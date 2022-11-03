@@ -1,0 +1,18 @@
+
+<div class="cmp-moredetails" data-cmp-is="moredetails">
+    <div class="cmp-moredetails__heading">${properties.heading || 'More details' @ i18n, context='text'}</div>
+    <div class="cmp-moredetails__item" data-sly-test="${properties.contentType}">
+        <p class="cmp-moredetails__item-label">${properties.contentTypeLabel || 'Content type' @ i18n, context='text'}</p>
+        <pre class="cmp-moredetails__item-output" data-cmp-hook-moredetails="contenttype">${properties.contentType}</pre>
+    </div>
+    <div class="cmp-moredetails__item" data-sly-test="${properties.calEventType}">
+        <p class="cmp-moredetails__item-label">${properties.calEventTypeLabel || 'Calendar Event Type' @ i18n, context='text'}</p>
+        <pre class="cmp-moredetails__item-output" data-cmp-hook-moredetails="caleventtype">${properties.calEventType}</pre>
+    </div>
+    <div class="cmp-moredetails__item" data-sly-test="${properties.product}">
+        <p class="cmp-moredetails__item-label">${properties.productLabel || 'Product' @ i18n, context='text'}</p>
+        <pre class="cmp-moredetails__item-output" data-cmp-hook-moredetails="product">${properties.product}</pre>
+    </div>
+</div>
+
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html" data-sly-call="${template.placeholder @ isEmpty=!properties.contentType, classAppend='cmp-moredetails'}"></sly>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Workday Community Site - UI content</comment>
+<entry key="allowIndexDefinitions">false</entry>
+<entry key="acHandling">merge</entry>
+<entry key="dependencies-locations">com.workday.community.aem:workday-community.ui.apps:0.0.1-SNAPSHOT=maven:com.workday.community.aem:workday-community.ui.apps:0.0.1-SNAPSHOT:zip</entry>
+<entry key="created">2022-11-02T20:52:13.332Z</entry>
+<entry key="groupId">com.workday.community.aem</entry>
+<entry key="description">UI content package for Workday Community Site</entry>
+<entry key="version">0.0.1-SNAPSHOT</entry>
+<entry key="packageType">content</entry>
+<entry key="requiresRoot">false</entry>
+<entry key="dependencies">com.workday.community.aem:workday-community.ui.apps:0.0.1-SNAPSHOT</entry>
+<entry key="cloudManagerTarget">none</entry>
+<entry key="name">workday-community.ui.content</entry>
+<entry key="artifactId">workday-community.ui.content</entry>
+<entry key="group">com.workday.community.aem</entry>
+</properties>

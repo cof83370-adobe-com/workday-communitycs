@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Created-By: Apache Jackrabbit FileVault - Package Maven Plugin 1.1.6
+Build-Jdk-Spec: 17
+Implementation-Title: Workday Community Site - UI content
+Implementation-Version: 0.0.1-SNAPSHOT
+Content-Package-Type: content
+Content-Package-Id: com.workday.community.aem:workday-community.ui.conte
+ nt:0.0.1-SNAPSHOT
+Content-Package-Description: UI content package for Workday Community Si
+ te
+Content-Package-Dependencies: com.workday.community.aem:workday-communit
+ y.ui.apps:0.0.1-SNAPSHOT
+Content-Package-Dependencies-Locations: com.workday.community.aem:workda
+ y-community.ui.apps:0.0.1-SNAPSHOT=maven:com.workday.community.aem:work
+ day-community.ui.apps:0.0.1-SNAPSHOT:zip
+Content-Package-Roots: /conf/community,/content/community,/content/dam/c
+ ommunity/asset.jpg,/content/experience-fragments/community
+

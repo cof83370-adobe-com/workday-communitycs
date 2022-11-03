@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:contextHubPath="/etc/cloudsettings/default/contexthub"
+        cq:contextHubSegmentsPath="/etc/segmentation/contexthub"
+        cq:template="/conf/community/settings/wcm/templates/page-content"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="en"
+        sling:resourceType="community/components/page"
+        pageTitle="Workday Community Site">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="community/components/container"
+            layout="responsiveGrid">
+            <container
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="community/components/container">
+                <title
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="community/components/title"/>
+                <container
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="community/components/container"
+                    layout="responsiveGrid">
+                    <teaser
+                        jcr:description="&lt;p>Don't stop half way, go for the top!&lt;/p>&#xd;&#xa;"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Epic Journey"
+                        sling:resourceType="community/components/teaser"
+                        actionsEnabled="false"
+                        descriptionFromPage="false"
+                        textIsRich="true"
+                        titleFromPage="false">
+                        <cq:responsive jcr:primaryType="nt:unstructured">
+                            <default
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="4"/>
+                        </cq:responsive>
+                    </teaser>
+                    <teaser_copy
+                        jcr:description="&lt;p>Don't stop half way, go for the top!&lt;/p>&#xd;&#xa;"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Epic Journey"
+                        sling:resourceType="community/components/teaser"
+                        actionsEnabled="false"
+                        descriptionFromPage="false"
+                        textIsRich="true"
+                        titleFromPage="false">
+                        <cq:responsive jcr:primaryType="nt:unstructured">
+                            <default
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="4"/>
+                        </cq:responsive>
+                    </teaser_copy>
+                    <teaser_copy_1579324932
+                        jcr:description="&lt;p>Don't stop half way, go for the top!&lt;/p>&#xd;&#xa;"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Epic Journey"
+                        sling:resourceType="community/components/teaser"
+                        actionsEnabled="false"
+                        descriptionFromPage="false"
+                        textIsRich="true"
+                        titleFromPage="false">
+                        <cq:responsive jcr:primaryType="nt:unstructured">
+                            <default
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="4"/>
+                        </cq:responsive>
+                    </teaser_copy_1579324932>
+                    <helloworld
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/helloworld"
+                        text="lalala :)"/>
+                </container>
+            </container>
+        </root>
+    </jcr:content>
+    <importcontent/>
+    <adaptive_ks7/>
+    <adaptive_ks/>
+    <landing/>
+    <adaptive_ks0/>
+    <custom_even/>
+    <adaptive_ks1/>
+    <custom1_eve/>
+    <custom2_eve/>
+    <events/>
+</jcr:root>

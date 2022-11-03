@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:lastModified="{Date}2022-11-01T10:43:19.890-05:00"
+        cq:lastModifiedBy="admin"
+        cq:template="/conf/community/settings/wcm/templates/common-page"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="Landing"
+        sling:resourceType="community/components/page">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="community/components/container"
+            layout="responsiveGrid">
+            <container
+                jcr:lastModified="{Date}2022-10-29T02:04:51.694-05:00"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="community/components/container"
+                layout="responsiveGrid">
+                <title
+                    jcr:created="{Date}2022-10-29T02:12:06.402-05:00"
+                    jcr:createdBy="admin"
+                    jcr:lastModified="{Date}2022-10-30T19:39:32.448-05:00"
+                    jcr:lastModifiedBy="admin"
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Get Started with Workday"
+                    sling:resourceType="community/components/title"
+                    linkTarget="_self"
+                    type="h1">
+                    <cq:responsive jcr:primaryType="nt:unstructured">
+                        <default
+                            jcr:primaryType="nt:unstructured"
+                            offset="0"
+                            width="12"/>
+                    </cq:responsive>
+                </title>
+                <text
+                    jcr:created="{Date}2022-10-30T19:39:46.115-05:00"
+                    jcr:createdBy="admin"
+                    jcr:lastModified="{Date}2022-10-30T19:39:52.859-05:00"
+                    jcr:lastModifiedBy="admin"
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="community/components/text"
+                    text="&lt;p>Welcome to the Workday Community.&amp;nbsp;Below you’ll find all the resources needed for an introduction to the Workday service and release process.&lt;/p>&#xd;&#xa;"
+                    textIsRich="true"/>
+                <accordion_1605414754
+                    jcr:created="{Date}2022-10-29T02:14:49.850-05:00"
+                    jcr:createdBy="admin"
+                    jcr:lastModified="{Date}2022-10-31T08:59:40.957-05:00"
+                    jcr:lastModifiedBy="admin"
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="community/components/accordion"
+                    expandedItems="[text_319339034]"
+                    singleExpansion="true">
+                    <text_319339034
+                        cq:panelTitle="How Do I Deploy Workday?"
+                        jcr:created="{Date}2022-10-30T19:43:32.081-05:00"
+                        jcr:createdBy="admin"
+                        jcr:lastModified="{Date}2022-10-30T19:44:29.445-05:00"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/text"
+                        text="&lt;p>Learn&amp;nbsp;&lt;a href=&quot;https://community.workday.com/node/104024&quot;>How Workday Delivers Features&lt;/a>, including what's&amp;nbsp;in a Service Update versus a Feature Release. You’ll also find out about Single Codeline development and the Workday Web Services Release Cycle.&lt;/p>&#xd;&#xa;"
+                        textIsRich="true"/>
+                    <text_228036021
+                        cq:panelTitle="What’s Included in Workday Documentation?"
+                        jcr:created="{Date}2022-10-30T19:43:26.999-05:00"
+                        jcr:createdBy="admin"
+                        jcr:lastModified="{Date}2022-10-30T21:56:17.230-05:00"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/text"
+                        text="&lt;p>With the introduction of each new release or feature, Workday publishes documentation to help walk you through deployment. Visit&amp;nbsp;&lt;a href=&quot;https://community.workday.com/node/186029&quot;>About Workday Documentation&lt;/a>&amp;nbsp;for an in-depth look the types of content accompanying an update, including publication schedules and best practices.&lt;/p>&#xd;&#xa;"
+                        textIsRich="true"/>
+                    <text_1238417440
+                        cq:panelTitle="How Do I Deploy Workday?"
+                        jcr:created="{Date}2022-10-30T19:43:23.018-05:00"
+                        jcr:createdBy="admin"
+                        jcr:lastModified="{Date}2022-10-30T21:56:30.715-05:00"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/text"
+                        text="&lt;p>Whether you’re in the middle of your initial Workday deployment,&amp;nbsp;or adding more features in Production, the&amp;nbsp;&lt;a href=&quot;https://community.workday.com/welcome-to-workday&quot;>Welcome to Workday&lt;/a>&amp;nbsp;and&amp;nbsp;&lt;a href=&quot;https://community.workday.com/km/deploying&quot;>Deploy Workday&lt;/a>&amp;nbsp;resources help you prepare for a seamless deployment.&amp;nbsp;&lt;/p>&#xd;&#xa;"
+                        textIsRich="true"/>
+                    <text_1011001764
+                        cq:panelTitle="How Do I Move to Production?"
+                        jcr:created="{Date}2022-10-30T19:43:18.523-05:00"
+                        jcr:createdBy="admin"
+                        jcr:lastModified="{Date}2022-10-30T21:56:45.167-05:00"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/text"
+                        text="&lt;p>As you near the end of your initial Workday deployment, you’re probably wondering what your next steps are. Use the&amp;nbsp;&lt;a href=&quot;https://community.workday.com/node/42947&quot;>Move to Production&lt;/a>&amp;nbsp;resources to help get ready to go live and manage Workday.&amp;nbsp; &amp;nbsp;&lt;/p>&#xd;&#xa;"
+                        textIsRich="true"/>
+                    <text_97971436
+                        cq:panelTitle="Free Training Resources"
+                        jcr:created="{Date}2022-10-30T19:43:14.226-05:00"
+                        jcr:createdBy="admin"
+                        jcr:lastModified="{Date}2022-10-30T19:46:40.737-05:00"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/text"
+                        text="&lt;p>Get the most out of your implementation with&amp;nbsp;&lt;a href=&quot;https://community.workday.com/articles/62197&quot;>free training resources&lt;/a>&amp;nbsp;on key Workday functions, including:&lt;/p>&#xd;&#xa;&lt;ul>&#xd;&#xa;&lt;li>&lt;a href=&quot;https://community.workday.com/node/396417&quot;>Business Process&lt;/a>&lt;/li>&#xd;&#xa;&lt;li>&lt;a href=&quot;https://community.workday.com/node/49356&quot;>Configurable Security&lt;/a>&lt;/li>&#xd;&#xa;&lt;li>&lt;a href=&quot;https://community.workday.com/node/433744&quot;>Core Concepts&lt;/a>&lt;/li>&#xd;&#xa;&lt;li>&lt;a href=&quot;https://community.workday.com/node/398948&quot;>Report Writer&lt;/a>&lt;/li>&#xd;&#xa;&lt;li>&lt;a href=&quot;https://community.workday.com/node/43916&quot;>Workday Integration&lt;/a>&lt;/li>&#xd;&#xa;&lt;li>&lt;a href=&quot;https://community.workday.com/node/31666&quot;>Workday Web Services&lt;/a>&lt;/li>&#xd;&#xa;&lt;/ul>&#xd;&#xa;&lt;p>Once you’re done with the resources above, learn how to&amp;nbsp;&lt;a href=&quot;https://community.workday.com/node/105&quot;>Get Started on the Workday Community&lt;/a>.&lt;/p>&#xd;&#xa;"
+                        textIsRich="true"/>
+                </accordion_1605414754>
+                <container
+                    jcr:created="{Date}2022-10-29T01:18:51.736-05:00"
+                    jcr:createdBy="admin"
+                    jcr:lastModified="{Date}2022-10-29T02:04:54.747-05:00"
+                    jcr:lastModifiedBy="admin"
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="community/components/container"
+                    layout="responsiveGrid">
+                    <container
+                        jcr:created="{Date}2022-10-29T01:19:13.075-05:00"
+                        jcr:createdBy="admin"
+                        jcr:lastModified="{Date}2022-10-29T01:19:13.075-05:00"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/container">
+                        <cq:responsive jcr:primaryType="nt:unstructured">
+                            <default
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="5"/>
+                        </cq:responsive>
+                        <card
+                            cq:styleIds="[1667025388315]"
+                            jcr:created="{Date}2022-10-29T01:19:57.106-05:00"
+                            jcr:createdBy="admin"
+                            jcr:lastModified="{Date}2022-10-31T22:34:50.370-05:00"
+                            jcr:lastModifiedBy="admin"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="community/components/card"
+                            description="&lt;p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc leo quam, malesuada in porta vitae, laoreet sit amet ex. Morbi faucibus mollis orci sit amet laoreet. Proin ac iaculis nunc. Cras accumsan elementum nulla, sed tempus ipsum luctus sed. Etiam fermentum ullamcorper pharetra. Ut viverra vulputate massa, vel convallis lorem consequat sit amet. &lt;/p>&#xd;&#xa;"
+                            heading="Demo Card Title 1"
+                            textIsRich="true"
+                            theme="default">
+                            <cq:responsive jcr:primaryType="nt:unstructured">
+                                <default
+                                    jcr:primaryType="nt:unstructured"
+                                    offset="0"
+                                    width="4"/>
+                            </cq:responsive>
+                        </card>
+                    </container>
+                    <container_752775991
+                        jcr:created="{Date}2022-10-29T01:19:18.959-05:00"
+                        jcr:createdBy="admin"
+                        jcr:lastModified="{Date}2022-10-29T01:19:18.959-05:00"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/container">
+                        <cq:responsive jcr:primaryType="nt:unstructured">
+                            <default
+                                jcr:primaryType="nt:unstructured"
+                                offset="1"
+                                width="5"/>
+                        </cq:responsive>
+                        <card
+                            jcr:created="{Date}2022-10-29T01:20:04.429-05:00"
+                            jcr:createdBy="admin"
+                            jcr:lastModified="{Date}2022-11-01T10:43:19.888-05:00"
+                            jcr:lastModifiedBy="admin"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="community/components/card"
+                            description="&lt;p>Aliquam eget consectetur orci. Donec sit amet urna nunc. Proin erat ligula, laoreet acaliquam fermentum blandit lacus, sit amet pulvinar velit rhoncus vitae. Donec facilisis sed nulla ac scelerisque. Donec libero lorem, elementum quis lorem vel, pharetra egestas nisl. Phasellus dolor lectus, porttitor non sem et, porta lobortis nibh. Cras tempus nisi quis elementum condimentum.&lt;/p>&#xd;&#xa;"
+                            heading="Demo Card Title 2"
+                            textIsRich="true"
+                            theme="default">
+                            <cq:responsive jcr:primaryType="nt:unstructured">
+                                <default
+                                    jcr:primaryType="nt:unstructured"
+                                    offset="1"
+                                    width="11"/>
+                            </cq:responsive>
+                        </card>
+                    </container_752775991>
+                </container>
+            </container>
+        </root>
+    </jcr:content>
+</jcr:root>

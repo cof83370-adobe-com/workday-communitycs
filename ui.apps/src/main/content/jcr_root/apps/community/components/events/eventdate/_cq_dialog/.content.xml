@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured"
+    jcr:title="Properties Config"
+    sling:resourceType="cq/gui/components/authoring/dialog">
+    <content
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
+        <items jcr:primaryType="nt:unstructured">
+            <column
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/container">
+                <items jcr:primaryType="nt:unstructured">
+                    <startdate
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                        displayedFormat="MMM DD, YYYY hh:mm a"
+                        fieldDescription="Choose event start date and time"
+                        fieldLabel="Event Start Date"
+                        name="./startDate"
+                        type="datetime"
+                        typeHint="Date"/>
+                    <enddate
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                        displayedFormat="MMM DD, YYYY hh:mm a"
+                        fieldDescription="Choose event end date and time"
+                        fieldLabel="Event End Date"
+                        name="./endDate"
+                        type="datetime"/>
+                    <buttonlabel
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                        fieldDescription="Enter Link label, the default will be 'Ask a related question' "
+                        fieldLabel="Enter Link Label"
+                        name="./buttonLabel"/>
+                    <showDescription
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                        fieldDescription="Click to Show Questions button"
+                        name="./showQuestionLink"
+                        text="Show Questions Button?"
+                        uncheckedValue="false"
+                        value="true"/>
+                </items>
+            </column>
+        </items>
+    </content>
+</jcr:root>

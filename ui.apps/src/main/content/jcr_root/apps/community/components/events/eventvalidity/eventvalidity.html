@@ -1,0 +1,20 @@
+<div class="cmp-eventvalidity" data-cmp-is="eventvalidity">
+
+    <span class="cmp-eventvalidity__item">
+        <span class="cmp-eventvalidity__item-output" data-cmp-hook-eventvalidity="updatedlabel">${'Updated' @ i18n, context='text'}</span>
+    </span>
+    <span class="cmp-eventvalidity__item" data-sly-test="${properties.updatedDate}">
+        <span class="cmp-eventvalidity__item-output" data-cmp-hook-eventvalidity="updateddate">${'MMM dd, YYYY' @ format=properties.updatedDate, timezone='GMT+05:30'}</span>
+    </span>
+   <span class="cmp-eventvalidity__item">
+        <span class="cmp-eventvalidity__item-output" data-cmp-hook-eventvalidity="retirementlabel">${'Retirement Date' @ i18n, context='text'}</span>
+    </span>
+    <span class="cmp-eventvalidity__item" data-sly-test="${properties.retirementDate}">
+        <span class="cmp-eventvalidity__item-output" data-cmp-hook-eventvalidity="retirementdate">${'MMM dd, YYYY' @ format=properties.retirementDate, timezone='GMT+05:30'} </span>
+    </span>
+     <span class="cmp-eventvalidity__item" data-sly-test="${properties.readCount}">
+        <span class="cmp-eventvalidity__item-output" data-cmp-hook-eventvalidity="readcount">${properties.readCount}</span>
+    </span> 
+</div>
+
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html" data-sly-call="${template.placeholder @ isEmpty=!properties.updatedDate, classAppend='cmp-eventvalidity'}"></sly>
