@@ -1,0 +1,22 @@
+
+//== Font
+$font-family-serif-default: "Asar",Georgia, "Times New Roman", Times, serif;
+$font-family:           "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-size:             16px;
+$font-height:           1.5;
+
+$font-family-serif:     var(--fontFamilySerif, $font-family-serif-default);
+
+$font-size-base:        18px;
+
+//== Color
+
+// Normal mode
+$color-foreground:      #202020;
+$color-background:      #FFFFFF;
+$color-link:            #2020E0;
+
+// Dark mode
+$color-foreground-dark: invert($color-foreground);
+$color-background-dark: invert($color-background);
+$color-link-dark:       invert($color-link);

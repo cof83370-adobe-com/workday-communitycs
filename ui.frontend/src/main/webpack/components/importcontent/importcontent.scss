@@ -1,0 +1,23 @@
+.cmp-importcontent {}
+.cmp-importcontent__item {}
+.cmp-importcontent__item-label {
+    color: #005cb9;
+    font-weight: 700;
+}
+.cmp-importcontent__item-output {
+    &:hover {
+        text-decoration: underline;
+    }
+}
+.cmp-importcontent__item-submit-button{
+    background-color: #005cb9;
+    border: none;
+    color: white;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 30px;
+    margin-left: 200px;
+}
