@@ -1,8 +1,0 @@
-{
-    "scripts": [
-        "create path (sling:OrderedFolder) /content/dam/community",
-        "create path (nt:unstructured) /content/dam/community/jcr:content",
-        "set properties on /content/dam/community/jcr:content\n  set cq:conf{String} to /conf/community\n  set jcr:title{String} to \"Workday Community Site\"\nend",
-        "create service user workday-community-administrative-service-user\r\nset ACL on /etc,/libs,/apps, /, /content/community,/home,/conf\r\n    allow jcr:all for workday-community-administrative-service-user\r\n    allow jcr:write for workday-community-administrative-service-user\r\nend"
-    ]
-}
