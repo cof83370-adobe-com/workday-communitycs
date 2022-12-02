@@ -53,7 +53,7 @@
                                                 fieldLabel="Enter Parent Page Path"
                                                 name="./pagePath"
                                                 required="{Boolean}true"
-                                                rootPath="/content/community"/>
+                                                rootPath="/content/workday-community"/>
                                         </items>
                                     </column>
                                 </items>
