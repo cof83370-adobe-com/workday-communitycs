@@ -331,7 +331,7 @@
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Page Root"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="[group:WD Community Site - Content,/apps/community/components/form/container,group:WD Community Site - Structure]"
+                    components="[group:Workday Community Site - Content,/apps/community/components/form/container,group:Workday Community Site - Structure]"
                     layout="responsiveGrid"
                     layoutDisabled="false">
                     <jcr:content
@@ -546,7 +546,7 @@
                     jcr:primaryType="nt:unstructured"
                     jcr:title="events-bottom-left"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="group:WD Community Site - Content"
+                    components="group:Workday Community Site - Content"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_2067608127785500>
@@ -556,7 +556,7 @@
                     jcr:primaryType="nt:unstructured"
                     jcr:title="events-bottom-right"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="group:WD Community Site - Content"
+                    components="group:Workday Community Site - Content"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_2067608134729200>
