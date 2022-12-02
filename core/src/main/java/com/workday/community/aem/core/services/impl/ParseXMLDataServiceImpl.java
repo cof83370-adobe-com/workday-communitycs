@@ -4,21 +4,27 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import javax.jcr.Node;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.day.cq.dam.api.Asset;
 import com.day.cq.dam.api.Rendition;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.models.EventPagesList;
+import com.workday.community.aem.core.services.PageCreationService;
 import com.workday.community.aem.core.services.ParseXMLDataService;
 
 /**
@@ -26,14 +32,9 @@ import com.workday.community.aem.core.services.ParseXMLDataService;
  * 
  * @author pepalla
  */
-@Component(immediate = true, service = ParseXMLDataService.class, name = ParseXMLDataServiceImpl.NAME, configurationPid = ParseXMLDataServiceImpl.CONFIG_PID)
+@Component(immediate = true, service = ParseXMLDataService.class)
+@ServiceDescription("Workday - XML Parser Provider")
 public class ParseXMLDataServiceImpl implements ParseXMLDataService {
-
-	/** The Constant NAME. */
-	public static final String NAME = "Workday - XML Parser Provider";
-
-	/** The Constant CONFIG_PID. */
-	public static final String CONFIG_PID = "com.workday.community.aem.core.servlets.ParseXMLDataImpl";
 
 	/** The Constant log. */
 	private static final Logger log = LoggerFactory.getLogger(ParseXMLDataServiceImpl.class);
@@ -45,6 +46,15 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 	private Unmarshaller unmarshaller;
 
 	/**
+	 * https://experienceleaguecommunities.adobe.com/t5/adobe-experience-manager/how
+	 * -do-i-specify-an-implementation-using-osgiservice/m-p/285357
+	 */
+	// @OSGiService(filter="(component.name=events-page)")
+	@Reference(target = "(type=events-page)")
+	PageCreationService eventsPageCreationService;
+
+
+	/**
 	 * Read XML from jcr source.
 	 *
 	 * @param <T> the generic type
@@ -53,8 +63,23 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 	 * @param clazz the clazz
 	 * @return the event pages list
 	 */
-	@Override
 	public  <T> T  readXMLFromJcrSource(final ResourceResolver resolver, Map<String, String> paramsMap, Class<T> clazz) {
+		String xmlResponse = readInputStreamFromAsset(resolver, paramsMap);
+		if(StringUtils.isNotBlank(xmlResponse)) {
+			xmlResponse = xmlResponse.substring(xmlResponse.indexOf("\n") + 1);
+			try {
+				jaxbContext = JAXBContext.newInstance(clazz);
+				unmarshaller = jaxbContext.createUnmarshaller();
+				T obj = clazz.cast(unmarshaller.unmarshal(new StringReader(xmlResponse)));
+				return   obj;
+			} catch (Exception e) {
+				log.error("Exception occured at readXML method :{}", e.getMessage());
+			}
+		}
+		return null;
+	}
+	
+	private String readInputStreamFromAsset(final ResourceResolver resolver, final Map<String, String> paramsMap) {
 		StringBuilder builder = new StringBuilder();
 		try {
 			Resource assetResource = resolver.getResource(paramsMap.get(GlobalConstants.SOURC_FILE_PARAM));
@@ -64,7 +89,7 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 			Node node = resolver.getResource(rnd.getPath() + String.format("%s%s", "/", GlobalConstants.JCR_CONTENT_NODE)).adaptTo(Node.class);
 			InputStream inputStreamReader = node.getProperty(GlobalConstants.JCR_DATA_NODE).getBinary().getStream();
 			// String result = IOUtils.toString(inputStreamReader, StandardCharsets.UTF_8);
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStreamReader));
+			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStreamReader, StandardCharsets.UTF_8));
 			if (bufferedReader != null) {
 				int eof;
 				while ((eof = bufferedReader.read()) != -1) {
@@ -73,22 +98,64 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 				bufferedReader.close();
 			}
 			inputStreamReader.close();
-
 		} catch (Exception e) {
-			log.error("Exception occured at readXML method :{}", e.getMessage());
+			log.error("Exception occured at readInputStreamFromAsset method :{}", e.getMessage());
 		}
-
-		String xmlResponse = builder.toString();
-		xmlResponse = xmlResponse.substring(xmlResponse.indexOf("\n") + 1);
-
+		return builder.toString();
+	}
+	/**
+	 * Read xml from jcr and delegate to page creation service.
+	 *
+	 * @param resolver the resolver
+	 * @param paramsMap the params map
+	 * @param templatePath the template path
+	 * @return the string
+	 */
+	@Override
+	public void readXmlFromJcrAndDelegateToPageCreationService(ResourceResolver resolver, Map<String, String> paramsMap,
+			final String templatePath) {
 		try {
-			jaxbContext = JAXBContext.newInstance(clazz);
-			unmarshaller = jaxbContext.createUnmarshaller();
-			T obj = clazz.cast(unmarshaller.unmarshal(new StringReader(xmlResponse)));
-			return   obj;
-		} catch (Exception e) {
-			log.error("Exception occured at readXML method :{}", e.getMessage());
+			String templateName = findTemplateName(templatePath);
+			if (StringUtils.isNotBlank(templateName)) {
+				switch (templateName) {
+				case "event-page-template":
+					EventPagesList listOfPageData = readXMLFromJcrSource(resolver, paramsMap, EventPagesList.class);
+					if (null != listOfPageData) {
+						doCreateEventsPageCreationService(paramsMap, listOfPageData);
+					}
+				case "kits-page-template":
+				default:
+				}
+			}
+		} catch (Exception exec) {
+			log.error("Exception occured at readXmlFromJcrAndDelegateToPageCreationService method :{}", exec.getMessage());
 		}
-		return null;
+	}
+	
+	/**
+	 * Find template name.
+	 *
+	 * @param templatePath the template path
+	 * @return the string
+	 */
+	private String findTemplateName(final String templatePath) {
+		String[] arr = templatePath.split("\\/");
+		String templateName = StringUtils.EMPTY;
+		if (null != arr && arr.length > 0)
+			templateName = arr[arr.length - 1];
+		return templateName;
+	}
+	
+	/**
+	 * Do create events page creation service.
+	 *
+	 * @param paramsMap the params map
+	 * @param listOfPageData the list of page data
+	 * @return the string
+	 */
+	private void doCreateEventsPageCreationService(Map<String, String> paramsMap, EventPagesList listOfPageData) {
+		listOfPageData.getRoot().forEach((item) -> {
+			 eventsPageCreationService.doCreatePage(paramsMap, item);
+		});
 	}
 }

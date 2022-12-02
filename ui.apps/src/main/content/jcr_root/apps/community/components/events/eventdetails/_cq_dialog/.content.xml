@@ -26,50 +26,27 @@
                                         sling:resourceType="granite/ui/components/coral/foundation/container"
                                         margin="{Boolean}true">
                                         <items jcr:primaryType="nt:unstructured">
-                                            <title
+                                            <eventtype
                                                 jcr:primaryType="nt:unstructured"
                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                emptyText="Title"
-                                                fieldLabel="Title"
-                                                name="./heading"/>
-                                            <accordions
+                                                emptyText="Event Type"
+                                                fieldDescription="Enter Event Type here"
+                                                fieldLabel="Event Type"
+                                                name="./eventType"/>
+                                            <location
                                                 jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
-                                                composite="{Boolean}true"
-                                                fieldLabel="Accordions">
-                                                <field
-                                                    jcr:primaryType="nt:unstructured"
-                                                    sling:resourceType="granite/ui/components/coral/foundation/container"
-                                                    name="./eventAccordion">
-                                                    <items jcr:primaryType="nt:unstructured">
-                                                        <outerbullets
-                                                            jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                            emptyText="Title"
-                                                            fieldLabel="Accordion Title"
-                                                            name="./eachOuterBullet"/>
-                                                        <list
-                                                            jcr:primaryType="nt:unstructured"
-                                                            sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
-                                                            composite="{Boolean}true"
-                                                            fieldLabel="Bullet list">
-                                                            <field
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="granite/ui/components/coral/foundation/container"
-                                                                name="./list">
-                                                                <items jcr:primaryType="nt:unstructured">
-                                                                    <innerbullets
-                                                                        jcr:primaryType="nt:unstructured"
-                                                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                        emptyText="Description"
-                                                                        fieldLabel="Description Label"
-                                                                        name="./eachInnerBullet"/>
-                                                                </items>
-                                                            </field>
-                                                        </list>
-                                                    </items>
-                                                </field>
-                                            </accordions>
+                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                emptyText="Location"
+                                                fieldDescription="Enter Location. default will be 'Virtual'"
+                                                fieldLabel="Location"
+                                                name="./location"/>
+                                            <host
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                emptyText="Host"
+                                                fieldDescription="Enter Host Name here"
+                                                fieldLabel="Host"
+                                                name="./host"/>
                                         </items>
                                     </column>
                                 </items>

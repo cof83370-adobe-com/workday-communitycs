@@ -1,18 +1,37 @@
 
-<sly data-sly-use.eventsAccordion="${'com.workday.community.aem.core.models.EventDetailsListModel'}"
-     data-sly-use.template="core/wcm/components/commons/v1/templates.html"></sly>
-<sly data-sly-test.configured="${eventsAccordion.configured}"></sly>
+<sly data-sly-use.eventDetails="${'com.workday.community.aem.core.models.EventDetailsModel'}"></sly>
+<sly data-sly-test.configured="${eventDetails.configured}"></sly>
 
 <div class="cmp-eventdetails" data-cmp-is="cmp-eventdetails">
 <div data-sly-test="${configured}">
-    <div class="cmp-eventdetails__heading">${eventsAccordion.heading @ i18n, context='text'}</div>
-    <div class="cmp-eventdetails__item" data-sly-list.accordionsList="${eventsAccordion.accordionList}">
-        <div class="cmp-eventdetails__item-output"> ${accordionsList.eachOuterBullet @ i18n, context='html'}
-        <ul class="cmp-eventdetails__item" data-sly-list="${accordionsList.bulletPointList}">
-            <li class="cmp-eventdetails__item-output">${item.eachInnerBullet @ i18n, context='html'}</li>
-        </ul>
-        </div>
+    <div class="cmp-eventdetails__heading">${'Event Details' @ i18n, context='text'}</div>
+    <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="eventDate">
+        <pre class="cmp-eventdetails__item-icon"></pre>
+        <div class="cmp-eventdetails__item-label">${'Event Date' @ i18n, context='text'} </div>
+        <div class="cmp-eventdetails__item-output">${eventDetails.dateFormat @ i18n, context='text'} ${'at' @ i18n, context='text'} ${eventDetails.timeFormat @ i18n, context='text'}</div>
     </div>
+    <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="eventType">
+        <pre class="cmp-eventdetails__item-icon"></pre>
+        <div class="cmp-eventdetails__item-label">${'Event Type' @ i18n, context='text'} </div>
+        <div class="cmp-eventdetails__item-output">${eventDetails.eventType @ i18n, context='text'}</div>
+    </div>
+    <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="location">
+        <pre class="cmp-eventdetails__item-icon"></pre>
+        <div class="cmp-eventdetails__item-label">${'Location' @ i18n, context='text'} </div>
+        <div class="cmp-eventdetails__item-output">${eventDetails.location || 'Virtual' @ i18n, context='text'}</div>
+    </div>
+    <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="host">
+        <pre class="cmp-eventdetails__item-icon"></pre>
+        <div class="cmp-eventdetails__item-label">${'Host' @ i18n, context='text'} </div>
+        <div class="cmp-eventdetails__item-output">${eventDetails.host @ i18n, context='text'}</div>
+    </div>
+    <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="length">
+        <pre class="cmp-eventdetails__item-icon"></pre>
+        <div class="cmp-eventdetails__item-label">${'Length' @ i18n, context='text'} </div>
+        <div class="cmp-eventdetails__item-output">${eventDetails.length @ i18n, context='text'}</div>
+    </div>
+    
 </div>
 </div>
-<sly data-sly-call="${template.placeholder @ isEmpty=!eventsAccordion.heading, classAppend='cmp-eventdetails'}"></sly>
+
+<div data-sly-test="${wcmmode.edit || wcmmode.design}" class="cq-placeholder" data-emptyText="WD Community Site - Event Details Component"></div>
