@@ -40,7 +40,7 @@
                         chooseSourceFileLabel="Import content from"
                         chooseTemplate="/conf/community/settings/wcm/templates/events-page"
                         chooseTemplateLabel="Using AEM template"
-                        pagePath="/content/community/us/en/events"
+                        pagePath="/content/workday-community/us/en/events"
                         pagePathLabel="Create pages under"/>
                 </container>
                 <rightcontainer
