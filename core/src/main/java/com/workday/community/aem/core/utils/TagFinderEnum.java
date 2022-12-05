@@ -11,18 +11,18 @@ package com.workday.community.aem.core.utils;
 public enum TagFinderEnum {
 	
 	/** The Calendareventtype. */
-	Calendareventtype("Events", "/content/cq:tags/event"), 
+	CALENDAREVENTTYPE("Events", "/content/cq:tags/event"), 
 	
 	/** The Product. */
-	Product("Product", "/content/cq:tags/product"),
+	PRODUCT("Product", "/content/cq:tags/product"),
 	
 	/** The using worday. */
-	using_worday("Using Workday", "/content/cq:tags/using-workday"),
+	USING_WORDAY("Using Workday", "/content/cq:tags/using-workday"),
 	
 	/** The release tag. */
-	release_tag("Release", "/content/cq:tags/release"),
+	RELEASE_TAG("Release", "/content/cq:tags/release"),
 	
-	Industry("Industry", "/content/cq:tags/industry");
+	INDUSTRY("Industry", "/content/cq:tags/industry");
 
 	/** The key. */
 	private final String key;

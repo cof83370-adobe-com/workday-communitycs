@@ -42,51 +42,83 @@ public class EventsPageCreationServiceImpl implements PageCreationService {
 	/** The logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
 	
+	/** The Constant default_event_location. */
 	private static final String default_event_location ="Virtual";
 	
+	/** The Constant default_event_host. */
+	private static final String default_event_host = "workday";
+	
+	/** The Constant CONTAINER. */
 	private static final String CONTAINER = "container";
 
+	/** The Constant CENTERCONTAINER2. */
 	private static final String CENTERCONTAINER2 = "centercontainer";
 
+	/** The Constant TOPRIGHTCONTAINER2. */
 	private static final String TOPRIGHTCONTAINER2 = "toprightcontainer";
 
+	/** The Constant HOST. */
 	private static final String HOST = "host";
 
+	/** The Constant LOCATION. */
 	private static final String LOCATION = "location";
 
+	/** The Constant REGISTER_LINK. */
 	private static final String REGISTER_LINK = "registerLink";
 
+	/** The Constant NEW_WINDOW. */
 	private static final String NEW_WINDOW = "newWindow";
 
+	/** The Constant FALSE. */
 	private static final String FALSE = "false";
 
+	/** The Constant TRUE. */
 	private static final String TRUE = "true";
 
+	/** The Constant SHOW_REGISTER_LINK. */
 	private static final String SHOW_REGISTER_LINK = "showRegisterLink";
 
+	/** The Constant JCR_TITLE. */
 	private static final String JCR_TITLE = "jcr:title";
 
+	/** The Constant TYPE. */
 	private static final String TYPE = "type";
 
+	/** The Constant TEXT_IS_RICH_PROP. */
 	private static final String TEXT_IS_RICH_PROP = "textIsRich";
 
+	/** The Constant TEXT. */
 	private static final String TEXT = "text";
 
+	/** The Constant JCR_SQL2. */
 	private static final String JCR_SQL2 = "JCR-SQL2";
 
+	/** The Constant EVENT_TAGS. */
 	private static final String EVENT_TAGS = "eventTags";
 
+	/** The Constant RETIREMENT_DATE. */
 	private static final String RETIREMENT_DATE = "retirementDate";
 
+	/** The Constant READ_COUNT. */
 	private static final String READ_COUNT = "readCount";
 
+	/** The Constant UPDATED_DATE. */
 	private static final String UPDATED_DATE = "updatedDate";
 
+	/** The Constant EVENT_TYPE. */
 	private static final String EVENT_TYPE = "eventType";
 
+	/** The Constant START_DATE. */
 	private static final String START_DATE = "startDate";
 
+	/** The Constant END_DATE. */
 	private static final String END_DATE = "endDate";
+	
+	private static final String TEXT_DESC = "text_desc";
+
+	private static final String TITLE_DESC = "title_desc";
+	
+	private static final String EVENT_DESCRIPTION = "Event Description";
 
 	/** The resolver factory. */
 	@Reference
@@ -183,8 +215,8 @@ public class EventsPageCreationServiceImpl implements PageCreationService {
 	 */
 	private void setPageProps(final Node jcrNode, final EventPageData data, ResourceResolver resourceResolver) {
 		try {
-			if(StringUtils.isNotBlank(data.getRetirement_date())) {
-				Calendar retirementDate = WokdayUtils.convertStrToAemCalInstance(data.getRetirement_date(),GlobalConstants.EventsPageConstants.YYYY_MM_DD_FORMAT);
+			if(StringUtils.isNotBlank(data.getFieldRetirementDateValue())) {
+				Calendar retirementDate = WokdayUtils.convertStrToAemCalInstance(data.getFieldRetirementDateValue(),GlobalConstants.EventsPageConstants.YYYY_MM_DD_FORMAT);
 				retirementDate.add(Calendar.DATE, 1); // add one day
 				jcrNode.setProperty(RETIREMENT_DATE, retirementDate);
 			}
@@ -197,23 +229,23 @@ public class EventsPageCreationServiceImpl implements PageCreationService {
 				updatedDate.add(Calendar.DATE, 1); //add one day
 				jcrNode.setProperty(UPDATED_DATE, updatedDate);
 			}
-			if(StringUtils.isNotBlank(data.getStart_date())) {
-				Calendar startDateCal = WokdayUtils.convertStrToAemCalInstance(data.getStart_date(),GlobalConstants.AEM_CAL_INSTANCE_FORMAT);
+			if(StringUtils.isNotBlank(data.getStartDate())) {
+				Calendar startDateCal = WokdayUtils.convertStrToAemCalInstance(data.getStartDate(),GlobalConstants.AEM_CAL_INSTANCE_FORMAT);
 				startDateCal.add(Calendar.HOUR_OF_DAY, 1); // add one hour
 				jcrNode.setProperty(START_DATE, startDateCal);
 			}
-			if(StringUtils.isNotBlank(data.getEnd_date())) {
-				Calendar endDateCal = WokdayUtils.convertStrToAemCalInstance(data.getEnd_date(), GlobalConstants.AEM_CAL_INSTANCE_FORMAT);
+			if(StringUtils.isNotBlank(data.getEndDate())) {
+				Calendar endDateCal = WokdayUtils.convertStrToAemCalInstance(data.getEndDate(), GlobalConstants.AEM_CAL_INSTANCE_FORMAT);
 				endDateCal.add(Calendar.HOUR_OF_DAY, 1);      // adds one hour
 				jcrNode.setProperty(END_DATE, endDateCal);
 			}
 			
-			if(StringUtils.isNotBlank(data.getCalendareventtype())) {
-				jcrNode.setProperty(EVENT_TYPE, data.getCalendareventtype());
+			if(StringUtils.isNotBlank(data.getCalendarEventType())) {
+				jcrNode.setProperty(EVENT_TYPE, data.getCalendarEventType());
 			}
 			
 			ArrayList<String> allPageTags = collectAllTagsForGivenPage(resourceResolver, data);
-			if(allPageTags.size() > 0) {
+			if(!allPageTags.isEmpty()) {
 				jcrNode.setProperty(EVENT_TAGS, allPageTags.stream().toArray(String[]::new));
 			}
 		} catch (Exception exec) {
@@ -221,36 +253,43 @@ public class EventsPageCreationServiceImpl implements PageCreationService {
 		} 
 	}
 	
+	/**
+	 * Collect all tags for given page.
+	 *
+	 * @param resourceResolver the resource resolver
+	 * @param data the data
+	 * @return the array list
+	 */
 	private ArrayList<String> collectAllTagsForGivenPage(ResourceResolver resourceResolver, final EventPageData data) {
 		ArrayList<String> allPageTags = new ArrayList<String>();
 
 		// Add Calendar eventtype tags.
-		if (StringUtils.isNotBlank(data.getCalendareventtype())) {
-			List<String> eventTypeTags = getTagsForGivenInputs(resourceResolver, TagFinderEnum.Calendareventtype, data.getCalendareventtype());
+		if (StringUtils.isNotBlank(data.getCalendarEventType())) {
+			List<String> eventTypeTags = getTagsForGivenInputs(resourceResolver, TagFinderEnum.CALENDAREVENTTYPE, data.getCalendarEventType());
 			if (null != eventTypeTags) {
 				allPageTags.addAll(eventTypeTags);
 			}
 		}
 
-		// TODO To add release tags
-		if (StringUtils.isNotBlank(data.getRelease_tag())) {
-			List<String> releaseTags = getTagsForGivenInputs(resourceResolver, TagFinderEnum.release_tag, data.getRelease_tag());
+		// To add release tags
+		if (StringUtils.isNotBlank(data.getReleaseTag())) {
+			List<String> releaseTags = getTagsForGivenInputs(resourceResolver, TagFinderEnum.RELEASE_TAG, data.getReleaseTag());
 			if (null != releaseTags) {
 				allPageTags.addAll(releaseTags);
 			}
 		}
 
-		// TODO To add product tags
+		// To add product tags
 		if (StringUtils.isNotBlank(data.getProduct())) {
-			List<String> productTags = getTagsForGivenInputs(resourceResolver, TagFinderEnum.Product, data.getProduct());
+			List<String> productTags = getTagsForGivenInputs(resourceResolver, TagFinderEnum.PRODUCT, data.getProduct());
 			if (null != productTags) {
 				allPageTags.addAll(productTags);
 			}
 		}
 
-		// TODO To add using workday tags
-		if (StringUtils.isNotBlank(data.getUsing_worday())) {
-			List<String> usingWorkdayTags = getTagsForGivenInputs(resourceResolver, TagFinderEnum.using_worday, data.getUsing_worday());
+		// To add using workday tags
+		if (StringUtils.isNotBlank(data.getUsingWorday())) {
+			List<String> usingWorkdayTags = getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORDAY, data.getUsingWorday());
 			if (null != usingWorkdayTags) {
 				allPageTags.addAll(usingWorkdayTags);
 			}
@@ -372,18 +411,41 @@ public class EventsPageCreationServiceImpl implements PageCreationService {
 		final String eventRegistrationTitle = "<h2 id=\"event-registration\">Registration Information</h2>";
 		final String eventPreReadTitle = "<h2 id=\"event-prereading\">Pre Reading</h2>";
 		final String eventAgendaTitle = "<h2 id=\"event-agenda\">Agenda</h2>";
+		final String TEXT_AGENDA = "text_agenda";
+
+		final String TITLE_AGENDA = "title_agenda";
+
+		final String TEXT_PREREAD = "text_preread";
+
+		final String TITLE_PREREAD = "title_preread";
+
+		final String TITLE_REG = "title_reg";
+
+		final String TEXT_REG = "text_reg";
+
+		final String TEXT_DESC = "text_desc";
+
+		final String TITLE_DESC = "title_desc";
+
+		final String AGENDA = "Agenda";
+
+		final String PRE_READING = "Pre Reading";
+
+		final String REGISTRATION_INFORMATION = "Registration Information";
+
+		
 		if(parseString.startsWith(eventDescTitle)) {
-			createCoreTitleComponent(innerContainer, "Event Description","title_desc");
-			createCoreTextComponent(innerContainer, parseString.replaceAll(eventDescTitle, StringUtils.EMPTY), "text_desc");
+			createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION,TITLE_DESC);
+			createCoreTextComponent(innerContainer, parseString.replaceAll(eventDescTitle, StringUtils.EMPTY), TEXT_DESC);
 		} else if(parseString.startsWith(eventRegistrationTitle)) {
-			createCoreTitleComponent(innerContainer, "Registration Information","title_reg" );
-			createCoreTextComponent(innerContainer, parseString.replaceAll(eventRegistrationTitle, StringUtils.EMPTY), "text_reg");
+			createCoreTitleComponent(innerContainer, REGISTRATION_INFORMATION,TITLE_REG );
+			createCoreTextComponent(innerContainer, parseString.replaceAll(eventRegistrationTitle, StringUtils.EMPTY), TEXT_REG);
 		} else if(parseString.startsWith(eventPreReadTitle)) {
-			createCoreTitleComponent(innerContainer, "Pre Reading", "title_preread");
-			createCoreTextComponent(innerContainer, parseString.replaceAll(eventPreReadTitle, StringUtils.EMPTY), "text_preread");
+			createCoreTitleComponent(innerContainer, PRE_READING, TITLE_PREREAD);
+			createCoreTextComponent(innerContainer, parseString.replaceAll(eventPreReadTitle, StringUtils.EMPTY), TEXT_PREREAD);
 		} else if(parseString.startsWith(eventAgendaTitle)) {
-			createCoreTitleComponent(innerContainer, "Agenda", "title_agenda");
-			createCoreTextComponent(innerContainer,parseString.replaceAll(eventAgendaTitle, StringUtils.EMPTY),"text_agenda");
+			createCoreTitleComponent(innerContainer, AGENDA, TITLE_AGENDA);
+			createCoreTextComponent(innerContainer,parseString.replaceAll(eventAgendaTitle, StringUtils.EMPTY),TEXT_AGENDA);
 		}
 	}
 	
@@ -446,8 +508,8 @@ public class EventsPageCreationServiceImpl implements PageCreationService {
 				 * It executes, if not find event desc or registration, agenda or pre reading
 				 * id's on xml description node data
 				 */
-				createCoreTitleComponent(innerContainer, "Event Description","title_desc");
-				createCoreTextComponent(innerContainer, descText, "text_desc");
+				createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION,TITLE_DESC);
+				createCoreTextComponent(innerContainer, descText, TEXT_DESC);
 			}
 			
 		}
@@ -507,15 +569,15 @@ public class EventsPageCreationServiceImpl implements PageCreationService {
 				eventRegistrationNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP, GlobalConstants.EventsPageConstants.EVENT_REGISTRATION_SLING_RESOURCE);
 			}
 			
-			if(StringUtils.isNotBlank(data.getShow_ask_related_question()) ) {
-				if(data.getShow_ask_related_question().equalsIgnoreCase("1")) {
+			if(StringUtils.isNotBlank(data.getShowAskRelatedQuestion()) ) {
+				if(data.getShowAskRelatedQuestion().equalsIgnoreCase("1")) {
 					eventRegistrationNode.setProperty(SHOW_REGISTER_LINK, TRUE);
 				} else {
 					eventRegistrationNode.setProperty(SHOW_REGISTER_LINK, FALSE);
 				}
 			}
 			eventRegistrationNode.setProperty(NEW_WINDOW, FALSE);
-			eventRegistrationNode.setProperty(REGISTER_LINK, data.getRegistration_url());
+			eventRegistrationNode.setProperty(REGISTER_LINK, data.getRegistrationUrl());
 		}  catch (Exception exec) {
 			LOGGER.error("Exception in createEventRegistrationComponent method::{}", exec.getMessage());
 		}
@@ -534,12 +596,10 @@ public class EventsPageCreationServiceImpl implements PageCreationService {
 					: innerContainer.addNode(GlobalConstants.EventsPageConstants.EVENT_DETAILS_COMP_NODE_NAME);
 
 			eventDetailsNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP, GlobalConstants.EventsPageConstants.EVENT_DETAILS_SLING_RESOURCE);
-			eventDetailsNode.setProperty(EVENT_TYPE, data.getCalendareventtype());
+			eventDetailsNode.setProperty(EVENT_TYPE, data.getCalendarEventType());
 			
-			//TODO - Need to set location value from xml
 			eventDetailsNode.setProperty(LOCATION, default_event_location);
-			//TODO - Need to set host value from xml
-			eventDetailsNode.setProperty(HOST, "Workday");
+			eventDetailsNode.setProperty(HOST, default_event_host);
 		}  catch (Exception exec) {
 			LOGGER.error("Exception in createEventDetailsComponent method::{}", exec.getMessage());
 		}

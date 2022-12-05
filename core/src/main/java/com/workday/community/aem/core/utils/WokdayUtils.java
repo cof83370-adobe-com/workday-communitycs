@@ -5,8 +5,7 @@ package com.workday.community.aem.core.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -24,10 +23,10 @@ import org.slf4j.LoggerFactory;
 public class WokdayUtils {
 
 	/** The Constant log. */
-	private final static Logger log = LoggerFactory.getLogger(WokdayUtils.class);
+	private static final Logger log = LoggerFactory.getLogger(WokdayUtils.class);
 
 	/** The Constant ISO8601DATEFORMAT. */
-	final static String ISO8601DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	 static final String ISO8601DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
 
 	/**
 	 * Gets the date string from epoch.
@@ -65,7 +64,7 @@ public class WokdayUtils {
 	}
 
 	/** The Constant dateFmt. */
-	private final static SimpleDateFormat dateFmt = new SimpleDateFormat(ISO8601DATEFORMAT);
+	private static final SimpleDateFormat dateFmt = new SimpleDateFormat(ISO8601DATEFORMAT);
 
 	/**
 	 * Format a date as text.
