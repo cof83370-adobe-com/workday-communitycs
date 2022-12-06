@@ -37,7 +37,7 @@ import com.workday.community.aem.core.utils.WokdayUtils;
  */
 @Component(immediate = true, service = PageCreationService.class, property={"type=events-page"})
 @ServiceDescription("Workday - Events Page Creation Service")
-public class EventsPageCreationServiceImpl implements PageCreationService {
+public class EventsPageCreationService implements PageCreationService {
 
 	/** The logger. */
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass().getName());
