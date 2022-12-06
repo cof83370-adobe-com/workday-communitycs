@@ -27,14 +27,14 @@
         padding: 10px 24px; 
     }
 
-    .cmp-button__text {
+    &__text {
         font-style: $font-style-normal;
         font-weight: $font-weight-bold;
         text-align: $align-center;
         color: $wdc-color-french-vanilla-100;
 
         @media (max-width: $screen-small) {
-            font-size: $font-size-large;
+            font-size: $font-size;
             line-height: 24px;        
             letter-spacing: 0.16px;
         }
