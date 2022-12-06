@@ -1,0 +1,90 @@
+.cmp-breadcrumb {
+    display: flex;
+    align-items: $align-center;
+    position: absolute;
+
+    &__list {
+
+        @media (max-width: $screen-small) {
+            width: 288px;
+            height: 22px;
+            left: 16px;
+            top: 200px;
+            font-size: 15px;
+        }
+
+        @media (min-width: $screen-small) {
+            left: 0%;
+            right: 60.14%;
+            top: 0%;
+            bottom: 0%;
+            font-size: $font-size-small;
+        }
+        
+    }
+
+    &__item {
+        color: $wdc-color-black-pepper-600;
+        font-style: $font-style-normal;
+        line-height: 22px;
+
+        @media (max-width: $screen-small) {
+            &:before {
+                content: '/';
+                padding: 5px;
+            }
+        }
+
+        @media (min-width: $screen-small) {
+            &:before {
+                $imagePath: url('../resources/images/rightArrow.jpg');
+                content: $imagePath;
+                padding: 5px;
+            }
+        }        
+      
+        &:first-child {
+            padding-left: 0;
+      
+            &:before {
+              content: none;
+            }
+        }
+
+        &--active {
+            @extend .cmp-breadcrumb__item;
+            &:hover {
+                color: $wdc-color-blueberry-400;
+                text-decoration: underline;
+            }
+    
+            &:focus {
+                color: $wdc-color-blueberry-400;
+                box-sizing: border-box;
+                border: 2px solid $wdc-color-blueberry-400;
+            }
+        }
+
+        &-link {
+            font-weight: $font-weight-bold;
+            color: $wdc-color-black-pepper-600;
+            text-decoration: none;
+
+            &:first {
+                padding-left: 0px;
+            }
+
+            &:hover {
+                color: $wdc-color-blueberry-400;
+                text-decoration: underline;
+            }
+
+            &:focus {
+                color: $wdc-color-blueberry-400;
+                box-sizing: border-box;
+                border: 2px solid $wdc-color-blueberry-400;
+            }
+        }
+    }
+
+}
