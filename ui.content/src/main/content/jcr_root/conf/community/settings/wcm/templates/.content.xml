@@ -7,4 +7,5 @@
     <rep:policy/>
     <events-page/>
     <common-page/>
+    <event-page-template/>
 </jcr:root>
