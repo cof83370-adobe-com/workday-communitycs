@@ -27,6 +27,9 @@ public class WokdayUtils {
 
 	/** The Constant ISO8601DATEFORMAT. */
 	 static final String ISO8601DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	 private WokdayUtils(){
+		log.info("Initialized");
+	 }
 
 	/**
 	 * Gets the date string from epoch.
@@ -121,17 +124,4 @@ public class WokdayUtils {
 	        return extraDays - dayTwo.get(Calendar.DAY_OF_YEAR) + dayOneOriginalYearDays ;
 	    }
 	}
-	
-	/**
-	 * String to date.
-	 *
-	 * @return the offset date time
-	 */
-	/** public static OffsetDateTime StringToDate() {
-		String strDateTime = "Tue Jun 29 15:37:43 GMT+05:30 2021";
-		DateTimeFormatter dtfInput = DateTimeFormatter.ofPattern("E MMM d H:m:s O u", Locale.ENGLISH);
-		OffsetDateTime formatedDate = OffsetDateTime.parse(strDateTime, dtfInput);
-		log.debug("formatedDate::{}", formatedDate);
-		return formatedDate;
-	} */
 }
