@@ -1,4 +1,4 @@
-.cmp-eventmetadata{
+.cmp-eventmetadata {
     position: absolute;
     top: 260px;
 
@@ -14,7 +14,7 @@
         right: 40.23%;
     }
 
-    .cmp-eventmetadata__item{
+    &__item{
         font-style: $font-style-normal;
         font-weight: 500;
         font-size: $font-size-xsmall;
@@ -35,7 +35,7 @@
             }
         }
 
-        .cmp-eventmetadata__item-label{
+        &__item-label{
             padding-right: 5px;
         }
     }
