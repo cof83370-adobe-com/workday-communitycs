@@ -6,24 +6,19 @@
 .cmp-button {
     justify-content: $align-center;
     align-items: $align-center;
-    position: absolute;  
     background: $wdc-color-blueberry-400;
     border-radius: 24px; 
     border: none;
 
     @media (max-width: $screen-small) {
         width: 252px; 
-        height: 48px; 
-        left: 108px; 
-        top: 321px; 
+        height: 48px;
         padding: 12px 32px; 
     }
 
     @media (min-width: $screen-small) {
         width: 260px; 
-        height: 40px; 
-        left: 959px; 
-        top: 207px; 
+        height: 40px;
         padding: 10px 24px; 
     }
 
