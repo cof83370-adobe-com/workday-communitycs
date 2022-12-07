@@ -18,8 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
-import com.workday.community.aem.core.models.EventPagesList;
-import com.workday.community.aem.core.services.PageCreationService;
+
 import com.workday.community.aem.core.services.ParseXMLDataService;
 
 /**
@@ -45,10 +44,8 @@ public class XMLDataImporterServlet extends SlingSafeMethodsServlet {
 	/** The parse XML data service. */
 	@Reference
 	ParseXMLDataService parseXMLDataService;
-
-	/** The page creation service. */
-	@Reference
-	PageCreationService pageCreationService;
+	
+	
 
 	/**
 	 * Do get.
@@ -65,7 +62,6 @@ public class XMLDataImporterServlet extends SlingSafeMethodsServlet {
 		resp.setContentType("text/html");
 		resp.setCharacterEncoding(DEFAULT_CHARSET);
 		try(ResourceResolver resolver = req.getResourceResolver()) {
-			String status = "failure";
 			final String sourceFile = req.getParameter(GlobalConstants.SOURC_FILE_PARAM);
 			final String template = req.getParameter(GlobalConstants.TEMPLATE_PARAM);
 			final String pagePath = req.getParameter(GlobalConstants.PARENT_PAGE_PATH_PARAM);
@@ -75,40 +71,13 @@ public class XMLDataImporterServlet extends SlingSafeMethodsServlet {
 				paramsMap.put(GlobalConstants.SOURC_FILE_PARAM, sourceFile);
 				paramsMap.put(GlobalConstants.TEMPLATE_PARAM, template);
 				paramsMap.put(GlobalConstants.PARENT_PAGE_PATH_PARAM, pagePath);
-
-				if (null != parseXMLDataService && null != getModelBasedOnTemplateName(template)) {
-					EventPagesList listOfPageData = parseXMLDataService.readXMLFromJcrSource(resolver, paramsMap,
-							getModelBasedOnTemplateName(template));
-					if (null != listOfPageData) {
-						log.debug("listOfPageData:::{}", listOfPageData);
-						listOfPageData.getRoot().forEach((item) -> {
-							pageCreationService.doCreatePage(req, paramsMap, item);
-						});
-						status = "success";
-					}
+				if (null != parseXMLDataService) {
+					 parseXMLDataService.readXmlFromJcrAndDelegateToPageCreationService(resolver, paramsMap,template);
 				}
 			}
-			resp.getWriter().write(status);
 		} catch (Exception e) {
+			resp.sendError(400, e.getMessage());
 			log.error("Exception occured at doGet method of XMLDataImporterServlet" + e.getMessage());
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	private <T> T getModelBasedOnTemplateName(String template) {
-		// template path null check already happening above.
-		String[] arr = template.split("\\/");
-		String templateName = StringUtils.EMPTY;
-		if (null != arr && arr.length > 0)
-			templateName = arr[arr.length - 1];
-
-		switch (templateName) {
-		case "events-page":
-			return (T) EventPagesList.class;
-		case "kits-page":
-			return null;
-		default:
-			return null;
 		}
 	}
 }

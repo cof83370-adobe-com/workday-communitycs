@@ -25,14 +25,25 @@ public interface GlobalConstants {
 	/** The Constant TITLE_COMP_SLING_RESOURCE. */
 	public static final String TITLE_COMP_SLING_RESOURCE = "community/components/title";
 	
+	public static final String TEXT_COMP_SLING_RESOURCE = "community/components/text";
+	
+	/** The Constant BREADCRUMB_COMP_SLING_RESOURCE. */
+	public static final String BREADCRUMB_COMP_SLING_RESOURCE = "community/components/breadcrumb";
+	
 	/** The Constant TITLE_COMP_NODE_NAME. */
 	public static final String TITLE_COMP_NODE_NAME = "title";
+	
+	/** The Constant TITLE_COMP_NODE_NAME. */
+	public static final String BREADCRUMB_COMP_NODE_NAME = "breadcrumb";
 	
 	/** The Constant JCR_CONTENT_NODE. */
 	public static final String JCR_CONTENT_NODE = "jcr:content";
 	
 	/** The Constant JCR_DATA_NODE. */
 	public static final String JCR_DATA_NODE = "jcr:data";
+	
+	/** The Constant JCR_TITLE_PROP. */
+	public static final String JCR_TITLE_PROP = "jcr:title";
 	
 	
 	/**
@@ -44,25 +55,19 @@ public interface GlobalConstants {
 		public static final String EVENT_DETAILS_SLING_RESOURCE = "community/components/events/eventdetails";
 		
 		/** The Constant EVENT_DETAILS_COMP_NODE_NAME. */
-		public static final String EVENT_DETAILS_COMP_NODE_NAME = "eventdetails_";
+		public static final String EVENT_DETAILS_COMP_NODE_NAME = "eventdetails";
 		
-		/** The Constant EVENT_DATE_SLING_RESOURCE. */
-		public static final String EVENT_DATE_SLING_RESOURCE = "community/components/events/eventdate";
+		/** The Constant EVENT_MATA_DATA_SLING_RESOURCE. */
+		public static final String EVENT_MATA_DATA_SLING_RESOURCE = "community/components/events/eventmetadata";
 		
-		/** The Constant EVENT_DATE_COMP_NODE_NAME. */
-		public static final String EVENT_DATE_COMP_NODE_NAME = "eventdate";
+		/** The Constant EVENT_META_DATA_COMP_NODE_NAME. */
+		public static final String EVENT_META_DATA_COMP_NODE_NAME = "eventmetadata";
 		
-		/** The Constant EVENT_VALIDITY_SLING_RESOURCE. */
-		public static final String EVENT_VALIDITY_SLING_RESOURCE = "community/components/events/eventvalidity";
+        /** The Constant EVENT_REGISTRATION_SLING_RESOURCE. */
+        public static final String EVENT_REGISTRATION_SLING_RESOURCE = "community/components/events/eventregistration";
 		
-		/** The Constant EVENT_VALIDITY_COMP_NODE_NAME. */
-		public static final String EVENT_VALIDITY_COMP_NODE_NAME = "eventvalidity";
-		
-		/** The Constant MORE_DETAILS_SLING_RESOURCE. */
-		public static final String MORE_DETAILS_SLING_RESOURCE = "community/components/events/moredetails";
-		
-		/** The Constant MORE_DETAILS_COMP_NODE_NAME. */
-		public static final String MORE_DETAILS_COMP_NODE_NAME = "moredetails";
+		/** The Constant EVENT_REGISTRATION_COMP_NODE_NAME. */
+		public static final String EVENT_REGISTRATION_COMP_NODE_NAME = "eventregistration";
 		
 		/** The Constant MMM_DD_COMMA_YYYY_FORMAT. */
 		public static final String MMM_DD_COMMA_YYYY_FORMAT = "MMM dd, yyyy";

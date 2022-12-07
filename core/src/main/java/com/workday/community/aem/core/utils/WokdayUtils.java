@@ -5,8 +5,7 @@ package com.workday.community.aem.core.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -24,10 +23,13 @@ import org.slf4j.LoggerFactory;
 public class WokdayUtils {
 
 	/** The Constant log. */
-	private final static Logger log = LoggerFactory.getLogger(WokdayUtils.class);
+	private static final Logger log = LoggerFactory.getLogger(WokdayUtils.class);
 
 	/** The Constant ISO8601DATEFORMAT. */
-	final static String ISO8601DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	 static final String ISO8601DATEFORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	 private WokdayUtils(){
+		log.info("Initialized");
+	 }
 
 	/**
 	 * Gets the date string from epoch.
@@ -65,7 +67,7 @@ public class WokdayUtils {
 	}
 
 	/** The Constant dateFmt. */
-	private final static SimpleDateFormat dateFmt = new SimpleDateFormat(ISO8601DATEFORMAT);
+	private static final SimpleDateFormat dateFmt = new SimpleDateFormat(ISO8601DATEFORMAT);
 
 	/**
 	 * Format a date as text.
@@ -96,16 +98,30 @@ public class WokdayUtils {
 		return calendar;
 	}
 
-	/**
-	 * String to date.
-	 *
-	 * @return the offset date time
-	 */
-	public static OffsetDateTime StringToDate() {
-		String strDateTime = "Tue Jun 29 15:37:43 GMT+05:30 2021";
-		DateTimeFormatter dtfInput = DateTimeFormatter.ofPattern("E MMM d H:m:s O u", Locale.ENGLISH);
-		OffsetDateTime formatedDate = OffsetDateTime.parse(strDateTime, dtfInput);
-		log.debug("formatedDate::{}", formatedDate);
-		return formatedDate;
+	public static int daysBetween(Calendar day1, Calendar day2){
+	    Calendar dayOne = (Calendar) day1.clone(),
+	            dayTwo = (Calendar) day2.clone();
+
+	    if (dayOne.get(Calendar.YEAR) == dayTwo.get(Calendar.YEAR)) {
+	        return Math.abs(dayOne.get(Calendar.DAY_OF_YEAR) - dayTwo.get(Calendar.DAY_OF_YEAR));
+	    } else {
+	        if (dayTwo.get(Calendar.YEAR) > dayOne.get(Calendar.YEAR)) {
+	            //swap them
+	            Calendar temp = dayOne;
+	            dayOne = dayTwo;
+	            dayTwo = temp;
+	        }
+	        int extraDays = 0;
+
+	        int dayOneOriginalYearDays = dayOne.get(Calendar.DAY_OF_YEAR);
+
+	        while (dayOne.get(Calendar.YEAR) > dayTwo.get(Calendar.YEAR)) {
+	            dayOne.add(Calendar.YEAR, -1);
+	            // getActualMaximum() important for leap years
+	            extraDays += dayOne.getActualMaximum(Calendar.DAY_OF_YEAR);
+	        }
+
+	        return extraDays - dayTwo.get(Calendar.DAY_OF_YEAR) + dayOneOriginalYearDays ;
+	    }
 	}
 }

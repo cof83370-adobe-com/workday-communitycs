@@ -31,87 +31,79 @@ import com.day.crx.JcrConstants;
  * 
  * @author pepalla
  */
-@Component(immediate = true,
-service = Servlet.class, 
-property = { "sling.servlet.resourceTypes=/bin/workday/templateslist/datasource",
-              "sling.servlet.methods=GET" })
-public class TemplatesListProviderServlet  extends SlingSafeMethodsServlet{
+@Component(immediate = true, service = Servlet.class, property = {
+		"sling.servlet.resourceTypes=/bin/workday/templateslist/datasource", "sling.servlet.methods=GET" })
+public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
+	private static final String templates_path = "/conf/community/settings/wcm/templates";
+
 	/** The log. */
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    /**
-     * Do get.
-     *
-     * @param request the request
-     * @param response the response
-     */
-    @Override
-    protected void doGet(SlingHttpServletRequest request,
-                         SlingHttpServletResponse response) {
-        try {
-            ResourceResolver resourceResolver = request.getResourceResolver();
-            List<KeyValue> dropDownList = new ArrayList<>();
-                Resource resource = request.getResourceResolver().getResource("/conf/community/settings/wcm/templates");
-                Iterator<Resource> iterator = resource.listChildren();
-                List<Resource> list = new ArrayList<>();
-                iterator.forEachRemaining(list::add);
-				list.forEach(res -> {
-					String title = res.getName();
-					if (StringUtils.isNotBlank(title) && !title.equalsIgnoreCase("rep:policy")) {
-						dropDownList.add(new KeyValue(res.getPath(), title));
-					}
-				});
-                log.info("DropdownList " + dropDownList);
-                @SuppressWarnings("unchecked")
-            
-                DataSource ds =
-                        new SimpleDataSource(
-                                new TransformIterator(
-                                        dropDownList.iterator(),
-                                        input -> {
-                                            final KeyValue keyValue = (KeyValue) input;
-                                            final ValueMap vm = new ValueMapDecorator(new HashMap<>());
-                                            vm.put("value", keyValue.key);
-                                            vm.put("text", keyValue.value);
-                                            return new ValueMapResource(
-                                                    resourceResolver, new ResourceMetadata(),
-                                                    JcrConstants.NT_UNSTRUCTURED, vm);
-                                        }));
-                request.setAttribute(DataSource.class.getName(), ds);
+	/**
+	 * Do get.
+	 *
+	 * @param request  the request
+	 * @param response the response
+	 */
+	@Override
+	protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
+		try {
+			ResourceResolver resourceResolver = request.getResourceResolver();
+			List<KeyValue> dropDownList = new ArrayList<>();
+			Resource resource = request.getResourceResolver().getResource(templates_path);
+			Iterator<Resource> iterator = resource.listChildren();
+			List<Resource> list = new ArrayList<>();
+			iterator.forEachRemaining(list::add);
+			list.forEach(res -> {
+				String title = res.getName();
+				if (StringUtils.isNotBlank(title) && !title.equalsIgnoreCase("rep:policy")) {
+					dropDownList.add(new KeyValue(res.getPath(), title));
+				}
+			});
+			log.info("DropdownList:: {}", dropDownList);
+			@SuppressWarnings("unchecked")
 
-        } catch (Exception e) {
-            log.error("Error in Get Drop Down Values", e);
-        }
-    }
+			DataSource ds = new SimpleDataSource(new TransformIterator(dropDownList.iterator(), input -> {
+				final KeyValue keyValue = (KeyValue) input;
+				final ValueMap vm = new ValueMapDecorator(new HashMap<>());
+				vm.put("value", keyValue.key);
+				vm.put("text", keyValue.value);
+				return new ValueMapResource(resourceResolver, new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, vm);
+			}));
+			request.setAttribute(DataSource.class.getName(), ds);
 
-    /**
-     * The Class KeyValue.
-     */
-    private class KeyValue {
+		} catch (Exception e) {
+			log.error("Error in Get Drop Down Values {}", e.getMessage());
+		}
+	}
 
-        /**
-         * key property.
-         */
-        private String key;
-        /**
-         * value property.
-         */
-        private String value;
+	/**
+	 * The Class KeyValue.
+	 */
+	private class KeyValue {
 
-        /**
-         * constructor instance instance.
-         *
-         * @param newKey   -
-         * @param newValue -
-         */
-        private KeyValue(final String newKey, final String newValue) {
-            this.key = newKey;
-            this.value = newValue;
-        }
-    }
+		/**
+		 * key property.
+		 */
+		private String key;
+		/**
+		 * value property.
+		 */
+		private String value;
 
+		/**
+		 * constructor instance instance.
+		 *
+		 * @param newKey   -
+		 * @param newValue -
+		 */
+		private KeyValue(final String newKey, final String newValue) {
+			this.key = newKey;
+			this.value = newValue;
+		}
+	}
 }

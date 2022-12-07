@@ -14,300 +14,252 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class EventPageData {
 	
+	private static final String STRING_EMPTY = "";
+
 	/** Generated serialVersionUID. */
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -2525852165658067914L;
-
-	/** The end date. */
-	@XmlElement(name = "end_date")
-	private String end_date;
-
-	/** The readcount. */
-	@XmlElement(name = "readcount")
-	private String readcount;
-
-	/** The Calendareventtype. */
-	@XmlElement(name = "Calendareventtype")
-	private String Calendareventtype;
-
-	/** The field retirement date value. */
-	@XmlElement(name = "field_retirement_date_value")
-	private String field_retirement_date_value;
-
-	/** The Contenttype. */
-	@XmlElement(name = "Contenttype")
-	private String Contenttype;
-
-	/** The field description value. */
-	@XmlElement(name = "field_description_value")
-	private String field_description_value;
-
-	/** The Product. */
-	@XmlElement(name = "Product")
-	private String Product;
+	
+	/** The nid. */
+	@XmlElement(name = "nid")
+	private String nid;
 
 	/** The title. */
 	@XmlElement(name = "title")
 	private String title;
-
-	/** The show ask related question. */
-	@XmlElement(name = "show_ask_related_question")
-	private String show_ask_related_question;
-
+	
 	/** The changed. */
 	@XmlElement(name = "changed")
 	private String changed;
-
+	
+	/** The field retirement date value. */
+	@XmlElement(name = "field_retirement_date_value")
+	private String fieldRetirementDateValue;
+	
+	/** The readcount. */
+	@XmlElement(name = "readcount")
+	private String readcount;
+	
+	/** The field description value. */
+	@XmlElement(name = "description")
+	private String description;
+	
 	/** The start date. */
 	@XmlElement(name = "start_date")
-	private String start_date;
+	private String startDate;
+	
+	/** The end date. */
+	@XmlElement(name = "end_date")
+	private String endDate;
+	
+	/** The Contenttype. */
+	@XmlElement(name = "Contenttype")
+	private String contentType;
 
-	/** The content type label. */
-	private String contentTypeLabel = "Contenttype";
+	/** The Calendareventtype. */
+	@XmlElement(name = "Calendareventtype")
+	private String calendarEventType;
 
-	/** The calendar event type label. */
-	private String calendarEventTypeLabel = "Calendareventtype";
+	/** The Product. */
+	@XmlElement(name = "Product")
+	private String product;
 
-	/** The product label. */
-	private String productLabel = "Product";
+	/** The show ask related question. */
+	@XmlElement(name = "show_ask_related_question")
+	private String showAskRelatedQuestion;
 
-	/**
-	 * Gets the content type label.
-	 *
-	 * @return the content type label
-	 */
-	public String getContentTypeLabel() {
-		return contentTypeLabel;
+	/** The access control. */
+	@XmlElement(name = "access_control")
+	private String accessControl;
+	
+	/** The group name. */
+	@XmlElement(name = "group_name")
+	private String groupName;
+	
+	/** The data center. */
+	@XmlElement(name = "data_center")
+	private String dataCenter;
+
+	/** The registration url. */
+	@XmlElement(name = "registration_url")
+	private String registrationUrl;
+	
+	/** The release tag. */
+	@XmlElement(name = "release_tag")
+	private String releaseTag;
+
+	/** The using worday. */
+	@XmlElement(name = "using_worday")
+	private String usingWorday;
+
+	public String getNid() {
+		return nid;
 	}
 
-	/**
-	 * Gets the calendar event type label.
-	 *
-	 * @return the calendar event type label
-	 */
-	public String getCalendarEventTypeLabel() {
-		return calendarEventTypeLabel;
+	public void setNid(String nid) {
+		this.nid = nid;
 	}
 
-	/**
-	 * Gets the product label.
-	 *
-	 * @return the product label
-	 */
-	public String getProductLabel() {
-		return productLabel;
-	}
-
-	/**
-	 * Gets the end date.
-	 *
-	 * @return the end date
-	 */
-	public String getEnd_date() {
-		return end_date;
-	}
-
-	/**
-	 * Sets the end date.
-	 *
-	 * @param end_date the new end date
-	 */
-	public void setEnd_date(String end_date) {
-		this.end_date = end_date;
-	}
-
-	/**
-	 * Gets the readcount.
-	 *
-	 * @return the readcount
-	 */
-	public String getReadcount() {
-		return readcount;
-	}
-
-	/**
-	 * Sets the readcount.
-	 *
-	 * @param readcount the new readcount
-	 */
-	public void setReadcount(String readcount) {
-		this.readcount = readcount;
-	}
-
-	/**
-	 * Gets the calendareventtype.
-	 *
-	 * @return the calendareventtype
-	 */
-	public String getCalendareventtype() {
-		return Calendareventtype;
-	}
-
-	/**
-	 * Sets the calendareventtype.
-	 *
-	 * @param Calendareventtype the new calendareventtype
-	 */
-	public void setCalendareventtype(String Calendareventtype) {
-		this.Calendareventtype = Calendareventtype;
-	}
-
-	/**
-	 * Gets the field retirement date value.
-	 *
-	 * @return the field retirement date value
-	 */
-	public String getField_retirement_date_value() {
-		return field_retirement_date_value;
-	}
-
-	/**
-	 * Sets the field retirement date value.
-	 *
-	 * @param field_retirement_date_value the new field retirement date value
-	 */
-	public void setField_retirement_date_value(String field_retirement_date_value) {
-		this.field_retirement_date_value = field_retirement_date_value;
-	}
-
-	/**
-	 * Gets the contenttype.
-	 *
-	 * @return the contenttype
-	 */
-	public String getContenttype() {
-		return Contenttype;
-	}
-
-	/**
-	 * Sets the contenttype.
-	 *
-	 * @param Contenttype the new contenttype
-	 */
-	public void setContenttype(String Contenttype) {
-		this.Contenttype = Contenttype;
-	}
-
-	/**
-	 * Gets the field description value.
-	 *
-	 * @return the field description value
-	 */
-	public String getField_description_value() {
-		return field_description_value;
-	}
-
-	/**
-	 * Sets the field description value.
-	 *
-	 * @param field_description_value the new field description value
-	 */
-	public void setField_description_value(String field_description_value) {
-		this.field_description_value = field_description_value;
-	}
-
-	/**
-	 * Gets the product.
-	 *
-	 * @return the product
-	 */
-	public String getProduct() {
-		return Product;
-	}
-
-	/**
-	 * Sets the product.
-	 *
-	 * @param Product the new product
-	 */
-	public void setProduct(String Product) {
-		this.Product = Product;
-	}
-
-	/**
-	 * Gets the title.
-	 *
-	 * @return the title
-	 */
 	public String getTitle() {
 		return title;
 	}
 
-	/**
-	 * Sets the title.
-	 *
-	 * @param title the new title
-	 */
 	public void setTitle(String title) {
 		this.title = title;
 	}
 
-	/**
-	 * Gets the show ask related question.
-	 *
-	 * @return the show ask related question
-	 */
-	public String getShow_ask_related_question() {
-		return show_ask_related_question;
-	}
-
-	/**
-	 * Sets the show ask related question.
-	 *
-	 * @param show_ask_related_question the new show ask related question
-	 */
-	public void setShow_ask_related_question(String show_ask_related_question) {
-		this.show_ask_related_question = show_ask_related_question;
-	}
-
-	/**
-	 * Gets the changed.
-	 *
-	 * @return the changed
-	 */
 	public String getChanged() {
 		return changed;
 	}
 
-	/**
-	 * Sets the changed.
-	 *
-	 * @param changed the new changed
-	 */
 	public void setChanged(String changed) {
 		this.changed = changed;
 	}
 
-	/**
-	 * Gets the start date.
-	 *
-	 * @return the start date
-	 */
-	public String getStart_date() {
-		return start_date;
+	public String getFieldRetirementDateValue() {
+		return fieldRetirementDateValue;
 	}
 
-	/**
-	 * Sets the start date.
-	 *
-	 * @param start_date the new start date
-	 */
-	public void setStart_date(String start_date) {
-		this.start_date = start_date;
+	public void setFieldRetirementDateValue(String fieldRetirementDateValue) {
+		this.fieldRetirementDateValue = fieldRetirementDateValue;
 	}
 
-	/**
-	 * To string.
-	 *
-	 * @return the string
-	 */
+	public String getReadcount() {
+		return readcount;
+	}
+
+	public void setReadcount(String readcount) {
+		this.readcount = readcount;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getStartDate() {
+		return startDate;
+	}
+
+	public void setStartDate(String startDate) {
+		this.startDate = startDate;
+	}
+
+	public String getEndDate() {
+		return endDate;
+	}
+
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
+	}
+
+	public String getCalendarEventType() {
+		if(calendarEventType.equalsIgnoreCase("NULL")) {
+			return STRING_EMPTY;
+		}
+		return calendarEventType;
+	}
+
+	public void setCalendarEventType(String calendarEventType) {
+		this.calendarEventType = calendarEventType;
+	}
+
+	public String getProduct() {
+		if(product.equalsIgnoreCase("NULL")) {
+			return STRING_EMPTY;
+		}
+		return product;
+	}
+
+	public void setProduct(String product) {
+		this.product = product;
+	}
+
+	public String getShowAskRelatedQuestion() {
+		return showAskRelatedQuestion;
+	}
+
+	public void setShowAskRelatedQuestion(String showAskRelatedQuestion) {
+		this.showAskRelatedQuestion = showAskRelatedQuestion;
+	}
+
+	public String getAccessControl() {
+		return accessControl;
+	}
+
+	public void setAccessControl(String accessControl) {
+		this.accessControl = accessControl;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public String getDataCenter() {
+		if(dataCenter.equalsIgnoreCase("NULL")) {
+			return STRING_EMPTY;
+		}
+		return dataCenter;
+	}
+
+	public void setDataCenter(String dataCenter) {
+		this.dataCenter = dataCenter;
+	}
+
+	public String getRegistrationUrl() {
+		return registrationUrl;
+	}
+
+	public void setRegistrationUrl(String registrationUrl) {
+		this.registrationUrl = registrationUrl;
+	}
+
+	public String getReleaseTag() {
+		if(releaseTag.equalsIgnoreCase("NULL")) {
+			return STRING_EMPTY;
+		}
+		return releaseTag;
+	}
+
+	public void setReleaseTag(String releaseTag) {
+		this.releaseTag = releaseTag;
+	}
+
+	public String getUsingWorday() {
+		if(usingWorday.equalsIgnoreCase("NULL")) {
+			return STRING_EMPTY;
+		}
+		return usingWorday;
+	}
+
+	public void setUsingWorday(String usingWorday) {
+		this.usingWorday = usingWorday;
+	}
+
 	@Override
 	public String toString() {
-		return "EventPageData [end_date=" + end_date + ", readcount=" + readcount + ", Calendareventtype="
-				+ Calendareventtype + ", field_retirement_date_value=" + field_retirement_date_value + ", Contenttype="
-				+ Contenttype + ", field_description_value=" + field_description_value + ", Product=" + Product
-				+ ", title=" + title + ", show_ask_related_question=" + show_ask_related_question + ", changed="
-				+ changed + ", start_date=" + start_date + ", contentTypeLabel=" + contentTypeLabel
-				+ ", calendarEventTypeLabel=" + calendarEventTypeLabel + ", productLabel=" + productLabel + "]";
+		return "EventPageData [nid=" + nid + ", title=" + title + ", changed=" + changed + ", fieldRetirementDateValue="
+				+ fieldRetirementDateValue + ", readcount=" + readcount + ", description=" + description
+				+ ", startDate=" + startDate + ", endDate=" + endDate + ", contentType=" + contentType
+				+ ", calendarEventType=" + calendarEventType + ", product=" + product + ", showAskRelatedQuestion="
+				+ showAskRelatedQuestion + ", accessControl=" + accessControl + ", groupName=" + groupName
+				+ ", dataCenter=" + dataCenter + ", registrationUrl=" + registrationUrl + ", releaseTag=" + releaseTag
+				+ ", usingWorday=" + usingWorday + "]";
 	}
+	
 }
