@@ -20,7 +20,7 @@
                 <items jcr:primaryType="nt:unstructured">
                     <eventconfig
                         jcr:primaryType="nt:unstructured"
-                        jcr:title="Event Configurations"
+                        jcr:title="Event Details Config"
                         sling:orderBefore="basic"
                         sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
                         <items jcr:primaryType="nt:unstructured">
@@ -37,8 +37,17 @@
                                         fieldDescription="Choose event start date and time"
                                         fieldLabel="Event Start Date"
                                         name="./startDate"
+                                        required="{Boolean}true"
                                         type="datetime"
                                         typeHint="Date"/>
+                                    <alternatetimezone
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        emptyText="Specify in Other Timezone"
+                                        fieldDescription="Enter other timezone to display. Ex: 8:00 AM PT"
+                                        fieldLabel="Specify Other Timezone"
+                                        name="./alternateTimezone"/>
                                     <enddate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -48,7 +57,166 @@
                                         fieldDescription="Choose event end date and time"
                                         fieldLabel="Event End Date"
                                         name="./endDate"
+                                        required="{Boolean}true"
                                         type="datetime"/>
+                                    <eventlocation
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        emptyText="Event Location"
+                                        fieldDescription="Enter event location. default will be 'Virtual'"
+                                        fieldLabel="Location"
+                                        name="./eventLocation"
+                                        required="{Boolean}true"/>
+                                    <eventhost
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        emptyText="Event Host"
+                                        fieldDescription="Enter event host. default will be 'Workday'"
+                                        fieldLabel="Event Host"
+                                        name="./eventHost"
+                                        required="{Boolean}true"/>
+                                    <eventimage
+                                        granite:class="cmp-image__editor"
+                                        jcr:primaryType="nt:unstructured"
+                                        jcr:title="Event Image"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/fieldset">
+                                        <items jcr:primaryType="nt:unstructured">
+                                            <file
+                                                granite:class="cmp-image__editor-file-upload"
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="cq/gui/components/authoring/dialog/fileupload"
+                                                allowDrop="{Boolean}false"
+                                                allowUpload="{Boolean}true"
+                                                class="cq-droptarget"
+                                                fieldDescription="Used in components referencing the page (e.g. teaser, list of pages)"
+                                                fieldLabel="Image"
+                                                fileNameParameter="./cq:eventimage/fileName"
+                                                fileReferenceParameter="./cq:eventimage/fileReference"
+                                                mimeTypes="[image/gif,image/jpeg,image/png,image/tiff,image/svg+xml]"
+                                                name="./cq:eventimage/file"/>
+                                            <type
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/form/hidden"
+                                                name="./cq:eventimage/sling:resourceType"
+                                                value="core/wcm/components/image/v3/image"/>
+                                            <alternativeGroup
+                                                granite:class="cmp-image__editor-alt"
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/well">
+                                                <items jcr:primaryType="nt:unstructured">
+                                                    <alt
+                                                        granite:class="cmp-image__editor-alt-text"
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                        fieldDescription="Textual alternative of the meaning or function of the image, for visually impaired readers."
+                                                        fieldLabel="Alternative Text"
+                                                        name="./cq:eventimage/alt"/>
+                                                    <altValueFromDAM
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                                        checked="true"
+                                                        fieldDescription="When checked, populate the image's alt attribute with the value of the dc:description metadata in DAM."
+                                                        name="./cq:eventimage/altValueFromDAM"
+                                                        text="Inherit - Value taken from the DAM asset"
+                                                        uncheckedValue="false"
+                                                        value="{Boolean}true"/>
+                                                </items>
+                                            </alternativeGroup>
+                                        </items>
+                                    </eventimage>
+                                    <eventformat
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Event Format"
+                                        fieldDescription="Choose event format"
+                                        fieldLabel="Event Format"
+                                        multiple="{Boolean}true"
+                                        name="./eventFormat"
+                                        required="{Boolean}true"
+                                        rootPath="/content/cq:tags/event/event-format"/>
+                                    <eventaudience
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Event Audience"
+                                        fieldDescription="Choose event audience"
+                                        fieldLabel="Event Audience"
+                                        multiple="{Boolean}true"
+                                        name="./eventAudience"
+                                        rootPath="/content/cq:tags/event/event-audience"/>
+                                    <usertags
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose User Tags"
+                                        fieldDescription="Choose user tags"
+                                        fieldLabel="Event Users"
+                                        multiple="{Boolean}true"
+                                        name="./userTags"
+                                        rootPath="/content/cq:tags/user"/>
+                                    <regioncountry
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Region &amp; Country Tag"
+                                        fieldDescription="Choose region &amp; country tag"
+                                        fieldLabel="Event Region &amp; Country"
+                                        multiple="{Boolean}true"
+                                        name="./regionCountry"
+                                        rootPath="/content/cq:tags/region-and-country"/>
+                                    <industry
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Industry Tags"
+                                        fieldDescription="Choose industry tags"
+                                        fieldLabel="Event Industry"
+                                        multiple="{Boolean}true"
+                                        name="./industryTags"
+                                        rootPath="/content/cq:tags/industry"/>
+                                    <release
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Release Tags"
+                                        fieldDescription="Choose release tags"
+                                        fieldLabel="Event Release"
+                                        multiple="{Boolean}true"
+                                        name="./releaseTags"
+                                        rootPath="/content/cq:tags/release"/>
+                                    <usingworkday
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Using Workday Tags"
+                                        fieldDescription="Choose using workday tags"
+                                        fieldLabel="Event Using Workday type"
+                                        multiple="{Boolean}true"
+                                        name="./usingWorkday"
+                                        rootPath="/content/cq:tags/using-workday"/>
+                                    <product
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Product Tags"
+                                        fieldDescription="Choose product tags"
+                                        fieldLabel="Event for Product"
+                                        multiple="{Boolean}true"
+                                        name="./productTags"
+                                        rootPath="/content/cq:tags/product"/>
+                                    <programstools
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Programs &amp; Tools Tags"
+                                        fieldDescription="Choose Programs &amp; Tools tags"
+                                        fieldLabel="Event for Programs &amp; Tools"
+                                        multiple="{Boolean}true"
+                                        name="./programsTools"
+                                        rootPath="/content/cq:tags/programs-tools"/>
                                     <retirementdate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -70,31 +238,6 @@
                                         fieldLabel="Event Updated Date"
                                         name="./updatedDate"
                                         type="datetime"/>
-                                    <readcount
-                                        cq:showOnCreate="{Boolean}true"
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/form/numberfield"
-                                        emptyText="Depicts page read count"
-                                        fieldDescription="Value depicts page read count"
-                                        fieldLabel="Read Count"
-                                        name="./readCount"/>
-                                    <eventtype
-                                        cq:showOnCreate="{Boolean}true"
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                        emptyText="Enter Event Type"
-                                        fieldDescription="Event type goes here"
-                                        fieldLabel="Event Type"
-                                        name="./eventType"/>
-                                    <eventags
-                                        cq:showOnCreate="{Boolean}true"
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
-                                        emptyText="Choose Event Tags"
-                                        fieldDescription="Choose event tags from the available"
-                                        fieldLabel="Event Tags"
-                                        multiple="{Boolean}true"
-                                        name="./eventTags"/>
                                 </items>
                             </column>
                         </items>

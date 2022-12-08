@@ -10,7 +10,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -18,12 +20,17 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
-import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.day.cq.tagging.Tag;
+import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
+import com.workday.community.aem.core.constants.GlobalConstants;
 
 /**
  * The Class EventDetailsModel.
@@ -34,28 +41,32 @@ import com.day.cq.wcm.api.Page;
 		SlingHttpServletRequest.class }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class EventDetailsModel {
 
-	/** The event type. */
-	@ValueMapValue
-	private String eventType;
+	/** The logger. */
+	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+
+	private List<String> eventFormat = new ArrayList<String>();
 
 	/** The location. */
-	@ValueMapValue
-	private String location;
+	private String eventLocation;
 
 	/** The host. */
-	@ValueMapValue
-	private String host;
-
-	/** The current page. */
-	@Inject
-	private Page currentPage;
+	private String eventHost;
 
 	/** The length. */
 	private long length;
 
+	private String daysLabel;
+	
 	private String dateFormat;
 
 	private String timeFormat;
+	/** The current page. */
+	@Inject
+	private Page currentPage;
+
+	@Inject
+    private ResourceResolver resolver;
+
 
 	/**
 	 * Inits the.
@@ -64,14 +75,33 @@ public class EventDetailsModel {
 	 */
 	@PostConstruct
 	protected void init() throws ParseException {
-		ValueMap map = currentPage.getProperties();
+		final ValueMap map = currentPage.getProperties();
 		String startDateStr = map.get("startDate", String.class);
 		String endDateStr = map.get("endDate", String.class);
 		if (StringUtils.isNotBlank(startDateStr) && StringUtils.isNotBlank(endDateStr)) {
 			calculateRequired(startDateStr, endDateStr);
 		}
+		eventLocation = map.get("eventLocation", String.class);
+		eventHost = map.get("eventHost", String.class);
+		getEventFormatList(map);
 	}
 
+	private List<String> getEventFormatList(final ValueMap map) {
+		String[] eventFormatTags = map.get("eventFormat", String[].class);
+		try {
+			if(null != eventFormatTags && eventFormatTags.length > 0){
+				TagManager tagManager = resolver.adaptTo(TagManager.class);
+				for(String eachTag:eventFormatTags){
+					Tag tag = tagManager.resolve(eachTag);
+					eventFormat.add(tag.getTitle());
+				}
+			}
+		} catch(Exception exec){
+			logger.error("Exception occured at getEventFormatList method of EventDetailsModel:{} ", exec.getMessage());
+		}
+		return eventFormat;
+
+	}
 	/**
 	 * Calculate required.
 	 *
@@ -80,17 +110,22 @@ public class EventDetailsModel {
 	 * @throws ParseException the parse exception
 	 */
 	private void calculateRequired(final String eventStartDate, final String eventEndDateStr) throws ParseException {
-		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		DateFormat formatter = new SimpleDateFormat(GlobalConstants.EventsDetailsConstants.DATE_TIME_FORMAT);
 		Date formattedStartDate = formatter.parse(eventStartDate);
 		LocalDateTime startDateAndTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault())
 				.toLocalDateTime();
 
-		dateFormat = DateTimeFormatter.ofPattern("EEEE, MMM dd, YYYY").format(startDateAndTime);
-		timeFormat = DateTimeFormatter.ofPattern("HH:mm").format(startDateAndTime);
+		dateFormat = DateTimeFormatter.ofPattern(GlobalConstants.EventsDetailsConstants.REQ_DATE_FORMAT).format(startDateAndTime);
+		timeFormat = DateTimeFormatter.ofPattern(GlobalConstants.EventsDetailsConstants.REQ_TIME_FORMAT).format(startDateAndTime);
 
 		Date formattedEndDate = formatter.parse(eventEndDateStr);
 		LocalDateTime endDateAndTime = formattedEndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		length = ChronoUnit.DAYS.between(startDateAndTime, endDateAndTime);
+		daysLabel = (length <= 1) ? GlobalConstants.EventsDetailsConstants.DAY_LABEL:GlobalConstants.EventsDetailsConstants.DAYS_LABEL;
+	}
+	
+	public String getDaysLabel() {
+		return daysLabel;
 	}
 
 	/**
@@ -111,32 +146,6 @@ public class EventDetailsModel {
 		this.length = length;
 	}
 
-	/**
-	 * Gets the event type.
-	 *
-	 * @return the event type
-	 */
-	public String getEventType() {
-		return eventType;
-	}
-
-	/**
-	 * Gets the location.
-	 *
-	 * @return the location
-	 */
-	public String getLocation() {
-		return location;
-	}
-
-	/**
-	 * Gets the host.
-	 *
-	 * @return the host
-	 */
-	public String getHost() {
-		return host;
-	}
 
 	/**
 	 * Checks if is configured.
@@ -144,7 +153,7 @@ public class EventDetailsModel {
 	 * @return true, if is configured
 	 */
 	public boolean isConfigured() {
-		return eventType != null && location != null && host != null;
+		return eventFormat != null && eventLocation != null && eventHost != null;
 	}
 
 	public String getDateFormat() {
@@ -155,11 +164,42 @@ public class EventDetailsModel {
 		return timeFormat;
 	}
 
-	@Override
-	public String toString() {
-		return "EventDetailsModel [eventType=" + eventType + ", location=" + location + ", host=" + host
-				+ ", currentPage=" + currentPage + ", length=" + length + ", dateFormat=" + dateFormat + ", timeFormat="
-				+ timeFormat + "]";
+	public List<String> getEventFormat() {
+		return eventFormat;
 	}
 
+	public void setEventFormat(List<String> eventFormat) {
+		this.eventFormat = eventFormat;
+	}
+
+	public String getEventLocation() {
+		return eventLocation;
+	}
+
+	public void setEventLocation(String evenLlocation) {
+		this.eventLocation = evenLlocation;
+	}
+
+	public String getEventHost() {
+		return eventHost;
+	}
+
+	public void setEventHost(String eventHost) {
+		this.eventHost = eventHost;
+	}
+
+	public void setDateTimeFormat(String dateFormat) {
+		this.dateFormat = dateFormat;
+	}
+
+	public void setTimeFormat(String timeFormat) {
+		this.timeFormat = timeFormat;
+	}
+
+	@Override
+	public String toString() {
+		return "EventDetailsModel [eventFormat=" + eventFormat + ", eventLocation=" + eventLocation + ", eventHost="
+				+ eventHost + ", length=" + length + ", daysLabel=" + daysLabel + ", dateFormat=" + dateFormat
+				+ ", timeFormat=" + timeFormat + "]";
+	}
 }

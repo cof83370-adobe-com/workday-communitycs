@@ -4,6 +4,8 @@
     <filter root="/content/workday-community" mode="merge"/>
     <filter root="/content/cq:tags/event" mode="merge"/>
     <filter root="/content/cq:tags/user" mode="merge"/>
+    <filter root="/content/cq:tags/region-and-country" mode="merge"/>
+    <filter root="/content/cq:tags/program-type" mode="merge"/>
     <filter root="/content/cq:tags/release-notes" mode="merge"/>
     <filter root="/content/dam/community/asset.jpg" mode="merge"/>
     <filter root="/content/experience-fragments/community" mode="merge"/>
