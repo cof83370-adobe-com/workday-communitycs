@@ -11,63 +11,7 @@
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="granite/ui/components/coral/foundation/tabs"
                 maximized="{Boolean}true">
-                <items jcr:primaryType="nt:unstructured">
-                    <componentProperties
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Component Properties"
-                        sling:resourceType="granite/ui/components/coral/foundation/container">
-                        <items jcr:primaryType="nt:unstructured">
-                            <columns
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
-                                <items jcr:primaryType="nt:unstructured">
-                                    <column
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/container"
-                                        margin="{Boolean}true">
-                                        <items jcr:primaryType="nt:unstructured">
-                                            <eventdate
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                emptyText="Event Date Label"
-                                                fieldDescription="Enter label for event date"
-                                                fieldLabel="Event Date Label"
-                                                name="./eventDateLabel"/>
-                                            <eventformat
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                emptyText="Event Format Label"
-                                                fieldDescription="Enter label for event format"
-                                                fieldLabel="Event Format Label"
-                                                name="./eventFormatLabel"/>
-                                            <eventlocation
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                emptyText="Event Location Label"
-                                                fieldDescription="Enter label for event location"
-                                                fieldLabel="Event Location Label"
-                                                name="./eventLocationLabel"/>
-                                            <eventhost
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                emptyText="Event Host Label"
-                                                fieldDescription="Enter event host label"
-                                                fieldLabel="Event Host Label"
-                                                name="./eventHost"/>
-                                            <eventlength
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                emptyText="Event Length Label"
-                                                fieldDescription="Enter event length label"
-                                                fieldLabel="Event Length Label"
-                                                name="./eventLength"/>
-                                        </items>
-                                    </column>
-                                </items>
-                            </columns>
-                        </items>
-                    </componentProperties>
-                </items>
+                <items jcr:primaryType="nt:unstructured"/>
             </tabs>
         </items>
     </content>
