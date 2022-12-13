@@ -56,7 +56,7 @@ public class EventDetailsModel {
 	private long length;
 
 	private String daysLabel;
-	
+
 	private String dateFormat;
 
 	private String timeFormat;
@@ -65,8 +65,7 @@ public class EventDetailsModel {
 	private Page currentPage;
 
 	@Inject
-    private ResourceResolver resolver;
-
+	private ResourceResolver resolver;
 
 	/**
 	 * Inits the.
@@ -89,19 +88,20 @@ public class EventDetailsModel {
 	private List<String> getEventFormatList(final ValueMap map) {
 		String[] eventFormatTags = map.get("eventFormat", String[].class);
 		try {
-			if(null != eventFormatTags && eventFormatTags.length > 0){
+			if (null != eventFormatTags && eventFormatTags.length > 0) {
 				TagManager tagManager = resolver.adaptTo(TagManager.class);
-				for(String eachTag:eventFormatTags){
+				for (String eachTag : eventFormatTags) {
 					Tag tag = tagManager.resolve(eachTag);
 					eventFormat.add(tag.getTitle());
 				}
 			}
-		} catch(Exception exec){
-			logger.error("Exception occured at getEventFormatList method of EventDetailsModel:{} ", exec.getMessage());
+		} catch (Exception exec) {
+			logger.error("Exception occurred at getEventFormatList method of EventDetailsModel:{} ", exec.getMessage());
 		}
 		return eventFormat;
 
 	}
+
 	/**
 	 * Calculate required.
 	 *
@@ -110,20 +110,23 @@ public class EventDetailsModel {
 	 * @throws ParseException the parse exception
 	 */
 	private void calculateRequired(final String eventStartDate, final String eventEndDateStr) throws ParseException {
-		DateFormat formatter = new SimpleDateFormat(GlobalConstants.EventsDetailsConstants.DATE_TIME_FORMAT);
+		DateFormat formatter = new SimpleDateFormat(GlobalConstants.EventDetailsConstants.DATE_TIME_FORMAT);
 		Date formattedStartDate = formatter.parse(eventStartDate);
 		LocalDateTime startDateAndTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault())
 				.toLocalDateTime();
 
-		dateFormat = DateTimeFormatter.ofPattern(GlobalConstants.EventsDetailsConstants.REQ_DATE_FORMAT).format(startDateAndTime);
-		timeFormat = DateTimeFormatter.ofPattern(GlobalConstants.EventsDetailsConstants.REQ_TIME_FORMAT).format(startDateAndTime);
+		dateFormat = DateTimeFormatter.ofPattern(GlobalConstants.EventDetailsConstants.REQ_DATE_FORMAT)
+				.format(startDateAndTime);
+		timeFormat = DateTimeFormatter.ofPattern(GlobalConstants.EventDetailsConstants.REQ_TIME_FORMAT)
+				.format(startDateAndTime);
 
 		Date formattedEndDate = formatter.parse(eventEndDateStr);
 		LocalDateTime endDateAndTime = formattedEndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		length = ChronoUnit.DAYS.between(startDateAndTime, endDateAndTime);
-		daysLabel = (length <= 1) ? GlobalConstants.EventsDetailsConstants.DAY_LABEL:GlobalConstants.EventsDetailsConstants.DAYS_LABEL;
+		daysLabel = (length <= 1) ? GlobalConstants.EventDetailsConstants.DAY_LABEL
+				: GlobalConstants.EventDetailsConstants.DAYS_LABEL;
 	}
-	
+
 	public String getDaysLabel() {
 		return daysLabel;
 	}
@@ -145,7 +148,6 @@ public class EventDetailsModel {
 	public void setLength(long length) {
 		this.length = length;
 	}
-
 
 	/**
 	 * Checks if is configured.
