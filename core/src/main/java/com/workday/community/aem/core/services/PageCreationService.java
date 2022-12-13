@@ -2,8 +2,6 @@ package com.workday.community.aem.core.services;
 
 import java.util.Map;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-
 import com.workday.community.aem.core.models.EventPageData;
 
 /**
@@ -20,6 +18,7 @@ public interface PageCreationService {
 	 * @param req the req
 	 * @param paramsMap the params map
 	 * @param data the data
+	 * @throws Exception 
 	 */
-	void doCreatePage(SlingHttpServletRequest req, final Map<String, String> paramsMap, EventPageData data);
+	void doCreatePage(final Map<String, String> paramsMap, EventPageData data);
 }

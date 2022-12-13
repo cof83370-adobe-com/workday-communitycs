@@ -2,6 +2,9 @@
 <workspaceFilter version="1.0">
     <filter root="/conf/community" mode="merge"/>
     <filter root="/content/workday-community" mode="merge"/>
+    <filter root="/content/cq:tags/event" mode="merge"/>
+    <filter root="/content/cq:tags/user" mode="merge"/>
+    <filter root="/content/cq:tags/release-notes" mode="merge"/>
     <filter root="/content/dam/community/asset.jpg" mode="merge"/>
     <filter root="/content/experience-fragments/community" mode="merge"/>
 </workspaceFilter>

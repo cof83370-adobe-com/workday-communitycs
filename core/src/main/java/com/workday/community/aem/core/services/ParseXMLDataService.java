@@ -13,15 +13,14 @@ import org.apache.sling.api.resource.ResourceResolver;
  * @author pepalla
  */
 public interface ParseXMLDataService {
-	
 	/**
-	 * Read XML from jcr source.
+	 * Read xml from jcr and delegate to page creation service.
 	 *
-	 * @param <T> the generic type
 	 * @param resolver the resolver
 	 * @param paramsMap the params map
-	 * @param clazz the clazz
-	 * @return the event pages list
+	 * @param templatePath the template path
+	 * @return the string
 	 */
-	 public <T> T readXMLFromJcrSource(ResourceResolver resolver, Map<String, String> paramsMap, Class<T> clazz);
+	void readXmlFromJcrAndDelegateToPageCreationService(ResourceResolver resolver, Map<String, String> paramsMap,
+			String templatePath);
 }
