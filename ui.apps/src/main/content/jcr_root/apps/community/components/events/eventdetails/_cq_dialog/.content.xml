@@ -11,49 +11,7 @@
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="granite/ui/components/coral/foundation/tabs"
                 maximized="{Boolean}true">
-                <items jcr:primaryType="nt:unstructured">
-                    <componentProperties
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Component Properties"
-                        sling:resourceType="granite/ui/components/coral/foundation/container">
-                        <items jcr:primaryType="nt:unstructured">
-                            <columns
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
-                                <items jcr:primaryType="nt:unstructured">
-                                    <column
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/container"
-                                        margin="{Boolean}true">
-                                        <items jcr:primaryType="nt:unstructured">
-                                            <eventtype
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                emptyText="Event Type"
-                                                fieldDescription="Enter event type here"
-                                                fieldLabel="Event Type"
-                                                name="./eventType"/>
-                                            <location
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                emptyText="Event Location"
-                                                fieldDescription="Enter event location. default will be 'Virtual'"
-                                                fieldLabel="Location"
-                                                name="./location"/>
-                                            <host
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                emptyText="Event Host"
-                                                fieldDescription="Enter event host. default will be 'workday'"
-                                                fieldLabel="Host"
-                                                name="./host"/>
-                                        </items>
-                                    </column>
-                                </items>
-                            </columns>
-                        </items>
-                    </componentProperties>
-                </items>
+                <items jcr:primaryType="nt:unstructured"/>
             </tabs>
         </items>
     </content>

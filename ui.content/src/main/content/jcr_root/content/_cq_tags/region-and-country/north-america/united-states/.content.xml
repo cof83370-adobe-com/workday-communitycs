@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="United States"
+    sling:resourceType="cq/tagging/components/tag">
+    <california/>
+    <massachusetts/>
+    <new-york/>
+    <ohio/>
+    <alabama/>
+    <alaska/>
+    <arizona/>
+    <arkansas/>
+    <colorado/>
+    <connecticut/>
+    <delaware/>
+    <florida/>
+    <georgia/>
+    <hawaii/>
+    <idaho/>
+    <illinois/>
+    <indiana/>
+    <iowa/>
+    <kansas/>
+    <kentucky/>
+    <louisiana/>
+    <maine/>
+    <maryland/>
+    <michigan/>
+    <minnesota/>
+    <mississippi/>
+    <missouri/>
+    <montana/>
+    <nebraska/>
+    <nevada/>
+    <new-hampshire/>
+    <new-jersey/>
+    <new-mexico/>
+    <north-carolina/>
+    <north-dakota/>
+    <oklahoma/>
+    <oregon/>
+    <pennsylvania/>
+    <rhode-island/>
+    <south-carolina/>
+    <south-dakota/>
+    <tennessee/>
+    <texas/>
+    <utah/>
+    <vermont/>
+    <virginia/>
+    <washington/>
+    <west-virginia/>
+    <wisconsin/>
+    <wyoming/>
+    <washington-dc/>
+</jcr:root>

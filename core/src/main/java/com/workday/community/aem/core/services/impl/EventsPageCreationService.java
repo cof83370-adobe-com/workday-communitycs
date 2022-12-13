@@ -483,7 +483,7 @@ public class EventsPageCreationService implements PageCreationService {
         final String descText = data.getDescription();
         if(StringUtils.isNotBlank(descText)) {
             List<Integer> indicesList = findAllIndicesOfGivenString(descText,"<h2 id=");
-            if(indicesList.size() > 0) {
+            if(!indicesList.isEmpty()) {
                 for( int index = 0; index < indicesList.size(); index++) {
                     if(index == indicesList.size() - 1) {
                         findCompType(innerContainer, descText.substring(indicesList.get(index)));
