@@ -12,7 +12,9 @@
     <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="eventType">
       <span class="cmp-eventdetails__item-icon-people"></span>
       <div class="cmp-eventdetails__item-label">${'Event Type' @ i18n, context='text'} </div>
-      <sly data-sly-list.eachItem="${eventDetails.eventFormat}" data-sly-unwrap> ${eachItem @ i18n, context='text'} </sly>
+      <div class="cmp-eventdetails__item-output">
+        <sly data-sly-list.eachItem="${eventDetails.eventFormat}" data-sly-unwrap> ${eachItem @ i18n, context='text'} </sly>
+      </div>
     </div>
     <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="location">
       <span class="cmp-eventdetails__item-icon-location"></span>

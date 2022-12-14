@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 
 import javax.jcr.Node;
@@ -24,7 +25,9 @@ import com.day.cq.dam.api.Asset;
 import com.day.cq.dam.api.Rendition;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.models.EventPagesList;
+import com.workday.community.aem.core.models.PageNameBean;
 import com.workday.community.aem.core.services.PageCreationService;
+import com.workday.community.aem.core.services.PageNameFinderService;
 import com.workday.community.aem.core.services.ParseXMLDataService;
 
 /**
@@ -53,32 +56,34 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 	@Reference(target = "(type=events-page)")
 	PageCreationService eventsPageCreationService;
 
+	@Reference
+	PageNameFinderService pageNameFinderService;
 
 	/**
 	 * Read XML from jcr source.
 	 *
-	 * @param <T> the generic type
-	 * @param resolver the resolver
+	 * @param <T>       the generic type
+	 * @param resolver  the resolver
 	 * @param paramsMap the params map
-	 * @param clazz the clazz
+	 * @param clazz     the clazz
 	 * @return the event pages list
 	 */
-	public  <T> T  readXMLFromJcrSource(final ResourceResolver resolver, Map<String, String> paramsMap, Class<T> clazz) {
+	public <T> T readXMLFromJcrSource(final ResourceResolver resolver, Map<String, String> paramsMap, Class<T> clazz) {
 		String xmlResponse = readInputStreamFromAsset(resolver, paramsMap);
-		if(StringUtils.isNotBlank(xmlResponse)) {
+		if (StringUtils.isNotBlank(xmlResponse)) {
 			xmlResponse = xmlResponse.substring(xmlResponse.indexOf("\n") + 1);
 			try {
 				jaxbContext = JAXBContext.newInstance(clazz);
 				unmarshaller = jaxbContext.createUnmarshaller();
 				T obj = clazz.cast(unmarshaller.unmarshal(new StringReader(xmlResponse)));
-				return   obj;
+				return obj;
 			} catch (Exception e) {
-				log.error("Exception occured at readXML method :{}", e.getMessage());
+				log.error("Exception occurred at readXML method :{}", e.getMessage());
 			}
 		}
 		return null;
 	}
-	
+
 	private String readInputStreamFromAsset(final ResourceResolver resolver, final Map<String, String> paramsMap) {
 		StringBuilder builder = new StringBuilder();
 		try {
@@ -86,28 +91,30 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 			Asset asset = assetResource.adaptTo(Asset.class);
 			Rendition rnd = asset.getOriginal();
 			log.debug("rend path::{}", rnd.getPath());
-			Node node = resolver.getResource(rnd.getPath() + String.format("%s%s", "/", GlobalConstants.JCR_CONTENT_NODE)).adaptTo(Node.class);
+			Node node = resolver
+					.getResource(rnd.getPath() + String.format("%s%s", "/", GlobalConstants.JCR_CONTENT_NODE))
+					.adaptTo(Node.class);
 			InputStream inputStreamReader = node.getProperty(GlobalConstants.JCR_DATA_NODE).getBinary().getStream();
 			// String result = IOUtils.toString(inputStreamReader, StandardCharsets.UTF_8);
-			BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStreamReader, StandardCharsets.UTF_8));
-			if (bufferedReader != null) {
-				int eof;
-				while ((eof = bufferedReader.read()) != -1) {
-					builder.append((char) eof);
-				}
-				bufferedReader.close();
+			BufferedReader bufferedReader = new BufferedReader(
+					new InputStreamReader(inputStreamReader, StandardCharsets.UTF_8));
+			int eof;
+			while ((eof = bufferedReader.read()) != -1) {
+				builder.append((char) eof);
 			}
+			bufferedReader.close();
 			inputStreamReader.close();
 		} catch (Exception e) {
-			log.error("Exception occured at readInputStreamFromAsset method :{}", e.getMessage());
+			log.error("Exception occurred at readInputStreamFromAsset method :{}", e.getMessage());
 		}
 		return builder.toString();
 	}
+
 	/**
 	 * Read xml from jcr and delegate to page creation service.
 	 *
-	 * @param resolver the resolver
-	 * @param paramsMap the params map
+	 * @param resolver     the resolver
+	 * @param paramsMap    the params map
 	 * @param templatePath the template path
 	 * @return the string
 	 */
@@ -118,20 +125,23 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 			String templateName = findTemplateName(templatePath);
 			if (StringUtils.isNotBlank(templateName)) {
 				switch (templateName) {
-				case "event-page-template":
-					EventPagesList listOfPageData = readXMLFromJcrSource(resolver, paramsMap, EventPagesList.class);
-					if (null != listOfPageData) {
-						doCreateEventsPageCreationService(paramsMap, listOfPageData);
-					}
-				case "kits-page-template":
-				default:
+					case "event-page-template":
+						EventPagesList listOfPageData = readXMLFromJcrSource(resolver, paramsMap, EventPagesList.class);
+						if (null != listOfPageData) {
+							doCreateEventsPageCreationService(resolver, paramsMap, listOfPageData);
+						}
+						break;
+					case "kits-page-template":
+						break;
+					default:
 				}
 			}
 		} catch (Exception exec) {
-			log.error("Exception occured at readXmlFromJcrAndDelegateToPageCreationService method :{}", exec.getMessage());
+			log.error("Exception occurred at readXmlFromJcrAndDelegateToPageCreationService method :{}",
+					exec.getMessage());
 		}
 	}
-	
+
 	/**
 	 * Find template name.
 	 *
@@ -145,17 +155,20 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 			templateName = arr[arr.length - 1];
 		return templateName;
 	}
-	
+
 	/**
 	 * Do create events page creation service.
 	 *
-	 * @param paramsMap the params map
+	 * @param paramsMap      the params map
 	 * @param listOfPageData the list of page data
 	 * @return the string
 	 */
-	private void doCreateEventsPageCreationService(Map<String, String> paramsMap, EventPagesList listOfPageData) {
+	private void doCreateEventsPageCreationService(ResourceResolver resolver, Map<String, String> paramsMap,
+			EventPagesList listOfPageData) {
+		List<PageNameBean> list = pageNameFinderService.getPageName(resolver,
+				GlobalConstants.EVENT_PAGE_NAMES_FINDER_JSON);
 		listOfPageData.getRoot().forEach((item) -> {
-			 eventsPageCreationService.doCreatePage(paramsMap, item);
+			eventsPageCreationService.doCreatePage(paramsMap, item, list);
 		});
 	}
 }

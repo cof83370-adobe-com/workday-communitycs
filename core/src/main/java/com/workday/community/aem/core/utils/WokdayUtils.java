@@ -44,7 +44,7 @@ public class WokdayUtils {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
 			return dateFormat.format(time);
 		} catch (Exception e) {
-			log.error("Exception occured at getDateFromEpoch::{}", e.getMessage());
+			log.error("Exception occurred at getDateFromEpoch::{}", e.getMessage());
 		}
 		return StringUtils.EMPTY;
 	}
@@ -61,7 +61,7 @@ public class WokdayUtils {
 			Date date = new SimpleDateFormat(format).parse(dateStr);
 			return getCalendarFromISO(formatDate(date));
 		} catch (ParseException e) {
-			log.error("ParseException occured at convertStringToDate method::{}", e.getMessage());
+			log.error("ParseException occurred at convertStringToDate method::{}", e.getMessage());
 		}
 		return null;
 	}
@@ -93,7 +93,7 @@ public class WokdayUtils {
 			date.setHours(date.getHours() - 1);
 			calendar.setTime(date);
 		} catch (ParseException e) {
-			log.error("ParseException occured at getCalendarFromISO method::{}", e.getMessage());
+			log.error("ParseException occurred at getCalendarFromISO method::{}", e.getMessage());
 		}
 		return calendar;
 	}

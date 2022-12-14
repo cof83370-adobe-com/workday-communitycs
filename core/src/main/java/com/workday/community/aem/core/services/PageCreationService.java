@@ -1,8 +1,10 @@
 package com.workday.community.aem.core.services;
 
+import java.util.List;
 import java.util.Map;
 
 import com.workday.community.aem.core.models.EventPageData;
+import com.workday.community.aem.core.models.PageNameBean;
 
 /**
  * The Interface PageCreationService.
@@ -20,5 +22,5 @@ public interface PageCreationService {
 	 * @param data the data
 	 * @throws Exception 
 	 */
-	void doCreatePage(final Map<String, String> paramsMap, EventPageData data);
+	void doCreatePage(final Map<String, String> paramsMap, EventPageData data, List<PageNameBean> list);
 }
