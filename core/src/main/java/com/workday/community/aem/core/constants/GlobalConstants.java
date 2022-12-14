@@ -45,6 +45,18 @@ public interface GlobalConstants {
 	/** The Constant JCR_TITLE_PROP. */
 	public static final String JCR_TITLE_PROP = "jcr:title";
 
+	public interface TagRootPaths {
+		public static final String REGION_AND_COUNTRY_TAG_ROOT = "/content/cq:tags/region-and-country";
+		public static final String PROGRAM_TYPE_TAG_ROOT = "/content/cq:tags/program-type";
+		public static final String RELEASE_NOTES_TAG_ROOT = "/content/cq:tags/release-notes";
+		public static final String INDUSTRY_TAG_ROOT = "/content/cq:tags/industry";
+		public static final String RELEASE_TAG_ROOT = "/content/cq:tags/release";
+		public static final String USER_TAG_ROOT = "/content/cq:tags/user";
+		public static final String USING_WORKDAY_TAG_ROOT = "/content/cq:tags/using-workday";
+		public static final String PRODUCT_TAG_ROOT = "/content/cq:tags/product";
+		public static final String EVENT_TAG_ROOT = "/content/cq:tags/event";
+	}
+
 	/**
 	 * The Interface EventsPageConstants.
 	 */

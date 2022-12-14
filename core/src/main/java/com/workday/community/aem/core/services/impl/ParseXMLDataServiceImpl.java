@@ -123,7 +123,9 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 					if (null != listOfPageData) {
 						doCreateEventsPageCreationService(paramsMap, listOfPageData);
 					}
+					break;
 				case "kits-page-template":
+				    break;
 				default:
 				}
 			}
