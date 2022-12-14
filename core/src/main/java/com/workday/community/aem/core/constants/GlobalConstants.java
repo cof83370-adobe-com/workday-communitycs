@@ -28,13 +28,10 @@ public interface GlobalConstants {
 	public static final String TEXT_COMP_SLING_RESOURCE = "community/components/text";
 
 	/** The Constant BREADCRUMB_COMP_SLING_RESOURCE. */
-	public static final String BREADCRUMB_COMP_SLING_RESOURCE = "community/components/breadcrumb";
+	public static final String BUTTON_COMP_SLING_RESOURCE = "community/components/button";
 
-	/** The Constant TITLE_COMP_NODE_NAME. */
-	public static final String TITLE_COMP_NODE_NAME = "title";
-
-	/** The Constant TITLE_COMP_NODE_NAME. */
-	public static final String BREADCRUMB_COMP_NODE_NAME = "breadcrumb";
+	/** The Constant BUTTON_COMP_NODE_NAME. */
+	public static final String BUTTON_COMP_NODE_NAME = "button";
 
 	/** The Constant JCR_CONTENT_NODE. */
 	public static final String JCR_CONTENT_NODE = "jcr:content";
@@ -45,6 +42,14 @@ public interface GlobalConstants {
 	/** The Constant JCR_TITLE_PROP. */
 	public static final String JCR_TITLE_PROP = "jcr:title";
 
+	/** The Constant LINK_TARGET_PROP. */
+	public static final String LINK_TARGET_PROP = "linkTarget";
+
+	/** The Constant LINK_URL_PROP. */
+	public static final String LINK_URL_PROP = "linkURL";
+
+	/** The Constant TEXT_UNDERSCORE_SELF. */
+	public static final String TEXT_UNDERSCORE_SELF = "_self";
 	public static final String EVENT_PAGE_NAMES_FINDER_JSON = "/content/dam/community/page_names_finder.json";
 
 	public interface TagRootPaths {
@@ -70,12 +75,6 @@ public interface GlobalConstants {
 		/** The Constant EVENT_DETAILS_COMP_NODE_NAME. */
 		public static final String EVENT_DETAILS_COMP_NODE_NAME = "eventdetails";
 
-		/** The Constant EVENT_MATA_DATA_SLING_RESOURCE. */
-		public static final String EVENT_MATA_DATA_SLING_RESOURCE = "community/components/events/eventmetadata";
-
-		/** The Constant EVENT_META_DATA_COMP_NODE_NAME. */
-		public static final String EVENT_META_DATA_COMP_NODE_NAME = "eventmetadata";
-
 		/** The Constant EVENT_REGISTRATION_SLING_RESOURCE. */
 		public static final String EVENT_REGISTRATION_SLING_RESOURCE = "community/components/events/eventregistration";
 
@@ -87,6 +86,9 @@ public interface GlobalConstants {
 
 		/** The Constant YYYY_MM_DD_FORMAT. */
 		public static final String YYYY_MM_DD_FORMAT = "yyyy-MM-dd";
+
+		/** The Constant TEXT_REGISTER_FOR_EVENT. */
+		public static final String TEXT_REGISTER_FOR_EVENT = "Register for Event";
 
 	}
 

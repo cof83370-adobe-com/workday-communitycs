@@ -166,8 +166,6 @@
                 </policy_641562756958017>
                 <policy_2127098231831899
                     jcr:description="Events page description section text component policy"
-                    jcr:lastModified="{Date}2022-11-29T11:59:35.902+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="events-description-text-policy"
                     sling:resourceType="wcm/core/components/policy/policy">
@@ -326,8 +324,6 @@
             <container jcr:primaryType="nt:unstructured">
                 <policy_1574694950110
                     jcr:description="Allows the template components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
-                    jcr:lastModified="{Date}2022-11-29T11:53:39.713+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Page Root"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -335,12 +331,6 @@
                     layout="responsiveGrid"
                     layoutDisabled="false">
                     <jcr:content
-                        cq:lastReplicated="{Date}2022-11-14T11:35:11.458+05:30"
-                        cq:lastReplicated_publish="{Date}2022-11-14T11:35:11.458+05:30"
-                        cq:lastReplicatedBy="admin"
-                        cq:lastReplicatedBy_publish="admin"
-                        cq:lastReplicationAction="Activate"
-                        cq:lastReplicationAction_publish="Activate"
                         jcr:mixinTypes="[cq:ReplicationStatus]"
                         jcr:primaryType="nt:unstructured"/>
                     <cq:authoring jcr:primaryType="nt:unstructured">
@@ -369,8 +359,6 @@
                 <policy_1574695586800
                     cq:styleDefaultElement="main"
                     jcr:description="Allows the page components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
-                    jcr:lastModified="{Date}2022-10-29T01:57:58.933-05:00"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Page Content"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -403,8 +391,6 @@
                 <policy_649128221558427
                     cq:styleDefaultElement="main"
                     jcr:description="Sets a &lt;main> element on the page content area."
-                    jcr:lastModified="{Date}2022-10-29T01:55:54.484-05:00"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Page Main"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -413,8 +399,6 @@
                 </policy_649128221558427>
                 <policy_1575040440977
                     jcr:description="Allows the template components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
-                    jcr:lastModified="{Date}2022-10-30T20:22:35.243-05:00"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="XF Root"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -446,8 +430,6 @@
                 </policy_1575040440977>
                 <policy_1666985911739
                     jcr:description="Allows the page components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
-                    jcr:lastModified="{Date}2022-10-31T19:48:50.287-05:00"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Event Page Policy - Main Container"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -479,8 +461,6 @@
                 </policy_1666985911739>
                 <policy_1666986168003
                     jcr:description="Allows the page components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
-                    jcr:lastModified="{Date}2022-10-28T14:43:08.277-05:00"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Event Page Policy - Right Container"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -511,8 +491,6 @@
                     </cq:authoring>
                 </policy_1666986168003>
                 <policy_2067079242913600
-                    jcr:lastModified="{Date}2022-11-29T11:46:28.083+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="events-top-left"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -521,18 +499,16 @@
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_2067079242913600>
                 <policy_2067079253960600
-                    jcr:lastModified="{Date}2022-11-29T11:48:18.362+05:30"
-                    jcr:lastModifiedBy="admin"
+                    cq:styleDefaultClasses="event-image-details"   
                     jcr:primaryType="nt:unstructured"
                     jcr:title="events-top-right"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="/apps/community/components/events/eventdetails"
+                    components="[/apps/community/components/events/eventdetails,/apps/community/components/image]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_2067079253960600>
                 <policy_2067079264297100
-                    jcr:lastModified="{Date}2022-11-29T11:49:55.798+05:30"
-                    jcr:lastModifiedBy="admin"
+                    cq:styleDefaultClasses="event-text"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="event-center-container"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -541,8 +517,7 @@
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_2067079264297100>
                 <policy_2067608127785500
-                    jcr:lastModified="{Date}2022-11-29T11:50:31.396+05:30"
-                    jcr:lastModifiedBy="admin"
+                    cq:styleDefaultClasses="event-bottom-left"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="events-bottom-left"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -551,8 +526,7 @@
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_2067608127785500>
                 <policy_2067608134729200
-                    jcr:lastModified="{Date}2022-11-29T11:51:04.223+05:30"
-                    jcr:lastModifiedBy="admin"
+                    cq:styleDefaultClasses="event-bottom-right"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="events-bottom-right"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -560,6 +534,23 @@
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_2067608134729200>
+                <policy_88960846754269
+                    cq:styleDefaultClasses="event-registration"
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Event Registration Container"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="/apps/community/components/button"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_88960846754269>
+                <policy_91296955275330
+                    cq:styleDefaultClasses="event-title-metadata"
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Event Title Container"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_91296955275330>
             </container>
             <teaser jcr:primaryType="nt:unstructured">
                 <policy_1575031387650
@@ -588,8 +579,6 @@
             <page jcr:primaryType="nt:unstructured">
                 <policy
                     jcr:description="Includes the required client libraries."
-                    jcr:lastModified="{Date}2022-10-28T11:59:01.394-05:00"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Generic Page"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -600,8 +589,6 @@
                 </policy>
                 <policy_1666985770733
                     jcr:description="Includes the required client libraries."
-                    jcr:lastModified="{Date}2022-10-28T14:36:49.547-05:00"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Event Page Policy"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -612,9 +599,7 @@
                 </policy_1666985770733>
             </page>
             <card jcr:primaryType="nt:unstructured">
-                <policy_1667025161544
-                    jcr:lastModified="{Date}2022-10-29T01:53:55.689-05:00"
-                    jcr:lastModifiedBy="admin"
+                <policy_1667025161544                    
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Card Component Policy"
                     sling:resourceType="wcm/core/components/policy/policy">
@@ -677,9 +662,7 @@
                 </policy_1667025161544>
             </card>
             <breadcrumb jcr:primaryType="nt:unstructured">
-                <policy_1669702440856
-                    jcr:lastModified="{Date}2022-11-29T11:44:25.633+05:30"
-                    jcr:lastModifiedBy="admin"
+                <policy_1669702440856                    
                     jcr:primaryType="nt:unstructured"
                     jcr:title="breadcrumb-policy"
                     sling:resourceType="wcm/core/components/policy/policy"

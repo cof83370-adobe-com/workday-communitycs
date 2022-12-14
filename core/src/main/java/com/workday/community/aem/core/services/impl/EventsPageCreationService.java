@@ -61,6 +61,9 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant TOPRIGHTCONTAINER2. */
     private static final String TOPRIGHTCONTAINER = "toprightcontainer";
 
+    /** The Constant TOPRIGHTCONTAINER2. */
+    private static final String EVENTREGISTRATIONCONTAINER = "eventregistration";
+
     /** The Constant HOST. */
     private static final String HOST = "host";
 
@@ -171,25 +174,18 @@ public class EventsPageCreationService implements PageCreationService {
 
                 // set Page properties.
                 setPageProps(jcrNode, data, resourceResolver);
-                Node rootNode = jcrNode.hasNode("root") ? jcrNode.getNode("root") : jcrNode.addNode("root");
-
-                Node containerNode = rootNode.hasNode(CONTAINER) ? rootNode.getNode(CONTAINER)
-                        : rootNode.addNode(CONTAINER);
-
-                // Creation of breadcrumb component
-                createBreadcrumbComp(containerNode);
-
-                // Creation of title component
-                createTitleComp(containerNode, data);
-
-                // Creation of event registration component
-                createEventRegistrationComponent(containerNode, data);
-
-                // Creation of event metadata component
-                createEventMetaDataComponent(containerNode);
-
-                // TODO top right container image.
-
+                Node rootNode = jcrNode.hasNode("root") ? jcrNode.getNode("root"): jcrNode.addNode("root");
+                
+                Node containerNode = rootNode.hasNode(CONTAINER) ? rootNode.getNode(CONTAINER): rootNode.addNode(CONTAINER);
+                
+                // Creation of Register for Event Core Button component
+                Node eventRegistrationContainer = containerNode.hasNode(EVENTREGISTRATIONCONTAINER)
+                ? containerNode.getNode(EVENTREGISTRATIONCONTAINER)
+                : containerNode.addNode(EVENTREGISTRATIONCONTAINER);
+                createRegisterForEventCoreButton(eventRegistrationContainer, data);
+                
+                //TODO top right container image.
+                
                 // Creation of event details component
                 Node toprightContainer = containerNode.hasNode(TOPRIGHTCONTAINER)
                         ? containerNode.getNode(TOPRIGHTCONTAINER)
@@ -367,45 +363,6 @@ public class EventsPageCreationService implements PageCreationService {
             final String tagTypeValue) {
         return Optional.ofNullable(tagFinderUtil(resourceResolver, tagFinderEnum.getValue(), tagTypeValue))
                 .orElse(new ArrayList<>());
-    }
-
-    /**
-     * Creates the breadcrumb comp.
-     *
-     * @param containerNode the container node
-     */
-    private void createBreadcrumbComp(final Node containerNode) {
-        try {
-            if (!containerNode.hasNode(GlobalConstants.BREADCRUMB_COMP_NODE_NAME)) {
-                Node breadcrumbNode = containerNode.addNode(GlobalConstants.BREADCRUMB_COMP_NODE_NAME);
-                breadcrumbNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP,
-                        GlobalConstants.BREADCRUMB_COMP_SLING_RESOURCE);
-            }
-        } catch (Exception exec) {
-            logger.error("Exception occurred in createBreadcrumbComp::{}", exec.getMessage());
-        }
-    }
-
-    /**
-     * Creates the title comp.
-     *
-     * @param containerNode the container node
-     * @param data          the data
-     */
-    private void createTitleComp(final Node containerNode, final EventPageData data) {
-        try {
-            if (containerNode.hasNode(GlobalConstants.TITLE_COMP_NODE_NAME)) {
-                Node titleNode = containerNode.getNode(GlobalConstants.TITLE_COMP_NODE_NAME);
-                titleNode.setProperty(GlobalConstants.JCR_TITLE_PROP, data.getTitle());
-            } else {
-                Node titleNode = containerNode.addNode(GlobalConstants.TITLE_COMP_NODE_NAME);
-                titleNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP,
-                        GlobalConstants.TITLE_COMP_SLING_RESOURCE);
-                titleNode.setProperty(GlobalConstants.JCR_TITLE_PROP, data.getTitle());
-            }
-        } catch (Exception exec) {
-            logger.error("Exception in createTitleComp::{}", exec.getMessage());
-        }
     }
 
     /**
@@ -599,54 +556,37 @@ public class EventsPageCreationService implements PageCreationService {
     }
 
     /**
-     * Creates the event meta data component.
+     * Creates the event registration core button component.
      *
      * @param innerContainer the inner container
      * @param data           the data
      */
-    private void createEventMetaDataComponent(Node innerContainer) {
+    private void createRegisterForEventCoreButton(Node innerContainer, EventPageData data) {
         try {
-            if (!innerContainer.hasNode(GlobalConstants.EventsPageConstants.EVENT_META_DATA_COMP_NODE_NAME)) {
-                Node eventMetaDataNode = innerContainer
-                        .addNode(GlobalConstants.EventsPageConstants.EVENT_META_DATA_COMP_NODE_NAME);
-                eventMetaDataNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP,
-                        GlobalConstants.EventsPageConstants.EVENT_MATA_DATA_SLING_RESOURCE);
-            }
-        } catch (Exception exec) {
-            logger.error("Exception in createEventMetaDataComponent method::{}", exec.getMessage());
-        }
-    }
-
-    /**
-     * Creates the event registration component.
-     *
-     * @param innerContainer the inner container
-     * @param data           the data
-     */
-    private void createEventRegistrationComponent(Node innerContainer, EventPageData data) {
-        try {
-            Node eventRegistrationNode;
-            if (innerContainer.hasNode(GlobalConstants.EventsPageConstants.EVENT_REGISTRATION_COMP_NODE_NAME)) {
-                eventRegistrationNode = innerContainer
-                        .getNode(GlobalConstants.EventsPageConstants.EVENT_REGISTRATION_COMP_NODE_NAME);
-            } else {
-                eventRegistrationNode = innerContainer
-                        .addNode(GlobalConstants.EventsPageConstants.EVENT_REGISTRATION_COMP_NODE_NAME);
-                eventRegistrationNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP,
-                        GlobalConstants.EventsPageConstants.EVENT_REGISTRATION_SLING_RESOURCE);
-            }
-
-            if (StringUtils.isNotBlank(data.getShowAskRelatedQuestion())) {
-                if (data.getShowAskRelatedQuestion().equalsIgnoreCase("1")) {
-                    eventRegistrationNode.setProperty(SHOW_REGISTER_LINK, TRUE);
+            Node registerForEventButtonNode;
+            if (StringUtils.isNotBlank(data.getRegistrationUrl())) {
+                if (innerContainer.hasNode(GlobalConstants.BUTTON_COMP_NODE_NAME)) {
+                    registerForEventButtonNode = innerContainer.getNode(GlobalConstants.BUTTON_COMP_NODE_NAME);
                 } else {
-                    eventRegistrationNode.setProperty(SHOW_REGISTER_LINK, FALSE);
+                    registerForEventButtonNode = innerContainer.addNode(GlobalConstants.BUTTON_COMP_NODE_NAME);
+                    registerForEventButtonNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP,
+                            GlobalConstants.BUTTON_COMP_SLING_RESOURCE);
                 }
+                registerForEventButtonNode.setProperty(GlobalConstants.JCR_TITLE_PROP,
+                        GlobalConstants.EventsPageConstants.TEXT_REGISTER_FOR_EVENT);
+                registerForEventButtonNode.setProperty(GlobalConstants.LINK_TARGET_PROP,
+                        GlobalConstants.TEXT_UNDERSCORE_SELF);
+                registerForEventButtonNode.setProperty(GlobalConstants.LINK_URL_PROP, data.getRegistrationUrl());
+                // TODO Find if default accessibilityLabel needed
+
+            } else {
+                logger.info("Event Registration URL not found for nid : {}", data.getNid());
+                if (innerContainer.hasNode(GlobalConstants.BUTTON_COMP_NODE_NAME))
+                    innerContainer.getNode(GlobalConstants.BUTTON_COMP_NODE_NAME).remove();
             }
-            eventRegistrationNode.setProperty(NEW_WINDOW, FALSE);
-            eventRegistrationNode.setProperty(REGISTER_LINK, data.getRegistrationUrl());
+
         } catch (Exception exec) {
-            logger.error("Exception in createEventRegistrationComponent method::{}", exec.getMessage());
+            logger.error("Exception in createRegisterForEventCoreButton method::{}", exec.getMessage());
         }
     }
 

@@ -3,8 +3,6 @@
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:deviceGroups="[mobile/groups/responsive]"
-        cq:lastModified="{Date}2022-11-29T14:56:35.316+05:30"
-        cq:lastModifiedBy="admin"
         cq:template="/conf/community/settings/wcm/templates/event-page-template"
         jcr:primaryType="cq:PageContent"
         sling:resourceType="community/components/page">
@@ -17,46 +15,37 @@
                 sling:resourceType="community/components/commons/header"
                 fragmentVariationPath="/content/experience-fragments/community/us/en/site/header/master"/>
             <container
-                jcr:lastModified="{Date}2022-11-29T11:42:15.825+05:30"
-                jcr:lastModifiedBy="admin"
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="community/components/container"
                 layout="responsiveGrid">
                 <breadcrumb
-                    jcr:created="{Date}2022-11-29T11:43:51.279+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:43:51.279+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/breadcrumb"/>
-                <title
-                    jcr:created="{Date}2022-11-29T11:44:35.017+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:44:35.017+05:30"
-                    jcr:lastModifiedBy="admin"
+                    sling:resourceType="community/components/breadcrumb"
+                    disableShadowing="false"
+                    hideCurrent="false"
+                    showHidden="false"
+                    startLevel="4"/>
+                <titlecontainer
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/title"/>
-                <eventmetadata
-                    jcr:created="{Date}2022-11-29T11:45:20.743+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:45:20.743+05:30"
-                    jcr:lastModifiedBy="admin"
-                    jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/events/eventmetadata"
-                    editable="{Boolean}true"/>
+                    sling:resourceType="community/components/container">
+                    <title
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/title"/>
+                    <eventmetadata
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/events/eventmetadata"/>
+                    <cq:responsive jcr:primaryType="nt:unstructured">
+                        <default
+                            jcr:primaryType="nt:unstructured"
+                            offset="0"
+                            width="9"/>
+                        <phone
+                            jcr:primaryType="nt:unstructured"
+                            offset="0"
+                            width="12"/>
+                    </cq:responsive>
+                </titlecontainer>
                 <eventregistration
-                    jcr:created="{Date}2022-11-29T11:44:46.819+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:44:46.819+05:30"
-                    jcr:lastModifiedBy="admin"
-                    jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/events/eventregistration"
-                    editable="{Boolean}true"/>
-                <topleftcontainer
-                    jcr:created="{Date}2022-11-29T11:46:00.770+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:46:00.770+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container"
                     editable="{Boolean}true">
@@ -64,45 +53,22 @@
                         <default
                             jcr:primaryType="nt:unstructured"
                             offset="0"
-                            width="5"/>
+                            width="3"/>
                         <phone
                             jcr:primaryType="nt:unstructured"
                             offset="0"
                             width="12"/>
                     </cq:responsive>
-                </topleftcontainer>
+                </eventregistration>
                 <toprightcontainer
-                    jcr:created="{Date}2022-11-29T11:47:57.297+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:47:57.297+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container"
-                    editable="{Boolean}true">
-                    <cq:responsive jcr:primaryType="nt:unstructured">
-                        <default
-                            jcr:primaryType="nt:unstructured"
-                            offset="0"
-                            width="7"/>
-                        <phone
-                            jcr:primaryType="nt:unstructured"
-                            offset="0"
-                            width="12"/>
-                    </cq:responsive>
-                </toprightcontainer>
+                    editable="{Boolean}true"/>
                 <centercontainer
-                    jcr:created="{Date}2022-11-29T11:48:32.469+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:48:32.469+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container"
                     editable="{Boolean}true"/>
                 <bottomleftcontainer
-                    jcr:created="{Date}2022-11-29T11:50:12.360+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:50:12.360+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container"
                     editable="{Boolean}true">
@@ -118,10 +84,6 @@
                     </cq:responsive>
                 </bottomleftcontainer>
                 <bottomrightcontainer
-                    jcr:created="{Date}2022-11-29T11:50:46.922+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:50:46.922+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container"
                     editable="{Boolean}true">
