@@ -45,6 +45,8 @@ public interface GlobalConstants {
 	/** The Constant JCR_TITLE_PROP. */
 	public static final String JCR_TITLE_PROP = "jcr:title";
 
+	public static final String EVENT_PAGE_NAMES_FINDER_JSON = "/content/dam/community/page_names_finder.json";
+
 	public interface TagRootPaths {
 		public static final String REGION_AND_COUNTRY_TAG_ROOT = "/content/cq:tags/region-and-country";
 		public static final String PROGRAM_TYPE_TAG_ROOT = "/content/cq:tags/program-type";

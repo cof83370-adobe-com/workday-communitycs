@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
-
 import com.workday.community.aem.core.services.ParseXMLDataService;
 
 /**
@@ -26,14 +25,14 @@ import com.workday.community.aem.core.services.ParseXMLDataService;
  * 
  * @author pepalla
  */
-@Component(service = { Servlet.class }, property = { "sling.servlet.paths=" + XMLDataImporterServlet.RESOURCE_PATH_1, "sling.servlet.methods=GET" })
+@Component(service = { Servlet.class }, property = { "sling.servlet.paths=" + XMLDataImporterServlet.RESOURCE_PATH, "sling.servlet.methods=GET" })
 public class XMLDataImporterServlet extends SlingSafeMethodsServlet {
 
 	/** The Constant log. */
 	private static final Logger log = LoggerFactory.getLogger(XMLDataImporterServlet.class);
 
 	/** The Constant RESOURCE_PATH. */
-	public static final String RESOURCE_PATH_1 = "/bin/dataimporter";
+	public static final String RESOURCE_PATH = "/bin/dataimporter";
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -43,9 +42,7 @@ public class XMLDataImporterServlet extends SlingSafeMethodsServlet {
 
 	/** The parse XML data service. */
 	@Reference
-	ParseXMLDataService parseXMLDataService;
-	
-	
+	private transient ParseXMLDataService parseXMLDataService;
 
 	/**
 	 * Do get.
@@ -77,7 +74,7 @@ public class XMLDataImporterServlet extends SlingSafeMethodsServlet {
 			}
 		} catch (Exception e) {
 			resp.sendError(400, e.getMessage());
-			log.error("Exception occured at doGet method of XMLDataImporterServlet" + e.getMessage());
+			log.error("Exception occured at doGet method of XMLDataImporterServlet:{}", e.getMessage());
 		}
 	}
 }
