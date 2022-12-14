@@ -2,10 +2,8 @@
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:Template">
     <jcr:content
-        cq:lastModified="{Date}2022-11-29T14:56:35.316+05:30"
-        cq:lastModifiedBy="admin"
         cq:templateType="/conf/community/settings/wcm/template-types/event-page"
-        jcr:description="Workday Community Site Event Pages Template"
+        jcr:description="Workday Community Site Event Page Template"
         jcr:primaryType="cq:PageContent"
         jcr:title="Event Page Template"
         status="enabled"/>

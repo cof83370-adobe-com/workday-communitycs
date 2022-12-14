@@ -331,12 +331,6 @@
                     layout="responsiveGrid"
                     layoutDisabled="false">
                     <jcr:content
-                        cq:lastReplicated="{Date}2022-11-14T11:35:11.458+05:30"
-                        cq:lastReplicated_publish="{Date}2022-11-14T11:35:11.458+05:30"
-                        cq:lastReplicatedBy="admin"
-                        cq:lastReplicatedBy_publish="admin"
-                        cq:lastReplicationAction="Activate"
-                        cq:lastReplicationAction_publish="Activate"
                         jcr:mixinTypes="[cq:ReplicationStatus]"
                         jcr:primaryType="nt:unstructured"/>
                     <cq:authoring jcr:primaryType="nt:unstructured">
