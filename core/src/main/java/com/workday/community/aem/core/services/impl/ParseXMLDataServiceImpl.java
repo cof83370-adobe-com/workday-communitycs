@@ -78,7 +78,7 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 				T obj = clazz.cast(unmarshaller.unmarshal(new StringReader(xmlResponse)));
 				return obj;
 			} catch (Exception e) {
-				log.error("Exception occured at readXML method :{}", e.getMessage());
+				log.error("Exception occurred at readXML method :{}", e.getMessage());
 			}
 		}
 		return null;
@@ -105,7 +105,7 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 			bufferedReader.close();
 			inputStreamReader.close();
 		} catch (Exception e) {
-			log.error("Exception occured at readInputStreamFromAsset method :{}", e.getMessage());
+			log.error("Exception occurred at readInputStreamFromAsset method :{}", e.getMessage());
 		}
 		return builder.toString();
 	}
@@ -137,7 +137,7 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 				}
 			}
 		} catch (Exception exec) {
-			log.error("Exception occured at readXmlFromJcrAndDelegateToPageCreationService method :{}",
+			log.error("Exception occurred at readXmlFromJcrAndDelegateToPageCreationService method :{}",
 					exec.getMessage());
 		}
 	}

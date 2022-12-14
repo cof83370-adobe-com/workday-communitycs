@@ -209,7 +209,7 @@ public class EventsPageCreationService implements PageCreationService {
                 saveToRepo(session);
             }
         } catch (Exception exec) {
-            logger.error("Exception occured at while creating page in doCreatePage::{}", exec.getMessage());
+            logger.error("Exception occurred at while creating page in doCreatePage::{}", exec.getMessage());
         }
     }
 
@@ -221,7 +221,7 @@ public class EventsPageCreationService implements PageCreationService {
             prodPage = pageManager.create(paramsMap.get(GlobalConstants.PARENT_PAGE_PATH_PARAM),
                     aemPageName, paramsMap.get(GlobalConstants.TEMPLATE_PARAM), aemPageTitle);
         } catch (Exception exec) {
-            logger.error("Exception occured while creating page in getPageCreated::{}", exec.getMessage());
+            logger.error("Exception occurred while creating page in getPageCreated::{}", exec.getMessage());
         }
         return prodPage;
     }
@@ -231,7 +231,7 @@ public class EventsPageCreationService implements PageCreationService {
             session.save();
             session.refresh(true);
         } catch (Exception exec) {
-            logger.error("Exception occured while save to repo::{}", exec.getMessage());
+            logger.error("Exception occurred while save to repo::{}", exec.getMessage());
         }
 
     }
@@ -281,7 +281,7 @@ public class EventsPageCreationService implements PageCreationService {
             collectAllTagsForGivenPage(resourceResolver, data);
 
         } catch (Exception exec) {
-            logger.error("Exception occured in setPageProps::{}", exec.getMessage());
+            logger.error("Exception occurred in setPageProps::{}", exec.getMessage());
         }
     }
 
@@ -382,7 +382,7 @@ public class EventsPageCreationService implements PageCreationService {
                         GlobalConstants.BREADCRUMB_COMP_SLING_RESOURCE);
             }
         } catch (Exception exec) {
-            logger.error("Exception occured in createBreadcrumbComp::{}", exec.getMessage());
+            logger.error("Exception occurred in createBreadcrumbComp::{}", exec.getMessage());
         }
     }
 

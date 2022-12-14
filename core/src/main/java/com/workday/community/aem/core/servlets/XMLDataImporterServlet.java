@@ -74,7 +74,7 @@ public class XMLDataImporterServlet extends SlingSafeMethodsServlet {
 			}
 		} catch (Exception e) {
 			resp.sendError(400, e.getMessage());
-			log.error("Exception occured at doGet method of XMLDataImporterServlet:{}", e.getMessage());
+			log.error("Exception occurred at doGet method of XMLDataImporterServlet:{}", e.getMessage());
 		}
 	}
 }

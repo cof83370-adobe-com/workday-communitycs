@@ -53,9 +53,9 @@ public class PageNameFinderServiceImpl implements PageNameFinderService {
             }.getType();
             pageNamesLists = (List<PageNameBean>) Optional.ofNullable(new Gson().fromJson(sb.toString(), listType))
                     .orElseGet(Collections::emptyList);
-        } catch (Exception e1) {
-            logger.info("Exception occured at readJsonResourceFromDam method of PageNameFinderServiceImpl:{}",
-                    e1.getMessage());
+        } catch (Exception exec) {
+            logger.info("Exception occurred at readJsonResourceFromDam method of PageNameFinderServiceImpl:{}",
+                    exec.getMessage());
         }
         return pageNamesLists;
     }
