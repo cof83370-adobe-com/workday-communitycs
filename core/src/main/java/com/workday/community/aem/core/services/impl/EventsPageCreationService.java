@@ -172,24 +172,11 @@ public class EventsPageCreationService implements PageCreationService {
                 
                 Node containerNode = rootNode.hasNode(CONTAINER) ? rootNode.getNode(CONTAINER): rootNode.addNode(CONTAINER);
                 
-                // Creation of breadcrumb component
-                createBreadcrumbComp(containerNode);
-                
-                // Creation of title component
-                createTitleComp(containerNode, data);
-                
-                // Creation of event registration component
-                // TODO Shall be cleaned up as part of CMTYAEM-79
-                // createEventRegistrationComponent(containerNode, data);
-
                 // Creation of Register for Event Core Button component
                 Node eventRegistrationContainer = containerNode.hasNode(EVENTREGISTRATIONCONTAINER)
                 ? containerNode.getNode(EVENTREGISTRATIONCONTAINER)
                 : containerNode.addNode(EVENTREGISTRATIONCONTAINER);
                 createRegisterForEventCoreButton(eventRegistrationContainer, data);
-                
-                // Creation of event metadata component
-                createEventMetaDataComponent(containerNode);
                 
                 //TODO top right container image.
                 
@@ -310,43 +297,6 @@ public class EventsPageCreationService implements PageCreationService {
      */
     private List<String> getTagsForGivenInputs(ResourceResolver resourceResolver, TagFinderEnum tagFinderEnum, final String tagTypeValue) {
         return Optional.ofNullable(tagFinderUtil(resourceResolver, tagFinderEnum.getValue(), tagTypeValue)).orElse(new ArrayList<>());
-    }
-    
-    /**
-     * Creates the breadcrumb comp.
-     *
-     * @param containerNode the container node
-     */
-    private void createBreadcrumbComp(final Node containerNode) {
-        try {
-            if(!containerNode.hasNode(GlobalConstants.BREADCRUMB_COMP_NODE_NAME)) {
-                Node breadcrumbNode = containerNode.addNode(GlobalConstants.BREADCRUMB_COMP_NODE_NAME);
-                breadcrumbNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP,GlobalConstants.BREADCRUMB_COMP_SLING_RESOURCE);
-            }
-        } catch (Exception exec) {
-            logger.error("Exception occured in createBreadcrumbComp::{}", exec.getMessage());
-        }
-    }
-    
-    /**
-     * Creates the title comp.
-     *
-     * @param containerNode the container node
-     * @param data the data
-     */
-    private void createTitleComp(final Node containerNode, final EventPageData data) {
-        try {
-            if(containerNode.hasNode(GlobalConstants.TITLE_COMP_NODE_NAME)) {
-                Node titleNode = containerNode.getNode(GlobalConstants.TITLE_COMP_NODE_NAME);
-                titleNode.setProperty(GlobalConstants.JCR_TITLE_PROP, data.getTitle());
-            } else {
-                Node titleNode = containerNode.addNode(GlobalConstants.TITLE_COMP_NODE_NAME);
-                titleNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP, GlobalConstants.TITLE_COMP_SLING_RESOURCE);
-                titleNode.setProperty(GlobalConstants.JCR_TITLE_PROP,  data.getTitle());
-            }
-        } catch (Exception exec) {
-            logger.error("Exception::{}", exec.getMessage());
-        }
     }
     
     /**
@@ -532,53 +482,6 @@ public class EventsPageCreationService implements PageCreationService {
             wordLength = searchWord.length();
         }
         return indexes;
-    }
-    
-    /**
-     * Creates the event meta data component.
-     *
-     * @param innerContainer the inner container
-     * @param data the data
-     */
-    private void createEventMetaDataComponent(Node innerContainer) {
-        try {
-            if(!innerContainer.hasNode(GlobalConstants.EventsPageConstants.EVENT_META_DATA_COMP_NODE_NAME)) {
-                Node eventMetaDataNode = innerContainer.addNode(GlobalConstants.EventsPageConstants.EVENT_META_DATA_COMP_NODE_NAME);
-                eventMetaDataNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP, GlobalConstants.EventsPageConstants.EVENT_MATA_DATA_SLING_RESOURCE);
-            } 
-        }  catch (Exception exec) {
-            logger.error("Exception in createEventMetaDataComponent method::{}", exec.getMessage());
-        }
-    }
-    
-    /**
-     * Creates the event registration component.
-     *
-     * @param innerContainer the inner container
-     * @param data the data
-     */
-    private void createEventRegistrationComponent(Node innerContainer, EventPageData data) {
-        try {
-            Node eventRegistrationNode;
-            if(innerContainer.hasNode(GlobalConstants.EventsPageConstants.EVENT_REGISTRATION_COMP_NODE_NAME)) {
-                eventRegistrationNode = innerContainer.getNode(GlobalConstants.EventsPageConstants.EVENT_REGISTRATION_COMP_NODE_NAME);
-            } else {
-                eventRegistrationNode = innerContainer.addNode(GlobalConstants.EventsPageConstants.EVENT_REGISTRATION_COMP_NODE_NAME);
-                eventRegistrationNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP, GlobalConstants.EventsPageConstants.EVENT_REGISTRATION_SLING_RESOURCE);
-            }
-            
-            if(StringUtils.isNotBlank(data.getShowAskRelatedQuestion()) ) {
-                if(data.getShowAskRelatedQuestion().equalsIgnoreCase("1")) {
-                    eventRegistrationNode.setProperty(SHOW_REGISTER_LINK, TRUE);
-                } else {
-                    eventRegistrationNode.setProperty(SHOW_REGISTER_LINK, FALSE);
-                }
-            }
-            eventRegistrationNode.setProperty(NEW_WINDOW, FALSE);
-            eventRegistrationNode.setProperty(REGISTER_LINK, data.getRegistrationUrl());
-        }  catch (Exception exec) {
-            logger.error("Exception in createEventRegistrationComponent method::{}", exec.getMessage());
-        }
     }
 
     /**

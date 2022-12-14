@@ -28,16 +28,7 @@ public interface GlobalConstants {
 	public static final String TEXT_COMP_SLING_RESOURCE = "community/components/text";
 
 	/** The Constant BREADCRUMB_COMP_SLING_RESOURCE. */
-	public static final String BREADCRUMB_COMP_SLING_RESOURCE = "community/components/breadcrumb";
-
-	/** The Constant BREADCRUMB_COMP_SLING_RESOURCE. */
 	public static final String BUTTON_COMP_SLING_RESOURCE = "community/components/button";
-
-	/** The Constant TITLE_COMP_NODE_NAME. */
-	public static final String TITLE_COMP_NODE_NAME = "title";
-
-	/** The Constant TITLE_COMP_NODE_NAME. */
-	public static final String BREADCRUMB_COMP_NODE_NAME = "breadcrumb";
 
 	/** The Constant BUTTON_COMP_NODE_NAME. */
 	public static final String BUTTON_COMP_NODE_NAME = "button";
@@ -69,12 +60,6 @@ public interface GlobalConstants {
 
 		/** The Constant EVENT_DETAILS_COMP_NODE_NAME. */
 		public static final String EVENT_DETAILS_COMP_NODE_NAME = "eventdetails";
-
-		/** The Constant EVENT_MATA_DATA_SLING_RESOURCE. */
-		public static final String EVENT_MATA_DATA_SLING_RESOURCE = "community/components/events/eventmetadata";
-
-		/** The Constant EVENT_META_DATA_COMP_NODE_NAME. */
-		public static final String EVENT_META_DATA_COMP_NODE_NAME = "eventmetadata";
 
 		/** The Constant EVENT_REGISTRATION_SLING_RESOURCE. */
 		public static final String EVENT_REGISTRATION_SLING_RESOURCE = "community/components/events/eventregistration";

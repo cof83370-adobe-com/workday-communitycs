@@ -17,16 +17,10 @@
                 sling:resourceType="community/components/commons/header"
                 fragmentVariationPath="/content/experience-fragments/community/us/en/site/header/master"/>
             <container
-                jcr:lastModified="{Date}2022-11-29T11:42:15.825+05:30"
-                jcr:lastModifiedBy="admin"
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="community/components/container"
                 layout="responsiveGrid">
                 <breadcrumb
-                    jcr:created="{Date}2022-11-29T11:43:51.279+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-12-13T21:19:03.956-06:00"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/breadcrumb"
                     disableShadowing="false"
@@ -34,24 +28,12 @@
                     showHidden="false"
                     startLevel="4"/>
                 <titlecontainer
-                    jcr:created="{Date}2022-12-07T20:02:55.683-06:00"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-12-07T20:02:55.683-06:00"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container">
                     <title
-                        jcr:created="{Date}2022-12-07T20:07:00.339-06:00"
-                        jcr:createdBy="admin"
-                        jcr:lastModified="{Date}2022-12-07T20:07:00.339-06:00"
-                        jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="community/components/title"/>
                     <eventmetadata
-                        jcr:created="{Date}2022-12-07T20:25:38.123-06:00"
-                        jcr:createdBy="admin"
-                        jcr:lastModified="{Date}2022-12-07T20:25:38.123-06:00"
-                        jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="community/components/events/eventmetadata"/>
                     <cq:responsive jcr:primaryType="nt:unstructured">
@@ -59,13 +41,13 @@
                             jcr:primaryType="nt:unstructured"
                             offset="0"
                             width="9"/>
+                        <phone
+                            jcr:primaryType="nt:unstructured"
+                            offset="0"
+                            width="12"/>
                     </cq:responsive>
                 </titlecontainer>
                 <eventregistration
-                    jcr:created="{Date}2022-12-07T20:06:15.765-06:00"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-12-07T20:06:15.765-06:00"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container"
                     editable="{Boolean}true">
@@ -74,29 +56,21 @@
                             jcr:primaryType="nt:unstructured"
                             offset="0"
                             width="3"/>
+                        <phone
+                            jcr:primaryType="nt:unstructured"
+                            offset="0"
+                            width="12"/>
                     </cq:responsive>
                 </eventregistration>
                 <toprightcontainer
-                    jcr:created="{Date}2022-11-29T11:47:57.297+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:47:57.297+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container"
                     editable="{Boolean}true"/>
                 <centercontainer
-                    jcr:created="{Date}2022-11-29T11:48:32.469+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:48:32.469+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container"
                     editable="{Boolean}true"/>
                 <bottomleftcontainer
-                    jcr:created="{Date}2022-11-29T11:50:12.360+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:50:12.360+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container"
                     editable="{Boolean}true">
@@ -112,10 +86,6 @@
                     </cq:responsive>
                 </bottomleftcontainer>
                 <bottomrightcontainer
-                    jcr:created="{Date}2022-11-29T11:50:46.922+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:50:46.922+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container"
                     editable="{Boolean}true">
