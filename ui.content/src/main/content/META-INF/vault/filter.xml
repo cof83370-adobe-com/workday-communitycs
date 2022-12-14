@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
-    <filter root="/conf/community" mode="merge"/>
+    <filter root="/conf/community" mode="update"/>
     <filter root="/content/workday-community" mode="merge"/>
     <filter root="/content/cq:tags/event" mode="merge"/>
     <filter root="/content/cq:tags/user" mode="merge"/>

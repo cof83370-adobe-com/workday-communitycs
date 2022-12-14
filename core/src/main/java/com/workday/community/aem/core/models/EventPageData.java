@@ -222,6 +222,9 @@ public class EventPageData {
 	}
 
 	public String getRegistrationUrl() {
+		if (registrationUrl.equalsIgnoreCase("NULL")) {
+			return STRING_EMPTY;
+		}
 		return registrationUrl;
 	}
 

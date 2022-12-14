@@ -2,7 +2,7 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
     jcr:primaryType="cq:Page">
     <jcr:content
-        cq:lastModified="{Date}2022-11-29T12:07:20.554+05:30"
+        cq:lastModified="{Date}2022-12-13T20:50:31.870-06:00"
         cq:lastModifiedBy="admin"
         cq:template="/conf/community/settings/wcm/templates/event-page-template"
         jcr:primaryType="cq:PageContent"
@@ -17,35 +17,19 @@
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="community/components/container"
                 layout="responsiveGrid">
-                <eventmetadata
-                    jcr:created="{Date}2022-11-29T11:45:20.743+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:45:45.391+05:30"
-                    jcr:lastModifiedBy="admin"
-                    jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/events/eventmetadata"/>
                 <eventregistration
-                    jcr:created="{Date}2022-11-29T11:44:46.819+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:45:42.736+05:30"
-                    jcr:lastModifiedBy="admin"
-                    jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/events/eventregistration"/>
-                <topleftcontainer
-                    jcr:created="{Date}2022-11-29T11:46:00.770+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2022-11-29T11:47:45.981+05:30"
-                    jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container">
-                    <image
-                        jcr:created="{Date}2022-11-29T12:07:10.420+05:30"
+                    <button
+                        jcr:created="{Date}2022-12-13T20:49:33.285-06:00"
                         jcr:createdBy="admin"
-                        jcr:lastModified="{Date}2022-11-29T12:07:10.421+05:30"
+                        jcr:lastModified="{Date}2022-12-13T20:50:17.436-06:00"
                         jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
-                        sling:resourceType="foundation/components/image"/>
-                </topleftcontainer>
+                        jcr:title="Register for Event"
+                        sling:resourceType="community/components/button"
+                        linkTarget="_self"/>
+                </eventregistration>
                 <toprightcontainer
                     jcr:created="{Date}2022-11-29T11:47:57.297+05:30"
                     jcr:createdBy="admin"
@@ -53,10 +37,17 @@
                     jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container">
-                    <eventdetails
-                        jcr:created="{Date}2022-11-29T12:07:20.546+05:30"
+                    <image
+                        jcr:created="{Date}2022-12-13T20:50:27.505-06:00"
                         jcr:createdBy="admin"
-                        jcr:lastModified="{Date}2022-11-29T12:07:20.546+05:30"
+                        jcr:lastModified="{Date}2022-12-13T20:50:27.505-06:00"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/image"/>
+                    <eventdetails
+                        jcr:created="{Date}2022-12-13T20:50:31.868-06:00"
+                        jcr:createdBy="admin"
+                        jcr:lastModified="{Date}2022-12-13T20:50:31.868-06:00"
                         jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="community/components/events/eventdetails"/>

@@ -58,6 +58,9 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant TOPRIGHTCONTAINER2. */
     private static final String TOPRIGHTCONTAINER = "toprightcontainer";
 
+    /** The Constant TOPRIGHTCONTAINER2. */
+    private static final String EVENTREGISTRATIONCONTAINER = "eventregistration";
+
     /** The Constant HOST. */
     private static final String HOST = "host";
 
@@ -176,7 +179,14 @@ public class EventsPageCreationService implements PageCreationService {
                 createTitleComp(containerNode, data);
                 
                 // Creation of event registration component
-                createEventRegistrationComponent(containerNode, data);
+                // TODO Shall be cleaned up as part of CMTYAEM-79
+                // createEventRegistrationComponent(containerNode, data);
+
+                // Creation of Register for Event Core Button component
+                Node eventRegistrationContainer = containerNode.hasNode(EVENTREGISTRATIONCONTAINER)
+                ? containerNode.getNode(EVENTREGISTRATIONCONTAINER)
+                : containerNode.addNode(EVENTREGISTRATIONCONTAINER);
+                createRegisterForEventCoreButton(eventRegistrationContainer, data);
                 
                 // Creation of event metadata component
                 createEventMetaDataComponent(containerNode);
@@ -568,6 +578,41 @@ public class EventsPageCreationService implements PageCreationService {
             eventRegistrationNode.setProperty(REGISTER_LINK, data.getRegistrationUrl());
         }  catch (Exception exec) {
             logger.error("Exception in createEventRegistrationComponent method::{}", exec.getMessage());
+        }
+    }
+
+    /**
+     * Creates the event registration core button component.
+     *
+     * @param innerContainer the inner container
+     * @param data           the data
+     */
+    private void createRegisterForEventCoreButton(Node innerContainer, EventPageData data) {
+        try {
+            Node registerForEventButtonNode;
+            if (StringUtils.isNotBlank(data.getRegistrationUrl())) {
+                if (innerContainer.hasNode(GlobalConstants.BUTTON_COMP_NODE_NAME)) {
+                    registerForEventButtonNode = innerContainer.getNode(GlobalConstants.BUTTON_COMP_NODE_NAME);
+                } else {
+                    registerForEventButtonNode = innerContainer.addNode(GlobalConstants.BUTTON_COMP_NODE_NAME);
+                    registerForEventButtonNode.setProperty(GlobalConstants.AEM_SLING_RESOURCE_TYPE_PROP,
+                            GlobalConstants.BUTTON_COMP_SLING_RESOURCE);
+                }
+                registerForEventButtonNode.setProperty(GlobalConstants.JCR_TITLE_PROP,
+                        GlobalConstants.EventsPageConstants.TEXT_REGISTER_FOR_EVENT);
+                registerForEventButtonNode.setProperty(GlobalConstants.LINK_TARGET_PROP,
+                        GlobalConstants.TEXT_UNDERSCORE_SELF);
+                registerForEventButtonNode.setProperty(GlobalConstants.LINK_URL_PROP, data.getRegistrationUrl());
+                // TODO Find if default accessibilityLabel needed
+
+            } else {
+                logger.info("Event Registration URL not found for nid : {}", data.getNid());
+                if (innerContainer.hasNode(GlobalConstants.BUTTON_COMP_NODE_NAME))
+                    innerContainer.getNode(GlobalConstants.BUTTON_COMP_NODE_NAME).remove();
+            }
+
+        } catch (Exception exec) {
+            logger.error("Exception in createRegisterForEventCoreButton method::{}", exec.getMessage());
         }
     }
     

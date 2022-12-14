@@ -30,11 +30,17 @@ public interface GlobalConstants {
 	/** The Constant BREADCRUMB_COMP_SLING_RESOURCE. */
 	public static final String BREADCRUMB_COMP_SLING_RESOURCE = "community/components/breadcrumb";
 
+	/** The Constant BREADCRUMB_COMP_SLING_RESOURCE. */
+	public static final String BUTTON_COMP_SLING_RESOURCE = "community/components/button";
+
 	/** The Constant TITLE_COMP_NODE_NAME. */
 	public static final String TITLE_COMP_NODE_NAME = "title";
 
 	/** The Constant TITLE_COMP_NODE_NAME. */
 	public static final String BREADCRUMB_COMP_NODE_NAME = "breadcrumb";
+
+	/** The Constant BUTTON_COMP_NODE_NAME. */
+	public static final String BUTTON_COMP_NODE_NAME = "button";
 
 	/** The Constant JCR_CONTENT_NODE. */
 	public static final String JCR_CONTENT_NODE = "jcr:content";
@@ -45,6 +51,14 @@ public interface GlobalConstants {
 	/** The Constant JCR_TITLE_PROP. */
 	public static final String JCR_TITLE_PROP = "jcr:title";
 
+	/** The Constant LINK_TARGET_PROP. */
+	public static final String LINK_TARGET_PROP = "linkTarget";
+
+	/** The Constant LINK_URL_PROP. */
+	public static final String LINK_URL_PROP = "linkURL";
+
+	/** The Constant TEXT_UNDERSCORE_SELF. */
+	public static final String TEXT_UNDERSCORE_SELF = "_self";
 	/**
 	 * The Interface EventsPageConstants.
 	 */
@@ -73,6 +87,9 @@ public interface GlobalConstants {
 
 		/** The Constant YYYY_MM_DD_FORMAT. */
 		public static final String YYYY_MM_DD_FORMAT = "yyyy-MM-dd";
+
+		/** The Constant TEXT_REGISTER_FOR_EVENT. */
+		public static final String TEXT_REGISTER_FOR_EVENT = "Register for Event";
 
 	}
 
