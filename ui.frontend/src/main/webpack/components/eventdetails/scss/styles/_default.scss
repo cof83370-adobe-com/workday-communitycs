@@ -1,0 +1,96 @@
+.event-image-details {
+    margin-top: 32px;
+
+    .cmp-container {
+        @media (min-width: $screen-small) {
+            display: flex;
+        }
+    }
+
+    .eventdetails {
+        display: inline-block;
+
+        .cmp-eventdetails {
+            background: $wdc-color-soap-200;
+            border-radius: 8px;
+
+            @media (max-width: $screen-small) {
+                width: 344px;
+                height: 495px;
+                margin-top: 24px;
+            }
+
+            @media (min-width: $screen-small) {
+                height: 343px;
+                width: auto;
+                min-width: 730px;
+                margin-left: 32px;
+            }
+
+            &__heading {
+                padding: 32px;
+                font-style: $font-style-normal;
+                font-weight: $font-weight-bold;
+                font-size: 20px;
+                line-height: 26px;
+                display: flex;
+                align-items: $align-center;
+                color: $wdc-color-black-pepper-600;
+                text-decoration: none;
+            }
+
+            &__itemList {
+                @media (min-width: $screen-small) {
+                    column-count: 2;
+                }
+            }
+
+            &__item {
+                width: 308px;
+                height: 79px;
+                padding-left: 40px;
+                font-style: $font-style-normal;
+                font-size: $font-size-base;
+                line-height: 24px;
+                color: $wdc-color-black-pepper-600;
+                display: inline-block;
+
+                &-icon-calendar {
+                    $imagePath: url('../resources/images/calendar.jpg');
+                    content: $imagePath;
+                }
+
+                &-icon-people {
+                    $imagePath: url('../resources/images/people.jpg');
+                    content: $imagePath;
+                }
+
+                &-icon-location {
+                    $imagePath: url('../resources/images/location.jpg');
+                    content: $imagePath;
+                }
+
+                &-icon-host {
+                    $imagePath: url('../resources/images/host.jpg');
+                    content: $imagePath;
+                }
+
+                &-icon-time {
+                    $imagePath: url('../resources/images/time.jpg');
+                    content: $imagePath;
+                }
+
+                &-label {
+                    font-weight: $font-weight-bold;
+                    display: inline-block;
+                    margin-left: 16px;
+                }
+
+                &-output {
+                    padding-left: 40px;
+                    list-style-type: none;
+                }
+            }
+        }
+    }
+}

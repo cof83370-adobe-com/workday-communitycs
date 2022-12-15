@@ -1,0 +1,21 @@
+.event-image-details {
+    .image {
+        display: inline-block;
+
+        .cmp-image {
+            &__image {
+                @media (max-width: $screen-small) {
+                    width: 344px;
+                    height: 279px;
+                    border-radius: 12px;
+                }
+
+                @media (min-width: $screen-small) {
+                    width: 408px;
+                    height: 343px;
+                    border-radius: 22px;
+                }
+            }
+        }
+    }
+}
