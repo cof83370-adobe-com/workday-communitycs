@@ -1,0 +1,40 @@
+.event-registration {
+    .cmp-button {
+        display: flex;
+        justify-content: $align-center;
+        align-items: $align-center;
+        background: $wdc-color-blueberry-400;
+        border-radius: 24px;
+        border: none;
+        text-decoration: none;
+
+        @media (max-width: $screen-small) {
+            width: 252px;
+            height: 48px;
+        }
+
+        @media (min-width: $screen-small) {
+            width: 260px;
+            height: 40px;
+        }
+
+        &__text {
+            font-style: $font-style-normal;
+            font-weight: $font-weight-bold;
+            text-align: $align-center;
+            color: $wdc-color-french-vanilla-100;
+
+            @media (max-width: $screen-small) {
+                font-size: $font-size;
+                line-height: 24px;
+                letter-spacing: 0.16px;
+            }
+
+            @media (min-width: $screen-small) {
+                font-size: $font-size-small;
+                line-height: 20px;
+                letter-spacing: 0.24px;
+            }
+        }
+    }
+}
