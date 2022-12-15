@@ -1,20 +1,14 @@
 .cmp-eventmetadata {
-    position: absolute;
-    top: 260px;
 
     @media (max-width: $screen-small) {
         height: 44px;
-        left: 4.26%;
-        right: 10.9%;
     }
 
     @media (min-width: $screen-small) {
         height: 22px;
-        left: 4.22%;
-        right: 40.23%;
     }
 
-    &__item{
+    &__item {
         font-style: $font-style-normal;
         font-weight: 500;
         font-size: $font-size-xsmall;
@@ -35,7 +29,7 @@
             }
         }
 
-        &__item-label{
+        &__item-label {
             padding-right: 5px;
         }
     }
