@@ -1,10 +1,20 @@
 package com.workday.community.aem.core.models;
 
-import com.day.cq.tagging.Tag;
-import com.day.cq.tagging.TagManager;
-import com.day.cq.wcm.api.Page;
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,12 +22,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import com.day.cq.tagging.Tag;
+import com.day.cq.tagging.TagManager;
+import com.day.cq.wcm.api.Page;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith(AemContextExtension.class)
 public class EventDetailsModelTest {
@@ -54,7 +64,11 @@ public class EventDetailsModelTest {
     void testGetTimeFormat() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
-        assertEquals("00:44", eventDetailsModel.getTimeFormat());
+        ZonedDateTime localDateTime = ZonedDateTime.now();
+        localDateTime = localDateTime.withHour(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[0]));
+        localDateTime = localDateTime.withMinute(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[1]));
+        ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
+        assertEquals("00:44", DateTimeFormatter.ofPattern("HH:mm").format(originDatetime));
     }
 
     @Test
@@ -68,7 +82,13 @@ public class EventDetailsModelTest {
     void testGetDateFormat() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
-        assertEquals("Tuesday, Nov 22, 2022", eventDetailsModel.getDateFormat());
+        DateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy");
+		Date formattedStartDate = formatter.parse(eventDetailsModel.getDateFormat());
+		ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
+        localDateTime = localDateTime.withHour(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[0]));
+        localDateTime = localDateTime.withMinute(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[1]));
+        ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
+        assertEquals("Tuesday, Nov 22, 2022", DateTimeFormatter.ofPattern("EEEE, MMM dd, yyyy").format(originDatetime));
     }
 
     @Test

@@ -104,4 +104,12 @@ public interface GlobalConstants {
 
 		public static final String DAY_LABEL = "Day";
 	}
+
+	public interface TagPropertyName {
+		public static final String EVENT_FORMAT = "eventFormat";
+		public static final String EVENT_AUDIENCE = "eventAudience";
+		public static final String RELEASE = "releaseTags";
+		public static final String PRODUCT = "productTags";
+		public static final String USING_WORKDAY = "usingWorkday";
+	}
 }

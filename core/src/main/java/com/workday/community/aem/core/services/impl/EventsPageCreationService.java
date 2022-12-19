@@ -274,7 +274,7 @@ public class EventsPageCreationService implements PageCreationService {
                     .ofNullable(
                             getTagsForGivenInputs(resourceResolver, TagFinderEnum.RELEASE_TAG, data.getReleaseTag()))
                     .orElse(new ArrayList<>());
-            mountTagPageProps("releaseTags", releaseTags);
+            mountTagPageProps(GlobalConstants.TagPropertyName.RELEASE, releaseTags);
         }
 
         // To add product tags
@@ -282,7 +282,7 @@ public class EventsPageCreationService implements PageCreationService {
             List<String> productTags = Optional
                     .ofNullable(getTagsForGivenInputs(resourceResolver, TagFinderEnum.PRODUCT, data.getProduct()))
                     .orElse(new ArrayList<>());
-            mountTagPageProps("productTags", productTags);
+            mountTagPageProps(GlobalConstants.TagPropertyName.PRODUCT, productTags);
         }
 
         // To add using workday tags
@@ -291,7 +291,7 @@ public class EventsPageCreationService implements PageCreationService {
                     .ofNullable(
                             getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY, data.getUsingWorday()))
                     .orElse(new ArrayList<>());
-            mountTagPageProps("usingWorkday", usingWorkdayTags);
+            mountTagPageProps(GlobalConstants.TagPropertyName.USING_WORKDAY, usingWorkdayTags);
         }
         // To add industry tags
     }
@@ -334,10 +334,10 @@ public class EventsPageCreationService implements PageCreationService {
 
     private void mountEventTypePageTags(final List<String> eventFormatTags, final List<String> eventAudienceTags) {
         if (!eventFormatTags.isEmpty()) {
-            mountTagPageProps("eventFormat", eventFormatTags);
+            mountTagPageProps(GlobalConstants.TagPropertyName.EVENT_FORMAT, eventFormatTags);
         }
         if (!eventAudienceTags.isEmpty()) {
-            mountTagPageProps("eventAudience", eventAudienceTags);
+            mountTagPageProps(GlobalConstants.TagPropertyName.EVENT_AUDIENCE, eventAudienceTags);
         }
     }
 
