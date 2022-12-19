@@ -1,5 +1,5 @@
 .event-image-details {
-    margin-top: 32px;
+    margin-bottom: 32px;
 
     .cmp-container {
         @media (min-width: $screen-small) {
@@ -8,23 +8,22 @@
     }
 
     .eventdetails {
-        display: inline-block;
 
         .cmp-eventdetails {
             background: $wdc-color-soap-200;
             border-radius: 8px;
 
             @media (max-width: $screen-small) {
-                width: 344px;
+                max-width: 326px;
                 height: 495px;
                 margin-top: 24px;
             }
 
             @media (min-width: $screen-small) {
-                height: 343px;
-                width: auto;
+                max-height: 325px;
+                min-height: 173px;
                 min-width: 730px;
-                margin-left: 32px;
+                max-width: 1168px;
             }
 
             &__heading {
@@ -46,7 +45,6 @@
             }
 
             &__item {
-                width: 308px;
                 height: 79px;
                 padding-left: 40px;
                 font-style: $font-style-normal;
@@ -54,6 +52,14 @@
                 line-height: 24px;
                 color: $wdc-color-black-pepper-600;
                 display: inline-block;
+
+                @media (max-width: $screen-small) {
+                    max-width: 326px;
+                }
+
+                @media (min-width: $screen-small) {
+                    width: 308px;
+                }
 
                 &-icon-calendar {
                     $imagePath: url('../resources/images/calendar.jpg');

@@ -2,12 +2,10 @@
 
     @media (max-width: $screen-small) {
         width: 331px;
-        height: 26px;
     }
 
     @media (min-width: $screen-small) {
         width: 853px;
-        height: 48px;
     }
 
 
@@ -17,6 +15,7 @@
     display: flex;
     align-items: $align-center;
     color: $wdc-color-black-pepper-600;
+    margin: 0;
 
         @media (max-width: $screen-small) {
             font-size: 20px;

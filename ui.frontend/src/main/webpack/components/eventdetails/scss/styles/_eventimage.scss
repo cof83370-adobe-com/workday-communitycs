@@ -5,15 +5,16 @@
         .cmp-image {
             &__image {
                 @media (max-width: $screen-small) {
-                    width: 344px;
+                    max-width: 326px;
                     height: 279px;
                     border-radius: 12px;
                 }
 
                 @media (min-width: $screen-small) {
                     width: 408px;
-                    height: 343px;
+                    max-height: 326px;
                     border-radius: 22px;
+                    margin-right: 32px;
                 }
             }
         }

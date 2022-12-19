@@ -7,10 +7,12 @@
         border-radius: 24px;
         border: none;
         text-decoration: none;
+        float: right;
 
         @media (max-width: $screen-small) {
             width: 252px;
             height: 48px;
+            margin-bottom: 32px;
         }
 
         @media (min-width: $screen-small) {
