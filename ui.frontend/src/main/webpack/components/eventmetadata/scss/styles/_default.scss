@@ -1,11 +1,13 @@
 .cmp-eventmetadata {
 
     @media (max-width: $screen-small) {
-        height: 44px;
+        margin-top: 12px;
+        margin-bottom: 24px;
     }
 
     @media (min-width: $screen-small) {
-        height: 22px;
+        margin-top: 24px;
+        margin-bottom: 32px;
     }
 
     &__item {
