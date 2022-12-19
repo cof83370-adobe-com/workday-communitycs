@@ -75,8 +75,7 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 			try {
 				jaxbContext = JAXBContext.newInstance(clazz);
 				unmarshaller = jaxbContext.createUnmarshaller();
-				T obj = clazz.cast(unmarshaller.unmarshal(new StringReader(xmlResponse)));
-				return obj;
+				return clazz.cast(unmarshaller.unmarshal(new StringReader(xmlResponse)));
 			} catch (Exception e) {
 				log.error("Exception occurred at readXML method :{}", e.getMessage());
 			}
@@ -95,7 +94,7 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 					.getResource(rnd.getPath() + String.format("%s%s", "/", GlobalConstants.JCR_CONTENT_NODE))
 					.adaptTo(Node.class);
 			InputStream inputStreamReader = node.getProperty(GlobalConstants.JCR_DATA_NODE).getBinary().getStream();
-			// String result = IOUtils.toString(inputStreamReader, StandardCharsets.UTF_8);
+			/**  String result = IOUtils.toString(inputStreamReader, StandardCharsets.UTF_8); */
 			BufferedReader bufferedReader = new BufferedReader(
 					new InputStreamReader(inputStreamReader, StandardCharsets.UTF_8));
 			int eof;
@@ -167,8 +166,6 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 			EventPagesList listOfPageData) {
 		List<PageNameBean> list = pageNameFinderService.getPageName(resolver,
 				GlobalConstants.EVENT_PAGE_NAMES_FINDER_JSON);
-		listOfPageData.getRoot().forEach((item) -> {
-			eventsPageCreationService.doCreatePage(paramsMap, item, list);
-		});
+		listOfPageData.getRoot().forEach(item -> eventsPageCreationService.doCreatePage(paramsMap, item, list));
 	}
 }

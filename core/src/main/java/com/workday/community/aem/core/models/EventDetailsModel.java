@@ -44,7 +44,7 @@ public class EventDetailsModel {
 	/** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-	private List<String> eventFormat = new ArrayList<String>();
+	private List<String> eventFormat = new ArrayList<>();
 
 	/** The location. */
 	private String eventLocation;
