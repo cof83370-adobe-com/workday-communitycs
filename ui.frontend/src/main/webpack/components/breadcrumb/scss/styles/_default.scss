@@ -28,6 +28,8 @@
             &:before {
                 content: '/';
                 padding: 12px;
+                margin-right: -4px;
+                margin-left: -4px;
             }
         }
 
@@ -36,6 +38,8 @@
                 $imagePath: url('../resources/images/rightArrow.jpg');
                 content: $imagePath;
                 padding: 12px;
+                margin-right: -4px;
+                margin-left: -4px;
             }
         }        
       
