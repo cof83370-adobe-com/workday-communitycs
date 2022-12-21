@@ -240,16 +240,16 @@
                                     <readCount
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/foundation/form/numberfield"
-                                        fieldLabel="Read Count"
                                         emptyText="Enter Read Count"
                                         fieldDescription="Enter page read count"
+                                        fieldLabel="Read Count"
                                         name="./readCount"/>
-                                        <readCountTypeHint
-                                          jcr:primaryType="nt:unstructured"
-                                          sling:resourceType="granite/ui/components/foundation/form/hidden"
-                                          ignoreData="{Boolean}true"
-                                          name="./readCount@TypeHint"
-                                          value="Long"/>
+                                    <readCountTypeHint
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/form/hidden"
+                                        ignoreData="{Boolean}true"
+                                        name="./readCount@TypeHint"
+                                        value="Long"/>
                                 </items>
                             </column>
                         </items>

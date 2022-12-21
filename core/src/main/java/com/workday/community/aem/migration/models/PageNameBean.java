@@ -1,4 +1,4 @@
-package com.workday.community.aem.core.models;
+package com.workday.community.aem.migration.models;
 
 public class PageNameBean {
     private String nodeId;

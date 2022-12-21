@@ -1,4 +1,4 @@
-package com.workday.community.aem.core.models;
+package com.workday.community.aem.migration.models;
 
 import java.util.ArrayList;
 import java.util.List;
