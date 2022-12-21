@@ -5,7 +5,7 @@
     <jcr:content
         cq:allowedTemplates="[/conf/community/settings/wcm/templates/(?!xf-).*,/conf/community/settings/wcm/templates/page-content]"
         cq:conf="/conf/community"
-        cq:redirectTarget="/content/workday-community/us/en"
+        cq:redirectTarget="/content/workday-community/en-us"
         cq:template="/conf/community/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
         jcr:title="Workday Community Site"
