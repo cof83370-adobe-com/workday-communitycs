@@ -362,7 +362,7 @@
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Page Content"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="[group:Workday Community Site - Content,/apps/community/components/form/container]"
+                    components="[group:Workday Community Site - Content,/apps/community/components/form/container,/apps/community/components/importcontent]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                     <cq:authoring jcr:primaryType="nt:unstructured">
@@ -428,68 +428,6 @@
                         </assetToComponentMapping>
                     </cq:authoring>
                 </policy_1575040440977>
-                <policy_1666985911739
-                    jcr:description="Allows the page components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
-                    jcr:primaryType="nt:unstructured"
-                    jcr:title="Event Page Policy - Main Container"
-                    sling:resourceType="wcm/core/components/policy/policy"
-                    components="[/apps/community/components/events/eventdate,/apps/community/components/events/eventdetails,/apps/community/components/events/eventvalidity,/apps/community/components/importcontent]"
-                    layoutDisabled="false">
-                    <jcr:content jcr:primaryType="nt:unstructured"/>
-                    <cq:authoring jcr:primaryType="nt:unstructured">
-                        <assetToComponentMapping jcr:primaryType="nt:unstructured">
-                            <mapping_1575030255082
-                                jcr:primaryType="nt:unstructured"
-                                assetGroup="media"
-                                assetMimetype="image/*"
-                                droptarget="image"
-                                resourceType="community/components/image"/>
-                            <mapping_1575030260142
-                                jcr:primaryType="nt:unstructured"
-                                assetGroup="content"
-                                assetMimetype="text/html"
-                                droptarget="experiencefragment"
-                                resourceType="community/components/experiencefragment"/>
-                            <mapping_1575030269139
-                                jcr:primaryType="nt:unstructured"
-                                assetGroup="media"
-                                assetMimetype="[text/html,application/vnd.adobe.contentfragment]"
-                                droptarget="contentfragment"
-                                resourceType="community/components/contentfragment"/>
-                        </assetToComponentMapping>
-                    </cq:authoring>
-                </policy_1666985911739>
-                <policy_1666986168003
-                    jcr:description="Allows the page components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
-                    jcr:primaryType="nt:unstructured"
-                    jcr:title="Event Page Policy - Right Container"
-                    sling:resourceType="wcm/core/components/policy/policy"
-                    components="[/apps/community/components/events/moredetails]"
-                    layoutDisabled="false">
-                    <jcr:content jcr:primaryType="nt:unstructured"/>
-                    <cq:authoring jcr:primaryType="nt:unstructured">
-                        <assetToComponentMapping jcr:primaryType="nt:unstructured">
-                            <mapping_1575030255082
-                                jcr:primaryType="nt:unstructured"
-                                assetGroup="media"
-                                assetMimetype="image/*"
-                                droptarget="image"
-                                resourceType="community/components/image"/>
-                            <mapping_1575030260142
-                                jcr:primaryType="nt:unstructured"
-                                assetGroup="content"
-                                assetMimetype="text/html"
-                                droptarget="experiencefragment"
-                                resourceType="community/components/experiencefragment"/>
-                            <mapping_1575030269139
-                                jcr:primaryType="nt:unstructured"
-                                assetGroup="media"
-                                assetMimetype="[text/html,application/vnd.adobe.contentfragment]"
-                                droptarget="contentfragment"
-                                resourceType="community/components/contentfragment"/>
-                        </assetToComponentMapping>
-                    </cq:authoring>
-                </policy_1666986168003>
                 <policy_2067079242913600
                     jcr:primaryType="nt:unstructured"
                     jcr:title="events-top-left"
@@ -499,7 +437,7 @@
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_2067079242913600>
                 <policy_2067079253960600
-                    cq:styleDefaultClasses="event-image-details"   
+                    cq:styleDefaultClasses="event-image-details"
                     jcr:primaryType="nt:unstructured"
                     jcr:title="events-top-right"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -587,82 +525,9 @@
                     clientlibsJsHead="community.dependencies">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy>
-                <policy_1666985770733
-                    jcr:description="Includes the required client libraries."
-                    jcr:primaryType="nt:unstructured"
-                    jcr:title="Event Page Policy"
-                    sling:resourceType="wcm/core/components/policy/policy"
-                    clientlibs="[community.dependencies,community.site]"
-                    clientlibsAsync="false"
-                    clientlibsJsHead="community.dependencies">
-                    <jcr:content jcr:primaryType="nt:unstructured"/>
-                </policy_1666985770733>
             </page>
-            <card jcr:primaryType="nt:unstructured">
-                <policy_1667025161544                    
-                    jcr:primaryType="nt:unstructured"
-                    jcr:title="Card Component Policy"
-                    sling:resourceType="wcm/core/components/policy/policy">
-                    <jcr:content jcr:primaryType="nt:unstructured"/>
-                    <cq:styleGroups jcr:primaryType="nt:unstructured">
-                        <item0
-                            cq:styleGroupLabel="Text Color"
-                            jcr:primaryType="nt:unstructured">
-                            <cq:styles jcr:primaryType="nt:unstructured">
-                                <item0
-                                    cq:styleClasses="green"
-                                    cq:styleId="1667025168470"
-                                    cq:styleLabel="Green"
-                                    jcr:primaryType="nt:unstructured"/>
-                                <item1
-                                    cq:styleClasses="pink"
-                                    cq:styleId="1667025170263"
-                                    cq:styleLabel="Pink"
-                                    jcr:primaryType="nt:unstructured"/>
-                                <item2
-                                    cq:styleClasses="purple"
-                                    cq:styleId="1667025172986"
-                                    cq:styleLabel="Purple"
-                                    jcr:primaryType="nt:unstructured"/>
-                                <item3
-                                    cq:styleClasses="teal"
-                                    cq:styleId="1667025175334"
-                                    cq:styleLabel="Teal"
-                                    jcr:primaryType="nt:unstructured"/>
-                            </cq:styles>
-                        </item0>
-                        <item1
-                            cq:styleGroupLabel="Spacing"
-                            jcr:primaryType="nt:unstructured">
-                            <cq:styles jcr:primaryType="nt:unstructured">
-                                <item0
-                                    cq:styleClasses="paddingtop20"
-                                    cq:styleId="1667025278575"
-                                    cq:styleLabel="Add top padding 20px"
-                                    jcr:primaryType="nt:unstructured"/>
-                            </cq:styles>
-                        </item1>
-                        <item2
-                            cq:styleGroupLabel="Alignment"
-                            jcr:primaryType="nt:unstructured">
-                            <cq:styles jcr:primaryType="nt:unstructured">
-                                <item0
-                                    cq:styleClasses="leftalign"
-                                    cq:styleId="1667025388315"
-                                    cq:styleLabel="Align center"
-                                    jcr:primaryType="nt:unstructured"/>
-                                <item1
-                                    cq:styleClasses="justify"
-                                    cq:styleId="1667026064774"
-                                    cq:styleLabel="Justify"
-                                    jcr:primaryType="nt:unstructured"/>
-                            </cq:styles>
-                        </item2>
-                    </cq:styleGroups>
-                </policy_1667025161544>
-            </card>
             <breadcrumb jcr:primaryType="nt:unstructured">
-                <policy_1669702440856                    
+                <policy_1669702440856
                     jcr:primaryType="nt:unstructured"
                     jcr:title="breadcrumb-policy"
                     sling:resourceType="wcm/core/components/policy/policy"
