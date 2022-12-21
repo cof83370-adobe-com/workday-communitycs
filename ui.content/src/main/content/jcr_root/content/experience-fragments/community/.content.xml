@@ -6,5 +6,5 @@
     jcr:primaryType="sling:OrderedFolder"
     jcr:title="Workday Community Site Fragments"
     sling:configRef="/conf/community">
-    <us/>
+    <en-us/>
 </jcr:root>
