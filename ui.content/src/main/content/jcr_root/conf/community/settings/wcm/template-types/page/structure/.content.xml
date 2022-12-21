@@ -3,7 +3,6 @@
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:deviceGroups="[mobile/groups/responsive]"
-        cq:template="/conf/community/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
         sling:resourceType="community/components/page">
         <root
@@ -12,13 +11,15 @@
             layout="responsiveGrid">
             <experiencefragment-header
                 jcr:primaryType="nt:unstructured"
-                sling:resourceType="community/components/experiencefragment"
-                fragmentVariationPath="/content/experience-fragments/community/us/en/site/header/master"/>
+                sling:resourceType="community/components/experiencefragment"/>
             <container
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="community/components/container"
                 editable="{Boolean}true"
                 layout="responsiveGrid"/>
+            <experiencefragment-footer
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="community/components/experiencefragment"/>
         </root>
         <cq:responsive jcr:primaryType="nt:unstructured">
             <breakpoints jcr:primaryType="nt:unstructured">
