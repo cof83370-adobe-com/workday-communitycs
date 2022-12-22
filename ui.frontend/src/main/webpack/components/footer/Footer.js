@@ -6,7 +6,6 @@ import {
 	Column,
 	Heading,
 } from "./FooterStyles";
-//import './Footer.scss';
 
 function FooterComponent(props) {
 	return (
@@ -14,8 +13,7 @@ function FooterComponent(props) {
 			<Container>
 				<Row>
 					<Column>
-						{/* <Heading>{props.footerItem1}</Heading> */}
-						<Heading>About Us</Heading>
+						<Heading>{props.footerItem1}</Heading>
 					</Column>
 					<Column>
 						<Heading>{props.footerItem2}</Heading>
