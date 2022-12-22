@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Workday Deployment &amp; Methodologies"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_472/>
+    <_x0037_473/>
+    <_x0037_474/>
+    <_x0037_475/>
+</jcr:root>

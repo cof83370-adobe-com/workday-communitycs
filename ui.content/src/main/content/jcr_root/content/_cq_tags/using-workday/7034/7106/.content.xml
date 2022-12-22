@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Time &amp; Attendance"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_335/>
+    <_x0037_336/>
+    <_x0037_337/>
+    <_x0037_338/>
+    <_x0037_339/>
+    <_x0037_340/>
+</jcr:root>

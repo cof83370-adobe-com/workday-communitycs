@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Compensation Types"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_251/>
+    <_x0037_252/>
+    <_x0037_253/>
+    <_x0037_254/>
+    <_x0037_255/>
+    <_x0037_256/>
+    <_x0037_257/>
+    <_x0037_258/>
+    <_x0037_259/>
+</jcr:root>

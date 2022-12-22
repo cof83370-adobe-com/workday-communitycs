@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Revenue &amp; Project Billing"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_303/>
+    <_x0037_304/>
+    <_x0037_305/>
+    <_x0037_306/>
+    <_x0037_307/>
+    <_x0037_308/>
+    <_x0037_309/>
+    <_x0037_310/>
+    <_x0037_311/>
+    <_x0037_312/>
+</jcr:root>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Plans &amp; Budgets"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_125/>
+    <_x0037_126/>
+    <_x0037_127/>
+    <_x0037_128/>
+    <_x0037_129/>
+    <_x0037_130/>
+    <_x0037_131/>
+    <_x0037_132/>
+</jcr:root>

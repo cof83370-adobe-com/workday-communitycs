@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Administration &amp; Integrations"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_043/>
+    <_x0037_044/>
+    <_x0037_045/>
+    <_x0037_046/>
+    <_x0037_047/>
+    <_x0037_048/>
+    <_x0037_049/>
+    <_x0037_050/>
+    <_x0037_051/>
+    <_x0037_052/>
+    <_x0037_053/>
+    <_x0037_054/>
+    <_x0037_055/>
+    <_x0037_056/>
+    <_x0037_057/>
+    <_x0037_058/>
+    <_x0037_059/>
+    <_x0037_060/>
+    <_x0037_061/>
+    <authentication-and-security/>
+    <business-processes/>
+    <content-management/>
+    <custom-configurations/>
+    <custom-integrations-and-apps/>
+    <data-migration-tools/>
+    <locations-and-geographic-attributes/>
+    <mobile-set-up/>
+    <tenant-set-up/>
+    <user-experience/>
+</jcr:root>

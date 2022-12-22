@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Training"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_462/>
+    <_x0037_463/>
+    <_x0037_464/>
+    <_x0037_465/>
+    <_x0037_466/>
+    <_x0037_467/>
+    <_x0037_468/>
+    <_x0037_469/>
+    <_x0037_470/>
+    <_x0037_471/>
+</jcr:root>

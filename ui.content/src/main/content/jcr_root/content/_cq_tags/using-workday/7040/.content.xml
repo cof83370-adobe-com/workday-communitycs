@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Talent &amp; Engagement"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_156/>
+    <_x0037_157/>
+    <_x0037_158/>
+    <_x0037_159/>
+    <_x0037_160/>
+    <_x0037_161/>
+    <_x0037_162/>
+    <_x0037_163/>
+    <_x0037_164/>
+</jcr:root>
