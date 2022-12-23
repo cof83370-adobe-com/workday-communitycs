@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Inventory"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_387/>
+    <_x0037_388/>
+    <_x0037_389/>
+    <_x0037_390/>
+    <_x0037_391/>
+    <_x0037_392/>
+    <_x0037_393/>
+    <_x0037_394/>
+    <_x0037_395/>
+    <_x0037_396/>
+</jcr:root>

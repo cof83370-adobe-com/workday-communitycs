@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Student &amp; Academia"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_138/>
+    <_x0037_139/>
+    <_x0037_140/>
+    <_x0037_141/>
+    <_x0037_142/>
+    <_x0037_143/>
+    <_x0037_144/>
+    <_x0037_145/>
+    <_x0037_146/>
+    <_x0037_147/>
+    <_x0037_148/>
+    <_x0037_149/>
+    <_x0037_150/>
+    <_x0037_151/>
+    <_x0037_152/>
+    <_x0037_153/>
+    <_x0037_154/>
+    <_x0037_155/>
+</jcr:root>

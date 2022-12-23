@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Homepages &amp; Self-Service Sites"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_090/>
+    <_x0037_091/>
+    <_x0037_092/>
+    <_x0037_093/>
+    <_x0037_094/>
+</jcr:root>

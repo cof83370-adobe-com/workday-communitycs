@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Using Workday"
+    sling:resourceType="cq/tagging/components/tag">
+    <workday-acquisition-integrations/>
+    <_x0037_028/>
+    <_x0037_029/>
+    <_x0037_030/>
+    <_x0037_031/>
+    <_x0037_032/>
+    <_x0037_033/>
+    <_x0037_034/>
+    <_x0037_035/>
+    <_x0037_036/>
+    <_x0037_037/>
+    <_x0037_038/>
+    <_x0037_039/>
+    <_x0037_040/>
+    <_x0037_042/>
+</jcr:root>

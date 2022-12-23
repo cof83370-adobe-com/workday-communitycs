@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Financial Management"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0031_08/>
+    <_x0035_971/>
+    <_x0031_10/>
+    <_x0037_39/>
+    <_x0031_59/>
+    <_x0033_06/>
+    <_x0037_748/>
+    <_x0031_55/>
+    <_x0032_44/>
+    <_x0031_34/>
+    <_x0033_85/>
+    <_x0031_58/>
+    <_x0037_507/>
+    <_x0032_46/>
+    <_x0037_505/>
+    <_x0033_22/>
+    <_x0037_506/>
+    <_x0035_56/>
+    <_x0033_926/>
+    <_x0032_62/>
+    <_x0031_09/>
+</jcr:root>

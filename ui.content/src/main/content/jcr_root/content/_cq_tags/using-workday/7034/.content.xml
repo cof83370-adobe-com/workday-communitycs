@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Payroll &amp; Time"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_099/>
+    <_x0037_100/>
+    <_x0037_101/>
+    <_x0037_102/>
+    <_x0037_103/>
+    <_x0037_104/>
+    <_x0037_105/>
+    <_x0037_106/>
+    <_x0037_107/>
+</jcr:root>
