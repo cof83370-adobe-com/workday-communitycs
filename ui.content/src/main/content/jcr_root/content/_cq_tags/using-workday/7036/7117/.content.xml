@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Candidates"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_345/>
+    <_x0037_346/>
+    <_x0037_347/>
+    <_x0037_348/>
+    <_x0037_349/>
+    <_x0037_350/>
+    <_x0037_351/>
+    <_x0037_352/>
+    <_x0037_353/>
+</jcr:root>

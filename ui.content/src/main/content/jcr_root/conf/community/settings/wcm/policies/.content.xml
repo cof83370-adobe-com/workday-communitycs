@@ -428,18 +428,10 @@
                         </assetToComponentMapping>
                     </cq:authoring>
                 </policy_1575040440977>
-                <policy_2067079242913600
-                    jcr:primaryType="nt:unstructured"
-                    jcr:title="events-top-left"
-                    sling:resourceType="wcm/core/components/policy/policy"
-                    components="[/libs/foundation/components/image,/libs/wcm/foundation/components/responsivegrid,/apps/community/components/container]"
-                    layoutDisabled="false">
-                    <jcr:content jcr:primaryType="nt:unstructured"/>
-                </policy_2067079242913600>
                 <policy_2067079253960600
                     cq:styleDefaultClasses="event-image-details"
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="events-top-right"
+                    jcr:title="Event Details Container"
                     sling:resourceType="wcm/core/components/policy/policy"
                     components="[/apps/community/components/events/eventdetails,/apps/community/components/image]"
                     layoutDisabled="false">
@@ -448,7 +440,7 @@
                 <policy_2067079264297100
                     cq:styleDefaultClasses="event-text"
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="event-center-container"
+                    jcr:title="Event Description Container"
                     sling:resourceType="wcm/core/components/policy/policy"
                     components="[/apps/community/components/text,/apps/community/components/title]"
                     layoutDisabled="false">
@@ -457,7 +449,7 @@
                 <policy_2067608127785500
                     cq:styleDefaultClasses="event-bottom-left"
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="events-bottom-left"
+                    jcr:title="Event Bottom Left Container"
                     sling:resourceType="wcm/core/components/policy/policy"
                     components="group:Workday Community Site - Content"
                     layoutDisabled="false">
@@ -466,7 +458,7 @@
                 <policy_2067608134729200
                     cq:styleDefaultClasses="event-bottom-right"
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="events-bottom-right"
+                    jcr:title="Event Bottom Right Container"
                     sling:resourceType="wcm/core/components/policy/policy"
                     components="group:Workday Community Site - Content"
                     layoutDisabled="false">

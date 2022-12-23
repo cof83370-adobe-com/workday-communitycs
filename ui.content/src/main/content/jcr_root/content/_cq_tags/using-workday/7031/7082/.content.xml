@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Accounting"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_260/>
+    <_x0037_261/>
+    <_x0037_262/>
+    <_x0037_263/>
+    <_x0037_264/>
+    <_x0037_265/>
+    <_x0037_266/>
+    <_x0037_267/>
+    <_x0037_268/>
+    <_x0037_269/>
+    <_x0037_270/>
+    <_x0037_271/>
+</jcr:root>

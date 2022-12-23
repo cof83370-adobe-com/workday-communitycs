@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Student Registration"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_445/>
+    <_x0037_446/>
+    <_x0037_447/>
+    <_x0037_448/>
+</jcr:root>

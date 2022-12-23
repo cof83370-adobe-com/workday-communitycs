@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Adaptive Planning"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_733/>
+    <_x0037_728/>
+    <_x0037_731/>
+    <_x0037_518/>
+    <_x0037_734/>
+    <_x0037_735/>
+    <_x0037_732/>
+    <_x0037_730/>
+    <_x0037_517/>
+    <_x0037_516/>
+    <_x0037_736/>
+    <_x0037_737/>
+    <_x0037_729/>
+    <_x0037_519/>
+</jcr:root>

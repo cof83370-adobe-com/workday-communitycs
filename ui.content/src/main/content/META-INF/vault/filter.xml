@@ -7,5 +7,7 @@
     <filter root="/content/cq:tags/region-and-country" mode="merge"/>
     <filter root="/content/cq:tags/programs-and-tools" mode="merge"/>
     <filter root="/content/cq:tags/release-notes" mode="merge"/>
+    <filter root="/content/cq:tags/using-workday" mode="merge"/>
+    <filter root="/content/cq:tags/product" mode="merge"/>
     <filter root="/content/experience-fragments/community" mode="merge"/>
 </workspaceFilter>

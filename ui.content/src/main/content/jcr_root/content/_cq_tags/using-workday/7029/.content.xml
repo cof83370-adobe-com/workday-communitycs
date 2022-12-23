@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Analytics &amp; Reporting"
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_062/>
+    <_x0037_063/>
+    <_x0037_064/>
+    <_x0037_065/>
+    <_x0037_066/>
+    <_x0037_067/>
+    <_x0037_068/>
+    <_x0037_069/>
+    <_x0037_070/>
+    <analytics-and-report-outputs/>
+    <create-and-customize-reports/>
+    <create-and-manipulate-data/>
+    <system-reports-and-analytics/>
+    <analytics-and-reporting/>
+</jcr:root>
