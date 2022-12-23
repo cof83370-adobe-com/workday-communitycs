@@ -12,7 +12,8 @@
                 }
 
                 @media (min-width: $screen-small) {
-                    width: 408px;
+                    width: auto;
+                    max-width: 408px;
                     max-height: 326px;
                     border-radius: 22px;
                     margin-right: 32px;
