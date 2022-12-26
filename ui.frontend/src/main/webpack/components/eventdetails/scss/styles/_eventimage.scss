@@ -5,7 +5,6 @@
         .cmp-image {
             &__image {
                 @media (max-width: $screen-small) {
-                    max-width: 326px;
                     height: 279px;
                     border-radius: 12px;
                     margin-bottom: 24px;
