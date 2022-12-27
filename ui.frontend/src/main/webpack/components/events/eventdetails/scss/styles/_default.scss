@@ -14,14 +14,12 @@
             border-radius: 8px;
 
             @media (max-width: $screen-small) {
-                max-width: 326px;
                 height: auto;
             }
 
             @media (min-width: $screen-small) {
                 height: 325px;
                 min-height: 173px;
-                min-width: 730px;
             }
 
             &__heading {
@@ -50,9 +48,11 @@
                 color: $wdc-color-black-pepper-600;
 
                 @media (min-width: $screen-small) {
-                    width: 308px;
                     height: 79px;
                     display: inline-block;
+                    width: auto;
+                    max-width: 308px;
+                    min-width: 186px;
                 }
 
                 &-icon-calendar {

@@ -2,11 +2,13 @@
 
 html,
 body {
-    margin: 0;
     font-size:   $font-size;
     font-family: $font-family;
     color:       $color-foreground;
     background:  $color-background;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 
     @media (prefers-color-scheme: dark) {
         color:       $color-foreground-dark;
@@ -14,6 +16,15 @@ body {
     }
 }
 
+main {
+    @media (max-width: $screen-small) {
+        padding: 4.0em 1.0em;
+    }
+
+    @media (min-width: $screen-small) {
+        padding: 4.0em 3.5em;
+    }
+}
 
 a {
     color: $color-link;
@@ -40,4 +51,9 @@ h1 {
 h2 {
     font-size: 20px;
     line-height: 26px;
+}
+
+h3 {
+    font-size: 16px;
+    line-height: 22px;
 }
