@@ -1,2 +1,9 @@
 ../ui.apps/
 ./src/main/webpack/tests/
+package.json
+package-lock.json
+webpack.dev.js
+webpack.prod.js
+webpack.common.js
+dist
+static
