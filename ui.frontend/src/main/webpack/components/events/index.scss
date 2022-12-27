@@ -1,7 +1,4 @@
-@import '~@workday/canvas-kit-css-core';
-@import '~@workday/canvas-kit-css-core/lib/colors.scss';
-
-@import 'eventdetails/scss/styles/_default';
-@import 'eventdetails/scss/styles/eventimage';
-@import 'eventmetadata/scss/styles/_default';
-@import 'eventregistration/scss/styles/_default';
+@import 'eventdetails/scss';
+@import 'eventdetails/scss';
+@import 'eventmetadata/scss';
+@import 'eventregistration/scss';
