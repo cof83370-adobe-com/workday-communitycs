@@ -19,7 +19,6 @@ class ExportHeader extends HTMLElement {
 }
 
 window.customElements.define("header-element", ExportHeader);
-// window.customElements.define("navigation-element", ExportHeader);
 
 
 
