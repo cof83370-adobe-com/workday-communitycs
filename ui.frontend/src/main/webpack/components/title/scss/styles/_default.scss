@@ -1,14 +1,4 @@
 .cmp-title {
-
-    @media (max-width: $screen-small) {
-        width: 331px;
-    }
-
-    @media (min-width: $screen-small) {
-        width: 853px;
-    }
-
-
     &__text {
         font-style: $font-style-normal;
         font-weight: $font-weight-bold;

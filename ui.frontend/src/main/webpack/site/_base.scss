@@ -6,9 +6,6 @@ body {
     font-family: $font-family;
     color:       $color-foreground;
     background:  $color-background;
-    max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
 
     @media (prefers-color-scheme: dark) {
         color:       $color-foreground-dark;
@@ -17,6 +14,10 @@ body {
 }
 
 main {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+
     @media (max-width: $screen-small) {
         padding: 4.0em 1.0em;
     }
