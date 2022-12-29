@@ -18,7 +18,7 @@
             }
 
             @media (min-width: $screen-small) {
-                height: 325px;
+                max-height: 325px;
                 min-height: 173px;
             }
 
@@ -37,6 +37,7 @@
             &__itemList {
                 @media (min-width: $screen-small) {
                     column-count: 2;
+                    column-gap: 32px;
                 }
             }
 
@@ -52,7 +53,7 @@
                     display: inline-block;
                     width: auto;
                     max-width: 308px;
-                    min-width: 186px;
+                    min-width: 232px;
                 }
 
                 &-icon-calendar {
