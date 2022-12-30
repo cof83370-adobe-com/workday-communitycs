@@ -1,11 +1,11 @@
-import React from "react";
+import React from 'react';
 import {
 	Box,
 	Container,
 	Row,
 	Column,
 	Heading,
-} from "./FooterStyles";
+} from './FooterStyles';
 
 function FooterComponent(props) {
 	return (

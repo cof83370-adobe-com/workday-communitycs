@@ -1,5 +1,5 @@
 (function() {
-    "use strict";
+    'use strict';
     var selectors = {
         self:      '[data-cmp-is="importcontent"]',
         file:  '[data-cmp-hook-importcontent="file"]',
@@ -11,8 +11,8 @@
     function ImportContent(config) {
 
         function init(config) {
-            config.element.removeAttribute("data-cmp-is");
-            document.getElementById("cmp_importcontent_button").onclick = function() {
+            config.element.removeAttribute('data-cmp-is');
+            document.getElementById('cmp_importcontent_button').onclick = function() {
 			
 			var file = config.element.querySelectorAll(selectors.file);
 			file = file.length == 1 ? file[0].textContent : null;
@@ -27,7 +27,7 @@
 
 			// Making our connection  
 			var url = '/bin/dataimporter?source='+file+'&template='+template+'&pagePath='+pagePath;
-			xhr.open("GET", url, true);
+			xhr.open('GET', url, true);
 
 			// function execute after request is successful 
 			xhr.onreadystatechange = function() {
@@ -52,7 +52,7 @@
         }
 
         var MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver;
-        var body             = document.querySelector("body");
+        var body             = document.querySelector('body');
         var observer         = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
                 // needed for IE
@@ -77,9 +77,9 @@
         });
     }
 
-    if (document.readyState !== "loading") {
+    if (document.readyState !== 'loading') {
         onDocumentReady();
     } else {
-        document.addEventListener("DOMContentLoaded", onDocumentReady);
+        document.addEventListener('DOMContentLoaded', onDocumentReady);
     }
 }());

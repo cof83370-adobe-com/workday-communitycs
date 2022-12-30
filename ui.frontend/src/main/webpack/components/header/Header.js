@@ -7,7 +7,7 @@ function HeaderComponent(props) {
 
     return (
         <div className='cmp-header'>
-            <Header title="Workday" brandUrl="#">
+            <Header title='Workday' brandUrl='#'>
                 <nav>
                     <ul>
                         <li>
