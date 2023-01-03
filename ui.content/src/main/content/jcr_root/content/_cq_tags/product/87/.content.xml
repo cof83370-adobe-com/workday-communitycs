@@ -2,4 +2,37 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:Tag"
     jcr:title="Platform and Product Extensions"
-    sling:resourceType="cq/tagging/components/tag"/>
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0035_11/>
+    <_x0037_727/>
+    <_x0037_733/>
+    <_x0038_8/>
+    <_x0035_01/>
+    <_x0038_9/>
+    <_x0039_4/>
+    <_x0037_728/>
+    <_x0034_17/>
+    <_x0035_70/>
+    <_x0037_751/>
+    <_x0033_745/>
+    <_x0033_748/>
+    <_x0033_690/>
+    <_x0037_523/>
+    <_x0031_56/>
+    <_x0039_0/>
+    <_x0036_107/>
+    <_x0033_659/>
+    <_x0037_522/>
+    <_x0031_96/>
+    <_x0037_530/>
+    <_x0033_746/>
+    <_x0039_1/>
+    <_x0034_889/>
+    <_x0031_69/>
+    <_x0035_984/>
+    <_x0031_44/>
+    <_x0035_158/>
+    <_x0035_564/>
+    <_x0033_969/>
+    <_x0037_60/>
+</jcr:root>
