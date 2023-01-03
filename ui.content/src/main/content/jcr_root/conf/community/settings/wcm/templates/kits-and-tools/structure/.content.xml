@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:deviceGroups="[mobile/groups/responsive]"
+        cq:lastModified="{Date}2023-01-02T13:12:47.625+05:30"
+        cq:lastModifiedBy="admin"
+        cq:template="/conf/community/settings/wcm/templates/kits-and-tools"
+        jcr:primaryType="cq:PageContent"
+        sling:resourceType="community/components/page">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="community/components/container"
+            layout="responsiveGrid">
+            <header
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="community/components/commons/header"/>
+            <container
+                jcr:lastModified="{Date}2023-01-02T12:58:56.129+05:30"
+                jcr:lastModifiedBy="admin"
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="community/components/container"
+                layout="responsiveGrid">
+                <breadcrumb
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="community/components/breadcrumb"
+                    disableShadowing="false"
+                    hideCurrent="false"
+                    showHidden="false"
+                    startLevel="4"/>
+                <container_leftrail
+                    jcr:created="{Date}2023-01-02T13:04:49.173+05:30"
+                    jcr:createdBy="admin"
+                    jcr:lastModified="{Date}2023-01-02T13:04:49.173+05:30"
+                    jcr:lastModifiedBy="admin"
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="community/components/container">
+                    <title
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/title"/>
+                    <cq:responsive jcr:primaryType="nt:unstructured">
+                        <default
+                            jcr:primaryType="nt:unstructured"
+                            offset="0"
+                            width="3"/>
+                    </cq:responsive>
+                </container_leftrail>
+                <container_center
+                    jcr:created="{Date}2023-01-02T13:05:02.771+05:30"
+                    jcr:createdBy="admin"
+                    jcr:lastModified="{Date}2023-01-02T13:05:02.771+05:30"
+                    jcr:lastModifiedBy="admin"
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="community/components/container">
+                    <title
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/title"/>
+                    <cq:responsive jcr:primaryType="nt:unstructured">
+                        <default
+                            jcr:primaryType="nt:unstructured"
+                            offset="0"
+                            width="6"/>
+                    </cq:responsive>
+                </container_center>
+                <container_rightrail
+                    jcr:created="{Date}2023-01-02T13:05:13.782+05:30"
+                    jcr:createdBy="admin"
+                    jcr:lastModified="{Date}2023-01-02T13:05:13.782+05:30"
+                    jcr:lastModifiedBy="admin"
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="community/components/container">
+                    <title
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/title"/>
+                    <cq:responsive jcr:primaryType="nt:unstructured">
+                        <default
+                            jcr:primaryType="nt:unstructured"
+                            offset="0"
+                            width="3"/>
+                    </cq:responsive>
+                </container_rightrail>
+            </container>
+            <footer
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="community/components/commons/footer"/>
+        </root>
+        <cq:responsive jcr:primaryType="nt:unstructured">
+            <breakpoints jcr:primaryType="nt:unstructured">
+                <phone
+                    jcr:primaryType="nt:unstructured"
+                    title="Smaller Screen"
+                    width="{Long}768"/>
+                <tablet
+                    jcr:primaryType="nt:unstructured"
+                    title="Tablet"
+                    width="{Long}1200"/>
+            </breakpoints>
+        </cq:responsive>
+    </jcr:content>
+</jcr:root>
