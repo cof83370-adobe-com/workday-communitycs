@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Transportation"
+    sling:resourceType="cq/tagging/components/tag">
+    <air-and-rail-freight/>
+    <airlines-and-aviation/>
+    <automobile-and-bus-transportation/>
+    <maritime-freight/>
+    <maritime-travel/>
+    <pipeline-transportation/>
+    <post-and-parcel-services/>
+    <rail-travel/>
+    <transportation-infrastructure/>
+    <truck-transportation/>
+    <warehousing-and-storage/>
+</jcr:root>
