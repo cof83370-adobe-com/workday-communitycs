@@ -11,5 +11,6 @@
     <filter root="/content/cq:tags/product" mode="merge"/>
     <filter root="/content/cq:tags/industry" mode="merge"/>
     <filter root="/content/cq:tags/release" mode="merge"/>
+    <filter root="/content/cq:tags/training" mode="merge"/>
     <filter root="/content/experience-fragments/community" mode="merge"/>
 </workspaceFilter>
