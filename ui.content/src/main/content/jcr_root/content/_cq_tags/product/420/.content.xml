@@ -2,4 +2,14 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:Tag"
     jcr:title="Student"
-    sling:resourceType="cq/tagging/components/tag"/>
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0035_82/>
+    <_x0034_22/>
+    <_x0034_26/>
+    <_x0035_36/>
+    <_x0034_24/>
+    <_x0035_161/>
+    <_x0034_27/>
+    <_x0034_25/>
+    <_x0034_21/>
+</jcr:root>
