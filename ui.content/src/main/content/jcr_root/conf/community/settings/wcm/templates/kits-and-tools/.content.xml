@@ -2,7 +2,7 @@
 <jcr:root xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:Template">
     <jcr:content
-        cq:lastModified="{Date}2023-01-02T13:12:47.625+05:30"
+        cq:lastModified="{Date}2023-01-04T11:54:33.037+05:30"
         cq:lastModifiedBy="admin"
         cq:templateType="/conf/community/settings/wcm/template-types/kitsandtools-page"
         jcr:description="Workday Community Site Kits and Tools Page Template"

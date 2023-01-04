@@ -3,7 +3,7 @@
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:deviceGroups="[mobile/groups/responsive]"
-        cq:lastModified="{Date}2023-01-02T13:12:47.625+05:30"
+        cq:lastModified="{Date}2023-01-04T11:54:33.037+05:30"
         cq:lastModifiedBy="admin"
         cq:template="/conf/community/settings/wcm/templates/kits-and-tools"
         jcr:primaryType="cq:PageContent"
@@ -28,50 +28,29 @@
                     hideCurrent="false"
                     showHidden="false"
                     startLevel="4"/>
-                <container_leftrail
-                    jcr:created="{Date}2023-01-02T13:04:49.173+05:30"
-                    jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2023-01-02T13:04:49.173+05:30"
-                    jcr:lastModifiedBy="admin"
-                    jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/container">
-                    <title
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="community/components/title"/>
-                    <cq:responsive jcr:primaryType="nt:unstructured">
-                        <default
-                            jcr:primaryType="nt:unstructured"
-                            offset="0"
-                            width="3"/>
-                    </cq:responsive>
-                </container_leftrail>
-                <container_center
+                <container_main
                     jcr:created="{Date}2023-01-02T13:05:02.771+05:30"
                     jcr:createdBy="admin"
-                    jcr:lastModified="{Date}2023-01-02T13:05:02.771+05:30"
+                    jcr:lastModified="{Date}2023-01-04T11:53:16.090+05:30"
                     jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/container">
-                    <title
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="community/components/title"/>
+                    sling:resourceType="community/components/container"
+                    editable="{Boolean}true">
                     <cq:responsive jcr:primaryType="nt:unstructured">
                         <default
                             jcr:primaryType="nt:unstructured"
-                            offset="0"
-                            width="6"/>
+                            offset="1"
+                            width="7"/>
                     </cq:responsive>
-                </container_center>
+                </container_main>
                 <container_rightrail
                     jcr:created="{Date}2023-01-02T13:05:13.782+05:30"
                     jcr:createdBy="admin"
                     jcr:lastModified="{Date}2023-01-02T13:05:13.782+05:30"
                     jcr:lastModifiedBy="admin"
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/container">
-                    <title
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="community/components/title"/>
+                    sling:resourceType="community/components/container"
+                    editable="{Boolean}true">
                     <cq:responsive jcr:primaryType="nt:unstructured">
                         <default
                             jcr:primaryType="nt:unstructured"
