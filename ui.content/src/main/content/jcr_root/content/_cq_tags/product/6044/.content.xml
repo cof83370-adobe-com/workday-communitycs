@@ -2,4 +2,11 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:Tag"
     jcr:title="Spend Management"
-    sling:resourceType="cq/tagging/components/tag"/>
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0035_72/>
+    <_x0031_11/>
+    <_x0032_55/>
+    <_x0037_515/>
+    <_x0032_47/>
+    <_x0035_630/>
+</jcr:root>

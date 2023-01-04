@@ -2,4 +2,15 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:Tag"
     jcr:title="Talent Management"
-    sling:resourceType="cq/tagging/components/tag"/>
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_513/>
+    <_x0037_504/>
+    <_x0035_935/>
+    <_x0037_514/>
+    <_x0036_32/>
+    <_x0035_006/>
+    <_x0037_503/>
+    <_x0033_26/>
+    <_x0035_675/>
+    <_x0037_502/>
+</jcr:root>
