@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Manufacturing"
+    sling:resourceType="cq/tagging/components/tag">
+    <aerospace-and-defense-manufacturing/>
+    <apparel-manufacturing/>
+    <chemical-manufacturing/>
+    <fabricated-metal-manufacturing/>
+    <food-and-beverage-manufacturing/>
+    <household-product-manufacturing/>
+    <machinery-manufacturing/>
+    <petroleum-manufacturing/>
+    <textiles-and-leather-manufacturing/>
+    <transportation-manufacturing/>
+</jcr:root>

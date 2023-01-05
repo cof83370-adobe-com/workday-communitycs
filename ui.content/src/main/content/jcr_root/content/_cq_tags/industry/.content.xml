@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Industry"
+    sling:resourceType="cq/tagging/components/tag">
+    <agriculture-and-fisheries/>
+    <construction/>
+    <_x0031_87/>
+    <utilities/>
+    <_x0036_177/>
+    <_x0031_85/>
+    <_x0032_61/>
+    <_x0031_86/>
+    <_x0036_178/>
+    <life-sciences/>
+    <_x0031_88/>
+    <_x0036_175/>
+    <nonprofit/>
+    <_x0031_89/>
+    <real-estate/>
+    <_x0036_179/>
+    <_x0036_180/>
+    <_x0036_181/>
+</jcr:root>
