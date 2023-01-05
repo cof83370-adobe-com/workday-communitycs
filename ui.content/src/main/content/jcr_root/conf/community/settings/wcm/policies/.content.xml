@@ -79,7 +79,7 @@
             <text jcr:primaryType="nt:unstructured">
                 <policy_641562756958017
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Content Text"
+                    jcr:title="Text Editor Policy"
                     sling:resourceType="wcm/core/components/policy/policy">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                     <rtePlugins jcr:primaryType="nt:unstructured">
@@ -105,7 +105,7 @@
                         </paraformat>
                         <misctools
                             jcr:primaryType="nt:unstructured"
-                            features="-">
+                            features="specialchars">
                             <specialCharsConfig jcr:primaryType="nt:unstructured">
                                 <chars
                                     jcr:primaryType="nt:unstructured"
@@ -131,19 +131,19 @@
                         </misctools>
                         <edit
                             jcr:primaryType="nt:unstructured"
-                            features="-"/>
+                            features="paste-plaintext"/>
                         <findreplace
                             jcr:primaryType="nt:unstructured"
-                            features="-"/>
+                            features="*"/>
                         <undo
                             jcr:primaryType="nt:unstructured"
-                            features="-"/>
+                            features="*"/>
                         <spellcheck
                             jcr:primaryType="nt:unstructured"
-                            features="-"/>
+                            features="*"/>
                         <image
                             jcr:primaryType="nt:unstructured"
-                            features="-"/>
+                            features="*"/>
                         <table
                             jcr:primaryType="nt:unstructured"
                             features="-"/>
@@ -155,10 +155,10 @@
                             features="-"/>
                         <format
                             jcr:primaryType="nt:unstructured"
-                            features="bold,italic"/>
+                            features="bold"/>
                         <links
                             jcr:primaryType="nt:unstructured"
-                            features="modifylink,unlink"/>
+                            features="modifylink,unlink,anchor"/>
                         <subsuperscript
                             jcr:primaryType="nt:unstructured"
                             features="-"/>
