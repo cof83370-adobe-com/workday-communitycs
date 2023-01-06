@@ -1,31 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
-    jcr:description=""
     jcr:primaryType="cq:Tag"
     jcr:title="Product"
     sling:resourceType="cq/tagging/components/tag">
-    <test/>
-    <engage/>
     <_x0034_903/>
-    <adaptive-planning/>
     <_x0039_2/>
-    <analytics-and-reporting/>
     <_x0031_07/>
-    <financial-management/>
     <_x0039_6/>
-    <human-capital-management/>
     <_x0031_05/>
-    <payroll/>
     <_x0036_283/>
-    <peakon/>
     <_x0038_7/>
-    <platform-and-product-extensions/>
     <_x0036_044/>
-    <spend-management/>
     <_x0034_20/>
-    <student/>
     <_x0031_37/>
-    <talent-management/>
     <_x0037_501/>
-    <workforce-management/>
 </jcr:root>
