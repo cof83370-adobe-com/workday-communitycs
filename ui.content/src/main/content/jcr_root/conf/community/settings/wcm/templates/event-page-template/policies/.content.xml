@@ -36,7 +36,7 @@
                     <community jcr:primaryType="nt:unstructured">
                         <components jcr:primaryType="nt:unstructured">
                             <text
-                                cq:policy="community/components/text/policy_2127098231831899"
+                                cq:policy="community/components/text/policy_641562756958017"
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="wcm/core/components/policies/mapping"/>
                         </components>
@@ -45,11 +45,29 @@
                 <bottomleftcontainer
                     cq:policy="community/components/container/policy_2067608127785500"
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="wcm/core/components/policies/mapping"/>
+                    sling:resourceType="wcm/core/components/policies/mapping">
+                    <community jcr:primaryType="nt:unstructured">
+                        <components jcr:primaryType="nt:unstructured">
+                            <text
+                                cq:policy="community/components/text/policy_641562756958017"
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="wcm/core/components/policies/mapping"/>
+                        </components>
+                    </community>
+                </bottomleftcontainer>
                 <bottomrightcontainer
                     cq:policy="community/components/container/policy_2067608134729200"
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="wcm/core/components/policies/mapping"/>
+                    sling:resourceType="wcm/core/components/policies/mapping">
+                    <community jcr:primaryType="nt:unstructured">
+                        <components jcr:primaryType="nt:unstructured">
+                            <container
+                                cq:policy="community/components/container/policy_2067608134729200"
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="wcm/core/components/policies/mapping"/>
+                        </components>
+                    </community>
+                </bottomrightcontainer>
             </container>
         </root>
     </jcr:content>
