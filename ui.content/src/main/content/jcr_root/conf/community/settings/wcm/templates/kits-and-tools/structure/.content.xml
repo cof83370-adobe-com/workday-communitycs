@@ -41,6 +41,10 @@
                             jcr:primaryType="nt:unstructured"
                             offset="1"
                             width="7"/>
+                        <phone
+                            jcr:primaryType="nt:unstructured"
+                            offset="0"
+                            width="12"/>
                     </cq:responsive>
                 </container_main>
                 <container_rightrail
@@ -56,6 +60,10 @@
                             jcr:primaryType="nt:unstructured"
                             offset="0"
                             width="3"/>
+                        <phone
+                            jcr:primaryType="nt:unstructured"
+                            offset="0"
+                            width="12"/>
                     </cq:responsive>
                 </container_rightrail>
             </container>
@@ -69,10 +77,6 @@
                     jcr:primaryType="nt:unstructured"
                     title="Smaller Screen"
                     width="{Long}768"/>
-                <tablet
-                    jcr:primaryType="nt:unstructured"
-                    title="Tablet"
-                    width="{Long}1200"/>
             </breakpoints>
         </cq:responsive>
     </jcr:content>
