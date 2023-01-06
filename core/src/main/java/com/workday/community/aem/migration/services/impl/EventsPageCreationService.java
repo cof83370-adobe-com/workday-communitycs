@@ -222,8 +222,8 @@ public class EventsPageCreationService implements PageCreationService {
      */
     private void setPageProps(final Node jcrNode, final EventPageData data, ResourceResolver resourceResolver) {
         try {
-            if (StringUtils.isNotBlank(data.getFieldRetirementDateValue())) {
-                Calendar retirementDate = MigrationUtils.convertStrToAemCalInstance(data.getFieldRetirementDateValue(),
+            if (StringUtils.isNotBlank(data.getRetirementDate())) {
+                Calendar retirementDate = MigrationUtils.convertStrToAemCalInstance(data.getRetirementDate(),
                         MigrationConstants.EventsPageConstants.YYYY_MM_DD_FORMAT);
                 retirementDate.add(Calendar.DATE, 1); // add one day
                 jcrNode.setProperty(RETIREMENT_DATE, retirementDate);
@@ -231,8 +231,8 @@ public class EventsPageCreationService implements PageCreationService {
             if (StringUtils.isNotBlank(data.getReadcount())) {
                 jcrNode.setProperty(READ_COUNT, Long.parseLong(data.getReadcount()));
             }
-            if (StringUtils.isNotBlank(data.getChanged())) {
-                String dateStr = MigrationUtils.getDateStringFromEpoch(Long.parseLong(data.getChanged()));
+            if (StringUtils.isNotBlank(data.getUpdatedDate())) {
+                String dateStr = MigrationUtils.getDateStringFromEpoch(Long.parseLong(data.getUpdatedDate()));
                 Calendar updatedDate = MigrationUtils.convertStrToAemCalInstance(dateStr,
                         MigrationConstants.EventsPageConstants.MMM_DD_COMMA_YYYY_FORMAT);
                 updatedDate.add(Calendar.DATE, 1); // add one day
@@ -286,10 +286,10 @@ public class EventsPageCreationService implements PageCreationService {
         }
 
         // To add using workday tags
-        if (StringUtils.isNotBlank(data.getUsingWorday())) {
+        if (StringUtils.isNotBlank(data.getUsingWorkday())) {
             List<String> usingWorkdayTags = Optional
                     .ofNullable(
-                            getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY, data.getUsingWorday()))
+                            getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY, data.getUsingWorkday()))
                     .orElse(new ArrayList<>());
             mountTagPageProps(MigrationConstants.TagPropertyName.USING_WORKDAY, usingWorkdayTags);
         }
