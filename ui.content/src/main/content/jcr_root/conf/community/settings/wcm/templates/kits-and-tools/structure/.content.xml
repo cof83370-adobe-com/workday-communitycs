@@ -56,6 +56,10 @@
                                 jcr:primaryType="nt:unstructured"
                                 offset="0"
                                 width="6"/>
+                            <phone
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="12"/>
                         </cq:responsive>
                         <title
                             jcr:primaryType="nt:unstructured"
@@ -90,6 +94,10 @@
                                 jcr:primaryType="nt:unstructured"
                                 offset="3"
                                 width="6"/>
+                            <phone
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="12"/>
                         </cq:responsive>
                     </container_main>
                 </container>
