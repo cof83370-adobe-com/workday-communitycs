@@ -28,13 +28,13 @@ public class EventPageData {
 	@XmlElement(name = "title")
 	private String title;
 	
-	/** The changed. */
-	@XmlElement(name = "changed")
-	private String changed;
+	/** The updated date. */
+	@XmlElement(name = "updated_date")
+	private String updatedDate;
 	
-	/** The field retirement date value. */
-	@XmlElement(name = "field_retirement_date_value")
-	private String fieldRetirementDateValue;
+	/** The retirement date. */
+	@XmlElement(name = "retirement_date")
+	private String retirementDate;
 	
 	/** The readcount. */
 	@XmlElement(name = "readcount")
@@ -53,15 +53,15 @@ public class EventPageData {
 	private String endDate;
 	
 	/** The Contenttype. */
-	@XmlElement(name = "Contenttype")
+	@XmlElement(name = "content_type")
 	private String contentType;
 
-	/** The Calendareventtype. */
-	@XmlElement(name = "Calendareventtype")
+	/** The Calendar event type. */
+	@XmlElement(name = "calendar_event_type")
 	private String calendarEventType;
 
 	/** The Product. */
-	@XmlElement(name = "Product")
+	@XmlElement(name = "product")
 	private String product;
 
 	/** The show ask related question. */
@@ -89,8 +89,8 @@ public class EventPageData {
 	private String releaseTag;
 
 	/** The using worday. */
-	@XmlElement(name = "using_worday")
-	private String usingWorday;
+	@XmlElement(name = "using_workday")
+	private String usingWorkday;
 
 	public String getNid() {
 		return nid;
@@ -108,20 +108,20 @@ public class EventPageData {
 		this.title = title;
 	}
 
-	public String getChanged() {
-		return changed;
+	public String getUpdatedDate() {
+		return updatedDate;
 	}
 
-	public void setChanged(String changed) {
-		this.changed = changed;
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 
-	public String getFieldRetirementDateValue() {
-		return fieldRetirementDateValue;
+	public String getRetirementDate() {
+		return retirementDate;
 	}
 
-	public void setFieldRetirementDateValue(String fieldRetirementDateValue) {
-		this.fieldRetirementDateValue = fieldRetirementDateValue;
+	public void setRetirementDate(String retirementDate) {
+		this.retirementDate = retirementDate;
 	}
 
 	public String getReadcount() {
@@ -243,26 +243,26 @@ public class EventPageData {
 		this.releaseTag = releaseTag;
 	}
 
-	public String getUsingWorday() {
-		if(usingWorday.equalsIgnoreCase("NULL")) {
+	public String getUsingWorkday() {
+		if(usingWorkday.equalsIgnoreCase("NULL")) {
 			return STRING_EMPTY;
 		}
-		return usingWorday;
+		return usingWorkday;
 	}
 
-	public void setUsingWorday(String usingWorday) {
-		this.usingWorday = usingWorday;
+	public void setUsingWorkday(String usingWorkday) {
+		this.usingWorkday = usingWorkday;
 	}
 
 	@Override
 	public String toString() {
-		return "EventPageData [nid=" + nid + ", title=" + title + ", changed=" + changed + ", fieldRetirementDateValue="
-				+ fieldRetirementDateValue + ", readcount=" + readcount + ", description=" + description
+		return "EventPageData [nid=" + nid + ", title=" + title + ", updatedDate=" + updatedDate + ", retirementDate="
+				+ retirementDate + ", readcount=" + readcount + ", description=" + description
 				+ ", startDate=" + startDate + ", endDate=" + endDate + ", contentType=" + contentType
 				+ ", calendarEventType=" + calendarEventType + ", product=" + product + ", showAskRelatedQuestion="
 				+ showAskRelatedQuestion + ", accessControl=" + accessControl + ", groupName=" + groupName
 				+ ", dataCenter=" + dataCenter + ", registrationUrl=" + registrationUrl + ", releaseTag=" + releaseTag
-				+ ", usingWorday=" + usingWorday + "]";
+				+ ", usingWorkday=" + usingWorkday + "]";
 	}
 	
 }
