@@ -4,7 +4,7 @@
     jcr:primaryType="cq:Page">
     <rep:policy/>
     <community jcr:primaryType="nt:unstructured">
-        <components jcr:primaryType="nt:unstructured">  
+        <components jcr:primaryType="nt:unstructured">
             <form jcr:primaryType="nt:unstructured">
                 <container jcr:primaryType="nt:unstructured">
                     <form-container
@@ -206,6 +206,24 @@
                 </policy_footer>
             </experiencefragment>
             <container jcr:primaryType="nt:unstructured">
+                <policy_16323801898166
+                    jcr:description="This policy contains all the components which are allowed in main container of the Kits and Tools Page."
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="kits and Tools - Main Content"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="[/apps/community/components/accordion,/apps/community/components/text]"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_16323801898166>
+                <policy_16822860900458
+                    jcr:description="This policy contains all the components which are allowed in Right Rail container of the Kits and Tools Page."
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Kits and Tools - Right Rail"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="[/apps/community/components/kitsandtools/taxonomy]"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_16822860900458>
                 <policy_1574694950110
                     jcr:description="Allows the template components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
                     jcr:primaryType="nt:unstructured"
@@ -388,6 +406,22 @@
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_91296955275330>
+                <policy_108825695570583
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Kits and Tools - Left Rail"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="/apps/community/components/kitsandtools/toc"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_108825695570583>
+                <policy_115140473724791
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Kits and Tools - Metadata"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="[/apps/community/components/events/eventmetadata,/apps/community/components/text]"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_115140473724791>
             </container>
             <teaser jcr:primaryType="nt:unstructured">
                 <policy_1575031387650
@@ -423,7 +457,7 @@
                     clientlibsAsync="false"
                     clientlibsJsHead="community.dependencies">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
-            </policy>
+                </policy>
             </page>
             <breadcrumb jcr:primaryType="nt:unstructured">
                 <policy_1669702440856

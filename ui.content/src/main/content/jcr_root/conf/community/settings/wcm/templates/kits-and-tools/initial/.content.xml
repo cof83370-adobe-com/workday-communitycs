@@ -18,20 +18,10 @@
                 <container_main
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/container">
-                    <toc
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="community/components/kitsandtools/taxonomy"/>
                     <accordion
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="community/components/accordion"/>
                 </container_main>
-                <container_rightrail
-                    jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/container">
-                    <taxonomy
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="community/components/kitsandtools/taxonomy"/>
-                </container_rightrail>
             </container>
         </root>
     </jcr:content>
