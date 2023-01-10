@@ -20,8 +20,7 @@
                 <items jcr:primaryType="nt:unstructured">
                     <kitsandtoolsconfig
                         jcr:primaryType="nt:unstructured"
-                        jcr:title="Kits and Tools Config"
-                        sling:orderBefore="basic"
+                        jcr:title="Kits and Tools"
                         sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
                         <items jcr:primaryType="nt:unstructured">
                             <column
@@ -34,7 +33,7 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Industry Tags"
                                         fieldDescription="Choose industry tags"
-                                        fieldLabel="Industry Type Tag"
+                                        fieldLabel="Industry Tags"
                                         multiple="{Boolean}true"
                                         name="./industryTags"
                                         rootPath="/content/cq:tags/industry"/>
@@ -44,7 +43,7 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Release Tags"
                                         fieldDescription="Choose release tags"
-                                        fieldLabel="Release Type Tag"
+                                        fieldLabel="Release Tags"
                                         multiple="{Boolean}true"
                                         name="./releaseTags"
                                         rootPath="/content/cq:tags/release"/>
@@ -54,7 +53,7 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Using Workday Tags"
                                         fieldDescription="Choose using workday tags"
-                                        fieldLabel="Using Workday Type Tag"
+                                        fieldLabel="Using Workday Tags"
                                         multiple="{Boolean}true"
                                         name="./usingWorkday"
                                         rootPath="/content/cq:tags/using-workday"/>
@@ -74,10 +73,10 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Programs &amp; Tools Tags"
                                         fieldDescription="Choose Programs &amp; Tools tags"
-                                        fieldLabel="Programs &amp; Tools Type Tag"
+                                        fieldLabel="Programs &amp; Tools Tags"
                                         multiple="{Boolean}true"
                                         name="./programsTools"
-                                        rootPath="/content/cq:tags/programs-tools"/>
+                                        rootPath="/content/cq:tags/programs-and-tools"/>
                                     <retirementdate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"

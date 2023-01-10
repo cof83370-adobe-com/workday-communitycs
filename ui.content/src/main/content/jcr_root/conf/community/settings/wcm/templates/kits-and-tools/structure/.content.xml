@@ -46,7 +46,7 @@
                         </cq:responsive>
                         <toc
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="community/components/kitsandtools/toc"/>
+                            sling:resourceType="community/components/toc"/>
                     </container_leftrail>
                     <container_center
                         jcr:primaryType="nt:unstructured"
@@ -110,7 +110,7 @@
                         </cq:responsive>
                         <taxonomy
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="community/components/kitsandtools/taxonomy">
+                            sling:resourceType="community/components/taxonomy">
                         </taxonomy>
                     </container_rightrail>
                 </container>

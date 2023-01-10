@@ -220,7 +220,7 @@
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Kits and Tools - Right Rail"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="[/apps/community/components/kitsandtools/taxonomy]"
+                    components="[/apps/community/components/taxonomy]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_16822860900458>
@@ -410,7 +410,7 @@
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Kits and Tools - Left Rail"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="/apps/community/components/kitsandtools/toc"
+                    components="/apps/community/components/toc"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_108825695570583>
