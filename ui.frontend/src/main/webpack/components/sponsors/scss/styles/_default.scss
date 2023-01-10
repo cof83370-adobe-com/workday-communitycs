@@ -1,10 +1,11 @@
 .sponsors {
     border-radius: 8px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+    margin-top: 32px;
 
     .cmp-title {
-        margin-top: 18px;
-        margin-bottom: 24px;
+        padding-top: 18px;
+        padding-bottom: 24px;
         &__text {
             font-style: $font-style-normal;
             font-weight: $font-weight-bold;
