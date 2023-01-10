@@ -5,7 +5,6 @@
     <page-content/>
     <xf-web-variation/>
     <rep:policy/>
-    <events-page/>
-    <common-page/>
     <event-page-template/>
+    <kits-and-tools/>
 </jcr:root>

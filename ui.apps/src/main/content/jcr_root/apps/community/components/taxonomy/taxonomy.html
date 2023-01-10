@@ -1,0 +1,20 @@
+<div class="cmp-taxonomy" data-cmp-is="cmp-taxonomy">
+<!--/* HTML should go here */-->
+    <div class="cmp-taxonomy__heading">${pageProperties.heading || 'More details' @ i18n, context='text'}</div>
+    <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.productTags}">
+        <p class="cmp-taxonomy__item-label">${properties.productTags || 'Product' @ i18n, context='text'}</p>
+        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="product">${pageProperties.productTags}</pre>
+    </div>
+    <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.programsTools}">
+        <p class="cmp-taxonomy__item-label">${pageProperties.programsTools || 'Programs Type' @ i18n, context='text'}</p>
+        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="programtools">${pageProperties.programsTools}</pre>
+    </div>
+    <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.releaseTags}">
+        <p class="cmp-taxonomy__item-label">${pageProperties.releaseTags || 'Release' @ i18n, context='text'}</p>
+        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="release">${pageProperties.releaseTags}</pre>
+    </div>
+</div>
+
+</div>
+
+<div data-sly-test="${wcmmode.edit || wcmmode.design}" class="cq-placeholder" data-emptyText="WD Community Site - Taxonomy Component"></div>
