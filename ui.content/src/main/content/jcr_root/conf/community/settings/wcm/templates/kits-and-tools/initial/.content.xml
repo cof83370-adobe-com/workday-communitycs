@@ -10,18 +10,31 @@
             sling:resourceType="community/components/container"
             layout="responsiveGrid">
             <container
-                jcr:lastModified="{Date}2023-01-02T12:58:56.129+05:30"
-                jcr:lastModifiedBy="admin"
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="community/components/container"
                 layout="responsiveGrid">
-                <container_main
+                <container
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="community/components/container">
-                    <accordion
+                    sling:resourceType="community/components/container"
+                    id="kits-and-tools-body-root"
+                    layout="responsiveGrid">
+                    <container_center
                         jcr:primaryType="nt:unstructured"
-                        sling:resourceType="community/components/accordion"/>
-                </container_main>
+                        sling:resourceType="community/components/container"
+                        id="kits-and-tools-center-container"
+                        layout="responsiveGrid">
+                        <container_main
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="community/components/container">
+                            <text
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="community/components/text"/>
+                            <accordion
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="community/components/accordion"/>
+                        </container_main>
+                    </container_center>
+                </container>
             </container>
         </root>
     </jcr:content>

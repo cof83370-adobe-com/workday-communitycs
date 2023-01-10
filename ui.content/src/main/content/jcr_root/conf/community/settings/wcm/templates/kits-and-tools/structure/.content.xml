@@ -48,26 +48,53 @@
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="community/components/kitsandtools/toc"/>
                     </container_leftrail>
-                    <container_metadata
+                    <container_center
                         jcr:primaryType="nt:unstructured"
-                        sling:resourceType="community/components/container">
+                        sling:resourceType="community/components/container"
+                        id="kits-and-tools-center-container"
+                        layout="responsiveGrid">
+                        <container_metadata
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="community/components/container">
+                            <cq:responsive jcr:primaryType="nt:unstructured">
+                                <default
+                                    jcr:primaryType="nt:unstructured"
+                                    offset="0"
+                                    width="6"/>
+                                <phone
+                                    jcr:primaryType="nt:unstructured"
+                                    offset="0"
+                                    width="12"/>
+                            </cq:responsive>
+                            <title
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="community/components/title"/>
+                            <eventmetadata
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="community/components/events/eventmetadata"/>
+                        </container_metadata>
+                        <container_main
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="community/components/container"
+                            editable="{Boolean}true">
+                            <cq:responsive jcr:primaryType="nt:unstructured">
+                                <default
+                                    jcr:primaryType="nt:unstructured"
+                                    offset="0"
+                                    width="6"/>
+                                <phone
+                                    jcr:primaryType="nt:unstructured"
+                                    offset="0"
+                                    width="12"/>
+                            </cq:responsive>
+                        </container_main>
                         <cq:responsive jcr:primaryType="nt:unstructured">
                             <default
                                 jcr:primaryType="nt:unstructured"
                                 offset="0"
                                 width="6"/>
-                            <phone
-                                jcr:primaryType="nt:unstructured"
-                                offset="0"
-                                width="12"/>
                         </cq:responsive>
-                        <title
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="community/components/title"/>
-                        <eventmetadata
-                            jcr:primaryType="nt:unstructured"
-                            sling:resourceType="community/components/events/eventmetadata"/>
-                    </container_metadata>
+                    </container_center>
                     <container_rightrail
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="community/components/container">
@@ -83,23 +110,9 @@
                         </cq:responsive>
                         <taxonomy
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="community/components/kitsandtools/taxonomy"/>
+                            sling:resourceType="community/components/kitsandtools/taxonomy">
+                        </taxonomy>
                     </container_rightrail>
-                    <container_main
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="community/components/container"
-                        editable="{Boolean}true">
-                        <cq:responsive jcr:primaryType="nt:unstructured">
-                            <default
-                                jcr:primaryType="nt:unstructured"
-                                offset="3"
-                                width="6"/>
-                            <phone
-                                jcr:primaryType="nt:unstructured"
-                                offset="0"
-                                width="12"/>
-                        </cq:responsive>
-                    </container_main>
                 </container>
             </container>
             <footer
