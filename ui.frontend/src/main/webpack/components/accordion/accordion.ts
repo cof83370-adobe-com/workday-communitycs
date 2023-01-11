@@ -20,13 +20,6 @@
             let header = config.element.querySelectorAll(accordionSelectors.header);
             header = header.length == 1 ? header[0] : null;
 
-            if (console && console.log) {
-                console.log(
-                    'Accordion component JavaScript example',
-                    'Accordion panel:\n', panel,
-                    'Accordion header:\n', header
-                );
-            }
             const collapseButton = document.createElement('a');
             collapseButton.href = '#';
             collapseButton.innerText = 'Collapse';
