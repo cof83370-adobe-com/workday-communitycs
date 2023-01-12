@@ -8,36 +8,29 @@
 
     function addCollapseButton(config: any) {
 
-        if (config && config.element) {
-            init(config);
-        }
+        let panel = config.element.querySelectorAll(accordionSelectors.panel);
+        panel = panel.length == 1 ? panel[0] : null;
 
-        function init(config) {
+        let header = config.element.querySelectorAll(accordionSelectors.header);
+        header = header.length == 1 ? header[0] : null;
 
-            let panel = config.element.querySelectorAll(accordionSelectors.panel);
-            panel = panel.length == 1 ? panel[0] : null;
-
-            let header = config.element.querySelectorAll(accordionSelectors.header);
-            header = header.length == 1 ? header[0] : null;
-
-            const collapseButton = document.createElement('a');
-            collapseButton.href = '#';
-            collapseButton.innerText = 'Collapse';
-            collapseButton.classList.add('collapse-button');
-            collapseButton.addEventListener('click', function() {
-                event.preventDefault();
-                let button = header.querySelectorAll(accordionSelectors.button);
-                button = button.length == 1 ? button[0] : null;
-                button.click();
-              });
-            panel.appendChild(collapseButton);
-        }
+        const collapseButton = document.createElement('a');
+        collapseButton.href = '#';
+        collapseButton.innerText = 'Collapse';
+        collapseButton.classList.add('collapse-button');
+        collapseButton.addEventListener('click', function() {
+            event.preventDefault();
+            let button = header.querySelectorAll(accordionSelectors.button);
+            button = button.length == 1 ? button[0] : null;
+            button.click();
+          });
+        panel.appendChild(collapseButton);
 
     }
 
     function onDocumentReady() {
         const elements = document.querySelectorAll(accordionSelectors.item);
-        for (var i = 0; i < elements.length; i++) {
+        for (var i = 0; i < elements.length && elements[i]; i++) {
             new addCollapseButton({ element: elements[i] });
         }
     }
