@@ -8,10 +8,10 @@
 
     function addCollapseButton(config: any) {
 
-        let panel = config.element.querySelectorAll(accordionSelectors.panel);
+        let panel = config.element.getElementsByClassName('cmp-accordion__panel');
         panel = panel.length == 1 ? panel[0] : null;
 
-        let header = config.element.querySelectorAll(accordionSelectors.header);
+        let header = config.element.getElementsByClassName('cmp-accordion__header');
         header = header.length == 1 ? header[0] : null;
 
         const collapseButton = document.createElement('a');
@@ -20,12 +20,11 @@
         collapseButton.classList.add('collapse-button');
         collapseButton.addEventListener('click', function() {
             event.preventDefault();
-            let button = header.querySelectorAll(accordionSelectors.button);
+            let button = header.getElementsByClassName('cmp-accordion__button');
             button = button.length == 1 ? button[0] : null;
             button.click();
           });
         panel.appendChild(collapseButton);
-
     }
 
     function onDocumentReady() {
