@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.jcr.Node;
@@ -289,7 +291,8 @@ public class EventsPageCreationService implements PageCreationService {
         if (StringUtils.isNotBlank(data.getUsingWorkday())) {
             List<String> usingWorkdayTags = Optional
                     .ofNullable(
-                            getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY, data.getUsingWorkday()))
+                            getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY,
+                                    data.getUsingWorkday()))
                     .orElse(new ArrayList<>());
             mountTagPageProps(MigrationConstants.TagPropertyName.USING_WORKDAY, usingWorkdayTags);
         }
@@ -414,45 +417,54 @@ public class EventsPageCreationService implements PageCreationService {
      * @param innerContainer the inner container
      * @param parseString    the parse string
      */
-    public void findCompType(Node innerContainer, String parseString) {
-        final String eventDescTitle = "<h2 id=\"event-description\">Event Description</h2>";
-        final String eventRegistrationTitle = "<h2 id=\"event-registration\">Registration Information</h2>";
-        final String eventPreReadTitle = "<h2 id=\"event-prereading\">Pre Reading</h2>";
-        final String eventAgendaTitle = "<h2 id=\"event-agenda\">Agenda</h2>";
-        final String TEXT_AGENDA = "text_agenda";
+    public int findCompType(Node innerContainer, String parseString, int counter) {
+        final String eventDescTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Event Description(.*)<\\/h2>(.*)$";
+        final String eventRegistrationTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Registration Information(.*)<\\/h2>(.*)$";
+        final String eventPreReadTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Pre Reading(.*)<\\/h2>(.*)$";
+        final String eventAgendaTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Agenda(.*)<\\/h2>(.*)$";
+        final String h2ElementEndTag = "</h2>";
 
-        final String TITLE_AGENDA = "title_agenda";
-
-        final String TEXT_PREREAD = "text_preread";
-
-        final String TITLE_PREREAD = "title_preread";
-
-        final String TITLE_REG = "title_reg";
-
-        final String TEXT_REG = "text_reg";
-
-        final String AGENDA = "Agenda";
-
-        final String PRE_READING = "Pre Reading";
-
-        final String REGISTRATION_INFORMATION = "Registration Information";
-
-        if (parseString.startsWith(eventDescTitle)) {
+        if (isMatchedRegex(eventDescTitle, parseString)) {
             createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-            createCoreTextComponent(innerContainer, parseString.replace(eventDescTitle, StringUtils.EMPTY), TEXT_DESC);
-        } else if (parseString.startsWith(eventRegistrationTitle)) {
+            createCoreTextComponent(innerContainer,
+                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
+                    TEXT_DESC);
+            counter++;
+        } else if (isMatchedRegex(eventRegistrationTitle, parseString)) {
+            final String REGISTRATION_INFORMATION = "Registration Information";
+            final String TITLE_REG = "title_reg";
+            final String TEXT_REG = "text_reg";
             createCoreTitleComponent(innerContainer, REGISTRATION_INFORMATION, TITLE_REG);
-            createCoreTextComponent(innerContainer, parseString.replace(eventRegistrationTitle, StringUtils.EMPTY),
+            createCoreTextComponent(innerContainer,
+                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
                     TEXT_REG);
-        } else if (parseString.startsWith(eventPreReadTitle)) {
+            counter++;
+        } else if (isMatchedRegex(eventPreReadTitle, parseString)) {
+            final String PRE_READING = "Pre Reading";
+            final String TEXT_PREREAD = "text_preread";
+            final String TITLE_PREREAD = "title_preread";
             createCoreTitleComponent(innerContainer, PRE_READING, TITLE_PREREAD);
-            createCoreTextComponent(innerContainer, parseString.replace(eventPreReadTitle, StringUtils.EMPTY),
+            createCoreTextComponent(innerContainer,
+                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
                     TEXT_PREREAD);
-        } else if (parseString.startsWith(eventAgendaTitle)) {
+            counter++;
+        } else if (isMatchedRegex(eventAgendaTitle, parseString)) {
+            final String AGENDA = "Agenda";
+            final String TEXT_AGENDA = "text_agenda";
+            final String TITLE_AGENDA = "title_agenda";
             createCoreTitleComponent(innerContainer, AGENDA, TITLE_AGENDA);
-            createCoreTextComponent(innerContainer, parseString.replace(eventAgendaTitle, StringUtils.EMPTY),
+            createCoreTextComponent(innerContainer,
+                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
                     TEXT_AGENDA);
+            counter++;
         }
+        return counter;
+    }
+
+    private boolean isMatchedRegex(final String regexStr, String parseString) {
+        Pattern patt = Pattern.compile(regexStr);// . represents single character
+        Matcher mat = patt.matcher(parseString);
+        return mat.matches();
     }
 
     /**
@@ -502,26 +514,34 @@ public class EventsPageCreationService implements PageCreationService {
     private void createEventDescription(Node innerContainer, EventPageData data) {
         final String descText = data.getDescription();
         if (StringUtils.isNotBlank(descText)) {
-            List<Integer> indicesList = findAllIndicesOfGivenString(descText, "<h2 id=");
+            List<Integer> indicesList = findAllIndicesOfGivenString(descText, "<h2 class=\"");
             if (!indicesList.isEmpty()) {
+                int counter = 0;
                 for (int index = 0; index < indicesList.size(); index++) {
                     if (index == indicesList.size() - 1) {
-                        findCompType(innerContainer, descText.substring(indicesList.get(index)));
+                        counter = findCompType(innerContainer, descText.substring(indicesList.get(index)), counter);
                     } else {
-                        findCompType(innerContainer,
-                                descText.substring(indicesList.get(index), indicesList.get(index + 1)));
+                        counter = findCompType(innerContainer,
+                                descText.substring(indicesList.get(index), indicesList.get(index + 1)), counter);
                     }
+                }
+                if (counter == 0) {
+                    createOnlyEventDescSection(innerContainer, descText);
                 }
             } else {
                 /**
                  * It executes, if not find event desc or registration, agenda or pre reading
                  * id's on xml description node data
                  */
-                createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-                createCoreTextComponent(innerContainer, descText, TEXT_DESC);
+                createOnlyEventDescSection(innerContainer, descText);
             }
 
         }
+    }
+
+    private void createOnlyEventDescSection(Node innerContainer, final String descText) {
+        createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
+        createCoreTextComponent(innerContainer, descText, TEXT_DESC);
     }
 
     /**
@@ -590,8 +610,10 @@ public class EventsPageCreationService implements PageCreationService {
         try {
             Node eventDetailsNode = innerContainer
                     .hasNode(MigrationConstants.EventsPageConstants.EVENT_DETAILS_COMP_NODE_NAME)
-                            ? innerContainer.getNode(MigrationConstants.EventsPageConstants.EVENT_DETAILS_COMP_NODE_NAME)
-                            : innerContainer.addNode(MigrationConstants.EventsPageConstants.EVENT_DETAILS_COMP_NODE_NAME);
+                            ? innerContainer
+                                    .getNode(MigrationConstants.EventsPageConstants.EVENT_DETAILS_COMP_NODE_NAME)
+                            : innerContainer
+                                    .addNode(MigrationConstants.EventsPageConstants.EVENT_DETAILS_COMP_NODE_NAME);
 
             eventDetailsNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
                     MigrationConstants.EventsPageConstants.EVENT_DETAILS_SLING_RESOURCE);
