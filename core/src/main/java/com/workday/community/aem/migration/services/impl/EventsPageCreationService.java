@@ -428,7 +428,7 @@ public class EventsPageCreationService implements PageCreationService {
             createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
             createCoreTextComponent(innerContainer,
                     parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
-                    TEXT_DESC);
+                    TEXT_DESC, "event-description");
             counter++;
         } else if (isMatchedRegex(eventRegistrationTitle, parseString)) {
             final String REGISTRATION_INFORMATION = "Registration Information";
@@ -437,7 +437,7 @@ public class EventsPageCreationService implements PageCreationService {
             createCoreTitleComponent(innerContainer, REGISTRATION_INFORMATION, TITLE_REG);
             createCoreTextComponent(innerContainer,
                     parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
-                    TEXT_REG);
+                    TEXT_REG,"registration-information");
             counter++;
         } else if (isMatchedRegex(eventPreReadTitle, parseString)) {
             final String PRE_READING = "Pre Reading";
@@ -446,7 +446,7 @@ public class EventsPageCreationService implements PageCreationService {
             createCoreTitleComponent(innerContainer, PRE_READING, TITLE_PREREAD);
             createCoreTextComponent(innerContainer,
                     parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
-                    TEXT_PREREAD);
+                    TEXT_PREREAD,"pre-reading");
             counter++;
         } else if (isMatchedRegex(eventAgendaTitle, parseString)) {
             final String AGENDA = "Agenda";
@@ -455,7 +455,7 @@ public class EventsPageCreationService implements PageCreationService {
             createCoreTitleComponent(innerContainer, AGENDA, TITLE_AGENDA);
             createCoreTextComponent(innerContainer,
                     parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
-                    TEXT_AGENDA);
+                    TEXT_AGENDA,"agenda");
             counter++;
         }
         return counter;
@@ -474,13 +474,14 @@ public class EventsPageCreationService implements PageCreationService {
      * @param richText       the rich text
      * @param nodeName       the node name
      */
-    private void createCoreTextComponent(Node innerContainer, final String richText, final String nodeName) {
+    private void createCoreTextComponent(Node innerContainer, final String richText, final String nodeName, final String classId) {
         try {
             Node textCompNode = innerContainer.addNode(nodeName);
             textCompNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
                     MigrationConstants.TEXT_COMP_SLING_RESOURCE);
             textCompNode.setProperty(TEXT, richText);
             textCompNode.setProperty(TEXT_IS_RICH_PROP, TRUE);
+            textCompNode.setProperty("id", classId);
         } catch (Exception exec) {
             logger.error("Exception in createCoreTextComponent method::{}", exec.getMessage());
         }
@@ -541,7 +542,7 @@ public class EventsPageCreationService implements PageCreationService {
 
     private void createOnlyEventDescSection(Node innerContainer, final String descText) {
         createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-        createCoreTextComponent(innerContainer, descText, TEXT_DESC);
+        createCoreTextComponent(innerContainer, descText, TEXT_DESC,"event-description");
     }
 
     /**
