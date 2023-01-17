@@ -467,7 +467,7 @@ public class EventsPageCreationService implements PageCreationService {
             Node textCompNode = innerContainer.addNode(nodeName);
             textCompNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
                     MigrationConstants.TEXT_COMP_SLING_RESOURCE);
-            textCompNode.setProperty(TEXT, richText);
+            textCompNode.setProperty(TEXT, removeStyleElementsWithCDATA(richText));
             textCompNode.setProperty(TEXT_IS_RICH_PROP, TRUE);
         } catch (Exception exec) {
             logger.error("Exception in createCoreTextComponent method::{}", exec.getMessage());
@@ -619,4 +619,22 @@ public class EventsPageCreationService implements PageCreationService {
         });
         return aemPageName;
     }
+
+    /**
+     * Remove all style tags that has CDATA from the text content
+     * 
+     * @param textContent
+     * @return cleaned up text content
+     */
+    private String removeStyleElementsWithCDATA(String textContent) {
+        int styleStartIndex = textContent.indexOf("<style");
+        int styleEndIndex = textContent.indexOf("</style>");
+        if (styleStartIndex >= 0 && styleEndIndex >= 0 && textContent.contains("[CDATA")) {
+            String styleCdataBlock = textContent.substring(styleStartIndex, styleEndIndex + 8);
+            textContent = textContent.replace(styleCdataBlock, "");
+            removeStyleElementsWithCDATA(textContent);
+        }
+        return textContent;
+    }
+
 }
