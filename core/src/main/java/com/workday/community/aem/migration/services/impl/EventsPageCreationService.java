@@ -470,22 +470,22 @@ public class EventsPageCreationService implements PageCreationService {
             for (int index = 0; index < compAttributeList.size(); index++) {
                 if (compAttributeList.get(index).getId() == 1) {
                     createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_DESC);
-                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_DESC);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_DESC, "event-description");
                 } else if (compAttributeList.get(index).getId() == 2) {
                     final String TITLE_REG = "title_reg";
                     final String TEXT_REG = "text_reg";
                     createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_REG);
-                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_REG);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_REG, "registration-information");
                 } else if (compAttributeList.get(index).getId() == 3) {
                     final String TEXT_PREREAD = "text_preread";
                     final String TITLE_PREREAD = "title_preread";
                     createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_PREREAD);
-                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_PREREAD);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_PREREAD, "pre-reading");
                 } else if (compAttributeList.get(index).getId() == 4) {
                     final String TEXT_AGENDA = "text_agenda";
                     final String TITLE_AGENDA = "title_agenda";
                     createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_AGENDA);
-                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_AGENDA);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_AGENDA, "agenda");
                 }
             }
         }
@@ -504,13 +504,14 @@ public class EventsPageCreationService implements PageCreationService {
      * @param richText       the rich text
      * @param nodeName       the node name
      */
-    private void createCoreTextComponent(Node innerContainer, final String richText, final String nodeName) {
+    private void createCoreTextComponent(Node innerContainer, final String richText, final String nodeName, final String classId) {
         try {
             Node textCompNode = innerContainer.addNode(nodeName);
             textCompNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
                     MigrationConstants.TEXT_COMP_SLING_RESOURCE);
             textCompNode.setProperty(TEXT, richText);
             textCompNode.setProperty(TEXT_IS_RICH_PROP, TRUE);
+            textCompNode.setProperty("id", classId);
         } catch (Exception exec) {
             logger.error("Exception in createCoreTextComponent method::{}", exec.getMessage());
         }
@@ -576,7 +577,7 @@ public class EventsPageCreationService implements PageCreationService {
                  * id's on xml description node data
                  */
                 createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-                createCoreTextComponent(innerContainer, descText, TEXT_DESC);
+                createCoreTextComponent(innerContainer, descText, TEXT_DESC, "event-description");
             }
 
         }
@@ -584,7 +585,7 @@ public class EventsPageCreationService implements PageCreationService {
 
     private void createOnlyEventDescSection(Node innerContainer, final String descText) {
         createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-        createCoreTextComponent(innerContainer, descText, TEXT_DESC);
+        createCoreTextComponent(innerContainer, descText, TEXT_DESC, "event-description");
     }
     
     /**
