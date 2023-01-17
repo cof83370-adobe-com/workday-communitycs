@@ -3,12 +3,15 @@ package com.workday.community.aem.migration.services.impl;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.jcr.Node;
@@ -28,11 +31,12 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.migration.constants.MigrationConstants;
+import com.workday.community.aem.migration.models.CompAttributes;
 import com.workday.community.aem.migration.models.EventPageData;
 import com.workday.community.aem.migration.models.PageNameBean;
 import com.workday.community.aem.migration.services.PageCreationService;
-import com.workday.community.aem.migration.utils.TagFinderEnum;
 import com.workday.community.aem.migration.utils.MigrationUtils;
+import com.workday.community.aem.migration.utils.TagFinderEnum;
 
 /**
  * The Class PageCreationServiceImpl.
@@ -111,6 +115,12 @@ public class EventsPageCreationService implements PageCreationService {
     private static final String TITLE_DESC = "title_desc";
 
     private static final String EVENT_DESCRIPTION = "Event Description";
+
+    private static final String REGISTRATION_INFORMATION = "Registration Information";
+
+    private static final String PRE_READING = "Pre Reading";
+
+    private static final String AGENDA = "Agenda";
 
     /** The resolver factory. */
     @Reference
@@ -414,45 +424,77 @@ public class EventsPageCreationService implements PageCreationService {
      * @param innerContainer the inner container
      * @param parseString    the parse string
      */
-    public void findCompType(Node innerContainer, String parseString) {
-        final String eventDescTitle = "<h2 id=\"event-description\">Event Description</h2>";
-        final String eventRegistrationTitle = "<h2 id=\"event-registration\">Registration Information</h2>";
-        final String eventPreReadTitle = "<h2 id=\"event-prereading\">Pre Reading</h2>";
-        final String eventAgendaTitle = "<h2 id=\"event-agenda\">Agenda</h2>";
-        final String TEXT_AGENDA = "text_agenda";
+    public Map<String, Object> findCompType(Node innerContainer, String parseString, Map<String, Object> resultMap,
+            List<CompAttributes> compAttributeList) {
+        String key = "counter";
+        int count = (Integer) resultMap.get(key);
+        final String eventDescTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Event Description(.*)<\\/h2>(.*)$";
+        final String eventRegistrationTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Registration Information(.*)<\\/h2>(.*)$";
+        final String eventPreReadTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Pre Reading(.*)<\\/h2>(.*)$";
+        final String eventAgendaTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Agenda(.*)<\\/h2>(.*)$";
+        final String h2ElementEndTag = "</h2>";
 
-        final String TITLE_AGENDA = "title_agenda";
-
-        final String TEXT_PREREAD = "text_preread";
-
-        final String TITLE_PREREAD = "title_preread";
-
-        final String TITLE_REG = "title_reg";
-
-        final String TEXT_REG = "text_reg";
-
-        final String AGENDA = "Agenda";
-
-        final String PRE_READING = "Pre Reading";
-
-        final String REGISTRATION_INFORMATION = "Registration Information";
-
-        if (parseString.startsWith(eventDescTitle)) {
-            createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-            createCoreTextComponent(innerContainer, parseString.replace(eventDescTitle, StringUtils.EMPTY), TEXT_DESC);
-        } else if (parseString.startsWith(eventRegistrationTitle)) {
-            createCoreTitleComponent(innerContainer, REGISTRATION_INFORMATION, TITLE_REG);
-            createCoreTextComponent(innerContainer, parseString.replace(eventRegistrationTitle, StringUtils.EMPTY),
-                    TEXT_REG);
-        } else if (parseString.startsWith(eventPreReadTitle)) {
-            createCoreTitleComponent(innerContainer, PRE_READING, TITLE_PREREAD);
-            createCoreTextComponent(innerContainer, parseString.replace(eventPreReadTitle, StringUtils.EMPTY),
-                    TEXT_PREREAD);
-        } else if (parseString.startsWith(eventAgendaTitle)) {
-            createCoreTitleComponent(innerContainer, AGENDA, TITLE_AGENDA);
-            createCoreTextComponent(innerContainer, parseString.replace(eventAgendaTitle, StringUtils.EMPTY),
-                    TEXT_AGENDA);
+        if (isMatchedRegex(eventDescTitle, parseString)) {
+            CompAttributes compAtr = new CompAttributes(1, EVENT_DESCRIPTION,
+                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()));
+            compAttributeList.add(compAtr);
+            count++;
+            resultMap.put(key, count);
+        } else if (isMatchedRegex(eventRegistrationTitle, parseString)) {
+            CompAttributes compAtr = new CompAttributes(2, REGISTRATION_INFORMATION,
+                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()));
+            compAttributeList.add(compAtr);
+            count++;
+            resultMap.put(key, count);
+        } else if (isMatchedRegex(eventPreReadTitle, parseString)) {
+            CompAttributes compAtr = new CompAttributes(3, PRE_READING,
+                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()));
+            compAttributeList.add(compAtr);
+            count++;
+            resultMap.put(key, count);
+        } else if (isMatchedRegex(eventAgendaTitle, parseString)) {
+            CompAttributes compAtr = new CompAttributes(4, AGENDA,
+                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()));
+            compAttributeList.add(compAtr);
+            count++;
+            resultMap.put(key, count);
         }
+        resultMap.put("compList", compAttributeList);
+        return resultMap;
+    }
+
+    private void createComponentsInOrderFashion(Node innerContainer,
+            List<CompAttributes> compAttributeList) {
+        if (!compAttributeList.isEmpty()) {
+            Collections.sort(compAttributeList, CompAttributes.IdComparator);
+            for (int index = 0; index < compAttributeList.size(); index++) {
+                if (compAttributeList.get(index).getId() == 1) {
+                    createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_DESC);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_DESC);
+                } else if (compAttributeList.get(index).getId() == 2) {
+                    final String TITLE_REG = "title_reg";
+                    final String TEXT_REG = "text_reg";
+                    createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_REG);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_REG);
+                } else if (compAttributeList.get(index).getId() == 3) {
+                    final String TEXT_PREREAD = "text_preread";
+                    final String TITLE_PREREAD = "title_preread";
+                    createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_PREREAD);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_PREREAD);
+                } else if (compAttributeList.get(index).getId() == 4) {
+                    final String TEXT_AGENDA = "text_agenda";
+                    final String TITLE_AGENDA = "title_agenda";
+                    createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_AGENDA);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_AGENDA);
+                }
+            }
+        }
+    }
+
+    private boolean isMatchedRegex(final String regexStr, String parseString) {
+        Pattern patt = Pattern.compile(regexStr);// . represents single character
+        Matcher mat = patt.matcher(parseString);
+        return mat.matches();
     }
 
     /**
@@ -502,15 +544,31 @@ public class EventsPageCreationService implements PageCreationService {
     private void createEventDescription(Node innerContainer, EventPageData data) {
         final String descText = data.getDescription();
         if (StringUtils.isNotBlank(descText)) {
-            List<Integer> indicesList = findAllIndicesOfGivenString(descText, "<h2 id=");
+            List<Integer> indicesList = findAllIndicesOfGivenString(descText, "<h2 class=");
             if (!indicesList.isEmpty()) {
+                int counter = 0;
+                List<CompAttributes> compAttrList = new ArrayList<>();
+                Map<String, Object> resultMap = new HashMap<>();
+                resultMap.put("counter", counter);
+                String parseStr = "";
                 for (int index = 0; index < indicesList.size(); index++) {
                     if (index == indicesList.size() - 1) {
-                        findCompType(innerContainer, descText.substring(indicesList.get(index)));
+                        parseStr = descText.substring(indicesList.get(index));
+                        resultMap = findCompType(innerContainer, parseStr, resultMap, compAttrList);
                     } else {
-                        findCompType(innerContainer,
-                                descText.substring(indicesList.get(index), indicesList.get(index + 1)));
+                        parseStr = descText.substring(indicesList.get(index), indicesList.get(index + 1));
+                        resultMap = findCompType(innerContainer, parseStr, resultMap, compAttrList);
                     }
+                }
+                if (null != resultMap && (Integer) resultMap.get("counter") == 0) {
+                    createOnlyEventDescSection(innerContainer, descText);
+                }
+                if (null != resultMap) {
+                    List<CompAttributes> compAttributeList = (List<CompAttributes>) resultMap.get("compList");
+                    if (!compAttributeList.isEmpty()) {
+                        createComponentsInOrderFashion(innerContainer, compAttributeList);
+                    }
+
                 }
             } else {
                 /**
@@ -524,6 +582,11 @@ public class EventsPageCreationService implements PageCreationService {
         }
     }
 
+    private void createOnlyEventDescSection(Node innerContainer, final String descText) {
+        createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
+        createCoreTextComponent(innerContainer, descText, TEXT_DESC);
+    }
+    
     /**
      * Find all indices of given string.
      *

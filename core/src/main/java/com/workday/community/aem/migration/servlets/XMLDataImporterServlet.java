@@ -64,7 +64,7 @@ public class XMLDataImporterServlet extends SlingSafeMethodsServlet {
 			final String pagePath = req.getParameter(MigrationConstants.PARENT_PAGE_PATH_PARAM);
 			if (StringUtils.isNotBlank(sourceFile) && StringUtils.isNotBlank(template)
 					&& StringUtils.isNotBlank(pagePath)) {
-				Map<String, String> paramsMap = new HashMap<String, String>();
+				Map<String, String> paramsMap = new HashMap<>();
 				paramsMap.put(MigrationConstants.SOURC_FILE_PARAM, sourceFile);
 				paramsMap.put(MigrationConstants.TEMPLATE_PARAM, template);
 				paramsMap.put(MigrationConstants.PARENT_PAGE_PATH_PARAM, pagePath);
