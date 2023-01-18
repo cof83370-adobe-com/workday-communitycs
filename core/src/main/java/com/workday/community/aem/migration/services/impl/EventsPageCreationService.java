@@ -112,6 +112,10 @@ public class EventsPageCreationService implements PageCreationService {
 
     private static final String EVENT_DESCRIPTION = "Event Description";
 
+    private static final String  STYLE_TAG_START = "<style";
+    
+    private static final String  STYLE_TAG_END = "</style>";
+
     /** The resolver factory. */
     @Reference
     private ResourceResolverFactory resolverFactory;
@@ -627,8 +631,8 @@ public class EventsPageCreationService implements PageCreationService {
      * @return cleaned up text content
      */
     private String removeStyleElementsWithCDATA(String textContent) {
-        int styleStartIndex = textContent.indexOf("<style");
-        int styleEndIndex = textContent.indexOf("</style>");
+        int styleStartIndex = textContent.indexOf(STYLE_TAG_START);
+        int styleEndIndex = textContent.indexOf(STYLE_TAG_END);
         if (styleStartIndex >= 0 && styleEndIndex >= 0 && textContent.contains("[CDATA")) {
             String styleCdataBlock = textContent.substring(styleStartIndex, styleEndIndex + 8);
             textContent = textContent.replace(styleCdataBlock, StringUtils.EMPTY);
