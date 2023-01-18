@@ -631,7 +631,7 @@ public class EventsPageCreationService implements PageCreationService {
         int styleEndIndex = textContent.indexOf("</style>");
         if (styleStartIndex >= 0 && styleEndIndex >= 0 && textContent.contains("[CDATA")) {
             String styleCdataBlock = textContent.substring(styleStartIndex, styleEndIndex + 8);
-            textContent = textContent.replace(styleCdataBlock, "");
+            textContent = textContent.replace(styleCdataBlock, StringUtils.EMPTY);
             removeStyleElementsWithCDATA(textContent);
         }
         return textContent;
