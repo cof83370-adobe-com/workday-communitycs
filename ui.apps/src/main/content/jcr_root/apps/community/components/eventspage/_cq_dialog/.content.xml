@@ -66,8 +66,7 @@
                                         emptyText="Event Location"
                                         fieldDescription="Enter event location. default will be 'Virtual'"
                                         fieldLabel="Event Location"
-                                        name="./eventLocation"
-                                        required="{Boolean}true"/>
+                                        name="./eventLocation"/>
                                     <eventhost
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -75,8 +74,7 @@
                                         emptyText="Event Host"
                                         fieldDescription="Enter event host. default will be 'Workday'"
                                         fieldLabel="Event Host"
-                                        name="./eventHost"
-                                        required="{Boolean}true"/>
+                                        name="./eventHost"/>
                                     <eventimage
                                         granite:class="cmp-image__editor"
                                         jcr:primaryType="nt:unstructured"
