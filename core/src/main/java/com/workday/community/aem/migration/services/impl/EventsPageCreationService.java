@@ -4,21 +4,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
@@ -27,9 +22,7 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
-import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.migration.constants.MigrationConstants;
 import com.workday.community.aem.migration.models.CompAttributes;
 import com.workday.community.aem.migration.models.EventPageData;
@@ -176,20 +169,21 @@ public class EventsPageCreationService implements PageCreationService {
      * Do create page.
      *
      * @param paramsMap the params map
-     * @param data      the data
+     * @param objecDdata the objec ddata
      * @param list      the list
      */
     @Override
-    public void doCreatePage(final Map<String, String> paramsMap, EventPageData data, List<PageNameBean> list) {
+    public void doCreatePage(final Map<String, String> paramsMap, Object objecDdata, List<PageNameBean> list) {
         try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(wdServiceParam)) {
             Session session = resourceResolver.adaptTo(Session.class);
             if (session != null) {
                 // Derive the page title and page name.
+                EventPageData data = (EventPageData) objecDdata;
                 final String nodeId = data.getDrupalNodeId();
                 String aemPageTitle = data.getTitle();
-                getAemPageName(list, nodeId);
+                MigrationUtils.getAemPageName(list, nodeId);
                 // Create Page
-                final Page prodPage = getPageCreated(resourceResolver, paramsMap, aemPageTitle);
+                final Page prodPage = MigrationUtils.getPageCreated(resourceResolver, paramsMap, aemPageTitle);
                 if (null != prodPage) {
                     jcrNode = prodPage.hasContent() ? prodPage.getContentResource().adaptTo(Node.class) : null;
                 }
@@ -228,47 +222,11 @@ public class EventsPageCreationService implements PageCreationService {
 
                 // TODO top bottom left container.
                 // TODO top bottom right image.
-                saveToRepo(session);
+                MigrationUtils.saveToRepo(session);
             }
         } catch (Exception exec) {
             logger.error("Exception occurred at while creating page in doCreatePage::{}", exec.getMessage());
         }
-    }
-
-    /**
-     * Gets the page created.
-     *
-     * @param resourceResolver the resource resolver
-     * @param paramsMap        the params map
-     * @param aemPageTitle     the aem page title
-     * @return the page created
-     */
-    private Page getPageCreated(ResourceResolver resourceResolver, final Map<String, String> paramsMap,
-            final String aemPageTitle) {
-        Page prodPage = null;
-        try {
-            PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-            prodPage = pageManager.create(paramsMap.get(MigrationConstants.PARENT_PAGE_PATH_PARAM),
-                    aemPageName, paramsMap.get(MigrationConstants.TEMPLATE_PARAM), aemPageTitle);
-        } catch (Exception exec) {
-            logger.error("Exception occurred while creating page in getPageCreated::{}", exec.getMessage());
-        }
-        return prodPage;
-    }
-
-    /**
-     * Save to repo.
-     *
-     * @param session the session
-     */
-    private void saveToRepo(Session session) {
-        try {
-            session.save();
-            session.refresh(true);
-        } catch (Exception exec) {
-            logger.error("Exception occurred while save to repo::{}", exec.getMessage());
-        }
-
     }
 
     /**
@@ -351,59 +309,41 @@ public class EventsPageCreationService implements PageCreationService {
         if (StringUtils.isNotBlank(data.getReleaseTag())) {
             List<String> releaseTags = Optional
                     .ofNullable(
-                            getTagsForGivenInputs(resourceResolver, TagFinderEnum.RELEASE_TAG, data.getReleaseTag()))
+                        MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.RELEASE_TAG, data.getReleaseTag()))
                     .orElse(new ArrayList<>());
-            mountTagPageProps(MigrationConstants.TagPropertyName.RELEASE, releaseTags);
+                    MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.RELEASE, releaseTags);
         }
 
         // To add product tags
         if (StringUtils.isNotBlank(data.getProduct())) {
             List<String> productTags = Optional
-                    .ofNullable(getTagsForGivenInputs(resourceResolver, TagFinderEnum.PRODUCT, data.getProduct()))
+                    .ofNullable(MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.PRODUCT, data.getProduct()))
                     .orElse(new ArrayList<>());
-            mountTagPageProps(MigrationConstants.TagPropertyName.PRODUCT, productTags);
+                    MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.PRODUCT, productTags);
         }
 
         // To add using workday tags
         if (StringUtils.isNotBlank(data.getUsingWorkday())) {
             List<String> usingWorkdayTags = Optional
                     .ofNullable(
-                            getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY,
+                        MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY,
                                     data.getUsingWorkday()))
                     .orElse(new ArrayList<>());
-            mountTagPageProps(MigrationConstants.TagPropertyName.USING_WORKDAY, usingWorkdayTags);
+                    MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.USING_WORKDAY, usingWorkdayTags);
         }
         // To add industry tags
     }
 
     /**
-     * Mount tag page props.
-     *
-     * @param key          the key
-     * @param givenTagList the given tag list
-     */
-    private void mountTagPageProps(final String key, List<String> givenTagList) {
-        try {
-            if (!givenTagList.isEmpty()) {
-                getJcrNode().setProperty(key, givenTagList.stream().toArray(String[]::new));
-            }
-        } catch (Exception exec) {
-            logger.error("Exception occurred while adding tags as Page props:{}", exec.getMessage());
-        }
-
-    }
-
-    // To add event format and event audience tags
-    /**
      * Creates the event type page tags.
-     *
+     * To add event format and event audience tags
      * @param resourceResolver the resource resolver
      * @param data             the data
      */
     private void createEventTypePageTags(ResourceResolver resourceResolver, final EventPageData data) {
         // To add event type and format tags
         if (StringUtils.isNotBlank(data.getCalendarEventType())) {
-            List<String> eventTypeTags = Optional.ofNullable(getTagsForGivenInputs(resourceResolver,
+            List<String> eventTypeTags = Optional.ofNullable(MigrationUtils.getTagsForGivenInputs(resourceResolver,
                     TagFinderEnum.CALENDAREVENTTYPE, data.getCalendarEventType())).orElse(new ArrayList<>());
             if (!eventTypeTags.isEmpty()) {
                 List<String> eventFormatTags = new ArrayList<>();
@@ -428,78 +368,11 @@ public class EventsPageCreationService implements PageCreationService {
      */
     private void mountEventTypePageTags(final List<String> eventFormatTags, final List<String> eventAudienceTags) {
         if (!eventFormatTags.isEmpty()) {
-            mountTagPageProps(MigrationConstants.TagPropertyName.EVENT_FORMAT, eventFormatTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.EVENT_FORMAT, eventFormatTags);
         }
         if (!eventAudienceTags.isEmpty()) {
-            mountTagPageProps(MigrationConstants.TagPropertyName.EVENT_AUDIENCE, eventAudienceTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.EVENT_AUDIENCE, eventAudienceTags);
         }
-    }
-
-    /**
-     * Gets the tags for given inputs.
-     *
-     * @param resourceResolver the resource resolver
-     * @param tagFinderEnum    the tag finder enum
-     * @param tagTypeValue     the tag type value
-     * @return the tags for given inputs
-     */
-    private List<String> getTagsForGivenInputs(ResourceResolver resourceResolver, TagFinderEnum tagFinderEnum,
-            final String tagTypeValue) {
-        return Optional.ofNullable(tagFinderUtil(resourceResolver, tagFinderEnum.getValue(), tagTypeValue))
-                .orElse(new ArrayList<>());
-    }
-
-    /**
-     * Collect page tags.
-     *
-     * @param resourceResolver the resource resolver
-     * @param tagRootPath      the tag root path
-     * @param tagTitle         the tag title
-     * @return the list
-     */
-    private List<String> tagFinderUtil(ResourceResolver resourceResolver, final String tagRootPath,
-            final String tagTitle) {
-        Iterator<Resource> tagResources = doQueryForTag(resourceResolver, tagRootPath, tagTitle);
-        Set<String> tagsSet = new HashSet<>();
-        if (null != tagResources) {
-            while (tagResources.hasNext()) {
-                Resource artcileResource = tagResources.next();
-                if (null != artcileResource) {
-                    Tag tag = artcileResource.adaptTo(Tag.class);
-                    tagsSet.add(tag.getTagID());
-                }
-            }
-        }
-        return tagsSet.stream().collect(Collectors.toList());
-    }
-
-    /**
-     * SELECT * FROM [cq:Tag] AS tag
-     * WHERE ISDESCENDANTNODE(tag, "/content/cq:tags/event") AND
-     * [sling:resourceType] = 'cq/tagging/components/tag' AND ([jcr:title] =
-     * 'Rising'
-     * OR [jcr:title] = 'Webinar').
-     *
-     * @param resourceResolver the resource resolver
-     * @param searchPath       the search path
-     * @param tagTitle         the tag title
-     * @return the iterator
-     */
-    private Iterator<Resource> doQueryForTag(ResourceResolver resourceResolver, String searchPath, String tagTitle) {
-        String partialSqlStmt = "SELECT * FROM [cq:Tag] AS tag WHERE ISDESCENDANTNODE(tag, \"" + searchPath
-                + "\") AND [sling:resourceType] = 'cq/tagging/components/tag' AND ";
-        String[] diffTagsList = tagTitle.split(",");
-        StringBuilder sbr = new StringBuilder();
-        for (int index = 0; index < diffTagsList.length; index++) {
-            if (index == 0 && StringUtils.isNotBlank(diffTagsList[index])) {
-                sbr.append("[jcr:title] = '" + diffTagsList[index].trim() + "'");
-            } else if (StringUtils.isNotBlank(diffTagsList[index])) {
-                sbr.append(" OR [jcr:title] = '" + diffTagsList[index].trim() + "'");
-            }
-        }
-        String sqlStmt = String.format("%s%s%s%s", partialSqlStmt, "(", sbr.toString(), ")");
-        logger.info("Query sql_stmt: {}", sqlStmt);
-        return resourceResolver.findResources(sqlStmt, MigrationConstants.JCR_SQL2);
     }
 
     /**
@@ -778,28 +651,5 @@ public class EventsPageCreationService implements PageCreationService {
         } catch (Exception exec) {
             logger.error("Exception in createEventDetailsComponent method::{}", exec.getMessage());
         }
-    }
-
-    /**
-     * Gets the aem page name.
-     *
-     * @param list   the list
-     * @param nodeId the node id
-     * @return the aem page name
-     */
-    private String getAemPageName(List<PageNameBean> list, final String nodeId) {
-        list.stream().forEach((item) -> {
-            if (item.getNodeId().equalsIgnoreCase(nodeId)) {
-                String[] pathArray = item.getTitle().split("/");
-                if (pathArray.length > 1) {
-                    aemPageName = pathArray[pathArray.length - 1].trim().replace(".html", StringUtils.EMPTY);
-                }
-                if (pathArray.length == 1) {
-                    aemPageName = item.getTitle().trim();
-                }
-                aemPageName = aemPageName.replaceAll("\\s+", "-");
-            }
-        });
-        return aemPageName;
     }
 }

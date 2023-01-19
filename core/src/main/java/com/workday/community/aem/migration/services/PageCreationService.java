@@ -3,7 +3,6 @@ package com.workday.community.aem.migration.services;
 import java.util.List;
 import java.util.Map;
 
-import com.workday.community.aem.migration.models.EventPageData;
 import com.workday.community.aem.migration.models.PageNameBean;
 
 /**
@@ -22,5 +21,5 @@ public interface PageCreationService {
 	 * @param data the data
 	 * @throws Exception 
 	 */
-	void doCreatePage(final Map<String, String> paramsMap, EventPageData data, List<PageNameBean> list);
+	void doCreatePage(final Map<String, String> paramsMap, Object data, List<PageNameBean> list);
 }
