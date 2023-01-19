@@ -46,22 +46,22 @@ public class EventsPageCreationService implements PageCreationService {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** The Constant default_event_location. */
+    /** The Constant DEFAULTEVENTLOCATION. */
     private static final String DEFAULTEVENTLOCATION = "Virtual";
 
-    /** The Constant default_event_host. */
+    /** The Constant DEFAULTEVENTHOST. */
     private static final String DEFAULTEVENTHOST = "workday";
 
     /** The Constant CONTAINER. */
     private static final String CONTAINER = "container";
 
-    /** The Constant CENTERCONTAINER2. */
+    /** The Constant CENTERCONTAINER. */
     private static final String CENTERCONTAINER = "centercontainer";
 
-    /** The Constant TOPRIGHTCONTAINER2. */
+    /** The Constant TOPRIGHTCONTAINER. */
     private static final String TOPRIGHTCONTAINER = "toprightcontainer";
 
-    /** The Constant TOPRIGHTCONTAINER2. */
+    /** The Constant EVENTREGISTRATIONCONTAINER. */
     private static final String EVENTREGISTRATIONCONTAINER = "eventregistration";
 
     /** The Constant HOST. */
@@ -106,14 +106,19 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant END_DATE. */
     private static final String END_DATE = "endDate";
 
+    /** The Constant TEXT_DESC. */
     private static final String TEXT_DESC = "text_desc";
 
+    /** The Constant TITLE_DESC. */
     private static final String TITLE_DESC = "title_desc";
 
+    /** The Constant EVENT_DESCRIPTION. */
     private static final String EVENT_DESCRIPTION = "Event Description";
 
+    /** The Constant STYLE_TAG_START. */
     private static final String  STYLE_TAG_START = "<style";
     
+    /** The Constant STYLE_TAG_END. */
     private static final String  STYLE_TAG_END = "</style>";
 
     /** The resolver factory. */
@@ -126,6 +131,10 @@ public class EventsPageCreationService implements PageCreationService {
 
     Node jcrNode = null;
 
+    /**
+     * Get JCR node
+     * @return jcr node
+     */
     public Node getJcrNode() {
         return jcrNode;
     }
@@ -137,6 +146,7 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param paramsMap the params map
      * @param data      the data
+     * @param list      the page name bean list
      */
     @Override
     public void doCreatePage(final Map<String, String> paramsMap, EventPageData data, List<PageNameBean> list) {
@@ -190,10 +200,17 @@ public class EventsPageCreationService implements PageCreationService {
                 saveToRepo(session);
             }
         } catch (Exception exec) {
-            logger.error("Exception occurred at while creating page in doCreatePage::{}", exec.getMessage());
+            logger.error("Exception occurred while creating page in doCreatePage::{}", exec.getMessage());
         }
     }
 
+    /**
+     * Gets the page created in JCR foir given inputs
+     * @param resourceResolver
+     * @param paramsMap
+     * @param aemPageTitle
+     * @return
+     */
     private Page getPageCreated(ResourceResolver resourceResolver, final Map<String, String> paramsMap,
             final String aemPageTitle) {
         Page prodPage = null;
@@ -207,12 +224,16 @@ public class EventsPageCreationService implements PageCreationService {
         return prodPage;
     }
 
+    /**
+     * Save page to JCR repository
+     * @param session
+     */
     private void saveToRepo(Session session) {
         try {
             session.save();
             session.refresh(true);
         } catch (Exception exec) {
-            logger.error("Exception occurred while save to repo::{}", exec.getMessage());
+            logger.error("Exception occurred while saving to repo::{}", exec.getMessage());
         }
 
     }
@@ -300,6 +321,11 @@ public class EventsPageCreationService implements PageCreationService {
         // To add industry tags
     }
 
+    /**
+     * Mount page tags
+     * @param key
+     * @param givenTagList
+     */
     private void mountTagPageProps(final String key, List<String> givenTagList) {
         try {
             if (!givenTagList.isEmpty()) {
@@ -336,6 +362,11 @@ public class EventsPageCreationService implements PageCreationService {
         }
     }
 
+    /**
+     * Mount event type page tags
+     * @param eventFormatTags
+     * @param eventAudienceTags
+     */
     private void mountEventTypePageTags(final List<String> eventFormatTags, final List<String> eventAudienceTags) {
         if (!eventFormatTags.isEmpty()) {
             mountTagPageProps(MigrationConstants.TagPropertyName.EVENT_FORMAT, eventFormatTags);
@@ -608,6 +639,12 @@ public class EventsPageCreationService implements PageCreationService {
         }
     }
 
+    /**
+     * Gets the AEM page name for given drupal node id
+     * @param list
+     * @param nodeId
+     * @return aem page name for given node id
+     */
     private String getAemPageName(List<PageNameBean> list, final String nodeId) {
         list.stream().forEach((item) -> {
             if (item.getNodeId().equalsIgnoreCase(nodeId)) {
