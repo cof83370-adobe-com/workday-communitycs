@@ -405,7 +405,7 @@ public class EventsPageCreationService implements PageCreationService {
      * @param resourceResolver the resource resolver
      * @param tagRootPath      the tag root path
      * @param tagTitle         the tag title
-     * @return the list
+     * @return                 the list
      */
     private List<String> tagFinderUtil(ResourceResolver resourceResolver, final String tagRootPath,
             final String tagTitle) {
