@@ -92,6 +92,18 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant JCR_SQL2. */
     private static final String JCR_SQL2 = "JCR-SQL2";
 
+    /** The Constant DRUPAL_NODE_ID */
+    private static final String DRUPAL_NODE_ID = "drupalNodeId";
+
+    /** The Constant DRUPAL_ACEESS_CONTROL */
+    private static final String DRUPAL_ACEESS_CONTROL = "drupalAccessControl";
+    
+    /** The Constant AUTHOR */
+    private static final String AUTHOR = "author";
+
+    /** The Constant POSTED_DATE */
+    private static final String POSTED_DATE = "postedDate";
+
     /** The Constant RETIREMENT_DATE. */
     private static final String RETIREMENT_DATE = "retirementDate";
 
@@ -150,7 +162,7 @@ public class EventsPageCreationService implements PageCreationService {
             Session session = resourceResolver.adaptTo(Session.class);
             if (session != null) {
                 // Derive the page title and page name.
-                final String nodeId = data.getNid();
+                final String nodeId = data.getDrupalNodeId();
                 String aemPageTitle = data.getTitle();
                 getAemPageName(list, nodeId);
                 // Create Page
@@ -232,6 +244,27 @@ public class EventsPageCreationService implements PageCreationService {
      */
     private void setPageProps(final Node jcrNode, final EventPageData data, ResourceResolver resourceResolver) {
         try {
+
+            if (StringUtils.isNotBlank(data.getDrupalNodeId())) {
+                jcrNode.setProperty(DRUPAL_NODE_ID, Long.parseLong(data.getDrupalNodeId()));
+            }
+
+            if (StringUtils.isNotBlank(data.getAuthor())) {
+                jcrNode.setProperty(AUTHOR, data.getAuthor());
+            }
+
+            if (StringUtils.isNotBlank(data.getPostedDate())) {
+                String postedDateStr = MigrationUtils.getDateStringFromEpoch(Long.parseLong(data.getPostedDate()));
+                Calendar postedDate = MigrationUtils.convertStrToAemCalInstance(postedDateStr,
+                        MigrationConstants.EventsPageConstants.MMM_DD_COMMA_YYYY_FORMAT);
+                postedDate.add(Calendar.DATE, 1); // add one day
+                jcrNode.setProperty(POSTED_DATE, postedDate);
+            }
+
+            if (StringUtils.isNoneBlank(data.getAccessControl())) {
+                jcrNode.setProperty(DRUPAL_ACEESS_CONTROL, data.getAccessControl());
+            }
+
             if (StringUtils.isNotBlank(data.getRetirementDate())) {
                 Calendar retirementDate = MigrationUtils.convertStrToAemCalInstance(data.getRetirementDate(),
                         MigrationConstants.EventsPageConstants.YYYY_MM_DD_FORMAT);
@@ -634,7 +667,7 @@ public class EventsPageCreationService implements PageCreationService {
                 // TODO Find if default accessibilityLabel needed
 
             } else {
-                logger.info("Event Registration URL not found for nid : {}", data.getNid());
+                logger.info("Event Registration URL not found for drupalNodeId : {}", data.getDrupalNodeId());
                 if (innerContainer.hasNode(MigrationConstants.BUTTON_COMP_NODE_NAME))
                     innerContainer.getNode(MigrationConstants.BUTTON_COMP_NODE_NAME).remove();
             }

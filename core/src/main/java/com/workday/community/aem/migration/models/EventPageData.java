@@ -20,9 +20,17 @@ public class EventPageData {
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -2525852165658067914L;
 	
-	/** The nid. */
+	/** The drupalNodeId. */
 	@XmlElement(name = "nid")
-	private String nid;
+	private String drupalNodeId;
+
+	/** The author. */
+	@XmlElement(name = "author")
+	private String author;
+
+	/** The postedDate. */
+	@XmlElement(name = "posted_date")
+	private String postedDate;
 
 	/** The title. */
 	@XmlElement(name = "title")
@@ -88,16 +96,44 @@ public class EventPageData {
 	@XmlElement(name = "release_tag")
 	private String releaseTag;
 
-	/** The using worday. */
+	/** The using workday. */
 	@XmlElement(name = "using_workday")
 	private String usingWorkday;
 
-	public String getNid() {
-		return nid;
+	public String getDrupalNodeId() {
+		return drupalNodeId;
 	}
 
-	public void setNid(String nid) {
-		this.nid = nid;
+	public void setDrupalNodeId(String drupalNodeId) {
+		this.drupalNodeId = drupalNodeId;
+	}
+
+	/**
+	 * @return the author
+	 */
+	public String getAuthor() {
+		return author;
+	}
+
+	/**
+	 * @param author the author to set
+	 */
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	/**
+	 * @return the postedDate
+	 */
+	public String getPostedDate() {
+		return postedDate;
+	}
+
+	/**
+	 * @param postedDate the postedDate to set
+	 */
+	public void setPostedDate(String postedDate) {
+		this.postedDate = postedDate;
 	}
 
 	public String getTitle() {
@@ -256,7 +292,8 @@ public class EventPageData {
 
 	@Override
 	public String toString() {
-		return "EventPageData [nid=" + nid + ", title=" + title + ", updatedDate=" + updatedDate + ", retirementDate="
+		return "EventPageData [drupalNodeId=" + drupalNodeId + ", title=" + title + ", author=" + author 
+				+ ", postedDate=" + postedDate + ", updatedDate=" + updatedDate + ", retirementDate="
 				+ retirementDate + ", readcount=" + readcount + ", description=" + description
 				+ ", startDate=" + startDate + ", endDate=" + endDate + ", contentType=" + contentType
 				+ ", calendarEventType=" + calendarEventType + ", product=" + product + ", showAskRelatedQuestion="
