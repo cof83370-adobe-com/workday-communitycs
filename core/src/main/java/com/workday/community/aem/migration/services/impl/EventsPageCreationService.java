@@ -33,8 +33,8 @@ import com.workday.community.aem.migration.constants.MigrationConstants;
 import com.workday.community.aem.migration.models.EventPageData;
 import com.workday.community.aem.migration.models.PageNameBean;
 import com.workday.community.aem.migration.services.PageCreationService;
-import com.workday.community.aem.migration.utils.TagFinderEnum;
 import com.workday.community.aem.migration.utils.MigrationUtils;
+import com.workday.community.aem.migration.utils.TagFinderEnum;
 
 /**
  * The Class PageCreationServiceImpl.
@@ -72,33 +72,6 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant LOCATION. */
     private static final String LOCATION = "location";
 
-    /** The Constant TRUE. */
-    private static final String TRUE = "true";
-
-    /** The Constant JCR_TITLE. */
-    private static final String JCR_TITLE = "jcr:title";
-
-    /** The Constant TYPE. */
-    private static final String TYPE = "type";
-
-    /** The Constant TEXT_IS_RICH_PROP. */
-    private static final String TEXT_IS_RICH_PROP = "textIsRich";
-
-    /** The Constant TEXT. */
-    private static final String TEXT = "text";
-
-    /** The Constant JCR_SQL2. */
-    private static final String JCR_SQL2 = "JCR-SQL2";
-
-    /** The Constant RETIREMENT_DATE. */
-    private static final String RETIREMENT_DATE = "retirementDate";
-
-    /** The Constant READ_COUNT. */
-    private static final String READ_COUNT = "readCount";
-
-    /** The Constant UPDATED_DATE. */
-    private static final String UPDATED_DATE = "updatedDate";
-
     /** The Constant EVENT_TYPE. */
     private static final String EVENT_TYPE = "eventType";
 
@@ -108,11 +81,56 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant END_DATE. */
     private static final String END_DATE = "endDate";
 
+    /** The Constant TEXT_DESC. */
     private static final String TEXT_DESC = "text_desc";
 
+    /** The Constant TITLE_DESC. */
     private static final String TITLE_DESC = "title_desc";
 
+    /** The Constant EVENT_DESCRIPTION. */
     private static final String EVENT_DESCRIPTION = "Event Description";
+
+    /** The registration information. */
+    private static final String REGISTRATION_INFORMATION = "Registration Information";
+
+    /** The title reg. */
+    private static final String TITLE_REG = "title_reg";
+
+    /** The text reg. */
+    private static final String TEXT_REG = "text_reg";
+
+    /** The pre reading. */
+    private static final String PRE_READING = "Pre Reading";
+
+    /** The text preread. */
+    private static final String TEXT_PREREAD = "text_preread";
+
+    /** The title preread. */
+    private static final String TITLE_PREREAD = "title_preread";
+
+    /** The agenda. */
+    private static final String AGENDA = "Agenda";
+
+    /** The text agenda. */
+    private static final String TEXT_AGENDA = "text_agenda";
+
+    /** The title agenda. */
+    private static final String TITLE_AGENDA = "title_agenda";
+
+    /** The event desc title. */
+    private static final String EVENT_DESC_REGEX = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Event Description(.*)<\\/h2>(.*)$";
+
+    /** The event registration title. */
+    private static final String EVENT_REG_REGEX = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Registration Information(.*)<\\/h2>(.*)$";
+
+    /** The event pre read title. */
+    private static final String EVENT_PRE_READ_REGEX = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Pre Reading(.*)<\\/h2>(.*)$";
+
+    /** The event agenda title. */
+    private static final String EVENT_AGENDA_REGEX = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Agenda(.*)<\\/h2>(.*)$";
+
+    /** The h 2 element end tag. */
+    private static final String H2_ELE_END_TAG = "</h2>";
 
     /** The resolver factory. */
     @Reference
@@ -122,12 +140,19 @@ public class EventsPageCreationService implements PageCreationService {
     Map<String, Object> wdServiceParam = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             "workday-community-administrative-service");
 
+    /** The jcr node. */
     Node jcrNode = null;
 
+    /**
+     * Gets the jcr node.
+     *
+     * @return the jcr node
+     */
     public Node getJcrNode() {
         return jcrNode;
     }
 
+    /** The aem page name. */
     String aemPageName = StringUtils.EMPTY;
 
     /**
@@ -135,6 +160,7 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param paramsMap the params map
      * @param data      the data
+     * @param list      the list
      */
     @Override
     public void doCreatePage(final Map<String, String> paramsMap, EventPageData data, List<PageNameBean> list) {
@@ -192,6 +218,14 @@ public class EventsPageCreationService implements PageCreationService {
         }
     }
 
+    /**
+     * Gets the page created.
+     *
+     * @param resourceResolver the resource resolver
+     * @param paramsMap        the params map
+     * @param aemPageTitle     the aem page title
+     * @return the page created
+     */
     private Page getPageCreated(ResourceResolver resourceResolver, final Map<String, String> paramsMap,
             final String aemPageTitle) {
         Page prodPage = null;
@@ -205,6 +239,11 @@ public class EventsPageCreationService implements PageCreationService {
         return prodPage;
     }
 
+    /**
+     * Save to repo.
+     *
+     * @param session the session
+     */
     private void saveToRepo(Session session) {
         try {
             session.save();
@@ -228,17 +267,17 @@ public class EventsPageCreationService implements PageCreationService {
                 Calendar retirementDate = MigrationUtils.convertStrToAemCalInstance(data.getRetirementDate(),
                         MigrationConstants.EventsPageConstants.YYYY_MM_DD_FORMAT);
                 retirementDate.add(Calendar.DATE, 1); // add one day
-                jcrNode.setProperty(RETIREMENT_DATE, retirementDate);
+                jcrNode.setProperty(MigrationConstants.RETIREMENT_DATE, retirementDate);
             }
             if (StringUtils.isNotBlank(data.getReadcount())) {
-                jcrNode.setProperty(READ_COUNT, Long.parseLong(data.getReadcount()));
+                jcrNode.setProperty(MigrationConstants.READ_COUNT, Long.parseLong(data.getReadcount()));
             }
             if (StringUtils.isNotBlank(data.getUpdatedDate())) {
                 String dateStr = MigrationUtils.getDateStringFromEpoch(Long.parseLong(data.getUpdatedDate()));
                 Calendar updatedDate = MigrationUtils.convertStrToAemCalInstance(dateStr,
                         MigrationConstants.EventsPageConstants.MMM_DD_COMMA_YYYY_FORMAT);
                 updatedDate.add(Calendar.DATE, 1); // add one day
-                jcrNode.setProperty(UPDATED_DATE, updatedDate);
+                jcrNode.setProperty(MigrationConstants.UPDATED_DATE, updatedDate);
             }
             if (StringUtils.isNotBlank(data.getStartDate())) {
                 Calendar startDateCal = MigrationUtils.convertStrToAemCalInstance(data.getStartDate(),
@@ -299,6 +338,12 @@ public class EventsPageCreationService implements PageCreationService {
         // To add industry tags
     }
 
+    /**
+     * Mount tag page props.
+     *
+     * @param key          the key
+     * @param givenTagList the given tag list
+     */
     private void mountTagPageProps(final String key, List<String> givenTagList) {
         try {
             if (!givenTagList.isEmpty()) {
@@ -312,8 +357,10 @@ public class EventsPageCreationService implements PageCreationService {
 
     // To add event format and event audience tags
     /**
-     * @param resourceResolver
-     * @param data
+     * Creates the event type page tags.
+     *
+     * @param resourceResolver the resource resolver
+     * @param data             the data
      */
     private void createEventTypePageTags(ResourceResolver resourceResolver, final EventPageData data) {
         // To add event type and format tags
@@ -335,6 +382,12 @@ public class EventsPageCreationService implements PageCreationService {
         }
     }
 
+    /**
+     * Mount event type page tags.
+     *
+     * @param eventFormatTags   the event format tags
+     * @param eventAudienceTags the event audience tags
+     */
     private void mountEventTypePageTags(final List<String> eventFormatTags, final List<String> eventAudienceTags) {
         if (!eventFormatTags.isEmpty()) {
             mountTagPageProps(MigrationConstants.TagPropertyName.EVENT_FORMAT, eventFormatTags);
@@ -408,7 +461,7 @@ public class EventsPageCreationService implements PageCreationService {
         }
         String sqlStmt = String.format("%s%s%s%s", partialSqlStmt, "(", sbr.toString(), ")");
         logger.info("Query sql_stmt: {}", sqlStmt);
-        return resourceResolver.findResources(sqlStmt, JCR_SQL2);
+        return resourceResolver.findResources(sqlStmt, MigrationConstants.JCR_SQL2);
     }
 
     /**
@@ -416,51 +469,45 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param innerContainer the inner container
      * @param parseString    the parse string
+     * @param counter        the counter
+     * @return the int
      */
     public int findCompType(Node innerContainer, String parseString, int counter) {
-        final String eventDescTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Event Description(.*)<\\/h2>(.*)$";
-        final String eventRegistrationTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Registration Information(.*)<\\/h2>(.*)$";
-        final String eventPreReadTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Pre Reading(.*)<\\/h2>(.*)$";
-        final String eventAgendaTitle = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Agenda(.*)<\\/h2>(.*)$";
-        final String h2ElementEndTag = "</h2>";
-
-        if (isMatchedRegex(eventDescTitle, parseString)) {
+        if (isMatchedRegex(EVENT_DESC_REGEX, parseString)) {
             createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
             createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()),
                     TEXT_DESC, "event-description");
             counter++;
-        } else if (isMatchedRegex(eventRegistrationTitle, parseString)) {
-            final String REGISTRATION_INFORMATION = "Registration Information";
-            final String TITLE_REG = "title_reg";
-            final String TEXT_REG = "text_reg";
+        } else if (isMatchedRegex(EVENT_REG_REGEX, parseString)) {
             createCoreTitleComponent(innerContainer, REGISTRATION_INFORMATION, TITLE_REG);
             createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
-                    TEXT_REG,"registration-information");
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()),
+                    TEXT_REG, "registration-information");
             counter++;
-        } else if (isMatchedRegex(eventPreReadTitle, parseString)) {
-            final String PRE_READING = "Pre Reading";
-            final String TEXT_PREREAD = "text_preread";
-            final String TITLE_PREREAD = "title_preread";
+        } else if (isMatchedRegex(EVENT_PRE_READ_REGEX, parseString)) {
             createCoreTitleComponent(innerContainer, PRE_READING, TITLE_PREREAD);
             createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
-                    TEXT_PREREAD,"pre-reading");
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()),
+                    TEXT_PREREAD, "pre-reading");
             counter++;
-        } else if (isMatchedRegex(eventAgendaTitle, parseString)) {
-            final String AGENDA = "Agenda";
-            final String TEXT_AGENDA = "text_agenda";
-            final String TITLE_AGENDA = "title_agenda";
+        } else if (isMatchedRegex(EVENT_AGENDA_REGEX, parseString)) {
             createCoreTitleComponent(innerContainer, AGENDA, TITLE_AGENDA);
             createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(h2ElementEndTag, 10), parseString.length()),
-                    TEXT_AGENDA,"agenda");
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()),
+                    TEXT_AGENDA, "agenda");
             counter++;
         }
         return counter;
     }
 
+    /**
+     * Checks if is matched regex.
+     *
+     * @param regexStr    the regex str
+     * @param parseString the parse string
+     * @return true, if is matched regex
+     */
     private boolean isMatchedRegex(final String regexStr, String parseString) {
         Pattern patt = Pattern.compile(regexStr);// . represents single character
         Matcher mat = patt.matcher(parseString);
@@ -473,14 +520,16 @@ public class EventsPageCreationService implements PageCreationService {
      * @param innerContainer the inner container
      * @param richText       the rich text
      * @param nodeName       the node name
+     * @param classId        the class id
      */
-    private void createCoreTextComponent(Node innerContainer, final String richText, final String nodeName, final String classId) {
+    private void createCoreTextComponent(Node innerContainer, final String richText, final String nodeName,
+            final String classId) {
         try {
             Node textCompNode = innerContainer.addNode(nodeName);
             textCompNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
                     MigrationConstants.TEXT_COMP_SLING_RESOURCE);
-            textCompNode.setProperty(TEXT, richText);
-            textCompNode.setProperty(TEXT_IS_RICH_PROP, TRUE);
+            textCompNode.setProperty(MigrationConstants.TEXT, richText);
+            textCompNode.setProperty(MigrationConstants.TEXT_IS_RICH_PROP, MigrationConstants.BOOLEAN_TRUE);
             textCompNode.setProperty("id", classId);
         } catch (Exception exec) {
             logger.error("Exception in createCoreTextComponent method::{}", exec.getMessage());
@@ -499,8 +548,8 @@ public class EventsPageCreationService implements PageCreationService {
             Node titleCompNode = innerContainer.addNode(nodeName);
             titleCompNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
                     MigrationConstants.TITLE_COMP_SLING_RESOURCE);
-            titleCompNode.setProperty(JCR_TITLE, plainText);
-            titleCompNode.setProperty(TYPE, "h2");
+            titleCompNode.setProperty(MigrationConstants.JCR_TITLE_PROP, plainText);
+            titleCompNode.setProperty(MigrationConstants.TYPE, "h2");
         } catch (Exception exec) {
             logger.error("Exception in createCoreTitleComponent method::{}", exec.getMessage());
         }
@@ -540,9 +589,15 @@ public class EventsPageCreationService implements PageCreationService {
         }
     }
 
+    /**
+     * Creates the only event desc section.
+     *
+     * @param innerContainer the inner container
+     * @param descText       the desc text
+     */
     private void createOnlyEventDescSection(Node innerContainer, final String descText) {
         createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-        createCoreTextComponent(innerContainer, descText, TEXT_DESC,"event-description");
+        createCoreTextComponent(innerContainer, descText, TEXT_DESC, "event-description");
     }
 
     /**
@@ -627,6 +682,13 @@ public class EventsPageCreationService implements PageCreationService {
         }
     }
 
+    /**
+     * Gets the aem page name.
+     *
+     * @param list   the list
+     * @param nodeId the node id
+     * @return the aem page name
+     */
     private String getAemPageName(List<PageNameBean> list, final String nodeId) {
         list.stream().forEach((item) -> {
             if (item.getNodeId().equalsIgnoreCase(nodeId)) {
