@@ -229,7 +229,7 @@ public class EventsPageCreationService implements PageCreationService {
     /**
      * Save page to JCR repository.
      * 
-     * @param session
+     * @param session the JCR session
      */
     private void saveToRepo(Session session) {
         try {
@@ -294,8 +294,7 @@ public class EventsPageCreationService implements PageCreationService {
      * Collect all tags for given page.
      *
      * @param resourceResolver the resource resolver
-     * @param data             the data
-     * @return                 the array list
+     * @param data             the event page data
      */
     private void collectAllTagsForGivenPage(ResourceResolver resourceResolver, final EventPageData data) {
         // To add event tags.
