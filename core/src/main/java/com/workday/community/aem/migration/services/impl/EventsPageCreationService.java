@@ -125,7 +125,7 @@ public class EventsPageCreationService implements PageCreationService {
     @Reference
     private ResourceResolverFactory resolverFactory;
 
-    /** The wg service param. */
+    /** The wd service param. */
     Map<String, Object> wdServiceParam = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             "workday-community-administrative-service");
 
@@ -143,7 +143,7 @@ public class EventsPageCreationService implements PageCreationService {
     String aemPageName = StringUtils.EMPTY;
 
     /**
-     * Do create page.
+     * Creates page in JCR with with given inputs.
      *
      * @param paramsMap the params map
      * @param data      the data
@@ -206,12 +206,12 @@ public class EventsPageCreationService implements PageCreationService {
     }
 
     /**
-     * Gets the page created in JCR foir given inputs.
+     * Gets the page object created for given inputs.
      * 
-     * @param resourceResolver
-     * @param paramsMap
-     * @param aemPageTitle
-     * @return
+     * @param   resourceResolver the resource resolver
+     * @param   paramsMap        the parameter map
+     * @param   aemPageTitle     the aem page title
+     * @return                   the created page object
      */
     private Page getPageCreated(ResourceResolver resourceResolver, final Map<String, String> paramsMap,
             final String aemPageTitle) {
@@ -295,7 +295,7 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param resourceResolver the resource resolver
      * @param data             the data
-     * @return the array list
+     * @return                 the array list
      */
     private void collectAllTagsForGivenPage(ResourceResolver resourceResolver, final EventPageData data) {
         // To add event tags.
@@ -325,14 +325,14 @@ public class EventsPageCreationService implements PageCreationService {
                     .orElse(new ArrayList<>());
             mountTagPageProps(MigrationConstants.TagPropertyName.USING_WORKDAY, usingWorkdayTags);
         }
-        // TODO: To add industry tags.
+        // TODO To add industry tags.
     }
 
     /**
      * Mount page tags.
      * 
-     * @param key
-     * @param givenTagList
+     * @param key           the key
+     * @param givenTagList  the given tag list
      */
     private void mountTagPageProps(final String key, List<String> givenTagList) {
         try {
@@ -348,8 +348,8 @@ public class EventsPageCreationService implements PageCreationService {
     /**
      * To add event format and event audience tags.
      * 
-     * @param resourceResolver
-     * @param data
+     * @param resourceResolver the resource resolver
+     * @param data             the event page data
      */
     private void createEventTypePageTags(ResourceResolver resourceResolver, final EventPageData data) {
         // To add event type and format tags.
@@ -374,8 +374,8 @@ public class EventsPageCreationService implements PageCreationService {
     /**
      * Mount event type page tags.
      * 
-     * @param eventFormatTags
-     * @param eventAudienceTags
+     * @param eventFormatTags   the event format tags
+     * @param eventAudienceTags the event audience tags
      */
     private void mountEventTypePageTags(final List<String> eventFormatTags, final List<String> eventAudienceTags) {
         if (!eventFormatTags.isEmpty()) {
@@ -392,7 +392,7 @@ public class EventsPageCreationService implements PageCreationService {
      * @param resourceResolver the resource resolver
      * @param tagFinderEnum    the tag finder enum
      * @param tagTypeValue     the tag type value
-     * @return the tags for given inputs
+     * @return                 the tags for given inputs
      */
     private List<String> getTagsForGivenInputs(ResourceResolver resourceResolver, TagFinderEnum tagFinderEnum,
             final String tagTypeValue) {
@@ -434,7 +434,7 @@ public class EventsPageCreationService implements PageCreationService {
      * @param resourceResolver the resource resolver
      * @param searchPath       the search path
      * @param tagTitle         the tag title
-     * @return the iterator
+     * @return                 the tag resource iterator
      */
     private Iterator<Resource> doQueryForTag(ResourceResolver resourceResolver, String searchPath, String tagTitle) {
         String partialSqlStmt = "SELECT * FROM [cq:Tag] AS tag WHERE ISDESCENDANTNODE(tag, \"" + searchPath
@@ -574,7 +574,7 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param sourceTextString the source text string
      * @param searchWord       the search word
-     * @return the list
+     * @return                 the index list for the search word
      */
     private List<Integer> findAllIndicesOfGivenString(String sourceTextString, String searchWord) {
         List<Integer> indexes = new ArrayList<>();
@@ -651,9 +651,10 @@ public class EventsPageCreationService implements PageCreationService {
 
     /**
      * Gets the AEM page name for given drupal node id.
-     * @param list
-     * @param nodeId
-     * @return aem page name for given node id
+     * 
+     * @param list   the page name bean list
+     * @param nodeId the node id
+     * @return       the aem page name for given node id
      */
     private String getAemPageName(List<PageNameBean> list, final String nodeId) {
         list.stream().forEach((item) -> {
@@ -674,8 +675,8 @@ public class EventsPageCreationService implements PageCreationService {
     /**
      * Remove all style tags that has CDATA from the text content.
      * 
-     * @param textContent
-     * @return cleaned up text content
+     * @param textContent the text content
+     * @return            the cleaned up text content
      */
     private String removeStyleElementsWithCDATA(String textContent) {
         int styleStartIndex = textContent.indexOf(STYLE_TAG_START);
