@@ -176,7 +176,7 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param paramsMap  the params map
      * @param objectData the object data
-     * @param list       the list
+     * @param list       the page name bean list
      */
     @Override
     public void doCreatePage(final Map<String, String> paramsMap, Object objectData, List<PageNameBean> list) {
@@ -188,7 +188,7 @@ public class EventsPageCreationService implements PageCreationService {
                 final String nodeId = data.getDrupalNodeId();
                 String aemPageTitle = data.getTitle();
                 MigrationUtils.getAemPageName(list, nodeId);
-                // Create Page
+                // Create Page.
                 final Page prodPage = MigrationUtils.getPageCreated(resourceResolver, paramsMap, aemPageTitle);
                 if (null != prodPage) {
                     jcrNode = prodPage.hasContent() ? prodPage.getContentResource().adaptTo(Node.class) : null;
