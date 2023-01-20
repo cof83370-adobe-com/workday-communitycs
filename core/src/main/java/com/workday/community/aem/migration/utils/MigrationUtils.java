@@ -179,6 +179,7 @@ public class MigrationUtils {
 				aemPageName = aemPageName.replaceAll("\\s+", "-");
 			}
 		});
+		log.debug("AEM page name for nodeid:: {} is:: {}", nodeId, aemPageName);
 		return aemPageName;
 	}
 
@@ -234,12 +235,13 @@ public class MigrationUtils {
 				.orElse(new ArrayList<>());
 	}
 
+	
 	/**
-	 * Collect page tags.
+	 * Tag finder util.
 	 *
 	 * @param resourceResolver the resource resolver
-	 * @param tagRootPath      the tag root path
-	 * @param tagTitle         the tag title
+	 * @param tagRootPath the tag root path
+	 * @param tagTitle the tag title
 	 * @return the list
 	 */
 	private static List<String> tagFinderUtil(ResourceResolver resourceResolver, final String tagRootPath,
@@ -284,21 +286,21 @@ public class MigrationUtils {
 			}
 		}
 		String sqlStmt = String.format("%s%s%s%s", partialSqlStmt, "(", sbr.toString(), ")");
-		log.info("Query sql_stmt: {}", sqlStmt);
+		log.debug("Query sql_stmt: {}", sqlStmt);
 		return resourceResolver.findResources(sqlStmt, JCR_SQL2);
 	}
 
 	/**
-	 * Save to repo.
+	 * Saving to repo.
 	 *
 	 * @param session the session
 	 */
-	public static void saveToRepo(Session session) {
+	public static void savingToRepo(Session session) {
 		try {
 			session.save();
 			session.refresh(true);
 		} catch (Exception exec) {
-			log.error("Exception occurred while save to repo::{}", exec.getMessage());
+			log.error("Exception occurred while saving to repo::{}", exec.getMessage());
 		}
 	}
 }
