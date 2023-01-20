@@ -30,7 +30,7 @@
     function onDocumentReady() {
         const elements = document.querySelectorAll(accordionSelectors.item);
         for (var i = 0; i < elements.length && elements[i]; i++) {
-            new addCollapseButton({ element: elements[i] });
+            addCollapseButton({ element: elements[i] });
         }
     }
 

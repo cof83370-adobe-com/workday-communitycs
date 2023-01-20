@@ -68,6 +68,8 @@ public class EventsPageCreationService implements PageCreationService {
     private static final String LOCATION = "location";
 
     /** The Constant DRUPAL_NODE_ID. */
+
+    /** The Constant DRUPAL_NODE_ID */
     private static final String DRUPAL_NODE_ID = "drupalNodeId";
 
     /** The Constant DRUPAL_ACEESS_CONTROL. */
@@ -89,11 +91,14 @@ public class EventsPageCreationService implements PageCreationService {
     private static final String END_DATE = "endDate";
 
     /** The Constant TEXT_DESC. */
+    /** The Constant TEXT_DESC. */
     private static final String TEXT_DESC = "text_desc";
 
     /** The Constant TITLE_DESC. */
+    /** The Constant TITLE_DESC. */
     private static final String TITLE_DESC = "title_desc";
 
+    /** The Constant EVENT_DESCRIPTION. */
     /** The Constant EVENT_DESCRIPTION. */
     private static final String EVENT_DESCRIPTION = "Event Description";
 
@@ -142,17 +147,24 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant EVENT_DESC_COMP_ID. */
     private static final String EVENT_DESC_COMP_ID = "event-description";
 
+
     /** The resolver factory. */
     @Reference
     private ResourceResolverFactory resolverFactory;
 
-    /** The wg service param. */
+    /** The wd service param. */
     Map<String, Object> wdServiceParam = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             "workday-community-administrative-service");
 
     /** The jcr node. */
+    /** The jcr node. */
     Node jcrNode = null;
 
+    /**
+     * Gets the jcr node.
+     *
+     * @return the jcr node
+     */
     /**
      * Gets the jcr node.
      *
@@ -162,6 +174,7 @@ public class EventsPageCreationService implements PageCreationService {
         return jcrNode;
     }
 
+    /** The aem page name. */
     /** The aem page name. */
     String aemPageName = StringUtils.EMPTY;
 
@@ -390,25 +403,25 @@ public class EventsPageCreationService implements PageCreationService {
         int count = (Integer) resultMap.get(key);
         if (isMatchedRegex(EVENT_DESC_REGEX, parseString)) {
             CompAttributes compAtr = new CompAttributes(1, EVENT_DESCRIPTION,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()));
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
             compAttributeList.add(compAtr);
             count++;
             resultMap.put(key, count);
         } else if (isMatchedRegex(EVENT_REG_REGEX, parseString)) {
             CompAttributes compAtr = new CompAttributes(2, REGISTRATION_INFORMATION,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()));
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
             compAttributeList.add(compAtr);
             count++;
             resultMap.put(key, count);
         } else if (isMatchedRegex(EVENT_PRE_READ_REGEX, parseString)) {
             CompAttributes compAtr = new CompAttributes(3, PRE_READING,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()));
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
             compAttributeList.add(compAtr);
             count++;
             resultMap.put(key, count);
         } else if (isMatchedRegex(EVENT_AGENDA_REGEX, parseString)) {
             CompAttributes compAtr = new CompAttributes(4, AGENDA,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()));
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
             compAttributeList.add(compAtr);
             count++;
             resultMap.put(key, count);
