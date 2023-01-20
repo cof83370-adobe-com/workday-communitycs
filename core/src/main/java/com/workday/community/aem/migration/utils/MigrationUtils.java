@@ -162,7 +162,7 @@ public class MigrationUtils {
 	/**
 	 * Gets the aem page name.
 	 *
-	 * @param list the list
+	 * @param list   the list
 	 * @param nodeId the node id
 	 * @return the aem page name
 	 */
@@ -187,8 +187,8 @@ public class MigrationUtils {
 	 * Gets the page created.
 	 *
 	 * @param resourceResolver the resource resolver
-	 * @param paramsMap the params map
-	 * @param aemPageTitle the aem page title
+	 * @param paramsMap        the params map
+	 * @param aemPageTitle     the aem page title
 	 * @return the page created
 	 */
 	public static Page getPageCreated(ResourceResolver resourceResolver, final Map<String, String> paramsMap,
@@ -207,8 +207,8 @@ public class MigrationUtils {
 	/**
 	 * Mount tag page props.
 	 *
-	 * @param jcrNode the jcr node
-	 * @param key the key
+	 * @param jcrNode      the jcr node
+	 * @param key          the key
 	 * @param givenTagList the given tag list
 	 */
 	public static void mountTagPageProps(Node jcrNode, final String key, List<String> givenTagList) {
@@ -225,8 +225,8 @@ public class MigrationUtils {
 	 * Gets the tags for given inputs.
 	 *
 	 * @param resourceResolver the resource resolver
-	 * @param tagFinderEnum the tag finder enum
-	 * @param tagTypeValue the tag type value
+	 * @param tagFinderEnum    the tag finder enum
+	 * @param tagTypeValue     the tag type value
 	 * @return the tags for given inputs
 	 */
 	public static List<String> getTagsForGivenInputs(ResourceResolver resourceResolver, TagFinderEnum tagFinderEnum,
@@ -235,13 +235,12 @@ public class MigrationUtils {
 				.orElse(new ArrayList<>());
 	}
 
-	
 	/**
 	 * Tag finder util.
 	 *
 	 * @param resourceResolver the resource resolver
-	 * @param tagRootPath the tag root path
-	 * @param tagTitle the tag title
+	 * @param tagRootPath      the tag root path
+	 * @param tagTitle         the tag title
 	 * @return the list
 	 */
 	private static List<String> tagFinderUtil(ResourceResolver resourceResolver, final String tagRootPath,
@@ -291,11 +290,11 @@ public class MigrationUtils {
 	}
 
 	/**
-	 * Saving to repo.
+	 * Save to repo.
 	 *
 	 * @param session the session
 	 */
-	public static void savingToRepo(Session session) {
+	public static void saveToRepo(Session session) {
 		try {
 			session.save();
 			session.refresh(true);

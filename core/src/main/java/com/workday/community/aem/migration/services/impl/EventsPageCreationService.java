@@ -43,22 +43,22 @@ public class EventsPageCreationService implements PageCreationService {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** The Constant default_event_location. */
+    /** The Constant DEFAULTEVENTLOCATION. */
     private static final String DEFAULTEVENTLOCATION = "Virtual";
 
-    /** The Constant default_event_host. */
+    /** The Constant DEFAULTEVENTHOST. */
     private static final String DEFAULTEVENTHOST = "workday";
 
     /** The Constant CONTAINER. */
     private static final String CONTAINER = "container";
 
-    /** The Constant CENTERCONTAINER2. */
+    /** The Constant CENTERCONTAINER. */
     private static final String CENTERCONTAINER = "centercontainer";
 
-    /** The Constant TOPRIGHTCONTAINER2. */
+    /** The Constant TOPRIGHTCONTAINER. */
     private static final String TOPRIGHTCONTAINER = "toprightcontainer";
 
-    /** The Constant TOPRIGHTCONTAINER2. */
+    /** The Constant EVENTREGISTRATIONCONTAINER. */
     private static final String EVENTREGISTRATIONCONTAINER = "eventregistration";
 
     /** The Constant HOST. */
@@ -68,8 +68,6 @@ public class EventsPageCreationService implements PageCreationService {
     private static final String LOCATION = "location";
 
     /** The Constant DRUPAL_NODE_ID. */
-
-    /** The Constant DRUPAL_NODE_ID */
     private static final String DRUPAL_NODE_ID = "drupalNodeId";
 
     /** The Constant DRUPAL_ACEESS_CONTROL. */
@@ -91,16 +89,19 @@ public class EventsPageCreationService implements PageCreationService {
     private static final String END_DATE = "endDate";
 
     /** The Constant TEXT_DESC. */
-    /** The Constant TEXT_DESC. */
     private static final String TEXT_DESC = "text_desc";
 
-    /** The Constant TITLE_DESC. */
     /** The Constant TITLE_DESC. */
     private static final String TITLE_DESC = "title_desc";
 
     /** The Constant EVENT_DESCRIPTION. */
-    /** The Constant EVENT_DESCRIPTION. */
     private static final String EVENT_DESCRIPTION = "Event Description";
+
+    /** The Constant STYLE_TAG_START. */
+    private static final String STYLE_TAG_START = "<style";
+
+    /** The Constant STYLE_TAG_END. */
+    private static final String STYLE_TAG_END = "</style>";
 
     /** The registration information. */
     private static final String REGISTRATION_INFORMATION = "Registration Information";
@@ -141,12 +142,11 @@ public class EventsPageCreationService implements PageCreationService {
     /** The event agenda title. */
     private static final String EVENT_AGENDA_REGEX = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Agenda(.*)<\\/h2>(.*)$";
 
-    /** The h 2 element end tag. */
+    /** The h2 element end tag. */
     private static final String H2_ELE_END_TAG = "</h2>";
 
     /** The Constant EVENT_DESC_COMP_ID. */
     private static final String EVENT_DESC_COMP_ID = "event-description";
-
 
     /** The resolver factory. */
     @Reference
@@ -157,14 +157,11 @@ public class EventsPageCreationService implements PageCreationService {
             "workday-community-administrative-service");
 
     /** The jcr node. */
-    /** The jcr node. */
     Node jcrNode = null;
 
-    /**
-     * Gets the jcr node.
-     *
-     * @return the jcr node
-     */
+    /** The aem page name. */
+    String aemPageName = StringUtils.EMPTY;
+
     /**
      * Gets the jcr node.
      *
@@ -174,24 +171,20 @@ public class EventsPageCreationService implements PageCreationService {
         return jcrNode;
     }
 
-    /** The aem page name. */
-    /** The aem page name. */
-    String aemPageName = StringUtils.EMPTY;
-
     /**
-     * Do create page.
+     * Creates page in JCR with with given inputs.
      *
-     * @param paramsMap the params map
-     * @param objecDdata the objec ddata
-     * @param list      the list
+     * @param paramsMap  the params map
+     * @param objectData the object data
+     * @param list       the list
      */
     @Override
-    public void doCreatePage(final Map<String, String> paramsMap, Object objecDdata, List<PageNameBean> list) {
+    public void doCreatePage(final Map<String, String> paramsMap, Object objectData, List<PageNameBean> list) {
         try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(wdServiceParam)) {
             Session session = resourceResolver.adaptTo(Session.class);
             if (session != null) {
                 // Derive the page title and page name.
-                EventPageData data = (EventPageData) objecDdata;
+                EventPageData data = (EventPageData) objectData;
                 final String nodeId = data.getDrupalNodeId();
                 String aemPageTitle = data.getTitle();
                 MigrationUtils.getAemPageName(list, nodeId);
@@ -211,7 +204,7 @@ public class EventsPageCreationService implements PageCreationService {
                 Node containerNode = rootNode.hasNode(CONTAINER) ? rootNode.getNode(CONTAINER)
                         : rootNode.addNode(CONTAINER);
 
-                // Creation of Register for Event Core Button component
+                // Creation of Register for Event Core Button component.
                 Node eventRegistrationContainer = containerNode.hasNode(EVENTREGISTRATIONCONTAINER)
                         ? containerNode.getNode(EVENTREGISTRATIONCONTAINER)
                         : containerNode.addNode(EVENTREGISTRATIONCONTAINER);
@@ -219,14 +212,14 @@ public class EventsPageCreationService implements PageCreationService {
 
                 // TODO top right container image.
 
-                // Creation of event details component
+                // Creation of event details component.
                 Node toprightContainer = containerNode.hasNode(TOPRIGHTCONTAINER)
                         ? containerNode.getNode(TOPRIGHTCONTAINER)
                         : containerNode.addNode(TOPRIGHTCONTAINER);
 
                 createEventDetailsComponent(toprightContainer, data);
 
-                // Creation of event description component
+                // Creation of event description component.
                 Node centerContainer = containerNode.hasNode(CENTERCONTAINER)
                         ? containerNode.getNode(CENTERCONTAINER)
                         : containerNode.addNode(CENTERCONTAINER);
@@ -238,7 +231,7 @@ public class EventsPageCreationService implements PageCreationService {
                 MigrationUtils.saveToRepo(session);
             }
         } catch (Exception exec) {
-            logger.error("Exception occurred at while creating page in doCreatePage::{}", exec.getMessage());
+            logger.error("Exception occurred while creating page in doCreatePage::{}", exec.getMessage());
         }
     }
 
@@ -275,7 +268,8 @@ public class EventsPageCreationService implements PageCreationService {
             if (StringUtils.isNotBlank(data.getRetirementDate())) {
                 Calendar retirementDate = MigrationUtils.convertStrToAemCalInstance(data.getRetirementDate(),
                         MigrationConstants.EventsPageConstants.YYYY_MM_DD_FORMAT);
-                retirementDate.add(Calendar.DATE, 1); // add one day
+                // Add one day.
+                retirementDate.add(Calendar.DATE, 1);
                 jcrNode.setProperty(MigrationConstants.RETIREMENT_DATE, retirementDate);
             }
             if (StringUtils.isNotBlank(data.getReadcount())) {
@@ -285,19 +279,22 @@ public class EventsPageCreationService implements PageCreationService {
                 String dateStr = MigrationUtils.getDateStringFromEpoch(Long.parseLong(data.getUpdatedDate()));
                 Calendar updatedDate = MigrationUtils.convertStrToAemCalInstance(dateStr,
                         MigrationConstants.EventsPageConstants.MMM_DD_COMMA_YYYY_FORMAT);
-                updatedDate.add(Calendar.DATE, 1); // add one day
+                // Add one day.
+                updatedDate.add(Calendar.DATE, 1);
                 jcrNode.setProperty(MigrationConstants.UPDATED_DATE, updatedDate);
             }
             if (StringUtils.isNotBlank(data.getStartDate())) {
                 Calendar startDateCal = MigrationUtils.convertStrToAemCalInstance(data.getStartDate(),
                         MigrationConstants.AEM_CAL_INSTANCE_FORMAT);
-                startDateCal.add(Calendar.HOUR_OF_DAY, 1); // add one hour
+                // Add one hour.
+                startDateCal.add(Calendar.HOUR_OF_DAY, 1);
                 jcrNode.setProperty(START_DATE, startDateCal);
             }
             if (StringUtils.isNotBlank(data.getEndDate())) {
                 Calendar endDateCal = MigrationUtils.convertStrToAemCalInstance(data.getEndDate(),
                         MigrationConstants.AEM_CAL_INSTANCE_FORMAT);
-                endDateCal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+                // Add one hour.
+                endDateCal.add(Calendar.HOUR_OF_DAY, 1);
                 jcrNode.setProperty(END_DATE, endDateCal);
             }
 
@@ -312,49 +309,52 @@ public class EventsPageCreationService implements PageCreationService {
      * Collect all tags for given page.
      *
      * @param resourceResolver the resource resolver
-     * @param data             the data
-     * @return the array list
+     * @param data             the event page data
      */
     private void collectAllTagsForGivenPage(ResourceResolver resourceResolver, final EventPageData data) {
-        // To add event tags
+        // To add event tags.
         createEventTypePageTags(resourceResolver, data);
-        // To add release tags
+        // To add release tags.
         if (StringUtils.isNotBlank(data.getReleaseTag())) {
             List<String> releaseTags = Optional
                     .ofNullable(
-                        MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.RELEASE_TAG, data.getReleaseTag()))
+                            MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.RELEASE_TAG,
+                                    data.getReleaseTag()))
                     .orElse(new ArrayList<>());
-                    MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.RELEASE, releaseTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.RELEASE, releaseTags);
         }
 
-        // To add product tags
+        // To add product tags.
         if (StringUtils.isNotBlank(data.getProduct())) {
             List<String> productTags = Optional
-                    .ofNullable(MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.PRODUCT, data.getProduct()))
+                    .ofNullable(MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.PRODUCT,
+                            data.getProduct()))
                     .orElse(new ArrayList<>());
-                    MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.PRODUCT, productTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.PRODUCT, productTags);
         }
 
-        // To add using workday tags
+        // To add using workday tags.
         if (StringUtils.isNotBlank(data.getUsingWorkday())) {
             List<String> usingWorkdayTags = Optional
                     .ofNullable(
-                        MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY,
+                            MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY,
                                     data.getUsingWorkday()))
                     .orElse(new ArrayList<>());
-                    MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.USING_WORKDAY, usingWorkdayTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.USING_WORKDAY,
+                    usingWorkdayTags);
         }
-        // To add industry tags
+        // TODO To add industry tags.
     }
 
     /**
      * Creates the event type page tags.
      * To add event format and event audience tags
+     * 
      * @param resourceResolver the resource resolver
-     * @param data             the data
+     * @param data             the event page data
      */
     private void createEventTypePageTags(ResourceResolver resourceResolver, final EventPageData data) {
-        // To add event type and format tags
+        // To add event type and format tags.
         if (StringUtils.isNotBlank(data.getCalendarEventType())) {
             List<String> eventTypeTags = Optional.ofNullable(MigrationUtils.getTagsForGivenInputs(resourceResolver,
                     TagFinderEnum.CALENDAREVENTTYPE, data.getCalendarEventType())).orElse(new ArrayList<>());
@@ -375,16 +375,18 @@ public class EventsPageCreationService implements PageCreationService {
 
     /**
      * Mount event type page tags.
-     *
+     * 
      * @param eventFormatTags   the event format tags
      * @param eventAudienceTags the event audience tags
      */
     private void mountEventTypePageTags(final List<String> eventFormatTags, final List<String> eventAudienceTags) {
         if (!eventFormatTags.isEmpty()) {
-            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.EVENT_FORMAT, eventFormatTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.EVENT_FORMAT,
+                    eventFormatTags);
         }
         if (!eventAudienceTags.isEmpty()) {
-            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.EVENT_AUDIENCE, eventAudienceTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.EVENT_AUDIENCE,
+                    eventAudienceTags);
         }
     }
 
@@ -439,7 +441,7 @@ public class EventsPageCreationService implements PageCreationService {
     private void createComponentsInOrderFashion(Node innerContainer,
             List<CompAttributes> compAttributeList) {
         if (!compAttributeList.isEmpty()) {
-            Collections.sort(compAttributeList, CompAttributes.IdComparator);
+            Collections.sort(compAttributeList, CompAttributes.idComparator);
             for (int index = 0; index < compAttributeList.size(); index++) {
                 if (compAttributeList.get(index).getId() == 1) {
                     createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_DESC);
@@ -470,7 +472,8 @@ public class EventsPageCreationService implements PageCreationService {
      * @return true, if is matched regex
      */
     private boolean isMatchedRegex(final String regexStr, String parseString) {
-        Pattern patt = Pattern.compile(regexStr);// . represents single character
+        // . represents single character.
+        Pattern patt = Pattern.compile(regexStr);
         Matcher mat = patt.matcher(parseString);
         return mat.matches();
     }
@@ -489,7 +492,7 @@ public class EventsPageCreationService implements PageCreationService {
             Node textCompNode = innerContainer.addNode(nodeName);
             textCompNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
                     MigrationConstants.TEXT_COMP_SLING_RESOURCE);
-            textCompNode.setProperty(MigrationConstants.TEXT, richText);
+            textCompNode.setProperty(MigrationConstants.TEXT, removeStyleElementsWithCDATA(richText));
             textCompNode.setProperty(MigrationConstants.TEXT_IS_RICH_PROP, MigrationConstants.BOOLEAN_TRUE);
             textCompNode.setProperty("id", compId);
         } catch (Exception exec) {
@@ -543,10 +546,8 @@ public class EventsPageCreationService implements PageCreationService {
                 }
                 processResultMap(innerContainer, resultMap, descText);
             } else {
-                /**
-                 * It executes, if not find event desc or registration, agenda or pre reading
-                 * id's on xml description node data
-                 */
+                // It executes, if not find event desc or registration, agenda or pre reading
+                // id's on xml description node data.
                 createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
                 createCoreTextComponent(innerContainer, descText, TEXT_DESC, EVENT_DESC_COMP_ID);
             }
@@ -558,8 +559,8 @@ public class EventsPageCreationService implements PageCreationService {
      * Process result map.
      *
      * @param innerContainer the inner container
-     * @param resultMap the result map
-     * @param descText the desc text
+     * @param resultMap      the result map
+     * @param descText       the desc text
      */
     private void processResultMap(Node innerContainer, Map<String, Object> resultMap, String descText) {
         if (null != resultMap && (Integer) resultMap.get("counter") == 0) {
@@ -589,7 +590,7 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param sourceTextString the source text string
      * @param searchWord       the search word
-     * @return the list
+     * @return the index list for the search word
      */
     private List<Integer> findAllIndicesOfGivenString(String sourceTextString, String searchWord) {
         List<Integer> indexes = new ArrayList<>();
@@ -627,7 +628,7 @@ public class EventsPageCreationService implements PageCreationService {
                 registerForEventButtonNode.setProperty(MigrationConstants.LINK_TARGET_PROP,
                         MigrationConstants.TEXT_UNDERSCORE_SELF);
                 registerForEventButtonNode.setProperty(MigrationConstants.LINK_URL_PROP, data.getRegistrationUrl());
-                // TODO Find if default accessibilityLabel needed
+                // TODO Find if default accessibilityLabel needed.
 
             } else {
                 logger.info("Event Registration URL not found for drupalNodeId : {}", data.getDrupalNodeId());
@@ -665,4 +666,22 @@ public class EventsPageCreationService implements PageCreationService {
             logger.error("Exception in createEventDetailsComponent method::{}", exec.getMessage());
         }
     }
+
+    /**
+     * Remove all style tags that has CDATA from the text content.
+     * 
+     * @param textContent the text content
+     * @return the cleaned up text content
+     */
+    private String removeStyleElementsWithCDATA(String textContent) {
+        int styleStartIndex = textContent.indexOf(STYLE_TAG_START);
+        int styleEndIndex = textContent.indexOf(STYLE_TAG_END);
+        if (styleStartIndex >= 0 && styleEndIndex >= 0 && textContent.contains("[CDATA")) {
+            String styleCdataBlock = textContent.substring(styleStartIndex, styleEndIndex + 8);
+            textContent = textContent.replace(styleCdataBlock, StringUtils.EMPTY);
+            removeStyleElementsWithCDATA(textContent);
+        }
+        return textContent;
+    }
+
 }
