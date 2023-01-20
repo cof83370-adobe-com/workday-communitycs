@@ -257,7 +257,8 @@ public class EventsPageCreationService implements PageCreationService {
                 String postedDateStr = MigrationUtils.getDateStringFromEpoch(Long.parseLong(data.getPostedDate()));
                 Calendar postedDate = MigrationUtils.convertStrToAemCalInstance(postedDateStr,
                         MigrationConstants.EventsPageConstants.MMM_DD_COMMA_YYYY_FORMAT);
-                postedDate.add(Calendar.DATE, 1); // add one day
+                // Add one day.
+                postedDate.add(Calendar.DATE, 1);
                 jcrNode.setProperty(POSTED_DATE, postedDate);
             }
 
@@ -597,7 +598,8 @@ public class EventsPageCreationService implements PageCreationService {
         int wordLength = 0;
         int index = 0;
         while (index != -1) {
-            index = sourceTextString.indexOf(searchWord, index + wordLength); // Slight improvement
+            // Slight improvement.
+            index = sourceTextString.indexOf(searchWord, index + wordLength);
             if (index != -1) {
                 indexes.add(index);
             }
