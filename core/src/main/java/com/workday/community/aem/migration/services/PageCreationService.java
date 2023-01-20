@@ -13,13 +13,13 @@ import com.workday.community.aem.migration.models.PageNameBean;
  */
 public interface PageCreationService {
 	
+	
 	/**
 	 * Do create page.
 	 *
-	 * @param req the req
 	 * @param paramsMap the params map
 	 * @param data the data
-	 * @throws Exception 
+	 * @param list the list
 	 */
 	void doCreatePage(final Map<String, String> paramsMap, Object data, List<PageNameBean> list);
 }
