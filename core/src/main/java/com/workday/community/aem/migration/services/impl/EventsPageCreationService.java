@@ -3,21 +3,17 @@ package com.workday.community.aem.migration.services.impl;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
@@ -26,10 +22,9 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
-import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.migration.constants.MigrationConstants;
+import com.workday.community.aem.migration.models.CompAttributes;
 import com.workday.community.aem.migration.models.EventPageData;
 import com.workday.community.aem.migration.models.PageNameBean;
 import com.workday.community.aem.migration.services.PageCreationService;
@@ -72,16 +67,16 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant LOCATION. */
     private static final String LOCATION = "location";
 
-    /** The Constant DRUPAL_NODE_ID */
+    /** The Constant DRUPAL_NODE_ID. */
     private static final String DRUPAL_NODE_ID = "drupalNodeId";
 
-    /** The Constant DRUPAL_ACEESS_CONTROL */
+    /** The Constant DRUPAL_ACEESS_CONTROL. */
     private static final String DRUPAL_ACEESS_CONTROL = "drupalAccessControl";
-    
-    /** The Constant AUTHOR */
+
+    /** The Constant AUTHOR. */
     private static final String AUTHOR = "author";
 
-    /** The Constant POSTED_DATE */
+    /** The Constant POSTED_DATE. */
     private static final String POSTED_DATE = "postedDate";
 
     /** The Constant EVENT_TYPE. */
@@ -103,10 +98,11 @@ public class EventsPageCreationService implements PageCreationService {
     private static final String EVENT_DESCRIPTION = "Event Description";
 
     /** The Constant STYLE_TAG_START. */
-    private static final String  STYLE_TAG_START = "<style";
-    
+    private static final String STYLE_TAG_START = "<style";
+
     /** The Constant STYLE_TAG_END. */
-    private static final String  STYLE_TAG_END = "</style>";
+    private static final String STYLE_TAG_END = "</style>";
+
     /** The registration information. */
     private static final String REGISTRATION_INFORMATION = "Registration Information";
 
@@ -146,11 +142,11 @@ public class EventsPageCreationService implements PageCreationService {
     /** The event agenda title. */
     private static final String EVENT_AGENDA_REGEX = "(?s)^<h2 class=(.*)title__h2(.*)>(.*)Agenda(.*)<\\/h2>(.*)$";
 
-    /** The h 2 element end tag. */
+    /** The h2 element end tag. */
     private static final String H2_ELE_END_TAG = "</h2>";
 
-    /** The h2 element start tag. */
-    private static final String H2_ELE_START_TAG = "<h2 class=";
+    /** The Constant EVENT_DESC_COMP_ID. */
+    private static final String EVENT_DESC_COMP_ID = "event-description";
 
     /** The resolver factory. */
     @Reference
@@ -163,6 +159,9 @@ public class EventsPageCreationService implements PageCreationService {
     /** The jcr node. */
     Node jcrNode = null;
 
+    /** The aem page name. */
+    String aemPageName = StringUtils.EMPTY;
+
     /**
      * Gets the jcr node.
      *
@@ -172,27 +171,25 @@ public class EventsPageCreationService implements PageCreationService {
         return jcrNode;
     }
 
-    /** The aem page name. */
-    String aemPageName = StringUtils.EMPTY;
-
     /**
      * Creates page in JCR with with given inputs.
      *
-     * @param paramsMap the params map
-     * @param data      the data
-     * @param list      the page name bean list
+     * @param paramsMap  the params map
+     * @param objectData the object data
+     * @param list       the page name bean list
      */
     @Override
-    public void doCreatePage(final Map<String, String> paramsMap, EventPageData data, List<PageNameBean> list) {
+    public void doCreatePage(final Map<String, String> paramsMap, Object objectData, List<PageNameBean> list) {
         try (ResourceResolver resourceResolver = resolverFactory.getServiceResourceResolver(wdServiceParam)) {
             Session session = resourceResolver.adaptTo(Session.class);
             if (session != null) {
                 // Derive the page title and page name.
+                EventPageData data = (EventPageData) objectData;
                 final String nodeId = data.getDrupalNodeId();
                 String aemPageTitle = data.getTitle();
-                getAemPageName(list, nodeId);
+                MigrationUtils.getAemPageName(list, nodeId);
                 // Create Page.
-                final Page prodPage = getPageCreated(resourceResolver, paramsMap, aemPageTitle);
+                final Page prodPage = MigrationUtils.getPageCreated(resourceResolver, paramsMap, aemPageTitle);
                 if (null != prodPage) {
                     jcrNode = prodPage.hasContent() ? prodPage.getContentResource().adaptTo(Node.class) : null;
                 }
@@ -231,47 +228,11 @@ public class EventsPageCreationService implements PageCreationService {
 
                 // TODO top bottom left container.
                 // TODO top bottom right image.
-                saveToRepo(session);
+                MigrationUtils.saveToRepo(session);
             }
         } catch (Exception exec) {
             logger.error("Exception occurred while creating page in doCreatePage::{}", exec.getMessage());
         }
-    }
-
-    /**
-     * Gets the page object created for given inputs.
-     * 
-     * @param   resourceResolver the resource resolver
-     * @param   paramsMap        the parameter map
-     * @param   aemPageTitle     the aem page title
-     * @return                   the created page object
-     */
-    private Page getPageCreated(ResourceResolver resourceResolver, final Map<String, String> paramsMap,
-            final String aemPageTitle) {
-        Page prodPage = null;
-        try {
-            PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-            prodPage = pageManager.create(paramsMap.get(MigrationConstants.PARENT_PAGE_PATH_PARAM),
-                    aemPageName, paramsMap.get(MigrationConstants.TEMPLATE_PARAM), aemPageTitle);
-        } catch (Exception exec) {
-            logger.error("Exception occurred while creating page in getPageCreated::{}", exec.getMessage());
-        }
-        return prodPage;
-    }
-
-    /**
-     * Save page to JCR repository.
-     * 
-     * @param session the JCR session
-     */
-    private void saveToRepo(Session session) {
-        try {
-            session.save();
-            session.refresh(true);
-        } catch (Exception exec) {
-            logger.error("Exception occurred while saving to repo::{}", exec.getMessage());
-        }
-
     }
 
     /**
@@ -296,7 +257,8 @@ public class EventsPageCreationService implements PageCreationService {
                 String postedDateStr = MigrationUtils.getDateStringFromEpoch(Long.parseLong(data.getPostedDate()));
                 Calendar postedDate = MigrationUtils.convertStrToAemCalInstance(postedDateStr,
                         MigrationConstants.EventsPageConstants.MMM_DD_COMMA_YYYY_FORMAT);
-                postedDate.add(Calendar.DATE, 1); // add one day
+                // Add one day.
+                postedDate.add(Calendar.DATE, 1);
                 jcrNode.setProperty(POSTED_DATE, postedDate);
             }
 
@@ -357,50 +319,37 @@ public class EventsPageCreationService implements PageCreationService {
         if (StringUtils.isNotBlank(data.getReleaseTag())) {
             List<String> releaseTags = Optional
                     .ofNullable(
-                            getTagsForGivenInputs(resourceResolver, TagFinderEnum.RELEASE_TAG, data.getReleaseTag()))
+                            MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.RELEASE_TAG,
+                                    data.getReleaseTag()))
                     .orElse(new ArrayList<>());
-            mountTagPageProps(MigrationConstants.TagPropertyName.RELEASE, releaseTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.RELEASE, releaseTags);
         }
 
         // To add product tags.
         if (StringUtils.isNotBlank(data.getProduct())) {
             List<String> productTags = Optional
-                    .ofNullable(getTagsForGivenInputs(resourceResolver, TagFinderEnum.PRODUCT, data.getProduct()))
+                    .ofNullable(MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.PRODUCT,
+                            data.getProduct()))
                     .orElse(new ArrayList<>());
-            mountTagPageProps(MigrationConstants.TagPropertyName.PRODUCT, productTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.PRODUCT, productTags);
         }
 
         // To add using workday tags.
         if (StringUtils.isNotBlank(data.getUsingWorkday())) {
             List<String> usingWorkdayTags = Optional
                     .ofNullable(
-                            getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY,
+                            MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.USING_WORKDAY,
                                     data.getUsingWorkday()))
                     .orElse(new ArrayList<>());
-            mountTagPageProps(MigrationConstants.TagPropertyName.USING_WORKDAY, usingWorkdayTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.USING_WORKDAY,
+                    usingWorkdayTags);
         }
         // TODO To add industry tags.
     }
 
     /**
-     * Mount tag page props.
-     *
-     * @param key          the key
-     * @param givenTagList the given tag list
-     */
-    private void mountTagPageProps(final String key, List<String> givenTagList) {
-        try {
-            if (!givenTagList.isEmpty()) {
-                getJcrNode().setProperty(key, givenTagList.stream().toArray(String[]::new));
-            }
-        } catch (Exception exec) {
-            logger.error("Exception occurred while adding tags as Page props:{}", exec.getMessage());
-        }
-
-    }
-
-    /**
-     * To add event format and event audience tags.
+     * Creates the event type page tags.
+     * To add event format and event audience tags
      * 
      * @param resourceResolver the resource resolver
      * @param data             the event page data
@@ -408,7 +357,7 @@ public class EventsPageCreationService implements PageCreationService {
     private void createEventTypePageTags(ResourceResolver resourceResolver, final EventPageData data) {
         // To add event type and format tags.
         if (StringUtils.isNotBlank(data.getCalendarEventType())) {
-            List<String> eventTypeTags = Optional.ofNullable(getTagsForGivenInputs(resourceResolver,
+            List<String> eventTypeTags = Optional.ofNullable(MigrationUtils.getTagsForGivenInputs(resourceResolver,
                     TagFinderEnum.CALENDAREVENTTYPE, data.getCalendarEventType())).orElse(new ArrayList<>());
             if (!eventTypeTags.isEmpty()) {
                 List<String> eventFormatTags = new ArrayList<>();
@@ -433,115 +382,87 @@ public class EventsPageCreationService implements PageCreationService {
      */
     private void mountEventTypePageTags(final List<String> eventFormatTags, final List<String> eventAudienceTags) {
         if (!eventFormatTags.isEmpty()) {
-            mountTagPageProps(MigrationConstants.TagPropertyName.EVENT_FORMAT, eventFormatTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.EVENT_FORMAT,
+                    eventFormatTags);
         }
         if (!eventAudienceTags.isEmpty()) {
-            mountTagPageProps(MigrationConstants.TagPropertyName.EVENT_AUDIENCE, eventAudienceTags);
+            MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.EVENT_AUDIENCE,
+                    eventAudienceTags);
         }
-    }
-
-    /**
-     * Gets the tags for given inputs.
-     *
-     * @param resourceResolver the resource resolver
-     * @param tagFinderEnum    the tag finder enum
-     * @param tagTypeValue     the tag type value
-     * @return                 the tags for given inputs
-     */
-    private List<String> getTagsForGivenInputs(ResourceResolver resourceResolver, TagFinderEnum tagFinderEnum,
-            final String tagTypeValue) {
-        return Optional.ofNullable(tagFinderUtil(resourceResolver, tagFinderEnum.getValue(), tagTypeValue))
-                .orElse(new ArrayList<>());
-    }
-
-    /**
-     * Collect page tags.
-     *
-     * @param resourceResolver the resource resolver
-     * @param tagRootPath      the tag root path
-     * @param tagTitle         the tag title
-     * @return                 the list
-     */
-    private List<String> tagFinderUtil(ResourceResolver resourceResolver, final String tagRootPath,
-            final String tagTitle) {
-        Iterator<Resource> tagResources = doQueryForTag(resourceResolver, tagRootPath, tagTitle);
-        Set<String> tagsSet = new HashSet<>();
-        if (null != tagResources) {
-            while (tagResources.hasNext()) {
-                Resource artcileResource = tagResources.next();
-                if (null != artcileResource) {
-                    Tag tag = artcileResource.adaptTo(Tag.class);
-                    tagsSet.add(tag.getTagID());
-                }
-            }
-        }
-        return tagsSet.stream().collect(Collectors.toList());
-    }
-
-    /**
-     * SELECT * FROM [cq:Tag] AS tag
-     * WHERE ISDESCENDANTNODE(tag, "/content/cq:tags/event") AND
-     * [sling:resourceType] = 'cq/tagging/components/tag' AND ([jcr:title] =
-     * 'Rising'
-     * OR [jcr:title] = 'Webinar').
-     *
-     * @param resourceResolver the resource resolver
-     * @param searchPath       the search path
-     * @param tagTitle         the tag title
-     * @return                 the tag resource iterator
-     */
-    private Iterator<Resource> doQueryForTag(ResourceResolver resourceResolver, String searchPath, String tagTitle) {
-        String partialSqlStmt = "SELECT * FROM [cq:Tag] AS tag WHERE ISDESCENDANTNODE(tag, \"" + searchPath
-                + "\") AND [sling:resourceType] = 'cq/tagging/components/tag' AND ";
-        String[] diffTagsList = tagTitle.split(",");
-        StringBuilder sbr = new StringBuilder();
-        for (int index = 0; index < diffTagsList.length; index++) {
-            if (index == 0 && StringUtils.isNotBlank(diffTagsList[index])) {
-                sbr.append("[jcr:title] = '" + diffTagsList[index].trim() + "'");
-            } else if (StringUtils.isNotBlank(diffTagsList[index])) {
-                sbr.append(" OR [jcr:title] = '" + diffTagsList[index].trim() + "'");
-            }
-        }
-        String sqlStmt = String.format("%s%s%s%s", partialSqlStmt, "(", sbr.toString(), ")");
-        logger.info("Query sql_stmt: {}", sqlStmt);
-        return resourceResolver.findResources(sqlStmt, MigrationConstants.JCR_SQL2);
     }
 
     /**
      * Find comp type.
      *
-     * @param innerContainer the inner container
-     * @param parseString    the parse string
-     * @param counter        the counter
-     * @return               the int
+     * @param innerContainer    the inner container
+     * @param parseString       the parse string
+     * @param resultMap         the result map
+     * @param compAttributeList the comp attribute list
+     * @return the map
      */
-    public int findCompType(Node innerContainer, String parseString, int counter) {
+    public Map<String, Object> findCompType(Node innerContainer, String parseString, Map<String, Object> resultMap,
+            List<CompAttributes> compAttributeList) {
+        String key = "counter";
+        int count = (Integer) resultMap.get(key);
         if (isMatchedRegex(EVENT_DESC_REGEX, parseString)) {
-            createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-            createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, H2_ELE_START_TAG.length()), parseString.length()),
-                    TEXT_DESC, "event-description");
-            counter++;
+            CompAttributes compAtr = new CompAttributes(1, EVENT_DESCRIPTION,
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
+            compAttributeList.add(compAtr);
+            count++;
+            resultMap.put(key, count);
         } else if (isMatchedRegex(EVENT_REG_REGEX, parseString)) {
-            createCoreTitleComponent(innerContainer, REGISTRATION_INFORMATION, TITLE_REG);
-            createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, H2_ELE_START_TAG.length()), parseString.length()),
-                    TEXT_REG, "registration-information");
-            counter++;
+            CompAttributes compAtr = new CompAttributes(2, REGISTRATION_INFORMATION,
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
+            compAttributeList.add(compAtr);
+            count++;
+            resultMap.put(key, count);
         } else if (isMatchedRegex(EVENT_PRE_READ_REGEX, parseString)) {
-            createCoreTitleComponent(innerContainer, PRE_READING, TITLE_PREREAD);
-            createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, H2_ELE_START_TAG.length()), parseString.length()),
-                    TEXT_PREREAD, "pre-reading");
-            counter++;
+            CompAttributes compAtr = new CompAttributes(3, PRE_READING,
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
+            compAttributeList.add(compAtr);
+            count++;
+            resultMap.put(key, count);
         } else if (isMatchedRegex(EVENT_AGENDA_REGEX, parseString)) {
-            createCoreTitleComponent(innerContainer, AGENDA, TITLE_AGENDA);
-            createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, H2_ELE_START_TAG.length()), parseString.length()),
-                    TEXT_AGENDA, "agenda");
-            counter++;
+            CompAttributes compAtr = new CompAttributes(4, AGENDA,
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
+            compAttributeList.add(compAtr);
+            count++;
+            resultMap.put(key, count);
         }
-        return counter;
+        resultMap.put("compList", compAttributeList);
+        return resultMap;
+    }
+
+    /**
+     * Creates the components in order fashion.
+     *
+     * @param innerContainer    the inner container
+     * @param compAttributeList the comp attribute list
+     */
+    private void createComponentsInOrderFashion(Node innerContainer,
+            List<CompAttributes> compAttributeList) {
+        if (!compAttributeList.isEmpty()) {
+            Collections.sort(compAttributeList, CompAttributes.idComparator);
+            for (int index = 0; index < compAttributeList.size(); index++) {
+                if (compAttributeList.get(index).getId() == 1) {
+                    createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_DESC);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_DESC,
+                            EVENT_DESC_COMP_ID);
+                } else if (compAttributeList.get(index).getId() == 2) {
+                    createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_REG);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_REG,
+                            "registration-information");
+                } else if (compAttributeList.get(index).getId() == 3) {
+                    createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_PREREAD);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_PREREAD,
+                            "pre-reading");
+                } else if (compAttributeList.get(index).getId() == 4) {
+                    createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_AGENDA);
+                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_AGENDA,
+                            "agenda");
+                }
+            }
+        }
     }
 
     /**
@@ -549,7 +470,7 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param regexStr    the regex str
      * @param parseString the parse string
-     * @return            true, if is matched regex
+     * @return true, if is matched regex
      */
     private boolean isMatchedRegex(final String regexStr, String parseString) {
         // . represents single character.
@@ -564,17 +485,17 @@ public class EventsPageCreationService implements PageCreationService {
      * @param innerContainer the inner container
      * @param richText       the rich text
      * @param nodeName       the node name
-     * @param classId        the class id
+     * @param compId         the comp id
      */
     private void createCoreTextComponent(Node innerContainer, final String richText, final String nodeName,
-            final String classId) {
+            final String compId) {
         try {
             Node textCompNode = innerContainer.addNode(nodeName);
             textCompNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
                     MigrationConstants.TEXT_COMP_SLING_RESOURCE);
             textCompNode.setProperty(MigrationConstants.TEXT, removeStyleElementsWithCDATA(richText));
             textCompNode.setProperty(MigrationConstants.TEXT_IS_RICH_PROP, MigrationConstants.BOOLEAN_TRUE);
-            textCompNode.setProperty("id", classId);
+            textCompNode.setProperty("id", compId);
         } catch (Exception exec) {
             logger.error("Exception in createCoreTextComponent method::{}", exec.getMessage());
         }
@@ -608,28 +529,49 @@ public class EventsPageCreationService implements PageCreationService {
     private void createEventDescription(Node innerContainer, EventPageData data) {
         final String descText = data.getDescription();
         if (StringUtils.isNotBlank(descText)) {
-            List<Integer> indicesList = findAllIndicesOfGivenString(descText, "<h2 class=\"");
+            List<Integer> indicesList = findAllIndicesOfGivenString(descText, "<h2 class=");
             if (!indicesList.isEmpty()) {
                 int counter = 0;
+                List<CompAttributes> compAttrList = new ArrayList<>();
+                Map<String, Object> resultMap = new HashMap<>();
+                resultMap.put("counter", counter);
+                String parseStr = "";
                 for (int index = 0; index < indicesList.size(); index++) {
                     if (index == indicesList.size() - 1) {
-                        counter = findCompType(innerContainer, descText.substring(indicesList.get(index)), counter);
+                        parseStr = descText.substring(indicesList.get(index));
+                        resultMap = findCompType(innerContainer, parseStr, resultMap, compAttrList);
                     } else {
-                        counter = findCompType(innerContainer,
-                                descText.substring(indicesList.get(index), indicesList.get(index + 1)), counter);
+                        parseStr = descText.substring(indicesList.get(index), indicesList.get(index + 1));
+                        resultMap = findCompType(innerContainer, parseStr, resultMap, compAttrList);
                     }
                 }
-                if (counter == 0) {
-                    createOnlyEventDescSection(innerContainer, descText);
-                }
+                processResultMap(innerContainer, resultMap, descText);
             } else {
-                /**
-                 * It executes, if not find event desc or registration, agenda or pre reading
-                 * id's on xml description node data
-                 */
-                createOnlyEventDescSection(innerContainer, descText);
+                // It executes, if not find event desc or registration, agenda or pre reading
+                // id's on xml description node data.
+                createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
+                createCoreTextComponent(innerContainer, descText, TEXT_DESC, EVENT_DESC_COMP_ID);
             }
 
+        }
+    }
+
+    /**
+     * Process result map.
+     *
+     * @param innerContainer the inner container
+     * @param resultMap      the result map
+     * @param descText       the desc text
+     */
+    private void processResultMap(Node innerContainer, Map<String, Object> resultMap, String descText) {
+        if (null != resultMap && (Integer) resultMap.get("counter") == 0) {
+            createOnlyEventDescSection(innerContainer, descText);
+        }
+        if (null != resultMap) {
+            List<CompAttributes> compAttributeList = (List<CompAttributes>) resultMap.get("compList");
+            if (!compAttributeList.isEmpty()) {
+                createComponentsInOrderFashion(innerContainer, compAttributeList);
+            }
         }
     }
 
@@ -641,7 +583,7 @@ public class EventsPageCreationService implements PageCreationService {
      */
     private void createOnlyEventDescSection(Node innerContainer, final String descText) {
         createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-        createCoreTextComponent(innerContainer, descText, TEXT_DESC, "event-description");
+        createCoreTextComponent(innerContainer, descText, TEXT_DESC, EVENT_DESC_COMP_ID);
     }
 
     /**
@@ -649,14 +591,15 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param sourceTextString the source text string
      * @param searchWord       the search word
-     * @return                 the index list for the search word
+     * @return the index list for the search word
      */
     private List<Integer> findAllIndicesOfGivenString(String sourceTextString, String searchWord) {
         List<Integer> indexes = new ArrayList<>();
         int wordLength = 0;
         int index = 0;
         while (index != -1) {
-            index = sourceTextString.indexOf(searchWord, index + wordLength); // Slight improvement
+            // Slight improvement.
+            index = sourceTextString.indexOf(searchWord, index + wordLength);
             if (index != -1) {
                 indexes.add(index);
             }
@@ -727,33 +670,10 @@ public class EventsPageCreationService implements PageCreationService {
     }
 
     /**
-     * Gets the AEM page name for given drupal node id.
-     * 
-     * @param list   the page name bean list
-     * @param nodeId the node id
-     * @return       the aem page name for given node id
-     */
-    private String getAemPageName(List<PageNameBean> list, final String nodeId) {
-        list.stream().forEach((item) -> {
-            if (item.getNodeId().equalsIgnoreCase(nodeId)) {
-                String[] pathArray = item.getTitle().split("/");
-                if (pathArray.length > 1) {
-                    aemPageName = pathArray[pathArray.length - 1].trim().replace(".html", StringUtils.EMPTY);
-                }
-                if (pathArray.length == 1) {
-                    aemPageName = item.getTitle().trim();
-                }
-                aemPageName = aemPageName.replaceAll("\\s+", "-");
-            }
-        });
-        return aemPageName;
-    }
-
-    /**
      * Remove all style tags that has CDATA from the text content.
      * 
      * @param textContent the text content
-     * @return            the cleaned up text content
+     * @return the cleaned up text content
      */
     private String removeStyleElementsWithCDATA(String textContent) {
         int styleStartIndex = textContent.indexOf(STYLE_TAG_START);
