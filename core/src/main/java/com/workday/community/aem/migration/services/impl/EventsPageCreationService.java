@@ -144,6 +144,9 @@ public class EventsPageCreationService implements PageCreationService {
     /** The h 2 element end tag. */
     private static final String H2_ELE_END_TAG = "</h2>";
 
+    /** The h2 element start tag. */
+    private static final String H2_ELE_START_TAG = "<h2 class=";
+
     /** The resolver factory. */
     @Reference
     private ResourceResolverFactory resolverFactory;
@@ -509,25 +512,25 @@ public class EventsPageCreationService implements PageCreationService {
         if (isMatchedRegex(EVENT_DESC_REGEX, parseString)) {
             createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
             createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()),
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, H2_ELE_START_TAG.length()), parseString.length()),
                     TEXT_DESC, "event-description");
             counter++;
         } else if (isMatchedRegex(EVENT_REG_REGEX, parseString)) {
             createCoreTitleComponent(innerContainer, REGISTRATION_INFORMATION, TITLE_REG);
             createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()),
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, H2_ELE_START_TAG.length()), parseString.length()),
                     TEXT_REG, "registration-information");
             counter++;
         } else if (isMatchedRegex(EVENT_PRE_READ_REGEX, parseString)) {
             createCoreTitleComponent(innerContainer, PRE_READING, TITLE_PREREAD);
             createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()),
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, H2_ELE_START_TAG.length()), parseString.length()),
                     TEXT_PREREAD, "pre-reading");
             counter++;
         } else if (isMatchedRegex(EVENT_AGENDA_REGEX, parseString)) {
             createCoreTitleComponent(innerContainer, AGENDA, TITLE_AGENDA);
             createCoreTextComponent(innerContainer,
-                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, 10), parseString.length()),
+                    parseString.substring(parseString.indexOf(H2_ELE_END_TAG, H2_ELE_START_TAG.length()), parseString.length()),
                     TEXT_AGENDA, "agenda");
             counter++;
         }
