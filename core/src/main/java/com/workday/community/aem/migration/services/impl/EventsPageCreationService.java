@@ -48,22 +48,22 @@ public class EventsPageCreationService implements PageCreationService {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** The Constant default_event_location. */
+    /** The Constant DEFAULTEVENTLOCATION. */
     private static final String DEFAULTEVENTLOCATION = "Virtual";
 
-    /** The Constant default_event_host. */
+    /** The Constant DEFAULTEVENTHOST. */
     private static final String DEFAULTEVENTHOST = "workday";
 
     /** The Constant CONTAINER. */
     private static final String CONTAINER = "container";
 
-    /** The Constant CENTERCONTAINER2. */
+    /** The Constant CENTERCONTAINER. */
     private static final String CENTERCONTAINER = "centercontainer";
 
-    /** The Constant TOPRIGHTCONTAINER2. */
+    /** The Constant TOPRIGHTCONTAINER. */
     private static final String TOPRIGHTCONTAINER = "toprightcontainer";
 
-    /** The Constant TOPRIGHTCONTAINER2. */
+    /** The Constant EVENTREGISTRATIONCONTAINER. */
     private static final String EVENTREGISTRATIONCONTAINER = "eventregistration";
 
     /** The Constant HOST. */
@@ -102,6 +102,11 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant EVENT_DESCRIPTION. */
     private static final String EVENT_DESCRIPTION = "Event Description";
 
+    /** The Constant STYLE_TAG_START. */
+    private static final String  STYLE_TAG_START = "<style";
+    
+    /** The Constant STYLE_TAG_END. */
+    private static final String  STYLE_TAG_END = "</style>";
     /** The registration information. */
     private static final String REGISTRATION_INFORMATION = "Registration Information";
 
@@ -151,7 +156,7 @@ public class EventsPageCreationService implements PageCreationService {
     @Reference
     private ResourceResolverFactory resolverFactory;
 
-    /** The wg service param. */
+    /** The wd service param. */
     Map<String, Object> wdServiceParam = Collections.singletonMap(ResourceResolverFactory.SUBSERVICE,
             "workday-community-administrative-service");
 
@@ -171,11 +176,11 @@ public class EventsPageCreationService implements PageCreationService {
     String aemPageName = StringUtils.EMPTY;
 
     /**
-     * Do create page.
+     * Creates page in JCR with with given inputs.
      *
      * @param paramsMap the params map
      * @param data      the data
-     * @param list      the list
+     * @param list      the page name bean list
      */
     @Override
     public void doCreatePage(final Map<String, String> paramsMap, EventPageData data, List<PageNameBean> list) {
@@ -186,7 +191,7 @@ public class EventsPageCreationService implements PageCreationService {
                 final String nodeId = data.getDrupalNodeId();
                 String aemPageTitle = data.getTitle();
                 getAemPageName(list, nodeId);
-                // Create Page
+                // Create Page.
                 final Page prodPage = getPageCreated(resourceResolver, paramsMap, aemPageTitle);
                 if (null != prodPage) {
                     jcrNode = prodPage.hasContent() ? prodPage.getContentResource().adaptTo(Node.class) : null;
@@ -202,7 +207,7 @@ public class EventsPageCreationService implements PageCreationService {
                 Node containerNode = rootNode.hasNode(CONTAINER) ? rootNode.getNode(CONTAINER)
                         : rootNode.addNode(CONTAINER);
 
-                // Creation of Register for Event Core Button component
+                // Creation of Register for Event Core Button component.
                 Node eventRegistrationContainer = containerNode.hasNode(EVENTREGISTRATIONCONTAINER)
                         ? containerNode.getNode(EVENTREGISTRATIONCONTAINER)
                         : containerNode.addNode(EVENTREGISTRATIONCONTAINER);
@@ -210,14 +215,14 @@ public class EventsPageCreationService implements PageCreationService {
 
                 // TODO top right container image.
 
-                // Creation of event details component
+                // Creation of event details component.
                 Node toprightContainer = containerNode.hasNode(TOPRIGHTCONTAINER)
                         ? containerNode.getNode(TOPRIGHTCONTAINER)
                         : containerNode.addNode(TOPRIGHTCONTAINER);
 
                 createEventDetailsComponent(toprightContainer, data);
 
-                // Creation of event description component
+                // Creation of event description component.
                 Node centerContainer = containerNode.hasNode(CENTERCONTAINER)
                         ? containerNode.getNode(CENTERCONTAINER)
                         : containerNode.addNode(CENTERCONTAINER);
@@ -229,17 +234,17 @@ public class EventsPageCreationService implements PageCreationService {
                 saveToRepo(session);
             }
         } catch (Exception exec) {
-            logger.error("Exception occurred at while creating page in doCreatePage::{}", exec.getMessage());
+            logger.error("Exception occurred while creating page in doCreatePage::{}", exec.getMessage());
         }
     }
 
     /**
-     * Gets the page created.
-     *
-     * @param resourceResolver the resource resolver
-     * @param paramsMap        the params map
-     * @param aemPageTitle     the aem page title
-     * @return the page created
+     * Gets the page object created for given inputs.
+     * 
+     * @param   resourceResolver the resource resolver
+     * @param   paramsMap        the parameter map
+     * @param   aemPageTitle     the aem page title
+     * @return                   the created page object
      */
     private Page getPageCreated(ResourceResolver resourceResolver, final Map<String, String> paramsMap,
             final String aemPageTitle) {
@@ -255,16 +260,16 @@ public class EventsPageCreationService implements PageCreationService {
     }
 
     /**
-     * Save to repo.
-     *
-     * @param session the session
+     * Save page to JCR repository.
+     * 
+     * @param session the JCR session
      */
     private void saveToRepo(Session session) {
         try {
             session.save();
             session.refresh(true);
         } catch (Exception exec) {
-            logger.error("Exception occurred while save to repo::{}", exec.getMessage());
+            logger.error("Exception occurred while saving to repo::{}", exec.getMessage());
         }
 
     }
@@ -302,7 +307,8 @@ public class EventsPageCreationService implements PageCreationService {
             if (StringUtils.isNotBlank(data.getRetirementDate())) {
                 Calendar retirementDate = MigrationUtils.convertStrToAemCalInstance(data.getRetirementDate(),
                         MigrationConstants.EventsPageConstants.YYYY_MM_DD_FORMAT);
-                retirementDate.add(Calendar.DATE, 1); // add one day
+                // Add one day.
+                retirementDate.add(Calendar.DATE, 1);
                 jcrNode.setProperty(MigrationConstants.RETIREMENT_DATE, retirementDate);
             }
             if (StringUtils.isNotBlank(data.getReadcount())) {
@@ -312,19 +318,22 @@ public class EventsPageCreationService implements PageCreationService {
                 String dateStr = MigrationUtils.getDateStringFromEpoch(Long.parseLong(data.getUpdatedDate()));
                 Calendar updatedDate = MigrationUtils.convertStrToAemCalInstance(dateStr,
                         MigrationConstants.EventsPageConstants.MMM_DD_COMMA_YYYY_FORMAT);
-                updatedDate.add(Calendar.DATE, 1); // add one day
+                // Add one day.
+                updatedDate.add(Calendar.DATE, 1);
                 jcrNode.setProperty(MigrationConstants.UPDATED_DATE, updatedDate);
             }
             if (StringUtils.isNotBlank(data.getStartDate())) {
                 Calendar startDateCal = MigrationUtils.convertStrToAemCalInstance(data.getStartDate(),
                         MigrationConstants.AEM_CAL_INSTANCE_FORMAT);
-                startDateCal.add(Calendar.HOUR_OF_DAY, 1); // add one hour
+                // Add one hour.
+                startDateCal.add(Calendar.HOUR_OF_DAY, 1);
                 jcrNode.setProperty(START_DATE, startDateCal);
             }
             if (StringUtils.isNotBlank(data.getEndDate())) {
                 Calendar endDateCal = MigrationUtils.convertStrToAemCalInstance(data.getEndDate(),
                         MigrationConstants.AEM_CAL_INSTANCE_FORMAT);
-                endDateCal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+                // Add one hour.
+                endDateCal.add(Calendar.HOUR_OF_DAY, 1);
                 jcrNode.setProperty(END_DATE, endDateCal);
             }
 
@@ -339,13 +348,12 @@ public class EventsPageCreationService implements PageCreationService {
      * Collect all tags for given page.
      *
      * @param resourceResolver the resource resolver
-     * @param data             the data
-     * @return the array list
+     * @param data             the event page data
      */
     private void collectAllTagsForGivenPage(ResourceResolver resourceResolver, final EventPageData data) {
-        // To add event tags
+        // To add event tags.
         createEventTypePageTags(resourceResolver, data);
-        // To add release tags
+        // To add release tags.
         if (StringUtils.isNotBlank(data.getReleaseTag())) {
             List<String> releaseTags = Optional
                     .ofNullable(
@@ -354,7 +362,7 @@ public class EventsPageCreationService implements PageCreationService {
             mountTagPageProps(MigrationConstants.TagPropertyName.RELEASE, releaseTags);
         }
 
-        // To add product tags
+        // To add product tags.
         if (StringUtils.isNotBlank(data.getProduct())) {
             List<String> productTags = Optional
                     .ofNullable(getTagsForGivenInputs(resourceResolver, TagFinderEnum.PRODUCT, data.getProduct()))
@@ -362,7 +370,7 @@ public class EventsPageCreationService implements PageCreationService {
             mountTagPageProps(MigrationConstants.TagPropertyName.PRODUCT, productTags);
         }
 
-        // To add using workday tags
+        // To add using workday tags.
         if (StringUtils.isNotBlank(data.getUsingWorkday())) {
             List<String> usingWorkdayTags = Optional
                     .ofNullable(
@@ -371,7 +379,7 @@ public class EventsPageCreationService implements PageCreationService {
                     .orElse(new ArrayList<>());
             mountTagPageProps(MigrationConstants.TagPropertyName.USING_WORKDAY, usingWorkdayTags);
         }
-        // To add industry tags
+        // TODO To add industry tags.
     }
 
     /**
@@ -391,15 +399,14 @@ public class EventsPageCreationService implements PageCreationService {
 
     }
 
-    // To add event format and event audience tags
     /**
-     * Creates the event type page tags.
-     *
+     * To add event format and event audience tags.
+     * 
      * @param resourceResolver the resource resolver
-     * @param data             the data
+     * @param data             the event page data
      */
     private void createEventTypePageTags(ResourceResolver resourceResolver, final EventPageData data) {
-        // To add event type and format tags
+        // To add event type and format tags.
         if (StringUtils.isNotBlank(data.getCalendarEventType())) {
             List<String> eventTypeTags = Optional.ofNullable(getTagsForGivenInputs(resourceResolver,
                     TagFinderEnum.CALENDAREVENTTYPE, data.getCalendarEventType())).orElse(new ArrayList<>());
@@ -420,7 +427,7 @@ public class EventsPageCreationService implements PageCreationService {
 
     /**
      * Mount event type page tags.
-     *
+     * 
      * @param eventFormatTags   the event format tags
      * @param eventAudienceTags the event audience tags
      */
@@ -439,7 +446,7 @@ public class EventsPageCreationService implements PageCreationService {
      * @param resourceResolver the resource resolver
      * @param tagFinderEnum    the tag finder enum
      * @param tagTypeValue     the tag type value
-     * @return the tags for given inputs
+     * @return                 the tags for given inputs
      */
     private List<String> getTagsForGivenInputs(ResourceResolver resourceResolver, TagFinderEnum tagFinderEnum,
             final String tagTypeValue) {
@@ -453,7 +460,7 @@ public class EventsPageCreationService implements PageCreationService {
      * @param resourceResolver the resource resolver
      * @param tagRootPath      the tag root path
      * @param tagTitle         the tag title
-     * @return the list
+     * @return                 the list
      */
     private List<String> tagFinderUtil(ResourceResolver resourceResolver, final String tagRootPath,
             final String tagTitle) {
@@ -481,7 +488,7 @@ public class EventsPageCreationService implements PageCreationService {
      * @param resourceResolver the resource resolver
      * @param searchPath       the search path
      * @param tagTitle         the tag title
-     * @return the iterator
+     * @return                 the tag resource iterator
      */
     private Iterator<Resource> doQueryForTag(ResourceResolver resourceResolver, String searchPath, String tagTitle) {
         String partialSqlStmt = "SELECT * FROM [cq:Tag] AS tag WHERE ISDESCENDANTNODE(tag, \"" + searchPath
@@ -506,7 +513,7 @@ public class EventsPageCreationService implements PageCreationService {
      * @param innerContainer the inner container
      * @param parseString    the parse string
      * @param counter        the counter
-     * @return the int
+     * @return               the int
      */
     public int findCompType(Node innerContainer, String parseString, int counter) {
         if (isMatchedRegex(EVENT_DESC_REGEX, parseString)) {
@@ -542,10 +549,11 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param regexStr    the regex str
      * @param parseString the parse string
-     * @return true, if is matched regex
+     * @return            true, if is matched regex
      */
     private boolean isMatchedRegex(final String regexStr, String parseString) {
-        Pattern patt = Pattern.compile(regexStr);// . represents single character
+        // . represents single character.
+        Pattern patt = Pattern.compile(regexStr);
         Matcher mat = patt.matcher(parseString);
         return mat.matches();
     }
@@ -564,7 +572,7 @@ public class EventsPageCreationService implements PageCreationService {
             Node textCompNode = innerContainer.addNode(nodeName);
             textCompNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
                     MigrationConstants.TEXT_COMP_SLING_RESOURCE);
-            textCompNode.setProperty(MigrationConstants.TEXT, richText);
+            textCompNode.setProperty(MigrationConstants.TEXT, removeStyleElementsWithCDATA(richText));
             textCompNode.setProperty(MigrationConstants.TEXT_IS_RICH_PROP, MigrationConstants.BOOLEAN_TRUE);
             textCompNode.setProperty("id", classId);
         } catch (Exception exec) {
@@ -641,7 +649,7 @@ public class EventsPageCreationService implements PageCreationService {
      *
      * @param sourceTextString the source text string
      * @param searchWord       the search word
-     * @return the list
+     * @return                 the index list for the search word
      */
     private List<Integer> findAllIndicesOfGivenString(String sourceTextString, String searchWord) {
         List<Integer> indexes = new ArrayList<>();
@@ -679,7 +687,7 @@ public class EventsPageCreationService implements PageCreationService {
                 registerForEventButtonNode.setProperty(MigrationConstants.LINK_TARGET_PROP,
                         MigrationConstants.TEXT_UNDERSCORE_SELF);
                 registerForEventButtonNode.setProperty(MigrationConstants.LINK_URL_PROP, data.getRegistrationUrl());
-                // TODO Find if default accessibilityLabel needed
+                // TODO Find if default accessibilityLabel needed.
 
             } else {
                 logger.info("Event Registration URL not found for drupalNodeId : {}", data.getDrupalNodeId());
@@ -719,11 +727,11 @@ public class EventsPageCreationService implements PageCreationService {
     }
 
     /**
-     * Gets the aem page name.
-     *
-     * @param list   the list
+     * Gets the AEM page name for given drupal node id.
+     * 
+     * @param list   the page name bean list
      * @param nodeId the node id
-     * @return the aem page name
+     * @return       the aem page name for given node id
      */
     private String getAemPageName(List<PageNameBean> list, final String nodeId) {
         list.stream().forEach((item) -> {
@@ -740,4 +748,22 @@ public class EventsPageCreationService implements PageCreationService {
         });
         return aemPageName;
     }
+
+    /**
+     * Remove all style tags that has CDATA from the text content.
+     * 
+     * @param textContent the text content
+     * @return            the cleaned up text content
+     */
+    private String removeStyleElementsWithCDATA(String textContent) {
+        int styleStartIndex = textContent.indexOf(STYLE_TAG_START);
+        int styleEndIndex = textContent.indexOf(STYLE_TAG_END);
+        if (styleStartIndex >= 0 && styleEndIndex >= 0 && textContent.contains("[CDATA")) {
+            String styleCdataBlock = textContent.substring(styleStartIndex, styleEndIndex + 8);
+            textContent = textContent.replace(styleCdataBlock, StringUtils.EMPTY);
+            removeStyleElementsWithCDATA(textContent);
+        }
+        return textContent;
+    }
+
 }
