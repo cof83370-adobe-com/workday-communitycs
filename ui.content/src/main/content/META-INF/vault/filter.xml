@@ -2,6 +2,7 @@
 <workspaceFilter version="1.0">
     <filter root="/conf/community" mode="update"/>
     <filter root="/content/workday-community" mode="merge"/>
+    <filter root="/content/dam/community" mode="merge"/>
     <filter root="/content/cq:tags/event" mode="merge"/>
     <filter root="/content/cq:tags/user" mode="merge"/>
     <filter root="/content/cq:tags/region-and-country" mode="merge"/>
