@@ -1,8 +1,19 @@
 .event-image-details {
-    .image {
+    .image:has(div) {
         display: inline-block;
 
+        @media (max-width: $screen-small) {
+            width: 100%;
+        }
+        @media (min-width: $screen-small) {
+            min-width: 33%;
+            vertical-align: top;
+        }
+
         .cmp-image {
+            @media (min-width: $screen-small) {
+                margin-right: 32px;
+            }
             &__image {
                 @media (max-width: $screen-small) {
                     height: 279px;
@@ -11,13 +22,18 @@
                 }
 
                 @media (min-width: $screen-small) {
-                    width: auto;
-                    max-width: 408px;
-                    max-height: 326px;
+                    height: 325px;
                     border-radius: 22px;
-                    margin-right: 32px;
                 }
             }
+        }
+    }
+}
+
+.event-image-details.cq-Editable-dom--container {
+    .cmp-container {
+        .image.cq-Editable-dom {
+            inline-size: -webkit-fill-available;
         }
     }
 }

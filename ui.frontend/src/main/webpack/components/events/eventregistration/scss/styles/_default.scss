@@ -7,16 +7,18 @@
         border-radius: 24px;
         border: none;
         text-decoration: none;
-        float: right;
 
         @media (max-width: $screen-small) {
-            width: 252px;
+            width: -webkit-fill-available;
+            max-width: 252px;
             height: 48px;
             margin-bottom: 32px;
+            float: right;
         }
 
         @media (min-width: $screen-small) {
             width: 100%;
+            max-width: 260px;
             height: 40px;
         }
 
