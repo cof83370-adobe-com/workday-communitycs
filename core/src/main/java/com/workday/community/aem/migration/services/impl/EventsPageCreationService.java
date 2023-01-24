@@ -67,18 +67,6 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant LOCATION. */
     private static final String LOCATION = "location";
 
-    /** The Constant DRUPAL_NODE_ID. */
-    private static final String DRUPAL_NODE_ID = "drupalNodeId";
-
-    /** The Constant DRUPAL_ACEESS_CONTROL. */
-    private static final String DRUPAL_ACEESS_CONTROL = "drupalAccessControl";
-
-    /** The Constant AUTHOR. */
-    private static final String AUTHOR = "author";
-
-    /** The Constant POSTED_DATE. */
-    private static final String POSTED_DATE = "postedDate";
-
     /** The Constant EVENT_TYPE. */
     private static final String EVENT_TYPE = "eventType";
 
@@ -246,11 +234,11 @@ public class EventsPageCreationService implements PageCreationService {
         try {
 
             if (StringUtils.isNotBlank(data.getDrupalNodeId())) {
-                jcrNode.setProperty(DRUPAL_NODE_ID, Long.parseLong(data.getDrupalNodeId()));
+                jcrNode.setProperty(MigrationConstants.DRUPAL_NODE_ID, Long.parseLong(data.getDrupalNodeId()));
             }
 
             if (StringUtils.isNotBlank(data.getAuthor())) {
-                jcrNode.setProperty(AUTHOR, data.getAuthor());
+                jcrNode.setProperty(MigrationConstants.AUTHOR, data.getAuthor());
             }
 
             if (StringUtils.isNotBlank(data.getPostedDate())) {
@@ -259,11 +247,11 @@ public class EventsPageCreationService implements PageCreationService {
                         MigrationConstants.EventsPageConstants.MMM_DD_COMMA_YYYY_FORMAT);
                 // Add one day.
                 postedDate.add(Calendar.DATE, 1);
-                jcrNode.setProperty(POSTED_DATE, postedDate);
+                jcrNode.setProperty(MigrationConstants.POSTED_DATE, postedDate);
             }
 
             if (StringUtils.isNoneBlank(data.getAccessControl())) {
-                jcrNode.setProperty(DRUPAL_ACEESS_CONTROL, data.getAccessControl());
+                jcrNode.setProperty(MigrationConstants.DRUPAL_ACEESS_CONTROL, data.getAccessControl());
             }
 
             if (StringUtils.isNotBlank(data.getRetirementDate())) {

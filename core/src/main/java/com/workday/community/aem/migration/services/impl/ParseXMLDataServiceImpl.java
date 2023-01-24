@@ -25,6 +25,7 @@ import com.day.cq.dam.api.Asset;
 import com.day.cq.dam.api.Rendition;
 import com.workday.community.aem.migration.constants.MigrationConstants;
 import com.workday.community.aem.migration.models.EventPagesList;
+import com.workday.community.aem.migration.models.KitsAndToolsPagesList;
 import com.workday.community.aem.migration.models.PageNameBean;
 import com.workday.community.aem.migration.services.PageCreationService;
 import com.workday.community.aem.migration.services.PageNameFinderService;
@@ -55,6 +56,9 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 	// @OSGiService(filter="(component.name=events-page)")
 	@Reference(target = "(type=events-page)")
 	PageCreationService eventsPageCreationService;
+
+	@Reference(target = "(type=kitsandtools-page)")
+	PageCreationService kitsAndsToolsPageCreationService;
 
 	@Reference
 	PageNameFinderService pageNameFinderService;
@@ -130,7 +134,11 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 							doCreateEventsPageCreationService(resolver, paramsMap, listOfPageData);
 						}
 						break;
-					case "kits-page-template":
+					case "kits-and-tools":
+					    KitsAndToolsPagesList listOfKitsPagesData = readXMLFromJcrSource(resolver, paramsMap, KitsAndToolsPagesList.class);
+						if(null != listOfKitsPagesData){
+							doCreateKitsAndToolsPageCreationService(resolver, paramsMap, listOfKitsPagesData);
+						}
 						break;
 					default:
 				}
@@ -140,6 +148,8 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 					exec.getMessage());
 		}
 	}
+
+
 
 	/**
 	 * Find template name.
@@ -167,5 +177,19 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 		List<PageNameBean> list = pageNameFinderService.getPageName(resolver,
 				MigrationConstants.EVENT_PAGE_NAMES_FINDER_JSON);
 		listOfPageData.getRoot().forEach(item -> eventsPageCreationService.doCreatePage(paramsMap, item, list));
+	}
+
+	/**
+	 * Do create Kits and Toos page creation service.
+	 *
+	 * @param paramsMap      the params map
+	 * @param KitsAndToolsPagesList the list of page data
+	 * @return the string
+	 */
+	private void doCreateKitsAndToolsPageCreationService(ResourceResolver resolver, Map<String, String> paramsMap,
+	KitsAndToolsPagesList listOfKitsPagesData) {
+		List<PageNameBean> list = pageNameFinderService.getPageName(resolver,
+				MigrationConstants.KITS_AND_TOOLS_PAGE_NAMES_FINDER_JSON);
+				listOfKitsPagesData.getRoot().forEach(item -> kitsAndsToolsPageCreationService.doCreatePage(paramsMap, item, list));
 	}
 }
