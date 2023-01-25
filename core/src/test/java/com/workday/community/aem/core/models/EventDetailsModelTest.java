@@ -48,7 +48,7 @@ public class EventDetailsModelTest {
         context.addModelsForClasses(EventDetailsModel.class);
         Map<String, Object> pageProperties = new HashMap<>();
         pageProperties.put("startDate", "2022-11-22T00:44:02.000+05:30");
-        pageProperties.put("endDate", "2022-11-24T00:44:02.000+05:30");
+        pageProperties.put("endDate", "2022-11-24T00:54:02.000+05:30");
         pageProperties.put("eventLocation", "California");
         pageProperties.put("eventHost", "workday");
         pageProperties.put("eventFormat", new String[] { "event:event-format/webinar" });
@@ -75,7 +75,7 @@ public class EventDetailsModelTest {
     void testGetLength() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
-        assertEquals(2, eventDetailsModel.getEventLengthDays());
+        assertEquals(3, eventDetailsModel.getEventLengthDays());
     }
 
     @Test
