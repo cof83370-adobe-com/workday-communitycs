@@ -75,7 +75,7 @@ public class EventDetailsModelTest {
     void testGetLength() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
-        assertEquals(2, eventDetailsModel.getLength());
+        assertEquals(2, eventDetailsModel.getEventLengthDays());
     }
 
     @Test

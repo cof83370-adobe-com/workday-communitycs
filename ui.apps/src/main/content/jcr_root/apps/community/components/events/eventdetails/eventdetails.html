@@ -1,37 +1,42 @@
 <sly data-sly-use.eventDetails="${'com.workday.community.aem.core.models.EventDetailsModel'}"></sly>
 <div class="cmp-eventdetails" data-cmp-is="cmp-eventdetails">
-<div>
-  <div class="cmp-eventdetails__heading">${'Event Details' @ i18n, context='text'}</div>
-  <div class="cmp-eventdetails__itemList">
-    <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="eventDate">
-      <span class="cmp-eventdetails__item-icon-calendar"></span>
-      <div class="cmp-eventdetails__item-label">${'Event Date' @ i18n, context='text'} </div>
-      <div class="cmp-eventdetails__item-output">${eventDetails.dateFormat @ i18n, context='text'} ${'at' @ i18n, context='text'} ${eventDetails.timeFormat @ i18n, context='text'} UTC
-        <sly data-sly-test="${pageProperties.alternateTimezone}">(${pageProperties.alternateTimezone})</sly></div>
-    </div>
-    <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="eventType">
-      <span class="cmp-eventdetails__item-icon-people"></span>
-      <div class="cmp-eventdetails__item-label">${'Event Type' @ i18n, context='text'} </div>
-      <div class="cmp-eventdetails__item-output">
-        <sly data-sly-list.eachItem="${eventDetails.eventFormat}" data-sly-unwrap> ${eachItem @ i18n, context='text'} </sly>
+  <div>
+    <div class="cmp-eventdetails__heading">${'Event Details' @ i18n, context='text'}</div>
+    <div class="cmp-eventdetails__itemList">
+      <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="eventDate">
+        <span class="cmp-eventdetails__item-icon-calendar"></span>
+        <div class="cmp-eventdetails__item-label">${'Event Date' @ i18n, context='text'} </div>
+        <div class="cmp-eventdetails__item-output">${eventDetails.dateFormat @ i18n, context='text'} ${'at' @ i18n, context='text'} ${eventDetails.timeFormat @ i18n, context='text'} UTC
+          <sly data-sly-test="${pageProperties.alternateTimezone}">(${pageProperties.alternateTimezone})</sly>
+        </div>
+      </div>
+      <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="eventType">
+        <span class="cmp-eventdetails__item-icon-people"></span>
+        <div class="cmp-eventdetails__item-label">${'Event Type' @ i18n, context='text'} </div>
+        <div class="cmp-eventdetails__item-output">
+          <sly data-sly-list.eachItem="${eventDetails.eventFormat}" data-sly-unwrap> ${eachItem @ i18n, context='text'} </sly>
+        </div>
+      </div>
+      <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="location">
+        <span class="cmp-eventdetails__item-icon-location"></span>
+        <div class="cmp-eventdetails__item-label">${'Location' @ i18n, context='text'} </div>
+        <div class="cmp-eventdetails__item-output">${eventDetails.eventLocation || 'Virtual' @ i18n, context='text'}</div>
+      </div>
+      <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="host">
+        <span class="cmp-eventdetails__item-icon-host"></span>
+        <div class="cmp-eventdetails__item-label">${'Host' @ i18n, context='text'} </div>
+        <div class="cmp-eventdetails__item-output">${eventDetails.eventHost || 'Workday' @ i18n, context='text'}</div>
+      </div>
+      <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="length">
+        <span class="cmp-eventdetails__item-icon-time"></span>
+        <div class="cmp-eventdetails__item-label">${'Length' @ i18n, context='text'} </div>
+        <div class="cmp-eventdetails__item-output">
+          <sly data-sly-test="${eventDetails.eventLengthDays > 0}">${eventDetails.eventLengthDays @ i18n, context='text'} ${eventDetails.daysLabel @ i18n, context='text'}</sly>
+          <sly data-sly-test="${eventDetails.eventLengthHours  > 0}">${eventDetails.eventLengthHours @ i18n, context='text'} ${eventDetails.hoursLabel @ i18n, context='text'}</sly>
+          <sly data-sly-test="${eventDetails.eventLengthMinuets > 0}">${eventDetails.eventLengthMinuets @ i18n, context='text'} ${eventDetails.minuetsLabel @ i18n, context='text'}</sly>
+        </div>
       </div>
     </div>
-    <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="location">
-      <span class="cmp-eventdetails__item-icon-location"></span>
-      <div class="cmp-eventdetails__item-label">${'Location' @ i18n, context='text'} </div>
-      <div class="cmp-eventdetails__item-output">${eventDetails.eventLocation || 'Virtual' @ i18n, context='text'}</div>
-    </div>
-    <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="host">
-      <span class="cmp-eventdetails__item-icon-host"></span>
-      <div class="cmp-eventdetails__item-label">${'Host' @ i18n, context='text'} </div>
-      <div class="cmp-eventdetails__item-output">${eventDetails.eventHost || 'Workday' @ i18n, context='text'}</div>
-    </div>
-    <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="length">
-      <span class="cmp-eventdetails__item-icon-time"></span>
-      <div class="cmp-eventdetails__item-label">${'Length' @ i18n, context='text'} </div>
-      <div class="cmp-eventdetails__item-output">${eventDetails.length @ i18n, context='text'} ${eventDetails.daysLabel @ i18n, context='text'}</div>
-    </div>
-  </div>
   </div>
 </div>
 <div data-sly-test="${wcmmode.edit || wcmmode.design}" class="cq-placeholder" data-emptyText="WD Community Site - Event Details Component"></div>
