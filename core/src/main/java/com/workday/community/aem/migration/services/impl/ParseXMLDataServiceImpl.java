@@ -128,15 +128,16 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 			String templateName = findTemplateName(templatePath);
 			if (StringUtils.isNotBlank(templateName)) {
 				switch (templateName) {
-					case "event-page-template":
+					case MigrationConstants.TemplateNames.EVENT:
 						EventPagesList listOfPageData = readXMLFromJcrSource(resolver, paramsMap, EventPagesList.class);
 						if (null != listOfPageData) {
 							doCreateEventsPageCreationService(resolver, paramsMap, listOfPageData);
 						}
 						break;
-					case "kits-and-tools":
-					    KitsAndToolsPagesList listOfKitsPagesData = readXMLFromJcrSource(resolver, paramsMap, KitsAndToolsPagesList.class);
-						if(null != listOfKitsPagesData){
+					case MigrationConstants.TemplateNames.KITS_AND_TOOLS:
+						KitsAndToolsPagesList listOfKitsPagesData = readXMLFromJcrSource(resolver, paramsMap,
+								KitsAndToolsPagesList.class);
+						if (null != listOfKitsPagesData) {
 							doCreateKitsAndToolsPageCreationService(resolver, paramsMap, listOfKitsPagesData);
 						}
 						break;

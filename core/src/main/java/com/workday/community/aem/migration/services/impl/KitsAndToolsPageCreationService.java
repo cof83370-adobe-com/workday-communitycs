@@ -69,7 +69,7 @@ public class KitsAndToolsPageCreationService implements PageCreationService {
                 final String nodeId = data.getDrupalNodeId();
                 String aemPageTitle = data.getTitle();
                 MigrationUtils.getAemPageName(list, nodeId);
-                // Create Page
+                // Create Page.
                 final Page prodPage = MigrationUtils.getPageCreated(resourceResolver, paramsMap, aemPageTitle);
                 if (null != prodPage) {
                     jcrNode = prodPage.hasContent() ? prodPage.getContentResource().adaptTo(Node.class) : null;
@@ -78,16 +78,15 @@ public class KitsAndToolsPageCreationService implements PageCreationService {
                     return;
                 }
 
-                // set Page properties.
+                // Set page properties.
                 setPageProps(jcrNode, data, resourceResolver);
                 MigrationUtils.saveToRepo(session);
             }
         } catch (Exception exec) {
             logger.error(
-                    "Exception occurred at while creating page in doCreatePage of KitsAndToolsPageCreationService::{}",
+                    "Exception occurred while creating page in doCreatePage of KitsAndToolsPageCreationService::{}",
                     exec.getMessage());
         }
-
     }
 
     private void setPageProps(final Node jcrNode, final KitsAndToolsPageData data, ResourceResolver resourceResolver) {
@@ -136,7 +135,7 @@ public class KitsAndToolsPageCreationService implements PageCreationService {
     }
 
     private void collectAllTagsForGivenPage(ResourceResolver resourceResolver, final KitsAndToolsPageData data) {
-        // To add release tags
+        // To add release tags.
         if (StringUtils.isNotBlank(data.getReleaseTag())) {
             List<String> releaseTags = Optional
                     .ofNullable(
@@ -146,7 +145,7 @@ public class KitsAndToolsPageCreationService implements PageCreationService {
             MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.RELEASE, releaseTags);
         }
 
-        // To add product tags
+        // To add product tags.
         if (StringUtils.isNotBlank(data.getProduct())) {
             List<String> productTags = Optional
                     .ofNullable(MigrationUtils.getTagsForGivenInputs(resourceResolver, TagFinderEnum.PRODUCT,
@@ -155,7 +154,7 @@ public class KitsAndToolsPageCreationService implements PageCreationService {
             MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.PRODUCT, productTags);
         }
 
-        // To add using workday tags
+        // To add using workday tags.
         if (StringUtils.isNotBlank(data.getUsingWorkday())) {
             List<String> usingWorkdayTags = Optional
                     .ofNullable(
@@ -166,7 +165,7 @@ public class KitsAndToolsPageCreationService implements PageCreationService {
                     usingWorkdayTags);
         }
 
-        // To add industry tags
+        // To add industry tags.
         if (StringUtils.isNotBlank(data.getIndustry())) {
             List<String> industryTags = Optional
                     .ofNullable(
@@ -177,7 +176,7 @@ public class KitsAndToolsPageCreationService implements PageCreationService {
             industryTags);
         }
 
-        // To add programsTools tags
+        // To add programsTools tags.
         if (StringUtils.isNotBlank(data.getProgramType())) {
             List<String> programTypeTags = Optional
                     .ofNullable(

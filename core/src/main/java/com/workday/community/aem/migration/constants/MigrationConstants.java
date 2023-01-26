@@ -95,6 +95,18 @@ public interface MigrationConstants {
 	public static final String KITS_AND_TOOLS_PAGE_NAMES_FINDER_JSON = "/content/dam/community/kits_and_tools_page_names_finder.json";
 
 	/**
+	 * The Interface TemplateNames.
+	 */
+	public interface TemplateNames {
+
+		/** The Constant EVENT. */
+		public static final String EVENT = "event-page-template";
+
+		/** The Constant KITS_AND_TOOLS. */
+		public static final String KITS_AND_TOOLS = "kits-and-tools";
+	}
+	
+	/**
 	 * The Interface TagRootPaths.
 	 */
 	public interface TagRootPaths {
