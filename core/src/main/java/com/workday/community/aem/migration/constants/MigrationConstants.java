@@ -67,6 +67,18 @@ public interface MigrationConstants {
 	/** The Constant UPDATED_DATE. */
 	public static final String UPDATED_DATE = "updatedDate";
 
+	/**  The Constant DRUPAL_NODE_ID. */
+	public static final String DRUPAL_NODE_ID = "drupalNodeId";
+
+	/** The Constant DRUPAL_ACEESS_CONTROL. */
+	public static final String DRUPAL_ACEESS_CONTROL = "drupalAccessControl";
+
+	/** The Constant AUTHOR. */
+	public static final String AUTHOR = "author";
+
+	/** The Constant POSTED_DATE. */
+	public static final String POSTED_DATE = "postedDate";
+
 	/** The Constant LINK_TARGET_PROP. */
 	public static final String LINK_TARGET_PROP = "linkTarget";
 
@@ -75,43 +87,54 @@ public interface MigrationConstants {
 
 	/** The Constant TEXT_UNDERSCORE_SELF. */
 	public static final String TEXT_UNDERSCORE_SELF = "_self";
-	
+
 	/** The Constant EVENT_PAGE_NAMES_FINDER_JSON. */
 	public static final String EVENT_PAGE_NAMES_FINDER_JSON = "/content/dam/community/page_names_finder.json";
 
 	/** The Constant KITS_AND_TOOLS_PAGE_NAMES_FINDER_JSON. */
 	public static final String KITS_AND_TOOLS_PAGE_NAMES_FINDER_JSON = "/content/dam/community/kits_and_tools_page_names_finder.json";
 
+	/**
+	 * The Interface TemplateNames.
+	 */
+	public interface TemplateNames {
+
+		/** The Constant EVENT. */
+		public static final String EVENT = "event-page-template";
+
+		/** The Constant KITS_AND_TOOLS. */
+		public static final String KITS_AND_TOOLS = "kits-and-tools";
+	}
 	
 	/**
 	 * The Interface TagRootPaths.
 	 */
 	public interface TagRootPaths {
-		
+
 		/** The Constant REGION_AND_COUNTRY_TAG_ROOT. */
 		public static final String REGION_AND_COUNTRY_TAG_ROOT = "/content/cq:tags/region-and-country";
-		
+
 		/** The Constant PROGRAM_TYPE_TAG_ROOT. */
 		public static final String PROGRAM_TYPE_TAG_ROOT = "/content/cq:tags/program-type";
-		
+
 		/** The Constant RELEASE_NOTES_TAG_ROOT. */
 		public static final String RELEASE_NOTES_TAG_ROOT = "/content/cq:tags/release-notes";
-		
+
 		/** The Constant INDUSTRY_TAG_ROOT. */
 		public static final String INDUSTRY_TAG_ROOT = "/content/cq:tags/industry";
-		
+
 		/** The Constant RELEASE_TAG_ROOT. */
 		public static final String RELEASE_TAG_ROOT = "/content/cq:tags/release";
-		
+
 		/** The Constant USER_TAG_ROOT. */
 		public static final String USER_TAG_ROOT = "/content/cq:tags/user";
-		
+
 		/** The Constant USING_WORKDAY_TAG_ROOT. */
 		public static final String USING_WORKDAY_TAG_ROOT = "/content/cq:tags/using-workday";
-		
+
 		/** The Constant PRODUCT_TAG_ROOT. */
 		public static final String PRODUCT_TAG_ROOT = "/content/cq:tags/product";
-		
+
 		/** The Constant EVENT_TAG_ROOT. */
 		public static final String EVENT_TAG_ROOT = "/content/cq:tags/event";
 	}
@@ -148,20 +171,26 @@ public interface MigrationConstants {
 	 * The Interface TagPropertyName.
 	 */
 	public interface TagPropertyName {
-		
+
 		/** The Constant EVENT_FORMAT. */
 		public static final String EVENT_FORMAT = "eventFormat";
-		
+
 		/** The Constant EVENT_AUDIENCE. */
 		public static final String EVENT_AUDIENCE = "eventAudience";
-		
+
 		/** The Constant RELEASE. */
 		public static final String RELEASE = "releaseTags";
-		
+
 		/** The Constant PRODUCT. */
 		public static final String PRODUCT = "productTags";
-		
+
 		/** The Constant USING_WORKDAY. */
 		public static final String USING_WORKDAY = "usingWorkday";
+
+		/** The Constant INDUSTRY. */
+		public static final String INDUSTRY = "industryTags";
+
+		/** The Constant PROGRAM_TYPE. */
+		public static final String PROGRAM_TYPE = "programsToolsTags";
 	}
 }

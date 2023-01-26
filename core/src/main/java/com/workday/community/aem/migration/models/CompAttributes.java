@@ -4,24 +4,27 @@ import java.util.Comparator;
 
 /**
  * The Class CompAttributes.
+ * 
+ * 
+ * @author palla.pentayya
  */
 public class CompAttributes implements Comparable<CompAttributes> {
-
+    
     /** The id. */
     private int id;
-
+    
     /** The title val. */
     private String titleVal;
-
+    
     /** The text val. */
     private String textVal;
 
     /**
      * Instantiates a new comp attributes.
      *
-     * @param id       the id
+     * @param id the id
      * @param titleVal the title val
-     * @param textVal  the text val
+     * @param textVal the text val
      */
     public CompAttributes(int id, String titleVal, String textVal) {
         this.id = id;
@@ -86,7 +89,7 @@ public class CompAttributes implements Comparable<CompAttributes> {
     /**
      * Compare to.
      *
-     * @param compareComp the comparecomp
+     * @param compareComp the compare comp
      * @return the int
      */
     @Override
