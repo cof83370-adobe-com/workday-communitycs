@@ -32,8 +32,8 @@
         <div class="cmp-eventdetails__item-label">${'Length' @ i18n, context='text'} </div>
         <div class="cmp-eventdetails__item-output">
           <sly data-sly-test="${eventDetails.eventLengthDays > 0}">${eventDetails.eventLengthDays @ i18n, context='text'} ${eventDetails.daysLabel @ i18n, context='text'}</sly>
-          <sly data-sly-test="${eventDetails.eventLengthHours  > 0}">${eventDetails.eventLengthHours @ i18n, context='text'} ${eventDetails.hoursLabel @ i18n, context='text'}</sly>
-          <sly data-sly-test="${eventDetails.eventLengthMinuets > 0}">${eventDetails.eventLengthMinuets @ i18n, context='text'} ${eventDetails.minuetsLabel @ i18n, context='text'}</sly>
+          <sly data-sly-test="${eventDetails.eventLengthHours > 0}">${eventDetails.eventLengthHours @ i18n, context='text'} ${eventDetails.hoursLabel @ i18n, context='text'}</sly>
+          <sly data-sly-test="${eventDetails.eventLengthMinutes > 0}">${eventDetails.eventLengthMinutes @ i18n, context='text'} ${eventDetails.minutesLabel @ i18n, context='text'}</sly>
         </div>
       </div>
     </div>
