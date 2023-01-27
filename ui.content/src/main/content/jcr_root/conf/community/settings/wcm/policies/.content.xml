@@ -471,6 +471,17 @@
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_1669702440856>
             </breadcrumb>
+            <accordion jcr:primaryType="nt:unstructured">
+                <policy_1674773938710
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Kits and Tools - Accordion (Main)"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    allowedHeadingElements="[h2,h3,h4,h5,h6]"
+                    components="[/apps/community/components/container,/apps/community/components/image,/apps/community/components/text]"
+                    headingElement="h2">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_1674773938710>
+            </accordion>
         </components>
     </community>
 </jcr:root>
