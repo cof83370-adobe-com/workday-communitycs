@@ -1,17 +1,29 @@
-<div class="cmp-taxonomy" data-cmp-is="cmp-taxonomy">
-<!--/* HTML should go here */-->
-    <div class="cmp-taxonomy__heading">${pageProperties.heading || 'More details' @ i18n, context='text'}</div>
+<sly data-sly-use.taxonomyModel="${'com.workday.community.aem.core.models.TaxonamyModel'}"></sly>
+<div class="cmp-taxonomy" data-cmp-is="cmp-taxonomy">    
+    <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.programsToolsTags}">
+        <p class="cmp-taxonomy__item-label">${'Program Type' @ i18n, context='text'}</p>
+        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="programsToolsTags">
+            <sly data-sly-list.eachItem="${taxonomyModel.programTypeTags}" data-sly-unwrap> <div> ${eachItem @ i18n, context='text'} </div> </sly>
+        </pre>
+    </div>
     <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.productTags}">
-        <p class="cmp-taxonomy__item-label">${properties.productTags || 'Product' @ i18n, context='text'}</p>
-        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="product">${pageProperties.productTags}</pre>
+        <p class="cmp-taxonomy__item-label">${'Products' @ i18n, context='text'}</p>
+        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="productTags">
+            <div data-sly-list.eachItem="${taxonomyModel.productTags}" data-sly-unwrap> <div>${eachItem @ i18n, context='text'}</div> </div>
+        </pre>
+
     </div>
-    <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.programsTools}">
-        <p class="cmp-taxonomy__item-label">${pageProperties.programsTools || 'Programs Type' @ i18n, context='text'}</p>
-        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="programtools">${pageProperties.programsTools}</pre>
+    <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.industryTags}">
+        <p class="cmp-taxonomy__item-label">${'Industry' @ i18n, context='text'}</p>
+        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="industryTags">
+            <sly data-sly-list.eachItem="${taxonomyModel.industryTags}" data-sly-unwrap><div> ${eachItem @ i18n, context='text'} </div> </sly>
+        </pre>
     </div>
-    <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.releaseTags}">
-        <p class="cmp-taxonomy__item-label">${pageProperties.releaseTags || 'Release' @ i18n, context='text'}</p>
-        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="release">${pageProperties.releaseTags}</pre>
+    <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.usingWorkdayTags}">
+        <p class="cmp-taxonomy__item-label">${'Using Workday' @ i18n, context='text'}</p>
+        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="usingWorkdayTags">
+            <sly data-sly-list.eachItem="${taxonomyModel.usingWorkdayTags}" data-sly-unwrap> <div>${eachItem @ i18n, context='text'} </div></sly>
+        </pre>
     </div>
 </div>
 
