@@ -15,8 +15,6 @@ body {
 
 main {
     max-width: 1200px;
-    margin-left: auto;
-    margin-right: auto;
 
     @media (max-width: $screen-small) {
         padding: 4.0em 1.0em;
@@ -57,4 +55,9 @@ h2 {
 h3 {
     font-size: 16px;
     line-height: 22px;
+}
+
+#main-container {
+    margin: 0 auto;
+    float: none;
 }
