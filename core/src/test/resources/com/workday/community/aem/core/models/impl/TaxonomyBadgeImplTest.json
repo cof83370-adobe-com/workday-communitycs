@@ -1,0 +1,81 @@
+{
+    "event-page": {
+        "jcr:primaryType": "cq:Page",
+        "jcr:content": {
+            "jcr:primaryType": "cq:PageContent",
+            "startDate": "Tue Nov 22 2022 00:44:02 GMT-0600",
+            "jcr:createdBy": "admin",
+            "jcr:title": "Test AEM content Demo 13",
+            "endDate": "Wed Nov 23 2022 00:44:48 GMT-0600",
+            "productTags": [
+                "product:engage"
+            ],
+            "pwaOrientation": "any",
+            "cq:template": "/conf/community/settings/wcm/templates/event-page-template",
+            "readCount": 1,
+            "updatedDate": "Mon Nov 21 2022 23:00:00 GMT-0600",
+            "jcr:created": "Sat Jan 21 2023 07:14:52 GMT-0600",
+            "pwaDisplay": "standalone",
+            "eventFormat": [
+                "event:event-format/conference/altitude",
+                "event:event-format/conference/rising",
+                "event:event-format/conference/elevate",
+                "event:event-format/webinar/training"
+            ],
+            "cq:lastModified": "Tue Jan 31 2023 18:46:06 GMT-0600",
+            "eventLocation": "Virtual",
+            "eventHost": "Community",
+            "pwaCachestrategy": "staleWhileRevalidate",
+            "sling:resourceType": "community/components/eventspage",
+            "retirementDate": "Wed May 22 2024 23:00:00 GMT-0500",
+            "cq:lastModifiedBy": "admin"
+        }
+    },
+    "release-notes-page": {
+        "jcr:primaryType": "cq:Page",
+        "jcr:content": {
+            "jcr:primaryType": "nt:unstructured",
+            "sling:resourceType": "community/components/releasenotespage",
+            "releasNotesChangeType": [
+                "release-notes:change-type/enhancement",
+                "release-notes:change-type/fix",
+                "release-notes:change-type/what-s-coming-next",
+                "release-notes:change-type/unresolvable-tag"
+            ]
+        }
+    },
+    "training-catalog-page": {
+        "jcr:primaryType": "cq:Page",
+        "jcr:content": {
+            "jcr:primaryType": "nt:unstructured",
+            "sling:resourceType": "community/components/trainingcatalogpage",
+            "trainingFormat": [
+                "training:/training-format/learn-on-demand",
+                "training:/training-format/learn-virtual",
+                "training:/training-format/workday-pro",
+                "training:/training-format/refresher-training"
+            ]
+        }
+    },
+    "kits-and-tools-page": {
+        "jcr:primaryType": "cq:Page",
+        "jcr:content": {
+            "jcr:primaryType": "nt:unstructured",
+            "sling:resourceType": "community/components/kitsandtoolspage",
+            "productTags": [
+                "product:engage"
+            ]
+        }
+    },
+    "untaged-event-page": {
+        "jcr:primaryType": "cq:Page",
+        "jcr:content": {
+            "jcr:primaryType": "cq:PageContent",
+            "sling:resourceType": "community/components/eventspage",
+            "eventAudience": [
+                "event:event-audience/executives",
+                "event:event-audience/partners"
+            ]
+        }
+    }
+}

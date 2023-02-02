@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.constants;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface GlobalConstants.
  * 
@@ -7,6 +8,37 @@ package com.workday.community.aem.core.constants;
  */
 public interface GlobalConstants {
 	
+	/**
+	 * The Interface PageResourceType.
+	 */
+	public interface PageResourceType {
+		
+		/** The Constant EVENT. */
+		public static final String EVENT = "community/components/eventspage";
+		
+		/** The Constant RELEASE_NOTES. */
+		public static final String RELEASE_NOTES = "community/components/releasenotespage";
+		
+		/** The Constant TRAINING_CATALOG. */
+		public static final String TRAINING_CATALOG = "community/components/trainingcatalogpage";
+	}
+
+	/**
+	 * The Interface TagPropertyName.
+	 */
+	public interface TagPropertyName {
+		
+		/** The Constant EVENT_FORMAT. */
+		public static final String EVENT_FORMAT = "eventFormat";
+		
+		/** The Constant TRAINING_FORMAT. */
+		public static final String TRAINING_FORMAT = "trainingFormat";
+		
+		/** The Constant RELEASE_NOTES_CHNAGE_TYPE. */
+		public static final String RELEASE_NOTES_CHNAGE_TYPE = "releasNotesChangeType";
+
+	}
+
 	/**
 	 * The Interface EventDetailsConstants.
 	 */
