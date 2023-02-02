@@ -94,6 +94,11 @@ public class KitsAndToolsPageCreationService implements PageCreationService {
             if (StringUtils.isNotBlank(data.getDrupalNodeId())) {
                 jcrNode.setProperty(MigrationConstants.DRUPAL_NODE_ID, Long.parseLong(data.getDrupalNodeId()));
             }
+            
+            if (StringUtils.isNotBlank(data.getWorkflowStatus())) {
+                jcrNode.setProperty(MigrationConstants.WORKFLOW_STATUS, data.getWorkflowStatus());
+            }
+
             if (StringUtils.isNotBlank(data.getAuthor())) {
                 jcrNode.setProperty(MigrationConstants.AUTHOR, data.getAuthor());
             }
