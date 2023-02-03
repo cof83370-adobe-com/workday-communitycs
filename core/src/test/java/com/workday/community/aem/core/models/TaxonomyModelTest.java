@@ -16,12 +16,12 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
- * The Class TaxonamyModelTest.
+ * The Class TaxonomyModelTest.
  * 
  * @author palla.pentayya
  */
 @ExtendWith(AemContextExtension.class)
-public class TaxonamyModelTest {
+public class TaxonomyModelTest {
 
     /** The context. */
     private final AemContext context = new AemContext();
@@ -36,7 +36,7 @@ public class TaxonamyModelTest {
      */
     @BeforeEach
     public void setup() throws Exception {
-        context.load().json("/TaxonamyModelTest.json", "/content");
+        context.load().json("/TaxonomyModelTest.json", "/content");
         TagManager tm = context.resourceResolver().adaptTo(TagManager.class);
         tm.createTag("programs-and-tools:program-type", "Program Type", "Program Type");
         tm.createTag("programs-and-tools:program-type/the-next-level", "The Next Level", "the next level");
@@ -67,11 +67,11 @@ public class TaxonamyModelTest {
                 "Content Management");
         List<String> expectedProgramsAndToolsTagsList = Arrays.asList("Program Type", "The Next Level");
 
-        TaxonamyModel taxonamyModel = context.request().adaptTo(TaxonamyModel.class);
+        TaxonomyModel taxonomyModel = context.request().adaptTo(TaxonomyModel.class);
 
-        assertEquals(expectedIndustryTagsList, taxonamyModel.getIndustryTags());
-        assertEquals(expectedProductTagsList, taxonamyModel.getProductTags());
-        assertEquals(expectedUsingWorkdayTagsList, taxonamyModel.getUsingWorkdayTags());
-        assertEquals(expectedProgramsAndToolsTagsList, taxonamyModel.getProgramTypeTags());
+        assertEquals(expectedIndustryTagsList, taxonomyModel.getIndustryTags());
+        assertEquals(expectedProductTagsList, taxonomyModel.getProductTags());
+        assertEquals(expectedUsingWorkdayTagsList, taxonomyModel.getUsingWorkdayTags());
+        assertEquals(expectedProgramsAndToolsTagsList, taxonomyModel.getProgramTypeTags());
     }
 } 

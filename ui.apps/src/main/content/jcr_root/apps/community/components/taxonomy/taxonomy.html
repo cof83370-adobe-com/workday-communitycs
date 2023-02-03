@@ -1,4 +1,5 @@
-<sly data-sly-use.taxonomyModel="${'com.workday.community.aem.core.models.TaxonamyModel'}"></sly>
+<sly data-sly-use.taxonomyModel="${'com.workday.community.aem.core.models.TaxonomyModel'}"></sly>
+
 <div class="cmp-taxonomy" data-cmp-is="cmp-taxonomy">    
     <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.programsToolsTags}">
         <p class="cmp-taxonomy__item-label">${'Program Type' @ i18n, context='text'}</p>
@@ -27,4 +28,5 @@
     </div>
 </div>
 
-<div data-sly-test="${wcmmode.edit || wcmmode.design}" class="cq-placeholder" data-emptyText="WD Community Site - Taxonomy Component"></div>
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
+    data-sly-call="${template.placeholder  @ isEmpty = hasContent, classAppend='cmp-taxonomy'}"></sly>

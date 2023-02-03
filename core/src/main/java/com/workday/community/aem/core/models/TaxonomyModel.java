@@ -15,21 +15,19 @@ import org.apache.sling.models.annotations.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 
 /**
- * The Class TaxonamyModel.
+ * The Class TaxonomyModel.
  * 
  * 
  * @author palla.pentayya
  */
 @Model(adaptables = { Resource.class,
         SlingHttpServletRequest.class }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
-public class TaxonamyModel {
+public class TaxonomyModel {
 
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
@@ -54,6 +52,10 @@ public class TaxonamyModel {
     /** The using workday tags. */
     private List<String> usingWorkdayTags = new ArrayList<>();
 
+    /** The has content. */
+    private Boolean hasContent=false;
+    
+
     /**
      * Inits the.
      */
@@ -65,6 +67,7 @@ public class TaxonamyModel {
             getGivenPageTagsList(map, "productTags", productTags);
             getGivenPageTagsList(map, "industryTags", industryTags);
             getGivenPageTagsList(map, "usingWorkdayTags", usingWorkdayTags);
+            this.hasContent = !programTypeTags.isEmpty() || !productTags.isEmpty() || !industryTags.isEmpty() || !usingWorkdayTags.isEmpty();
         }
     }
 
@@ -87,11 +90,14 @@ public class TaxonamyModel {
                 }
             }
         } catch (Exception exec) {
-            logger.error("Exception occurred at getGivenPageTagsList method of TaxonamyModel:{} ", exec.getMessage());
+            logger.error("Exception occurred at getGivenPageTagsList method of TaxonomyModel:{} ", exec.getMessage());
         }
         return tagType;
 
     }
+
+
+
 
     /**
      * Gets the program type tags.
@@ -127,5 +133,14 @@ public class TaxonamyModel {
      */
     public List<String> getUsingWorkdayTags() {
         return usingWorkdayTags;
+    }
+
+   /**
+     * Gets the has content.
+     *
+     * @return the has content
+     */
+    public Boolean getHasContent() {
+        return !hasContent;
     }
 }
