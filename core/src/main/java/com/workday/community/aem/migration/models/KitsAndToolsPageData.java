@@ -93,6 +93,10 @@ public class KitsAndToolsPageData {
     @XmlElement(name = "read_count")
     private String readCount;
 
+    /** The workflow status. */
+    @XmlElement(name = "workflow_status")
+    private String workflowStatus;
+
     /**
      * Gets the product.
      *
@@ -491,21 +495,43 @@ public class KitsAndToolsPageData {
     public void setReadCount(String readCount) {
         this.readCount = readCount;
     }
-
-    /**
-     * To string.
+    
+/**
+     * Gets the workflow status.
      *
-     * @return the string
+     * @return the workflow status
      */
-    @Override
-    public String toString() {
-        return "KitsAndToolsPageData [product=" + product + ", articleType=" + articleType + ", author=" + author
-                + ", drupalAccessControl=" + drupalAccessControl + ", drupalNodeId=" + drupalNodeId + ", description="
-                + description + ", industry=" + industry + ", title=" + title + ", videoAttachment=" + videoAttachment
-                + ", showAskRelatedQuestion=" + showAskRelatedQuestion + ", fileAttachment=" + fileAttachment
-                + ", programType=" + programType + ", retirementDate=" + retirementDate + ", contentType=" + contentType
-                + ", updatedDate=" + updatedDate + ", usingWorkday=" + usingWorkday + ", postedDate=" + postedDate
-                + ", releaseTag=" + releaseTag + ", readCount=" + readCount + "]";
-    }
+    public String getWorkflowStatus() {
+    	if (workflowStatus.equalsIgnoreCase("NULL")) {
+            return StringUtils.EMPTY;
+        }
+		return workflowStatus;
+	}
+
+	/**
+	 * Sets the workflow status.
+	 *
+	 * @param workflowStatus the new workflow status
+	 */
+	public void setWorkflowStatus(String workflowStatus) {
+		this.workflowStatus = workflowStatus;
+	}
+
+	/**
+	 * To string.
+	 *
+	 * @return the string
+	 */
+	@Override
+	public String toString() {
+		return "KitsAndToolsPageData [product=" + product + ", articleType=" + articleType + ", author=" + author
+				+ ", drupalAccessControl=" + drupalAccessControl + ", drupalNodeId=" + drupalNodeId + ", description="
+				+ description + ", industry=" + industry + ", title=" + title + ", videoAttachment=" + videoAttachment
+				+ ", showAskRelatedQuestion=" + showAskRelatedQuestion + ", fileAttachment=" + fileAttachment
+				+ ", programType=" + programType + ", retirementDate=" + retirementDate + ", contentType=" + contentType
+				+ ", updatedDate=" + updatedDate + ", usingWorkday=" + usingWorkday + ", postedDate=" + postedDate
+				+ ", releaseTag=" + releaseTag + ", readCount=" + readCount + ", workflowStatus=" + workflowStatus
+				+ "]";
+	}
 
 }
