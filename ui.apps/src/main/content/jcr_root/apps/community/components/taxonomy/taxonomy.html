@@ -3,28 +3,28 @@
 <div class="cmp-taxonomy" data-cmp-is="cmp-taxonomy">    
     <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.programsToolsTags}">
         <p class="cmp-taxonomy__item-label">${'Program Type' @ i18n, context='text'}</p>
-        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="programsToolsTags">
+        <span class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="programsToolsTags">
             <sly data-sly-list.eachItem="${taxonomyModel.programTypeTags}" data-sly-unwrap> <div> ${eachItem @ i18n, context='text'} </div> </sly>
-        </pre>
+        </span>
     </div>
     <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.productTags}">
         <p class="cmp-taxonomy__item-label">${'Products' @ i18n, context='text'}</p>
-        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="productTags">
-            <div data-sly-list.eachItem="${taxonomyModel.productTags}" data-sly-unwrap> <div>${eachItem @ i18n, context='text'}</div> </div>
-        </pre>
+        <span class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="productTags">
+            <sly data-sly-list.eachItem="${taxonomyModel.productTags}" data-sly-unwrap> <div>${eachItem @ i18n, context='text'}</div> </sly>
+        </span>
 
     </div>
     <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.industryTags}">
         <p class="cmp-taxonomy__item-label">${'Industry' @ i18n, context='text'}</p>
-        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="industryTags">
+        <span class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="industryTags">
             <sly data-sly-list.eachItem="${taxonomyModel.industryTags}" data-sly-unwrap><div> ${eachItem @ i18n, context='text'} </div> </sly>
-        </pre>
+        </span>
     </div>
     <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.usingWorkdayTags}">
         <p class="cmp-taxonomy__item-label">${'Using Workday' @ i18n, context='text'}</p>
-        <pre class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="usingWorkdayTags">
+        <span class="cmp-taxonomy__item-output" data-cmp-hook-moredetails="usingWorkdayTags">
             <sly data-sly-list.eachItem="${taxonomyModel.usingWorkdayTags}" data-sly-unwrap> <div>${eachItem @ i18n, context='text'} </div></sly>
-        </pre>
+        </span>
     </div>
 </div>
 
