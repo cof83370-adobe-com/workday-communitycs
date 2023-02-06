@@ -1,0 +1,39 @@
+.cmp-taxonomy {
+    margin-top: 32px;
+
+    &__item {
+        font-style: $font-style-normal;
+        letter-spacing: 0.2px;
+        color: $wdc-color-black-pepper-600;
+        margin-bottom: 32px;
+
+        @media (max-width: $screen-small) {
+            font-size: 15px;
+            line-height: 24px;
+        }
+
+        @media (min-width: $screen-small) {
+            font-size: 14px;
+            line-height: 20px;
+        }
+    }
+
+    &__item-label {
+        font-weight: $font-weight-bold;
+        margin: 0;
+    }
+
+    &__item-output {
+        margin: 0;
+
+        &:after {
+            content: ',';
+        }
+
+        &:last-child {
+            &:after {
+              content: none;
+            }
+        }
+    }
+}
