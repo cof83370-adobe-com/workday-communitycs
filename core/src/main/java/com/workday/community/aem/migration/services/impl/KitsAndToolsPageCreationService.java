@@ -73,10 +73,13 @@ public class KitsAndToolsPageCreationService implements PageCreationService {
     /** The Constant IMG_SRC_REGX. */
     private static final String IMG_SRC_REGX = "<img[^>]*src=\"([^\"]+)\"[^>]*>";
 
+    /** The Constant ACCORDION_NODE. */
     private static final String ACCORDION_NODE = "accordion";
 
+    /** The Constant CONTAINER_MAIN. */
     private static final String CONTAINER_MAIN = "container_main";
 
+    /** The Constant CONTAINER_CENTER. */
     private static final String CONTAINER_CENTER = "container_center";
 
     /** The aem page name. */

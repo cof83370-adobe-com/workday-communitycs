@@ -41,7 +41,7 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
 	private static final String TEMPLATES_PATH = "/conf/community/settings/wcm/templates";
 
 	/** The log. */
-	private final  transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
 	/**
 	 * Do get.
@@ -64,18 +64,16 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
 					dropDownList.add(new KeyValue(res.getPath(), title));
 				}
 			});
-			log.info("DropdownList:: {}", dropDownList);
-			@SuppressWarnings("unchecked")
+			log.debug("DropdownList:: {}", dropDownList);
 
-			DataSource ds = new SimpleDataSource(new TransformIterator(dropDownList.iterator(), input -> {
-				final KeyValue keyValue = (KeyValue) input;
+			DataSource ds = new SimpleDataSource(new TransformIterator<>(dropDownList.iterator(), input -> {
+				final KeyValue keyValue = input;
 				final ValueMap vm = new ValueMapDecorator(new HashMap<>());
 				vm.put("value", keyValue.key);
 				vm.put("text", keyValue.value);
 				return new ValueMapResource(resourceResolver, new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, vm);
 			}));
 			request.setAttribute(DataSource.class.getName(), ds);
-
 		} catch (Exception e) {
 			log.error("Error in Get Drop Down Values {}", e.getMessage());
 		}

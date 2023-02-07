@@ -388,6 +388,13 @@ public class MigrationUtils {
 		return indexes;
 	}
 
+	/**
+	 * Creates the core image component.
+	 *
+	 * @param parentNode the parent node
+	 * @param imageNodeName the image node name
+	 * @param map the map
+	 */
 	public static void createCoreImageComponent(Node parentNode, final String imageNodeName,
 			Map<String, String> map) {
 		try {
