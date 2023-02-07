@@ -38,10 +38,10 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	private static final String templates_path = "/conf/community/settings/wcm/templates";
+	private static final String TEMPLATES_PATH = "/conf/community/settings/wcm/templates";
 
 	/** The log. */
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final  transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
 	/**
 	 * Do get.
@@ -54,7 +54,7 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
 		try {
 			ResourceResolver resourceResolver = request.getResourceResolver();
 			List<KeyValue> dropDownList = new ArrayList<>();
-			Resource resource = request.getResourceResolver().getResource(templates_path);
+			Resource resource = request.getResourceResolver().getResource(TEMPLATES_PATH);
 			Iterator<Resource> iterator = resource.listChildren();
 			List<Resource> list = new ArrayList<>();
 			iterator.forEachRemaining(list::add);
