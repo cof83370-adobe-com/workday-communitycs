@@ -43,12 +43,6 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 	/** The Constant log. */
 	private static final Logger log = LoggerFactory.getLogger(ParseXMLDataServiceImpl.class);
 
-	/** JAXB jaxb instance . */
-	private JAXBContext jaxbContext;
-
-	/** JAXB unmarshaller. */
-	private Unmarshaller unmarshaller;
-
 	/**
 	 * https://experienceleaguecommunities.adobe.com/t5/adobe-experience-manager/how
 	 * -do-i-specify-an-implementation-using-osgiservice/m-p/285357
@@ -57,28 +51,31 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 	@Reference(target = "(type=events-page)")
 	PageCreationService eventsPageCreationService;
 
+	/** The kits ands tools page creation service. */
 	@Reference(target = "(type=kitsandtools-page)")
 	PageCreationService kitsAndsToolsPageCreationService;
 
+	/** The page name finder service. */
 	@Reference
 	PageNameFinderService pageNameFinderService;
 
+	
 	/**
 	 * Read XML from jcr source.
 	 *
-	 * @param <T>       the generic type
-	 * @param resolver  the resolver
+	 * @param <T> the generic type
+	 * @param resolver the resolver
 	 * @param paramsMap the params map
-	 * @param clazz     the clazz
-	 * @return the event pages list
+	 * @param clazz the clazz
+	 * @return the t
 	 */
 	public <T> T readXMLFromJcrSource(final ResourceResolver resolver, Map<String, String> paramsMap, Class<T> clazz) {
 		String xmlResponse = readInputStreamFromAsset(resolver, paramsMap);
 		if (StringUtils.isNotBlank(xmlResponse)) {
 			xmlResponse = xmlResponse.substring(xmlResponse.indexOf("\n") + 1);
 			try {
-				jaxbContext = JAXBContext.newInstance(clazz);
-				unmarshaller = jaxbContext.createUnmarshaller();
+				JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 				return clazz.cast(unmarshaller.unmarshal(new StringReader(xmlResponse)));
 			} catch (Exception e) {
 				log.error("Exception occurred at readXML method :{}", e.getMessage());
@@ -87,6 +84,13 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 		return null;
 	}
 
+	/**
+	 * Read input stream from asset.
+	 *
+	 * @param resolver the resolver
+	 * @param paramsMap the params map
+	 * @return the string
+	 */
 	private String readInputStreamFromAsset(final ResourceResolver resolver, final Map<String, String> paramsMap) {
 		StringBuilder builder = new StringBuilder();
 		try {
@@ -119,7 +123,6 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 	 * @param resolver     the resolver
 	 * @param paramsMap    the params map
 	 * @param templatePath the template path
-	 * @return the string
 	 */
 	@Override
 	public void readXmlFromJcrAndDelegateToPageCreationService(ResourceResolver resolver, Map<String, String> paramsMap,
@@ -166,12 +169,13 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 		return templateName;
 	}
 
+
 	/**
 	 * Do create events page creation service.
 	 *
-	 * @param paramsMap      the params map
+	 * @param resolver the resolver
+	 * @param paramsMap the params map
 	 * @param listOfPageData the list of page data
-	 * @return the string
 	 */
 	private void doCreateEventsPageCreationService(ResourceResolver resolver, Map<String, String> paramsMap,
 			EventPagesList listOfPageData) {
@@ -183,9 +187,9 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 	/**
 	 * Do create Kits and Toos page creation service.
 	 *
+	 * @param resolver the resolver
 	 * @param paramsMap      the params map
-	 * @param KitsAndToolsPagesList the list of page data
-	 * @return the string
+	 * @param listOfKitsPagesData the list of kits pages data
 	 */
 	private void doCreateKitsAndToolsPageCreationService(ResourceResolver resolver, Map<String, String> paramsMap,
 	KitsAndToolsPagesList listOfKitsPagesData) {

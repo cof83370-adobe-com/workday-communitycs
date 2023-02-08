@@ -36,7 +36,7 @@ public class TaxonomyModelTest {
      */
     @BeforeEach
     public void setup() throws Exception {
-        context.load().json("/TaxonomyModelTest.json", "/content");
+        context.load().json("/com/workday/community/aem/core/models/impl/TaxonomyModelTest.json", "/content");
         TagManager tm = context.resourceResolver().adaptTo(TagManager.class);
         tm.createTag("programs-and-tools:program-type", "Program Type", "Program Type");
         tm.createTag("programs-and-tools:program-type/the-next-level", "The Next Level", "the next level");

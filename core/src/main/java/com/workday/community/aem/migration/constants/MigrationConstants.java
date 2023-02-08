@@ -71,7 +71,7 @@ public interface MigrationConstants {
 	public static final String DRUPAL_NODE_ID = "drupalNodeId";
 
 	/**  The Constant WORKFLOW_STATUS. */
-	public static final String WORKFLOW_STATUS = "workflowStatus";
+	public static final String WORKFLOW_STATUS = "drupalWorkflowStatus";
 
 	/** The Constant DRUPAL_ACEESS_CONTROL. */
 	public static final String DRUPAL_ACEESS_CONTROL = "drupalAccessControl";
