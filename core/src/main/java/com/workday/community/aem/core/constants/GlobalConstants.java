@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.constants;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Interface GlobalConstants.
  * 

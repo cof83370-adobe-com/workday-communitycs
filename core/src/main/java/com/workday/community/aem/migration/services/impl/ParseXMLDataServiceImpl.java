@@ -43,12 +43,6 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 	/** The Constant log. */
 	private static final Logger log = LoggerFactory.getLogger(ParseXMLDataServiceImpl.class);
 
-	/** JAXB jaxb instance . */
-	private JAXBContext jaxbContext;
-
-	/** JAXB unmarshaller. */
-	private Unmarshaller unmarshaller;
-
 	/**
 	 * https://experienceleaguecommunities.adobe.com/t5/adobe-experience-manager/how
 	 * -do-i-specify-an-implementation-using-osgiservice/m-p/285357
@@ -80,8 +74,8 @@ public class ParseXMLDataServiceImpl implements ParseXMLDataService {
 		if (StringUtils.isNotBlank(xmlResponse)) {
 			xmlResponse = xmlResponse.substring(xmlResponse.indexOf("\n") + 1);
 			try {
-				jaxbContext = JAXBContext.newInstance(clazz);
-				unmarshaller = jaxbContext.createUnmarshaller();
+				JAXBContext jaxbContext = JAXBContext.newInstance(clazz);
+				Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 				return clazz.cast(unmarshaller.unmarshal(new StringReader(xmlResponse)));
 			} catch (Exception e) {
 				log.error("Exception occurred at readXML method :{}", e.getMessage());

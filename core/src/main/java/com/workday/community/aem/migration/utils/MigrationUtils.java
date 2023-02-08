@@ -61,9 +61,6 @@ public class MigrationUtils {
 	/** The aem page name. */
 	private static String aemPageName = StringUtils.EMPTY;
 
-	/** The Constant dateFmt. */
-	private static final SimpleDateFormat dateFmt = new SimpleDateFormat(ISO8601DATEFORMAT);
-
 	/**
 	 * Instantiates a new migration utils.
 	 */
@@ -113,6 +110,7 @@ public class MigrationUtils {
 	 * @return the string
 	 */
 	public static String formatDate(Date dat) {
+		SimpleDateFormat dateFmt = new SimpleDateFormat(ISO8601DATEFORMAT);
 		return dateFmt.format(dat);
 	}
 
@@ -122,13 +120,13 @@ public class MigrationUtils {
 	 * @param datestring the datestring
 	 * @return the calendar from ISO
 	 */
-	public static Calendar getCalendarFromISO(String datestring) {
+	private static Calendar getCalendarFromISO(String datestring) {
 		Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
 		SimpleDateFormat dateformat = new SimpleDateFormat(ISO8601DATEFORMAT, Locale.getDefault());
 		try {
 			Date date = dateformat.parse(datestring);
-			date.setHours(date.getHours() - 1);
 			calendar.setTime(date);
+			calendar.add(Calendar.HOUR_OF_DAY, -1);
 		} catch (ParseException e) {
 			log.error("ParseException occurred at getCalendarFromISO method::{}", e.getMessage());
 		}
@@ -388,13 +386,6 @@ public class MigrationUtils {
 		return indexes;
 	}
 
-	/**
-	 * Creates the core image component.
-	 *
-	 * @param parentNode the parent node
-	 * @param imageNodeName the image node name
-	 * @param map the map
-	 */
 	public static void createCoreImageComponent(Node parentNode, final String imageNodeName,
 			Map<String, String> map) {
 		try {
