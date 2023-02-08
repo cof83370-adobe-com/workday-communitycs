@@ -3,10 +3,22 @@
         currentPagination: '[class="cmp-carousel__actions__pagination"]'
     };
 
-    if (document.readyState !== 'loading') {
-        onDocumentReady();
-    } else {
-        document.addEventListener('DOMContentLoaded', onDocumentReady);
+    function getCarouselPagination() {
+        const activeItem = document.getElementsByClassName('cmp-carousel__item cmp-carousel__item--active');
+        const activeCarouselItem = activeItem.length == 1 ? activeItem[0] : null;
+        const activeSlide = activeCarouselItem.ariaLabel.replace('Slide ', '');
+
+        const carouselAction = document.getElementsByClassName('cmp-carousel__actions');
+        const carouselActionItems = carouselAction.length == 1 ? carouselAction[0] : null;
+
+        const activeSlideSpan = document.createElement('span');
+        activeSlideSpan.append(activeSlide);
+        activeSlideSpan.className = 'cmp-carousel__actions__pagination';
+
+        if(carouselActionItems.querySelector(carouselSelectors.currentPagination)) {
+            carouselActionItems.removeChild(carouselActionItems.children[1]);
+        }
+        carouselActionItems.insertBefore(activeSlideSpan, carouselActionItems.children[1]);
     }
 
     function onDocumentReady() {
@@ -20,19 +32,10 @@
        })
     }
 
-    function getCarouselPagination() {
-        const activeItem = document.getElementsByClassName('cmp-carousel__item cmp-carousel__item--active');
-        const activeCarouselItem = activeItem.length == 1 ? activeItem[0] : null;
-        const activeSlide = activeCarouselItem.ariaLabel.replace('Slide ', '');
-        const carouselAction = document.getElementsByClassName('cmp-carousel__actions');
-        const carouselActionItems = carouselAction.length == 1 ? carouselAction[0] : null;
-        const activeSlideSpan = document.createElement('span');
-        activeSlideSpan.append(activeSlide);
-        activeSlideSpan.className = 'cmp-carousel__actions__pagination';
-        if(carouselActionItems.querySelector(carouselSelectors.currentPagination)) {
-            carouselActionItems.removeChild(carouselActionItems.children[1]);
-        }
-        carouselActionItems.insertBefore(activeSlideSpan, carouselActionItems.children[1]);
+    if (document.readyState !== 'loading') {
+        onDocumentReady();
+    } else {
+        document.addEventListener('DOMContentLoaded', onDocumentReady);
     }
 
 }());
