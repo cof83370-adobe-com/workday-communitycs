@@ -16,9 +16,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.lang3.StringUtils;
@@ -49,11 +52,14 @@ public class MigrationUtils {
 	/** The Constant JCR_SQL2. */
 	private static final String JCR_SQL2 = "JCR-SQL2";
 
+	/** The Constant STYLE_TAG_START. */
+	private static final String STYLE_TAG_START = "<style";
+
+	/** The Constant STYLE_TAG_END. */
+	private static final String STYLE_TAG_END = "</style>";
+
 	/** The aem page name. */
 	private static String aemPageName = StringUtils.EMPTY;
-
-	/** The Constant dateFmt. */
-	private static final SimpleDateFormat dateFmt = new SimpleDateFormat(ISO8601DATEFORMAT);
 
 	/**
 	 * Instantiates a new migration utils.
@@ -104,6 +110,7 @@ public class MigrationUtils {
 	 * @return the string
 	 */
 	public static String formatDate(Date dat) {
+		SimpleDateFormat dateFmt = new SimpleDateFormat(ISO8601DATEFORMAT);
 		return dateFmt.format(dat);
 	}
 
@@ -113,13 +120,13 @@ public class MigrationUtils {
 	 * @param datestring the datestring
 	 * @return the calendar from ISO
 	 */
-	public static Calendar getCalendarFromISO(String datestring) {
+	private static Calendar getCalendarFromISO(String datestring) {
 		Calendar calendar = Calendar.getInstance(TimeZone.getDefault(), Locale.getDefault());
 		SimpleDateFormat dateformat = new SimpleDateFormat(ISO8601DATEFORMAT, Locale.getDefault());
 		try {
 			Date date = dateformat.parse(datestring);
-			date.setHours(date.getHours() - 1);
 			calendar.setTime(date);
+			calendar.add(Calendar.HOUR_OF_DAY, -1);
 		} catch (ParseException e) {
 			log.error("ParseException occurred at getCalendarFromISO method::{}", e.getMessage());
 		}
@@ -134,8 +141,8 @@ public class MigrationUtils {
 	 * @return the int
 	 */
 	public static int daysBetween(Calendar day1, Calendar day2) {
-		Calendar dayOne = (Calendar) day1.clone(),
-				dayTwo = (Calendar) day2.clone();
+		Calendar dayOne = (Calendar) day1.clone();
+		Calendar dayTwo = (Calendar) day2.clone();
 
 		if (dayOne.get(Calendar.YEAR) == dayTwo.get(Calendar.YEAR)) {
 			return Math.abs(dayOne.get(Calendar.DAY_OF_YEAR) - dayTwo.get(Calendar.DAY_OF_YEAR));
@@ -167,7 +174,7 @@ public class MigrationUtils {
 	 * @return the aem page name
 	 */
 	public static String getAemPageName(List<PageNameBean> list, final String nodeId) {
-		list.stream().forEach((item) -> {
+		list.stream().forEach(item -> {
 			if (item.getNodeId().equalsIgnoreCase(nodeId)) {
 				String[] pathArray = item.getTitle().split("/");
 				if (pathArray.length > 1) {
@@ -302,4 +309,98 @@ public class MigrationUtils {
 			log.error("Exception occurred while saving to repo::{}", exec.getMessage());
 		}
 	}
+
+	/**
+	 * Removes the style elements with CDATA.
+	 *
+	 * @param textContent the text content
+	 * @return the string
+	 */
+	private static String removeStyleElementsWithCDATA(String textContent) {
+		int styleStartIndex = textContent.indexOf(STYLE_TAG_START);
+		int styleEndIndex = textContent.indexOf(STYLE_TAG_END);
+		if (styleStartIndex >= 0 && styleEndIndex >= 0 && textContent.contains("[CDATA")) {
+			String styleCdataBlock = textContent.substring(styleStartIndex, styleEndIndex + 8);
+			textContent = textContent.replace(styleCdataBlock, StringUtils.EMPTY);
+			removeStyleElementsWithCDATA(textContent);
+		}
+		return textContent;
+	}
+
+	/**
+	 * Creates the core text component.
+	 *
+	 * @param parentNode the parent node
+	 * @param richText   the rich text
+	 * @param nodeName   the node name
+	 * @param compId     the comp id
+	 */
+	public static void createCoreTextComponent(Node parentNode, final String richText, final String nodeName,
+			final String compId) {
+		try {
+			Node textCompNode = parentNode.hasNode(nodeName) ? parentNode.getNode(nodeName)
+					: parentNode.addNode(nodeName);
+			textCompNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
+					MigrationConstants.TEXT_COMP_SLING_RESOURCE);
+			textCompNode.setProperty(MigrationConstants.TEXT, removeStyleElementsWithCDATA(richText));
+			textCompNode.setProperty(MigrationConstants.TEXT_IS_RICH_PROP, MigrationConstants.BOOLEAN_TRUE);
+			textCompNode.setProperty("id", compId);
+		} catch (Exception exec) {
+			log.error("Exception in createCoreTextComponent method::{}", exec.getMessage());
+		}
+	}
+
+	/**
+	 * Checks if is matched regex.
+	 *
+	 * @param regexStr    the regex str
+	 * @param parseString the parse string
+	 * @return true, if is matched regex
+	 */
+	public static boolean isMatchedRegex(final String regexStr, String parseString) {
+		// . represents single character.
+		Pattern patt = Pattern.compile(regexStr);
+		Matcher mat = patt.matcher(parseString);
+		return mat.matches();
+	}
+
+	/**
+	 * Find all indices of given string.
+	 *
+	 * @param sourceTextString the source text string
+	 * @param searchWord       the search word
+	 * @return the list
+	 */
+	public static List<Integer> findAllIndicesOfGivenString(String sourceTextString, String searchWord) {
+		List<Integer> indexes = new ArrayList<>();
+		int wordLength = 0;
+		int index = 0;
+		while (index != -1) {
+			// Slight improvement.
+			index = sourceTextString.indexOf(searchWord, index + wordLength);
+			if (index != -1) {
+				indexes.add(index);
+			}
+			wordLength = searchWord.length();
+		}
+		return indexes;
+	}
+
+	public static void createCoreImageComponent(Node parentNode, final String imageNodeName,
+			Map<String, String> map) {
+		try {
+			Node imgCompNode = parentNode.hasNode(imageNodeName) ? parentNode.getNode(imageNodeName)
+					: parentNode.addNode(imageNodeName);
+			map.forEach((key, value) -> {
+				try {
+					imgCompNode.setProperty(key, value);
+				} catch (RepositoryException exec) {
+					log.error("RepositoryException occured while adding props::{}", exec.getMessage());
+				}
+			});
+		} catch (Exception exec) {
+			log.error("Exception in createCoreTextComponent method::{}", exec.getMessage());
+		}
+	}
+
 }

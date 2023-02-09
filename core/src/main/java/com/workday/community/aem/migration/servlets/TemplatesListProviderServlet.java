@@ -38,10 +38,10 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	private static final String templates_path = "/conf/community/settings/wcm/templates";
+	private static final String TEMPLATES_PATH = "/conf/community/settings/wcm/templates";
 
 	/** The log. */
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private final transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
 	/**
 	 * Do get.
@@ -54,7 +54,7 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
 		try {
 			ResourceResolver resourceResolver = request.getResourceResolver();
 			List<KeyValue> dropDownList = new ArrayList<>();
-			Resource resource = request.getResourceResolver().getResource(templates_path);
+			Resource resource = request.getResourceResolver().getResource(TEMPLATES_PATH);
 			Iterator<Resource> iterator = resource.listChildren();
 			List<Resource> list = new ArrayList<>();
 			iterator.forEachRemaining(list::add);
@@ -64,18 +64,16 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
 					dropDownList.add(new KeyValue(res.getPath(), title));
 				}
 			});
-			log.info("DropdownList:: {}", dropDownList);
-			@SuppressWarnings("unchecked")
+			log.debug("DropdownList:: {}", dropDownList);
 
-			DataSource ds = new SimpleDataSource(new TransformIterator(dropDownList.iterator(), input -> {
-				final KeyValue keyValue = (KeyValue) input;
+			DataSource ds = new SimpleDataSource(new TransformIterator<>(dropDownList.iterator(), input -> {
+				final KeyValue keyValue = input;
 				final ValueMap vm = new ValueMapDecorator(new HashMap<>());
 				vm.put("value", keyValue.key);
 				vm.put("text", keyValue.value);
 				return new ValueMapResource(resourceResolver, new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, vm);
 			}));
 			request.setAttribute(DataSource.class.getName(), ds);
-
 		} catch (Exception e) {
 			log.error("Error in Get Drop Down Values {}", e.getMessage());
 		}

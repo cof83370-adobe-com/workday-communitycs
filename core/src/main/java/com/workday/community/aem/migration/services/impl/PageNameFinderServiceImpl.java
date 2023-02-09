@@ -22,6 +22,9 @@ import com.google.gson.reflect.TypeToken;
 import com.workday.community.aem.migration.models.PageNameBean;
 import com.workday.community.aem.migration.services.PageNameFinderService;
 
+/**
+ * The Class PageNameFinderServiceImpl.
+ */
 @Component(immediate = true, service = PageNameFinderService.class)
 @ServiceDescription("Workday - Page Name Finder Service Provider")
 public class PageNameFinderServiceImpl implements PageNameFinderService {
@@ -29,11 +32,25 @@ public class PageNameFinderServiceImpl implements PageNameFinderService {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
+    /**
+     * Gets the page name.
+     *
+     * @param resolver the resolver
+     * @param eventPageJsonDamPath the event page json dam path
+     * @return the page name
+     */
     @Override
     public List<PageNameBean> getPageName(ResourceResolver resolver, final String eventPageJsonDamPath) {
         return readJsonResourceFromDam(resolver, eventPageJsonDamPath);
     }
 
+    /**
+     * Read json resource from dam.
+     *
+     * @param resolver the resolver
+     * @param damPath the dam path
+     * @return the list
+     */
     private List<PageNameBean> readJsonResourceFromDam(ResourceResolver resolver, final String damPath) {
         List<PageNameBean> pageNamesLists = null;
         try {

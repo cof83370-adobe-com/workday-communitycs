@@ -1,0 +1,36 @@
+.taxonomy-badge {
+    @media (max-width: $screen-small) {
+        margin-top: 24px;
+    }
+
+    @media (min-width: $screen-small) {
+        margin-top: 40px;
+    }
+
+    .cmp-taxonomy-badge {
+        padding-left: 0;
+        margin: 0;
+
+        &__item {
+            display: inline;
+            border: 1px solid $wdc-color-soap-500;
+            padding: 0 4px;
+            margin-right: 5px;
+
+            @media (max-width: $screen-small) {
+                line-height: 30px;
+            }
+        }
+
+        &__item-title {
+            font-style: $font-style-normal;
+            font-weight: $font-weight-bold;
+            font-size: 12px;
+            line-height: 14px;
+            align-items: $align-center;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: $wdc-color-black-pepper-600;
+        }
+    }
+}

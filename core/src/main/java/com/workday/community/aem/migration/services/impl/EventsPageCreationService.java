@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.jcr.Node;
 import javax.jcr.Session;
@@ -85,12 +83,6 @@ public class EventsPageCreationService implements PageCreationService {
     /** The Constant EVENT_DESCRIPTION. */
     private static final String EVENT_DESCRIPTION = "Event Description";
 
-    /** The Constant STYLE_TAG_START. */
-    private static final String STYLE_TAG_START = "<style";
-
-    /** The Constant STYLE_TAG_END. */
-    private static final String STYLE_TAG_END = "</style>";
-
     /** The registration information. */
     private static final String REGISTRATION_INFORMATION = "Registration Information";
 
@@ -135,6 +127,9 @@ public class EventsPageCreationService implements PageCreationService {
 
     /** The Constant EVENT_DESC_COMP_ID. */
     private static final String EVENT_DESC_COMP_ID = "event-description";
+
+    /** The Constant COUNTER. */
+    private static final String COUNTER = "counter";
 
     /** The resolver factory. */
     @Reference
@@ -188,38 +183,46 @@ public class EventsPageCreationService implements PageCreationService {
                 // set Page properties.
                 setPageProps(jcrNode, data, resourceResolver);
                 Node rootNode = jcrNode.hasNode("root") ? jcrNode.getNode("root") : jcrNode.addNode("root");
-
-                Node containerNode = rootNode.hasNode(CONTAINER) ? rootNode.getNode(CONTAINER)
-                        : rootNode.addNode(CONTAINER);
-
-                // Creation of Register for Event Core Button component.
-                Node eventRegistrationContainer = containerNode.hasNode(EVENTREGISTRATIONCONTAINER)
-                        ? containerNode.getNode(EVENTREGISTRATIONCONTAINER)
-                        : containerNode.addNode(EVENTREGISTRATIONCONTAINER);
-                createRegisterForEventCoreButton(eventRegistrationContainer, data);
-
-                // TODO top right container image.
-
-                // Creation of event details component.
-                Node toprightContainer = containerNode.hasNode(TOPRIGHTCONTAINER)
-                        ? containerNode.getNode(TOPRIGHTCONTAINER)
-                        : containerNode.addNode(TOPRIGHTCONTAINER);
-
-                createEventDetailsComponent(toprightContainer, data);
-
-                // Creation of event description component.
-                Node centerContainer = containerNode.hasNode(CENTERCONTAINER)
-                        ? containerNode.getNode(CENTERCONTAINER)
-                        : containerNode.addNode(CENTERCONTAINER);
-
-                createEventDescription(centerContainer, data);
-
-                // TODO top bottom left container.
-                // TODO top bottom right image.
+                createEventPageComponents(rootNode, data);
                 MigrationUtils.saveToRepo(session);
             }
         } catch (Exception exec) {
             logger.error("Exception occurred while creating page in doCreatePage::{}", exec.getMessage());
+        }
+    }
+
+    /**
+     * Creates the event page components.
+     *
+     * @param rootNode the root node
+     * @param data the data
+     */
+    private void createEventPageComponents(Node rootNode, EventPageData data) {
+        try {
+            Node containerNode = rootNode.hasNode(CONTAINER) ? rootNode.getNode(CONTAINER)
+                    : rootNode.addNode(CONTAINER);
+
+            // Creation of Register for Event Core Button component.
+            Node eventRegistrationContainer = containerNode.hasNode(EVENTREGISTRATIONCONTAINER)
+                    ? containerNode.getNode(EVENTREGISTRATIONCONTAINER)
+                    : containerNode.addNode(EVENTREGISTRATIONCONTAINER);
+            createRegisterForEventCoreButton(eventRegistrationContainer, data);
+
+            // Creation of event details component.
+            Node toprightContainer = containerNode.hasNode(TOPRIGHTCONTAINER)
+                    ? containerNode.getNode(TOPRIGHTCONTAINER)
+                    : containerNode.addNode(TOPRIGHTCONTAINER);
+
+            createEventDetailsComponent(toprightContainer, data);
+
+            // Creation of event description component.
+            Node centerContainer = containerNode.hasNode(CENTERCONTAINER)
+                    ? containerNode.getNode(CENTERCONTAINER)
+                    : containerNode.addNode(CENTERCONTAINER);
+
+            createEventDescription(centerContainer, data);
+        } catch (Exception exec) {
+            logger.error("Exception occurred in createEventPageComponents::{}", exec.getMessage());
         }
     }
 
@@ -332,7 +335,6 @@ public class EventsPageCreationService implements PageCreationService {
             MigrationUtils.mountTagPageProps(getJcrNode(), MigrationConstants.TagPropertyName.USING_WORKDAY,
                     usingWorkdayTags);
         }
-        // TODO To add industry tags.
     }
 
     /**
@@ -390,32 +392,31 @@ public class EventsPageCreationService implements PageCreationService {
      */
     public Map<String, Object> findCompType(Node innerContainer, String parseString, Map<String, Object> resultMap,
             List<CompAttributes> compAttributeList) {
-        String key = "counter";
-        int count = (Integer) resultMap.get(key);
-        if (isMatchedRegex(EVENT_DESC_REGEX, parseString)) {
+        int count = (Integer) resultMap.get(COUNTER);
+        if (MigrationUtils.isMatchedRegex(EVENT_DESC_REGEX, parseString)) {
             CompAttributes compAtr = new CompAttributes(1, EVENT_DESCRIPTION,
                     parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
             compAttributeList.add(compAtr);
             count++;
-            resultMap.put(key, count);
-        } else if (isMatchedRegex(EVENT_REG_REGEX, parseString)) {
+            resultMap.put(COUNTER, count);
+        } else if (MigrationUtils.isMatchedRegex(EVENT_REG_REGEX, parseString)) {
             CompAttributes compAtr = new CompAttributes(2, REGISTRATION_INFORMATION,
                     parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
             compAttributeList.add(compAtr);
             count++;
-            resultMap.put(key, count);
-        } else if (isMatchedRegex(EVENT_PRE_READ_REGEX, parseString)) {
+            resultMap.put(COUNTER, count);
+        } else if (MigrationUtils.isMatchedRegex(EVENT_PRE_READ_REGEX, parseString)) {
             CompAttributes compAtr = new CompAttributes(3, PRE_READING,
                     parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
             compAttributeList.add(compAtr);
             count++;
-            resultMap.put(key, count);
-        } else if (isMatchedRegex(EVENT_AGENDA_REGEX, parseString)) {
+            resultMap.put(COUNTER, count);
+        } else if (MigrationUtils.isMatchedRegex(EVENT_AGENDA_REGEX, parseString)) {
             CompAttributes compAtr = new CompAttributes(4, AGENDA,
                     parseString.substring(parseString.indexOf(H2_ELE_END_TAG), parseString.length()));
             compAttributeList.add(compAtr);
             count++;
-            resultMap.put(key, count);
+            resultMap.put(COUNTER, count);
         }
         resultMap.put("compList", compAttributeList);
         return resultMap;
@@ -434,58 +435,26 @@ public class EventsPageCreationService implements PageCreationService {
             for (int index = 0; index < compAttributeList.size(); index++) {
                 if (compAttributeList.get(index).getId() == 1) {
                     createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_DESC);
-                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_DESC,
+                    MigrationUtils.createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(),
+                            TEXT_DESC,
                             EVENT_DESC_COMP_ID);
                 } else if (compAttributeList.get(index).getId() == 2) {
                     createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_REG);
-                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_REG,
+                    MigrationUtils.createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(),
+                            TEXT_REG,
                             "registration-information");
                 } else if (compAttributeList.get(index).getId() == 3) {
                     createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_PREREAD);
-                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_PREREAD,
+                    MigrationUtils.createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(),
+                            TEXT_PREREAD,
                             "pre-reading");
                 } else if (compAttributeList.get(index).getId() == 4) {
                     createCoreTitleComponent(innerContainer, compAttributeList.get(index).getTitleVal(), TITLE_AGENDA);
-                    createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(), TEXT_AGENDA,
+                    MigrationUtils.createCoreTextComponent(innerContainer, compAttributeList.get(index).getTextVal(),
+                            TEXT_AGENDA,
                             "agenda");
                 }
             }
-        }
-    }
-
-    /**
-     * Checks if is matched regex.
-     *
-     * @param regexStr    the regex str
-     * @param parseString the parse string
-     * @return true, if is matched regex
-     */
-    private boolean isMatchedRegex(final String regexStr, String parseString) {
-        // . represents single character.
-        Pattern patt = Pattern.compile(regexStr);
-        Matcher mat = patt.matcher(parseString);
-        return mat.matches();
-    }
-
-    /**
-     * Creates the core text component.
-     *
-     * @param innerContainer the inner container
-     * @param richText       the rich text
-     * @param nodeName       the node name
-     * @param compId         the comp id
-     */
-    private void createCoreTextComponent(Node innerContainer, final String richText, final String nodeName,
-            final String compId) {
-        try {
-            Node textCompNode = innerContainer.addNode(nodeName);
-            textCompNode.setProperty(MigrationConstants.AEM_SLING_RESOURCE_TYPE_PROP,
-                    MigrationConstants.TEXT_COMP_SLING_RESOURCE);
-            textCompNode.setProperty(MigrationConstants.TEXT, removeStyleElementsWithCDATA(richText));
-            textCompNode.setProperty(MigrationConstants.TEXT_IS_RICH_PROP, MigrationConstants.BOOLEAN_TRUE);
-            textCompNode.setProperty("id", compId);
-        } catch (Exception exec) {
-            logger.error("Exception in createCoreTextComponent method::{}", exec.getMessage());
         }
     }
 
@@ -517,12 +486,12 @@ public class EventsPageCreationService implements PageCreationService {
     private void createEventDescription(Node innerContainer, EventPageData data) {
         final String descText = data.getDescription();
         if (StringUtils.isNotBlank(descText)) {
-            List<Integer> indicesList = findAllIndicesOfGivenString(descText, "<h2 class=");
+            List<Integer> indicesList = MigrationUtils.findAllIndicesOfGivenString(descText, "<h2 class=");
             if (!indicesList.isEmpty()) {
                 int counter = 0;
                 List<CompAttributes> compAttrList = new ArrayList<>();
                 Map<String, Object> resultMap = new HashMap<>();
-                resultMap.put("counter", counter);
+                resultMap.put(COUNTER, counter);
                 String parseStr = "";
                 for (int index = 0; index < indicesList.size(); index++) {
                     if (index == indicesList.size() - 1) {
@@ -538,7 +507,7 @@ public class EventsPageCreationService implements PageCreationService {
                 // It executes, if not find event desc or registration, agenda or pre reading
                 // id's on xml description node data.
                 createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-                createCoreTextComponent(innerContainer, descText, TEXT_DESC, EVENT_DESC_COMP_ID);
+                MigrationUtils.createCoreTextComponent(innerContainer, descText, TEXT_DESC, EVENT_DESC_COMP_ID);
             }
 
         }
@@ -552,10 +521,11 @@ public class EventsPageCreationService implements PageCreationService {
      * @param descText       the desc text
      */
     private void processResultMap(Node innerContainer, Map<String, Object> resultMap, String descText) {
-        if (null != resultMap && (Integer) resultMap.get("counter") == 0) {
+        if (null != resultMap && (Integer) resultMap.get(COUNTER) == 0) {
             createOnlyEventDescSection(innerContainer, descText);
         }
         if (null != resultMap) {
+            @SuppressWarnings (value="unchecked")
             List<CompAttributes> compAttributeList = (List<CompAttributes>) resultMap.get("compList");
             if (!compAttributeList.isEmpty()) {
                 createComponentsInOrderFashion(innerContainer, compAttributeList);
@@ -571,29 +541,7 @@ public class EventsPageCreationService implements PageCreationService {
      */
     private void createOnlyEventDescSection(Node innerContainer, final String descText) {
         createCoreTitleComponent(innerContainer, EVENT_DESCRIPTION, TITLE_DESC);
-        createCoreTextComponent(innerContainer, descText, TEXT_DESC, EVENT_DESC_COMP_ID);
-    }
-
-    /**
-     * Find all indices of given string.
-     *
-     * @param sourceTextString the source text string
-     * @param searchWord       the search word
-     * @return the index list for the search word
-     */
-    private List<Integer> findAllIndicesOfGivenString(String sourceTextString, String searchWord) {
-        List<Integer> indexes = new ArrayList<>();
-        int wordLength = 0;
-        int index = 0;
-        while (index != -1) {
-            // Slight improvement.
-            index = sourceTextString.indexOf(searchWord, index + wordLength);
-            if (index != -1) {
-                indexes.add(index);
-            }
-            wordLength = searchWord.length();
-        }
-        return indexes;
+        MigrationUtils.createCoreTextComponent(innerContainer, descText, TEXT_DESC, EVENT_DESC_COMP_ID);
     }
 
     /**
@@ -618,8 +566,6 @@ public class EventsPageCreationService implements PageCreationService {
                 registerForEventButtonNode.setProperty(MigrationConstants.LINK_TARGET_PROP,
                         MigrationConstants.TEXT_UNDERSCORE_SELF);
                 registerForEventButtonNode.setProperty(MigrationConstants.LINK_URL_PROP, data.getRegistrationUrl());
-                // TODO Find if default accessibilityLabel needed.
-
             } else {
                 logger.info("Event Registration URL not found for drupalNodeId : {}", data.getDrupalNodeId());
                 if (innerContainer.hasNode(MigrationConstants.BUTTON_COMP_NODE_NAME))
@@ -656,22 +602,4 @@ public class EventsPageCreationService implements PageCreationService {
             logger.error("Exception in createEventDetailsComponent method::{}", exec.getMessage());
         }
     }
-
-    /**
-     * Remove all style tags that has CDATA from the text content.
-     * 
-     * @param textContent the text content
-     * @return the cleaned up text content
-     */
-    private String removeStyleElementsWithCDATA(String textContent) {
-        int styleStartIndex = textContent.indexOf(STYLE_TAG_START);
-        int styleEndIndex = textContent.indexOf(STYLE_TAG_END);
-        if (styleStartIndex >= 0 && styleEndIndex >= 0 && textContent.contains("[CDATA")) {
-            String styleCdataBlock = textContent.substring(styleStartIndex, styleEndIndex + 8);
-            textContent = textContent.replace(styleCdataBlock, StringUtils.EMPTY);
-            removeStyleElementsWithCDATA(textContent);
-        }
-        return textContent;
-    }
-
 }

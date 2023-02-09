@@ -70,6 +70,9 @@ public interface MigrationConstants {
 	/**  The Constant DRUPAL_NODE_ID. */
 	public static final String DRUPAL_NODE_ID = "drupalNodeId";
 
+	/**  The Constant WORKFLOW_STATUS. */
+	public static final String WORKFLOW_STATUS = "drupalWorkflowStatus";
+
 	/** The Constant DRUPAL_ACEESS_CONTROL. */
 	public static final String DRUPAL_ACEESS_CONTROL = "drupalAccessControl";
 
@@ -93,6 +96,12 @@ public interface MigrationConstants {
 
 	/** The Constant KITS_AND_TOOLS_PAGE_NAMES_FINDER_JSON. */
 	public static final String KITS_AND_TOOLS_PAGE_NAMES_FINDER_JSON = "/content/dam/community/kits_and_tools_page_names_finder.json";
+
+	/** The Constant CONTAINER. */
+    public static final String CONTAINER_NODE = "container";
+	
+	/** The Constant ROOT_NODE. */
+	public static final String ROOT_NODE = "root";
 
 	/**
 	 * The Interface TemplateNames.
