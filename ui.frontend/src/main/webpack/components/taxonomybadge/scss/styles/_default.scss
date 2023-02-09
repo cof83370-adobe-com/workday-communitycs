@@ -16,10 +16,7 @@
             border: 1px solid $wdc-color-soap-500;
             padding: 0 4px;
             margin-right: 5px;
-
-            @media (max-width: $screen-small) {
-                line-height: 30px;
-            }
+            line-height: 30px;
         }
 
         &__item-title {
