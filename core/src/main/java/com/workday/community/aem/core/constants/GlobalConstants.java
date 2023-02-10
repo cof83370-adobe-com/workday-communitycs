@@ -3,7 +3,7 @@ package com.workday.community.aem.core.constants;
 /**
  * The Interface GlobalConstants.
  * 
- * @author pepalla
+ * @author pepalla Palla
  */
 public interface GlobalConstants {
 	
