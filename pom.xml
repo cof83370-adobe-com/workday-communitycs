@@ -592,6 +592,19 @@
 				<version>1.0.1</version>
 				<scope>test</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.workday.community.migration</groupId>
+				<artifactId>workday-community-migration</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<scope>provided</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	<repositories>
+		<repository>
+			<id>project.local</id>
+			<name>project</name>
+			<url>file:${maven.multiModuleProjectDirectory}/repository</url>
+		</repository>
+	</repositories>
 </project>

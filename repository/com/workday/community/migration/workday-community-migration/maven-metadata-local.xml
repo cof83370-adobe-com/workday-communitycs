@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.workday.community.migration</groupId>
+  <artifactId>workday-community-migration</artifactId>
+  <versioning>
+    <versions>
+      <version>0.0.1-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20230210005336</lastUpdated>
+  </versioning>
+</metadata>
