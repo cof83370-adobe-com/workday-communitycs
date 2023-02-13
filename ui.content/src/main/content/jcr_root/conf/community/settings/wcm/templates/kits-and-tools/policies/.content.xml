@@ -42,7 +42,16 @@
                         <container_main
                             cq:policy="community/components/container/policy_16323801898166"
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="wcm/core/components/policies/mapping"/>
+                            sling:resourceType="wcm/core/components/policies/mapping">
+                            <community jcr:primaryType="nt:unstructured">
+                                <components jcr:primaryType="nt:unstructured">
+                                    <accordion
+                                        cq:policy="community/components/accordion/policy_1674773938710"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="wcm/core/components/policies/mapping"/>
+                                </components>
+                            </community>
+                        </container_main>
                         <container_metadata
                             cq:policy="community/components/container/policy_115140473724791"
                             jcr:primaryType="nt:unstructured"

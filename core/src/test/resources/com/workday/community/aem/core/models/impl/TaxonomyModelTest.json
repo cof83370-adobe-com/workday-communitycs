@@ -1,0 +1,45 @@
+{
+   "jcr:primaryType":"cq:Page",
+   "jcr:content":{
+      "jcr:primaryType":"cq:PageContent",
+      "jcr:createdBy":"workday-community-administrative-service-user",
+      "jcr:title":"Considerations When Translating BIRT Output (Kits and Tools)",
+      "productTags":[
+         "product:4903/7728",
+         "product:92"
+      ],
+      "pwaOrientation":"any",
+      "author":"cslamka",
+      "cq:template":"/conf/community/settings/wcm/templates/kits-and-tools",
+      "readCount":40,
+      "industryTags":[
+         "industry:187",
+         "industry:utilities"
+      ],
+      "updatedDate":"Wed Jan 11 2023 23:00:00 GMT+0530",
+      "jcr:created":"Tue Jan 31 2023 15:39:47 GMT+0530",
+      "pwaDisplay":"standalone",
+      "cq:lastModified":"Tue Jan 31 2023 16:53:33 GMT+0530",
+      "usingWorkdayTags":[
+         "using-workday:workday-acquisition-integrations",
+         "using-workday:7028/7046"
+      ],
+      "drupalNodeId":1060265,
+      "releaseTags":[
+         "release:114",
+         "release:141",
+         "release:148"
+      ],
+      "pwaCachestrategy":"staleWhileRevalidate",
+      "drupalAccessControl":"Workday - all",
+      "programsToolsTags":[
+         "programs-and-tools:program-type",
+         "programs-and-tools:program-type/the-next-level",
+         "programs-and-tools:program-type/workday-methodology"
+      ],
+      "sling:resourceType":"community/components/kitsandtoolspage",
+      "retirementDate":"Fri Dec 15 2023 23:00:00 GMT+0530",
+      "cq:lastModifiedBy":"admin",
+      "postedDate":"Sat Nov 26 2022 23:00:00 GMT+0530"
+   }
+}

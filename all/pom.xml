@@ -77,6 +77,13 @@
                             <type>zip</type>
                             <target>/apps/community-packages/application/install</target>
                         </embedded>
+                        <!-- Embedding the migration bunlde here-->
+                        <embedded>
+                            <groupId>com.workday.community.migration</groupId>
+                            <artifactId>workday-community-migration</artifactId>
+                            <type>jar</type>
+                            <target>/apps/community-packages/application/install</target>
+                       </embedded>
                         <embedded>
                             <groupId>org.jsoup</groupId>
                             <artifactId>jsoup</artifactId>
@@ -222,6 +229,12 @@
             <version>${project.version}</version>
             <type>zip</type>
         </dependency>
+        <dependency>
+				<groupId>com.workday.community.migration</groupId>
+				<artifactId>workday-community-migration</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<type>jar</type>
+		</dependency>
         <dependency>
             <groupId>com.adobe.acs</groupId>
             <artifactId>acs-aem-commons-ui.apps</artifactId>

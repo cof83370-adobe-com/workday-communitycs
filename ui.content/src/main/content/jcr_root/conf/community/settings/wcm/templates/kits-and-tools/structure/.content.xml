@@ -14,10 +14,9 @@
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="community/components/commons/header"/>
             <container
-                jcr:lastModified="{Date}2023-01-02T12:58:56.129+05:30"
-                jcr:lastModifiedBy="admin"
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="community/components/container"
+                id="main-container"
                 layout="responsiveGrid">
                 <breadcrumb
                     jcr:primaryType="nt:unstructured"
@@ -93,6 +92,10 @@
                                 jcr:primaryType="nt:unstructured"
                                 offset="0"
                                 width="6"/>
+                            <phone
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="12"/>
                         </cq:responsive>
                     </container_center>
                     <container_rightrail
@@ -110,8 +113,7 @@
                         </cq:responsive>
                         <taxonomy
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="community/components/taxonomy">
-                        </taxonomy>
+                            sling:resourceType="community/components/taxonomy"/>
                     </container_rightrail>
                 </container>
             </container>
