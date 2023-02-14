@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:template="/conf/community/settings/wcm/templates/reference-page-template"
+        jcr:primaryType="cq:PageContent"
+        sling:resourceType="community/components/referencepage">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="community/components/container"
+            layout="responsiveGrid">
+            <container
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="community/components/container"
+                layout="responsiveGrid">
+                <container
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="community/components/container"
+                    id="reference-body-root"
+                    layout="responsiveGrid">
+                    <container_center
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="community/components/container"
+                        id="reference-center-container"
+                        layout="responsiveGrid">
+                        <container_main
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="community/components/container">
+                            <text
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="community/components/text"/>
+                        </container_main>
+                    </container_center>
+                </container>
+            </container>
+        </root>
+    </jcr:content>
+</jcr:root>
