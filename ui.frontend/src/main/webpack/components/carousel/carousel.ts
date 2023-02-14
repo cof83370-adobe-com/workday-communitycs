@@ -1,11 +1,12 @@
 (function() {
     const actions = 'cmp-carousel__actions';
+    const item = 'cmp-carousel__item';
     var carouselSelectors = {
         currentPagination: `[class="${actions}__pagination"]`
     };
 
     function getCarouselPagination() {
-        const activeItem = document.getElementsByClassName('cmp-carousel__item cmp-carousel__item--active');
+        const activeItem = document.getElementsByClassName(`${item} ${item}--active`);
         const activeCarouselItem = activeItem.length == 1 ? activeItem[0] : null;
         let activeSlide;
         if(activeCarouselItem) {
@@ -17,7 +18,7 @@
 
         const activeSlideSpan = document.createElement('span');
         activeSlideSpan.append(activeSlide);
-        activeSlideSpan.className = 'cmp-carousel__actions__pagination';
+        activeSlideSpan.className = `${actions}__pagination`;
 
         if(carouselActionItems && (carouselActionItems.children.length > 1)) {
             if(carouselActionItems.querySelector(carouselSelectors.currentPagination)) {
