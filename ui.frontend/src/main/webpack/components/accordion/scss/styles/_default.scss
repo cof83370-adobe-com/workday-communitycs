@@ -1,9 +1,5 @@
 .cmp-accordion {
 
-    @media (min-width: $screen-small) {
-        margin-left: 32px;
-    }
-
     &__item {
         margin-bottom: 32px;
     }
@@ -25,6 +21,7 @@
             $imagePath: url('../resources/images/expand.svg');
             content: $imagePath;
             vertical-align: middle;
+            line-height: 24px;
         }
 
         &--expanded {
@@ -34,6 +31,7 @@
                 $imagePath: url('../resources/images/collapse.svg');
                 content: $imagePath;
                 vertical-align: middle;
+                line-height: 24px;
             }
         }
 
@@ -47,7 +45,9 @@
         line-height: 24px;
         color: $wdc-color-black-pepper-600;
         margin-left: 8px;
-        vertical-align: middle;
+        display: inline-block;
+        width: 80%;
+        vertical-align: top;
     }
 
     &__panel {

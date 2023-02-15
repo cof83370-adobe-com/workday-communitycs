@@ -1,21 +1,24 @@
 (function() {
+    const actions = 'cmp-carousel__actions';
+    const item = 'cmp-carousel__item';
     var carouselSelectors = {
-        currentPagination: '[class="cmp-carousel__actions__pagination"]'
+        currentPagination: `[class="${actions}__pagination"]`
     };
 
     function getCarouselPagination() {
-        const activeItem = document.getElementsByClassName('cmp-carousel__item cmp-carousel__item--active');
+        const activeItem = document.getElementsByClassName(`${item} ${item}--active`);
         const activeCarouselItem = activeItem.length == 1 ? activeItem[0] : null;
+        let activeSlide;
         if(activeCarouselItem) {
-            var activeSlide = activeCarouselItem.ariaLabel.replace('Slide ', '');
+            activeSlide = activeCarouselItem.ariaLabel.replace('Slide ', '');
         }
 
-        const carouselAction = document.getElementsByClassName('cmp-carousel__actions');
+        const carouselAction = document.getElementsByClassName(actions);
         const carouselActionItems = carouselAction.length == 1 ? carouselAction[0] : null;
 
         const activeSlideSpan = document.createElement('span');
         activeSlideSpan.append(activeSlide);
-        activeSlideSpan.className = 'cmp-carousel__actions__pagination';
+        activeSlideSpan.className = `${actions}__pagination`;
 
         if(carouselActionItems && (carouselActionItems.children.length > 1)) {
             if(carouselActionItems.querySelector(carouselSelectors.currentPagination)) {
