@@ -1,47 +1,78 @@
 package com.workday.community.aem.core.constants;
 
 /**
- * The Interface GlobalConstants.
+ * The Class GlobalConstants.
  * 
- * @author pepalla Palla
+ * @author pepalla
  */
-public interface GlobalConstants {
-	
+public final class GlobalConstants {
+
+	/** The Constant UNSUPPORTED_EXCEPTION_MSG. */
+	public static final String UNSUPPORTED_EXCEPTION_MSG = "This is a utility class and cannot be instantiated";
+
 	/**
-	 * The Interface PageResourceType.
+	 * Instantiates a new global constants.
 	 */
-	public interface PageResourceType {
-		
+	private GlobalConstants() {
+		throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
+	}
+
+	/**
+	 * The Class PageResourceType.
+	 */
+	public final class PageResourceType {
+
+		/**
+		 * Instantiates a new page resource type.
+		 */
+		private PageResourceType() {
+			throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
+		}
+
 		/** The Constant EVENT. */
 		public static final String EVENT = "community/components/eventspage";
-		
+
 		/** The Constant RELEASE_NOTES. */
 		public static final String RELEASE_NOTES = "community/components/releasenotespage";
-		
+
 		/** The Constant TRAINING_CATALOG. */
 		public static final String TRAINING_CATALOG = "community/components/trainingcatalogpage";
 	}
 
 	/**
-	 * The Interface TagPropertyName.
+	 * The Class TagPropertyName.
 	 */
-	public interface TagPropertyName {
-		
+	public final class TagPropertyName {
+
+		/**
+		 * Instantiates a new tag property name.
+		 */
+		private TagPropertyName() {
+			throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
+		}
+
 		/** The Constant EVENT_FORMAT. */
 		public static final String EVENT_FORMAT = "eventFormat";
-		
+
 		/** The Constant TRAINING_FORMAT. */
 		public static final String TRAINING_FORMAT = "trainingFormat";
-		
+
 		/** The Constant RELEASE_NOTES_CHNAGE_TYPE. */
 		public static final String RELEASE_NOTES_CHNAGE_TYPE = "releasNotesChangeType";
 
 	}
 
 	/**
-	 * The Interface EventDetailsConstants.
+	 * The Class EventDetailsConstants.
 	 */
-	public interface EventDetailsConstants {
+	public final class EventDetailsConstants {
+
+		/**
+		 * Instantiates a new event details constants.
+		 */
+		private EventDetailsConstants() {
+			throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
+		}
 
 		/** The Constant REQ_TIME_FORMAT. */
 		public static final String REQ_TIME_FORMAT = "HH:mm";
@@ -72,10 +103,10 @@ public interface GlobalConstants {
 
 		/** The Constant MINUTES_IN_1_HOUR. */
 		public static final long MINUTES_IN_1_HOUR = 60;
-		
+
 		/** The Constant MINUTES_IN_8_HOURS. */
 		public static final long MINUTES_IN_8_HOURS = 480;
-		
+
 		/** The Constant MINUTES_IN_24_HOURS. */
 		public static final long MINUTES_IN_24_HOURS = 1440;
 	}
