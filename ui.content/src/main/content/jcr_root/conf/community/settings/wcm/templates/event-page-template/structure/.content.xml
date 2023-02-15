@@ -23,8 +23,7 @@
                     sling:resourceType="community/components/breadcrumb"
                     disableShadowing="false"
                     hideCurrent="false"
-                    showHidden="false"
-                    startLevel="4"/>
+                    showHidden="false"/>
                 <taxonomybadge
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="community/components/taxonomybadge"/>

@@ -209,7 +209,7 @@
                 <policy_16323801898166
                     jcr:description="This policy contains all the components which are allowed in main container of the Kits and Tools Page."
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="kits and Tools - Main Content"
+                    jcr:title="Kits and Tools - Main Content"
                     sling:resourceType="wcm/core/components/policy/policy"
                     components="[/apps/community/components/accordion,/apps/community/components/text]"
                     layoutDisabled="false">
@@ -422,6 +422,15 @@
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_115140473724791>
+                <policy_30056181409111
+                    jcr:description="This policy contains all the components which are allowed in main container of the FAQ Page."
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="FAQ - Main Content"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="/apps/community/components/text"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_30056181409111>
             </container>
             <teaser jcr:primaryType="nt:unstructured">
                 <policy_1575031387650
