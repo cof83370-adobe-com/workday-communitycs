@@ -425,16 +425,16 @@
                 <policy_17323802898146
                     jcr:description="This policy contains all the components which are allowed in main container of the Reference Page."
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Reference Page - Main Content"
+                    jcr:title="Reference - Main Content"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="[/apps/community/components/text]"
+                    components="[/apps/community/components/text,/apps/community/components/image]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_17323802898146>
                 <policy_16322860230451
                     jcr:description="This policy contains all the components which are allowed in Right Rail container of the Reference Page."
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Reference Page - Right Rail"
+                    jcr:title="Reference - Right Rail"
                     sling:resourceType="wcm/core/components/policy/policy"
                     components="[/apps/community/components/taxonomy]"
                     layoutDisabled="false">
@@ -442,15 +442,15 @@
                 </policy_16322860230451>
                 <policy_135140973724596
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Reference Page - Metadata"
+                    jcr:title="Reference - Metadata"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="[/apps/community/components/events/eventmetadata,/apps/community/components/text]"
+                    components="[/apps/community/components/events/eventmetadata,/apps/community/components/title]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_135140973724596>
                 <policy_168925665550543
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Reference Page - Left Rail"
+                    jcr:title="Reference - Left Rail"
                     sling:resourceType="wcm/core/components/policy/policy"
                     components="/apps/community/components/toc"
                     layoutDisabled="false">
