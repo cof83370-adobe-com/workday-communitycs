@@ -1,0 +1,52 @@
+.cmp-download {
+    display: flex;
+    align-items: $align-center;
+    height: 43px;
+    background: $wdc-color-soap-200;
+    margin-bottom: 8px;
+
+    &__title {
+        max-width: 90%;
+        margin: 0;
+    }
+
+    &__title-link {
+        font-style: $font-style-normal;
+        font-weight: 500;
+        font-size: 14px;
+        line-height: 22px;
+        letter-spacing: 0.5px;
+        color: $wdc-color-black-pepper-400;
+
+        text-decoration: none;
+        margin-left: 15px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inherit;
+
+        &:before {
+            $imagePath: url('../resources/images/download.svg');
+            content: $imagePath;
+            margin-right: 13px;
+            vertical-align: middle;
+        }
+    }
+
+    &__description {
+        display: none;
+    }
+
+    &__properties {
+        display: none;
+    }
+
+    &__action {
+        display: none;
+    }
+
+    &__img {
+        margin-left: 15px;
+        vertical-align: middle;
+    }
+}
