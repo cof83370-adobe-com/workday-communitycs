@@ -1,0 +1,24 @@
+<!--/* Related Information Component */-->
+
+
+<div class="cmp-relinfo">
+  <div class="cmp-relinfo__heading">
+    <h3 class="cmp-relinfo__heading__title">${properties.componenttitle}</h3>
+  </div>
+      <div class="cmp-relinfo__content" data-sly-list.urllinkMultifield="${resource.getChildren}">
+    
+        <ul class="cmp-relinfo__list" data-sly-list.urllink="${urllinkMultifield.getChildren}">
+    
+            <li class="cmp-relinfo__list__item">
+    
+                <a class="cmp-relinfo__list__link" href="${urllink.pagepath}.html"><span class ="cmp-relinfo__list__item__title">${urllink.subtitle}</span></a>
+    
+            </li>
+    
+        </ul>
+
+      </div>
+</div>
+
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
+   data-sly-call="${template.placeholder  @ isEmpty =! properties.componenttitle, classAppend='cmp-relinfo'}"></sly>
