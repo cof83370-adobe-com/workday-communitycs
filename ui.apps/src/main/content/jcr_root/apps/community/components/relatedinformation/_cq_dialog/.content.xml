@@ -32,16 +32,16 @@
                                             <componenttitle
                                                 jcr:primaryType="nt:unstructured"
                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                emptyText="Component Title"
-                                                fieldDescription="Enter the Title for the Component"
-                                                fieldLabel="Component Title"
-                                                name="./componenttitle"/>
+                                                emptyText="Title"
+                                                fieldDescription="Enter the Title"
+                                                fieldLabel="Title"
+                                                name="./title"/>
                                             <listFrom
                                                 granite:class="cq-dialog-dropdown-showhide"
                                                 jcr:primaryType="nt:unstructured"
                                                 sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                fieldLabel="List Type"
-                                                name="./listFrom">
+                                                fieldLabel="Type"
+                                                name="./type">
                                                 <granite:data
                                                     jcr:primaryType="nt:unstructured"
                                                     cq-dialog-dropdown-showhide-target=".list-option-listfrom-showhide-target"/>
@@ -71,18 +71,18 @@
                                                         jcr:primaryType="nt:unstructured"
                                                         sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                                                         composite="{Boolean}true"
-                                                        fieldLabel="URL Link"
+                                                        fieldLabel="Links"
                                                         validation="max-items-4">
                                                         <field
                                                             jcr:primaryType="nt:unstructured"
                                                             sling:resourceType="granite/ui/components/coral/foundation/container"
                                                             name="./items">
                                                             <items jcr:primaryType="nt:unstructured">
-                                                                <subtitle
+                                                                <linktitle
                                                                     jcr:primaryType="nt:unstructured"
                                                                     sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                    emptyText="Sub Title"
-                                                                    name="./subtitle"
+                                                                    emptyText="Link Title"
+                                                                    name="./linktitle"
                                                                     required="{Boolean}true"/>
                                                                 <pagepath
                                                                     jcr:primaryType="nt:unstructured"
