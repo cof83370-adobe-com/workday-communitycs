@@ -7,5 +7,6 @@
     <rep:policy/>
     <event-page-template/>
     <kits-and-tools/>
-    <reference-page-template/>
+    <reference/>
+    <faq/>
 </jcr:root>

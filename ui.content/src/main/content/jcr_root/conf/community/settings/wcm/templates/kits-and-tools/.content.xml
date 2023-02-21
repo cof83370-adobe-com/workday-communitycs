@@ -5,6 +5,6 @@
         cq:templateType="/conf/community/settings/wcm/template-types/kitsandtools-page"
         jcr:description="Workday Community Site Kits and Tools Page Template"
         jcr:primaryType="cq:PageContent"
-        jcr:title="Kits and Tools Page Template"
+        jcr:title="Kits and Tools"
         status="enabled"/>
 </jcr:root>

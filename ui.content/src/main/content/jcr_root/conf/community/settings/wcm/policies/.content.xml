@@ -207,20 +207,21 @@
             </experiencefragment>
             <container jcr:primaryType="nt:unstructured">
                 <policy_16323801898166
-                    jcr:description="This policy contains all the components which are allowed in main container of the Kits and Tools Page."
+                    jcr:description="This policy defines allowed components of the Content Main container of the Kits and Tools Page."
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Kits and Tools - Main Content"
+                    jcr:title="Kits and Tools - Content Main"
                     sling:resourceType="wcm/core/components/policy/policy"
                     components="[/apps/community/components/accordion,/apps/community/components/text]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_16323801898166>
                 <policy_16822860900458
-                    jcr:description="This policy contains all the components which are allowed in Right Rail container of the Kits and Tools Page."
+                    cq:styleDefaultClasses="container__right-rail"
+                    jcr:description="This policy defines default style classes and allowed components of Right Rail container of the Kits and Tools Page."
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Kits and Tools - Right Rail"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="[/apps/community/components/taxonomy]"
+                    components="[/apps/community/components/relatedinformation,/apps/community/components/taxonomy]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_16822860900458>
@@ -259,7 +260,7 @@
                     </cq:authoring>
                 </policy_1574694950110>
                 <policy_1574695586800
-                    cq:styleDefaultElement="main"
+                    cq:styleDefaultClasses="container__page-content"
                     jcr:description="Allows the page components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Page Content"
@@ -407,6 +408,8 @@
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_91296955275330>
                 <policy_108825695570583
+                    cq:styleDefaultClasses="container__left-rail"
+                    jcr:description="This policy defines default style classes and allowed components of Left Rail container of the Kits and Tools Page."
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Kits and Tools - Left Rail"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -415,40 +418,45 @@
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_108825695570583>
                 <policy_115140473724791
+                    jcr:description="This policy defines allowed components of the Page Title &amp; Metadata container of the Kits and Tools Page."
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Kits and Tools - Metadata"
+                    jcr:title="Kits and Tools - Page Title &amp; Metadata"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="[/apps/community/components/events/eventmetadata,/apps/community/components/text]"
+                    components="[/apps/community/components/events/eventmetadata,/apps/community/components/title]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_115140473724791>
                 <policy_17323802898146
-                    jcr:description="This policy contains all the components which are allowed in main container of the Reference Page."
+                    jcr:description="This policy defines allowed components of the Content Main container of the Reference Page."
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Reference - Main Content"
+                    jcr:title="Reference - Content Main"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="[/apps/community/components/text,/apps/community/components/image]"
+                    components="[/apps/community/components/image,/apps/community/components/text]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_17323802898146>
                 <policy_16322860230451
-                    jcr:description="This policy contains all the components which are allowed in Right Rail container of the Reference Page."
+                    cq:styleDefaultClasses="container__right-rail"
+                    jcr:description="This policy defines default style classes and allowed components of Right Rail container of the Reference Page."
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Reference - Right Rail"
                     sling:resourceType="wcm/core/components/policy/policy"
-                    components="[/apps/community/components/taxonomy]"
+                    components="[/apps/community/components/relatedinformation,/apps/community/components/taxonomy]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_16322860230451>
                 <policy_135140973724596
+                    jcr:description="This policy defines allowed components of the Page Title &amp; Metadata container of the Reference Page."
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="Reference - Metadata"
+                    jcr:title="Reference - Page Title &amp; Metadata"
                     sling:resourceType="wcm/core/components/policy/policy"
                     components="[/apps/community/components/events/eventmetadata,/apps/community/components/title]"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_135140973724596>
                 <policy_168925665550543
+                    cq:styleDefaultClasses="container__left-rail"
+                    jcr:description="This policy defines default style classes and allowed components of Left Rail container of the Reference Page."
                     jcr:primaryType="nt:unstructured"
                     jcr:title="Reference - Left Rail"
                     sling:resourceType="wcm/core/components/policy/policy"
@@ -457,14 +465,73 @@
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_168925665550543>
                 <policy_30056181409111
-                    jcr:description="This policy contains all the components which are allowed in main container of the FAQ Page."
+                    jcr:description="This policy defines allowed components of the Content Main container of the FAQ Page."
                     jcr:primaryType="nt:unstructured"
-                    jcr:title="FAQ - Main Content"
+                    jcr:title="FAQ - Content Main"
                     sling:resourceType="wcm/core/components/policy/policy"
                     components="/apps/community/components/text"
                     layoutDisabled="false">
                     <jcr:content jcr:primaryType="nt:unstructured"/>
                 </policy_30056181409111>
+                <policy_1676930971305
+                    cq:styleDefaultClasses="container__left-rail"
+                    jcr:description="This policy defines default style classes and allowed components of Left Rail container of the FAQ Page."
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="FAQ - Left Rail"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="/apps/community/components/toc"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_1676930971305>
+                <policy_1676931065193
+                    cq:styleDefaultClasses="container__right-rail"
+                    jcr:description="This policy defines default style classes and allowed components of Right Rail container of the FAQ Page."
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="FAQ - Right Rail"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="[/apps/community/components/relatedinformation,/apps/community/components/taxonomy]"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_1676931065193>
+                <policy_1676931538182
+                    jcr:description="This policy defines allowed components of the Page Title &amp; Metadata container of the FAQ Page."
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="FAQ - Page Title &amp; Metadata"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="[/apps/community/components/events/eventmetadata,/apps/community/components/title]"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_1676931538182>
+                <policy_1676937205547
+                    cq:styleDefaultClasses="container__center"
+                    jcr:description="This policy defines container style class of the Center container of the FAQ Page."
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="FAQ - Center"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="/apps/community/components/text"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_1676937205547>
+                <policy_1676938889768
+                    cq:styleDefaultClasses="container__center"
+                    jcr:description="This policy defines container style class of the Center container of the Kits and Tools Page."
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Kits and Tools - Center"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="/apps/community/components/text"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_1676938889768>
+                <policy_1676940689642
+                    cq:styleDefaultClasses="container__center"
+                    jcr:description="This policy defines container style class of the Center container of the Reference Page."
+                    jcr:primaryType="nt:unstructured"
+                    jcr:title="Reference - Center"
+                    sling:resourceType="wcm/core/components/policy/policy"
+                    components="/apps/community/components/text"
+                    layoutDisabled="false">
+                    <jcr:content jcr:primaryType="nt:unstructured"/>
+                </policy_1676940689642>
             </container>
             <teaser jcr:primaryType="nt:unstructured">
                 <policy_1575031387650
