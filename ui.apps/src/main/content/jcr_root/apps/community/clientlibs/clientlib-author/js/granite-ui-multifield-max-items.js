@@ -1,4 +1,4 @@
-;(function ($, Coral) {
+(function ($, Coral) {
     'use strict';
 
     /**
