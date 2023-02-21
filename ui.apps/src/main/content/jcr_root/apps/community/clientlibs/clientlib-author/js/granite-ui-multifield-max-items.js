@@ -23,7 +23,7 @@
             TARGET_GRANITE_UI: '.granite-ui-validation-multifield-max-items',
             VALIDATION_PROPERTY: 'validation',
             VALIDATION_VALUE_PREFIX: 'max-items',
-            ERROR_MESSAGE: 'Max allowed items is {0}',
+            ERROR_MESSAGE: 'Maximum allowed items are {0}',
             ERROR_TOOLTIP_ID: Coral.commons.getUID(),
             DEFAULT_MAX_SIZE:  100
         };
@@ -73,9 +73,9 @@
          * @param {HTMLElement} el is the validation HTML block with an existing validation attribute
          */
         function _getMaxSizeValue(el) {
-            var validationName = el.getAttribute('data-' + CONST.VALIDATION_PROPERTY);
+            var validationName = el.getAttribute(`data-${CONST.VALIDATION_PROPERTY}`);
             if (validationName) {
-                var max = validationName.replace(CONST.VALIDATION_VALUE_PREFIX + '-', '');
+                var max = validationName.replace(`${CONST.VALIDATION_VALUE_PREFIX}-`, '');
                 if (max) {
                     return parseInt(max);
                 }
@@ -102,12 +102,10 @@
 
             // set foundation field to show as invalid
             var error = $el.data('foundation-validation.internal.error');
-            if (error) {
+            if (error && !error.parentNode) {
                 error.content.innerHTML = message;
-                if (!error.parentNode) {
                     $el.after(error);
                     error.show();
-                }
             } else {
                 error = new Coral.Tooltip();
                 error.variant = 'error';
