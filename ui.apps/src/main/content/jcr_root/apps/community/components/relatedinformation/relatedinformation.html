@@ -1,0 +1,22 @@
+<!--/* Related Information Component */-->
+<div class="cmp-related-info">
+	<sly data-sly-test="${resource.getChildren || properties.type=='dynamic' }">
+		<div class="cmp-related-info__heading">
+			<h3 data-sly-test="${properties.title}" class="cmp-related-info__heading-title">${properties.title}</h3>
+		</div>
+		<sly data-sly-test="${properties.type=='static'}"> 
+			<div class="cmp-related-info__content"
+				data-sly-list.urllinkMultifield="${resource.getChildren}">
+				<ul class="cmp-related-info__list"
+					data-sly-list.urllink="${urllinkMultifield.getChildren}">
+					<li class="cmp-related-info__item"><a
+						class="cmp-related-info__item-link" href="${urllink.pagepath}.html"><span
+							class="cmp-related-info__item-title">${urllink.linktitle}</span></a></li>
+				</ul>
+			</div>
+		</sly>
+	</sly>
+</div>
+<sly
+	data-sly-use.template="core/wcm/components/commons/v1/templates.html"
+	data-sly-call="${template.placeholder  @ isEmpty=!resource.getChildren, classAppend='cmp-related-info'}"></sly>
