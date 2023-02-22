@@ -2,4 +2,9 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:Tag"
     jcr:title="Tenant Set Up"
-    sling:resourceType="cq/tagging/components/tag"/>
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_214/>
+    <_x0037_215/>
+    <_x0037_216/>
+    <_x0037_217/>
+</jcr:root>

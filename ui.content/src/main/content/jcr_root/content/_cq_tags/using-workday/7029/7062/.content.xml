@@ -2,4 +2,16 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:Tag"
     jcr:title="Analytics &amp; Report Outputs"
-    sling:resourceType="cq/tagging/components/tag"/>
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_222/>
+    <_x0037_223/>
+    <_x0037_224/>
+    <_x0037_225/>
+    <_x0037_226/>
+    <_x0037_227/>
+    <_x0037_228/>
+    <_x0037_229/>
+    <_x0037_230/>
+    <_x0037_231/>
+    <_x0037_232/>
+</jcr:root>
