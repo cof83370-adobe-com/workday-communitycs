@@ -1,0 +1,3 @@
+#base=js
+
+granite-ui-multifield-max-items.js

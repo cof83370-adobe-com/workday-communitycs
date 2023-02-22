@@ -10,7 +10,7 @@
             jcr:primaryType="nt:unstructured"
             sling:resourceType="wcm/core/components/policies/mapping">
             <container
-                cq:policy="community/components/container/policy_1574695586800"
+                cq:policy="community/components/container/policy_649128221558427"
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="wcm/core/components/policies/mapping">
                 <breadcrumb
@@ -33,12 +33,18 @@
                     cq:policy="community/components/container/policy_115140473724791"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="wcm/core/components/policies/mapping"/>
-                <container jcr:primaryType="nt:unstructured">
+                <container
+                    cq:policy="community/components/container/policy_1574695586800"
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="wcm/core/components/policies/mapping">
                     <container_main
                         cq:policy="community/components/container/policy_16323801898166"
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="wcm/core/components/policies/mapping"/>
-                    <container_center jcr:primaryType="nt:unstructured">
+                    <container_center
+                        cq:policy="community/components/container/policy_1676938889768"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="wcm/core/components/policies/mapping">
                         <container_main
                             cq:policy="community/components/container/policy_16323801898166"
                             jcr:primaryType="nt:unstructured"
