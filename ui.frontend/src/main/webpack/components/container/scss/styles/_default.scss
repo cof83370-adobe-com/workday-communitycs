@@ -1,0 +1,32 @@
+.container {
+    @media (min-width: $screen-small) {
+        &__page-content {
+            margin-top: 36px;
+
+            .collapse {
+                .cmp-toc {
+                    &__group, &__heading-title {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        &__left-rail {
+            padding-right: 32px;
+        }
+
+        &__right-rail {
+            padding-left: 29px;
+        }
+    }
+}
+
+ .cmp-toc__heading-icon {
+    @media (min-width: $screen-small) {
+        float: right;
+        content: url('../resources/images/toggle.svg');
+        padding-right: 15px;
+        padding-top: 4px;
+    }
+ }
