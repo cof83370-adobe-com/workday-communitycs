@@ -2,4 +2,16 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:Tag"
     jcr:title="Authentication &amp; Security"
-    sling:resourceType="cq/tagging/components/tag"/>
+    sling:resourceType="cq/tagging/components/tag">
+    <_x0037_176/>
+    <_x0037_177/>
+    <_x0037_178/>
+    <_x0037_179/>
+    <_x0037_180/>
+    <_x0037_181/>
+    <_x0037_182/>
+    <_x0037_183/>
+    <_x0037_184/>
+    <_x0037_185/>
+    <_x0037_186/>
+</jcr:root>
