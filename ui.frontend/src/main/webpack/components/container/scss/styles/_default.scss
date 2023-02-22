@@ -1,32 +1,31 @@
-.container__page-content {
+.container {
     @media (min-width: $screen-small) {
-        margin-top: 36px;
+        &__page-content {
+            margin-top: 36px;
 
-        .container__left-rail {
+            .collapse {
+                .cmp-toc {
+                    &__group, &__heading-title {
+                        display: none;
+                    }
+                }
+            }
+        }
+
+        &__left-rail {
             padding-right: 32px;
         }
 
-        .collapse {
-            .cmp-toc__group {
-                display: none;
-            }
-
-            .cmp-toc__heading-title {
-                display: none;
-            }
-        }
-
-         .container__right-rail {
+        &__right-rail {
             padding-left: 29px;
-         }
+        }
     }
 }
 
  .cmp-toc__heading-icon {
     @media (min-width: $screen-small) {
         float: right;
-        $imagePath: url('../resources/images/toggle.svg');
-        content: $imagePath;
+        content: url('../resources/images/toggle.svg');
         padding-right: 15px;
         padding-top: 4px;
     }
