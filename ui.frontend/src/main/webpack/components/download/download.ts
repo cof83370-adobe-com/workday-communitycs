@@ -12,9 +12,10 @@
         if(hasTitle){
             const downloadTitleLink = config.element.querySelector(downloadSelectors.titleLink);
             const fileUrl = downloadTitleLink.href;
-            const str = 'coredownload';
-            const fileExtension = fileUrl.substr(fileUrl.indexOf(str) + str.length);
-            downloadTitleLink.append(fileExtension);
+            const str = '.coredownload';
+            const substrUrl = fileUrl.split(str)[0];
+            const fileExtension = substrUrl.substring(substrUrl.lastIndexOf('.') + 1);
+            downloadTitleLink.append(`.${fileExtension}`);
         } else {
             const downloadImg = new Image();
             downloadImg.src = '/etc.clientlibs/community/clientlibs/clientlib-site/resources/images/download.svg';
