@@ -18,7 +18,7 @@
             downloadTitleLink.append(`.${fileExtension}`);
         } else {
             const downloadImg = new Image();
-            downloadImg.src = '/etc.clientlibs/community/clientlibs/clientlib-site/resources/images/download.svg';
+            downloadImg.src = '/etc.clientlibs/workday-community/clientlibs/clientlib-site/resources/images/download.svg';
             config.element.append(downloadImg);
             downloadImg.className = `${download}__img`;
         }

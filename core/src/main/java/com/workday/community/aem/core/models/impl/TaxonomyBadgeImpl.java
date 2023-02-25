@@ -28,7 +28,7 @@ import com.workday.community.aem.core.models.TaxonomyBadge;
 public class TaxonomyBadgeImpl implements TaxonomyBadge {
 
     /** The Constant RESOURCE_TYPE. */
-    protected static final String RESOURCE_TYPE = "community/components/taxonomybadge";
+    protected static final String RESOURCE_TYPE = "workday-community/components/common/taxonomybadge";
 
     /** The badge list. */
     private List<String> badgeList = new ArrayList<>();

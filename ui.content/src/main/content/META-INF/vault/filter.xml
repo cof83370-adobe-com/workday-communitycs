@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
-    <filter root="/conf/community" mode="update"/>
+    <filter root="/conf/workday-community" mode="merge"/>
     <filter root="/content/workday-community" mode="merge"/>
-    <filter root="/content/dam/community" mode="merge"/>
+    <filter root="/content/dam/workday-community" mode="merge">
+        <exclude pattern="/content/dam/workday-community(/.*)?"/>
+        <include pattern="/content/dam/workday-community/jcr:content(/.*)?"/>
+    </filter>
     <filter root="/content/cq:tags/event" mode="merge"/>
     <filter root="/content/cq:tags/user" mode="merge"/>
     <filter root="/content/cq:tags/region-and-country" mode="merge"/>
@@ -14,5 +17,5 @@
     <filter root="/content/cq:tags/release" mode="merge"/>
     <filter root="/content/cq:tags/training" mode="merge"/>
     <filter root="/content/cq:tags/asset-type" mode="merge"/>
-    <filter root="/content/experience-fragments/community" mode="merge"/>
+    <filter root="/content/experience-fragments/workday-community" mode="merge"/>
 </workspaceFilter>

@@ -30,13 +30,13 @@ public final class GlobalConstants {
 		}
 
 		/** The Constant EVENT. */
-		public static final String EVENT = "community/components/eventspage";
+		public static final String EVENT = "workday-community/components/structure/eventspage";
 
 		/** The Constant RELEASE_NOTES. */
-		public static final String RELEASE_NOTES = "community/components/releasenotespage";
+		public static final String RELEASE_NOTES = "workday-community/components/core/releasenotespage";
 
 		/** The Constant TRAINING_CATALOG. */
-		public static final String TRAINING_CATALOG = "community/components/trainingcatalogpage";
+		public static final String TRAINING_CATALOG = "workday-community/components/core/trainingcatalogpage";
 	}
 
 	/**

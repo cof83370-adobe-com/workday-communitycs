@@ -31,6 +31,7 @@
 		<module>ui.config</module>
 		<module>ui.content</module>
 		<module>it.tests</module>
+		<module>dispatcher</module>
 		<module>ui.tests</module>
 	</modules>
 	<properties>
@@ -43,11 +44,11 @@
 		<vault.user>admin</vault.user>
 		<vault.password>admin</vault.password>
 		<frontend-maven-plugin.version>1.12.0</frontend-maven-plugin.version>
-		<core.wcm.components.version>2.19.0</core.wcm.components.version>
+		<core.wcm.components.version>2.22.0</core.wcm.components.version>
 		<bnd.version>5.1.2</bnd.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<aem.sdk.api>2022.9.8722.20220912T101352Z-220800</aem.sdk.api>
+		<aem.sdk.api>2023.1.10912.20230130T173736Z-230100</aem.sdk.api>
 		<aemanalyser.version>1.4.10</aemanalyser.version>
 		<componentGroupName>Workday Community Site</componentGroupName>
 	</properties>
@@ -136,6 +137,9 @@
 							<goals>
 								<goal>npm</goal>
 							</goals>
+							<configuration>
+								<arguments>ci</arguments>
+							</configuration>
 						</execution>
 					</executions>
 				</plugin>
@@ -177,7 +181,7 @@
 										Bundle-DocURL:
 										-plugin org.apache.sling.caconfig.bndplugin.ConfigurationClassScannerPlugin
 										-plugin org.apache.sling.bnd.models.ModelsScannerPlugin
-                                	]]>
+                  					]]>
 								</bnd>
 							</configuration>
 						</execution>
@@ -341,54 +345,42 @@
 										<versionRange>[1.0.0,)</versionRange>
 										<goals>
 											<goal>enforce</goal>
-										</goals>
-									</pluginExecutionFilter>
+                    					</goals>
+                  					</pluginExecutionFilter>
 									<action>
-										<ignore />
-									</action>
+                    					<ignore />
+                  					</action>
+                				</pluginExecution>
+								<pluginExecution>
+								<pluginExecutionFilter>
+									<groupId>org.apache.maven.plugins</groupId>																		
+									<artifactId>maven-dependency-plugin</artifactId>					
+									<versionRange>[2.2,)</versionRange>
+									<goals>
+										<goal>copy-dependencies</goal>
+										<goal>unpack</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore />
+								</action>
 								</pluginExecution>
 								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-                                            org.apache.maven.plugins
-                                        </groupId>
-										<artifactId>
-                                            maven-dependency-plugin
-                                        </artifactId>
-										<versionRange>
-                                            [2.2,)
-                                        </versionRange>
-										<goals>
-											<goal>copy-dependencies</goal>
-											<goal>unpack</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
+								<pluginExecutionFilter>
+									<groupId>org.codehaus.mojo</groupId>
+									<artifactId>build-helper-maven-plugin</artifactId>
+									<versionRange>[1.5,)</versionRange>
+									<goals>
+										<goal>
+											reserve-network-port
+										</goal>
+									</goals>
+								</pluginExecutionFilter>
+								<action>
+									<ignore />
+								</action>
 								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-                                            org.codehaus.mojo
-                                        </groupId>
-										<artifactId>
-                                            build-helper-maven-plugin
-                                        </artifactId>
-										<versionRange>
-                                            [1.5,)
-                                        </versionRange>
-										<goals>
-											<goal>
-                                                reserve-network-port
-                                            </goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
+              				</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
@@ -400,14 +392,13 @@
 		<profile>
 			<id>autoInstallBundle</id>
 			<!--
-                To enable this feature for a bundle, the sling-maven-plugin
-                (without configuration) needs to be included:
-
-                <plugin>
-                    <groupId>org.apache.sling</groupId>
-                    <artifactId>sling-maven-plugin</artifactId>
-                 </plugin>
-            -->
+				To enable this feature for a bundle, the sling-maven-plugin
+				(without configuration) needs to be included:
+				<plugin>
+					<groupId>org.apache.sling</groupId>
+					<artifactId>sling-maven-plugin</artifactId>
+				</plugin>
+			-->
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
@@ -433,7 +424,8 @@
 		<profile>
 			<id>autoInstallPackage</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>
+					false</activeByDefault>
 			</activation>
 			<build>
 				<pluginManagement>
@@ -460,7 +452,8 @@
 										<goal>install</goal>
 									</goals>
 									<configuration>
-										<targetURL>http://${aem.host}:${aem.port}/crx/packmgr/service.jsp</targetURL>
+										<targetURL>
+											http://${aem.host}:${aem.port}/crx/packmgr/service.jsp</targetURL>
 									</configuration>
 								</execution>
 							</executions>
@@ -472,7 +465,8 @@
 		<profile>
 			<id>autoInstallPackagePublish</id>
 			<activation>
-				<activeByDefault>false</activeByDefault>
+				<activeByDefault>
+					false</activeByDefault>
 			</activation>
 			<build>
 				<pluginManagement>
@@ -499,7 +493,8 @@
 										<goal>install</goal>
 									</goals>
 									<configuration>
-										<targetURL>http://${aem.publish.host}:${aem.publish.port}/crx/packmgr/service.jsp</targetURL>
+										<targetURL>
+											http://${aem.publish.host}:${aem.publish.port}/crx/packmgr/service.jsp</targetURL>
 									</configuration>
 								</execution>
 							</executions>
@@ -525,11 +520,7 @@
 				<artifactId>core.wcm.components.core</artifactId>
 				<version>${core.wcm.components.version}</version>
 			</dependency>
-			<dependency>
-				<groupId>org.jsoup</groupId>
-				<artifactId>jsoup</artifactId>
-				<version>1.15.3</version>
-			</dependency>
+
 			<!-- Testing -->
 			<dependency>
 				<groupId>org.junit</groupId>
@@ -557,12 +548,12 @@
 				<scope>test</scope>
 			</dependency>
 			<!--
-			 |	The xerces depdendncy has been added as per Adobe community guideline to resolve the following error
-             |	java.lang.IllegalStateException: Unable to enable secure processing.
-             |	at org.apache.sling.contentparser.xml.jcr.internal.JCRXMLContentParser.(JCRXMLContentParser.java:61)
-             |	This was documented in https://github.com/adobe/aem-project-archetype/issues/920
-             |	and in https://experienceleaguecommunities.adobe.com/t5/adobe-experience-manager/junit-test-fails-with-saxnotrecognizedexception-while-loading/td-p/447234
-            -->
+			|	The xerces depdendncy has been added as per Adobe community guideline to resolve the following error
+			|	java.lang.IllegalStateException: Unable to enable secure processing.
+			|	at org.apache.sling.contentparser.xml.jcr.internal.JCRXMLContentParser.(JCRXMLContentParser.java:61)
+			|	This was documented in https://github.com/adobe/aem-project-archetype/issues/920
+			|	and in https://experienceleaguecommunities.adobe.com/t5/adobe-experience-manager/junit-test-fails-with-saxnotrecognizedexception-while-loading/td-p/447234
+			-->
 			<dependency>
 				<groupId>xerces</groupId>
 				<artifactId>xercesImpl</artifactId>
@@ -595,7 +586,7 @@
 			<dependency>
 				<groupId>com.workday.community.migration</groupId>
 				<artifactId>workday-community-migration</artifactId>
-				<version>0.0.4-SNAPSHOT</version>
+				<version>0.0.5-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
 		</dependencies>

@@ -26,7 +26,7 @@ const CLIENTLIB_DIR = path.join(
   'content',
   'jcr_root',
   'apps',
-  'community',
+  'workday-community',
   'clientlibs'
 );
 
@@ -45,7 +45,7 @@ module.exports = {
     {
       ...libsBaseConfig,
       name: 'clientlib-dependencies',
-      categories: ['community.dependencies'],
+      categories: ['workday-community.dependencies'],
       assets: {
         // Copy entrypoint scripts and stylesheets into the respective ClientLib
         // directories
@@ -64,8 +64,8 @@ module.exports = {
     {
       ...libsBaseConfig,
       name: 'clientlib-site',
-      categories: ['community.site'],
-      dependencies: ['community.dependencies'],
+      categories: ['workday-community.site'],
+      dependencies: ['workday-community.dependencies'],
       assets: {
         // Copy entrypoint scripts and stylesheets into the respective ClientLib
         // directories

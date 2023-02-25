@@ -52,11 +52,11 @@ public class EventDetailsModelTest {
         pageProperties.put("eventLocation", "California");
         pageProperties.put("eventHost", "workday");
         pageProperties.put("eventFormat", new String[] { "event:event-format/webinar" });
-        currentPage = context.create().page("/content/community/event",
-                "/conf/community/settings/wcm/templates/event-page-template", pageProperties);
+        currentPage = context.create().page("/content/workday-community/event",
+                "/conf/workday-community/settings/wcm/templates/event-page-template", pageProperties);
         resource = context.create().resource(currentPage, "eventspage",
-                "sling:resourceType", "community/components/eventspage");
-        currentPage = context.currentResource("/content/community/event").adaptTo(Page.class);
+                "sling:resourceType", "workday-community/components/structure/eventspage");
+        currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
     }
 
