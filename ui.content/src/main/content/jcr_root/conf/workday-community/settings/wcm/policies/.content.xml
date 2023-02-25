@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal"
+    jcr:mixinTypes="[rep:AccessControllable]"
+    jcr:primaryType="cq:Page">
+    <rep:policy/>
+    <workday-community jcr:primaryType="nt:unstructured">
+        <components jcr:primaryType="nt:unstructured">
+            <core jcr:primaryType="nt:unstructured">
+                <form jcr:primaryType="nt:unstructured">
+                    <container jcr:primaryType="nt:unstructured">
+                        <form-container
+                            jcr:description="Allows the form components to be dropped into this core form container."
+                            jcr:primaryType="nt:unstructured"
+                            jcr:title="Content Form"
+                            sling:resourceType="wcm/core/components/policy/policy"
+                            components="[/apps/workday-community/components/core/form/button,/apps/workday-community/components/core/form/hidden,/apps/workday-community/components/core/form/options,/apps/workday-community/components/core/form/text]">
+                            <jcr:content jcr:primaryType="nt:unstructured"/>
+                        </form-container>
+                    </container>
+                </form>
+                <languagenavigation jcr:primaryType="nt:unstructured">
+                    <policy_xfm
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Workday Community Site Language Navigation - Experience Fragment"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        navigationRoot="/content/workday-community"
+                        structureDepth="1">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_xfm>
+                </languagenavigation>
+                <image jcr:primaryType="nt:unstructured">
+                    <policy_651483963895698
+                        jcr:description="- Enable lazy loading for faster page loading.&#xd;&#xa;- Define allowed image widths for automatic loading of the image in the most optimal resolution, given the size at which each image is displayed on the page, and the visitor's pixel density.&#xd;&#xa;- Disallow direct asset upload, to force authors to first upload the images to Assets."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Content Image"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        allowedRenditionWidths="[320,480,600,800,1024,1200,1600]"
+                        allowUpload="false"
+                        altValueFromDAM="true"
+                        disableLazyLoading="false"
+                        displayPopupTitle="true"
+                        enableAssetDelivery="true"
+                        isDecorative="false"
+                        jpegQuality="{Long}85"
+                        titleValueFromDAM="true"
+                        uuidDisabled="true">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <plugins jcr:primaryType="nt:unstructured">
+                            <crop
+                                jcr:primaryType="nt:unstructured"
+                                features="*">
+                                <aspectRatios jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        jcr:primaryType="nt:unstructured"
+                                        name="Wide Landscape"
+                                        ratio="0.6180"/>
+                                    <item1
+                                        jcr:primaryType="nt:unstructured"
+                                        name="Landscape"
+                                        ratio="0.8284"/>
+                                    <item2
+                                        jcr:primaryType="nt:unstructured"
+                                        name="Square"
+                                        ratio="1"/>
+                                    <item3
+                                        jcr:primaryType="nt:unstructured"
+                                        name="Portrait"
+                                        ratio="1.6180"/>
+                                </aspectRatios>
+                            </crop>
+                            <rotate
+                                jcr:primaryType="nt:unstructured"
+                                features="right"/>
+                            <flip
+                                jcr:primaryType="nt:unstructured"
+                                features="-"/>
+                        </plugins>
+                    </policy_651483963895698>
+                </image>
+                <text jcr:primaryType="nt:unstructured">
+                    <policy_641562756958017
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Text Editor Policy"
+                        sling:resourceType="wcm/core/components/policy/policy">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <rtePlugins jcr:primaryType="nt:unstructured">
+                            <paraformat
+                                jcr:primaryType="nt:unstructured"
+                                features="*">
+                                <formats
+                                    jcr:primaryType="nt:unstructured"
+                                    override="true">
+                                    <item0
+                                        jcr:primaryType="nt:unstructured"
+                                        description="Paragraph"
+                                        tag="p"/>
+                                    <item1
+                                        jcr:primaryType="nt:unstructured"
+                                        description="Quote"
+                                        tag="blockquote"/>
+                                    <item2
+                                        jcr:primaryType="nt:unstructured"
+                                        description="Preformatted"
+                                        tag="pre"/>
+                                </formats>
+                            </paraformat>
+                            <misctools
+                                jcr:primaryType="nt:unstructured"
+                                features="specialchars">
+                                <specialCharsConfig jcr:primaryType="nt:unstructured">
+                                    <chars
+                                        jcr:primaryType="nt:unstructured"
+                                        override="true">
+                                        <item0
+                                            jcr:primaryType="nt:unstructured"
+                                            entity="&amp;copy;"
+                                            name="copyright"/>
+                                        <item1
+                                            jcr:primaryType="nt:unstructured"
+                                            entity="&amp;euro;"
+                                            name="euro"/>
+                                        <item2
+                                            jcr:primaryType="nt:unstructured"
+                                            entity="&amp;reg;"
+                                            name="registered"/>
+                                        <item3
+                                            jcr:primaryType="nt:unstructured"
+                                            entity="&amp;trade;"
+                                            name="trademark"/>
+                                    </chars>
+                                </specialCharsConfig>
+                            </misctools>
+                            <edit
+                                jcr:primaryType="nt:unstructured"
+                                features="paste-plaintext"/>
+                            <findreplace
+                                jcr:primaryType="nt:unstructured"
+                                features="*"/>
+                            <undo
+                                jcr:primaryType="nt:unstructured"
+                                features="*"/>
+                            <spellcheck
+                                jcr:primaryType="nt:unstructured"
+                                features="*"/>
+                            <image
+                                jcr:primaryType="nt:unstructured"
+                                features="*"/>
+                            <table
+                                jcr:primaryType="nt:unstructured"
+                                features="-"/>
+                            <lists
+                                jcr:primaryType="nt:unstructured"
+                                features="*"/>
+                            <justify
+                                jcr:primaryType="nt:unstructured"
+                                features="-"/>
+                            <format
+                                jcr:primaryType="nt:unstructured"
+                                features="bold"/>
+                            <links
+                                jcr:primaryType="nt:unstructured"
+                                features="modifylink,unlink,anchor"/>
+                            <subsuperscript
+                                jcr:primaryType="nt:unstructured"
+                                features="-"/>
+                        </rtePlugins>
+                    </policy_641562756958017>
+                </text>
+                <title jcr:primaryType="nt:unstructured">
+                    <policy_641475696923109
+                        jcr:description="Allows only H1 and disallows links for the main page title."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Page Title"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        allowedTypes="h1"
+                        linkDisabled="true"
+                        type="h1">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_641475696923109>
+                    <policy_641528232375303
+                        jcr:description="Allows all sizes, but not H1, which is reserved for the main page title."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Content Title"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        allowedTypes="[h2,h3,h4,h5,h6]"
+                        linkDisabled="false"
+                        type="h2">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_641528232375303>
+                </title>
+                <experiencefragment jcr:primaryType="nt:unstructured">
+                    <policy_header
+                        cq:styleDefaultElement="header"
+                        jcr:description="Sets a &lt;header> element on the page header experience fragment."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Page Header"
+                        sling:resourceType="wcm/core/components/policy/policy">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_header>
+                    <policy_footer
+                        cq:styleDefaultElement="footer"
+                        jcr:description="Sets a &lt;footer> element on the page footer experience fragment."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Page Footer"
+                        sling:resourceType="wcm/core/components/policy/policy">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_footer>
+                </experiencefragment>
+                <container jcr:primaryType="nt:unstructured">
+                    <policy_16323801898166
+                        jcr:description="This policy defines allowed components of the Content Main container of the Kits and Tools Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Kits and Tools - Content Main"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/text]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_16323801898166>
+                    <policy_16822860900458
+                        cq:styleDefaultClasses="container__right-rail"
+                        jcr:description="This policy defines default style classes and allowed components of Right Rail container of the Kits and Tools Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Kits and Tools - Right Rail"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/common/taxonomy]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_16822860900458>
+                    <policy_1574694950110
+                        jcr:description="Allows the template components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Page Root"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[group:Workday Community Site - Content,/apps/workday-community/components/core/form/container,group:Workday Community Site - Structure]">
+                        <jcr:content
+                            jcr:mixinTypes="[cq:ReplicationStatus]"
+                            jcr:primaryType="nt:unstructured"/>
+                        <cq:authoring jcr:primaryType="nt:unstructured">
+                            <assetToComponentMapping jcr:primaryType="nt:unstructured">
+                                <mapping_1575024218483
+                                    jcr:primaryType="nt:unstructured"
+                                    assetGroup="media"
+                                    assetMimetype="image/*"
+                                    droptarget="image"
+                                    resourceType="workday-community/components/core/image"/>
+                                <mapping_1575030843388
+                                    jcr:primaryType="nt:unstructured"
+                                    assetGroup="content"
+                                    assetMimetype="text/html"
+                                    droptarget="experiencefragment"
+                                    resourceType="workday-community/components/core/experiencefragment"/>
+                                <mapping_1575030853128
+                                    jcr:primaryType="nt:unstructured"
+                                    assetGroup="media"
+                                    assetMimetype="[text/html,application/vnd.adobe.contentfragment]"
+                                    droptarget="contentfragment"
+                                    resourceType="workday-community/components/core/contentfragment"/>
+                            </assetToComponentMapping>
+                        </cq:authoring>
+                    </policy_1574694950110>
+                    <policy_1574695586800
+                        cq:styleDefaultClasses="container__page-content"
+                        jcr:description="Allows the page components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Page Content"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[group:Workday Community Site - Content,/apps/workday-community/components/core/form/container,/apps/workday-community/components/common/importcontent]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:authoring jcr:primaryType="nt:unstructured">
+                            <assetToComponentMapping jcr:primaryType="nt:unstructured">
+                                <mapping_1575030255082
+                                    jcr:primaryType="nt:unstructured"
+                                    assetGroup="media"
+                                    assetMimetype="image/*"
+                                    droptarget="image"
+                                    resourceType="workday-community/components/core/image"/>
+                                <mapping_1575030260142
+                                    jcr:primaryType="nt:unstructured"
+                                    assetGroup="content"
+                                    assetMimetype="text/html"
+                                    droptarget="experiencefragment"
+                                    resourceType="workday-community/components/core/experiencefragment"/>
+                                <mapping_1575030269139
+                                    jcr:primaryType="nt:unstructured"
+                                    assetGroup="media"
+                                    assetMimetype="[text/html,application/vnd.adobe.contentfragment]"
+                                    droptarget="contentfragment"
+                                    resourceType="workday-community/components/core/contentfragment"/>
+                            </assetToComponentMapping>
+                        </cq:authoring>
+                    </policy_1574695586800>
+                    <policy_649128221558427
+                        cq:styleDefaultElement="main"
+                        jcr:description="Sets a &lt;main> element on the page content area."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Page Main"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_649128221558427>
+                    <policy_1575040440977
+                        jcr:description="Allows the template components and defines the component mapping (this configures what components should be automatically created when authors drop assets from the content finder to the page editor)."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="XF Root"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[group:Workday Community Site - Content,/apps/workday-community/components/core/form/container]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:authoring jcr:primaryType="nt:unstructured">
+                            <assetToComponentMapping jcr:primaryType="nt:unstructured">
+                                <mapping_1575024218483
+                                    jcr:primaryType="nt:unstructured"
+                                    assetGroup="media"
+                                    assetMimetype="image/*"
+                                    droptarget="image"
+                                    resourceType="workday-community/components/core/image"/>
+                                <mapping_1575030843388
+                                    jcr:primaryType="nt:unstructured"
+                                    assetGroup="content"
+                                    assetMimetype="text/html"
+                                    droptarget="experiencefragment"
+                                    resourceType="workday-community/components/core/experiencefragment"/>
+                                <mapping_1575030853128
+                                    jcr:primaryType="nt:unstructured"
+                                    assetGroup="media"
+                                    assetMimetype="[text/html,application/vnd.adobe.contentfragment]"
+                                    droptarget="contentfragment"
+                                    resourceType="workday-community/components/core/contentfragment"/>
+                            </assetToComponentMapping>
+                        </cq:authoring>
+                    </policy_1575040440977>
+                    <policy_2067079253960600
+                        cq:styleDefaultClasses="event-image-details"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Details Container"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/core/events/eventdetails,/apps/workday-community/components/core/image]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_2067079253960600>
+                    <policy_2067079264297100
+                        cq:styleDefaultClasses="event-text"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Description Container"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_2067079264297100>
+                    <policy_2067608127785500
+                        cq:styleDefaultClasses="event-bottom-left"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Bottom Left Container"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="group:Workday Community Site - Content"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_2067608127785500>
+                    <policy_2067608134729200
+                        cq:styleDefaultClasses="event-bottom-right"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Bottom Right Container"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="group:Workday Community Site - Content"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Container Styles"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="speakers"
+                                        cq:styleId="1672945911947"
+                                        cq:styleLabel="Speakers"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="sponsors"
+                                        cq:styleId="1672942053585"
+                                        cq:styleLabel="Sponsors"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="related-information"
+                                        cq:styleId="1672945987785"
+                                        cq:styleLabel="Related Information"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_2067608134729200>
+                    <policy_88960846754269
+                        cq:styleDefaultClasses="event-registration"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Registration Container"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="/apps/workday-community/components/core/button"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_88960846754269>
+                    <policy_91296955275330
+                        cq:styleDefaultClasses="event-title-metadata"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Title Container"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_91296955275330>
+                    <policy_108825695570583
+                        cq:styleDefaultClasses="container__left-rail"
+                        jcr:description="This policy defines default style classes and allowed components of Left Rail container of the Kits and Tools Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Kits and Tools - Left Rail"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="/apps/workday-community/components/common/toc"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_108825695570583>
+                    <policy_115140473724791
+                        jcr:description="This policy defines allowed components of the Page Title &amp; Metadata container of the Kits and Tools Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Kits and Tools - Page Title &amp; Metadata"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_115140473724791>
+                    <policy_17323802898146
+                        jcr:description="This policy defines allowed components of the Content Main container of the Reference Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Reference - Content Main"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_17323802898146>
+                    <policy_16322860230451
+                        cq:styleDefaultClasses="container__right-rail"
+                        jcr:description="This policy defines default style classes and allowed components of Right Rail container of the Reference Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Reference - Right Rail"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/common/taxonomy]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_16322860230451>
+                    <policy_135140973724596
+                        jcr:description="This policy defines allowed components of the Page Title &amp; Metadata container of the Reference Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Reference - Page Title &amp; Metadata"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_135140973724596>
+                    <policy_168925665550543
+                        cq:styleDefaultClasses="container__left-rail"
+                        jcr:description="This policy defines default style classes and allowed components of Left Rail container of the Reference Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Reference - Left Rail"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="/apps/workday-community/components/common/toc"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_168925665550543>
+                    <policy_30056181409111
+                        jcr:description="This policy defines allowed components of the Content Main container of the FAQ Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="FAQ - Content Main"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="/apps/workday-community/components/core/text"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_30056181409111>
+                    <policy_1676930971305
+                        cq:styleDefaultClasses="container__left-rail"
+                        jcr:description="This policy defines default style classes and allowed components of Left Rail container of the FAQ Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="FAQ - Left Rail"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="/apps/workday-community/components/common/toc"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1676930971305>
+                    <policy_1676931065193
+                        cq:styleDefaultClasses="container__right-rail"
+                        jcr:description="This policy defines default style classes and allowed components of Right Rail container of the FAQ Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="FAQ - Right Rail"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/common/taxonomy]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1676931065193>
+                    <policy_1676931538182
+                        jcr:description="This policy defines allowed components of the Page Title &amp; Metadata container of the FAQ Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="FAQ - Page Title &amp; Metadata"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1676931538182>
+                    <policy_1676937205547
+                        cq:styleDefaultClasses="container__center"
+                        jcr:description="This policy defines container style class of the Center container of the FAQ Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="FAQ - Center"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="/apps/workday-community/components/core/text"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1676937205547>
+                    <policy_1676938889768
+                        cq:styleDefaultClasses="container__center"
+                        jcr:description="This policy defines container style class of the Center container of the Kits and Tools Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Kits and Tools - Center"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="/apps/workday-community/components/core/text"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1676938889768>
+                    <policy_1676940689642
+                        cq:styleDefaultClasses="container__center"
+                        jcr:description="This policy defines container style class of the Center container of the Reference Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Reference - Center"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="/apps/workday-community/components/core/text"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1676940689642>
+                </container>
+                <teaser jcr:primaryType="nt:unstructured">
+                    <policy_1575031387650
+                        jcr:description="Sets the title size to H3."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Content Teaser"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        titleType="h3">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1575031387650>
+                </teaser>
+                <download jcr:primaryType="nt:unstructured">
+                    <policy_1575032193319
+                        jcr:description="Sets the title size to H3."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Content Download"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        allowUpload="false"
+                        displayFilename="true"
+                        displayFormat="true"
+                        displaySize="true"
+                        titleType="h3">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1575032193319>
+                </download>
+                <breadcrumb jcr:primaryType="nt:unstructured">
+                    <policy_1669702440856
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Breadcrumb Policy"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        disableShadowing="false"
+                        hideCurrent="false"
+                        showHidden="false"
+                        startLevel="3">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1669702440856>
+                </breadcrumb>
+                <accordion jcr:primaryType="nt:unstructured">
+                    <policy_1674773938710
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Kits and Tools - Accordion (Main)"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        allowedHeadingElements="[h2,h3,h4,h5,h6]"
+                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
+                        headingElement="h2">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1674773938710>
+                </accordion>
+            </core>
+            <structure jcr:primaryType="nt:unstructured">
+                <page jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Generic Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </page>
+            </structure>       
+        </components>
+    </workday-community>
+</jcr:root>

@@ -58,55 +58,56 @@
                             <groupId>com.workday.community.aem</groupId>
                             <artifactId>workday-community.ui.apps</artifactId>
                             <type>zip</type>
-                            <target>/apps/community-packages/application/install</target>
+                            <target>/apps/workday-community-packages/application/install</target>
                         </embedded>
                         <embedded>
                             <groupId>com.workday.community.aem</groupId>
                             <artifactId>workday-community.core</artifactId>
-                            <target>/apps/community-packages/application/install</target>
+                            <target>/apps/workday-community-packages/application/install</target>
                         </embedded>
                         <embedded>
                             <groupId>com.workday.community.aem</groupId>
                             <artifactId>workday-community.ui.content</artifactId>
                             <type>zip</type>
-                            <target>/apps/community-packages/content/install</target>
+                            <target>/apps/workday-community-packages/content/install</target>
                         </embedded>
                         <embedded>
                             <groupId>com.workday.community.aem</groupId>
                             <artifactId>workday-community.ui.config</artifactId>
                             <type>zip</type>
-                            <target>/apps/community-packages/application/install</target>
+                            <target>/apps/workday-community-packages/application/install</target>
                         </embedded>
+                        
                         <!-- Embedding the migration bunlde here-->
                         <embedded>
                             <groupId>com.workday.community.migration</groupId>
                             <artifactId>workday-community-migration</artifactId>
                             <type>jar</type>
-                            <target>/apps/community-packages/application/install</target>
+                            <target>/apps/workday-community-packages/application/install</target>
                        </embedded>
                         <embedded>
                             <groupId>org.jsoup</groupId>
                             <artifactId>jsoup</artifactId>
                             <type>jar</type>
-                            <target>/apps/community-packages/application/install</target>
+                            <target>/apps/workday-community-packages/application/install</target>
                        </embedded>
                        <embedded>
                             <groupId>com.adobe.acs</groupId>
                             <artifactId>acs-aem-commons-ui.apps</artifactId>
                             <type>zip</type>
-                            <target>/apps/community-packages/application/install</target>
+                            <target>/apps/workday-community-packages/application/install</target>
                         </embedded>
                         <embedded>
                             <groupId>com.adobe.acs</groupId>
                             <artifactId>acs-aem-commons-ui.content</artifactId>
                             <type>zip</type>
-                            <target>/apps/community-packages/content/install</target>
+                            <target>/apps/workday-community-packages/content/install</target>
                         </embedded>
                         <embedded>    
                                 <groupId>com.adobe.acs</groupId>    
                                 <artifactId>acs-aem-commons-content</artifactId>    
                                 <type>zip</type>
-                                <target>/apps/community-packages/container/install</target>
+                                <target>/apps/workday-community-packages/container/install</target>
                                 <filter>true</filter>
                                 <isAllVersionsFilter>true</isAllVersionsFilter>
                         </embedded>
@@ -230,11 +231,11 @@
             <type>zip</type>
         </dependency>
         <dependency>
-				<groupId>com.workday.community.migration</groupId>
-				<artifactId>workday-community-migration</artifactId>
-				<version>0.0.4-SNAPSHOT</version>
-				<type>jar</type>
-		</dependency>
+                <groupId>com.workday.community.migration</groupId>
+                <artifactId>workday-community-migration</artifactId>
+                <version>0.0.5-SNAPSHOT</version>
+                <type>jar</type>
+        </dependency>
         <dependency>
             <groupId>com.adobe.acs</groupId>
             <artifactId>acs-aem-commons-ui.apps</artifactId>

@@ -15,6 +15,6 @@
   ~ limitations under the License.
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 <workspaceFilter version="1.0">
-    <filter root="/apps/community-packages"/>
-    <filter root="/apps/community-vendor-packages"/>
+    <filter root="/apps/workday-community-packages"/>
+    <filter root="/apps/workday-community-vendor-packages"/>
 </workspaceFilter>

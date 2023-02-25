@@ -35,7 +35,7 @@
                     <filters>
                         <!-- /apps root -->
                         <filter><root>/apps</root></filter>
-                        <filter><root>/apps/community</root></filter>
+                        <filter><root>/apps/workday-community</root></filter>
 
                         <!-- Common overlay roots -->
                         <filter><root>/apps/sling</root></filter>
@@ -48,7 +48,7 @@
                         <filter><root>/apps/settings</root></filter>
 
                         <!-- DAM folder root, will be created via repoinit -->
-                        <filter><root>/content/dam/community</root></filter>
+                        <filter><root>/content/dam/workday-community</root></filter>
 
                     </filters>
                 </configuration>

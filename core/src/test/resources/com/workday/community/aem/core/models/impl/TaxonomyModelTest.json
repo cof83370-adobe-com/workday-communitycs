@@ -10,7 +10,7 @@
       ],
       "pwaOrientation":"any",
       "author":"cslamka",
-      "cq:template":"/conf/community/settings/wcm/templates/kits-and-tools",
+      "cq:template":"/conf/workday-community/settings/wcm/templates/kits-and-tools",
       "readCount":40,
       "industryTags":[
          "industry:187",
@@ -37,7 +37,7 @@
          "programs-and-tools:program-type/the-next-level",
          "programs-and-tools:program-type/workday-methodology"
       ],
-      "sling:resourceType":"community/components/kitsandtoolspage",
+      "sling:resourceType":"workday-community/components/structure/kitsandtoolspage",
       "retirementDate":"Fri Dec 15 2023 23:00:00 GMT+0530",
       "cq:lastModifiedBy":"admin",
       "postedDate":"Sat Nov 26 2022 23:00:00 GMT+0530"

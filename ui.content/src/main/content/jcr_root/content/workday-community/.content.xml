@@ -3,16 +3,16 @@
     jcr:mixinTypes="[rep:AccessControllable]"
     jcr:primaryType="cq:Page">
     <jcr:content
-        cq:allowedTemplates="[/conf/community/settings/wcm/templates/(?!xf-).*,/conf/community/settings/wcm/templates/page-content]"
-        cq:conf="/conf/community"
+        cq:allowedTemplates="[/conf/workday-community/settings/wcm/templates/(?!xf-).*,/conf/workday-community/settings/wcm/templates/page-content]"
+        cq:conf="/conf/workday-community"
         cq:redirectTarget="/content/workday-community/en-us"
-        cq:template="/conf/community/settings/wcm/templates/page-content"
+        cq:template="/conf/workday-community/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
         jcr:title="Workday Community Site"
-        sling:configRef="/conf/community"
+        sling:configRef="/conf/workday-community"
         sling:redirect="{Boolean}true"
         sling:redirectStatus="{Long}302"
-        sling:resourceType="community/components/page">
+        sling:resourceType="workday-community/components/structure/page">
         <image jcr:primaryType="nt:unstructured">
             <file/>
         </image>

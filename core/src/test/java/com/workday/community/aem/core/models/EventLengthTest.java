@@ -32,11 +32,11 @@ public class EventLengthTest {
         Map<String, Object> pageProperties = new HashMap<>();
         pageProperties.put("startDate", "2022-11-22T00:44:02.000+05:30");
         pageProperties.put("endDate", "2022-11-22T05:54:02.000+05:30");
-        currentPage = context.create().page("/content/community/event",
-                "/conf/community/settings/wcm/templates/event-page-template", pageProperties);
+        currentPage = context.create().page("/content/workday-community/event",
+                "/conf/workday-community/settings/wcm/templates/event-page-template", pageProperties);
         resource = context.create().resource(currentPage, "eventslengthpage",
-                "sling:resourceType", "community/components/eventspage");
-        currentPage = context.currentResource("/content/community/event").adaptTo(Page.class);
+                "sling:resourceType", "workday-community/components/structure/eventspage");
+        currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
     }
 
