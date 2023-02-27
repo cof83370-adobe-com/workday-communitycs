@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -118,7 +119,7 @@ public class EventDetailsModel {
 		} catch (Exception exec) {
 			logger.error("Exception occurred at getEventFormatList method of EventDetailsModel:{} ", exec.getMessage());
 		}
-		return eventFormat;
+		return Collections.unmodifiableList(eventFormat);
 
 	}
 
@@ -247,16 +248,7 @@ public class EventDetailsModel {
 	 * @return the event format
 	 */
 	public List<String> getEventFormat() {
-		return eventFormat;
-	}
-
-	/**
-	 * Sets the event format.
-	 *
-	 * @param eventFormat the new event format
-	 */
-	public void setEventFormat(List<String> eventFormat) {
-		this.eventFormat = eventFormat;
+		return Collections.unmodifiableList(eventFormat);
 	}
 
 	/**
@@ -269,48 +261,12 @@ public class EventDetailsModel {
 	}
 
 	/**
-	 * Sets the event location.
-	 *
-	 * @param evenLlocation the new event location
-	 */
-	public void setEventLocation(String evenLlocation) {
-		this.eventLocation = evenLlocation;
-	}
-
-	/**
 	 * Gets the event host.
 	 *
 	 * @return the event host
 	 */
 	public String getEventHost() {
 		return eventHost;
-	}
-
-	/**
-	 * Sets the event host.
-	 *
-	 * @param eventHost the new event host
-	 */
-	public void setEventHost(String eventHost) {
-		this.eventHost = eventHost;
-	}
-
-	/**
-	 * Sets the date time format.
-	 *
-	 * @param dateFormat the new date time format
-	 */
-	public void setDateTimeFormat(String dateFormat) {
-		this.dateFormat = dateFormat;
-	}
-
-	/**
-	 * Sets the time format.
-	 *
-	 * @param timeFormat the new time format
-	 */
-	public void setTimeFormat(String timeFormat) {
-		this.timeFormat = timeFormat;
 	}
 
 	/**

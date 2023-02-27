@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -96,16 +97,13 @@ public class TaxonomyModel {
 
     }
 
-
-
-
     /**
      * Gets the program type tags.
      *
      * @return the program type tags
      */
     public List<String> getProgramTypeTags() {
-        return programTypeTags;
+        return Collections.unmodifiableList(programTypeTags);
     }
 
     /**
@@ -114,7 +112,7 @@ public class TaxonomyModel {
      * @return the product tags
      */
     public List<String> getProductTags() {
-        return productTags;
+        return Collections.unmodifiableList(productTags);
     }
 
     /**
@@ -123,7 +121,7 @@ public class TaxonomyModel {
      * @return the industry tags
      */
     public List<String> getIndustryTags() {
-        return industryTags;
+        return Collections.unmodifiableList(industryTags);
     }
 
     /**
@@ -132,7 +130,7 @@ public class TaxonomyModel {
      * @return the using workday tags
      */
     public List<String> getUsingWorkdayTags() {
-        return usingWorkdayTags;
+        return Collections.unmodifiableList(usingWorkdayTags);
     }
 
    /**
