@@ -25,10 +25,9 @@ import org.apache.sling.models.annotations.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.day.cq.tagging.Tag;
-import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.migration.utils.CommunityUtils;
 
 /**
  * The Class EventDetailsModel.
@@ -84,43 +83,24 @@ public class EventDetailsModel {
 
 	/**
 	 * Inits the model.
-	 *
-	 * @throws ParseException the parse exception
 	 */
 	@PostConstruct
-	protected void init() throws ParseException {
-		final ValueMap map = currentPage.getProperties();
-		String startDateStr = map.get("startDate", String.class);
-		String endDateStr = map.get("endDate", String.class);
-		if (StringUtils.isNotBlank(startDateStr) && StringUtils.isNotBlank(endDateStr)) {
-			calculateRequired(startDateStr, endDateStr);
-		}
-		eventLocation = map.get("eventLocation", String.class);
-		eventHost = map.get("eventHost", String.class);
-		getEventFormatList(map);
-	}
-
-	/**
-	 * Gets the event format list.
-	 *
-	 * @param map the map
-	 * @return the event format list
-	 */
-	private List<String> getEventFormatList(final ValueMap map) {
-		String[] eventFormatTags = map.get("eventFormat", String[].class);
-		try {
-			if (null != eventFormatTags && eventFormatTags.length > 0) {
-				TagManager tagManager = resolver.adaptTo(TagManager.class);
-				for (String eachTag : eventFormatTags) {
-					Tag tag = tagManager.resolve(eachTag);
-					eventFormat.add(tag.getTitle());
+	protected void init() {
+		if (null != currentPage) {
+			try {
+				final ValueMap map = currentPage.getProperties();
+				String startDateStr = map.get("startDate", String.class);
+				String endDateStr = map.get("endDate", String.class);
+				if (StringUtils.isNotBlank(startDateStr) && StringUtils.isNotBlank(endDateStr)) {
+					calculateRequired(startDateStr, endDateStr);
 				}
+				eventLocation = map.get("eventLocation", String.class);
+				eventHost = map.get("eventHost", String.class);
+				eventFormat = CommunityUtils.getPageTagsList(map, "eventFormat", resolver);
+			} catch (Exception exec) {
+				logger.error("Exception occurred at init method of EventDetailsModel:{} ", exec.getMessage());
 			}
-		} catch (Exception exec) {
-			logger.error("Exception occurred at getEventFormatList method of EventDetailsModel:{} ", exec.getMessage());
 		}
-		return Collections.unmodifiableList(eventFormat);
-
 	}
 
 	/**

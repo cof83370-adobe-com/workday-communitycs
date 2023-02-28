@@ -41,7 +41,7 @@ public class EventDetailsModelTest {
     private TagManager tm;
     private Tag tag;
 
-	private ResourceResolver resolver;
+    private ResourceResolver resolver;
 
     @BeforeEach
     public void setup() throws Exception {
@@ -83,8 +83,8 @@ public class EventDetailsModelTest {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         DateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy");
-		Date formattedStartDate = formatter.parse(eventDetailsModel.getDateFormat());
-		ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
+        Date formattedStartDate = formatter.parse(eventDetailsModel.getDateFormat());
+        ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
         localDateTime = localDateTime.withHour(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[0]));
         localDateTime = localDateTime.withMinute(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[1]));
         ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
@@ -138,5 +138,14 @@ public class EventDetailsModelTest {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         eventDetailsModel.getEventFormat();
+    }
+
+    @Test
+    void testToString() throws Exception {
+        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        assertNotNull(eventDetailsModel);
+        assertEquals(
+                "EventDetailsModel [eventFormat=[], eventLocation=California, eventHost=workday, eventLengthDays=3, eventLengthHours=0, eventLengthMinutes=0, daysLabel=Days, hoursLabel=null, minutesLabel=null, dateFormat=Tuesday, Nov 22, 2022, timeFormat=00:44]",
+                eventDetailsModel.toString());
     }
 }

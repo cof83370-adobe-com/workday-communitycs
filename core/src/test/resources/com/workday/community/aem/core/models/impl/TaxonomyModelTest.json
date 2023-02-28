@@ -34,8 +34,7 @@
       "drupalAccessControl":"Workday - all",
       "programsToolsTags":[
          "programs-and-tools:program-type",
-         "programs-and-tools:program-type/the-next-level",
-         "programs-and-tools:program-type/workday-methodology"
+         "programs-and-tools:program-type/the-next-level"
       ],
       "sling:resourceType":"workday-community/components/structure/kitsandtoolspage",
       "retirementDate":"Fri Dec 15 2023 23:00:00 GMT+0530",
