@@ -11,7 +11,7 @@
             layout="responsiveGrid">
             <header
                 jcr:primaryType="nt:unstructured"
-                sling:resourceType="workday-community/components/core/react/header"/>
+                sling:resourceType="workday-community/components/react/header"/>
             <container
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="workday-community/components/core/container"
@@ -19,7 +19,7 @@
                 layout="responsiveGrid"/>
             <footer
                 jcr:primaryType="nt:unstructured"
-                sling:resourceType="workday-community/components/core/react/footer"/>
+                sling:resourceType="workday-community/components/react/footer"/>
         </root>
         <cq:responsive jcr:primaryType="nt:unstructured">
             <breakpoints jcr:primaryType="nt:unstructured">
