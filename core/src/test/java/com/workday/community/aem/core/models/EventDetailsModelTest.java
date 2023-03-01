@@ -29,20 +29,38 @@ import com.day.cq.wcm.api.Page;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
+/**
+ * The Class EventDetailsModelTest.
+ */
 @ExtendWith(AemContextExtension.class)
 public class EventDetailsModelTest {
 
+    /** The context. */
     private final AemContext context = new AemContext();
 
+    /** The event details model. */
     private EventDetailsModel eventDetailsModel;
 
+    /** The current page. */
     private Page currentPage;
+    
+    /** The resource. */
     private Resource resource;
+    
+    /** The tm. */
     private TagManager tm;
+    
+    /** The tag. */
     private Tag tag;
 
+    /** The resolver. */
     private ResourceResolver resolver;
 
+    /**
+     * Setup.
+     *
+     * @throws Exception the exception
+     */
     @BeforeEach
     public void setup() throws Exception {
         context.addModelsForClasses(EventDetailsModel.class);
@@ -60,6 +78,11 @@ public class EventDetailsModelTest {
         context.registerService(Page.class, currentPage);
     }
 
+    /**
+     * Test get time format.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testGetTimeFormat() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
@@ -71,6 +94,11 @@ public class EventDetailsModelTest {
         assertEquals("00:44", DateTimeFormatter.ofPattern("HH:mm").format(originDatetime));
     }
 
+    /**
+     * Test get length.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testGetLength() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
@@ -78,6 +106,11 @@ public class EventDetailsModelTest {
         assertEquals(3, eventDetailsModel.getEventLengthDays());
     }
 
+    /**
+     * Test get date format.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testGetDateFormat() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
@@ -91,6 +124,11 @@ public class EventDetailsModelTest {
         assertEquals("Tuesday, Nov 22, 2022", DateTimeFormatter.ofPattern("EEEE, MMM dd, yyyy").format(originDatetime));
     }
 
+    /**
+     * Test get event location.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testGetEventLocation() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
@@ -98,6 +136,11 @@ public class EventDetailsModelTest {
         assertEquals("California", eventDetailsModel.getEventLocation());
     }
 
+    /**
+     * Test get event host.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testGetEventHost() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
@@ -105,6 +148,11 @@ public class EventDetailsModelTest {
         assertEquals("workday", eventDetailsModel.getEventHost());
     }
 
+    /**
+     * Test is configured.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testIsConfigured() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
@@ -112,6 +160,11 @@ public class EventDetailsModelTest {
         assertTrue(eventDetailsModel.isConfigured());
     }
 
+    /**
+     * Test get days label.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testGetDaysLabel() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
@@ -119,6 +172,11 @@ public class EventDetailsModelTest {
         assertEquals("Days", eventDetailsModel.getDaysLabel());
     }
 
+    /**
+     * Test get event format without tags.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testGetEventFormatWithoutTags() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
@@ -126,6 +184,11 @@ public class EventDetailsModelTest {
         assertEquals(new ArrayList<String>(), eventDetailsModel.getEventFormat());
     }
 
+    /**
+     * Test get event format with tags.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testGetEventFormatWithTags() throws Exception {
         resolver = Mockito.mock(ResourceResolver.class);
@@ -138,14 +201,5 @@ public class EventDetailsModelTest {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         eventDetailsModel.getEventFormat();
-    }
-
-    @Test
-    void testToString() throws Exception {
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        assertEquals(
-                "EventDetailsModel [eventFormat=[], eventLocation=California, eventHost=workday, eventLengthDays=3, eventLengthHours=0, eventLengthMinutes=0, daysLabel=Days, hoursLabel=null, minutesLabel=null, dateFormat=Tuesday, Nov 22, 2022, timeFormat=00:44]",
-                eventDetailsModel.toString());
     }
 }

@@ -44,9 +44,9 @@ public class TaxonomyModelTest {
 
     /**
      * Test init.
-     * 
-     * @throws InvalidTagFormatException
-     * @throws AccessControlException
+     *
+     * @throws AccessControlException the access control exception
+     * @throws InvalidTagFormatException the invalid tag format exception
      */
     @Test
     public void testInit() throws AccessControlException, InvalidTagFormatException {
@@ -84,11 +84,45 @@ public class TaxonomyModelTest {
         assertEquals(false, taxonomyModel.getHasContent());
     }
 
+    /**
+     * Test with all tags empty.
+     *
+     * @throws AccessControlException the access control exception
+     * @throws InvalidTagFormatException the invalid tag format exception
+     */
     @Test
-    public void testNoTagsCase() throws AccessControlException, InvalidTagFormatException {
+    public void testWithAllTagsEmpty() throws AccessControlException, InvalidTagFormatException {
         Page currentPage = context.currentResource("/content").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
         TaxonomyModel taxonomyModel = context.request().adaptTo(TaxonomyModel.class);
         assertEquals(true, taxonomyModel.getHasContent());
     }
+
+    /**
+     * Test with program type tags empty.
+     *
+     * @throws AccessControlException the access control exception
+     * @throws InvalidTagFormatException the invalid tag format exception
+     */
+    @Test
+    public void testWithProgramTypeTagsEmpty() throws AccessControlException, InvalidTagFormatException {
+        Page currentPage = context.currentResource("/content").adaptTo(Page.class);
+        context.registerService(Page.class, currentPage);
+        TagManager tm = context.resourceResolver().adaptTo(TagManager.class);
+
+        tm.createTag("using-workday:workday-acquisition-integrations", "Workday Acquisition Integrations",
+                "Workday Acquisition Integrations");
+        tm.createTag("using-workday:7028/7046", "Content Management", "Content Management");
+
+        tm.createTag("product:4903/7728", "Connection to Workday Financial Management",
+                "workday 7 - retired");
+        tm.createTag("product:92", "Analytics & Reporting", "Analytics & Reporting");
+
+        tm.createTag("industry:187", "Education", "Education");
+        tm.createTag("industry:utilities", "Utilities", "Utilities");
+
+        TaxonomyModel taxonomyModel = context.request().adaptTo(TaxonomyModel.class);
+        assertEquals(false, taxonomyModel.getHasContent());
+    }
+   
 }

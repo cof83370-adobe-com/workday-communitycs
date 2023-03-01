@@ -248,18 +248,4 @@ public class EventDetailsModel {
 	public String getEventHost() {
 		return eventHost;
 	}
-
-	/**
-	 * To string.
-	 *
-	 * @return the string
-	 */
-	@Override
-	public String toString() {
-		return "EventDetailsModel [eventFormat=" + eventFormat + ", eventLocation=" + eventLocation + ", eventHost="
-				+ eventHost + ", eventLengthDays=" + eventLengthDays + ", eventLengthHours=" + eventLengthHours
-				+ ", eventLengthMinutes=" + eventLengthMinutes + ", daysLabel=" + daysLabel + ", hoursLabel="
-				+ hoursLabel + ", minutesLabel=" + minutesLabel + ", dateFormat=" + dateFormat
-				+ ", timeFormat=" + timeFormat + "]";
-	}
 }
