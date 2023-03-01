@@ -112,6 +112,10 @@
                         <taxonomy
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="workday-community/components/common/taxonomy"/>
+                        <relatedinformation
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/common/relatedinformation"
+                            editable="{Boolean}true"/> 
                     </container_rightrail>
                 </container>
             </container>
