@@ -21,11 +21,11 @@ main {
     float: none !important;
 
     @media (max-width: $screen-small) {
-        padding: 5.0em 1.0em;
+        padding: 6.0em 1.0em;
     }
 
     @media (min-width: $screen-small) {
-        padding: 5.0em 3.5em;
+        padding: 6.0em 3.5em;
     }
 }
 
