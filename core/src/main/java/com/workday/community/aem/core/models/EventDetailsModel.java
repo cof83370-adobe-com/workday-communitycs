@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.constants.GlobalConstants;
-import com.workday.community.aem.migration.utils.CommunityUtils;
+import com.workday.community.aem.core.utils.CommunityUtils;
 
 /**
  * The Class EventDetailsModel.
