@@ -1,5 +1,5 @@
 (function() {
-    var containerSelectors = {
+    const containerSelectors = {
         tocToggleIcon:  '[class="cmp-toc__heading-icon"]'
     };
     const container = 'container';
@@ -55,7 +55,7 @@
 
     function onDocumentReady() {
         const toggleIcon = document.querySelector(containerSelectors.tocToggleIcon);
-        var showPanel = true;
+        let showPanel = true;
         checkTocPanel();
 
         if(toggleIcon){

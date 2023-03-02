@@ -20,7 +20,7 @@
 
     function onDocumentReady() {
         const tocClose = document.querySelector(tocSelectors.tocModalClose);
-        var showModal = false;
+        let showModal = false;
 
         if(showModal) {
             openTocModal();
