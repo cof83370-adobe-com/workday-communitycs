@@ -15,7 +15,7 @@ import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 
 import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.migration.utils.CommunityUtils;
+import com.workday.community.aem.core.utils.CommunityUtils;
 
 /**
  * The Class TaxonomyModel.
