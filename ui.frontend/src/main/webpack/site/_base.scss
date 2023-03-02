@@ -2,14 +2,16 @@
 
 html,
 body {
-    font-size:   $font-size;
+    font-size: $font-size;
     font-family: $font-family;
-    color:       $color-foreground;
-    background:  $color-background;
+    color: $color-foreground;
+    background: $color-background;
+    width: 100%;
+    margin: 0 auto;
 
     @media (prefers-color-scheme: dark) {
-        color:       $color-foreground-dark;
-        background:  $color-background-dark;
+        color: $color-foreground-dark;
+        background: $color-background-dark;
     }
 }
 
@@ -19,11 +21,11 @@ main {
     float: none !important;
 
     @media (max-width: $screen-small) {
-        padding: 4.0em 1.0em;
+        padding: 5.0em 1.0em;
     }
 
     @media (min-width: $screen-small) {
-        padding: 4.0em 3.5em;
+        padding: 5.0em 3.5em;
     }
 }
 
