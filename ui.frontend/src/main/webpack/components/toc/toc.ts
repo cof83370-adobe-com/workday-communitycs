@@ -1,6 +1,6 @@
 (function() {
     const toc = 'cmp-toc';
-    var tocSelectors = {
+    const tocSelectors = {
         tocModalButton:  '[class="cmp-button"]',
         tocModalClose:  `[class="${toc}__modal-close"]`
     };
