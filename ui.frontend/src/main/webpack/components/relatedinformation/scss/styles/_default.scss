@@ -33,3 +33,27 @@
         color: $wdc-color-blueberry-400;
     }
 }
+
+#kits-and-tools-body-root {
+    &>.aem-Grid {
+        display: flex;
+
+        @media (max-width: $screen-small) {
+            flex-direction: column;
+        }
+
+        $border-color: #ced3d9;
+        .container__left-rail {
+            border-right: 1px solid $border-color;
+            padding-right: 0px;
+
+            &.collapse {
+                border-right: 0px;
+            }
+        }
+
+        .container__center {
+            padding-left: 2pc;
+        }
+    }
+}
