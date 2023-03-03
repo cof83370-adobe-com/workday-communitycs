@@ -1,0 +1,25 @@
+.cmp-coveo {
+
+  padding: 24px;
+
+  h2 {
+    text-align: center;
+  }
+  
+  progress {
+    width: 100%;
+  }
+
+  &__progress {
+    display: inline-block;
+    width: 100%;
+  }
+
+  &__info-item {
+    margin: 24px 0;
+  }
+
+  &__action-reindex {
+    margin-right: 24px;
+  }
+}
