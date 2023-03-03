@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.models.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -68,9 +69,9 @@ public class TaxonomyBadgeImpl implements TaxonomyBadge {
                 break;
 
             default:
-                return badgeList;
+                return Collections.unmodifiableList(badgeList);
         }
-        return badgeList;
+        return Collections.unmodifiableList(badgeList);
 
     }
 
@@ -90,6 +91,6 @@ public class TaxonomyBadgeImpl implements TaxonomyBadge {
                 }
             }
         }
-        return badgeList;
+        return Collections.unmodifiableList(badgeList);
     }
 }

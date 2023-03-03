@@ -8,6 +8,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -24,10 +25,9 @@ import org.apache.sling.models.annotations.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.day.cq.tagging.Tag;
-import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.utils.CommunityUtils;
 
 /**
  * The Class EventDetailsModel.
@@ -83,43 +83,24 @@ public class EventDetailsModel {
 
 	/**
 	 * Inits the model.
-	 *
-	 * @throws ParseException the parse exception
 	 */
 	@PostConstruct
-	protected void init() throws ParseException {
-		final ValueMap map = currentPage.getProperties();
-		String startDateStr = map.get("startDate", String.class);
-		String endDateStr = map.get("endDate", String.class);
-		if (StringUtils.isNotBlank(startDateStr) && StringUtils.isNotBlank(endDateStr)) {
-			calculateRequired(startDateStr, endDateStr);
-		}
-		eventLocation = map.get("eventLocation", String.class);
-		eventHost = map.get("eventHost", String.class);
-		getEventFormatList(map);
-	}
-
-	/**
-	 * Gets the event format list.
-	 *
-	 * @param map the map
-	 * @return the event format list
-	 */
-	private List<String> getEventFormatList(final ValueMap map) {
-		String[] eventFormatTags = map.get("eventFormat", String[].class);
-		try {
-			if (null != eventFormatTags && eventFormatTags.length > 0) {
-				TagManager tagManager = resolver.adaptTo(TagManager.class);
-				for (String eachTag : eventFormatTags) {
-					Tag tag = tagManager.resolve(eachTag);
-					eventFormat.add(tag.getTitle());
+	protected void init() {
+		if (null != currentPage) {
+			try {
+				final ValueMap map = currentPage.getProperties();
+				String startDateStr = map.get("startDate", String.class);
+				String endDateStr = map.get("endDate", String.class);
+				if (StringUtils.isNotBlank(startDateStr) && StringUtils.isNotBlank(endDateStr)) {
+					calculateRequired(startDateStr, endDateStr);
 				}
+				eventLocation = map.get("eventLocation", String.class);
+				eventHost = map.get("eventHost", String.class);
+				eventFormat = CommunityUtils.getPageTagsList(map, "eventFormat", resolver);
+			} catch (Exception exec) {
+				logger.error("Exception occurred at init method of EventDetailsModel:{} ", exec.getMessage());
 			}
-		} catch (Exception exec) {
-			logger.error("Exception occurred at getEventFormatList method of EventDetailsModel:{} ", exec.getMessage());
 		}
-		return eventFormat;
-
 	}
 
 	/**
@@ -247,16 +228,7 @@ public class EventDetailsModel {
 	 * @return the event format
 	 */
 	public List<String> getEventFormat() {
-		return eventFormat;
-	}
-
-	/**
-	 * Sets the event format.
-	 *
-	 * @param eventFormat the new event format
-	 */
-	public void setEventFormat(List<String> eventFormat) {
-		this.eventFormat = eventFormat;
+		return Collections.unmodifiableList(eventFormat);
 	}
 
 	/**
@@ -269,61 +241,11 @@ public class EventDetailsModel {
 	}
 
 	/**
-	 * Sets the event location.
-	 *
-	 * @param evenLlocation the new event location
-	 */
-	public void setEventLocation(String evenLlocation) {
-		this.eventLocation = evenLlocation;
-	}
-
-	/**
 	 * Gets the event host.
 	 *
 	 * @return the event host
 	 */
 	public String getEventHost() {
 		return eventHost;
-	}
-
-	/**
-	 * Sets the event host.
-	 *
-	 * @param eventHost the new event host
-	 */
-	public void setEventHost(String eventHost) {
-		this.eventHost = eventHost;
-	}
-
-	/**
-	 * Sets the date time format.
-	 *
-	 * @param dateFormat the new date time format
-	 */
-	public void setDateTimeFormat(String dateFormat) {
-		this.dateFormat = dateFormat;
-	}
-
-	/**
-	 * Sets the time format.
-	 *
-	 * @param timeFormat the new time format
-	 */
-	public void setTimeFormat(String timeFormat) {
-		this.timeFormat = timeFormat;
-	}
-
-	/**
-	 * To string.
-	 *
-	 * @return the string
-	 */
-	@Override
-	public String toString() {
-		return "EventDetailsModel [eventFormat=" + eventFormat + ", eventLocation=" + eventLocation + ", eventHost="
-				+ eventHost + ", eventLengthDays=" + eventLengthDays + ", eventLengthHours=" + eventLengthHours
-				+ ", eventLengthMinutes=" + eventLengthMinutes + ", daysLabel=" + daysLabel + ", hoursLabel="
-				+ hoursLabel + ", minutesLabel=" + minutesLabel + ", dateFormat=" + dateFormat
-				+ ", timeFormat=" + timeFormat + "]";
 	}
 }

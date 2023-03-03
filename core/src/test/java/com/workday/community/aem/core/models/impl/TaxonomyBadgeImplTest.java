@@ -20,13 +20,23 @@ import com.workday.community.aem.core.models.TaxonomyBadge;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
+/**
+ * The Class TaxonomyBadgeImplTest.
+ */
 @ExtendWith(AemContextExtension.class)
 public class TaxonomyBadgeImplTest {
 
+    /** The context. */
     private final AemContext context = new AemContext();
 
+    /** The tm. */
     TagManager tm;
 
+    /**
+     * Setup.
+     *
+     * @throws Exception the exception
+     */
     @BeforeEach
     public void setup() throws Exception {
         context.load().json("/com/workday/community/aem/core/models/impl/TaxonomyBadgeImplTest.json", "/content");
@@ -34,6 +44,9 @@ public class TaxonomyBadgeImplTest {
         populateTagManager(tm);
     }
 
+    /**
+     * Test event taxonomy badges.
+     */
     @Test
     public void testEventTaxonomyBadges() {
         Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
@@ -45,6 +58,12 @@ public class TaxonomyBadgeImplTest {
         assertEquals(expectedBadges, actualBadges);
     }
 
+    /**
+     * Test release notes taxonomy badges.
+     *
+     * @throws AccessControlException the access control exception
+     * @throws InvalidTagFormatException the invalid tag format exception
+     */
     @Test
     public void testReleaseNotesTaxonomyBadges() throws AccessControlException, InvalidTagFormatException {
         Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
@@ -56,6 +75,12 @@ public class TaxonomyBadgeImplTest {
         assertEquals(expectedBadges, actualBadges);
     }
 
+    /**
+     * Test training catalog taxonomy badges.
+     *
+     * @throws AccessControlException the access control exception
+     * @throws InvalidTagFormatException the invalid tag format exception
+     */
     @Test
     public void testTrainingCatalogTaxonomyBadges() throws AccessControlException, InvalidTagFormatException {
         Page currentPage = context.currentResource("/content/training-catalog-page").adaptTo(Page.class);
@@ -67,6 +92,12 @@ public class TaxonomyBadgeImplTest {
         assertEquals(expectedBadges, actualBadges);
     }
 
+    /**
+     * Test unsuported template type.
+     *
+     * @throws AccessControlException the access control exception
+     * @throws InvalidTagFormatException the invalid tag format exception
+     */
     @Test
     public void testUnsuportedTemplateType() throws AccessControlException, InvalidTagFormatException {
         Page currentPage = context.currentResource("/content/kits-and-tools-page").adaptTo(Page.class);
@@ -78,6 +109,12 @@ public class TaxonomyBadgeImplTest {
         assertEquals(expectedBadges, actualBadges);
     }
 
+    /**
+     * Test no tag event taxonomy.
+     *
+     * @throws AccessControlException the access control exception
+     * @throws InvalidTagFormatException the invalid tag format exception
+     */
     @Test
     public void testNoTagEventTaxonomy() throws AccessControlException, InvalidTagFormatException {
         Page currentPage = context.currentResource("/content/untaged-event-page").adaptTo(Page.class);
@@ -90,6 +127,11 @@ public class TaxonomyBadgeImplTest {
     }
 
 
+    /**
+     * Populate tag manager.
+     *
+     * @param tagManager the tag manager
+     */
     private void populateTagManager(TagManager tagManager) {
         try {
             tagManager.createTag("event:event-format/conference/rising", "Raising", "test tag");
