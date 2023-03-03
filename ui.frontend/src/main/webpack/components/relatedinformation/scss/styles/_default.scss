@@ -36,11 +36,9 @@
 
 .container__page-content {
 
-    #kits-and-tools-body-root,
-    #reference-body-root,
-    #events-body-root {
+   .cmp-container{
 
-        &>.aem-Grid {
+        &>.aem-Grid:has(> .container__left-rail) {
             display: flex;
 
             @media (max-width: $screen-small) {
