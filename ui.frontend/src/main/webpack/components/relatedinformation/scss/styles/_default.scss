@@ -35,25 +35,30 @@
 }
 
 .container__page-content {
-    &>.aem-Grid {
-        display: flex;
 
-        @media (max-width: $screen-small) {
-            flex-direction: column;
-        }
+    #kits-and-tools-body-root,
+    #reference-body-root,
+    #events-body-root {
 
-        $border-color: #ced3d9;
-        .container__left-rail {
-            border-right: 1px solid $border-color;
-            padding-right: 0px;
+        &>.aem-Grid {
+            display: flex;
 
-            &.collapse {
-                border-right: 0px;
+            @media (max-width: $screen-small) {
+                flex-direction: column;
             }
-        }
 
-        .container__center {
-            padding-left: 2pc;
+            .container__left-rail {
+                border-right: 1px solid $wdc-color-soap-500;
+                padding-right: 0px;
+
+                &.collapse {
+                    border-right: 0px;
+                }
+            }
+
+            .container__center {
+                padding-left: 2pc;
+            }
         }
     }
 }
