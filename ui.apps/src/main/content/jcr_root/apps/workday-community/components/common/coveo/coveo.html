@@ -8,13 +8,12 @@
 
   <div class="cmp-coveo__info">
     <div class="cmp-coveo__info-item"><strong>${'Datasource: ' @ i18n, context='text'}</strong>${coveo.indexedPages}/${coveo.totalPages}${' indexed' @ i18n, context='text'}</div>
-    <div class="cmp-coveo__info-item" data-sly-test="${coveo.serverStatus}"><strong>${'Server index status: ' @ i18n, context='text'}</strong>${'There are' @ i18n, context='text'} ${coveo.indexedPages} ${'items indexed on the server for this index.' @ i18n, context='text'}</div>
+    <div class="cmp-coveo__info-item" data-sly-test="${coveo.serverStatus}"><strong>${'Server index status: ' @ i18n, context='text'}</strong>${'There ' @ i18n, context='text'} ${(coveo.indexedPages >=2 ? "are " : "is ") @ i18n, context='text'} ${coveo.indexedPages} ${(coveo.indexedPages >=2 ? "items" : "item") @ i18n, context='text'} ${'indexed on the server for this index.' @ i18n, context='text'}</div>
     <div class="cmp-coveo__info-item" data-sly-test="${!coveo.serverStatus}"><strong>${'Server index status: ' @ i18n, context='text'}</strong>${'There is an error while fetching the server index status. (<a href="https://www.coveo.com">More information</a>)' @ i18n, context='text'}</div> 
   </div>
 
-  <div class="cmp-coveo__actions" >
+  <div class="cmp-coveo__actions">
     <span><a href="#" class="cmp-coveo__action-reindex">${'Reindex all contents' @ i18n, context='text'}</a></span>
     <span><a href="#" class="cmp-coveo__action-clear">${'Clear all indexed data' @ i18n, context='text'}</a></span>
   </div>
-
 </div>
