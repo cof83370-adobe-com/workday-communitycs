@@ -1,4 +1,18 @@
 .container {
+    @media (max-width: $screen-small) {
+        &__left-rail {
+            margin-top: 32px;
+        }
+
+        &__center {
+            margin-top: 32px;
+        }
+
+        &__right-rail {
+            margin-top: 32px;
+        }
+    }
+
     @media (min-width: $screen-small) {
         &__page-content {
             margin-top: 36px;
@@ -20,13 +34,9 @@
             padding-left: 29px;
         }
     }
-}
 
- .cmp-toc__heading-icon {
-    @media (min-width: $screen-small) {
-        float: right;
-        content: url('../resources/images/toggle.svg');
-        padding-right: 15px;
-        padding-top: 4px;
+    .hide {
+        display: none;
+        margin: 0;
     }
- }
+}
