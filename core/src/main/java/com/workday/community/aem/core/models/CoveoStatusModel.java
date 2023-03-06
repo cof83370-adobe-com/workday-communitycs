@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.models;
 
-public interface CoveoModel {
+public interface CoveoStatusModel {
 
     /**
      * Gets the total number of pages.

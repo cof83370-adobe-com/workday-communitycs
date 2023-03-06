@@ -2,12 +2,15 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
     jcr:primaryType="cq:Page">
     <jcr:content
-        cq:lastModified="{Date}2023-02-03T10:46:28.458-08:00"
+        cq:lastModified="{Date}2023-03-06T14:19:45.953-08:00"
         cq:lastModifiedBy="admin"
         cq:template="/conf/workday-community/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
-        jcr:title="en-us"
-        sling:resourceType="community/components/page">
+        jcr:title="Admin Pages"
+        sling:resourceType="workday-community/components/page"
+        pwaCachestrategy="staleWhileRevalidate"
+        pwaDisplay="standalone"
+        pwaOrientation="any">
         <root
             jcr:primaryType="nt:unstructured"
             sling:resourceType="workday-community/components/container"
@@ -26,5 +29,6 @@
             </container>
         </root>
     </jcr:content>
-    <admin-pages/>
+    <coveo-status/>
+    <importcontent/>
 </jcr:root>

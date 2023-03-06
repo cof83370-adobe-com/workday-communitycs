@@ -6,20 +6,20 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 
-import com.workday.community.aem.core.models.CoveoModel;
+import com.workday.community.aem.core.models.CoveoStatusModel;
 import com.workday.community.aem.core.services.QueryService;
 
 /**
- * The Class CoveoModelImpl.
+ * The Class CoveoStatusModelImpl.
  */
 @Model(
         adaptables = SlingHttpServletRequest.class,
-        adapters = {CoveoModel.class},
-        resourceType = {CoveoModelImpl.RESOURCE_TYPE})
-public class CoveoModelImpl implements CoveoModel {
+        adapters = {CoveoStatusModel.class},
+        resourceType = {CoveoStatusModelImpl.RESOURCE_TYPE})
+public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     /** The Constant RESOURCE_TYPE. */
-    final protected static String RESOURCE_TYPE = "workday-community/components/coveo";
+    final protected static String RESOURCE_TYPE = "workday-community/components/coveostatus";
 
     /** The query service. */
     @OSGiService 

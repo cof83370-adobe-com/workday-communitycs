@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:template="/conf/workday-community/settings/wcm/templates/page-content"
@@ -11,22 +11,25 @@
         pwaOrientation="any">
         <root
             jcr:primaryType="nt:unstructured"
-            sling:resourceType="workday-community/components/core/container"
+            sling:resourceType="workday-community/components/container"
             layout="responsiveGrid">
             <container
                 jcr:primaryType="nt:unstructured"
-                sling:resourceType="workday-community/components/core/container"
+                sling:resourceType="workday-community/components/container"
                 layout="responsiveGrid">
                 <title
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="workday-community/components/core/title"/>
+                    sling:resourceType="workday-community/components/title"/>
                 <container
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="workday-community/components/core/container"
+                    sling:resourceType="workday-community/components/container"
                     layout="responsiveGrid">
                     <title
+                        jcr:lastModified="{Date}2023-01-10T16:20:13.060-08:00"
+                        jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
-                        sling:resourceType="workday-community/components/core/title"/>
+                        jcr:title="Import Content Dashboard"
+                        sling:resourceType="workday-community/components/title"/>
                     <importcontent
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="workday-community/components/common/importcontent"/>

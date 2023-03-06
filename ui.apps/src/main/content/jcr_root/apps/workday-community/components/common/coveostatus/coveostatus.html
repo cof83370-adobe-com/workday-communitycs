@@ -1,0 +1,19 @@
+<sly data-sly-use.coveo="${'com.workday.community.aem.core.models.CoveoStatusModel'}"></sly>
+<div class="cmp-coveo-status">
+  <h2>${'Coveo Index status' @ i18n, context='text'}</h2>
+  <div class="cmp-coveo-status__progress">
+    <progress class="cmp-coveo-status__progress-bar" value="${coveo.indexedPages}" max="${coveo.totalPages}"></progress> 
+    <div class="cmp-coveo-status__progress-percentage">${'#%' @ format=coveo.percentage}</div>
+  </div>
+
+  <div class="cmp-coveo-status__info">
+    <div class="cmp-coveo-status__info-item"><strong>${'Datasource: ' @ i18n, context='text'}</strong>${coveo.indexedPages}/${coveo.totalPages}${' indexed' @ i18n, context='text'}</div>
+    <div class="cmp-coveo-status__info-item" data-sly-test="${coveo.serverStatus}"><strong>${'Server index status: ' @ i18n, context='text'}</strong>${'There ' @ i18n, context='text'} ${(coveo.indexedPages >=2 ? "are " : "is ") @ i18n, context='text'} ${coveo.indexedPages} ${(coveo.indexedPages >=2 ? "items" : "item") @ i18n, context='text'} ${'indexed on the server for this index.' @ i18n, context='text'}</div>
+    <div class="cmp-coveo-status__info-item" data-sly-test="${!coveo.serverStatus}"><strong>${'Server index status: ' @ i18n, context='text'}</strong>${'There is an error while fetching the server index status. (<a href="https://www.coveo.com">More information</a>)' @ i18n, context='text'}</div> 
+  </div>
+
+  <div class="cmp-coveo-status__actions">
+    <span><a href="#" class="cmp-coveo-status__action-reindex">${'Reindex all contents' @ i18n, context='text'}</a></span>
+    <span><a href="#" class="cmp-coveo-status__action-clear">${'Clear all indexed data' @ i18n, context='text'}</a></span>
+  </div>
+</div>

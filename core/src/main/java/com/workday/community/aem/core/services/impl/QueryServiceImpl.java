@@ -15,6 +15,7 @@ import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 
@@ -43,19 +44,20 @@ public class QueryServiceImpl implements QueryService{
     @Override
     public long getNumOfTotalPages(){
         long totalResults = 0;
-        try {
+        Session session = null;
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory)) {
             Map<String,String> queryMap = new HashMap<>();
-            queryMap.put("path","/content/workday-community");
+            queryMap.put("path", GlobalConstants.CONTENT_PATH);
             queryMap.put("type","cq:Page");
-            
-            ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory);
-            final Session session = resourceResolver.adaptTo(Session.class);
+
+            session = resourceResolver.adaptTo(Session.class);
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult result = query.getResult();
             totalResults = (long) result.getTotalMatches();
+            resourceResolver.close();
         }
         catch (Exception e){
-            logger.error("Exception occurs when running query to get total number of pages {} ", e.getMessage());
+            logger.error("Exception occured when running query to get total number of pages {} ", e.getMessage());
         }
         return totalResults;
     }
