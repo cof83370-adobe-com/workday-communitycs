@@ -33,3 +33,30 @@
         color: $wdc-color-blueberry-400;
     }
 }
+
+.container__page-content {
+
+   .cmp-container{
+
+        &>.aem-Grid:has(> .container__left-rail) {
+            display: flex;
+
+            @media (max-width: $screen-small) {
+                flex-direction: column;
+            }
+
+            .container__left-rail {
+                border-right: 1px solid $wdc-color-soap-500;
+                padding-right: 0px;
+
+                &.collapse {
+                    border-right: 0px;
+                }
+            }
+
+            .container__center {
+                padding-left: 2pc;
+            }
+        }
+    }
+}

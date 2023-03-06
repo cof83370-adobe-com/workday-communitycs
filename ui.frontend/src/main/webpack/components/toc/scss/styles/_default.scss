@@ -1,0 +1,79 @@
+.cmp-toc {
+    &__heading-icon {
+        @media (min-width: $screen-small) {
+            float: right;
+            content: url('../resources/images/toggle.svg');
+            padding-right: 15px;
+            padding-top: 4px;
+        }
+    }
+
+    &__modal {
+        @media (max-width: $screen-small) {
+            border: 1px solid $wdc-color-licorice-200;
+            padding: 18px;
+            margin-top: 24px;
+        }
+    }
+
+    &__modal-heading {
+        @media (min-width: $screen-small) {
+            display: none;
+        }
+    }
+
+    &__modal-title {
+        @media (max-width: $screen-small) {
+            font-style: $font-style-normal;
+            font-weight: $font-weight-bold;
+            font-size: 24px;
+            line-height: 30px;
+            color: $wdc-color-black-pepper-600;
+        }
+    }
+
+    &__modal-close {
+        @media (max-width: $screen-small) {
+            content: url('../resources/images/close.svg');
+            float: right;
+            height: 24px;
+        }
+    }
+
+    .cmp-button {
+        @media (max-width: $screen-small) {
+            border: 1px solid $wdc-color-black-pepper-400;
+            border-radius: 24px;
+            height: 48px;
+            width: 100%;
+            text-align: $align-center;
+            background: $wdc-color-french-vanilla-100;
+            margin-top: 24px;
+
+            .cmp-button__text {
+                font-style: $font-style-normal;
+                font-weight: $font-weight-bold;
+                font-size: 16px;
+                line-height: 24px;
+                letter-spacing: 0.16px;
+                color: $wdc-color-black-pepper-400;
+
+                &:before {
+                    content: url('../resources/images/toc.svg');
+                    margin-right: 11px;
+                    vertical-align: middle;
+                }
+            }
+        }
+
+        @media (min-width: $screen-small) {
+            display: none;
+        }
+    }
+
+    .hide-modal {
+        @media (max-width: $screen-small) {
+            display: none;
+        }
+    }
+}

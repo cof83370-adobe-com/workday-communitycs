@@ -97,7 +97,7 @@ public class EventDetailsModel {
 				eventLocation = map.get("eventLocation", String.class);
 				eventHost = map.get("eventHost", String.class);
 				eventFormat = CommunityUtils.getPageTagsList(map, "eventFormat", resolver);
-			} catch (Exception exec) {
+			} catch (ParseException exec) {
 				logger.error("Exception occurred at init method of EventDetailsModel:{} ", exec.getMessage());
 			}
 		}
