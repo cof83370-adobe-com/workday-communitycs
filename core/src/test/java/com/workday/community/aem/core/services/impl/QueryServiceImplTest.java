@@ -26,21 +26,7 @@ public class QueryServiceImplTest {
         ResourceResolver resourceResolver = mock(ResourceResolver.class);
         ResourceResolverFactory resourceResolverFactory = mock(ResourceResolverFactory.class);
         lenient().when(resourceResolverFactory.getServiceResourceResolver(params)).thenReturn(resourceResolver);
-        if (resourceResolver != null) {
-            assertEquals(0, queryService.getNumOfTotalPages());  
-        }
-        else {
         assertEquals(0, queryService.getNumOfTotalPages());
-        }
-    }
-
-    @Test 
-    void testServiceUser() throws Exception {
-        Map<String, Object> params = new HashMap<>();
-        params.put(ResourceResolverFactory.SUBSERVICE, "queryserviceuser");
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        ResourceResolverFactory resourceResolverFactory = mock(ResourceResolverFactory.class);
-        lenient().when(resourceResolverFactory.getServiceResourceResolver(params)).thenReturn(resourceResolver);
     }
 
 }
