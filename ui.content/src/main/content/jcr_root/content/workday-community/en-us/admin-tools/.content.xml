@@ -4,7 +4,7 @@
     <jcr:content
         cq:template="/conf/workday-community/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
-        jcr:title="Import Content Dashboard"
+        jcr:title="Admin Tools"
         sling:resourceType="workday-community/components/structure/page"
         pwaCachestrategy="staleWhileRevalidate"
         pwaDisplay="standalone"
@@ -23,19 +23,10 @@
                 <container
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="workday-community/components/core/container"
-                    layout="responsiveGrid">
-                    <title
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="workday-community/components/core/title"/>
-                    <importcontent
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="workday-community/components/common/importcontent"/>
-                </container>
+                    layout="responsiveGrid"/>
             </container>
         </root>
-        <cq:featuredimage
-            jcr:primaryType="nt:unstructured"
-            sling:resourceType="core/wcm/components/image/v3/image"
-            altValueFromDAM="false"/>
     </jcr:content>
+    <coveo-status/>
+    <importcontent/>
 </jcr:root>

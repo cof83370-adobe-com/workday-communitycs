@@ -2,6 +2,7 @@
 {
   "user.mapping":[
     
-    "workday-community-migration.core:workday-community-administrative-service=workday-community-administrative-service-user"
+    "workday-community-migration.core:workday-community-administrative-service=workday-community-administrative-service-user",
+    "workday-community.core:queryserviceuser=query-service-user"
   ]
 }

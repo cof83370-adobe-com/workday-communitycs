@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:template="/conf/workday-community/settings/wcm/templates/page-content"
+        jcr:isCheckedOut="{Boolean}true"
+        jcr:mixinTypes="[mix:versionable]"
         jcr:primaryType="cq:PageContent"
-        jcr:title="en-us"
+        jcr:title="Coveo Status"
         sling:resourceType="workday-community/components/structure/page">
         <root
             jcr:primaryType="nt:unstructured"
@@ -20,9 +22,12 @@
                 <container
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="workday-community/components/core/container"
-                    layout="responsiveGrid"/>
+                    layout="responsiveGrid">
+                    <coveostatus
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/common/coveostatus"/>
+                </container>
             </container>
         </root>
     </jcr:content>
-    <admin-tools/>
 </jcr:root>
