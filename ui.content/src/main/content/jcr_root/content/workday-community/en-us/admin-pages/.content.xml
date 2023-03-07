@@ -7,7 +7,7 @@
         cq:template="/conf/workday-community/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
         jcr:title="Admin Pages"
-        sling:resourceType="workday-community/components/page"
+        sling:resourceType="workday-community/components/structure/page"
         pwaCachestrategy="staleWhileRevalidate"
         pwaDisplay="standalone"
         pwaOrientation="any">
