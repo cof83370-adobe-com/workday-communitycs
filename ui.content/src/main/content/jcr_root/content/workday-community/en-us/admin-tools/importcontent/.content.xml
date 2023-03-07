@@ -2,15 +2,13 @@
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
     jcr:primaryType="cq:Page">
     <jcr:content
-        cq:lastModified="{Date}2023-03-02T09:10:22.633-08:00"
-        cq:lastModifiedBy="admin"
         cq:template="/conf/workday-community/settings/wcm/templates/page-content"
-        jcr:isCheckedOut="{Boolean}true"
-        jcr:mixinTypes="[mix:versionable]"
         jcr:primaryType="cq:PageContent"
-        jcr:title="Coveo Status"
-        jcr:uuid="8674ba66-1fed-47bf-9de7-c76b41c728b1"
-        sling:resourceType="workday-community/components/structure/page">
+        jcr:title="Import Content Dashboard"
+        sling:resourceType="workday-community/components/structure/page"
+        pwaCachestrategy="staleWhileRevalidate"
+        pwaDisplay="standalone"
+        pwaOrientation="any">
         <root
             jcr:primaryType="nt:unstructured"
             sling:resourceType="workday-community/components/core/container"
@@ -26,15 +24,18 @@
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="workday-community/components/core/container"
                     layout="responsiveGrid">
-                    <coveostatus
-                        jcr:created="{Date}2023-03-02T09:10:06.989-08:00"
-                        jcr:createdBy="admin"
-                        jcr:lastModified="{Date}2023-03-02T09:10:06.989-08:00"
-                        jcr:lastModifiedBy="admin"
+                    <title
                         jcr:primaryType="nt:unstructured"
-                        sling:resourceType="workday-community/components/common/coveostatus"/>
+                        sling:resourceType="workday-community/components/core/title"/>
+                    <importcontent
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/common/importcontent"/>
                 </container>
             </container>
         </root>
+        <cq:featuredimage
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="core/wcm/components/image/v3/image"
+            altValueFromDAM="false"/>
     </jcr:content>
 </jcr:root>

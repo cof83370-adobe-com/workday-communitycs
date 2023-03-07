@@ -47,7 +47,7 @@ public class QueryServiceImpl implements QueryService{
         Session session = null;
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory)) {
             Map<String,String> queryMap = new HashMap<>();
-            queryMap.put("path", GlobalConstants.CONTENT_PATH);
+            queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
             queryMap.put("type","cq:Page");
 
             session = resourceResolver.adaptTo(Session.class);

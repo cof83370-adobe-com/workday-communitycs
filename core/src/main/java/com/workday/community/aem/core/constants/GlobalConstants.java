@@ -10,8 +10,8 @@ public final class GlobalConstants {
 	/** The Constant UNSUPPORTED_EXCEPTION_MSG. */
 	public static final String UNSUPPORTED_EXCEPTION_MSG = "This is a utility class and cannot be instantiated";
 
-	/** The Constant CONTENT_PATH. */
-	public static final String CONTENT_PATH = "/content/workday-community";
+	/** The Constant COMMUNITY_CONTENT_ROOT_PATH. */
+	public static final String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
 	/**
 	 * Instantiates a new global constants.

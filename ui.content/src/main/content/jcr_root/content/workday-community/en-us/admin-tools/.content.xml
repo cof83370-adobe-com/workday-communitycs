@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:template="/conf/workday-community/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
-        jcr:title="Import Content Dashboard"
+        jcr:title="Admin Tools"
         sling:resourceType="workday-community/components/structure/page"
         pwaCachestrategy="staleWhileRevalidate"
         pwaDisplay="standalone"
@@ -23,22 +23,10 @@
                 <container
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="workday-community/components/core/container"
-                    layout="responsiveGrid">
-                    <title
-                        jcr:lastModified="{Date}2023-01-10T16:20:13.060-08:00"
-                        jcr:lastModifiedBy="admin"
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Import Content Dashboard"
-                        sling:resourceType="workday-community/components/core/title"/>
-                    <importcontent
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="workday-community/components/common/importcontent"/>
-                </container>
+                    layout="responsiveGrid"/>
             </container>
         </root>
-        <cq:featuredimage
-            jcr:primaryType="nt:unstructured"
-            sling:resourceType="core/wcm/components/image/v3/image"
-            altValueFromDAM="false"/>
     </jcr:content>
+    <coveo-status/>
+    <importcontent/>
 </jcr:root>
