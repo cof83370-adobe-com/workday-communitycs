@@ -11,25 +11,25 @@
         pwaOrientation="any">
         <root
             jcr:primaryType="nt:unstructured"
-            sling:resourceType="workday-community/components/container"
+            sling:resourceType="workday-community/components/core/container"
             layout="responsiveGrid">
             <container
                 jcr:primaryType="nt:unstructured"
-                sling:resourceType="workday-community/components/container"
+                sling:resourceType="workday-community/components/core/container"
                 layout="responsiveGrid">
                 <title
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="workday-community/components/title"/>
+                    sling:resourceType="workday-community/components/core/title"/>
                 <container
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="workday-community/components/container"
+                    sling:resourceType="workday-community/components/core/container"
                     layout="responsiveGrid">
                     <title
                         jcr:lastModified="{Date}2023-01-10T16:20:13.060-08:00"
                         jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Import Content Dashboard"
-                        sling:resourceType="workday-community/components/title"/>
+                        sling:resourceType="workday-community/components/core/title"/>
                     <importcontent
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="workday-community/components/common/importcontent"/>

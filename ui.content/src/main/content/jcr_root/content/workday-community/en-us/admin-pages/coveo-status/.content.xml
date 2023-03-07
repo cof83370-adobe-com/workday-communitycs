@@ -13,18 +13,18 @@
         sling:resourceType="workday-community/components/page">
         <root
             jcr:primaryType="nt:unstructured"
-            sling:resourceType="workday-community/components/container"
+            sling:resourceType="workday-community/components/core/container"
             layout="responsiveGrid">
             <container
                 jcr:primaryType="nt:unstructured"
-                sling:resourceType="workday-community/components/container"
+                sling:resourceType="workday-community/components/core/container"
                 layout="responsiveGrid">
                 <title
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="workday-community/components/title"/>
+                    sling:resourceType="workday-community/components/core/title"/>
                 <container
                     jcr:primaryType="nt:unstructured"
-                    sling:resourceType="workday-community/components/container"
+                    sling:resourceType="workday-community/components/core/container"
                     layout="responsiveGrid">
                     <coveo
                         jcr:created="{Date}2023-03-02T09:10:06.989-08:00"
