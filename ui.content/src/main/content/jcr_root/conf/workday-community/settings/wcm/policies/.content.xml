@@ -531,6 +531,54 @@
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676940689642>
+                    <policy_1678148340632
+                        cq:styleDefaultClasses="container__left-rail"
+                        jcr:description="This policy defines default style classes and allowed components of Left Rail container of the Troubleshooting Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Troubleshooting - Left Rail"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="/apps/workday-community/components/common/toc"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1678148340632>
+                    <policy_1678149939855
+                        cq:styleDefaultClasses="container__center"
+                        jcr:description="This policy defines container style class of the Center container of the Troubleshooting Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Troubleshooting - Center"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="/apps/workday-community/components/core/text"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1678149939855>
+                    <policy_1678150225585
+                        jcr:description="This policy defines allowed components of the Page Title &amp; Metadata container of the Troubleshooting Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Troubleshooting - Page Title &amp; Metadata"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1678150225585>
+                    <policy_1678150259879
+                        jcr:description="This policy defines allowed components of the Content Main container of the Troubleshooting Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Troubleshooting - Content Main"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/text,/apps/workday-community/components/core/image,/apps/workday-community/components/core/container]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1678150259879>
+                    <policy_1678150305206
+                        cq:styleDefaultClasses="container__right-rail"
+                        jcr:description="This policy defines default style classes and allowed components of Right Rail container of the Troubleshooting Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Troubleshooting- Right Rail"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/common/taxonomy]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1678150305206>
                 </container>
                 <teaser jcr:primaryType="nt:unstructured">
                     <policy_1575031387650
