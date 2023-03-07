@@ -19,7 +19,7 @@ import com.workday.community.aem.core.services.QueryService;
 public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     /** The Constant RESOURCE_TYPE. */
-    final protected static String RESOURCE_TYPE = "workday-community/components/coveostatus";
+    final protected static String RESOURCE_TYPE = "workday-community/components/common/coveostatus";
 
     /** The query service. */
     @OSGiService 
