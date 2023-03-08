@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:template="/conf/workday-community/settings/wcm/templates/troubleshooting"
+        jcr:primaryType="cq:PageContent"
+        sling:resourceType="workday-community/components/structure/troubleshooting">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="workday-community/components/core/container"
+            layout="responsiveGrid">
+            <container
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="workday-community/components/core/container"
+                layout="responsiveGrid">
+                <container
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="workday-community/components/core/container"
+                    id="troubleshooting-body-root"
+                    layout="responsiveGrid">
+                    <container_center
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/core/container"
+                        id="troubleshooting-center-container"
+                        layout="responsiveGrid">
+                        <container_main
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/container">
+                            <text
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/core/text"/>
+                            <accordion
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/core/accordion"
+                                headingElement="h2"
+                                singleExpansion="false">
+                                <container_title1
+                                    cq:panelTitle="Troubleshooting Item 1"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="workday-community/components/core/container">
+                                    <text
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="workday-community/components/core/text"/>
+                                </container_title1>
+                                <container_title2
+                                    cq:panelTitle="Troubleshooting Item 2"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="workday-community/components/core/container">
+                                    <text
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="workday-community/components/core/text"/>
+                                </container_title2>
+                                <container_title3
+                                    cq:panelTitle="Troubleshooting Item 3"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="workday-community/components/core/container">
+                                    <text
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="workday-community/components/core/text"/>
+                                </container_title3>
+                            </accordion>
+                        </container_main>
+                    </container_center>
+                    <container_rightrail
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/core/container">
+                        <relatedinformation
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/common/relatedinformation"/>
+                    </container_rightrail>
+                </container>
+            </container>
+        </root>
+    </jcr:content>
+</jcr:root>
