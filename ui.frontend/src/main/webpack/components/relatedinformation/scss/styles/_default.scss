@@ -36,7 +36,7 @@
 
 .container__page-content {
 
-   .cmp-container{
+    .cmp-container {
 
         &>.aem-Grid:has(> .container__left-rail) {
             display: flex;
@@ -48,6 +48,10 @@
             .container__left-rail {
                 border-right: 1px solid $wdc-color-soap-500;
                 padding-right: 0px;
+
+                @media (max-width: $screen-small) {
+                    border-right: 0px;
+                }
             }
 
             .container__center {
