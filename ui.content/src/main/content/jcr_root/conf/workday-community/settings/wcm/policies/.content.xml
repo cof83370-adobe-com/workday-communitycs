@@ -579,6 +579,101 @@
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678150305206>
+                    <policy_1809301152227968
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Generic - Container"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Spacing"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="pg-top-32"
+                                        cq:styleId="1678325088093"
+                                        cq:styleLabel="Add top padding 32px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="pg-top-24"
+                                        cq:styleId="1678325127281"
+                                        cq:styleLabel="Add top padding 24px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="pg-top-16"
+                                        cq:styleId="1678325141276"
+                                        cq:styleLabel="Add top padding 16px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item3
+                                        cq:styleClasses="pg-top-8"
+                                        cq:styleId="1678325163385"
+                                        cq:styleLabel="Add top padding 8px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item4
+                                        cq:styleClasses="pg-bottom-32"
+                                        cq:styleId="1678325197257"
+                                        cq:styleLabel="Add bottom padding 32px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item5
+                                        cq:styleClasses="pg-bottom-24"
+                                        cq:styleId="1678325217633"
+                                        cq:styleLabel="Add bottom padding 24px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item6
+                                        cq:styleClasses="pg-bottom-16"
+                                        cq:styleId="1678325243891"
+                                        cq:styleLabel="Add bottom padding 16px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item7
+                                        cq:styleClasses="pg-bottom-8"
+                                        cq:styleId="1678325261607"
+                                        cq:styleLabel="Add bottom padding 8px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item8
+                                        cq:styleClasses="margin-top-32"
+                                        cq:styleId="1678325291785"
+                                        cq:styleLabel="Add margin top 32px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item9
+                                        cq:styleClasses="margin-top-24"
+                                        cq:styleId="1678325323505"
+                                        cq:styleLabel="Add margin top 24px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item10
+                                        cq:styleClasses="margin-top-16"
+                                        cq:styleId="1678325339650"
+                                        cq:styleLabel="Add margin top 16px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item11
+                                        cq:styleClasses="margin-top-8"
+                                        cq:styleId="1678325399058"
+                                        cq:styleLabel="Add margin top 8px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item12
+                                        cq:styleClasses="margin-bottom-32"
+                                        cq:styleId="1678325417040"
+                                        cq:styleLabel="Add margin bottom 32px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item13
+                                        cq:styleClasses="margin-bottom-24"
+                                        cq:styleId="1678325451503"
+                                        cq:styleLabel="Add margin bottom 24px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item14
+                                        cq:styleClasses="margin-bottom-16"
+                                        cq:styleId="1678325467860"
+                                        cq:styleLabel="Add margin bottom 16px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item15
+                                        cq:styleClasses="margin-bottom-8"
+                                        cq:styleId="1678325483556"
+                                        cq:styleLabel="Add margin bottom 8px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_1809301152227968>
                 </container>
                 <teaser jcr:primaryType="nt:unstructured">
                     <policy_1575031387650
@@ -626,6 +721,15 @@
                         headingElement="h2">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1674773938710>
+                    <policy_1678380800744
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Troubleshooting - Accordion (Main)"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        allowedHeadingElements="[h3]"
+                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
+                        headingElement="h3">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1678380800744>
                 </accordion>
             </core>
             <structure jcr:primaryType="nt:unstructured">
