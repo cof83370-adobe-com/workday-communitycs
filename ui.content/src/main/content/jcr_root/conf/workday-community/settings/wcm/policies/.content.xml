@@ -573,7 +573,7 @@
                         cq:styleDefaultClasses="container__right-rail"
                         jcr:description="This policy defines default style classes and allowed components of Right Rail container of the Troubleshooting Page."
                         jcr:primaryType="nt:unstructured"
-                        jcr:title="Troubleshooting- Right Rail"
+                        jcr:title="Troubleshooting - Right Rail"
                         sling:resourceType="wcm/core/components/policy/policy"
                         components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/common/taxonomy]"
                         layoutDisabled="false">

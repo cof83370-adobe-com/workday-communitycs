@@ -17,30 +17,10 @@
                     cq:policy="workday-community/components/core/breadcrumb/policy_1669702440856"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="wcm/core/components/policies/mapping"/>
-                <container_main
-                    cq:policy="workday-community/components/core/container/policy_1678150259879"
-                    jcr:primaryType="nt:unstructured"
-                    sling:resourceType="wcm/core/components/policies/mapping"/>
-                <container_rightrail
-                    cq:policy="workday-community/components/core/container/policy_1678150305206"
-                    jcr:primaryType="nt:unstructured"
-                    sling:resourceType="wcm/core/components/policies/mapping"/>
-                <container_leftrail
-                    cq:policy="workday-community/components/core/container/policy_1678148340632"
-                    jcr:primaryType="nt:unstructured"
-                    sling:resourceType="wcm/core/components/policies/mapping"/>
-                <container_metadata
-                    cq:policy="workday-community/components/core/container/policy_1678150225585"
-                    jcr:primaryType="nt:unstructured"
-                    sling:resourceType="wcm/core/components/policies/mapping"/>
                 <container
                     cq:policy="workday-community/components/core/container/policy_1574695586800"
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="wcm/core/components/policies/mapping">
-                    <container_main
-                        cq:policy="workday-community/components/core/container/policy_1678150259879"
-                        jcr:primaryType="nt:unstructured"
-                        sling:resourceType="wcm/core/components/policies/mapping"/>
                     <container_center
                         cq:policy="workday-community/components/core/container/policy_1678149939855"
                         jcr:primaryType="nt:unstructured"
@@ -48,16 +28,7 @@
                         <container_main
                             cq:policy="workday-community/components/core/container/policy_1678150259879"
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="wcm/core/components/policies/mapping">
-                            <community jcr:primaryType="nt:unstructured">
-                                <components jcr:primaryType="nt:unstructured">
-                                    <accordion
-                                        cq:policy="workday-community/components/core/accordion/policy_1674773938710"
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="wcm/core/components/policies/mapping"/>
-                                </components>
-                            </community>
-                        </container_main>
+                            sling:resourceType="wcm/core/components/policies/mapping"/>
                         <container_metadata
                             cq:policy="workday-community/components/core/container/policy_1678150225585"
                             jcr:primaryType="nt:unstructured"
