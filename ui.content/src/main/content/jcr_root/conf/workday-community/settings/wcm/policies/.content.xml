@@ -335,7 +335,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Event Details Container"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/events/eventdetails,/apps/workday-community/components/core/image]"
+                        components="[/apps/workday-community/components/content/events/eventdetails,/apps/workday-community/components/core/image]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_2067079253960600>
@@ -365,29 +365,6 @@
                         components="group:Workday Community Site - Content"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
-                        <cq:styleGroups jcr:primaryType="nt:unstructured">
-                            <item0
-                                cq:styleGroupLabel="Container Styles"
-                                jcr:primaryType="nt:unstructured">
-                                <cq:styles jcr:primaryType="nt:unstructured">
-                                    <item0
-                                        cq:styleClasses="speakers"
-                                        cq:styleId="1672945911947"
-                                        cq:styleLabel="Speakers"
-                                        jcr:primaryType="nt:unstructured"/>
-                                    <item1
-                                        cq:styleClasses="sponsors"
-                                        cq:styleId="1672942053585"
-                                        cq:styleLabel="Sponsors"
-                                        jcr:primaryType="nt:unstructured"/>
-                                    <item2
-                                        cq:styleClasses="related-information"
-                                        cq:styleId="1672945987785"
-                                        cq:styleLabel="Related Information"
-                                        jcr:primaryType="nt:unstructured"/>
-                                </cq:styles>
-                            </item0>
-                        </cq:styleGroups>
                     </policy_2067608134729200>
                     <policy_88960846754269
                         cq:styleDefaultClasses="event-registration"
@@ -674,6 +651,37 @@
                             </item0>
                         </cq:styleGroups>
                     </policy_1809301152227968>
+                    <policy_1678388306174
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event - Speakers Sponsors Related Info"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="group:Workday Community Site - Content"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Container Styles"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="speakers"
+                                        cq:styleId="1672945911947"
+                                        cq:styleLabel="Speakers"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="sponsors"
+                                        cq:styleId="1672942053585"
+                                        cq:styleLabel="Sponsors"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="related-information"
+                                        cq:styleId="1672945987785"
+                                        cq:styleLabel="Related Information"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_1678388306174>
                 </container>
                 <teaser jcr:primaryType="nt:unstructured">
                     <policy_1575031387650
@@ -745,7 +753,7 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy>
                 </page>
-            </structure>       
+            </structure>
         </components>
     </workday-community>
 </jcr:root>
