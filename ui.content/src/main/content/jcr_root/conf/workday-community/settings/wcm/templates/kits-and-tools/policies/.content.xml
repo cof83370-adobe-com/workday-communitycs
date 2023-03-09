@@ -49,14 +49,16 @@
                             cq:policy="workday-community/components/core/container/policy_16323801898166"
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="wcm/core/components/policies/mapping">
-                            <community jcr:primaryType="nt:unstructured">
+                            <workday-community jcr:primaryType="nt:unstructured">
                                 <components jcr:primaryType="nt:unstructured">
-                                    <accordion
+                                    <core jcr:primaryType="nt:unstructured" >
+                                        <accordion
                                         cq:policy="workday-community/components/core/accordion/policy_1674773938710"
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="wcm/core/components/policies/mapping"/>
+                                    </core>
                                 </components>
-                            </community>
+                            </workday-community>
                         </container_main>
                         <container_metadata
                             cq:policy="workday-community/components/core/container/policy_115140473724791"
