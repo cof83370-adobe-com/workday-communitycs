@@ -115,14 +115,14 @@ public final class GlobalConstants {
 	}
 
 	/**
-	 * The Class RestAPIConstants.
+	 * The Class RESTAPIConstants.
 	 */
-	public final class RestAPIConstants {
+	public final class RESTAPIConstants {
 
 		/**
-		 * Instantiates a new RestAPIConstants.
+		 * Instantiates a new RESTAPIConstants.
 		 */
-		private RestAPIConstants() {
+		private RESTAPIConstants() {
 			throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
 		}
 

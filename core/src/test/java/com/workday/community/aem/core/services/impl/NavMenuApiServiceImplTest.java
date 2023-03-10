@@ -10,7 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.Spy;
 
-import com.workday.community.aem.core.utils.RestAPIUtil;
+import com.workday.community.aem.core.utils.RESTAPIUtil;
 import com.workday.community.aem.core.utils.restclient.APIRequest;
 import com.workday.community.aem.core.utils.restclient.APIResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +48,7 @@ public class NavMenuApiServiceImplTest {
     }
 
     /**
-     * Test method for constructAPIRequestHeader in RestAPIUtil class.
+     * Test method for constructAPIRequestHeader in RESTAPIUtil class.
      * 
      * @throws Exception
      */
@@ -58,14 +58,14 @@ public class NavMenuApiServiceImplTest {
         String apiToken = "";
         String apiKey = "";
         String traceId = "";
-        APIRequest apiReq = RestAPIUtil.constructAPIRequestHeader(url, apiToken, apiKey, traceId);
+        APIRequest apiReq = RESTAPIUtil.constructAPIRequestHeader(url, apiToken, apiKey, traceId);
         assertEquals(5, apiReq.getHeaders().size());
 
-        APIResponse snapRes = RestAPIUtil.getRequest(apiReq);
+        APIResponse snapRes = RESTAPIUtil.getRequest(apiReq);
         assertEquals(null, snapRes.getResponseBody());
 
-        APIRequest newApiReq = RestAPIUtil.constructAPIRequestHeader(url, apiToken, apiKey, traceId);
-        APIResponse newSnapRes = RestAPIUtil.executeGetRequest(newApiReq);
+        APIRequest newApiReq = RESTAPIUtil.constructAPIRequestHeader(url, apiToken, apiKey, traceId);
+        APIResponse newSnapRes = RESTAPIUtil.executeGetRequest(newApiReq);
         assertEquals(null, newSnapRes.getResponseBody());
     }
 }

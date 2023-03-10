@@ -20,7 +20,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import com.workday.community.aem.core.config.NavMenuApiConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.NavMenuApiService;
-import com.workday.community.aem.core.utils.RestAPIUtil;
+import com.workday.community.aem.core.utils.RESTAPIUtil;
 import com.workday.community.aem.core.utils.restclient.APIRequest;
 import com.workday.community.aem.core.utils.restclient.APIResponse;
 
@@ -78,13 +78,13 @@ public class NavMenuApiServiceImpl implements NavMenuApiService {
                     sfid);
             String traceId = "Community AEM-" + new Date().getTime();
             // Construct the request header.
-            APIRequest getUserNavigationDataReq = RestAPIUtil.constructAPIRequestHeader(url,
+            APIRequest getUserNavigationDataReq = RESTAPIUtil.constructAPIRequestHeader(url,
                     properties.get(GlobalConstants.NavMenuAPIConstants.NAV_API_TOKEN_CONST).toString(),
                     properties.get(GlobalConstants.NavMenuAPIConstants.NAV_API_KEY_CONST).toString(), traceId);
             logger.debug("NavMenuApiServiceImpl: Calling SNAP getUserNavigationData() - " + url);
 
             // Execute the request.
-            APIResponse snapRes = RestAPIUtil.getRequest(getUserNavigationDataReq);
+            APIResponse snapRes = RESTAPIUtil.getRequest(getUserNavigationDataReq);
 
             // Gson object for json handling.
             Gson gson = new Gson();

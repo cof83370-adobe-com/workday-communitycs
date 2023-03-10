@@ -19,12 +19,12 @@ import com.workday.community.aem.core.utils.restclient.APIResponse;
 import com.workday.community.aem.core.constants.GlobalConstants;
 
 /**
- * The Class RestAPIUtil.
+ * The Class RESTAPIUtil.
  */
-public class RestAPIUtil {
+public class RESTAPIUtil {
 
     /** The Constant logger. */
-    private static final Logger logger = LoggerFactory.getLogger(RestAPIUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(RESTAPIUtil.class);
 
     /**
      * Executes the input API get request.
@@ -36,7 +36,7 @@ public class RestAPIUtil {
     public static APIResponse executeGetRequest(APIRequest req) throws IOException {
         APIResponse apiresponse = new APIResponse();
 
-        logger.debug("RestAPIUtil: Calling REST executeGetRequest().");
+        logger.debug("RESTAPIUtil: Calling REST executeGetRequest().");
         if (StringUtils.isBlank(req.getMethod())) {
             req.setMethod("GET");
         }
@@ -76,7 +76,7 @@ public class RestAPIUtil {
      * @throws IOException
      */
     public static APIResponse getRequest(APIRequest req) throws IOException {
-        req.setMethod(GlobalConstants.RestAPIConstants.GET_API);
+        req.setMethod(GlobalConstants.RESTAPIConstants.GET_API);
         return executeGetRequest(req);
     }
 
@@ -91,14 +91,14 @@ public class RestAPIUtil {
     public static APIRequest constructAPIRequestHeader(String url, String authToken, String xapiKey, String traceId) {
         APIRequest apiRequestInfo = new APIRequest();
         apiRequestInfo.setUrl(url);
-        apiRequestInfo.addHeader(GlobalConstants.RestAPIConstants.AUTHORIZATION,
-                GlobalConstants.RestAPIConstants.BEARER_TYPE + authToken);
-        apiRequestInfo.addHeader(GlobalConstants.RestAPIConstants.ACCEPT_TYPE,
-                GlobalConstants.RestAPIConstants.APPLICATION_SLASH_JSON);
-        apiRequestInfo.addHeader(GlobalConstants.RestAPIConstants.CONTENT_TYPE,
-                GlobalConstants.RestAPIConstants.APPLICATION_SLASH_JSON);
-        apiRequestInfo.addHeader(GlobalConstants.RestAPIConstants.X_API_KEY, xapiKey);
-        apiRequestInfo.addHeader(GlobalConstants.RestAPIConstants.TRACE_ID, traceId);
+        apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.AUTHORIZATION,
+                GlobalConstants.RESTAPIConstants.BEARER_TYPE + authToken);
+        apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.ACCEPT_TYPE,
+                GlobalConstants.RESTAPIConstants.APPLICATION_SLASH_JSON);
+        apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.CONTENT_TYPE,
+                GlobalConstants.RESTAPIConstants.APPLICATION_SLASH_JSON);
+        apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.X_API_KEY, xapiKey);
+        apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.TRACE_ID, traceId);
         return apiRequestInfo;
     }
 }
