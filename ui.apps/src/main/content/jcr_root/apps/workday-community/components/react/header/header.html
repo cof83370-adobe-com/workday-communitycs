@@ -1,1 +1,6 @@
-<div id="community-header-div" class="cmp-reactheader"></div>
+<div>
+    <sly data-sly-use.model="com.workday.community.aem.core.models.NavHeaderModel">
+        <div data-sly-test.data="${model.userNavigationHeaderMenu}" data-sly-unwrap></div>
+        <div id="community-header-div" class="cmp-reactheader" data-model-property="${data}"></div>
+    </sly>
+</div>

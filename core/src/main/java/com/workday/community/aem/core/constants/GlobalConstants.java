@@ -113,4 +113,79 @@ public final class GlobalConstants {
 		/** The Constant MINUTES_IN_24_HOURS. */
 		public static final long MINUTES_IN_24_HOURS = 1440;
 	}
+
+	/**
+	 * The Class RestAPIConstants.
+	 */
+	public final class RestAPIConstants {
+
+		/**
+		 * Instantiates a new RestAPIConstants.
+		 */
+		private RestAPIConstants() {
+			throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
+		}
+
+		/** The constant AUTHORIZATION */
+		public static final String AUTHORIZATION = "Authorization";
+
+		/** The constant BEARER_TYPE */
+		public static final String BEARER_TYPE = "Bearer ";
+
+		/** The constant X_API_KEY */
+		public static final String X_API_KEY = "X-api-key";
+
+		/** The constant CONTENT_TYPE */
+		public static final String CONTENT_TYPE = "Content-Type";
+
+		/** The constant ACCEPT_TYPE */
+		public static final String ACCEPT_TYPE = "Accept";
+
+		/** The constant APPLICATION_SLASH_JSON */
+		public static final String APPLICATION_SLASH_JSON = "application/json";
+
+		/** The constant TRACE_ID */
+		public static final String TRACE_ID = "X-Amzn-Trace-Id";
+
+		/** The constant GET_API */
+		public static final String GET_API = "GET";
+
+		/** The constant POST_API */
+		public static final String POST_API = "POST";
+
+		/** The constant PUT_API */
+		public static final String PUT_API = "PUT";
+
+		/** The constant DELETE_API */
+		public static final String DELETE_API = "DELETE";
+
+		/** The constant HTTP_TIMEMOUT_UPDATE */
+		public static final int HTTP_TIMEMOUT_UPDATE = 15000;
+
+	}
+
+	/**
+	 * The Class NavMenuAPIConstants.
+	 */
+	public final class NavMenuAPIConstants {
+
+		/**
+		 * Instantiates a new NavMenuAPIConstants.
+		 */
+		private NavMenuAPIConstants() {
+			throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
+		}
+
+		/** The constant SNAP_URL_CONST */
+		public static final String SNAP_URL_CONST = "snapUrl";
+
+		/** The constant NAV_API_ENDPOINT_CONST */
+		public static final String NAV_API_ENDPOINT_CONST = "navApi";
+
+		/** The constant NAV_API_KEY_CONST */
+		public static final String NAV_API_KEY_CONST = "navApiKey";
+
+		/** The constant NAV_API_TOKEN_CONST */
+		public static final String NAV_API_TOKEN_CONST = "navApiToken";
+	}
 }

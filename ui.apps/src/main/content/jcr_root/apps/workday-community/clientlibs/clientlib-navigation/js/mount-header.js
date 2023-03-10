@@ -724,9 +724,12 @@ function renderNavHeader() {
     const elementCreator = React.createElement;
 
     const headerDiv = document.getElementById('community-header-div');
+    let navHeaderStringData = null, parsedNavHeaderJsonData = null;
 
     if (elementValidator(headerDiv)) {
-        const headerElement = elementCreator(Cmty.GlobalHeader, { menus: default_header_data, skipTo, sticky, searchProps: { redirectPath: '/global-search' } });
+        navHeaderStringData = headerDiv.getAttribute('data-model-property');
+        parsedNavHeaderJsonData = JSON.parse(navHeaderStringData);
+        const headerElement = elementCreator(Cmty.GlobalHeader, { menus: parsedNavHeaderJsonData, skipTo, sticky, searchProps: { redirectPath: '/global-search' } });
         ReactDOM.render(headerElement, headerDiv);
     }
 }
