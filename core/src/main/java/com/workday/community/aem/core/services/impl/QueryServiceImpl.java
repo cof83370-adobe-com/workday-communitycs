@@ -24,14 +24,11 @@ import javax.jcr.Session;
 /**
  * The Class QueryServiceImpl.
  */
-@Component(
-    service = QueryService.class,
-    immediate = true
-)
-public class QueryServiceImpl implements QueryService{
-    
+@Component(service = QueryService.class, immediate = true)
+public class QueryServiceImpl implements QueryService {
+
     /** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /** The query builder. */
     @Reference
@@ -41,22 +38,24 @@ public class QueryServiceImpl implements QueryService{
     @Reference
     ResourceResolverFactory resourceResolverFactory;
 
+    /** The service user. */
+    public static final String SERVICE_USER = "queryserviceuser";
+
     @Override
-    public long getNumOfTotalPages(){
+    public long getNumOfTotalPages() {
         long totalResults = 0;
         Session session = null;
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory)) {
-            Map<String,String> queryMap = new HashMap<>();
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+            Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
-            queryMap.put("type","cq:Page");
+            queryMap.put("type", "cq:Page");
 
             session = resourceResolver.adaptTo(Session.class);
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult result = query.getResult();
             totalResults = (long) result.getTotalMatches();
             resourceResolver.close();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             logger.error("Exception occured when running query to get total number of pages {} ", e.getMessage());
         }
         return totalResults;

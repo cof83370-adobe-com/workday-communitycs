@@ -6,9 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
+import org.osgi.service.component.annotations.Reference;
 
 import com.workday.community.aem.core.models.NavHeaderModel;
 import com.workday.community.aem.core.services.NavMenuApiService;
@@ -31,6 +33,9 @@ public class NavHeaderModelImpl implements NavHeaderModel {
     @OSGiService
     NavMenuApiService navMenuApiService;
 
+    @Reference
+    private ResourceResolverFactory resolverFactory;
+
     /**
      * Calls the NavMenuApiService to get header menu data.
      *
@@ -40,7 +45,7 @@ public class NavHeaderModelImpl implements NavHeaderModel {
         String sfid = StringUtils.EMPTY;
 
         sfid = "masterdata";
-        // Add logic to fetch SFID of logged in user here.
+        // TODO: Add logic to fetch SFID of logged in user here.
 
         logger.trace("User id : {}", sfid);
 
@@ -49,12 +54,15 @@ public class NavHeaderModelImpl implements NavHeaderModel {
             return userNavResponse;
         }
 
-        // Check if SFID exists
         try {
-
             userNavResponse = navMenuApiService.getUserNavigationHeaderData(sfid);
 
-        } catch (RuntimeException e) {
+            // If there is an error in getting the data from service call,
+            // read the fail state data from DAM.
+            if (StringUtils.isEmpty(userNavResponse) || userNavResponse.equals("null")) {
+                userNavResponse = navMenuApiService.getFailStateData();
+            }
+        } catch (Exception e) {
             logger.error("NavHeader Response Exception: " + e.getMessage());
         }
 

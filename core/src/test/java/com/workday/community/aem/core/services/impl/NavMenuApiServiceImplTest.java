@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
 
@@ -13,6 +13,7 @@ import org.mockito.Spy;
 import com.workday.community.aem.core.utils.RESTAPIUtil;
 import com.workday.community.aem.core.utils.restclient.APIRequest;
 import com.workday.community.aem.core.utils.restclient.APIResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockitoAnnotations;
 

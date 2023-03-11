@@ -47,6 +47,7 @@ public class NavHeaderModelImplTest {
     @Test
     void testGetUserNavigationHeaderMenu() throws Exception {
         when(navMenuApiService.getUserNavigationHeaderData("masterdata")).thenReturn("");
+        when(navMenuApiService.getFailStateData()).thenReturn("");
         NavHeaderModel navModel = context.request().adaptTo(NavHeaderModel.class);
         assertEquals("", navModel.getUserNavigationHeaderMenu());
     }

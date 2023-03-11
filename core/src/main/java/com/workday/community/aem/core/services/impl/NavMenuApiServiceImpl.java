@@ -1,14 +1,26 @@
 package com.workday.community.aem.core.services.impl;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.day.cq.dam.api.Asset;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+
 import java.util.Dictionary;
+
+import javax.annotation.Generated;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -21,6 +33,7 @@ import com.workday.community.aem.core.config.NavMenuApiConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.NavMenuApiService;
 import com.workday.community.aem.core.utils.RESTAPIUtil;
+import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.utils.restclient.APIRequest;
 import com.workday.community.aem.core.utils.restclient.APIResponse;
 
@@ -42,6 +55,10 @@ public class NavMenuApiServiceImpl implements NavMenuApiService {
      */
     @Reference
     private ConfigurationAdmin configAdmin;
+
+    /** The resource resolver factory. */
+    @Reference
+    ResourceResolverFactory resourceResolverFactory;
 
     /**
      * Reads the OSGi configuration.
@@ -94,6 +111,39 @@ public class NavMenuApiServiceImpl implements NavMenuApiService {
             logger.error("Error in getNavUserData method :: {}", e.getMessage());
         }
         return jsonResponse;
+    }
+
+    /**
+     * Reads the fail state json from content DAM
+     * 
+     * @return json string of fail state data.
+     * @throws Exception
+     */
+    public String getFailStateData() throws Exception {
+        String failStateResponse = null;
+
+        // Reading the JSON File from DAM
+        ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory,
+                "navserviceuser");
+        Resource resource = resourceResolver.getResource("/content/dam/workday-community/FailStateHeaderData.json");
+        Asset asset = resource.adaptTo(Asset.class);
+        Resource original = asset.getOriginal();
+        InputStream content = original.adaptTo(InputStream.class);
+
+        StringBuilder sb = new StringBuilder();
+        String line;
+        BufferedReader br = new BufferedReader(new InputStreamReader(
+                content, StandardCharsets.UTF_8));
+
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+        }
+
+        // Gson object for json handling.
+        Gson gson = new Gson();
+        JsonObject navResponseObj = gson.fromJson(sb.toString(), JsonObject.class);
+        failStateResponse = gson.toJson(navResponseObj);
+        return failStateResponse;
     }
 
 }
