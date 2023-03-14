@@ -6,6 +6,7 @@
     letter-spacing: 0.2px;
     color: $wdc-color-blueberry-400;
     cursor: pointer;
+    display: block;
 
     &:before {
         content: url('../resources/images/expandMedia.svg');
