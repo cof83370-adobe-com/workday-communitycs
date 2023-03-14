@@ -254,5 +254,11 @@
             <version>5.4.0</version>    
             <type>zip</type>
         </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.15.4</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
 </project>
