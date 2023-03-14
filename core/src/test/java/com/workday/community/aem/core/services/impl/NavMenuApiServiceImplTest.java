@@ -4,13 +4,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
 
+import com.workday.community.aem.core.services.SnapService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.Spy;
 
-import com.workday.community.aem.core.utils.RESTAPIUtil;
+import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.restclient.APIRequest;
 import com.workday.community.aem.core.utils.restclient.APIResponse;
 
@@ -25,7 +26,7 @@ public class NavMenuApiServiceImplTest {
 
     /** NavMenuApiServiceImpl object */
     @Spy
-    NavMenuApiServiceImpl navMenuApiService;
+    SnapService snapService;
 
     /**
      * Set uo method for test run.
@@ -44,8 +45,8 @@ public class NavMenuApiServiceImplTest {
      */
     @Test
     void testGetUserNavigationHeaderData() throws Exception {
-        when(navMenuApiService.getUserNavigationHeaderData("masterdata")).thenReturn("");
-        assertEquals("", navMenuApiService.getUserNavigationHeaderData("masterdata"));
+        when(snapService.getUserHeaderMenu("masterdata")).thenReturn("");
+        assertEquals("", snapService.getUserHeaderMenu("masterdata"));
     }
 
     /**
@@ -59,14 +60,14 @@ public class NavMenuApiServiceImplTest {
         String apiToken = "";
         String apiKey = "";
         String traceId = "";
-        APIRequest apiReq = RESTAPIUtil.constructAPIRequestHeader(url, apiToken, apiKey, traceId);
+        APIRequest apiReq = RestApiUtil.constructAPIRequestHeader(url, apiToken, apiKey, traceId);
         assertEquals(5, apiReq.getHeaders().size());
 
-        APIResponse snapRes = RESTAPIUtil.getRequest(apiReq);
-        assertEquals(null, snapRes.getResponseBody());
+        APIResponse snapRes = RestApiUtil.getRequest(apiReq);
+        assertNull(snapRes.getResponseBody());
 
-        APIRequest newApiReq = RESTAPIUtil.constructAPIRequestHeader(url, apiToken, apiKey, traceId);
-        APIResponse newSnapRes = RESTAPIUtil.executeGetRequest(newApiReq);
-        assertEquals(null, newSnapRes.getResponseBody());
+        APIRequest newApiReq = RestApiUtil.constructAPIRequestHeader(url, apiToken, apiKey, traceId);
+        APIResponse newSnapRes = RestApiUtil.executeGetRequest(newApiReq);
+        assertNull(newSnapRes.getResponseBody());
     }
 }

@@ -717,29 +717,22 @@ const default_header_data = {
     'lastAccessedDate': '12/12/2022 17:03:44'
 }
 
-const skipTo = '';
-const sticky = true;
-
 function renderNavHeader() {
-    const elementCreator = React.createElement;
+    const headerDiv = document.getElementById(' community-header-div');
 
-    const headerDiv = document.getElementById('community-header-div');
-    let navHeaderStringData = null, parsedNavHeaderJsonData = null;
+    if (headerDiv !== undefined && headerDiv !== null) {
+        let navHeaderStringData = headerDiv.getAttribute('data-model-property');
+        let avatarUrl = headerDiv.getAttribute("data-model-avatar");
+        let parsedNavHeaderJsonData = JSON.parse(navHeaderStringData);
 
-    if (elementValidator(headerDiv)) {
-        navHeaderStringData = headerDiv.getAttribute('data-model-property');
-        parsedNavHeaderJsonData = JSON.parse(navHeaderStringData);
-        const headerElement = elementCreator(Cmty.GlobalHeader, { menus: parsedNavHeaderJsonData, skipTo, sticky, searchProps: { redirectPath: '/global-search' } });
+        const headerElement = React.createElement(Cmty.GlobalHeader, {
+            menus: parsedNavHeaderJsonData,
+            skipTo: '',
+            sticky: true,
+            searchProps: {redirectPath: '/global-search'}
+        });
+
         ReactDOM.render(headerElement, headerDiv);
-    }
-}
-
-function elementValidator(element) {
-    if (element !== undefined && element !== null) {
-        return true;
-    }
-    else {
-        return false
     }
 }
 

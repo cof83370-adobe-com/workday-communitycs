@@ -3,6 +3,7 @@ package com.workday.community.aem.core.utils;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
+import com.workday.community.aem.core.constants.WRCConstants;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -21,10 +22,10 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 /**
  * The Class RESTAPIUtil.
  */
-public class RESTAPIUtil {
+public class RestApiUtil {
 
     /** The Constant logger. */
-    private static final Logger logger = LoggerFactory.getLogger(RESTAPIUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(RestApiUtil.class);
 
     /**
      * Executes the input API get request.
@@ -100,5 +101,18 @@ public class RESTAPIUtil {
         apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.X_API_KEY, xapiKey);
         apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.TRACE_ID, traceId);
         return apiRequestInfo;
+    }
+
+
+    public static String requestSnapJsonResponse(String url, String authToken, String xapiKey) throws IOException {
+        logger.debug("RestAPIUtil: Calling REST requestSnapJsonResponse()...= {}", url);
+
+        APIRequest apiRequestInfo = new APIRequest();
+        apiRequestInfo.setUrl(url);
+        apiRequestInfo.addHeader(WRCConstants.AUTHORIZATION, WRCConstants.BEARER_TYPE+authToken);
+        apiRequestInfo.addHeader(WRCConstants.X_API_KEY, xapiKey);
+        String snapJSONResp = executeGetRequest(apiRequestInfo).getResponseBody();
+
+        return snapJSONResp;
     }
 }

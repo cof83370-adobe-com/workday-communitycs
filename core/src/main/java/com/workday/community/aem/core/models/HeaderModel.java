@@ -5,7 +5,7 @@ import java.io.IOException;
 /**
  * The NavHeaderModel interface.
  */
-public interface NavHeaderModel {
+public interface HeaderModel {
 
     /**
      * Gets the user navigation menu.
@@ -13,5 +13,7 @@ public interface NavHeaderModel {
      * @return The navigation menu data.
      * @throws IOException
      */
-    String getUserNavigationHeaderMenu();
+    String getUserHeaderMenus();
+
+    String getUserAvatarUrl();
 }

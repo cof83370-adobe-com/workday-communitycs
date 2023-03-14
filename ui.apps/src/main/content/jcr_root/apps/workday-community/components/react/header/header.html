@@ -1,6 +1,10 @@
 <div>
-    <sly data-sly-use.model="com.workday.community.aem.core.models.NavHeaderModel">
-        <div data-sly-test.data="${model.userNavigationHeaderMenu}" data-sly-unwrap></div>
-        <div id="community-header-div" class="cmp-reactheader" data-model-property="${data}"></div>
+    <sly data-sly-use.model="com.workday.community.aem.core.models.HeaderModel">
+        <div id="community-header-div"
+             class="cmp-react__header"
+             data-model-property="${model.userHeaderMenus}"
+             data-model-avatar="${model.userAvatarUrl}">
+             data-prop-home="${properties.homepageUrl}
+        </div>
     </sly>
 </div>

@@ -1,6 +1,9 @@
 package com.workday.community.aem.core.models.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import com.workday.community.aem.core.models.HeaderModel;
+import com.workday.community.aem.core.services.SnapService;
 import org.mockito.MockitoAnnotations;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -8,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Spy;
 
-import com.workday.community.aem.core.models.NavHeaderModel;
-import com.workday.community.aem.core.services.NavMenuApiService;
 import static org.mockito.Mockito.*;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -26,7 +27,7 @@ public class NavHeaderModelImplTest {
 
     /** NavMenuApiService object */
     @Spy
-    NavMenuApiService navMenuApiService;
+    SnapService snapService;
 
     /**
      * Set up method for test run.
@@ -35,7 +36,7 @@ public class NavHeaderModelImplTest {
      */
     @BeforeEach
     public void setup() throws Exception {
-        context.addModelsForClasses(NavHeaderModelImpl.class);
+        context.addModelsForClasses(HeaderModelImpl.class);
         MockitoAnnotations.initMocks(this);
     }
 
@@ -46,9 +47,9 @@ public class NavHeaderModelImplTest {
      */
     @Test
     void testGetUserNavigationHeaderMenu() throws Exception {
-        when(navMenuApiService.getUserNavigationHeaderData("masterdata")).thenReturn("");
-        when(navMenuApiService.getFailStateData()).thenReturn("");
-        NavHeaderModel navModel = context.request().adaptTo(NavHeaderModel.class);
-        assertEquals("", navModel.getUserNavigationHeaderMenu());
+        when(snapService.getUserHeaderMenu("masterdata")).thenReturn("");
+//        when(navMenuApiService.getFailStateHeaderMenu()).thenReturn("");
+        HeaderModel navModel = context.request().adaptTo(HeaderModel.class);
+        assertEquals("", navModel.getUserHeaderMenus());
     }
 }
