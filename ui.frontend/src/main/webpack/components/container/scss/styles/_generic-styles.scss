@@ -1,79 +1,63 @@
-@mixin padding-top-mixin ($pixels) {
-    padding-top: $pixels;
-}
-
-@mixin padding-bottom-mixin ($pixels) {
-    padding-bottom: $pixels;
-}
-
-@mixin margin-top-mixin ($pixels) {
-    margin-top: $pixels;
-}
-
-@mixin margin-bottom-mixin ($pixels) {
-    margin-bottom: $pixels;
-}
-
 .pg-top-32 {
-    @include padding-top-mixin(32px)
+    padding-top: $pg-top-32;
 }
 
 .pg-top-24 {
-    @include padding-top-mixin(24px)
+    padding-top: $pg-top-24;
 }
 
 .pg-top-16 {
-    @include padding-top-mixin(16px)
+    padding-top: $pg-top-16;
 }
 
 .pg-top-8 {
-    @include padding-top-mixin(8px)
+    padding-top: $pg-top-8;
 }
 
 .pg-bottom-32 {
-    @include padding-bottom-mixin(32px)
+    padding-bottom: $pg-bottom-32;
 }
 
 .pg-bottom-24 {
-    @include padding-bottom-mixin(24px)
+    padding-bottom: $pg-bottom-24;
 }
 
 .pg-bottom-16 {
-    @include padding-bottom-mixin(16px)
+    padding-bottom: $pg-bottom-16;
 }
 
 .pg-bottom-8 {
-    @include padding-bottom-mixin(8px)
+    padding-bottom: $pg-bottom-8;
 }
 
 .margin-top-32 {
-    @include padding-top-mixin(32px)
+    margin-top: $margin-top-32;
 }
 
 .margin-top-24 {
-    @include padding-top-mixin(24px)
+    margin-top: $margin-top-24;
 }
 
 .margin-top-16 {
-    @include padding-top-mixin(16px)
+    margin-top: $margin-top-16;
 }
 
 .margin-top-8 {
-    @include padding-top-mixin(8px)
+    margin-top: $margin-top-8;
 }
 
 .margin-bottom-32 {
-    @include margin-bottom-mixin(32px)
+    margin-bottom: $margin-bottom-32;
 }
 
 .margin-bottom-24 {
-    @include margin-bottom-mixin(24px)
+    margin-bottom: $margin-bottom-24;
 }
 
 .margin-bottom-16 {
-    @include margin-bottom-mixin(16px)
+    margin-bottom: $margin-bottom-16;
 }
 
 .margin-bottom-8 {
-    @include margin-bottom-mixin(8px)
+    margin-bottom: $margin-bottom-8;
 }
