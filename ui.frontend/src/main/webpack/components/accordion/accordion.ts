@@ -16,6 +16,9 @@
 			collapseButton.href = '#';
 			collapseButton.innerText = panel.getAttribute('data-collpase-title');
 			collapseButton.classList.add('collapse-button');
+            collapseButton.ariaLabel = `${collapseButton.innerText}${panel.parentElement.innerText}`;
+            collapseButton.ariaExpanded = 'true';
+
 			collapseButton.addEventListener('click', function() {
 				event.preventDefault();
 				let button = header.getElementsByClassName('cmp-accordion__button');
