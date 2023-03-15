@@ -99,7 +99,7 @@
                     <container_rightrail
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="workday-community/components/core/container">
-                         <cq:responsive jcr:primaryType="nt:unstructured">
+                        <cq:responsive jcr:primaryType="nt:unstructured">
                             <default
                                 jcr:primaryType="nt:unstructured"
                                 offset="0"
@@ -109,13 +109,22 @@
                                 offset="0"
                                 width="12"/>
                         </cq:responsive>
+                        <separator
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/separator"/>
                         <taxonomy
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="workday-community/components/common/taxonomy"/>
+                        <separator_1399634078
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/separator"/>
                         <relatedinformation
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="workday-community/components/common/relatedinformation"
-                            editable="{Boolean}true"/> 
+                            editable="{Boolean}true"/>
+                        <separator_971317705
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/separator"/>
                     </container_rightrail>
                 </container>
             </container>

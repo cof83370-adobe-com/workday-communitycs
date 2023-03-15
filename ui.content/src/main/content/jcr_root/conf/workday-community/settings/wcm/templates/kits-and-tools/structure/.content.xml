@@ -109,13 +109,22 @@
                                 offset="0"
                                 width="12"/>
                         </cq:responsive>
+                        <separator_918091882
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/separator"/>
                         <taxonomy
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="workday-community/components/common/taxonomy"/>
+                        <separator
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/separator"/>
                         <relatedinformation
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="workday-community/components/common/relatedinformation"
-                            editable="{Boolean}true"/>    
+                            editable="{Boolean}true"/>
+                        <separator_214467894
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/separator"/>
                     </container_rightrail>
                 </container>
             </container>
