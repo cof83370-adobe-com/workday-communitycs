@@ -44,7 +44,6 @@
         imgModalContentItem.src = img.src;
 
         const spanClose = img.parentNode.getElementsByClassName(`${image}__close`)[0];
-        spanClose.textContent = 'X';
 
         spanClose.addEventListener('click', function(){
             imgModal.style.display = 'none';
