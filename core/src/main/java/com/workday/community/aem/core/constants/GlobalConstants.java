@@ -161,31 +161,9 @@ public final class GlobalConstants {
 
 		/** The constant HTTP_TIMEMOUT_UPDATE */
 		public static final int HTTP_TIMEMOUT_UPDATE = 15000;
-
 	}
 
-	/**
-	 * The Class NavMenuAPIConstants.
-	 */
-	public final class NavMenuAPIConstants {
-
-		/**
-		 * Instantiates a new NavMenuAPIConstants.
-		 */
-		private NavMenuAPIConstants() {
-			throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
-		}
-
-		/** The constant SNAP_URL_CONST */
-		public static final String SNAP_URL_CONST = "snapUrl";
-
-		/** The constant NAV_API_ENDPOINT_CONST */
-		public static final String NAV_API_ENDPOINT_CONST = "navApi";
-
-		/** The constant NAV_API_KEY_CONST */
-		public static final String NAV_API_KEY_CONST = "navApiKey";
-
-		/** The constant NAV_API_TOKEN_CONST */
-		public static final String NAV_API_TOKEN_CONST = "navApiToken";
+	public interface WRCConstants {
+		String PROFILE_SOURCE_ID	= "./profile/sourceId";
 	}
 }

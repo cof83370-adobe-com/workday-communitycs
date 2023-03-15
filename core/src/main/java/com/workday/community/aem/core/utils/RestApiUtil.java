@@ -3,7 +3,6 @@ package com.workday.community.aem.core.utils;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import com.workday.community.aem.core.constants.WRCConstants;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -109,8 +108,8 @@ public class RestApiUtil {
 
         APIRequest apiRequestInfo = new APIRequest();
         apiRequestInfo.setUrl(url);
-        apiRequestInfo.addHeader(WRCConstants.AUTHORIZATION, WRCConstants.BEARER_TYPE+authToken);
-        apiRequestInfo.addHeader(WRCConstants.X_API_KEY, xapiKey);
+        apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.AUTHORIZATION, GlobalConstants.RESTAPIConstants.BEARER_TYPE+authToken);
+        apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.X_API_KEY, xapiKey);
         String snapJSONResp = executeGetRequest(apiRequestInfo).getResponseBody();
 
         return snapJSONResp;

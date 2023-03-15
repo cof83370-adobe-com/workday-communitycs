@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.models.impl;
 
-import com.workday.community.aem.core.constants.WRCConstants;
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
@@ -68,7 +68,8 @@ public class HeaderModelImpl implements HeaderModel {
 
         try {
             User user = (User) userManager.getAuthorizable(session.getUserID());
-            sfId = user.getProperty(WRCConstants.PROFILE_SOURCE_ID) != null ? user.getProperty(WRCConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+            sfId = user.getProperty(GlobalConstants.WRCConstants.PROFILE_SOURCE_ID) != null ?
+                    user.getProperty(GlobalConstants.WRCConstants.PROFILE_SOURCE_ID)[0].getString() : null;
         } catch (RepositoryException e) {
             logger.error("Exception in init HeaderModelImpl method: %s", e.getMessage());
         }
