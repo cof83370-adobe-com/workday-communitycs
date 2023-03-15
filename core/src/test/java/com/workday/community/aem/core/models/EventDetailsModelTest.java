@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -87,9 +88,9 @@ public class EventDetailsModelTest {
     void testGetTimeFormat() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
-        ZonedDateTime localDateTime = ZonedDateTime.now();
-        localDateTime = localDateTime.withHour(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[0]));
-        localDateTime = localDateTime.withMinute(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[1]));
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+		Date formattedStartDate = formatter.parse(currentPage.getProperties().get("startDate", String.class));
+		ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
         ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
         assertEquals("00:44", DateTimeFormatter.ofPattern("HH:mm").format(originDatetime));
     }
