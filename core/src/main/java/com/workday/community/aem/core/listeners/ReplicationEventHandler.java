@@ -36,7 +36,8 @@ public class ReplicationEventHandler implements EventHandler {
             ReplicationAction action = getAction(event);
             //ReplicationAction action = ReplicationAction.fromEvent(event);
             if (action.getType().equals(ReplicationActionType.ACTIVATE) ||
-                action.getType().equals(ReplicationActionType.DEACTIVATE)
+                action.getType().equals(ReplicationActionType.DEACTIVATE) ||
+                action.getType().equals(ReplicationActionType.DELETE)
             ) {
                 Map<String, Object> jobProperties = new HashMap<>();
                 String op = action.getType().equals(ReplicationActionType.ACTIVATE) ? "index" : "delete";
