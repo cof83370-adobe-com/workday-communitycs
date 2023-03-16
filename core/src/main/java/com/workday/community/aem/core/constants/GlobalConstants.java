@@ -13,6 +13,9 @@ public final class GlobalConstants {
 	/** The Constant COMMUNITY_CONTENT_ROOT_PATH. */
 	public static final String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
+	/** The Constant COMMUNITY_COVEO_JOB. */
+	public static final String COMMUNITY_COVEO_JOB = "workday-community/coveo/job";
+
 	/**
 	 * Instantiates a new global constants.
 	 */

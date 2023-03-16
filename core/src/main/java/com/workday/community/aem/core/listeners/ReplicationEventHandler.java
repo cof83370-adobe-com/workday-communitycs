@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.listeners;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.day.cq.replication.ReplicationAction;
 import com.day.cq.replication.ReplicationActionType;
+import com.workday.community.aem.core.constants.GlobalConstants;
 
 @Component(
     service = EventHandler.class,
@@ -40,12 +42,14 @@ public class ReplicationEventHandler implements EventHandler {
                 action.getType().equals(ReplicationActionType.DELETE)
             ) {
                 Map<String, Object> jobProperties = new HashMap<>();
+                ArrayList<String> paths = new ArrayList<String>();
+                paths.add(action.getPath());
                 String op = action.getType().equals(ReplicationActionType.ACTIVATE) ? "index" : "delete";
                 jobProperties.put("op", op);
-                jobProperties.put("path", action.getPath());
+                jobProperties.put("paths", paths);
                 
                 // Add this job to the job manager.
-                jobManager.addJob("workday-community/replication/job", jobProperties);
+                jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
             }
         } catch (Exception e){
             logger.error("\n Error occured while Publishing/Unpublishing page - {} " , e.getMessage());

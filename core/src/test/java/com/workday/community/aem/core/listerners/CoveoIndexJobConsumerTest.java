@@ -19,7 +19,7 @@ public class CoveoIndexJobConsumerTest {
     @Test
     void testProcessJobPass() throws Exception {
         Job job = mock(Job.class);
-        when(job.getProperty("path")).thenReturn("content path");
+        when(job.getProperty("paths")).thenReturn("content path");
         CoveoIndexJobConsumer consumer = new CoveoIndexJobConsumer();
         JobResult result = consumer.process(job);
         assertEquals(JobResult.OK, result);
