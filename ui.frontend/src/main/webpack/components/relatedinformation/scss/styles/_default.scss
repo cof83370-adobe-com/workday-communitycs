@@ -22,15 +22,21 @@
 
     &__item-link {
         text-decoration: none;
+        line-height: 2pc;
     }
 
     &__item-title {
         font-style: $font-style-normal;
         font-weight: $font-weight-bold;
         font-size: 14px;
-        line-height: 32px;
+        display: inline-block;
+        line-height: 20px;
         letter-spacing: 0.2px;
         color: $wdc-color-blueberry-400;
+
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }
 
@@ -65,17 +71,8 @@
             font-style: $font-style-normal;
             font-weight: $font-weight-normal;
             font-size: 15px;
-            line-height: 41px;
             letter-spacing: 0.2px;
             color: $wdc-color-black-pepper-600;
-        }
-
-        &__item-title {
-            display: inline-block;
-            line-height: 20px;
-            &:hover {
-                text-decoration: underline;
-            }
         }
     }
 }
