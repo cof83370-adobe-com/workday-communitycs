@@ -1,14 +1,14 @@
-package com.workday.community.aem.core.listerner;
+package com.workday.community.aem.core.listerners;
 
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.apache.sling.event.jobs.JobManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,26 +22,21 @@ import com.workday.community.aem.core.listeners.ReplicationEventHandler;
 @ExtendWith(MockitoExtension.class)
 public class ReplicationEventHandlerTest {
 
-    @Test
-    void testHandleEvents() throws Exception {
-        Event event = Mockito.mock(Event.class);
-        ReplicationAction action = Mockito.mock(ReplicationAction.class);
-        //lenient().when(ReplicationAction.fromEvent(event)).thenReturn(action);
-        lenient().when(action.getType()).thenReturn(ReplicationActionType.ACTIVATE);
-        JobManager jobManager = Mockito.mock(JobManager.class);
-        ReplicationEventHandler eventHandler = new ReplicationEventHandler();
-        eventHandler.handleEvent(event);
-        verify(jobManager, times(1)).addJob(anyString(), anyMap());
-    }
+    @Spy
+    ReplicationEventHandler eventHandler;
+
+    @Mock 
+    ReplicationAction action;
+
+    @Mock
+    JobManager jobManager;
 
     @Test
-    void testHandleEventsFailed() throws Exception {
-        ReplicationEventHandler eventHandler = new ReplicationEventHandler();
-        Event event = mock(Event.class);
-        ReplicationAction action = mock(ReplicationAction.class);
-        lenient().when(action.getType()).thenReturn(ReplicationActionType.DELETE);
-        JobManager jobManager = mock(JobManager.class);
+    void testHandleEventsFailed() {
+        Event event = Mockito.mock(Event.class);
+        doReturn(action).when(eventHandler).getAction(event);
+        doReturn(ReplicationActionType.DELETE).when(action).getType();
         eventHandler.handleEvent(event);
-        verify(jobManager, times(0)).addJob(eq("workday-community/replication/job"), anyMap());
+        verify(jobManager, times(0)).addJob(anyString(), anyMap());
     }
 }

@@ -33,12 +33,13 @@ public class ReplicationEventHandler implements EventHandler {
     @Override
     public void handleEvent(Event event) {
         try {
-            ReplicationAction action = ReplicationAction.fromEvent(event);
+            ReplicationAction action = getAction(event);
+            //ReplicationAction action = ReplicationAction.fromEvent(event);
             if (action.getType().equals(ReplicationActionType.ACTIVATE) ||
                 action.getType().equals(ReplicationActionType.DEACTIVATE)
             ) {
                 Map<String, Object> jobProperties = new HashMap<>();
-                String op = ReplicationAction.fromEvent(event).getType().equals(ReplicationActionType.ACTIVATE) ? "index" : "delete";
+                String op = action.getType().equals(ReplicationActionType.ACTIVATE) ? "index" : "delete";
                 jobProperties.put("op", op);
                 jobProperties.put("path", action.getPath());
                 
@@ -49,6 +50,16 @@ public class ReplicationEventHandler implements EventHandler {
             logger.error("\n Error occured while Publishing/Unpublishing page - {} " , e.getMessage());
         }
         
+    }
+
+    /**
+	 * Get the ReplicationAction.
+	 *
+	 * @return The ReplicationAction.
+	 */
+    public ReplicationAction getAction(Event event) {
+        ReplicationAction action = ReplicationAction.fromEvent(event);
+        return action;
     }
     
 }
