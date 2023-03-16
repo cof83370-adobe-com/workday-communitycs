@@ -1,17 +1,22 @@
 .cmp-related-info {
     margin-top: 32px;
 
-    &__heading-title {
-        font-style: $font-style-normal;
-        font-weight: $font-weight-bold;
-        font-size: 18px;
-        line-height: 24px;
-        color: $wdc-color-black-pepper-400;
-        margin: 0;
+    &__heading {
+        padding-bottom: 11px;
+        margin: 0 24px;
+
+        &-title {
+            font-style: $font-style-normal;
+            font-weight: $font-weight-bold;
+            font-size: 18px;
+            line-height: 24px;
+            color: $wdc-color-black-pepper-400;
+            margin: 0;
+        }
     }
 
     &__content {
-        margin-bottom: 32px;
+        margin: 0 32px 24px 24px;
     }
 
     &__list {
@@ -22,7 +27,7 @@
 
     &__item-link {
         text-decoration: none;
-        line-height: 2pc;
+        line-height: 32px;
     }
 
     &__item-title {
@@ -43,15 +48,13 @@
 .related-information {
     border-radius: 8px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
-    margin: 2pc 0;
+    margin: 32px 0;
 
     .cmp-related-info {
         margin-top: 0;
 
         &__heading {
             padding-top: 18px;
-            padding-bottom: 11px;
-            margin: 0 24px;
 
             &-title {
                 font-size: 20px;
@@ -98,7 +101,9 @@
             }
 
             .container__center {
-                padding-left: 2pc;
+                @media (min-width: $screen-small) {
+                    padding-left: 32px;
+                }
             }
         }
     }
