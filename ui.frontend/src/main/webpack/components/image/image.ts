@@ -6,10 +6,20 @@
     };
 
     function addExpandImageOption(config: any) {
-        const expandSpan = document.createElement('span');
-        expandSpan.textContent = 'Expand Image';
-        expandSpan.className = 'expand-media';
-        config.element.append(expandSpan);
+        const expandLink = document.createElement('a');
+        expandLink.textContent = 'Expand Image';
+        expandLink.className = 'expand-media';
+        const imageElements = config.element.children;
+        for (var i = 0; i < imageElements.length && imageElements[i]; i++) {
+            if(imageElements[i].className == `${image}__image`) {
+                if(imageElements[i].alt) {
+                    expandLink.ariaLabel = `expand image of ${imageElements[i].alt} to full size`;
+                } else {
+                    expandLink.ariaLabel = 'expand image to full size';
+                }
+            }
+        }
+        config.element.append(expandLink);
     }
 
     function expandImage(option) {
