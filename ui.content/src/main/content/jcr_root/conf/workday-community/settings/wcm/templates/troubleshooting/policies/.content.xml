@@ -36,6 +36,10 @@
                                             cq:policy="workday-community/components/core/accordion/policy_1678380800744"
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="wcm/core/components/policies/mapping"/>
+                                        <image
+                                            cq:policy="workday-community/components/core/image/policy_12512096045080"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="wcm/core/components/policies/mapping"/>
                                     </core>
                                 </components>
                             </workday-community>

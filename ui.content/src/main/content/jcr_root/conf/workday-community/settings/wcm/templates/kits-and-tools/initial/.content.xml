@@ -93,7 +93,7 @@
                             </accordion>
                         </container_main>
                     </container_center>
-                     <container_rightrail
+                    <container_rightrail
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="workday-community/components/core/container">
                         <relatedinformation
