@@ -1,63 +1,81 @@
+.cmp-related-info {
+    margin-top: 32px;
+
+    &__heading {
+        padding-bottom: 11px;
+        margin: 0 24px;
+
+        &-title {
+            font-style: $font-style-normal;
+            font-weight: $font-weight-bold;
+            font-size: 18px;
+            line-height: 24px;
+            color: $wdc-color-black-pepper-400;
+            margin: 0;
+        }
+    }
+
+    &__content {
+        margin: 0 32px 24px 24px;
+    }
+
+    &__list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    &__item-link {
+        text-decoration: none;
+        line-height: 32px;
+    }
+
+    &__item-title {
+        font-style: $font-style-normal;
+        font-weight: $font-weight-bold;
+        font-size: 14px;
+        display: inline-block;
+        line-height: 20px;
+        letter-spacing: 0.2px;
+        color: $wdc-color-blueberry-400;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
 .related-information {
     border-radius: 8px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
-    margin: 2pc 0;
+    margin: 32px 0;
 
     .cmp-related-info {
+        margin-top: 0;
 
         &__heading {
             padding-top: 18px;
-            padding-bottom: 11px;
-            margin-left: 24px;
 
             &-title {
-                font-style: $font-style-normal;
-                font-weight: $font-weight-bold;
                 font-size: 20px;
                 line-height: 26px;
-                margin: 0;
-                color: $wdc-color-black-pepper-600;
             }
         }
 
         &__content {
-            margin-left: 24px;
+            margin: 0 24px;
         }
 
         &__list {
-            margin: 0;
-            padding: 0;
-            list-style: none;
             padding-bottom: 24px;
         }
-
-        &__item {
-            max-height: 41px;
-            overflow: hidden;
-        }
-
 
         &__item-link {
             font-style: $font-style-normal;
             font-weight: $font-weight-normal;
             font-size: 15px;
-            line-height: 41px;
             letter-spacing: 0.2px;
             color: $wdc-color-black-pepper-600;
-            text-decoration: none;
-
-            &:hover {
-                text-decoration: underline;
-            }
-        }
-
-        &__item-title {
-            font-style: $font-style-normal;
-            font-weight: $font-weight-bold;
-            font-size: 14px;
-            line-height: 32px;
-            letter-spacing: 0.2px;
-            color: $wdc-color-blueberry-400;
         }
     }
 }
@@ -83,7 +101,7 @@
             }
 
             .container__center {
-                 @media (min-width: $screen-small) {
+                @media (min-width: $screen-small) {
                     padding-left: 32px;
                 }
             }
