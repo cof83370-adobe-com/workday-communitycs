@@ -6,6 +6,7 @@
     letter-spacing: 0.2px;
     color: $wdc-color-blueberry-400;
     cursor: pointer;
+    display: block;
 
     &:before {
         content: url('../resources/images/expandMedia.svg');
@@ -31,8 +32,8 @@
     &__modal-content {
       margin: auto;
       display: block;
-      width: 80%;
-      max-width: 700px;
+      width: 60%;
+      padding-top: 30px;
     }
 
     &__close {
@@ -40,14 +41,10 @@
         top: 15px;
         right: 35px;
         color: $wdc-color-french-vanilla-200;
-        font-size: 30px;
-        font-weight: 300;
-
-         &:hover,
-         &:focus {
-             color: $wdc-color-french-vanilla-400;
-             cursor: pointer;
-         }
+        content: url('../resources/images/closeMedia.svg');
+        background-color: $wdc-color-black-pepper-400;
+        border-radius: 50%;
+        padding: 8px;
+        cursor: pointer;
     }
-
 }

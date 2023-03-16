@@ -83,7 +83,9 @@
             }
 
             .container__center {
-                padding-left: 2pc;
+                 @media (min-width: $screen-small) {
+                    padding-left: 32px;
+                }
             }
         }
     }
