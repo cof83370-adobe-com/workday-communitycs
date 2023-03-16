@@ -54,7 +54,9 @@
     function onDocumentReady() {
         const elements = document.querySelectorAll(imageSelectors.imageElement);
         for (var i = 0; i < elements.length && elements[i]; i++) {
-            addExpandImageOption({ element: elements[i] });
+            if(elements[i].parentElement.classList.contains('enable-expand')) {
+                addExpandImageOption({ element: elements[i] });
+            }
         }
 
         window.onclick = e => {
