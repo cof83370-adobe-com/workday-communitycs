@@ -1,7 +1,7 @@
 <div class="cmp-toc" data-cmp-is="cmp-toc">
   <div class="cmp-toc__heading">
-        <span class="cmp-toc__heading-title">${'Table of Contents' @ i18n, context='text'}</span>
-        <span class="cmp-toc__heading-icon"></span>
+    <span class="cmp-toc__heading-title">${'Table of Contents' @ i18n, context='text'}</span>
+    <span class="cmp-toc__heading-icon"></span>
   </div>
 
   <div class="button">
@@ -16,7 +16,11 @@
       <span class="cmp-toc__modal-close"></span>
     </div>
     <ul class="cmp-toc__group">
-      <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic 1</a></li>
+      <li class="cmp-toc__item">
+        <a class="cmp-toc__item-link" href="#">
+          Topic 1
+        </a>
+      </li>
       <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic 2</a></li>
       <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic 3</a></li>
       <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic 4</a></li>
@@ -24,19 +28,11 @@
       <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic 6</a></li>
       <li class="cmp-toc__item">
         <a class="cmp-toc__item-link" href="#">Topic 7</a>
-        <ul class="cmp-toc__group">
-          <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic A</a></li>
-          <li class="cmp-toc__item">
-            <a class="cmp-toc__item-link" href="#">Topic B</a>
-            <ul class="cmp-toc__group">
-              <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic B1</a></li>
-              <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic B2</a></li>
-            </ul>
-          </li>
-        </ul>
+       
       </li>
     </ul>
   </div>
 
 </div>
-<div data-sly-test="${wcmmode.edit || wcmmode.design}" class="cq-placeholder" data-emptyText="WD Community Site - Table Of Content Component"></div>
+<div data-sly-test="${wcmmode.edit || wcmmode.design}" class="cq-placeholder"
+  data-emptyText="WD Community Site - Table Of Content Component"></div>
