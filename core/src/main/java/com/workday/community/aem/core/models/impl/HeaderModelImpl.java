@@ -1,13 +1,12 @@
 package com.workday.community.aem.core.models.impl;
 
-import com.workday.community.aem.core.constants.GlobalConstants;
+import com.drew.lang.annotations.NotNull;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.utils.OurmUtils;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jackrabbit.api.security.user.User;
-import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -19,8 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 /**
  * The class NavHeaderModelImpl.
@@ -46,13 +43,13 @@ public class HeaderModelImpl implements HeaderModel {
      */
     private final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
 
+    @NotNull
     @SlingObject
     private ResourceResolver resourceResolver;
 
     /**
      * The navMenuApi service.
      */
-
     @NonNull
     @OSGiService
     SnapService snapService;
@@ -62,18 +59,12 @@ public class HeaderModelImpl implements HeaderModel {
     @PostConstruct
     protected void init() {
         logger.debug("Initializing HeaderModel ....");
-
-        Session session = resourceResolver.adaptTo(Session.class);
-        UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-
-        try {
-            User user = (User) userManager.getAuthorizable(session.getUserID());
-            sfId = user.getProperty(GlobalConstants.WRCConstants.PROFILE_SOURCE_ID) != null ?
-                    user.getProperty(GlobalConstants.WRCConstants.PROFILE_SOURCE_ID)[0].getString() : null;
-        } catch (RepositoryException e) {
-            logger.error("Exception in init HeaderModelImpl method: %s", e.getMessage());
+        if (resourceResolver == null) {
+            logger.error("ResourceResolver is not injected (null) in HeaderModelImpl init method.");
+            throw new RuntimeException();
         }
 
+        sfId = OurmUtils.getSalesForceId(resourceResolver);
         if (StringUtils.isBlank(sfId)) {
             // Default fallback
             logger.debug("Salesforce Id for current user is unavailable");
@@ -87,7 +78,7 @@ public class HeaderModelImpl implements HeaderModel {
      * @return Nav menu as string.
      */
     public String getUserHeaderMenus() {
-        return snapService.getUserHeaderMenu(sfId);
+        return this.snapService.getUserHeaderMenu(sfId);
     }
 
     public String getUserAvatarUrl() {
@@ -95,7 +86,7 @@ public class HeaderModelImpl implements HeaderModel {
         String extension;
 
         try {
-            ProfilePhoto photoAPIResponse = snapService.getProfilePhoto(sfId);
+              ProfilePhoto photoAPIResponse = this.snapService.getProfilePhoto(sfId);
             if (StringUtils.isNotBlank(photoAPIResponse.getPhotoVersionId())) {
                 if (photoAPIResponse.getBase64content().contains("data:image/")) {
                     return photoAPIResponse.getBase64content();

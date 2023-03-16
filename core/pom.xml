@@ -87,7 +87,8 @@
 					<outputDirectory>${project.reporting.outputDirectory}/jacoco-ut</outputDirectory>
 					<excludes>
 						<exclude>com/workday/community/aem/core/constants/*</exclude>
-						<exclude>META-INF/**</exclude>
+                        <exclude>com/workday/community/aem/core/pojos/*</exclude>
+                        <exclude>META-INF/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>

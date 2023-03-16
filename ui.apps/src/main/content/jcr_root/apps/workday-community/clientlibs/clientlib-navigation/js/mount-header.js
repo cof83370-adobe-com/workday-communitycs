@@ -721,16 +721,31 @@ function renderNavHeader() {
     const headerDiv = document.getElementById(' community-header-div');
 
     if (headerDiv !== undefined && headerDiv !== null) {
-        let navHeaderStringData = headerDiv.getAttribute('data-model-property');
+        let headerStringData = headerDiv.getAttribute('data-model-property');
         let avatarUrl = headerDiv.getAttribute("data-model-avatar");
-        let parsedNavHeaderJsonData = JSON.parse(navHeaderStringData);
+        let homePage  =  headerDiv.getAttribute("data-prop-home");
 
-        const headerElement = React.createElement(Cmty.GlobalHeader, {
-            menus: parsedNavHeaderJsonData,
-            skipTo: '',
+        let headerMenu;
+        if (stringValid(headerStringData)) {
+            headerMenu = JSON.parse(headerStringData);
+
+            if (stringValid(avatarUrl) && stringValid(headerMenu.profile)) {
+                headerMenu.profile.avatar={ data:avatarUrl };
+            }
+        }
+
+        const headerData = {
+            menus: headerMenu,
+                skipTo: '',
             sticky: true,
             searchProps: {redirectPath: '/global-search'}
-        });
+        };
+
+        if (stringValid(homePage)) {
+           headerData.homeUrl = homePage;
+        }
+
+        const headerElement = React.createElement(Cmty.GlobalHeader, headerData);
 
         ReactDOM.render(headerElement, headerDiv);
     }
@@ -741,3 +756,7 @@ document.addEventListener('readystatechange', event => {
         renderNavHeader();
     }
 });
+
+function stringValid(str) {
+  return (str !== undefined && str !== null && str.trim() !== '');
+}

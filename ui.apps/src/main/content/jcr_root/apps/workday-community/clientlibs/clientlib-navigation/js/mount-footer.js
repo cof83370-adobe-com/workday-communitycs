@@ -3,7 +3,7 @@ function renderNavFooter() {
 
     const footerDiv = document.getElementById('community-footer-div');
 
-    if (elementValidator(footerDiv)) {
+    if (stringValid(footerDiv)) {
         const footerData = {
             ...Cmty.DefaultFooterData,
             context: {
