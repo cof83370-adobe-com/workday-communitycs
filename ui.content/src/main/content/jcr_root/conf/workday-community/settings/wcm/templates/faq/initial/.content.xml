@@ -24,14 +24,14 @@
                             <accordion
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="workday-community/components/core/accordion"
+                                collapseTitle="Collpase"
                                 headingElement="h4"
                                 singleExpansion="false">
                                 <item_1
                                     cq:panelTitle="Question 1"
                                     jcr:primaryType="nt:unstructured"
                                     jcr:title="Item 1"
-                                    sling:resourceType="workday-community/components/core/container"
-                                    layout="responsiveGrid">
+                                    sling:resourceType="workday-community/components/core/container">
                                     <text
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="workday-community/components/core/text"
@@ -41,8 +41,7 @@
                                     cq:panelTitle="Question 2"
                                     jcr:primaryType="nt:unstructured"
                                     jcr:title="Item 2"
-                                    sling:resourceType="workday-community/components/core/container"
-                                    layout="responsiveGrid">
+                                    sling:resourceType="workday-community/components/core/container">
                                     <text
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="workday-community/components/core/text"

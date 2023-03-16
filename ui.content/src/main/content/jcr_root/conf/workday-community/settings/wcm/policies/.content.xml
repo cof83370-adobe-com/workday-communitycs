@@ -76,6 +76,32 @@
                                 features="-"/>
                         </plugins>
                     </policy_651483963895698>
+                    <policy_12512096045080
+                        jcr:description="This policy defines generic styles and configurations of Image components in the Community site. This also enables the Expand Image style dropdown for authors."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Community Image - Generic"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        allowUpload="false"
+                        altValueFromDAM="true"
+                        disableLazyLoading="false"
+                        displayPopupTitle="true"
+                        isDecorative="false"
+                        titleValueFromDAM="true">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Image Interactions"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="enable-expand"
+                                        cq:styleId="1678916140198"
+                                        cq:styleLabel="Enable Expand"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_12512096045080>
                 </image>
                 <text jcr:primaryType="nt:unstructured">
                     <policy_641562756958017
@@ -222,7 +248,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/text]"
+                        components="[/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/carousel,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_16323801898166>
@@ -417,7 +443,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
+                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_17323802898146>
@@ -472,8 +498,6 @@
                     <policy_1676931065193
                         cq:styleDefaultClasses="container__right-rail"
                         jcr:description="This policy defines default style classes and allowed components of Right Rail container of the FAQ Page."
-                        jcr:lastModified="{Date}2023-03-14T19:58:53.757-05:00"
-                        jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ - Right Rail"
                         sling:resourceType="wcm/core/components/policy/policy"
@@ -554,7 +578,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/text,/apps/workday-community/components/core/image,/apps/workday-community/components/core/container]"
+                        components="[/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678150259879>
