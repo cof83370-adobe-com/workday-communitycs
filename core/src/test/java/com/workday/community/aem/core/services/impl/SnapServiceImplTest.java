@@ -151,7 +151,7 @@ public class SnapServiceImplTest {
     //Case 4: With mock content for Request call.
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       APIResponse response = mock(APIResponse.class);
-      mocked.when(() -> RestApiUtil.getRequest(any())).thenReturn(response);
+      mocked.when(() -> RestApiUtil.doGet(any())).thenReturn(response);
       when(response.getResponseBody()).thenReturn(menuData2);
       snapService.activate(snapConfig.get(2, 2));
       String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
@@ -173,7 +173,7 @@ public class SnapServiceImplTest {
     //Case 4: With mock content for Request call.
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       APIResponse response = mock(APIResponse.class);
-      mocked.when(() -> RestApiUtil.getRequest(any())).thenThrow(new RuntimeException());
+      mocked.when(() -> RestApiUtil.doGet(any())).thenThrow(new RuntimeException());
       lenient().when(response.getResponseBody()).thenReturn(menuData2);
       String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals("", menuData3);
@@ -202,7 +202,7 @@ public class SnapServiceImplTest {
     String mockRet = objectMapper.writeValueAsString(retObj);
 
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      mocked.when(() -> RestApiUtil.requestSnapJsonResponse(anyString(), anyString(), anyString())).thenReturn(mockRet);
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(mockRet);
       ProfilePhoto photoObj = this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER);
       assertEquals(retObj.getBase64content(), photoObj.getBase64content());
     }
@@ -212,7 +212,7 @@ public class SnapServiceImplTest {
   public void testGetProfilePhotoWithException() throws Exception {
     snapService.activate(snapConfig.get(1, 2));
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      mocked.when(() -> RestApiUtil.requestSnapJsonResponse(anyString(), anyString(), anyString())).thenThrow(new RuntimeException());
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new RuntimeException());
       assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
     }
   }

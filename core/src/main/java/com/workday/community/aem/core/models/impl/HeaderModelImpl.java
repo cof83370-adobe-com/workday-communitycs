@@ -67,14 +67,14 @@ public class HeaderModelImpl implements HeaderModel {
 
     sfId = OurmUtils.getSalesForceId(resourceResolver);
     if (StringUtils.isBlank(sfId)) {
-      // Default fallback
+      // Default fallback.
       logger.debug("Salesforce Id for current user is unavailable");
       sfId = DEFAULT_SFID_MASTER;
     }
   }
 
   /**
-   * Calls the NavMenuApiService to get header menu data.
+   * Calls the snapService to get header menu data.
    *
    * @return Nav menu as string.
    */

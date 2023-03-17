@@ -165,7 +165,19 @@ public interface GlobalConstants {
   }
 
   interface WRCConstants {
+    /**
+     * The profile source id.
+     */
     String PROFILE_SOURCE_ID = "./profile/sourceId";
+
+    /**
+     * The defeault salesforce id for menu api.
+     */
     String DEFAULT_SFID_MASTER = "masterdata";
+
+    /**
+     * The timeout for HTTP request (In milliseconds).
+     */
+    int HTTP_TIMEMOUT = 15000;
   }
 }

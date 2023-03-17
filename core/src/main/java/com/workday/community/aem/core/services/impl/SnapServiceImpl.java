@@ -88,12 +88,11 @@ public class SnapServiceImpl implements SnapService {
       String traceId = "Community AEM-" + new Date().getTime();
 
       // Construct the request header.
-      APIRequest getUserNavigationDataReq = RestApiUtil.constructAPIRequestHeader(url,
+      APIRequest getUserNavigationDataReq = RestApiUtil.constructHeader(url,
         apiToken, apiKey, traceId);
-      logger.debug("NavMenuApiServiceImpl: Calling SNAP getUserNavigationData() - " + url);
 
       // Execute the request.
-      APIResponse snapRes = RestApiUtil.getRequest(getUserNavigationDataReq);
+      APIResponse snapRes = RestApiUtil.doGet(getUserNavigationDataReq);
 
       if (StringUtils.isEmpty(snapRes.getResponseBody())) {
         logger.debug("Sfdc menu fetch is empty, fallback to use local default");
@@ -123,7 +122,7 @@ public class SnapServiceImpl implements SnapService {
 
     try {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto()..." + config.snapUrl() + config.sfdcUserAvatarUrl());
-      String jsonResponse = RestApiUtil.requestSnapJsonResponse(url, config.sfdcUserAvatarToken(), config.sfdcApiKey());
+      String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcApiKey());
       if (jsonResponse != null) {
         return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
       }

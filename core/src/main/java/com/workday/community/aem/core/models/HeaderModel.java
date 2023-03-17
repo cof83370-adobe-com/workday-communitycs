@@ -3,7 +3,7 @@ package com.workday.community.aem.core.models;
 import java.io.IOException;
 
 /**
- * The NavHeaderModel interface.
+ * The HeaderModel interface.
  */
 public interface HeaderModel {
 
