@@ -46,10 +46,10 @@ public class HeaderModelImplTest {
   }
 
   /**
-   * Test method for getUserNavigationHeaderMenu in NavHeaderModel class.
+   * Test method for getUserHeaderMenu in NavHeaderModel class.
    */
   @Test
-  void testGetUserNavigationHeaderMenu() {
+  void testGetUserHeaderMenu() {
     lenient().when(snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER)).thenReturn("");
     HeaderModel navModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(navModel);
@@ -60,7 +60,7 @@ public class HeaderModelImplTest {
   void testGetUserAvatarUrl() {
     HeaderModel navModel = context.request().adaptTo(HeaderModel.class);
 
-    // Case 1:
+    // Case 1: Mock return with format
     ProfilePhoto ret = new ProfilePhoto();
     ret.setPhotoVersionId("fooVersion");
     ret.setBase64content("data:image/xxx");
@@ -69,10 +69,14 @@ public class HeaderModelImplTest {
     assertNotNull(navModel);
     assertEquals("data:image/xxx", navModel.getUserAvatarUrl());
 
-    // Case 2:
+    // Case 2: Real Mock return with another format
     ret.setBase64content("xxx");
     ret.setFileNameWithExtension("fff.png");
     ret.setBase64content("content");
     assertEquals("data:image/png;base64,content", navModel.getUserAvatarUrl());
+
+    // Case 3: Exception return
+    lenient().when(snapService.getProfilePhoto(DEFAULT_SFID_MASTER)).thenThrow(new RuntimeException());
+    assertEquals("", navModel.getUserAvatarUrl());
   }
 }
