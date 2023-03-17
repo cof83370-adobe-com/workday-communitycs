@@ -1,7 +1,7 @@
 
 {
-    "snapUrl":"https://integrationsapidev.workdayinternal.com/ipe/qa",
-    "navApi":"/contact/menu?id=%s",
-    "navApiKey":"AAnWrg2Qkm7r69lKuWbar1TB01RPDFWX8NViTpfk",
-    "navApiToken":"rGseWXXAAU8NuH9uFMjsp4XtXVOaFhfD"
+    "snapUrl":"fake-snap-url",
+    "navApi":"fake-nav-api",
+    "navApiKey":"fake-nav-api-key",
+    "navApiToken":"fake-nav-api-token"
 }

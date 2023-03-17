@@ -18,90 +18,90 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.WRCConstants.DEFAULT_SFID_MASTER;
+
 /**
- * The class NavHeaderModelImpl.
+ * The model implementation class for the common nav header menus.
  */
 @Model(
-        adaptables = {
-                Resource.class,
-                SlingHttpServletRequest.class
-        },
-        adapters = {HeaderModel.class},
-        resourceType = {HeaderModelImpl.RESOURCE_TYPE},
-        defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+  adaptables = {
+    Resource.class,
+    SlingHttpServletRequest.class
+  },
+  adapters = {HeaderModel.class},
+  resourceType = {HeaderModelImpl.RESOURCE_TYPE},
+  defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class HeaderModelImpl implements HeaderModel {
 
-    /**
-     * The Constant RESOURCE_TYPE.
-     */
-    protected static final String RESOURCE_TYPE = "workday-community/components/react/header";
+  /**
+   * The Constant RESOURCE_TYPE.
+   */
+  protected static final String RESOURCE_TYPE = "workday-community/components/react/header";
 
-    /**
-     * The logger.
-     */
-    private final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
+  /**
+   * The logger.
+   */
+  private final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
 
-    @NotNull
-    @SlingObject
-    private ResourceResolver resourceResolver;
+  @NotNull
+  @SlingObject
+  private ResourceResolver resourceResolver;
 
-    /**
-     * The navMenuApi service.
-     */
-    @NotNull
-    @OSGiService
-    SnapService snapService;
+  /**
+   * The navMenuApi service.
+   */
+  @NotNull
+  @OSGiService
+  SnapService snapService;
 
-    String sfId;
+  String sfId;
 
-    @PostConstruct
-    protected void init() {
-        logger.debug("Initializing HeaderModel ....");
-        if (resourceResolver == null) {
-            logger.error("ResourceResolver is not injected (null) in HeaderModelImpl init method.");
-            throw new RuntimeException();
-        }
-
-        sfId = OurmUtils.getSalesForceId(resourceResolver);
-        if (StringUtils.isBlank(sfId)) {
-            // Default fallback
-            logger.debug("Salesforce Id for current user is unavailable");
-            sfId = "masterdata";
-        }
+  @PostConstruct
+  protected void init() {
+    logger.debug("Initializing HeaderModel ....");
+    if (resourceResolver == null) {
+      logger.error("ResourceResolver is not injected (null) in HeaderModelImpl init method.");
+      throw new RuntimeException();
     }
 
-    /**
-     * Calls the NavMenuApiService to get header menu data.
-     *
-     * @return Nav menu as string.
-     */
-    public String getUserHeaderMenus() {
-        return this.snapService.getUserHeaderMenu(sfId);
+    sfId = OurmUtils.getSalesForceId(resourceResolver);
+    if (StringUtils.isBlank(sfId)) {
+      // Default fallback
+      logger.debug("Salesforce Id for current user is unavailable");
+      sfId = DEFAULT_SFID_MASTER;
     }
+  }
 
-    public String getUserAvatarUrl() {
-        String base64ImageURL;
-        String extension;
+  /**
+   * Calls the NavMenuApiService to get header menu data.
+   *
+   * @return Nav menu as string.
+   */
+  public String getUserHeaderMenus() {
+    return this.snapService.getUserHeaderMenu(sfId);
+  }
 
-        try {
-              ProfilePhoto photoAPIResponse = this.snapService.getProfilePhoto(sfId);
-            if (StringUtils.isNotBlank(photoAPIResponse.getPhotoVersionId())) {
-                if (photoAPIResponse.getBase64content().contains("data:image/")) {
-                    return photoAPIResponse.getBase64content();
-                }
+  public String getUserAvatarUrl() {
+    String extension;
 
-                int lastIndex = photoAPIResponse.getFileNameWithExtension().lastIndexOf('.');
-                extension = photoAPIResponse.getFileNameWithExtension().substring(lastIndex + 1).toLowerCase();
-                base64ImageURL = "data:image/" + extension + ";base64," + photoAPIResponse.getBase64content();
-
-                return base64ImageURL;
-            }
-
-        } catch (Exception e) {
-            logger.error("Exception in getUserAvatarUrl method = {}, {}", e.getClass().getName(), e.getMessage());
+    try {
+      ProfilePhoto photoAPIResponse = this.snapService.getProfilePhoto(sfId);
+      if (photoAPIResponse != null && StringUtils.isNotBlank(photoAPIResponse.getPhotoVersionId())) {
+        String content = photoAPIResponse.getBase64content();
+        if (content.contains("data:image/")) {
+          return content;
         }
 
-        return "";
+        int lastIndex = photoAPIResponse.getFileNameWithExtension().lastIndexOf('.');
+        extension = photoAPIResponse.getFileNameWithExtension().substring(lastIndex + 1).toLowerCase();
+        return "data:image/" + extension + ";base64," + photoAPIResponse.getBase64content();
+      }
+
+    } catch (Exception e) {
+      logger.error("Exception in getUserAvatarUrl method = {}, {}", e.getClass().getName(), e.getMessage());
     }
+
+    return "";
+  }
 }

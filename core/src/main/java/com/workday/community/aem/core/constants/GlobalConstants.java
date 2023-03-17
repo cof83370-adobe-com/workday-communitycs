@@ -2,115 +2,170 @@ package com.workday.community.aem.core.constants;
 
 /**
  * The Class GlobalConstants.
- * 
+ *
  * @author pepalla
  */
 public interface GlobalConstants {
 
-	/** The Constant COMMUNITY_CONTENT_ROOT_PATH. */
-	String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
+  /**
+   * The Constant COMMUNITY_CONTENT_ROOT_PATH.
+   */
+  String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
-	/**
-	 * The Class PageResourceType.
-	 */
-	interface PageResourceType {
-		/** The Constant EVENT. */
-		String EVENT = "workday-community/components/structure/eventspage";
+  /**
+   * The Class PageResourceType.
+   */
+  interface PageResourceType {
+    /**
+     * The Constant EVENT.
+     */
+    String EVENT = "workday-community/components/structure/eventspage";
 
-		/** The Constant RELEASE_NOTES. */
-		String RELEASE_NOTES = "workday-community/components/core/releasenotespage";
+    /**
+     * The Constant RELEASE_NOTES.
+     */
+    String RELEASE_NOTES = "workday-community/components/core/releasenotespage";
 
-		/** The Constant TRAINING_CATALOG. */
-		String TRAINING_CATALOG = "workday-community/components/core/trainingcatalogpage";
-	}
+    /**
+     * The Constant TRAINING_CATALOG.
+     */
+    String TRAINING_CATALOG = "workday-community/components/core/trainingcatalogpage";
+  }
 
-	/**
-	 * The Class TagPropertyName.
-	 */
-	interface TagPropertyName {
-		/** The Constant EVENT_FORMAT. */
-		String EVENT_FORMAT = "eventFormat";
+  /**
+   * The Class TagPropertyName.
+   */
+  interface TagPropertyName {
+    /**
+     * The Constant EVENT_FORMAT.
+     */
+    String EVENT_FORMAT = "eventFormat";
 
-		/** The Constant TRAINING_FORMAT. */
-		String TRAINING_FORMAT = "trainingFormat";
+    /**
+     * The Constant TRAINING_FORMAT.
+     */
+    String TRAINING_FORMAT = "trainingFormat";
 
-		/** The Constant RELEASE_NOTES_CHNAGE_TYPE. */
-		String RELEASE_NOTES_CHNAGE_TYPE = "releasNotesChangeType";
+    /**
+     * The Constant RELEASE_NOTES_CHNAGE_TYPE.
+     */
+    String RELEASE_NOTES_CHNAGE_TYPE = "releasNotesChangeType";
 
-	}
+  }
 
-	/**
-	 * The Class EventDetailsConstants.
-	 */
-	interface EventDetailsConstants {
-		/** The Constant REQ_TIME_FORMAT. */
-		String REQ_TIME_FORMAT = "HH:mm";
+  /**
+   * The Class EventDetailsConstants.
+   */
+  interface EventDetailsConstants {
+    /**
+     * The Constant REQ_TIME_FORMAT.
+     */
+    String REQ_TIME_FORMAT = "HH:mm";
 
-		/** The Constant REQ_DATE_FORMAT. */
-		String REQ_DATE_FORMAT = "EEEE, MMM dd, YYYY";
+    /**
+     * The Constant REQ_DATE_FORMAT.
+     */
+    String REQ_DATE_FORMAT = "EEEE, MMM dd, YYYY";
 
-		/** The Constant DATE_TIME_FORMAT. */
-		String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+    /**
+     * The Constant DATE_TIME_FORMAT.
+     */
+    String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
-		/** The Constant DAYS_LABEL. */
-		String DAYS_LABEL = "Days";
+    /**
+     * The Constant DAYS_LABEL.
+     */
+    String DAYS_LABEL = "Days";
 
-		/** The Constant DAY_LABEL. */
-		String DAY_LABEL = "Day";
+    /**
+     * The Constant DAY_LABEL.
+     */
+    String DAY_LABEL = "Day";
 
-		/** The Constant HOURS_LABEL. */
-		String HOURS_LABEL = "Hours";
+    /**
+     * The Constant HOURS_LABEL.
+     */
+    String HOURS_LABEL = "Hours";
 
-		/** The Constant HOUR_LABEL. */
-		String HOUR_LABEL = "Hour";
+    /**
+     * The Constant HOUR_LABEL.
+     */
+    String HOUR_LABEL = "Hour";
 
-		/** The Constant MINUTES_LABEL. */
-		String MINUTES_LABEL = "Minutes";
+    /**
+     * The Constant MINUTES_LABEL.
+     */
+    String MINUTES_LABEL = "Minutes";
 
-		/** The Constant MINUTE_LABEL. */
-		String MINUTE_LABEL = "Minute";
+    /**
+     * The Constant MINUTE_LABEL.
+     */
+    String MINUTE_LABEL = "Minute";
 
-		/** The Constant MINUTES_IN_1_HOUR. */
-		long MINUTES_IN_1_HOUR = 60;
+    /**
+     * The Constant MINUTES_IN_1_HOUR.
+     */
+    long MINUTES_IN_1_HOUR = 60;
 
-		/** The Constant MINUTES_IN_8_HOURS. */
-		long MINUTES_IN_8_HOURS = 480;
+    /**
+     * The Constant MINUTES_IN_8_HOURS.
+     */
+    long MINUTES_IN_8_HOURS = 480;
 
-		/** The Constant MINUTES_IN_24_HOURS. */
-		long MINUTES_IN_24_HOURS = 1440;
-	}
+    /**
+     * The Constant MINUTES_IN_24_HOURS.
+     */
+    long MINUTES_IN_24_HOURS = 1440;
+  }
 
-	/**
-	 * The Class RESTAPIConstants.
-	 */
-	interface RESTAPIConstants {
+  /**
+   * The Class RESTAPIConstants.
+   */
+  interface RESTAPIConstants {
 
-		/** The constant AUTHORIZATION */
-		String AUTHORIZATION = "Authorization";
+    /**
+     * The constant AUTHORIZATION
+     */
+    String AUTHORIZATION = "Authorization";
 
-		/** The constant BEARER_TYPE */
-		String BEARER_TYPE = "Bearer ";
+    /**
+     * The constant BEARER_TYPE
+     */
+    String BEARER_TYPE = "Bearer ";
 
-		/** The constant X_API_KEY */
-		String X_API_KEY = "X-api-key";
+    /**
+     * The constant X_API_KEY
+     */
+    String X_API_KEY = "X-api-key";
 
-		/** The constant CONTENT_TYPE */
-		String CONTENT_TYPE = "Content-Type";
+    /**
+     * The constant CONTENT_TYPE
+     */
+    String CONTENT_TYPE = "Content-Type";
 
-		/** The constant ACCEPT_TYPE */
-		String ACCEPT_TYPE = "Accept";
+    /**
+     * The constant ACCEPT_TYPE
+     */
+    String ACCEPT_TYPE = "Accept";
 
-		/** The constant APPLICATION_SLASH_JSON */
-		String APPLICATION_SLASH_JSON = "application/json";
+    /**
+     * The constant APPLICATION_SLASH_JSON
+     */
+    String APPLICATION_SLASH_JSON = "application/json";
 
-		/** The constant TRACE_ID */
-		String TRACE_ID = "X-Amzn-Trace-Id";
+    /**
+     * The constant TRACE_ID
+     */
+    String TRACE_ID = "X-Amzn-Trace-Id";
 
-		/** The constant GET_API */
-		String GET_API = "GET";
-	}
+    /**
+     * The constant GET_API
+     */
+    String GET_API = "GET";
+  }
 
-	interface WRCConstants {
-		String PROFILE_SOURCE_ID	= "./profile/sourceId";
-	}
+  interface WRCConstants {
+    String PROFILE_SOURCE_ID = "./profile/sourceId";
+    String DEFAULT_SFID_MASTER = "masterdata";
+  }
 }

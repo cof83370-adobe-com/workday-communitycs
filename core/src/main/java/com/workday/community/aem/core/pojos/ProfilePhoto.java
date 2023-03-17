@@ -46,6 +46,4 @@ public final class ProfilePhoto {
     public void setPhotoVersionId(String photoVersionId) {
         this.photoVersionId = photoVersionId;
     }
-
-
 }
