@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer.JobResult;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,9 @@ public class CoveoIndexJobConsumerTest {
     @Test
     void testProcessJobPass() throws Exception {
         Job job = mock(Job.class);
-        when(job.getProperty("paths")).thenReturn("content path");
+        ArrayList<String> paths = new ArrayList<>();
+        paths.add("sample/path");
+        when(job.getProperty("paths")).thenReturn(paths);
         CoveoIndexJobConsumer consumer = new CoveoIndexJobConsumer();
         JobResult result = consumer.process(job);
         assertEquals(JobResult.OK, result);
