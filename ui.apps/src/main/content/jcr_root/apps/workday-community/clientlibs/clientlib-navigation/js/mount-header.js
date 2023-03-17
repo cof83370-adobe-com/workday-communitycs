@@ -736,7 +736,7 @@ function renderNavHeader() {
 
         const headerData = {
             menus: headerMenu,
-                skipTo: '',
+            skipTo: 'mainDivId', //TODO: need to change to correct value once it is finalized.
             sticky: true,
             searchProps: {redirectPath: '/global-search'}
         };
@@ -746,7 +746,6 @@ function renderNavHeader() {
         }
 
         const headerElement = React.createElement(Cmty.GlobalHeader, headerData);
-
         ReactDOM.render(headerElement, headerDiv);
     }
 }

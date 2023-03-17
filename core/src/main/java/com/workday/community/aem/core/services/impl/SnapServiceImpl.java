@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.pojos.restclient.APIRequest;
@@ -81,10 +82,9 @@ public class SnapServiceImpl implements SnapService {
     }
 
     try {
-      snapUrl = snapUrl.endsWith("/") ? snapUrl.substring(0, snapUrl.length()-2) : snapUrl;
-      navApi = navApi.startsWith("/") ? navApi : '/' + navApi;
+      String url = CommunityUtils.formUrl(snapUrl, navApi);
+      url = String.format("%s/%s", url, sfId);
 
-      String url = String.format("%s%s/%s", snapUrl, navApi, sfId);
       String traceId = "Community AEM-" + new Date().getTime();
 
       // Construct the request header.
@@ -118,9 +118,8 @@ public class SnapServiceImpl implements SnapService {
       return null;
     }
 
-    snapUrl = snapUrl.endsWith("/") ? snapUrl.substring(0, snapUrl.length()-2) : snapUrl;
-    avatarUrl = avatarUrl.startsWith("/") ? avatarUrl : '/' + avatarUrl;
-    String url = String.format("%s%s/%s", snapUrl, avatarUrl, userId);
+    String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
+    url = String.format("%s/%s", url, userId);
 
     try {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto()..." + config.snapUrl() + config.sfdcUserAvatarUrl());

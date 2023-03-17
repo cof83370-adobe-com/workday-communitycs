@@ -42,6 +42,16 @@ public class QueryServiceImpl implements QueryService {
     public static final String SERVICE_USER = "queryserviceuser";
 
     @Override
+    public void setQueryBuilder(QueryBuilder queryBuilder) {
+        this.queryBuilder = queryBuilder;
+    }
+
+    @Override
+    public void setResovlerFactory(ResourceResolverFactory resourceResolverFactory) {
+       this.resourceResolverFactory = resourceResolverFactory;
+    }
+
+    @Override
     public long getNumOfTotalPages() {
         long totalResults = 0;
         Session session = null;

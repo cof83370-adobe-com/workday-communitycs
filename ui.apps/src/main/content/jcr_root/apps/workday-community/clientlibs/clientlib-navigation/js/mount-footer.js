@@ -2,8 +2,7 @@ function renderNavFooter() {
     const elementCreator = React.createElement;
 
     const footerDiv = document.getElementById('community-footer-div');
-
-    if (stringValid(footerDiv)) {
+    if (footerDiv !== undefined && footerDiv !== null) {
         const footerData = {
             ...Cmty.DefaultFooterData,
             context: {
@@ -12,7 +11,7 @@ function renderNavFooter() {
                 cookiePrefUrl: 'https://assets.adobedtm.com/d0845c7cd69d/2c847d99b6d2/launch-cd3b9e540274-development.min.js',
             }
         };
-        const footerElement = elementCreator(Cmty.GlobalFooter, { menus: footerData });
+        const footerElement = elementCreator(Cmty.GlobalFooter, {menus: footerData});
         ReactDOM.render(footerElement, footerDiv);
     }
 }

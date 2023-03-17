@@ -4,6 +4,9 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
+/**
+ * The snap logic service configuration interface.
+ */
 @ObjectClassDefinition(name = "Snaplogic Config", description = "SnaplogicService OSGi Config Vaues")
 public @interface SnapConfig {
   @AttributeDefinition(name = "Snaplogic Url", description = "Sanplogic base Url.", type = AttributeType.STRING)

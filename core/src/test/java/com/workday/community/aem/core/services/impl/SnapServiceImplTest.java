@@ -5,6 +5,7 @@ import com.day.cq.dam.api.Rendition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
+import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.SnapService;
 
 import com.workday.community.aem.core.utils.RestApiUtil;
@@ -35,8 +36,9 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class SnapServiceImplTest {
 
   /**
@@ -49,89 +51,7 @@ public class SnapServiceImplTest {
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
-  @Mock
-  SnapConfig snapConfig;
-
-  private final SnapConfig testEmptySnapConfig = new SnapConfig() {
-
-    @Override
-    public Class<? extends Annotation> annotationType() {
-      return null;
-    }
-
-    @Override
-    public String snapUrl() {
-      return null;
-    }
-
-    @Override
-    public String navApi() {
-      return null;
-    }
-
-    @Override
-    public String navApiKey() {
-      return null;
-    }
-
-    @Override
-    public String navApiToken() {
-      return null;
-    }
-
-    @Override
-    public String sfdcUserAvatarUrl() {
-      return null;
-    }
-
-    public String sfdcUserAvatarToken() {
-      return null;
-    }
-
-    public String sfdcApiKey() {
-      return null;
-    }
-  };
-
-  private final SnapConfig testSnapConfig = new SnapConfig() {
-    @Override
-    public Class<? extends Annotation> annotationType() {
-      return null;
-    }
-
-    @Override
-    public String snapUrl() {
-      return "http://test/snap";
-    }
-
-    @Override
-    public String navApi() {
-      return "/menu";
-    }
-
-    @Override
-    public String navApiKey() {
-      return "testApiKey";
-    }
-
-    @Override
-    public String navApiToken() {
-      return "testApiToken";
-    }
-
-    @Override
-    public String sfdcUserAvatarUrl() {
-      return "/foo";
-    }
-
-    public String sfdcUserAvatarToken() {
-      return "TestPhotoToken";
-    }
-
-    public String sfdcApiKey() {
-      return "testSfApiToken";
-    }
-  };
+  private GetSnapConfig snapConfig;
 
   SnapService snapService;
 
@@ -141,11 +61,50 @@ public class SnapServiceImplTest {
   public void setup() {
     context.registerService(ResourceResolverFactory.class, resResolverFactory);
     context.registerService(objectMapper);
-    context.registerService(snapConfig);
 
     snapService = new SnapServiceImpl();
     resource = mock(Resource.class);
     snapService.setResourceResolverFactory(resResolverFactory);
+
+    snapConfig = (x, y) -> new SnapConfig() {
+      @Override
+      public Class<? extends Annotation> annotationType() {
+        return null;
+      }
+
+      @Override
+      public String snapUrl() {
+        return x == 0 ? null : x == 1 ? "http://test/snap" : "http://test/snap/";
+      }
+
+      @Override
+      public String navApi() {
+        return y == 0 ? null : y == 1 ? "/menu" : "/menu/";
+      }
+
+      @Override
+      public String navApiKey() {
+        return "testApiKey";
+      }
+
+      @Override
+      public String navApiToken() {
+        return "testApiToken";
+      }
+
+      @Override
+      public String sfdcUserAvatarUrl() {
+        return y == 0 ? null : y == 1 ? "/avatar" : "/avatar/";
+      }
+
+      public String sfdcUserAvatarToken() {
+        return "TestPhotoToken";
+      }
+
+      public String sfdcApiKey() {
+        return "testSfApiToken";
+      }
+    };
   }
 
   @Test
@@ -154,8 +113,18 @@ public class SnapServiceImplTest {
     Rendition original = mock(Rendition.class);
     ResourceResolver resolverMock = mock(ResourceResolver.class);
 
+    // Case 0 Empty configuration
+    snapService.activate(snapConfig.get(0, 0));
+    assertEquals("", this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER));
+
+    snapService.activate(snapConfig.get(0, 1));
+    assertEquals("", this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER));
+
+    snapService.activate(snapConfig.get(1, 0));
+    assertEquals("", this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER));
+
     // Case 1: no resolver mock
-    snapService.activate(testSnapConfig);
+    snapService.activate(snapConfig.get(1, 1));
     String menuData0 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
     assertEquals("", menuData0);
 
@@ -166,7 +135,7 @@ public class SnapServiceImplTest {
     lenient().when(asset.getOriginal()).thenReturn(original);
 
     // Case 2 No content
-    snapService.activate(testSnapConfig);
+    snapService.activate(snapConfig.get(1, 2));
     String menuData1 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
     assertEquals("", menuData1);
 
@@ -174,23 +143,51 @@ public class SnapServiceImplTest {
     ByteArrayInputStream content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
     lenient().when(original.adaptTo(any())).thenReturn(content);
 
-    // Case 4 use incorrect test configuration.
-    snapService.activate(testSnapConfig);
+    // Case 4 With mock content for default fallback
+    snapService.activate(snapConfig.get(2, 1));
     String menuData2 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
     assertTrue(menuData2.length() == 16756);
 
-    // Case 3 use the default with empty value
-    snapService.activate(testEmptySnapConfig);
-    assertEquals("", this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER));
+    //Case 4: With mock content for Request call.
+    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      APIResponse response = mock(APIResponse.class);
+      mocked.when(() -> RestApiUtil.getRequest(any())).thenReturn(response);
+      when(response.getResponseBody()).thenReturn(menuData2);
+      snapService.activate(snapConfig.get(2, 2));
+      String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
+      assertEquals(menuData2, menuData3);
+    }
   }
+
+  @Test
+  public void testGetUserHeaderMenuWithException() throws Exception {
+    Rendition original = mock(Rendition.class);
+
+    snapService.activate(snapConfig.get(1, 1));
+    ByteArrayInputStream content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
+    lenient().when(original.adaptTo(any())).thenReturn(content);
+
+    // Case 4 With mock content for default fallback
+    String menuData2 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
+
+    //Case 4: With mock content for Request call.
+    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      APIResponse response = mock(APIResponse.class);
+      mocked.when(() -> RestApiUtil.getRequest(any())).thenThrow(new RuntimeException());
+      lenient().when(response.getResponseBody()).thenReturn(menuData2);
+      String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
+      assertEquals("", menuData3);
+    }
+  }
+
 
   @Test
   public void testGetProfilePhoto() throws Exception {
     // Case 1: use empty config.
-    snapService.activate(testEmptySnapConfig);
+    snapService.activate(snapConfig.get(0, 0));
     assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
 
-    snapService.activate(testSnapConfig);
+    snapService.activate(snapConfig.get(1, 1));
 
     // Case 2: No return from failed call
     assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
@@ -206,9 +203,17 @@ public class SnapServiceImplTest {
 
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       mocked.when(() -> RestApiUtil.requestSnapJsonResponse(anyString(), anyString(), anyString())).thenReturn(mockRet);
-      context.registerService(mocked);
       ProfilePhoto photoObj = this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER);
       assertEquals(retObj.getBase64content(), photoObj.getBase64content());
+    }
+  }
+
+  @Test
+  public void testGetProfilePhotoWithException() throws Exception {
+    snapService.activate(snapConfig.get(1, 2));
+    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      mocked.when(() -> RestApiUtil.requestSnapJsonResponse(anyString(), anyString(), anyString())).thenThrow(new RuntimeException());
+      assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
     }
   }
 
