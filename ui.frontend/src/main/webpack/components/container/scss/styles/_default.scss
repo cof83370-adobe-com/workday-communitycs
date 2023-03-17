@@ -43,37 +43,77 @@
             margin: 0;
             padding-top: 1rem;
 
-            li {
+            .cmp-toc__item {
                 list-style: none;
                 text-decoration: none;
                 padding: 0.5rem 0rem 0.5rem 0rem;
+            
+              .cmp-toc__item-link 
+              {
+                color:$wdc-color-black-pepper-400;
+                font-weight:700;
+                text-decoration:none;
 
-               // &.active {
-                  //  background-color: $wdc-color-blueberry-100;
-                 //   color: $wdc-color-blueberry-400;
-                    //border-left: 3px solid $wdc-color-blueberry-400;
-                }
+               &::before 
+               {
+                content: '\2192';
+			   font-size: 20px;
+			   color: #000;
+			   margin-left: 5px;
+               }
+               &.active::before 
+               {
+                content: "\2193";
+               }
+              }  
 
-                a {
-                    text-decoration: none;
-                    color: $wdc-color-black-pepper-400;
-                    font-size: 18px;
-                    font-weight: 700;
-
-                    
-                        &:before {
-                            vertical-align: middle;
-                            content: "1111";
-                            font-size: 20px
-                        }       
-               
             }
-            a.active {
+            .cmp-toc__item-link_panel
+            {
+              opacity:0;
+              transition:0.6s ease-in-out;
 
-                content:"3333";
-                vertical-align:middle;
-                font-size:20px;
+              &.show 
+              {
+                  opacity:1;
+              }
+              .cmp-toc__item-1 {
+                list-style: none;
+                text-decoration: none;
+                padding: 0.5rem 0rem 0.5rem 0rem;
+            
+              .cmp-toc__item-link_1 
+              {
+                color:$wdc-color-black-pepper-400;
+                font-weight:700;
+                text-decoration:none;
 
+               &::before 
+               {
+                content: '\2192';
+			   font-size: 20px;
+			   color: #000;
+			   margin-left: 5px;
+               }
+               &.active::before 
+               {
+                content: "\2193";
+               }
+              }  
+
+            }
+            }
+
+            .cmp-toc__item-link_panel-1
+            {
+              opacity:0;
+              transition:0.6s ease-in-out;
+
+              &.show 
+              {
+                  opacity:1;
+              }
+            
             }
         }
     }
