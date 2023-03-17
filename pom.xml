@@ -589,6 +589,12 @@
 				<version>0.0.9-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.jsoup</groupId>
+				<artifactId>jsoup</artifactId>
+				<version>1.15.4</version>
+				<type>jar</type>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<repositories>
