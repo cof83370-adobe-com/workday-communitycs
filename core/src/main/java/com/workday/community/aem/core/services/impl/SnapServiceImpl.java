@@ -18,7 +18,6 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
@@ -63,11 +62,6 @@ public class SnapServiceImpl implements SnapService {
     @Override
     public void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory) {
         this.resResolverFactory = resourceResolverFactory;
-    }
-
-    @Deactivate
-    protected void deactivate() {
-        logger.info("SnapService is de-activated.");
     }
 
     public String getUserHeaderMenu(String sfId) {
@@ -129,13 +123,12 @@ public class SnapServiceImpl implements SnapService {
 
     private String getFailStateHeaderMenu() {
         // Reading the JSON File from DAM
-
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
                     "navserviceuser")) {
             Resource resource = resourceResolver.getResource("/content/dam/workday-community/FailStateHeaderData.json");
-            Asset asset = (resource == null) ? null : resource.adaptTo(Asset.class);
-            Resource original = ( asset == null ) ? null: asset.getOriginal();
-            InputStream content = ( original == null) ? null : original.adaptTo(InputStream.class);
+            Asset asset = resource.adaptTo(Asset.class);
+            Resource original = asset.getOriginal();
+            InputStream content = original.adaptTo(InputStream.class);
             if (content == null) {
                 logger.error("content is null in SnaServiceImpl");
                 return "";

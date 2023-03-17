@@ -1,17 +1,15 @@
 package com.workday.community.aem.core.models.impl;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
-import org.mockito.Mock;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static junit.framework.Assert.assertNotNull;
+import static junitx.framework.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 

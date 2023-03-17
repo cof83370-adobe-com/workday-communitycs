@@ -5,7 +5,6 @@ import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.OurmUtils;
-import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -50,7 +49,7 @@ public class HeaderModelImpl implements HeaderModel {
     /**
      * The navMenuApi service.
      */
-    @NonNull
+    @NotNull
     @OSGiService
     SnapService snapService;
 
