@@ -17,6 +17,9 @@ import com.day.cq.replication.ReplicationAction;
 import com.day.cq.replication.ReplicationActionType;
 import com.workday.community.aem.core.constants.GlobalConstants;
 
+/**
+ * The Class ReplicationEventHandler.
+ */
 @Component(
     service = EventHandler.class,
     immediate = true,

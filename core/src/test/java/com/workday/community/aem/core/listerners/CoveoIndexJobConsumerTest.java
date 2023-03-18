@@ -1,4 +1,4 @@
-package com.workday.community.aem.core.listerner;
+package com.workday.community.aem.core.listerners;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -15,9 +15,17 @@ import com.workday.community.aem.core.listeners.CoveoIndexJobConsumer;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
+/**
+ * The Class CoveoIndexJobConsumerTest.
+ */
 @ExtendWith(AemContextExtension.class)
 public class CoveoIndexJobConsumerTest {
     
+    /**
+     * Test process job passed.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testProcessJobPass() throws Exception {
         Job job = mock(Job.class);
@@ -29,6 +37,11 @@ public class CoveoIndexJobConsumerTest {
         assertEquals(JobResult.OK, result);
     }
 
+    /**
+     * Test process job failed.
+     *
+     * @throws Exception the exception
+     */
     @Test
     void testProcessJobFail() throws Exception {
         Job job = mock(Job.class);

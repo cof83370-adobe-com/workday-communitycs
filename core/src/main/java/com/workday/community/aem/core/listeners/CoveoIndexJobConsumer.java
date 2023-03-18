@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.listeners;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
@@ -13,7 +12,9 @@ import org.slf4j.LoggerFactory;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
 
-
+/**
+ * The Class CoveoIndexJobConsumer.
+ */
 @Component(
     service = JobConsumer.class,
     immediate = true,

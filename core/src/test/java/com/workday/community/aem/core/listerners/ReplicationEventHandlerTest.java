@@ -19,18 +19,27 @@ import com.day.cq.replication.ReplicationAction;
 import com.day.cq.replication.ReplicationActionType;
 import com.workday.community.aem.core.listeners.ReplicationEventHandler;
 
+/**
+ * The Class ReplicationEventHandlerTest.
+ */
 @ExtendWith(MockitoExtension.class)
 public class ReplicationEventHandlerTest {
 
+    /** The ReplicationEventHandler. */
     @Spy
     ReplicationEventHandler eventHandler;
 
+    /** The ReplicationAction. */
     @Mock 
     ReplicationAction action;
 
+    /** The JobManager. */
     @Mock
     JobManager jobManager;
 
+    /**
+     * Test handler events.
+     */
     @Test
     void testHandleEventsFailed() {
         Event event = Mockito.mock(Event.class);
