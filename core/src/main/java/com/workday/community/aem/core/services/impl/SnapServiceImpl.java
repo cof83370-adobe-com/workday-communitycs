@@ -136,7 +136,7 @@ public class SnapServiceImpl implements SnapService {
     // Reading the JSON File from DAM
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
       "navserviceuser")) {
-      Resource resource = resourceResolver.getResource("/content/dam/workday-community/FailStateHeaderData.json");
+      Resource resource = resourceResolver.getResource(config.fallbackMenuData());
       Asset asset = resource.adaptTo(Asset.class);
       Resource original = asset.getOriginal();
       InputStream content = original.adaptTo(InputStream.class);

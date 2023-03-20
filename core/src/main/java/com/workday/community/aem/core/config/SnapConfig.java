@@ -30,6 +30,9 @@ public @interface SnapConfig {
   @AttributeDefinition(name = "Sfdc Api key", description = "Sfdc Api key.", type = AttributeType.STRING)
   String sfdcApiKey();
 
+  @AttributeDefinition(name = "Fallback Menu Data", description = "Fallback Menu Data.", type = AttributeType.STRING)
+  String fallbackMenuData() default "/content/dam/workday-community/jcr:content/FailStateHeaderData.json";
+
   @AttributeDefinition(name = "enable AEM beta", description = "AEM Beta?", type = AttributeType.STRING)
   boolean beta() default true;
 }

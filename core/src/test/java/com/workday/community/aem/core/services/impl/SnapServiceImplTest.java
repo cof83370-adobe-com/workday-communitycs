@@ -105,6 +105,11 @@ public class SnapServiceImplTest {
       }
 
       @Override
+      public String fallbackMenuData() {
+        return "/content/dam/workday-community/jcr:content/FailStateHeaderData.json";
+      }
+
+      @Override
       public boolean beta() {
         return true;
       }
