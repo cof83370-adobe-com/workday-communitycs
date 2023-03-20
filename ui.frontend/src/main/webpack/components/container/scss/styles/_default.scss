@@ -47,73 +47,89 @@
                 list-style: none;
                 text-decoration: none;
                 padding: 0.5rem 0rem 0.5rem 0rem;
-            
-              .cmp-toc__item-link 
-              {
-                color:$wdc-color-black-pepper-400;
-                font-weight:700;
-                text-decoration:none;
 
-               &::before 
-               {
-                content: '\2192';
-			   font-size: 20px;
-			   color: #000;
-			   margin-left: 5px;
-               }
-               &.active::before 
-               {
-                content: "\2193";
-               }
-              }  
+                .cmp-toc__item-link {
+                    color: $wdc-color-black-pepper-400;
+                    font-weight: 700;
+                    text-decoration: none;
+                    display:block;
+                    padding: 0.5rem 0rem 0.5rem 0rem;
+                    width:100%;
 
-            }
-            .cmp-toc__item-link_panel
-            {
-              opacity:0;
-              transition:0.6s ease-in-out;
+                    
+                    &.active {
+                        background:#D7EAFc;
+                        color:#0875E1;
+                        border-left:5px solid #0875E1;
+                        padding: 0.5rem 0rem 0.5rem 0rem;
+                    }
 
-              &.show 
-              {
-                  opacity:1;
-              }
-              .cmp-toc__item-1 {
-                list-style: none;
-                text-decoration: none;
-                padding: 0.5rem 0rem 0.5rem 0rem;
-            
-              .cmp-toc__item-link_1 
-              {
-                color:$wdc-color-black-pepper-400;
-                font-weight:700;
-                text-decoration:none;
 
-               &::before 
-               {
-                content: '\2192';
-			   font-size: 20px;
-			   color: #000;
-			   margin-left: 5px;
-               }
-               &.active::before 
-               {
-                content: "\2193";
-               }
-              }  
+                    &::before {
+                        content: url('../resources/images/wd-icon-chevron-right.svg');
+                        font-size: 20px;
+                        vertical-align: middle;
+                        color: #000;
+                        margin-right: 5px;
+                    }
+                    &:hover 
+                    {
+                        border-left:5px solid #0875E1;
+                        background:#D7EAFc;
+                        color:#0875E1;
+                        
+                    }
+                    &.active::before {
+                        vertical-align: middle;
+                        content: url('../resources/images/wd-icon-chevron-down.svg');
+                        margin-right:5px;
+                        margin-left:20px;
+                    }
+                }
 
             }
+
+            .cmp-toc__item-link_panel {
+                opacity: 0;
+                transition: 0.6s ease-in-out;
+
+                &.show {
+                    opacity: 1;
+                }
+
+                .cmp-toc__item-1 {
+                    list-style: none;
+                    text-decoration: none;
+                    padding: 0.5rem 0rem 0.5rem 0rem;
+
+                    .cmp-toc__item-link_1 {
+                        color: $wdc-color-black-pepper-400;
+                        font-weight: 700;
+                        text-decoration: none;
+
+                        &::before {
+                            content: url('../resources/images/wd-icon-chevron-right.svg');
+                            font-size: 20px;
+                            color: #000;
+                            margin-left: 5px;
+                        }
+
+                        &.active::before {
+                            content: url('../resources/images/wd-icon-chevron-down.svg');
+                        }
+                    }
+
+                }
             }
 
-            .cmp-toc__item-link_panel-1
-            {
-              opacity:0;
-              transition:0.6s ease-in-out;
+            .cmp-toc__item-link_panel-1 {
+                opacity: 0;
+                transition: 0.6s ease-in-out;
 
-              &.show 
-              {
-                  opacity:1;
-              }
-            
+                &.show {
+                    opacity: 1;
+                }
+
             }
         }
     }
