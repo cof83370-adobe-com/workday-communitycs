@@ -37,7 +37,6 @@
                                             cq-msm-lockable="./profileLink"
                                             fieldDescription="Profile Link"
                                             fieldLabel="Profile Link"
-                                            rootPath="/content/workday/en-us/wrc"
                                             name="./profileLink"
                                             required="{Boolean}true"/>
                                     <homepageUrl
@@ -46,7 +45,6 @@
                                             cq-msm-lockable="./homepageUrl"
                                             fieldDescription="WRC Homepage URL"
                                             fieldLabel="WRC Homepage URL"
-                                            rootPath="/content/workday/en-us/wrc"
                                             name="./homepageUrl"
                                             required="{Boolean}true"/>
                                     <searchPageLink
@@ -56,31 +54,7 @@
                                             fieldDescription="Search Page Link"
                                             fieldLabel="Search Page Link"
                                             name="./searchPageLink"
-                                            required="{Boolean}true"
-                                            rootPath="/content/workday/en-us/wrc"/>
-                                    <failStateData
-                                            jcr:primaryType="nt:unstructured"
-                                            sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                            cq-msm-lockable="./failStateData"
-                                            fieldDescription="Select Fail State Data"
-                                            fieldLabel="Select Fail State Data"
-                                            name="./failStateData"
-                                            required="{Boolean}true">
-                                        <items jcr:primaryType="nt:unstructured">
-                                            <production
-                                                    jcr:primaryType="nt:unstructured"
-                                                    text="production"
-                                                    value="production"/>
-                                            <qa
-                                                    jcr:primaryType="nt:unstructured"
-                                                    text="qa"
-                                                    value="qa"/>
-                                            <stage
-                                                    jcr:primaryType="nt:unstructured"
-                                                    text="stage"
-                                                    value="stage"/>
-                                        </items>
-                                    </failStateData>
+                                            required="{Boolean}true"/>
                                 </items>
                             </column>
                         </items>

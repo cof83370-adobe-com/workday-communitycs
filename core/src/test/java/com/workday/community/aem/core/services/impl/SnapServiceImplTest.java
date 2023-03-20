@@ -30,7 +30,6 @@ import java.lang.annotation.Annotation;
 import static com.workday.community.aem.core.constants.GlobalConstants.WRCConstants.DEFAULT_SFID_MASTER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
@@ -104,6 +103,11 @@ public class SnapServiceImplTest {
       public String sfdcApiKey() {
         return "testSfApiToken";
       }
+
+      @Override
+      public boolean beta() {
+        return true;
+      }
     };
   }
 
@@ -146,12 +150,12 @@ public class SnapServiceImplTest {
     // Case 4 With mock content for default fallback
     snapService.activate(snapConfig.get(2, 1));
     String menuData2 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
-    assertTrue(menuData2.length() == 16756);
+    assertEquals(16756, menuData2.length());
 
     //Case 4: With mock content for Request call.
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       APIResponse response = mock(APIResponse.class);
-      mocked.when(() -> RestApiUtil.doGet(any())).thenReturn(response);
+      mocked.when(() -> RestApiUtil.doGetMenu(anyString(), anyString(), anyString(), anyString())).thenReturn(response);
       when(response.getResponseBody()).thenReturn(menuData2);
       snapService.activate(snapConfig.get(2, 2));
       String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
@@ -160,7 +164,7 @@ public class SnapServiceImplTest {
   }
 
   @Test
-  public void testGetUserHeaderMenuWithException() throws Exception {
+  public void testGetUserHeaderMenuWithException() {
     Rendition original = mock(Rendition.class);
 
     snapService.activate(snapConfig.get(1, 1));
@@ -173,7 +177,7 @@ public class SnapServiceImplTest {
     //Case 4: With mock content for Request call.
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       APIResponse response = mock(APIResponse.class);
-      mocked.when(() -> RestApiUtil.doGet(any())).thenThrow(new RuntimeException());
+      mocked.when(() -> RestApiUtil.doGetMenu(anyString(), anyString(), anyString(), anyString())).thenThrow(new RuntimeException());
       lenient().when(response.getResponseBody()).thenReturn(menuData2);
       String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals("", menuData3);
@@ -202,17 +206,17 @@ public class SnapServiceImplTest {
     String mockRet = objectMapper.writeValueAsString(retObj);
 
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(mockRet);
+      mocked.when(() -> RestApiUtil.doAvatarGet(anyString(), anyString(), anyString())).thenReturn(mockRet);
       ProfilePhoto photoObj = this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER);
       assertEquals(retObj.getBase64content(), photoObj.getBase64content());
     }
   }
 
   @Test
-  public void testGetProfilePhotoWithException() throws Exception {
+  public void testGetProfilePhotoWithException() {
     snapService.activate(snapConfig.get(1, 2));
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new RuntimeException());
+      mocked.when(() -> RestApiUtil.doAvatarGet(anyString(), anyString(), anyString())).thenThrow(new RuntimeException());
       assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
     }
   }

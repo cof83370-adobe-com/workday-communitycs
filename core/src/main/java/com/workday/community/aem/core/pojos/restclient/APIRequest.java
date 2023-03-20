@@ -86,13 +86,15 @@ public class APIRequest {
    * @param header the current header name.
    * @param value  the header value.
    */
-  public void addHeader(String header, String value) {
+  public APIRequest addHeader(String header, String value) {
     if (this.headers != null)
       headers.put(header, value);
     else {
       headers = new HashMap<String, String>();
       headers.put(header, value);
     }
+
+    return this;
   }
 
   /**

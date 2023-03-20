@@ -11,7 +11,6 @@ import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.ResolverUtil;
-import com.workday.community.aem.core.pojos.restclient.APIRequest;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -86,23 +85,24 @@ public class SnapServiceImpl implements SnapService {
       url = String.format("%s/%s", url, sfId);
 
       String traceId = "Community AEM-" + new Date().getTime();
-
-      // Construct the request header.
-      APIRequest getUserNavigationDataReq = RestApiUtil.constructHeader(url,
-        apiToken, apiKey, traceId);
-
       // Execute the request.
-      APIResponse snapRes = RestApiUtil.doGet(getUserNavigationDataReq);
+      APIResponse snapRes = RestApiUtil.doGetMenu(url, apiToken, apiKey, traceId);
 
       if (StringUtils.isEmpty(snapRes.getResponseBody())) {
         logger.debug("Sfdc menu fetch is empty, fallback to use local default");
-        return this.getFailStateHeaderMenu();
+        return this.getMergedHeaderMenu(null);
       }
 
       // Gson object for json handling.
       Gson gson = new Gson();
       JsonObject navResponseObj = gson.fromJson(snapRes.getResponseBody(), JsonObject.class);
-      jsonResponse = gson.toJson(navResponseObj);
+      // Need to make merge with beta support.
+      if (config.beta()) {
+        return getMergedHeaderMenu(navResponseObj);
+      } else {
+        jsonResponse = gson.toJson(null);
+      }
+
     } catch (Exception e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
     }
@@ -122,7 +122,7 @@ public class SnapServiceImpl implements SnapService {
 
     try {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto()..." + config.snapUrl() + config.sfdcUserAvatarUrl());
-      String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcApiKey());
+      String jsonResponse = RestApiUtil.doAvatarGet(url, config.sfdcUserAvatarToken(), config.sfdcApiKey());
       if (jsonResponse != null) {
         return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
       }
@@ -132,7 +132,7 @@ public class SnapServiceImpl implements SnapService {
     return null;
   }
 
-  private String getFailStateHeaderMenu() {
+  private String getMergedHeaderMenu(JsonObject sfNavObj) {
     // Reading the JSON File from DAM
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
       "navserviceuser")) {
@@ -159,7 +159,16 @@ public class SnapServiceImpl implements SnapService {
       // Gson object for json handling.
       Gson gson = new Gson();
       JsonObject navResponseObj = gson.fromJson(sb.toString(), JsonObject.class);
+
+      if (sfNavObj != null) {
+         if (navResponseObj == null) {
+           return gson.toJson(sfNavObj);
+         }
+         // TODO Merge local default to sfNavObj and return the merged result (once nav model strategy is finalized).
+      }
+
       return gson.toJson(navResponseObj);
+
     } catch (Exception e) {
       logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
       return "";

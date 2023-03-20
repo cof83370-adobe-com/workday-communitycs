@@ -12,9 +12,18 @@ import javax.jcr.Session;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.WRCConstants.DEFAULT_SFID_MASTER;
 
+/**
+ * The Utility class for all OURM related Utility APIs
+ */
 public class OurmUtils {
   private final static Logger logger = LoggerFactory.getLogger(OurmUtils.class);
 
+  /**
+   * Get the Salesforce id.
+   *
+   * @param resourceResolver the Resource Resolver object
+   * @return the Salesforce id from the session.
+   */
   public static String getSalesForceId(ResourceResolver resourceResolver) {
     String sfId = "";
 
@@ -37,7 +46,7 @@ public class OurmUtils {
 
     if (StringUtils.isBlank(sfId)) {
       // Default fallback
-      logger.debug("Salesforce Id for current user is unavailable");
+      logger.debug("Salesforce Id for current user is unavailable, please check with admin.");
       sfId = DEFAULT_SFID_MASTER;
     }
 

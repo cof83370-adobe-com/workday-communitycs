@@ -29,4 +29,7 @@ public @interface SnapConfig {
 
   @AttributeDefinition(name = "Sfdc Api key", description = "Sfdc Api key.", type = AttributeType.STRING)
   String sfdcApiKey();
+
+  @AttributeDefinition(name = "enable AEM beta", description = "AEM Beta?", type = AttributeType.STRING)
+  boolean beta() default true;
 }

@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.constants;
 
+import com.workday.community.aem.core.constants.lambda.BearerToken;
+
 /**
  * The Class GlobalConstants.
  *
@@ -131,7 +133,7 @@ public interface GlobalConstants {
     /**
      * The constant BEARER_TYPE
      */
-    String BEARER_TYPE = "Bearer ";
+    BearerToken BEARER_TOKEN = (token) -> String.format("Bearer %s", token);
 
     /**
      * The constant X_API_KEY
@@ -142,11 +144,6 @@ public interface GlobalConstants {
      * The constant CONTENT_TYPE
      */
     String CONTENT_TYPE = "Content-Type";
-
-    /**
-     * The constant ACCEPT_TYPE
-     */
-    String ACCEPT_TYPE = "Accept";
 
     /**
      * The constant APPLICATION_SLASH_JSON
