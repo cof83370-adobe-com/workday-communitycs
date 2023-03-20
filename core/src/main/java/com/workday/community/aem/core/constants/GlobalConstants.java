@@ -112,5 +112,7 @@ public final class GlobalConstants {
 
 		/** The Constant MINUTES_IN_24_HOURS. */
 		public static final long MINUTES_IN_24_HOURS = 1440;
+
+
 	}
 }
