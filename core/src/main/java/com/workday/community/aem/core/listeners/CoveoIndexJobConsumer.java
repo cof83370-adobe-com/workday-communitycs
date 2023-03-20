@@ -31,8 +31,8 @@ public class CoveoIndexJobConsumer implements JobConsumer {
     public JobResult process(Job job) {
         try {
             ArrayList<String> paths = (ArrayList<String>) job.getProperty("paths");
-            // @todo Once we have the coveo mapping and service, we can extract page properties 
-            // and pass those info to coveo. 
+            // @todo Once we have the fields mapping and coveo service, we can extract page 
+            // properties and pass those info to coveo. 
             return JobResult.OK;
         } 
         catch (Exception e) {

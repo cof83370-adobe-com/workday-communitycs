@@ -39,7 +39,6 @@ public class ReplicationEventHandler implements EventHandler {
     public void handleEvent(Event event) {
         try {
             ReplicationAction action = getAction(event);
-            //ReplicationAction action = ReplicationAction.fromEvent(event);
             if (action.getType().equals(ReplicationActionType.ACTIVATE) ||
                 action.getType().equals(ReplicationActionType.DEACTIVATE) ||
                 action.getType().equals(ReplicationActionType.DELETE)
