@@ -43,15 +43,7 @@ public class ReplicationEventHandler implements EventHandler {
                 action.getType().equals(ReplicationActionType.DEACTIVATE) ||
                 action.getType().equals(ReplicationActionType.DELETE)
             ) {
-                Map<String, Object> jobProperties = new HashMap<>();
-                ArrayList<String> paths = new ArrayList<String>();
-                paths.add(action.getPath());
-                String op = action.getType().equals(ReplicationActionType.ACTIVATE) ? "index" : "delete";
-                jobProperties.put("op", op);
-                jobProperties.put("paths", paths);
-                
-                // Add this job to the job manager.
-                jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
+                startCoveoJob(action);
             }
         } catch (Exception e){
             logger.error("\n Error occured while Publishing/Unpublishing page - {} " , e.getMessage());
@@ -67,6 +59,21 @@ public class ReplicationEventHandler implements EventHandler {
     public ReplicationAction getAction(Event event) {
         ReplicationAction action = ReplicationAction.fromEvent(event);
         return action;
+    }
+
+    /**
+	 * Start coveo job for indexing or deleteing.
+	 */
+    public void startCoveoJob(ReplicationAction action) {
+        Map<String, Object> jobProperties = new HashMap<>();
+        ArrayList<String> paths = new ArrayList<String>();
+        paths.add(action.getPath());
+        String op = action.getType().equals(ReplicationActionType.ACTIVATE) ? "index" : "delete";
+        jobProperties.put("op", op);
+        jobProperties.put("paths", paths);
+                
+        // Add this job to the job manager.
+        jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
     }
     
 }
