@@ -110,6 +110,11 @@ public class SnapServiceImplTest {
       }
 
       @Override
+      public String fallbackMenuServiceUser() {
+        return "navserviceuser";
+      }
+
+      @Override
       public boolean beta() {
         return true;
       }

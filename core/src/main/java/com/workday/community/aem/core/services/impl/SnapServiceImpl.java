@@ -70,14 +70,13 @@ public class SnapServiceImpl implements SnapService {
   }
 
   public String getUserHeaderMenu(String sfId) {
-    String jsonResponse = "";
-
     String snapUrl = config.snapUrl(), navApi = config.navApi(),
       apiToken = config.navApiToken(), apiKey = config.navApiKey();
 
     if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(snapUrl) ||
       StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
-      return jsonResponse;
+      // No Snap configuration provided, just return the default one
+      return this.getMergedHeaderMenu(null);
     }
 
     try {
@@ -99,15 +98,13 @@ public class SnapServiceImpl implements SnapService {
       // Need to make merge with beta support.
       if (config.beta()) {
         return getMergedHeaderMenu(navResponseObj);
-      } else {
-        jsonResponse = gson.toJson(null);
       }
 
     } catch (Exception e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
     }
 
-    return jsonResponse;
+    return this.getMergedHeaderMenu(null);
   }
 
   @Override
@@ -135,7 +132,7 @@ public class SnapServiceImpl implements SnapService {
   private String getMergedHeaderMenu(JsonObject sfNavObj) {
     // Reading the JSON File from DAM
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
-      "navserviceuser")) {
+      config.fallbackMenuServiceUser())) {
       Resource resource = resourceResolver.getResource(config.fallbackMenuData());
       Asset asset = resource.adaptTo(Asset.class);
       Resource original = asset.getOriginal();
@@ -160,7 +157,7 @@ public class SnapServiceImpl implements SnapService {
       Gson gson = new Gson();
       JsonObject navResponseObj = gson.fromJson(sb.toString(), JsonObject.class);
 
-      if (sfNavObj != null) {
+      if (sfNavObj != null && config.beta()) {
          if (navResponseObj == null) {
            return gson.toJson(sfNavObj);
          }
