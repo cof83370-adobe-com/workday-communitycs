@@ -54,7 +54,7 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public long getNumOfTotalPages() {
         long totalResults = 0;
-        Session session = null;
+        Session session;
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
@@ -63,8 +63,7 @@ public class QueryServiceImpl implements QueryService {
             session = resourceResolver.adaptTo(Session.class);
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult result = query.getResult();
-            totalResults = (long) result.getTotalMatches();
-            resourceResolver.close();
+            totalResults = result.getTotalMatches();
         } catch (Exception e) {
             logger.error("Exception occured when running query to get total number of pages {} ", e.getMessage());
         }

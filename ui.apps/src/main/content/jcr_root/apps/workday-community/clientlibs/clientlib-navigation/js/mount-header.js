@@ -718,7 +718,7 @@ const default_header_data = {
 }
 
 function renderNavHeader() {
-    const headerDiv = document.getElementById(' community-header-div');
+    const headerDiv = document.getElementById('community-header-div');
 
     if (headerDiv !== undefined && headerDiv !== null) {
         let headerStringData = headerDiv.getAttribute('data-model-property');
