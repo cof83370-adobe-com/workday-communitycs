@@ -6,7 +6,7 @@
 				<ul class="cmp-book__firstlevellist" data-sly-list.booklink="${booksMultifield.getChildren}">
 					<li class="cmp-book__firstlevelitem"><a class="cmp-book__firstlevelitem-link" target="${booklink.newTab}"
 							href="${booklink.mainpagepath}.html"><span
-								class="cmp-book__firstlevelitem-title">${booklink.bookTitle}</span></a>
+								class="cmp-book__firstlevelitem-title">${booklink.mainpagepath}</span></a>
 						<div class="cmp-book__secondlevelheading"
 							data-sly-list.secondlevelMultifield="${booklink.getChildren}">
 							<sly data-sly-test="${booklink.getChildren && secondlevelMultifield.name == 'secondlevel'}">
@@ -14,7 +14,7 @@
 									data-sly-list.secondlink="${secondlevelMultifield.getChildren}">
 									<li class="cmp-book__secondlevelitem"><a class="cmp-book__secondlevelitem-link" target="${secondlink.newTab}"
 											href="${secondlink.secondpagepath}.html"><span
-												class="cmp-book__secondlevelitem-title">${secondlink.secondTitle}</span></a>
+												class="cmp-book__secondlevelitem-title">${secondlink.secondpagepath}</span></a>
 										<div class="cmp-book__thirdlevelheading"
 											data-sly-list.thirdlevelMultifield="${secondlink.getChildren}">
 											<sly
@@ -24,7 +24,7 @@
 													<li class="cmp-book__thirdlevelitem"><a
 															class="cmp-book__thirdlevelitem-link" target="${thirdlink.newTab}"
 															href="${thirdlink.thirdpagepath}.html"><span
-																class="cmp-book__thirdlevelitem-title">${thirdlink.thirdTitle}</span></a>
+																class="cmp-book__thirdlevelitem-title">${thirdlink.thirdpagepath}</span></a>
 													</li>
 												</ul>
 											</sly>
