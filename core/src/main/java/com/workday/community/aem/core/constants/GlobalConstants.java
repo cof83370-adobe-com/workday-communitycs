@@ -14,7 +14,10 @@ public interface GlobalConstants {
    */
   String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
-  /**
+	/** The Constant COMMUNITY_COVEO_JOB. */
+	public static final String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
+
+	/**
    * The Class PageResourceType.
    */
   interface PageResourceType {
@@ -113,13 +116,11 @@ public interface GlobalConstants {
      * The Constant MINUTES_IN_8_HOURS.
      */
     long MINUTES_IN_8_HOURS = 480;
-
     /**
      * The Constant MINUTES_IN_24_HOURS.
      */
     long MINUTES_IN_24_HOURS = 1440;
   }
-
   /**
    * The Class RESTAPIConstants.
    */
