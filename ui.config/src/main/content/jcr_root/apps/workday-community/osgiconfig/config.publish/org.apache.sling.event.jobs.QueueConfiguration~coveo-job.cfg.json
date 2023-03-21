@@ -1,0 +1,8 @@
+{
+    "queue.priority":"MAX",
+    "queue.name":"Coveo job",
+    "service.ranking:Integer":10,
+    "queue.topics":[
+      "workday-community/common/coveo/job"
+    ]
+  }
