@@ -45,6 +45,18 @@ public class ReplicationEventHandlerTest {
         Event event = Mockito.mock(Event.class);
         doReturn(action).when(eventHandler).getAction(event);
         doReturn(ReplicationActionType.DELETE).when(action).getType();
+        doReturn(true).when(eventHandler).isCoveoEnabled();
+        eventHandler.handleEvent(event);
+        verify(jobManager, times(0)).addJob(anyString(), anyMap());
+    }
+
+    /**
+     * Test coveo is not enabled.
+     */
+    @Test
+    void testHandleEventsNotRun() {
+        Event event = Mockito.mock(Event.class);
+        doReturn(false).when(eventHandler).isCoveoEnabled();
         eventHandler.handleEvent(event);
         verify(jobManager, times(0)).addJob(anyString(), anyMap());
     }

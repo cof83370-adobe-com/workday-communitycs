@@ -55,7 +55,7 @@ public class ReplicationEventHandler implements EventHandler {
     /**
 	 * Get coveo indexing is enabled or not.
 	 *
-	 * @return Coveo indexing is enable or not.
+	 * @return Coveo indexing is enabled or not.
 	 */
     public boolean isCoveoEnabled() {
         return coveoApiConfig.isEnabled();

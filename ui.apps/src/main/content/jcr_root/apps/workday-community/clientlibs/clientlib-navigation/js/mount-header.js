@@ -717,26 +717,36 @@ const default_header_data = {
     'lastAccessedDate': '12/12/2022 17:03:44'
 }
 
-const skipTo = '';
-const sticky = true;
-
 function renderNavHeader() {
-    const elementCreator = React.createElement;
-
     const headerDiv = document.getElementById('community-header-div');
 
-    if (elementValidator(headerDiv)) {
-        const headerElement = elementCreator(Cmty.GlobalHeader, { menus: default_header_data, skipTo, sticky, searchProps: { redirectPath: '/global-search' } });
-        ReactDOM.render(headerElement, headerDiv);
-    }
-}
+    if (headerDiv !== undefined && headerDiv !== null) {
+        let headerStringData = headerDiv.getAttribute('data-model-property');
+        let avatarUrl = headerDiv.getAttribute("data-model-avatar");
+        let homePage  =  headerDiv.getAttribute("data-prop-home");
 
-function elementValidator(element) {
-    if (element !== undefined && element !== null) {
-        return true;
-    }
-    else {
-        return false
+        let headerMenu;
+        if (stringValid(headerStringData)) {
+            headerMenu = JSON.parse(headerStringData);
+
+            if (stringValid(avatarUrl) && stringValid(headerMenu.profile)) {
+                headerMenu.profile.avatar={ data:avatarUrl };
+            }
+        }
+
+        const headerData = {
+            menus: headerMenu,
+            skipTo: 'mainDivId', //TODO: need to change to correct value once it is finalized.
+            sticky: true,
+            searchProps: {redirectPath: '/global-search'}
+        };
+
+        if (stringValid(homePage)) {
+           headerData.homeUrl = homePage;
+        }
+
+        const headerElement = React.createElement(Cmty.GlobalHeader, headerData);
+        ReactDOM.render(headerElement, headerDiv);
     }
 }
 
@@ -745,3 +755,7 @@ document.addEventListener('readystatechange', event => {
         renderNavHeader();
     }
 });
+
+function stringValid(str) {
+  return (str !== undefined && str !== null && str.trim() !== '');
+}
