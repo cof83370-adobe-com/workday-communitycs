@@ -1,116 +1,181 @@
 package com.workday.community.aem.core.constants;
 
+import com.workday.community.aem.core.constants.lambda.BearerToken;
+
 /**
  * The Class GlobalConstants.
- * 
+ *
  * @author pepalla
  */
-public final class GlobalConstants {
+public interface GlobalConstants {
 
-	/** The Constant UNSUPPORTED_EXCEPTION_MSG. */
-	public static final String UNSUPPORTED_EXCEPTION_MSG = "This is a utility class and cannot be instantiated";
+  /**
+   * The Constant COMMUNITY_CONTENT_ROOT_PATH.
+   */
+  String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
-	/** The Constant COMMUNITY_CONTENT_ROOT_PATH. */
-	public static final String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
-
-	/**
-	 * Instantiates a new global constants.
-	 */
-	private GlobalConstants() {
-		throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
-	}
+	/** The Constant COMMUNITY_COVEO_JOB. */
+	public static final String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
 
 	/**
-	 * The Class PageResourceType.
-	 */
-	public final class PageResourceType {
+   * The Class PageResourceType.
+   */
+  interface PageResourceType {
+    /**
+     * The Constant EVENT.
+     */
+    String EVENT = "workday-community/components/structure/eventspage";
 
-		/**
-		 * Instantiates a new page resource type.
-		 */
-		private PageResourceType() {
-			throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
-		}
+    /**
+     * The Constant RELEASE_NOTES.
+     */
+    String RELEASE_NOTES = "workday-community/components/core/releasenotespage";
 
-		/** The Constant EVENT. */
-		public static final String EVENT = "workday-community/components/structure/eventspage";
+    /**
+     * The Constant TRAINING_CATALOG.
+     */
+    String TRAINING_CATALOG = "workday-community/components/core/trainingcatalogpage";
+  }
 
-		/** The Constant RELEASE_NOTES. */
-		public static final String RELEASE_NOTES = "workday-community/components/core/releasenotespage";
+  /**
+   * The Class TagPropertyName.
+   */
+  interface TagPropertyName {
+    /**
+     * The Constant EVENT_FORMAT.
+     */
+    String EVENT_FORMAT = "eventFormat";
 
-		/** The Constant TRAINING_CATALOG. */
-		public static final String TRAINING_CATALOG = "workday-community/components/core/trainingcatalogpage";
-	}
+    /**
+     * The Constant TRAINING_FORMAT.
+     */
+    String TRAINING_FORMAT = "trainingFormat";
 
-	/**
-	 * The Class TagPropertyName.
-	 */
-	public final class TagPropertyName {
+    /**
+     * The Constant RELEASE_NOTES_CHNAGE_TYPE.
+     */
+    String RELEASE_NOTES_CHNAGE_TYPE = "releasNotesChangeType";
 
-		/**
-		 * Instantiates a new tag property name.
-		 */
-		private TagPropertyName() {
-			throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
-		}
+  }
 
-		/** The Constant EVENT_FORMAT. */
-		public static final String EVENT_FORMAT = "eventFormat";
+  /**
+   * The Class EventDetailsConstants.
+   */
+  interface EventDetailsConstants {
+    /**
+     * The Constant REQ_TIME_FORMAT.
+     */
+    String REQ_TIME_FORMAT = "HH:mm";
 
-		/** The Constant TRAINING_FORMAT. */
-		public static final String TRAINING_FORMAT = "trainingFormat";
+    /**
+     * The Constant REQ_DATE_FORMAT.
+     */
+    String REQ_DATE_FORMAT = "EEEE, MMM dd, YYYY";
 
-		/** The Constant RELEASE_NOTES_CHNAGE_TYPE. */
-		public static final String RELEASE_NOTES_CHNAGE_TYPE = "releasNotesChangeType";
+    /**
+     * The Constant DATE_TIME_FORMAT.
+     */
+    String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
-	}
+    /**
+     * The Constant DAYS_LABEL.
+     */
+    String DAYS_LABEL = "Days";
 
-	/**
-	 * The Class EventDetailsConstants.
-	 */
-	public final class EventDetailsConstants {
+    /**
+     * The Constant DAY_LABEL.
+     */
+    String DAY_LABEL = "Day";
 
-		/**
-		 * Instantiates a new event details constants.
-		 */
-		private EventDetailsConstants() {
-			throw new UnsupportedOperationException(UNSUPPORTED_EXCEPTION_MSG);
-		}
+    /**
+     * The Constant HOURS_LABEL.
+     */
+    String HOURS_LABEL = "Hours";
 
-		/** The Constant REQ_TIME_FORMAT. */
-		public static final String REQ_TIME_FORMAT = "HH:mm";
+    /**
+     * The Constant HOUR_LABEL.
+     */
+    String HOUR_LABEL = "Hour";
 
-		/** The Constant REQ_DATE_FORMAT. */
-		public static final String REQ_DATE_FORMAT = "EEEE, MMM dd, YYYY";
+    /**
+     * The Constant MINUTES_LABEL.
+     */
+    String MINUTES_LABEL = "Minutes";
 
-		/** The Constant DATE_TIME_FORMAT. */
-		public static final String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+    /**
+     * The Constant MINUTE_LABEL.
+     */
+    String MINUTE_LABEL = "Minute";
 
-		/** The Constant DAYS_LABEL. */
-		public static final String DAYS_LABEL = "Days";
+    /**
+     * The Constant MINUTES_IN_1_HOUR.
+     */
+    long MINUTES_IN_1_HOUR = 60;
 
-		/** The Constant DAY_LABEL. */
-		public static final String DAY_LABEL = "Day";
+    /**
+     * The Constant MINUTES_IN_8_HOURS.
+     */
+    long MINUTES_IN_8_HOURS = 480;
+    /**
+     * The Constant MINUTES_IN_24_HOURS.
+     */
+    long MINUTES_IN_24_HOURS = 1440;
+  }
+  /**
+   * The Class RESTAPIConstants.
+   */
+  interface RESTAPIConstants {
 
-		/** The Constant HOURS_LABEL. */
-		public static final String HOURS_LABEL = "Hours";
+    /**
+     * The constant AUTHORIZATION
+     */
+    String AUTHORIZATION = "Authorization";
 
-		/** The Constant HOUR_LABEL. */
-		public static final String HOUR_LABEL = "Hour";
+    /**
+     * The constant BEARER_TYPE
+     */
+    BearerToken BEARER_TOKEN = (token) -> String.format("Bearer %s", token);
 
-		/** The Constant MINUTES_LABEL. */
-		public static final String MINUTES_LABEL = "Minutes";
+    /**
+     * The constant X_API_KEY
+     */
+    String X_API_KEY = "X-api-key";
 
-		/** The Constant MINUTE_LABEL. */
-		public static final String MINUTE_LABEL = "Minute";
+    /**
+     * The constant CONTENT_TYPE
+     */
+    String CONTENT_TYPE = "Content-Type";
 
-		/** The Constant MINUTES_IN_1_HOUR. */
-		public static final long MINUTES_IN_1_HOUR = 60;
+    /**
+     * The constant APPLICATION_SLASH_JSON
+     */
+    String APPLICATION_SLASH_JSON = "application/json";
 
-		/** The Constant MINUTES_IN_8_HOURS. */
-		public static final long MINUTES_IN_8_HOURS = 480;
+    /**
+     * The constant TRACE_ID
+     */
+    String TRACE_ID = "X-Amzn-Trace-Id";
 
-		/** The Constant MINUTES_IN_24_HOURS. */
-		public static final long MINUTES_IN_24_HOURS = 1440;
-	}
+    /**
+     * The constant GET_API
+     */
+    String GET_API = "GET";
+  }
+
+  interface WRCConstants {
+    /**
+     * The profile source id.
+     */
+    String PROFILE_SOURCE_ID = "./profile/sourceId";
+
+    /**
+     * The defeault salesforce id for menu api.
+     */
+    String DEFAULT_SFID_MASTER = "masterdata";
+
+    /**
+     * The timeout for HTTP request (In milliseconds).
+     */
+    int HTTP_TIMEMOUT = 15000;
+  }
 }
