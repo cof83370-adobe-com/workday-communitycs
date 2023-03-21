@@ -6,10 +6,20 @@
     };
 
     function addExpandImageOption(config: any) {
-        const expandSpan = document.createElement('span');
-        expandSpan.textContent = 'Expand Image';
-        expandSpan.className = 'expand-media';
-        config.element.append(expandSpan);
+        const expandLink = document.createElement('a');
+        expandLink.textContent = 'Expand Image';
+        expandLink.className = 'expand-media';
+        const imageElements = config.element.children;
+        for (var i = 0; i < imageElements.length && imageElements[i]; i++) {
+            if(imageElements[i].className == `${image}__image`) {
+                if(imageElements[i].alt) {
+                    expandLink.ariaLabel = `expand image of ${imageElements[i].alt} to full size`;
+                } else {
+                    expandLink.ariaLabel = 'expand image to full size';
+                }
+            }
+        }
+        config.element.append(expandLink);
     }
 
     function expandImage(option) {
@@ -44,7 +54,6 @@
         imgModalContentItem.src = img.src;
 
         const spanClose = img.parentNode.getElementsByClassName(`${image}__close`)[0];
-        spanClose.textContent = 'X';
 
         spanClose.addEventListener('click', function(){
             imgModal.style.display = 'none';
@@ -55,7 +64,9 @@
     function onDocumentReady() {
         const elements = document.querySelectorAll(imageSelectors.imageElement);
         for (var i = 0; i < elements.length && elements[i]; i++) {
-            addExpandImageOption({ element: elements[i] });
+            if(elements[i].parentElement.classList.contains('enable-expand')) {
+                addExpandImageOption({ element: elements[i] });
+            }
         }
 
         window.onclick = e => {

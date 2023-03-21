@@ -32,6 +32,7 @@
                             <accordion
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="workday-community/components/core/accordion"
+                                collapseTitle="Collapse"
                                 headingElement="h2"
                                 singleExpansion="false">
                                 <container_title1
