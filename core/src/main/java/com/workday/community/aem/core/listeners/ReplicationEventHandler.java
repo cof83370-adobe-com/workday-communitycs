@@ -5,16 +5,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.sling.event.jobs.JobManager;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
+import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.day.cq.replication.ReplicationAction;
 import com.day.cq.replication.ReplicationActionType;
+import com.workday.community.aem.core.config.CoveoApiConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 
 /**
@@ -26,6 +30,7 @@ import com.workday.community.aem.core.constants.GlobalConstants;
     property = {
         EventConstants.EVENT_TOPIC + "=" + ReplicationAction.EVENT_TOPIC,
     })
+@Designate(ocd = CoveoApiConfig.class)
 public class ReplicationEventHandler implements EventHandler {
     
     /** The logger. */
@@ -34,21 +39,43 @@ public class ReplicationEventHandler implements EventHandler {
     /** The jobManager service. */
     @Reference
     JobManager jobManager;
+
+    /** The coveoApiConfig. */
+    private CoveoApiConfig coveoApiConfig;
+
+    /**
+	 * Activate the config.
+	 */
+    @Activate
+    @Modified
+    protected void activate(CoveoApiConfig coveoApiConfig) {
+        this.coveoApiConfig = coveoApiConfig;
+    }
+
+    /**
+	 * Get coveo indexing is enabled or not.
+	 *
+	 * @return Coveo indexing is enable or not.
+	 */
+    public boolean isCoveoEnabled() {
+        return coveoApiConfig.isEnabled();
+    }
     
     @Override
     public void handleEvent(Event event) {
-        try {
-            ReplicationAction action = getAction(event);
-            if (action.getType().equals(ReplicationActionType.ACTIVATE) ||
-                action.getType().equals(ReplicationActionType.DEACTIVATE) ||
-                action.getType().equals(ReplicationActionType.DELETE)
-            ) {
-                startCoveoJob(action);
+        if (isCoveoEnabled()) {
+            try {
+                ReplicationAction action = getAction(event);
+                if (action.getType().equals(ReplicationActionType.ACTIVATE) ||
+                    action.getType().equals(ReplicationActionType.DEACTIVATE) ||
+                    action.getType().equals(ReplicationActionType.DELETE)
+                ) {
+                    startCoveoJob(action);
+                }
+            } catch (Exception e) {
+                logger.error("\n Error occured while Publishing/Unpublishing page - {} " , e.getMessage());
             }
-        } catch (Exception e){
-            logger.error("\n Error occured while Publishing/Unpublishing page - {} " , e.getMessage());
-        }
-        
+        }    
     }
 
     /**
