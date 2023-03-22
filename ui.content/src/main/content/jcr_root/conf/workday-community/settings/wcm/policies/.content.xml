@@ -720,7 +720,7 @@
                     </policy_1678388306174>
                     <policy_856086685582958
                         jcr:primaryType="nt:unstructured"
-                        jcr:title="Book "
+                        jcr:title="Book"
                         sling:resourceType="wcm/core/components/policy/policy"
                         components="[/apps/workday-community/components/common/book,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
