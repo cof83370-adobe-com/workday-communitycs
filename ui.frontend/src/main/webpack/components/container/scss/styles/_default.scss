@@ -52,8 +52,6 @@
                 text-decoration: none;
                 padding: 0.5rem 0rem 0.5rem 0rem;
 
-
-
                 .cmp-toc__item-link {
                     color: $wdc-color-black-pepper-400;
                     font-weight: 700;
@@ -61,26 +59,23 @@
                     display: block;
                     width: 100%;
                     font-size: 18px;
-                    border-left: 5px solid #fff;
+                    border-left: 5px solid $wdc-color-french-vanilla-100;
 
                     &.active {
-                        background: #D7EAFc;
-                        color: #0875E1;
-                        border-left: 5px solid #0875E1;
+                        background: $wdc-color-blueberry-100;
+                        color: $wdc-color-blueberry-400;
+                        border-left: 5px solid $wdc-color-blueberry-400;
                         padding: 0.5rem 0rem 0.5rem 0rem;
                     }
-
 
                     &::before {
                         content: url('../resources/images/wd-icon-chevron-right.svg');
                         font-size: 23px;
                         vertical-align: middle;
-                        color: #000;
+                        color: $wdc-color-black-pepper-600;
                         margin-right: 5px;
 
                     }
-
-
 
                     &.active::before {
                         vertical-align: middle;
@@ -93,15 +88,13 @@
                 .cmp-toc__group-1 {
                     padding: 0;
                     margin: 0;
-                    padding-top: 1rem;
+                    padding-top: 0.25rem;
                     margin-left: 1.5rem;
 
                     .cmp-toc__item-1 {
                         list-style: none;
                         text-decoration: none;
                         padding: 0.5rem 0rem 0.5rem 0rem;
-
-
 
                         .cmp-toc__item-link-1 {
                             color: $wdc-color-black-pepper-400;
@@ -111,18 +104,14 @@
                             width: 100%;
                             font-size: 18px;
 
-
-
                             &::before {
                                 content: url('../resources/images/wd-icon-chevron-right-small.svg');
                                 font-size: 23px;
                                 vertical-align: middle;
-                                color: #000;
+                                color: $wdc-color-black-pepper-600;
                                 margin-right: 5px;
 
                             }
-
-
 
                             &.active::before {
                                 vertical-align: middle;
@@ -135,15 +124,13 @@
                         .cmp-toc__group-2 {
                             padding: 0;
                             margin: 0;
-                            padding-top: 1rem;
+                            padding-top: 0.25rem;
                             margin-left: 1.5rem;
 
                             .cmp-toc__item-2 {
                                 list-style: none;
                                 text-decoration: none;
                                 padding: 0.5rem 0rem 0.5rem 0rem;
-
-
 
                                 .cmp-toc__item-link-2 {
                                     color: $wdc-color-black-pepper-400;
@@ -153,18 +140,13 @@
                                     width: 100%;
                                     font-size: 18px;
 
-
-
                                     &::before {
                                         content: url('../resources/images/wd-icon-chevron-right-small.svg');
                                         font-size: 23px;
                                         vertical-align: middle;
-                                        color: #000;
+                                        color: $wdc-color-black-pepper-600;
                                         margin-right: 5px;
-
                                     }
-
-
 
                                     &.active::before {
                                         vertical-align: middle;
@@ -176,15 +158,19 @@
                             }
                         }
                     }
-        &__center {
-            .cmp-title {
-                margin: 0;
                 }
             }
-
-        &__right-rail {
-            padding-left: 29px;
         }
+    }
+
+    &__center {
+        .cmp-title {
+            margin: 0;
+        }
+    }
+
+    &__right-rail {
+        padding-left: 29px;
     }
 
     .hide {
