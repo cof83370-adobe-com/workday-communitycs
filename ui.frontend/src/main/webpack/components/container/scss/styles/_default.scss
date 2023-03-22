@@ -6,6 +6,10 @@
 
         &__center {
             margin-top: 32px;
+
+            .cmp-title {
+                margin: 0;
+            }
         }
 
         &__right-rail {
@@ -15,7 +19,7 @@
 
     @media (min-width: $screen-small) {
         &__page-content {
-            margin-top: 36px;
+            margin-top: 40px;
 
             .collapse {
                 .cmp-toc {
@@ -173,6 +177,14 @@
                     }
                 }
             }
+        &__center {
+            .cmp-title {
+                margin: 0;
+            }
+        }
+
+        &__right-rail {
+            padding-left: 29px;
         }
     }
 
