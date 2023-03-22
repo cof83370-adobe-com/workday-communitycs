@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
+import com.drew.lang.annotations.NotNull;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -17,7 +18,6 @@ import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
-import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
