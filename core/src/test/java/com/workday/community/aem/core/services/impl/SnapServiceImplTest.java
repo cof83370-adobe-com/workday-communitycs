@@ -3,6 +3,7 @@ package com.workday.community.aem.core.services.impl;
 import com.day.cq.dam.api.Asset;
 import com.day.cq.dam.api.Rendition;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
@@ -238,6 +239,29 @@ public class SnapServiceImplTest {
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new RuntimeException());
       assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
+    }
+  }
+
+  @Test
+  public void testGetUserContext() {
+    snapService.activate(snapConfig.get(1, 1));
+    try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      String testUserContext = "{\"email\":\"foo@workday.com\"}";
+
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(testUserContext);
+
+      JsonObject ret = this.snapService.getUserContext(DEFAULT_SFID_MASTER);
+      assertEquals(testUserContext, ret.toString());
+    }
+  }
+
+  @Test
+  public void testGetUserContextWithException() {
+    snapService.activate(snapConfig.get(1, 1));
+    try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new RuntimeException());
+      JsonObject ret = this.snapService.getUserContext(DEFAULT_SFID_MASTER);
+      assertNull(ret);
     }
   }
 

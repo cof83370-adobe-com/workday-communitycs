@@ -4,13 +4,16 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
+/**
+ * The Coveo search configuration class.
+ */
 @ObjectClassDefinition(
-    name = "Coveo Search api configuration",
-    description = "Parameters for coveo search."
+    name = "Coveo Search configuration",
+    description = "Parameters for Coveo search."
 )
-public interface SearchConfig {
+public @interface CoveoSearchConfig {
 
-  @AttributeDefinition(name = "Search token Api", description = "Search Token api")
+  @AttributeDefinition(name = "Search token Api endpoint", description = "Search Token api endpoint")
   String tokenApi();
 
   @AttributeDefinition(name = "Search token API Key", description = "Search API Key")
@@ -25,6 +28,9 @@ public interface SearchConfig {
   @AttributeDefinition(name = "Organization Id", description = "Organization Id")
   String orgId();
 
-  @AttributeDefinition(name = "Token Valid", description = "Time token is valid for (ms)",  type = AttributeType.INTEGER)
+  @AttributeDefinition(name = "Token Valid period", description = "Time token is valid for (ms)",  type = AttributeType.INTEGER)
   int tokenValidTime();
+
+  @AttributeDefinition(name = "Dev Mode", description = "Dev Mode",  type = AttributeType.BOOLEAN)
+  boolean devMode();
 }

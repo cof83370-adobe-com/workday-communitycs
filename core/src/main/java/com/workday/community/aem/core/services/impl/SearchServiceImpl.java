@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.workday.community.aem.core.config.SearchConfig;
-import com.workday.community.aem.core.services.SearchTokenService;
+import com.workday.community.aem.core.config.CoveoSearchConfig;
+import com.workday.community.aem.core.services.SearchService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -12,21 +12,21 @@ import org.osgi.service.metatype.annotations.Designate;
  * The Coveo search implementation class.
  */
 @Component(
-    service = SearchTokenService.class,
+    service = SearchService.class,
     property = {
         "service.pid=aem.core.services.search"
     },
     configurationPolicy = ConfigurationPolicy.OPTIONAL,
     immediate = true
 )
-@Designate(ocd = SearchConfig.class)
-public class SearchServiceImpl implements SearchTokenService {
+@Designate(ocd = CoveoSearchConfig.class)
+public class SearchServiceImpl implements SearchService {
 
-  private SearchConfig config;
+  private CoveoSearchConfig config;
 
   @Activate
   @Modified
-  public void activate(SearchConfig config) {
+  public void activate(CoveoSearchConfig config) {
      this.config = config;
   }
 
@@ -58,5 +58,10 @@ public class SearchServiceImpl implements SearchTokenService {
   @Override
   public int getTokenValidTime() {
     return config.tokenValidTime();
+  }
+
+  @Override
+  public boolean isDevMode() {
+    return config.devMode();
   }
 }

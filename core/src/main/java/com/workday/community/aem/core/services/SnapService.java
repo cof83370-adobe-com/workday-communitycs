@@ -13,13 +13,13 @@ import org.osgi.annotation.versioning.ProviderType;
 public interface SnapService {
   /**
    * @param config Service configuration object for snap logic service. This method is used for programmatically pass
-   *               a configuration to the service object during service activate stage.
+   * a configuration to the service object during service activate stage.
    */
   void activate(SnapConfig config);
 
   /**
    * @param resourceResolverFactory ResourceResolverFactory object. This method is used to explicitly pass the
-   *                                Resource resolver to the snap logic service
+   * Resource resolver to the snap logic service
    */
   void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory);
 

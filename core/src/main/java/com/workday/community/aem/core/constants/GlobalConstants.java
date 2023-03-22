@@ -173,6 +173,11 @@ public interface GlobalConstants {
      */
     String DEFAULT_SFID_MASTER = "masterdata";
 
+    /**
+     * The email name in the user context.
+     */
+    String EMAIL_NAME = "email";
+
   }
 
   interface HttpConstants {

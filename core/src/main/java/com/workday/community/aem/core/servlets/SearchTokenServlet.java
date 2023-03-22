@@ -4,25 +4,30 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.services.SearchTokenService;
+import com.workday.community.aem.core.services.SearchService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
-import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.jetbrains.annotations.NotNull;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -30,33 +35,65 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants.APPLICATION_SLASH_JSON;
+import static com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants.BEARER_TOKEN;
+import static com.workday.community.aem.core.constants.GlobalConstants.SnapConstants.EMAIL_NAME;
 
+/**
+ * The search Token servlet class.
+ */
 @Component(
-  service = Servlet.class,
-  immediate = true,
-  property = {
-    Constants.SERVICE_DESCRIPTION + "=Search Token Servlet" + "sling.servlet.paths=/bin/search",
-    "sling.servlet.methods=GET" })
+    service = Servlet.class,
+    immediate = true,
+    property = {
+        Constants.SERVICE_DESCRIPTION + "=Search Token Servlet",
+        "sling.servlet.methods=" + HttpConstants.METHOD_GET,
+        "sling.servlet.paths=/search/token",
+    }
+)
 public class SearchTokenServlet extends SlingAllMethodsServlet {
   private static final Logger logger = LoggerFactory.getLogger(SearchTokenServlet.class);
 
-  @Reference
-  transient SearchTokenService searchService;
+  @ObjectClassDefinition(name = "My Servlet Configuration")
+  public @interface Config {
+    @AttributeDefinition(name = "Object Mapper", description = "Inject an instance of ObjectMapper")
+    String object_mapper() default "";
+  }
 
   @Reference
-  transient SnapService snapService;
+  private transient SearchService searchService;
 
-  transient  ObjectMapper objectMapper = new ObjectMapper();
+  @Reference
+  private transient SnapService snapService;
 
-  transient Gson gson = new Gson();
+  @Reference
+  private transient HttpClient httpClient;
 
+  private transient ObjectMapper objectMapper = new ObjectMapper();
 
-  protected void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response) throws IOException {
+  private final transient Gson gson = new Gson();
+
+  /**
+   * Pass in ObjectMapper for the search service.
+   * @param objectMapper the pass-in ObjectMapper object.
+   */
+  public void setObjectMapper(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
+
+  /**
+   * Implementation of the servlet GET method
+   * @param request The HttpServletRequest object.
+   * @param response The HttpServletResponse object.
+   * @throws IOException if the method call fails with IOException.
+   */
+  @Override
+  protected void doGet(@NotNull SlingHttpServletRequest request,
+                       @NotNull SlingHttpServletResponse response) throws ServletException, IOException {
     logger.debug("start to receive request for fetching search token");
+
     String utfName = StandardCharsets.UTF_8.name();
     response.setContentType(APPLICATION_SLASH_JSON);
     response.setCharacterEncoding(utfName);
@@ -73,8 +110,8 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     int tokenExpiryTime = searchService.getTokenValidTime() / 1000;
 
     JsonObject userContext = snapService.getUserContext(sfId);
-    if (userContext.has("email")) {
-      String email =  userContext.get("email").getAsString();
+    if (userContext.has(EMAIL_NAME)) {
+      String email = userContext.get(EMAIL_NAME).getAsString();
       String searchToken = getToken(email, searchService.getSearchTokenAPIKey());
       String recommendationToken = getToken(email, searchService.getRecommendationAPIKey());
       String upcomingEventToken = getToken(email, searchService.getUpcomingEventAPIKey());
@@ -88,44 +125,34 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
       String coveoInfo = gson.toJson(userContext);
 
       Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
-      HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/");
-      response.setStatus(200);
+      HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", searchService.isDevMode());
+      response.setStatus(HttpStatus.SC_OK);
     }
-
-
-
   }
 
-  private String getToken(String email, String apiKey) {
-    ObjectMapper mapper = new ObjectMapper();
+  private String getToken(String email, String apiKey) throws IOException {
     HashMap<String, String> result;
 
-    try (CloseableHttpClient client = HttpClients.createDefault()) {
-      StringEntity entity = new StringEntity(getTokenPayload(email));
-      HttpPost request = new HttpPost(searchService.getSearchTokenAPI());
+    HttpPost request = new HttpPost(searchService.getSearchTokenAPI());
+    StringEntity entity = new StringEntity(getTokenPayload(email));
 
-      request.addHeader("authorization", "Bearer " + apiKey);
-      request.addHeader("accept", "application/json");
-      request.addHeader("Content-Type", "application/json");
-      request.setEntity(entity);
+    request.addHeader("authorization", BEARER_TOKEN.token(apiKey));
+    request.addHeader("accept", APPLICATION_SLASH_JSON);
+    request.addHeader("Content-Type", APPLICATION_SLASH_JSON);
+    request.setEntity(entity);
 
-      try (CloseableHttpResponse response = client.execute(request)) {
-        int status = response.getStatusLine().getStatusCode();
-        if (status == 200) {
-          result = mapper.readValue(response.getEntity().getContent(),
-              HashMap.class);
+    HttpResponse response = httpClient.execute(request);
+    int status = response.getStatusLine().getStatusCode();
+    if (status == HttpStatus.SC_OK) {
+      result = objectMapper.readValue(response.getEntity().getContent(),
+          HashMap.class);
 
-          return result.get("token");
-        }
-      }
-    } catch (Exception ex) {
-      logger.debug(ex.getMessage());
+      return result.get("token");
     }
 
-    logger.error("Fetching search Token fails");
+    logger.error("Retrieve token returns empty");
     return "";
   }
-
 
   public String getTokenPayload(String emailId) {
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -142,7 +169,8 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     userArray.add(jsonString);
     payloadMap.put("validFor", searchService.getTokenValidTime());
     payloadMap.put("userIds", userArray.toString());
-    JsonObject jsonObj = gson.fromJson (payloadMap.toString(), JsonObject.class);
+    JsonObject jsonObj = gson.fromJson(payloadMap.toString(), JsonObject.class);
+
     return jsonObj.toString();
   }
 }
