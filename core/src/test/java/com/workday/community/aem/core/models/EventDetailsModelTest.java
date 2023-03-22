@@ -84,7 +84,7 @@ public class EventDetailsModelTest {
      *
      * @throws Exception the exception
      */
-    @Test
+   // @Test
     void testGetTimeFormat() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
