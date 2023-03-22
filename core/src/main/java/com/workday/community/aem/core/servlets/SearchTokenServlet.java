@@ -154,7 +154,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     return "";
   }
 
-  public String getTokenPayload(String emailId) {
+  private String getTokenPayload(String emailId) {
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     HashMap<String, String> userMap = new HashMap<>();
