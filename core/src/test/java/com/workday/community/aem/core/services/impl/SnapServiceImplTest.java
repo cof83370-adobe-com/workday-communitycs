@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.WRCConstants.DEFAULT_SFID_MASTER;
+import static com.workday.community.aem.core.constants.GlobalConstants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -77,6 +77,11 @@ public class SnapServiceImplTest {
       }
 
       @Override
+      public String snapContextUrl() {
+        return "http://testContextendpoint";
+      }
+
+      @Override
       public String navApi() {
         return y == 0 ? null : y == 1 ? "/menu" : "/menu/";
       }
@@ -89,6 +94,11 @@ public class SnapServiceImplTest {
       @Override
       public String navApiToken() {
         return "testApiToken";
+      }
+
+      @Override
+      public String snapContextApiToken() {
+        return "snapContextApiTokenTest";
       }
 
       @Override
@@ -216,7 +226,7 @@ public class SnapServiceImplTest {
     String mockRet = objectMapper.writeValueAsString(retObj);
 
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      mocked.when(() -> RestApiUtil.doAvatarGet(anyString(), anyString(), anyString())).thenReturn(mockRet);
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(mockRet);
       ProfilePhoto photoObj = this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER);
       assertEquals(retObj.getBase64content(), photoObj.getBase64content());
     }
@@ -226,7 +236,7 @@ public class SnapServiceImplTest {
   public void testGetProfilePhotoWithException() {
     snapService.activate(snapConfig.get(1, 2));
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      mocked.when(() -> RestApiUtil.doAvatarGet(anyString(), anyString(), anyString())).thenThrow(new RuntimeException());
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new RuntimeException());
       assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
     }
   }

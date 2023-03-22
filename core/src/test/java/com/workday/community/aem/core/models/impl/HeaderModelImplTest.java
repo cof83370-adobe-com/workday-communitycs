@@ -17,7 +17,7 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.WRCConstants.DEFAULT_SFID_MASTER;
+import static com.workday.community.aem.core.constants.GlobalConstants.SnapConstants.DEFAULT_SFID_MASTER;
 
 /**
  * The Class HeaderModelImplTest.

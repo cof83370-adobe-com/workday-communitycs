@@ -12,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.WRCConstants.DEFAULT_SFID_MASTER;
+import static com.workday.community.aem.core.constants.GlobalConstants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;

@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.Session;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.WRCConstants.DEFAULT_SFID_MASTER;
+import static com.workday.community.aem.core.constants.GlobalConstants.SnapConstants.DEFAULT_SFID_MASTER;
 
 /**
  * The Utility class for all OURM related Utility APIs
@@ -37,8 +37,8 @@ public class OurmUtils {
           throw new RuntimeException("User is not in userManager");
         }
 
-        sfId = user.getProperty(GlobalConstants.WRCConstants.PROFILE_SOURCE_ID) != null ?
-            user.getProperty(GlobalConstants.WRCConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+        sfId = user.getProperty(GlobalConstants.SnapConstants.PROFILE_SOURCE_ID) != null ?
+            user.getProperty(GlobalConstants.SnapConstants.PROFILE_SOURCE_ID)[0].getString() : null;
       } catch (Exception e) {
         logger.error(String.format("Exception in init HeaderModelImpl method: %s", e.getMessage()));
       }

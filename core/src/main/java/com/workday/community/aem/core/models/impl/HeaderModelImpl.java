@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.WRCConstants.DEFAULT_SFID_MASTER;
+import static com.workday.community.aem.core.constants.GlobalConstants.SnapConstants.DEFAULT_SFID_MASTER;
 
 /**
  * The model implementation class for the common nav header menus.

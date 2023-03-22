@@ -15,7 +15,7 @@ public interface GlobalConstants {
   String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
 	/** The Constant COMMUNITY_COVEO_JOB. */
-	public static final String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
+	String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
 
 	/**
    * The Class PageResourceType.
@@ -162,7 +162,7 @@ public interface GlobalConstants {
     String GET_API = "GET";
   }
 
-  interface WRCConstants {
+  interface SnapConstants {
     /**
      * The profile source id.
      */
@@ -173,9 +173,19 @@ public interface GlobalConstants {
      */
     String DEFAULT_SFID_MASTER = "masterdata";
 
+  }
+
+  interface HttpConstants {
+
     /**
      * The timeout for HTTP request (In milliseconds).
      */
     int HTTP_TIMEMOUT = 15000;
+
+    /**
+     * Coveo cookie name in the http request.
+     */
+    String COVEO_COOKIE_NAME = "coveo-info";
+
   }
 }

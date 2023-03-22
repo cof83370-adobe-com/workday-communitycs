@@ -21,7 +21,7 @@ import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.constants.GlobalConstants;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.GlobalConstants.WRCConstants.HTTP_TIMEMOUT;
+import static com.workday.community.aem.core.constants.GlobalConstants.HttpConstants.HTTP_TIMEMOUT;
 
 /**
  * The Class RESTAPIUtil.
@@ -59,7 +59,7 @@ public class RestApiUtil {
    * @return the Json response as String from snap logic API call.
    * @throws IOException IOException.
    */
-  public static String doAvatarGet(String url, String authToken, String xapiKey) throws IOException {
+  public static String doSnapGet(String url, String authToken, String xapiKey) throws IOException {
     logger.debug("RestAPIUtil: Calling REST requestSnapJsonResponse()...= {}", url);
     APIRequest apiRequestInfo = new APIRequest();
 
@@ -70,7 +70,7 @@ public class RestApiUtil {
     return executeGetRequest(apiRequestInfo).getResponseBody();
   }
 
-  private static APIResponse executeGetRequest(APIRequest req) throws IOException {
+  private static APIResponse executeGetRequest(APIRequest req) {
     APIResponse apiresponse = new APIResponse();
 
     logger.debug("RESTAPIUtil: Calling REST executeGetRequest().");
