@@ -6,7 +6,7 @@
   "createUser":true,
   "defaultRedirectUrl":"/content/workday-community/en-us.html",
   "userIDAttribute":"uid",
-  "idpIdentifier":"http://www.okta.com/exk1lbix0amhXXIuR0h8",
+  "idpIdentifier":"http://www.okta.com/exk1lcnb9mvRSd61g0h8",
   "assertionConsumerServiceURL":"",
   "defaultGroups":[
     "everyone"
