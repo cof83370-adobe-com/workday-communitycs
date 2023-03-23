@@ -11,3 +11,11 @@ $include "./default_filters.any"
 
 # Allow manifest.webmanifest files located in the content
 /0102 { /type "allow" /extension "webmanifest" /path "/content/*/manifest" }
+
+#Enable SAML
+/0103 { /type "allow" /method "POST" /url "/content/workday-community/saml_login" }
+/0104 { /type "allow" /method "GET" /path "/bin/user/logout*" }
+/0105 { /type "allow" /method "GET" /path "/bin/user/session*" }
+
+#Enable DAM Access
+/0120 { /type "allow" /method "GET" /path "/content/dam/workday-community/*" }
