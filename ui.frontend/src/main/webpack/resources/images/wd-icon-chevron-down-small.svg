@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="wd-icon-chevron-down-small wd-icon" focusable="false" role="presentation" viewBox="0 0 24 24">
+    <g fill-rule="evenodd" class="wd-icon-container">
+        <path d="M12 13.703l4.61-4.575a.44.44 0 0 1 .62 0l.64.635a.44.44 0 0 1 .002.622l-.002.002-5.523 5.482a.44.44 0 0 1-.347.127.44.44 0 0 1-.347-.127L6.13 10.387a.44.44 0 0 1-.002-.622l.002-.002.64-.635a.44.44 0 0 1 .62 0L12 13.703z" class="wd-icon-fill"/>
+    </g>
+</svg>
