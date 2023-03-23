@@ -39,9 +39,9 @@ import java.util.HashMap;
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.SnapConstants.EMAIL_NAME;
-import static com.workday.community.aem.core.constants.SnapConstants.SEARCH_EMAIL_SECURITY_PROVIDER;
-import static com.workday.community.aem.core.constants.SnapConstants.SEARCH_TOKEN_USER_TYPE;
+import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
+import static com.workday.community.aem.core.constants.SearchConstants.SEARCH_EMAIL_SECURITY_PROVIDER;
+import static com.workday.community.aem.core.constants.SearchConstants.SEARCH_TOKEN_USER_TYPE;
 
 /**
  * The search Token servlet class.

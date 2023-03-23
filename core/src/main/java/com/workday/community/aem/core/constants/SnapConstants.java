@@ -11,13 +11,4 @@ public interface SnapConstants {
    */
   String DEFAULT_SFID_MASTER = "masterdata";
 
-  /**
-   * The email name in the user context.
-   */
-  String EMAIL_NAME = "email";
-
-  String SEARCH_EMAIL_SECURITY_PROVIDER = "Email Security Provider";
-
-  String SEARCH_TOKEN_USER_TYPE = "user";
-
 }
