@@ -1,0 +1,24 @@
+{
+  "allow.hosts.regexp":[
+    ""
+  ],
+  "allow.hosts":[
+    "dev-34324671.okta.com",
+    "preview.workdayit5.com",
+    "publish-p35953-e148708.adobeaemcloud.com",
+    "publish-p35953-e178197.adobeaemcloud.com",
+    "dev-resourcecenter.workday.com",
+    "qa-resourcecenter.workday.com"
+  ],
+  "filter.methods":[
+    "POST",
+    "PUT",
+    "DELETE",
+    "COPY",
+    "MOVE"
+  ],
+  "exclude.agents.regexp":[
+    ""
+  ],
+  "allow.empty":true
+}
