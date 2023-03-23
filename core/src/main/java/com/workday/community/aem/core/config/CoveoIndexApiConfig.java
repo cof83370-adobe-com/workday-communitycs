@@ -8,7 +8,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
     name = "Coveo api configuration",
     description = "Parameters for coveo api."
 )
-public @interface CoveoApiConfig {
+public @interface CoveoIndexApiConfig {
 
     @AttributeDefinition (
         name = "Enabled",
@@ -22,7 +22,7 @@ public @interface CoveoApiConfig {
         description = "Coveo api key.",
         type = AttributeType.STRING
     )
-    String apiKey();
+    String apiKey() default "xxc65c7915-1e84-4137-a913-948dd927c424";
 
     @AttributeDefinition (
         name = "Push Api Uri",
@@ -43,12 +43,12 @@ public @interface CoveoApiConfig {
         description = "Coveo organization id.",
         type = AttributeType.STRING
     )
-    String organizationId();
+    String organizationId() default "workdayp3sqtwnv";
 
     @AttributeDefinition (
         name = "Source Id",
         description = "Coveo source id.",
         type = AttributeType.STRING
     )
-    String sourceId();
+    String sourceId() default "workdayp3sqtwnv-uto34xdscujxnir5wcbi2ncare";
 }

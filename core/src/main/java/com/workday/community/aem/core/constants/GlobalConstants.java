@@ -126,6 +126,11 @@ public interface GlobalConstants {
    */
   interface RESTAPIConstants {
 
+	/**
+     * The constant ACCEPT
+     */
+    String ACCEPT = "Accept";
+
     /**
      * The constant AUTHORIZATION
      */

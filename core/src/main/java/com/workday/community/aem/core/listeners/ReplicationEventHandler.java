@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import com.day.cq.replication.ReplicationAction;
 import com.day.cq.replication.ReplicationActionType;
-import com.workday.community.aem.core.config.CoveoApiConfig;
+import com.workday.community.aem.core.config.CoveoIndexApiConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 
 /**
@@ -30,7 +30,7 @@ import com.workday.community.aem.core.constants.GlobalConstants;
     property = {
         EventConstants.EVENT_TOPIC + "=" + ReplicationAction.EVENT_TOPIC,
     })
-@Designate(ocd = CoveoApiConfig.class)
+@Designate(ocd = CoveoIndexApiConfig.class)
 public class ReplicationEventHandler implements EventHandler {
     
     /** The logger. */
@@ -41,15 +41,15 @@ public class ReplicationEventHandler implements EventHandler {
     JobManager jobManager;
 
     /** The coveoApiConfig. */
-    private CoveoApiConfig coveoApiConfig;
+    private CoveoIndexApiConfig coveoIndexApiConfig;
 
     /**
 	 * Activate the config.
 	 */
     @Activate
     @Modified
-    protected void activate(CoveoApiConfig coveoApiConfig) {
-        this.coveoApiConfig = coveoApiConfig;
+    protected void activate(CoveoIndexApiConfig coveoIndexApiConfig) {
+        this.coveoIndexApiConfig = coveoIndexApiConfig;
     }
 
     /**
@@ -58,7 +58,7 @@ public class ReplicationEventHandler implements EventHandler {
 	 * @return Coveo indexing is enabled or not.
 	 */
     public boolean isCoveoEnabled() {
-        return coveoApiConfig.isEnabled();
+        return coveoIndexApiConfig.isEnabled();
     }
     
     @Override
