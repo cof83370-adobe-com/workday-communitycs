@@ -13,7 +13,7 @@
   ],
   "storeSAMLResponse":false,
   "signatureMethod":"http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
-  "idpCertAlias":"certalias___1679517629889",
+  "idpCertAlias":"admin#1679604966356",
   "addGroupMemberships":true,
   "path":[
     "/content/workday-community"
