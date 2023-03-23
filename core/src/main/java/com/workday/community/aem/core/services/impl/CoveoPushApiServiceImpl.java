@@ -8,7 +8,6 @@ import java.util.List;
 import org.apache.commons.collections4.ListUtils;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
@@ -31,7 +30,6 @@ import static com.workday.community.aem.core.constants.GlobalConstants.RESTAPICo
  */
 @Component(
     service = CoveoPushApiService.class,
-    //configurationPolicy = ConfigurationPolicy.REQUIRE,
     immediate = true
 )
 @Designate(ocd = CoveoIndexApiConfig.class)

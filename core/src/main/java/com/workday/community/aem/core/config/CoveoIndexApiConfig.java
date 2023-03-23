@@ -22,7 +22,7 @@ public @interface CoveoIndexApiConfig {
         description = "Coveo api key.",
         type = AttributeType.STRING
     )
-    String apiKey() default "xxc65c7915-1e84-4137-a913-948dd927c424";
+    String apiKey();
 
     @AttributeDefinition (
         name = "Push Api Uri",
@@ -43,12 +43,12 @@ public @interface CoveoIndexApiConfig {
         description = "Coveo organization id.",
         type = AttributeType.STRING
     )
-    String organizationId() default "workdayp3sqtwnv";
+    String organizationId();
 
     @AttributeDefinition (
         name = "Source Id",
         description = "Coveo source id.",
         type = AttributeType.STRING
     )
-    String sourceId() default "workdayp3sqtwnv-uto34xdscujxnir5wcbi2ncare";
+    String sourceId();
 }
