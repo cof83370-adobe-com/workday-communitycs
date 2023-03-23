@@ -29,8 +29,8 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.HttpConstants.COVEO_COOKIE_NAME;
-import static com.workday.community.aem.core.constants.GlobalConstants.SnapConstants.DEFAULT_SFID_MASTER;
+import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
+import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;

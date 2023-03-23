@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.utils;
 
-import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.constants.SnapConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.Session;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.SnapConstants.DEFAULT_SFID_MASTER;
+import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 
 /**
  * The Utility class for all OURM related Utility APIs
@@ -37,10 +37,10 @@ public class OurmUtils {
           throw new RuntimeException("User is not in userManager");
         }
 
-        sfId = user.getProperty(GlobalConstants.SnapConstants.PROFILE_SOURCE_ID) != null ?
-            user.getProperty(GlobalConstants.SnapConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+        sfId = user.getProperty(SnapConstants.PROFILE_SOURCE_ID) != null ?
+            user.getProperty(SnapConstants.PROFILE_SOURCE_ID)[0].getString() : null;
       } catch (Exception e) {
-        logger.error(String.format("Exception in init HeaderModelImpl method: %s", e.getMessage()));
+        logger.error(String.format("getSalesForceId fails with error: %s", e.getMessage()));
       }
     }
 

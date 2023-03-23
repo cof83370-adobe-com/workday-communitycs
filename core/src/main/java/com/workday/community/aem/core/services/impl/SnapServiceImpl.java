@@ -108,6 +108,7 @@ public class SnapServiceImpl implements SnapService {
     return this.getMergedHeaderMenu(null);
   }
 
+  @Override
   public JsonObject getUserContext(String sfId) {
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
@@ -118,7 +119,7 @@ public class SnapServiceImpl implements SnapService {
       logger.error("Error in getUserContext method :: {}", e.getMessage());
     }
 
-    logger.error("Email is not fetched from the snap context API call without error, please contact admin.");
+    logger.error("User context is not fetched from the snap context API call without error, please contact admin.");
 
     return null;
   }

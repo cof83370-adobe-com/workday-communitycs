@@ -36,10 +36,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.HttpConstants.COVEO_COOKIE_NAME;
-import static com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants.APPLICATION_SLASH_JSON;
-import static com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.GlobalConstants.SnapConstants.EMAIL_NAME;
+import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
+import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
+import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static com.workday.community.aem.core.constants.SnapConstants.EMAIL_NAME;
+import static com.workday.community.aem.core.constants.SnapConstants.SEARCH_EMAIL_SECURITY_PROVIDER;
+import static com.workday.community.aem.core.constants.SnapConstants.SEARCH_TOKEN_USER_TYPE;
 
 /**
  * The search Token servlet class.
@@ -154,15 +156,15 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     return "";
   }
 
-  private String getTokenPayload(String emailId) {
+  private String getTokenPayload(String email) {
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     HashMap<String, String> userMap = new HashMap<>();
     HashMap<String, Object> payloadMap = new HashMap<>();
 
-    userMap.put("name", emailId);
-    userMap.put("provider", "Email Security Provider");
-    userMap.put("type", "User");
+    userMap.put("name", email);
+    userMap.put("provider", SEARCH_EMAIL_SECURITY_PROVIDER);
+    userMap.put("type", SEARCH_TOKEN_USER_TYPE);
 
     String jsonString = gson.toJson(userMap);
     ArrayList<String> userArray = new ArrayList<>();
