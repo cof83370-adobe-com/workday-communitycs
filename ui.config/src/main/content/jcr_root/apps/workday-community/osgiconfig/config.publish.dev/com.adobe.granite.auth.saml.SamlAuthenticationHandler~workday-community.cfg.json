@@ -25,7 +25,7 @@
   ],
   "clockTolerance:Integer":60,
   "groupMembershipAttribute":"groupMembership",
-  "idpUrl":"https://preview.workdayit5.com/app/workday-ciam-preview_communityaemdev_1/exk1lcnb9mvRSd61g0h8/sso/saml",
+  "idpUrl":"https://preview.workdayit5.com/app/workday-ciam-preview_communityaemdev_1/exk1lcnb9mvRSd61g0h8",
   "logoutUrl":"",
   "serviceProviderEntityId":"https://publish-p85402-e766370.adobeaemcloud.com/",
   "handleLogout":false,
