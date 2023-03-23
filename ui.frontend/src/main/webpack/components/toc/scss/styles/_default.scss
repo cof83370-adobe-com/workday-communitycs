@@ -1,16 +1,10 @@
 .cmp-toc {
-    &__heading-title {
-        font-size: 24px;
-        line-height: 30px;
-        display: inline;
-    }
-
     &__heading-icon {
         @media (min-width: $screen-small) {
             float: right;
             content: url('../resources/images/toggle.svg');
             padding-right: 15px;
-            margin-top: 10px;
+            padding-top: 4px;
         }
     }
 
@@ -18,26 +12,7 @@
         @media (max-width: $screen-small) {
             border: 1px solid $wdc-color-licorice-200;
             padding: 18px;
-            position: absolute;
-            width: 100%;
-            left: 0;
-            top: 15px;
-            background: #fff;
-            z-index: 999;
-            margin-top: 0;
-            height: 100%;
-        }
-
-        .cmp-toc__item {
-            .cmp-toc__group {
-                padding-left: 20px;
-
-                .cmp-toc__item {
-                    .cmp-toc__item-link {
-                        font-weight: normal;
-                    }
-                }
-            }
+            margin-top: 24px;
         }
     }
 
