@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
 import com.workday.community.aem.core.config.CoveoSearchConfig;
-import com.workday.community.aem.core.services.SearchService;
+import com.workday.community.aem.core.services.SearchApiConfigService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,9 +13,9 @@ import java.lang.annotation.Annotation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
-public class SearchServiceImplTest {
+public class SearchApiConfigServiceImplTest {
 
-  private final SearchService searchService = new SearchServiceImpl();
+  private final SearchApiConfigService searchApiConfigService = new SearchApiConfigServiceImpl();
   private final CoveoSearchConfig testConfig = new CoveoSearchConfig() {
 
     @Override
@@ -61,17 +61,17 @@ public class SearchServiceImplTest {
 
   @BeforeEach
   public void setup() {
-    ((SearchServiceImpl) searchService).activate(testConfig);
+    ((SearchApiConfigServiceImpl) searchApiConfigService).activate(testConfig);
   }
 
   @Test
   public void testAllApis() {
-    assertEquals(searchService.getSearchTokenAPI(), testConfig.tokenApi());
-    assertEquals(searchService.getRecommendationAPIKey(), testConfig.recommendationApiKey());
-    assertEquals(searchService.getTokenValidTime(), testConfig.tokenValidTime());
-    assertEquals(searchService.getSearchTokenAPIKey(), testConfig.tokenApiKey());
-    assertEquals(searchService.getUpcomingEventAPIKey(), testConfig.upcomingEventApiKey());
-    assertEquals(searchService.getOrgId(), testConfig.orgId());
-    assertEquals(searchService.isDevMode(), testConfig.devMode());
+    assertEquals(searchApiConfigService.getSearchTokenAPI(), testConfig.tokenApi());
+    assertEquals(searchApiConfigService.getRecommendationAPIKey(), testConfig.recommendationApiKey());
+    assertEquals(searchApiConfigService.getTokenValidTime(), testConfig.tokenValidTime());
+    assertEquals(searchApiConfigService.getSearchTokenAPIKey(), testConfig.tokenApiKey());
+    assertEquals(searchApiConfigService.getUpcomingEventAPIKey(), testConfig.upcomingEventApiKey());
+    assertEquals(searchApiConfigService.getOrgId(), testConfig.orgId());
+    assertEquals(searchApiConfigService.isDevMode(), testConfig.devMode());
   }
 }

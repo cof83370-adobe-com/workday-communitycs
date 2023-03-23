@@ -13,7 +13,7 @@ public interface RestApiConstants {
   String AUTHORIZATION = "Authorization";
 
   /**
-   * The constant BEARER_TYPE
+   * The constant BEARER_TOKEN
    */
   BearerToken BEARER_TOKEN = (token) -> String.format("Bearer %s", token);
 

@@ -3,7 +3,7 @@ package com.workday.community.aem.core.servlets;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.services.SearchService;
+import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 public class SearchTokenServletTest {
 
   @Mock
-  SearchService searchService;
+  SearchApiConfigService searchApiConfigService;
 
   @Mock
   SnapService snapService;
@@ -89,12 +89,12 @@ public class SearchTokenServletTest {
     lenient().when(response.getWriter()).thenReturn(pr);
 
     // Mock return from searchService
-    when(searchService.getTokenValidTime()).thenReturn(12000);
-    when(searchService.getSearchTokenAPIKey()).thenReturn("mockSearchToken");
-    when(searchService.getUpcomingEventAPIKey()).thenReturn("mockUpcomingEventAPIKey");
-    when(searchService.getRecommendationAPIKey()).thenReturn("mockRecommendationAPIkey");
-    when(searchService.getOrgId()).thenReturn("mockOrgId");
-    when(searchService.getSearchTokenAPI()).thenReturn("http://coveo/token/api");
+    when(searchApiConfigService.getTokenValidTime()).thenReturn(12000);
+    when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn("mockSearchToken");
+    when(searchApiConfigService.getUpcomingEventAPIKey()).thenReturn("mockUpcomingEventAPIKey");
+    when(searchApiConfigService.getRecommendationAPIKey()).thenReturn("mockRecommendationAPIkey");
+    when(searchApiConfigService.getOrgId()).thenReturn("mockOrgId");
+    when(searchApiConfigService.getSearchTokenAPI()).thenReturn("http://coveo/token/api");
 
     JsonObject testUserContext = gson.fromJson("{\"email\":\"foo@workday.com\"}", JsonObject.class);
     when(snapService.getUserContext(anyString())).thenReturn(testUserContext);

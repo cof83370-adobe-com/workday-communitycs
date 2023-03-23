@@ -3,7 +3,7 @@ package com.workday.community.aem.core.services;
 /**
  * The Coveo search service definition class.
  */
-public interface SearchService {
+public interface SearchApiConfigService {
 
   /**
    * Get the Organization id.

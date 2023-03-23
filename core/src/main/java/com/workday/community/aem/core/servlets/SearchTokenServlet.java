@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.services.SearchService;
+import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
@@ -38,7 +38,9 @@ import java.util.HashMap;
 
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
+import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static com.workday.community.aem.core.constants.SearchConstants.SEARCH_EMAIL_SECURITY_PROVIDER;
 import static com.workday.community.aem.core.constants.SearchConstants.SEARCH_TOKEN_USER_TYPE;
@@ -65,7 +67,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   }
 
   @Reference
-  private transient SearchService searchService;
+  private transient SearchApiConfigService searchApiConfigService;
 
   @Reference
   private transient SnapService snapService;
@@ -109,25 +111,25 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     }
 
     String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
-    int tokenExpiryTime = searchService.getTokenValidTime() / 1000;
+    int tokenExpiryTime = searchApiConfigService.getTokenValidTime() / 1000;
 
     JsonObject userContext = snapService.getUserContext(sfId);
     if (userContext.has(EMAIL_NAME)) {
       String email = userContext.get(EMAIL_NAME).getAsString();
-      String searchToken = getToken(email, searchService.getSearchTokenAPIKey());
-      String recommendationToken = getToken(email, searchService.getRecommendationAPIKey());
-      String upcomingEventToken = getToken(email, searchService.getUpcomingEventAPIKey());
+      String searchToken = getToken(email, searchApiConfigService.getSearchTokenAPIKey());
+      String recommendationToken = getToken(email, searchApiConfigService.getRecommendationAPIKey());
+      String upcomingEventToken = getToken(email, searchApiConfigService.getUpcomingEventAPIKey());
 
       userContext.addProperty("searchToken", searchToken);
       userContext.addProperty("recommendationToken", recommendationToken);
       userContext.addProperty("upcomingEventToken", upcomingEventToken);
-      userContext.addProperty("orgId", searchService.getOrgId());
+      userContext.addProperty("orgId", searchApiConfigService.getOrgId());
       userContext.remove("contactId");
       userContext.remove("email");
       String coveoInfo = gson.toJson(userContext);
 
       Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
-      HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", searchService.isDevMode());
+      HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", searchApiConfigService.isDevMode());
       response.setStatus(HttpStatus.SC_OK);
     }
   }
@@ -135,12 +137,12 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   private String getToken(String email, String apiKey) throws IOException {
     HashMap<String, String> result;
 
-    HttpPost request = new HttpPost(searchService.getSearchTokenAPI());
+    HttpPost request = new HttpPost(searchApiConfigService.getSearchTokenAPI());
     StringEntity entity = new StringEntity(getTokenPayload(email));
 
-    request.addHeader("authorization", BEARER_TOKEN.token(apiKey));
-    request.addHeader("accept", APPLICATION_SLASH_JSON);
-    request.addHeader("Content-Type", APPLICATION_SLASH_JSON);
+    request.addHeader(AUTHORIZATION, BEARER_TOKEN.token(apiKey));
+    request.addHeader(HttpConstants.HEADER_ACCEPT, APPLICATION_SLASH_JSON);
+    request.addHeader(CONTENT_TYPE, APPLICATION_SLASH_JSON);
     request.setEntity(entity);
 
     HttpResponse response = httpClient.execute(request);
@@ -169,7 +171,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     String jsonString = gson.toJson(userMap);
     ArrayList<String> userArray = new ArrayList<>();
     userArray.add(jsonString);
-    payloadMap.put("validFor", searchService.getTokenValidTime());
+    payloadMap.put("validFor", searchApiConfigService.getTokenValidTime());
     payloadMap.put("userIds", userArray.toString());
     JsonObject jsonObj = gson.fromJson(payloadMap.toString(), JsonObject.class);
 

@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
 import com.workday.community.aem.core.config.CoveoSearchConfig;
-import com.workday.community.aem.core.services.SearchService;
+import com.workday.community.aem.core.services.SearchApiConfigService;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -12,7 +12,7 @@ import org.osgi.service.metatype.annotations.Designate;
  * The Coveo search implementation class.
  */
 @Component(
-    service = SearchService.class,
+    service = SearchApiConfigService.class,
     property = {
         "service.pid=aem.core.services.search"
     },
@@ -20,7 +20,7 @@ import org.osgi.service.metatype.annotations.Designate;
     immediate = true
 )
 @Designate(ocd = CoveoSearchConfig.class)
-public class SearchServiceImpl implements SearchService {
+public class SearchApiConfigServiceImpl implements SearchApiConfigService {
 
   private CoveoSearchConfig config;
 
