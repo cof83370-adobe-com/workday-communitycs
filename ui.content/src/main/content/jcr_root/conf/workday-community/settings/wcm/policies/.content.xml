@@ -434,7 +434,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools - Page Title &amp; Metadata"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        components="[/apps/workday-community/components/common/metadata,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_115140473724791>
@@ -462,7 +462,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Page Title &amp; Metadata"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        components="[/apps/workday-community/components/common/metadata,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_135140973724596>
@@ -510,7 +510,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ - Page Title &amp; Metadata"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        components="[/apps/workday-community/components/common/metadata,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676931538182>
@@ -569,7 +569,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Page Title &amp; Metadata"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        components="[/apps/workday-community/components/common/metadata,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678150225585>
