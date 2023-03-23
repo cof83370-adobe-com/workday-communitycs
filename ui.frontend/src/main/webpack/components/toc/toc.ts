@@ -19,9 +19,8 @@
     }
 
     function leftrailpanellevel1() {
-        console.log('working');
         var acc = document.getElementsByClassName('cmp-toc__item-link');
-        var panel = document.getElementsByClassName('cmp-toc__item-link_panel');
+        var panel = document.getElementsByClassName('cmp-toc__group-1');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
                 var setClasses = !this.classList.contains('active');
@@ -42,8 +41,8 @@
     }
 
     function leftrailpanellevel2() {
-        var acc = document.getElementsByClassName('cmp-toc__item-link_1');
-        var panel = document.getElementsByClassName('cmp-toc__item-link_panel-1');
+        var acc = document.getElementsByClassName('cmp-toc__item-link-1');
+        var panel = document.getElementsByClassName('cmp-toc__group-2');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
                 var setClasses = !this.classList.contains('active');
