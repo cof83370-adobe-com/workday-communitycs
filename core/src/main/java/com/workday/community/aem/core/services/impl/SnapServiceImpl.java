@@ -55,6 +55,8 @@ public class SnapServiceImpl implements SnapService {
 
   private ObjectMapper objectMapper;
 
+  private final Gson gson = new Gson();
+
   @Activate
   @Modified
   @Override
@@ -93,7 +95,6 @@ public class SnapServiceImpl implements SnapService {
       }
 
       // Gson object for json handling.
-      Gson gson = new Gson();
       JsonObject navResponseObj = gson.fromJson(snapRes.getResponseBody(), JsonObject.class);
       // Need to make merge with beta support.
       if (config.beta()) {
@@ -108,6 +109,22 @@ public class SnapServiceImpl implements SnapService {
   }
 
   @Override
+  public JsonObject getUserContext(String sfId) {
+    try {
+      logger.debug("SnapImpl: Calling SNAP getUserContext()...");
+      String url = String.format(config.snapUrl()+ config.snapContextUrl(), sfId);
+      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.sfdcApiKey());
+      return gson.fromJson(jsonResponse, JsonObject.class);
+    } catch (Exception e) {
+      logger.error("Error in getUserContext method :: {}", e.getMessage());
+    }
+
+    logger.error("User context is not fetched from the snap context API call without error, please contact admin.");
+
+    return null;
+  }
+
+  @Override
   public ProfilePhoto getProfilePhoto(String userId) {
     String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
     if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(avatarUrl)) {
@@ -119,7 +136,7 @@ public class SnapServiceImpl implements SnapService {
 
     try {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto()..." + config.snapUrl() + config.sfdcUserAvatarUrl());
-      String jsonResponse = RestApiUtil.doAvatarGet(url, config.sfdcUserAvatarToken(), config.sfdcApiKey());
+      String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcApiKey());
       if (jsonResponse != null) {
         return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
       }
