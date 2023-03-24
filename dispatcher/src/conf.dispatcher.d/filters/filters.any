@@ -13,9 +13,11 @@ $include "./default_filters.any"
 /0102 { /type "allow" /extension "webmanifest" /path "/content/*/manifest" }
 
 #Enable SAML
-/0103 { /type "allow" /method "POST" /url "/content/workday-community/saml_login" }
-/0104 { /type "allow" /method "GET" /path "/bin/user/logout*" }
-/0105 { /type "allow" /method "GET" /path "/bin/user/session*" }
+/0203 { /type "allow" /method "POST" /url "/content/workday-community/saml_login" }
+/0204 { /type "allow" /method "GET" /path "/bin/user/logout*" }
+/0205 { /type "allow" /method "GET" /path "/bin/user/session*" }
 
 #Enable DAM Access
-/0120 { /type "allow" /method "GET" /path "/content/dam/workday-community/*" }
+/0220 { /type "allow" /method "GET" /path "/content/dam/workday-community/*" }
+
+/0999 { /type "allow" /url " * /libs/granite/csrf/token.json*" }
