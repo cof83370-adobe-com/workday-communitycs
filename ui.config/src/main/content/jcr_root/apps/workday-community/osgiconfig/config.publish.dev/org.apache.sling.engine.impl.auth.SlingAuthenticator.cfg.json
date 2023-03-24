@@ -1,0 +1,17 @@
+{
+  "auth.annonymous":true,
+  "auth.sudo.cookie":"sling.sudo",
+  "auth.http.realm":"Sling (Development)",
+  "sling.auth.requirements":[
+    "+/",
+    "+/content/workday-community",
+    "+/libs/granite/oauth/content/authorization",
+    "+/bin"
+  ],
+  "sling.auth.anonymous.user":"",
+  "auth.uri.suffix":[
+    "/j_security_check"
+  ],
+  "auth.http":"preemptive",
+  "auth.sudo.parameter":"sudo"
+}

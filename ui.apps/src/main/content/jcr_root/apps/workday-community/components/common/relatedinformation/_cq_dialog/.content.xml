@@ -2,8 +2,7 @@
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:primaryType="nt:unstructured"
     jcr:title="Related Information"
-    sling:resourceType="cq/gui/components/authoring/dialog"
-    extraClientlibs="[]">
+    sling:resourceType="cq/gui/components/authoring/dialog">
     <content
         granite:class="cmp-list__editor"
         jcr:primaryType="nt:unstructured"
@@ -67,12 +66,13 @@
                                                     showhidetargetvalue="static"/>
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <urllink
-                                                        granite:class="granite-ui-validation-multifield-max-items"
                                                         jcr:primaryType="nt:unstructured"
                                                         sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                                                         composite="{Boolean}true"
-                                                        fieldLabel="Links"
-                                                        validation="max-items-4">
+                                                        fieldLabel="Links">
+                                                        <granite:data
+                                                            jcr:primaryType="nt:unstructured"
+                                                            max-item="4"/>
                                                         <field
                                                             jcr:primaryType="nt:unstructured"
                                                             sling:resourceType="granite/ui/components/coral/foundation/container"

@@ -11,6 +11,13 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 public @interface CoveoApiConfig {
 
     @AttributeDefinition (
+        name = "Enabled",
+        description = "Is coveo enabled",
+        type = AttributeType.STRING
+    )
+    boolean isEnabled() default false;
+
+    @AttributeDefinition (
         name = "Api key",
         description = "Coveo api key.",
         type = AttributeType.STRING
