@@ -1,0 +1,28 @@
+{
+  "alloworigin":["https://preview.workdayit5.com","preview.workdayit5.com"],
+  "alloworiginregexp":[".*"],
+  "allowedpaths":[ ".*/saml_login"],
+  "exposedheaders":[
+    ""
+  ],
+  "maxage": 1800,
+  "supportedheaders":[
+    "Origin",
+    "Accept",
+    "X-Requested-With",
+    "Content-Type",
+    "Access-Control-Request-Method",
+    "Access-Control-Request-Headers",
+    "Authorization",
+    "CSRF-Token"
+  ],
+  "supportedmethods":[
+    "GET",
+    "HEAD",
+    "POST",
+    "DELETE",
+    "OPTIONS",
+    "PUT"
+  ],
+  "supportscredentials":true
+}
