@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.sling.api.servlets.HttpConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -64,7 +65,7 @@ public class HttpsURLConnectionServiceTest {
      */
     @Test
     public void testSendFailed() throws IOException {
-        header.put(RestApiConstants.ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+        header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         int expected = 403;
         doReturn(request).when(service).getHttpsURLConnection(any());
         doReturn(expected).when(request).getResponseCode();
