@@ -6,6 +6,8 @@
 
 $include "./default_filters.any"
 
+/0100 { /type "allow" /method "POST" /url "*/saml_login" }
+
 # Allow components JSON model
 /0101 { /type "allow" /extension "json" /selectors "model" /path "/content/*" }
 
