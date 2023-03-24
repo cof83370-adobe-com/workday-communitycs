@@ -22,4 +22,18 @@ $include "./default_filters.any"
 #Enable DAM Access
 /0220 { /type "allow" /method "GET" /path "/content/dam/workday-community/*" }
 
+/0121 { /type "allow" /method "GET" /path "/bin/locations" }
+
+#User Token and Context
+/0122 { /type "allow" /method "GET" /path "/bin/search" }
+
+
+/0998 { /type "deny" /method "GET" /url "/etc/cloudsettings.kernel.js*" }
 /0999 { /type "allow" /url " * /libs/granite/csrf/token.json*" }
+
+#Enable Settings Page Privacy Servlet
+/0124 { /type "allow" /method "POST" /url "/bin/privacy" }
+
+
+#Enable Settings Page MultiFactor Authentication Servlet
+/0126 { /type "allow" /method "POST" /path "/bin/multifactorauthentication" }

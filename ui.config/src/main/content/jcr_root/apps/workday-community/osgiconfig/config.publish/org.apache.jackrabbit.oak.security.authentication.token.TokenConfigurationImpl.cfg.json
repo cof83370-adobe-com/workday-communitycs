@@ -1,0 +1,9 @@
+{
+  "tokenRefresh":false,
+  "passwordHashIterations:Integer":1,
+  "tokenExpiration":"7200000",
+  "tokenCleanupThreshold":5,
+  "passwordHashAlgorithm":"SHA-256",
+  "tokenLength":"16",
+  "passwordSaltSize:Integer":8
+}
