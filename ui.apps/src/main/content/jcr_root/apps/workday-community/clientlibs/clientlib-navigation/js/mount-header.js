@@ -23,12 +23,15 @@ function renderNavHeader() {
         if (stringValid(headerStringData)) {
             headerMenu = JSON.parse(headerStringData);
 
-            if (stringValid(headerMenu.profile) {
-                if (stringValid(avatarUrl)) {
-                    headerMenu.profile.avatar = {...headerMenu.profile.avatar, data: avatarUrl};
-                }
-                headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
+            if (!headerMenu.profile) {
+              headerMenu.profile = [];
             }
+
+            if (stringValid(avatarUrl)) {
+                headerMenu.profile.avatar = {...headerMenu.profile.avatar, data: avatarUrl};
+            }
+
+            headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
         }
 
         const headerData = {
