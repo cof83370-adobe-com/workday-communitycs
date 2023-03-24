@@ -17,9 +17,11 @@ public class HttpUtils {
   private final static Logger logger = LoggerFactory.getLogger(HttpUtils.class);
 
   /**
-   * Get cookie from the http servlet request object given the cookie name
+   * Get cookie from the http servlet request object given the cookie name.
+   *
    * @param request The http servlet request object.
    * @param cookieName The cookie name.
+   *
    * @return The Cookie object with the given cookie name
    */
   public static Cookie getCookie(final HttpServletRequest request, final String cookieName) {
@@ -39,6 +41,7 @@ public class HttpUtils {
   }
 
   /**
+   * Set Cookie.
    *
    * @param cookie The Cookie object.
    * @param response The http servlet response object.
@@ -54,5 +57,39 @@ public class HttpUtils {
     cookie.setPath((null == path) ? "/" : path);
     cookie.setSecure(secure);
     addCookie(cookie, response);
+  }
+
+  /**
+   * Clear all cookies.
+   *
+   * @param request The HttpServletRequest object.
+   * @param response The HttpServletResponse object.
+   * @param cookiePath The Cookie path.
+   *
+   * @return the number of cookies being dropped.
+   */
+  public static int dropCookies(final HttpServletRequest request, final HttpServletResponse response,
+                                final String cookiePath) {
+    final Cookie[] cookies = request.getCookies();
+    if (cookies == null) {
+      return 0;
+    }
+
+    int count = 0;
+    for (final Cookie cookie : cookies) {
+      if (cookie == null || cookie.getName().equalsIgnoreCase("email")) {
+        continue;
+      }
+
+      final Cookie responseCookie = (Cookie) cookie.clone();
+      responseCookie.setMaxAge(0);
+      responseCookie.setPath(cookiePath);
+      responseCookie.setValue("");
+
+      addCookie(responseCookie, response);
+      count++;
+    }
+
+    return count;
   }
 }
