@@ -76,10 +76,17 @@ public class HttpsURLConnectionService {
             in.close();
             apiResponse.put("response", response.toString());
             request.disconnect();
+            return apiResponse;
         }
         catch (IOException e) {
             logger.error("Rest api call in HttpsURLConnectionService failed: {}", e.getMessage());
+            if (!apiResponse.containsKey("statusCode")) {
+                apiResponse.put("statusCode", 400);
+            }
+            if (!apiResponse.containsKey("response")) {
+                apiResponse.put("response", e.getMessage());
+            }
+            return apiResponse;
         }
-        return apiResponse;
     }
 }

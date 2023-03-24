@@ -100,6 +100,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
             }
             catch (IOException e) {
                 logger.error("Parse coveo source api call response failed: {}", e.getMessage());
+                return totalNumberOfIndexedItems;
             }
         }
         else {
