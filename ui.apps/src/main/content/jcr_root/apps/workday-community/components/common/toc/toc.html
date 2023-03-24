@@ -1,7 +1,7 @@
 <div class="cmp-toc" data-cmp-is="cmp-toc">
   <div class="cmp-toc__heading">
-        <span class="cmp-toc__heading-title">${'Table of Contents' @ i18n, context='text'}</span>
-        <span class="cmp-toc__heading-icon"></span>
+    <h1 class="cmp-toc__heading-title">${'Table of Contents' @ i18n, context='text'}</h1>
+    <span class="cmp-toc__heading-icon"></span>
   </div>
 
   <div class="button">
@@ -24,19 +24,24 @@
       <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic 6</a></li>
       <li class="cmp-toc__item">
         <a class="cmp-toc__item-link" href="#">Topic 7</a>
-        <ul class="cmp-toc__group">
-          <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic A</a></li>
-          <li class="cmp-toc__item">
-            <a class="cmp-toc__item-link" href="#">Topic B</a>
-            <ul class="cmp-toc__group">
-              <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic B1</a></li>
-              <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="#">Topic B2</a></li>
+        <ul class="cmp-toc__group-1">
+          <li class="cmp-toc__item-1"><a class="cmp-toc__item-link-1" href="#">Topic A</a></li>
+          <li class="cmp-toc__item-1"><a class="cmp-toc__item-link-1" href="#">Topic B</a>
+            <ul class="cmp-toc__group-2">
+              <li class="cmp-toc__item-2"><a class="cmp-toc__item-link-2" href="#">Topic A</a></li>
+              <li class="cmp-toc__item-2"><a class="cmp-toc__item-link-2" href="#">Topic B</a>
+              
+              </li>
             </ul>
           </li>
         </ul>
+
       </li>
     </ul>
   </div>
 
 </div>
 <div data-sly-test="${wcmmode.edit || wcmmode.design}" class="cq-placeholder" data-emptyText="WD Community Site - Table Of Content Component"></div>
+
+<div data-sly-test="${wcmmode.edit || wcmmode.design}" class="cq-placeholder"
+     data-emptyText="WD Community Site - Table Of Content Component"></div>

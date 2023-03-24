@@ -22,8 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workday.community.aem.core.config.CoveoIndexApiConfig;
 import com.workday.community.aem.core.services.CoveoPushApiService;
 import com.workday.community.aem.core.services.HttpsURLConnectionService;
-import com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants;
-import static com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants.BEARER_TOKEN;
+import com.workday.community.aem.core.constants.RestApiConstants;
+import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
 
 /**
  * The Class CoveoPushApiServiceImpl.
@@ -92,17 +92,17 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     @Override
     public HashMap<String, Object> callBatchUploadUri(String fileId) {
         HashMap<String, String> header = new HashMap<String, String>();
-        header.put(RESTAPIConstants.CONTENT_TYPE, RESTAPIConstants.APPLICATION_SLASH_JSON);
-        header.put(RESTAPIConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+        header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+        header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         return callApi(generateBatchUploadUri(fileId), header, "PUT", "");
     }
 
     @Override
     public HashMap<String, Object> callCreateContainerUri() {
         HashMap<String, String> containerHeader = new HashMap<String, String>();
-        containerHeader.put(RESTAPIConstants.CONTENT_TYPE, RESTAPIConstants.APPLICATION_SLASH_JSON);
-        containerHeader.put(RESTAPIConstants.ACCEPT, RESTAPIConstants.APPLICATION_SLASH_JSON);
-        containerHeader.put(RESTAPIConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+        containerHeader.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+        containerHeader.put(RestApiConstants.ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+        containerHeader.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         HashMap<String, Object> createContainerResponse = callApi(generateContainerUri(), containerHeader, "POST", "");
         return createContainerResponse;
     }
@@ -111,8 +111,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     public void callDeleteAllItemsUri() {
         // Coveo reference https://docs.coveo.com/en/131/index-content/deleting-old-items-in-a-push-source.
         HashMap<String, String> header = new HashMap<String, String>();
-        header.put(RESTAPIConstants.ACCEPT, RESTAPIConstants.APPLICATION_SLASH_JSON);
-        header.put(RESTAPIConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+        header.put(RestApiConstants.ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+        header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header, "DELETE", "");
         if ((Integer) response.get("statusCode") != 202) {
             logger.error("Deleting all items from coveo failed with status code {}: {}.", response.get("statusCode"), response.get("response").toString());
@@ -123,7 +123,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     public void callDeleteSingleItemUri(String documentId) {
         // Coveo reference https://docs.coveo.com/en/171/index-content/deleting-an-item-and-optionally-its-children-in-a-push-source.
         HashMap<String, String> header = new HashMap<String, String>();
-        header.put(RESTAPIConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+        header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         HashMap<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header, "DELETE", "");
         if ((Integer) response.get("statusCode") != 202) {
             logger.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId, response.get("statusCode"), response.get("response").toString());

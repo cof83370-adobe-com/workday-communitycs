@@ -17,7 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants;
+import com.workday.community.aem.core.constants.RestApiConstants;
 
 /**
  * The Class HttpsURLConnectionServiceTest.
@@ -46,7 +46,7 @@ public class HttpsURLConnectionServiceTest {
      */
     @Test
     public void testSendSccessed() throws IOException {
-        header.put(RESTAPIConstants.CONTENT_TYPE, RESTAPIConstants.APPLICATION_SLASH_JSON);
+        header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
         int expected = 200;
         doReturn(request).when(service).getHttpsURLConnection(any());
         doReturn(expected).when(request).getResponseCode();
@@ -64,7 +64,7 @@ public class HttpsURLConnectionServiceTest {
      */
     @Test
     public void testSendFailed() throws IOException {
-        header.put(RESTAPIConstants.ACCEPT, RESTAPIConstants.APPLICATION_SLASH_JSON);
+        header.put(RestApiConstants.ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         int expected = 403;
         doReturn(request).when(service).getHttpsURLConnection(any());
         doReturn(expected).when(request).getResponseCode();

@@ -13,8 +13,8 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.workday.community.aem.core.services.HttpsURLConnectionService;
-import com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants;
-import static com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants.BEARER_TOKEN;
+import com.workday.community.aem.core.constants.RestApiConstants;
+import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 
@@ -49,9 +49,9 @@ public class CoveoSourceApiServiceImplTest {
     public void testGenerateHeader() {
         service = this.registerService();
         HashMap<String, String> header = service.generateHeader();
-        assertEquals(RESTAPIConstants.APPLICATION_SLASH_JSON, header.get(RESTAPIConstants.ACCEPT));
-        assertEquals(RESTAPIConstants.APPLICATION_SLASH_JSON, header.get(RESTAPIConstants.CONTENT_TYPE));
-        assertEquals(BEARER_TOKEN.token("apiKey"), header.get(RESTAPIConstants.AUTHORIZATION));
+        assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(RestApiConstants.ACCEPT));
+        assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(RestApiConstants.CONTENT_TYPE));
+        assertEquals(BEARER_TOKEN.token("apiKey"), header.get(RestApiConstants.AUTHORIZATION));
     }
 
     /**

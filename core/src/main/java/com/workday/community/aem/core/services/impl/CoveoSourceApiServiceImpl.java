@@ -18,8 +18,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workday.community.aem.core.config.CoveoIndexApiConfig;
 import com.workday.community.aem.core.services.HttpsURLConnectionService;
 import com.workday.community.aem.core.services.CoveoSourceApiService;
-import com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants;
-import static com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants.BEARER_TOKEN;
+import com.workday.community.aem.core.constants.RestApiConstants;
+import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
 
 /**
  * The Class CoveoSourceApiServiceImpl.
@@ -72,9 +72,9 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
 	 */
     protected HashMap<String, String> generateHeader() {
         HashMap<String, String> header = new HashMap<String, String>();
-        header.put(RESTAPIConstants.CONTENT_TYPE, RESTAPIConstants.APPLICATION_SLASH_JSON);
-        header.put(RESTAPIConstants.ACCEPT, RESTAPIConstants.APPLICATION_SLASH_JSON);
-        header.put(RESTAPIConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+        header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+        header.put(RestApiConstants.ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+        header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         return header;
     }
 

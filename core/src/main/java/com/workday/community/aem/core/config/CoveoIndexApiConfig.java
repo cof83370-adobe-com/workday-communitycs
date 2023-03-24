@@ -12,10 +12,10 @@ public @interface CoveoIndexApiConfig {
 
     @AttributeDefinition (
         name = "Enabled",
-        description = "Is coveo enabled",
+        description = "Is coveo indexing enabled",
         type = AttributeType.STRING
     )
-    boolean isEnabled() default false;
+    boolean isCoveoIndexingEnabled() default false;
 
     @AttributeDefinition (
         name = "Api key",

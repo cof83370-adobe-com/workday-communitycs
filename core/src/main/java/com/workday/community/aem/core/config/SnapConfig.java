@@ -9,8 +9,11 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
  */
 @ObjectClassDefinition(name = "Snaplogic Config", description = "SnaplogicService OSGi Config Vaues")
 public @interface SnapConfig {
-  @AttributeDefinition(name = "Snaplogic Url", description = "Sanplogic base Url.", type = AttributeType.STRING)
+  @AttributeDefinition(name = "Snap logic API Url", description = "Sanplogic API Url.", type = AttributeType.STRING)
   String snapUrl();
+
+  @AttributeDefinition(name = "Snap logic Context API Url", description = "Sanplogic Context Url.", type = AttributeType.STRING)
+  String snapContextUrl();
 
   @AttributeDefinition(name = "Nav API", description = "Nav menu api endpoint.", type = AttributeType.STRING)
   String navApi() default "/contact/menu?id=%s";
@@ -20,6 +23,9 @@ public @interface SnapConfig {
 
   @AttributeDefinition(name = "Nav Api Token", description = "Nav menu api token.", type = AttributeType.STRING)
   String navApiToken();
+
+  @AttributeDefinition(name = "Snap logic context Api Token", description = "Nav menu api token.", type = AttributeType.STRING)
+  String snapContextApiToken();
 
   @AttributeDefinition(name = "Profile Avatar Url endpoint", description = "Profile Avatar Url endpoint", type = AttributeType.STRING)
   String sfdcUserAvatarUrl();
