@@ -9,6 +9,7 @@ import static org.mockito.Mockito.doReturn;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -75,7 +76,7 @@ public class CoveoPushApiServiceImplTest {
      */
     @Test void testCallDeleteAllItemsUri() {
         HashMap<String, Object> response = new HashMap<>();
-        response.put("statusCode", 202);
+        response.put("statusCode", HttpStatus.SC_ACCEPTED);
         String responseString = "{\"success\": {\"message\": \"ok\"}}"; 
         response.put("response", responseString);
         doReturn(response).when(service).callApi(any(), any(), any(), any());
@@ -87,7 +88,7 @@ public class CoveoPushApiServiceImplTest {
      */
     @Test void testCallDeleteSingleItemUri() {
         HashMap<String, Object> response = new HashMap<>();
-        response.put("statusCode", 403);
+        response.put("statusCode", HttpStatus.SC_FORBIDDEN);
         String responseString = "{\"error\": {\"message\": \"fail\"}}"; 
         response.put("response", responseString);
         doReturn(response).when(service).callApi(any(), any(), any(), any());
@@ -99,18 +100,18 @@ public class CoveoPushApiServiceImplTest {
      */
     @Test void testIndexItemsSuccessed() {
         HashMap<String, Object> createContainerResponse = new HashMap<String, Object>();
-        createContainerResponse.put("statusCode", 201);
+        createContainerResponse.put("statusCode", HttpStatus.SC_CREATED);
         String response = "{\"fileId\": \"fileId\",\"requiredHeaders\": {\"additionalProp1\": \"string\"},\"uploadUri\": \"uploadUri\"}"; 
         createContainerResponse.put("response", response);
         doReturn(createContainerResponse).when(service).callCreateContainerUri();
 
         HashMap<String, Object> uploadFileResponse = new HashMap<String, Object>();
-        uploadFileResponse.put("statusCode", 200);
+        uploadFileResponse.put("statusCode", HttpStatus.SC_OK);
         uploadFileResponse.put("response", "upload file successed");
         doReturn(uploadFileResponse).when(service).callUploadFileUri(any(), any(), any());
 
         HashMap<String, Object> batchUploadResponse = new HashMap<String, Object>();
-        batchUploadResponse.put("statusCode", 202);
+        batchUploadResponse.put("statusCode", HttpStatus.SC_ACCEPTED);
         batchUploadResponse.put("response", "batch upload successed");
         doReturn(batchUploadResponse).when(service).callBatchUploadUri(any());
         assertEquals(202, service.indexItems(any()));
@@ -121,7 +122,7 @@ public class CoveoPushApiServiceImplTest {
      */
     @Test void testIndexItemsFailed() {
         HashMap<String, Object> createContainerResponse = new HashMap<String, Object>();
-        createContainerResponse.put("statusCode", 403);
+        createContainerResponse.put("statusCode", HttpStatus.SC_FORBIDDEN);
         createContainerResponse.put("response", "create container failed");
         doReturn(createContainerResponse).when(service).callCreateContainerUri();
         assertEquals(0, service.indexItems(any()));

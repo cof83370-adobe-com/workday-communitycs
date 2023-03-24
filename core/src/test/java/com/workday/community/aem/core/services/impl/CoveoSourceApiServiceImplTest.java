@@ -5,6 +5,8 @@ import static org.mockito.Mockito.doReturn;
 
 import java.util.HashMap;
 
+import org.apache.http.HttpStatus;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,7 +51,7 @@ public class CoveoSourceApiServiceImplTest {
     public void testGenerateHeader() {
         service = this.registerService();
         HashMap<String, String> header = service.generateHeader();
-        assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(RestApiConstants.ACCEPT));
+        assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(HttpConstants.HEADER_ACCEPT));
         assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(RestApiConstants.CONTENT_TYPE));
         assertEquals(BEARER_TOKEN.token("apiKey"), header.get(RestApiConstants.AUTHORIZATION));
     }
@@ -71,7 +73,7 @@ public class CoveoSourceApiServiceImplTest {
      */
     @Test void testGetTotalIndexedNumber() {
         HashMap<String, Object> response = new HashMap<>();
-        response.put("statusCode", 200);
+        response.put("statusCode", HttpStatus.SC_OK);
         String responseString = "{\"information\": {\"numberOfDocuments\": \"20\"}}"; 
         response.put("response", responseString);
         doReturn(response).when(service).callApi();

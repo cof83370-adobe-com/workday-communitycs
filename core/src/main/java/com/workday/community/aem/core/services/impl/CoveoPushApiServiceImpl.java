@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections4.ListUtils;
+import org.apache.http.HttpStatus;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -101,7 +103,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     public HashMap<String, Object> callCreateContainerUri() {
         HashMap<String, String> containerHeader = new HashMap<String, String>();
         containerHeader.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
-        containerHeader.put(RestApiConstants.ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+        containerHeader.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         containerHeader.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         HashMap<String, Object> createContainerResponse = callApi(generateContainerUri(), containerHeader, "POST", "");
         return createContainerResponse;
@@ -111,10 +113,10 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     public void callDeleteAllItemsUri() {
         // Coveo reference https://docs.coveo.com/en/131/index-content/deleting-old-items-in-a-push-source.
         HashMap<String, String> header = new HashMap<String, String>();
-        header.put(RestApiConstants.ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+        header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header, "DELETE", "");
-        if ((Integer) response.get("statusCode") != 202) {
+        if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
             logger.error("Deleting all items from coveo failed with status code {}: {}.", response.get("statusCode"), response.get("response").toString());
         }
     }
@@ -125,7 +127,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         HashMap<String, String> header = new HashMap<String, String>();
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         HashMap<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header, "DELETE", "");
-        if ((Integer) response.get("statusCode") != 202) {
+        if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
             logger.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId, response.get("statusCode"), response.get("response").toString());
         }
     }
@@ -140,29 +142,29 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         // Coveo reference https://docs.coveo.com/en/90/index-content/manage-batches-of-items-in-a-push-source.
         Integer apiStatusCode = 0;
         HashMap<String, Object> createContainerResponse = callCreateContainerUri();
-        if ((Integer) createContainerResponse.get("statusCode") == 201) {
+        if ((Integer) createContainerResponse.get("statusCode") == HttpStatus.SC_CREATED) {
             HashMap<String, Object> fileInfo = transformCreateContainerResponse(createContainerResponse.get("response").toString());
             String uploadUri = fileInfo.get("uploadUri").toString();
             HashMap<String, String> uploadFileHeader = (HashMap<String, String>) fileInfo.get("requiredHeaders");
             String fileId = fileInfo.get("fileId").toString();
             HashMap<String, Object> uploadFileResponse = callUploadFileUri(uploadUri, uploadFileHeader, payload);
-            if ((Integer) uploadFileResponse.get("statusCode") == 200) {
+            if ((Integer) uploadFileResponse.get("statusCode") == HttpStatus.SC_OK) {
                 HashMap<String, Object> batchUploadResponse = callBatchUploadUri(fileId);
-                if ((Integer) batchUploadResponse.get("statusCode") == 202) {
-                    return apiStatusCode = 202;
+                if ((Integer) batchUploadResponse.get("statusCode") == HttpStatus.SC_ACCEPTED) {
+                    return apiStatusCode = HttpStatus.SC_ACCEPTED;
                 }
                 else {
                     logger.error("Triggering batch ingestion failed with status code {}: {}.", batchUploadResponse.get("statusCode"), batchUploadResponse.get("response").toString()); 
                 }
             }
-            else if ((Integer) uploadFileResponse.get("statusCode") == 413) {
+            else if ((Integer) uploadFileResponse.get("statusCode") == HttpStatus.SC_REQUEST_TOO_LONG) {
                 // Split payload.
                 Integer chunckStatusCode = -1;
                 List<List<Object>> chunks = ListUtils.partition(payload, payload.size() / 2 + 1);
                 Iterator<List<Object>> it = chunks.iterator();
                 while (it.hasNext()) {
                     Integer code = this.indexItems(it.next());
-                    if (code != 202 || chunckStatusCode == -1) {
+                    if (code != HttpStatus.SC_ACCEPTED || chunckStatusCode == -1) {
                         chunckStatusCode = code;
                     }  
                 }
@@ -190,6 +192,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         } 
         catch (IOException e) {
             logger.error("Transform payload failed: {}.", e.getMessage());
+            return transformedPayload;
         }
         return transformedPayload;
     }
@@ -212,6 +215,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         }
         catch (Exception e) {
             logger.error("Parse create container reponse failed: {}", e.getMessage());
+            return transformedResponse;
         }
 
         HashMap<String, String> header = new HashMap<String, String>();
@@ -221,6 +225,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         } 
         catch (Exception e) {
             logger.error("Generate requiredheader array failed: {}", e.getMessage());
+            return transformedResponse;
         }
         transformedResponse.put("fileId", fileId);
         transformedResponse.put("uploadUri", uploadUri);

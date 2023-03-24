@@ -6,12 +6,7 @@ import com.workday.community.aem.core.constants.lambda.BearerToken;
  * The Class RESTAPIConstants.
  */
 public interface RestApiConstants {
-
-  /**
-   * The constant ACCEPT
-   */
-  String ACCEPT = "Accept";
-
+  
   /**
    * The constant AUTHORIZATION
    */
@@ -46,4 +41,9 @@ public interface RestApiConstants {
    * The constant GET_API
    */
   String GET_API = "GET";
+
+  /**
+   * The constant TIMEOUT
+   */
+  int TIMEOUT = 10000;
 }

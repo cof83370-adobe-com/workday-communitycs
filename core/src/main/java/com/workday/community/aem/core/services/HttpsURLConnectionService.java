@@ -9,9 +9,12 @@ import java.util.HashMap;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.apache.http.HttpStatus;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.workday.community.aem.core.constants.RestApiConstants;
 
 /**
  * The Class HttpsURLConnectionService.
@@ -50,8 +53,8 @@ public class HttpsURLConnectionService {
 
         try {
             HttpsURLConnection request = this.getHttpsURLConnection(url);
-            request.setConnectTimeout(10000);
-            request.setReadTimeout(10000);
+            request.setConnectTimeout(RestApiConstants.TIMEOUT);
+            request.setReadTimeout(RestApiConstants.TIMEOUT);
             request.setRequestMethod(httpMethod);
             if (!header.isEmpty()) {
                 for (HashMap.Entry<String,String> entry : header.entrySet()) {
@@ -81,7 +84,7 @@ public class HttpsURLConnectionService {
         catch (IOException e) {
             logger.error("Rest api call in HttpsURLConnectionService failed: {}", e.getMessage());
             if (!apiResponse.containsKey("statusCode")) {
-                apiResponse.put("statusCode", 400);
+                apiResponse.put("statusCode", HttpStatus.SC_BAD_REQUEST);
             }
             if (!apiResponse.containsKey("response")) {
                 apiResponse.put("response", e.getMessage());

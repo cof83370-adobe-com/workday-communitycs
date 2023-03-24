@@ -3,6 +3,8 @@ package com.workday.community.aem.core.services.impl;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.http.HttpStatus;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -73,7 +75,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
     protected HashMap<String, String> generateHeader() {
         HashMap<String, String> header = new HashMap<String, String>();
         header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
-        header.put(RestApiConstants.ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+        header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         return header;
     }
@@ -88,7 +90,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
         // Coveo reference https://docs.coveo.com/en/65/index-content/get-detailed-information-about-a-source.
         long totalNumberOfIndexedItems = -1;
         HashMap<String, Object> response = this.callApi();
-        if ((Integer) response.get("statusCode") == 200) {
+        if ((Integer) response.get("statusCode") == HttpStatus.SC_OK) {
             ObjectMapper mapper = new ObjectMapper();
             JsonFactory factory = mapper.getFactory();
             try {
