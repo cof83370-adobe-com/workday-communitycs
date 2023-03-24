@@ -21,6 +21,9 @@
                             <text
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="workday-community/components/core/text"/>
+                            <title
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/core/title"/>
                             <accordion
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="workday-community/components/core/accordion"
