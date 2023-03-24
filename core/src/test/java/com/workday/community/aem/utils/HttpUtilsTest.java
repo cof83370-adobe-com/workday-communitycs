@@ -10,6 +10,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static junit.framework.Assert.assertNotNull;
 import static junitx.framework.Assert.assertEquals;
 import static org.mockito.Mockito.lenient;
@@ -27,8 +28,9 @@ public class HttpUtilsTest {
   public void setup() {
     this.request = mock(HttpServletRequest.class);
     this.response = mock(HttpServletResponse.class);
+
     Cookie[] cookies = new Cookie[] {new Cookie("test", "testValue"),
-    new Cookie("testName", "testValue1")};
+    new Cookie("testName", "testValue1"), new Cookie(EMAIL_NAME, "community@workday.com")};
     lenient().when(request.getCookies()).thenReturn(cookies);
   }
 
@@ -43,5 +45,11 @@ public class HttpUtilsTest {
   public void testSetCookie() {
     HttpUtils.setCookie(testCookie, response, true, 12, "/", true);
     verify(response).addCookie(testCookie);
+  }
+
+  @Test
+  public void testDropCookies() {
+    int count = HttpUtils.dropCookies(request, response, "/");
+    assertEquals(2, count);
   }
 }

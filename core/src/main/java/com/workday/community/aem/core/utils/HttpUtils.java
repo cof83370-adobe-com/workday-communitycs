@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static com.adobe.acs.commons.util.CookieUtil.addCookie;
+import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 
 /**
  * Utility class for Http request/response related code.
@@ -77,7 +78,7 @@ public class HttpUtils {
 
     int count = 0;
     for (final Cookie cookie : cookies) {
-      if (cookie == null || cookie.getName().equalsIgnoreCase("email")) {
+      if (cookie == null || cookie.getName().equalsIgnoreCase(EMAIL_NAME)) {
         continue;
       }
 
