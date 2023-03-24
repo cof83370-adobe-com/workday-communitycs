@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.utils;
 
-import java.io.IOException;
-
+import com.workday.community.aem.core.constants.RestApiConstants;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -18,10 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import com.workday.community.aem.core.pojos.restclient.APIRequest;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
-import com.workday.community.aem.core.constants.GlobalConstants;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.RESTAPIConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.GlobalConstants.WRCConstants.HTTP_TIMEMOUT;
+import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static com.workday.community.aem.core.constants.HttpConstants.HTTP_TIMEMOUT;
 
 /**
  * The Class RESTAPIUtil.
@@ -42,9 +40,8 @@ public class RestApiUtil {
    * @param traceId traceId
    *
    * @return the API repsonse from menu API call
-   * @throws IOException IOException
    */
-  public static APIResponse doGetMenu(String url, String apiToken, String apiKey, String traceId) throws IOException {
+  public static APIResponse doGetMenu(String url, String apiToken, String apiKey, String traceId) {
     // Construct the request header.
     APIRequest req = getMenuApiRequest(url, apiToken, apiKey, traceId);
 
@@ -57,25 +54,24 @@ public class RestApiUtil {
    * @param authToken Photo API token.
    * @param xapiKey API secret key.
    * @return the Json response as String from snap logic API call.
-   * @throws IOException IOException.
    */
-  public static String doAvatarGet(String url, String authToken, String xapiKey) throws IOException {
+  public static String doSnapGet(String url, String authToken, String xapiKey) {
     logger.debug("RestAPIUtil: Calling REST requestSnapJsonResponse()...= {}", url);
     APIRequest apiRequestInfo = new APIRequest();
 
     apiRequestInfo.setUrl(url);
-    apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
-      .addHeader(GlobalConstants.RESTAPIConstants.X_API_KEY, xapiKey);
+    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
+      .addHeader(RestApiConstants.X_API_KEY, xapiKey);
 
     return executeGetRequest(apiRequestInfo).getResponseBody();
   }
 
-  private static APIResponse executeGetRequest(APIRequest req) throws IOException {
+  private static APIResponse executeGetRequest(APIRequest req) {
     APIResponse apiresponse = new APIResponse();
 
     logger.debug("RESTAPIUtil: Calling REST executeGetRequest().");
     if (StringUtils.isBlank(req.getMethod())) {
-      req.setMethod(GlobalConstants.RESTAPIConstants.GET_API);
+      req.setMethod(RestApiConstants.GET_API);
     }
 
     // Client with connection pool reused for all requests.
@@ -109,11 +105,11 @@ public class RestApiUtil {
 
     apiRequestInfo.setUrl(url);
 
-    apiRequestInfo.addHeader(GlobalConstants.RESTAPIConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
-        .addHeader(HttpConstants.HEADER_ACCEPT, GlobalConstants.RESTAPIConstants.APPLICATION_SLASH_JSON)
-        .addHeader(GlobalConstants.RESTAPIConstants.CONTENT_TYPE, GlobalConstants.RESTAPIConstants.APPLICATION_SLASH_JSON)
-        .addHeader(GlobalConstants.RESTAPIConstants.X_API_KEY, xapiKey)
-        .addHeader(GlobalConstants.RESTAPIConstants.TRACE_ID, traceId);
+    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
+        .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
+        .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON)
+        .addHeader(RestApiConstants.X_API_KEY, xapiKey)
+        .addHeader(RestApiConstants.TRACE_ID, traceId);
 
     return apiRequestInfo;
   }

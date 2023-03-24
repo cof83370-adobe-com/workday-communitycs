@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import com.workday.community.aem.core.constants.PageResourceType;
+import com.workday.community.aem.core.constants.TagPropertyName;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -15,7 +17,6 @@ import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.models.TaxonomyBadge;
 
 /**
@@ -51,19 +52,19 @@ public class TaxonomyBadgeImpl implements TaxonomyBadge {
     public List<String> getBadgeList() {
         String[] tagIDs;
         switch (currentPage.getContentResource().getResourceType()) {
-            case GlobalConstants.PageResourceType.EVENT:
-                tagIDs = currentPage.getProperties().get(GlobalConstants.TagPropertyName.EVENT_FORMAT, String[].class);
+            case PageResourceType.EVENT:
+                tagIDs = currentPage.getProperties().get(TagPropertyName.EVENT_FORMAT, String[].class);
                 badgeList = getTagTitlesByTagID(tagIDs);
                 break;
 
-            case GlobalConstants.PageResourceType.RELEASE_NOTES:
-                tagIDs = currentPage.getProperties().get(GlobalConstants.TagPropertyName.RELEASE_NOTES_CHNAGE_TYPE,
+            case PageResourceType.RELEASE_NOTES:
+                tagIDs = currentPage.getProperties().get(TagPropertyName.RELEASE_NOTES_CHNAGE_TYPE,
                         String[].class);
                 badgeList = getTagTitlesByTagID(tagIDs);
                 break;
 
-            case GlobalConstants.PageResourceType.TRAINING_CATALOG:
-                tagIDs = currentPage.getProperties().get(GlobalConstants.TagPropertyName.TRAINING_FORMAT,
+            case PageResourceType.TRAINING_CATALOG:
+                tagIDs = currentPage.getProperties().get(TagPropertyName.TRAINING_FORMAT,
                         String[].class);
                 badgeList = getTagTitlesByTagID(tagIDs);
                 break;
