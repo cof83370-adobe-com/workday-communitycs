@@ -28,6 +28,7 @@ import javax.jcr.Session;
 
 import com.day.cq.search.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
@@ -87,7 +88,9 @@ class QueryServiceImplTest {
     when(hit.getPath()).thenReturn("/test/path");
 
     SearchResult result = mock(SearchResult.class);
-    when(result.getHits()).thenReturn(List.of(hit));
+    List<Hit> hitList = new ArrayList<>();
+    hitList.add(hit);
+    when(result.getHits()).thenReturn(hitList);
 
     when(query.getResult()).thenReturn(result);
 
