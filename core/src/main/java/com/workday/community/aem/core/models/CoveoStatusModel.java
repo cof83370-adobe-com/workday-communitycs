@@ -31,8 +31,6 @@ public interface CoveoStatusModel {
      * @return Cover server has error or not.
      */
 
-    boolean getServerStatus();
-
     /**
      * Gets the page templates.
      *
@@ -40,5 +38,10 @@ public interface CoveoStatusModel {
      */
     List<String> getTemplates();
 
+    /**
+     * Get server status.
+     *
+     * @return server status.
+     */
     boolean getServerHasError();
 }

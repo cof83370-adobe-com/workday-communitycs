@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
@@ -19,7 +20,9 @@ import com.workday.community.aem.core.services.QueryService;
 @Model(
         adaptables = SlingHttpServletRequest.class,
         adapters = {CoveoStatusModel.class},
-        resourceType = {CoveoStatusModelImpl.RESOURCE_TYPE})
+        resourceType = {CoveoStatusModelImpl.RESOURCE_TYPE},
+        defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     /** The Constant RESOURCE_TYPE. */
@@ -40,8 +43,6 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     private long indexedPages;
     @ValueMapValue
     private List<String> templates;
-
-    private boolean serverStatus;
 
     /** The coveo source server status. */
     private boolean serverHasError;
@@ -71,11 +72,6 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
             return (float) 0.0;
         }
         return (float) indexedPages / totalPages;
-    } 
-
-    @Override
-    public boolean getServerStatus() {
-        return serverStatus;
     }
 
     @Override
@@ -83,6 +79,7 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
         return templates;
     }
 
+    @Override
     public boolean getServerHasError() {
         return serverHasError;
     }

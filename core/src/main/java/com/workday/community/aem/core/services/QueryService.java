@@ -8,12 +8,12 @@ public interface QueryService {
 	 *
 	 * @return The total number of pages.
 	 */
-    public long getNumOfTotalPages();
+    long getNumOfTotalPages();
 
 	/**
 	 * Gets the pages by templates.
 	 *
 	 * @return List of page path.
 	 */
-	public List getPagesByTemplates(String[] templates);
+	List getPagesByTemplates(String[] templates);
 }
