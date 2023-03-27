@@ -32,8 +32,9 @@ public class IndexServicesImpl implements IndexServices {
         for (int i = 0; i < paths.size(); i++) {
             pagePaths.add(paths.get(i));
             if (i + 1 % IndexServices.BATCH_SIZE == 0) {
-                createJobs(pagePaths);
-                pagePaths = new ArrayList<>();
+                if (createJobs(pagePaths)) {
+                    pagePaths.clear();
+                }
             }
         }
 
@@ -47,10 +48,11 @@ public class IndexServicesImpl implements IndexServices {
      *
      * @param pagePaths
      */
-    protected void createJobs(ArrayList<String> pagePaths) {
+    protected boolean createJobs(ArrayList<String> pagePaths) {
         Map<String, Object> jobProperties = new HashMap<>();
         jobProperties.put("op", "index");
         jobProperties.put("paths", pagePaths);
         jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
+        return true;
     }
 }

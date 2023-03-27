@@ -73,8 +73,8 @@ public class QueryServiceImpl implements QueryService {
             queryMap.put("type", "cq:Page");
             queryMap.put("group.p.or", "true");
             for (int i = 0; i < templates.length; i++) {
-                queryMap.put("group." + i + "_property", "jcr:content/cq:template");
-                queryMap.put("group." + i + "_property.value", templates[i]);
+                queryMap.put(String.format("group.%d_property", i), "jcr:content/cq:template");
+                queryMap.put(String.format("group.%d_property.value", i), templates[i]);
             }
             queryMap.put("1_property", "cq:lastReplicationAction");
             queryMap.put("1_property.value", "Activate");

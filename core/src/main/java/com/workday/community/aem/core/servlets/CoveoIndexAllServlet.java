@@ -53,7 +53,7 @@ public class CoveoIndexAllServlet extends SlingAllMethodsServlet {
         }
 
         indexServices.indexPages(paths);
-        printOut.append(paths.size() + " number of content(s) indexed.");
+        printOut.append(String.format("%d number of content(s) indexed.", paths.size()));
     }
 
 }
