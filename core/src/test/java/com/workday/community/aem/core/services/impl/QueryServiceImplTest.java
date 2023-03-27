@@ -5,33 +5,33 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.*;
 
 import com.day.cq.search.PredicateGroup;
+import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import com.day.cq.search.QueryBuilder;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import com.day.cq.search.Query;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
-public class QueryServiceImplTest {
+import java.util.List;
 
-  QueryServiceImpl queryService = new QueryServiceImpl();
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+class QueryServiceImplTest {
 
   @Mock
   QueryBuilder queryBuilder;
@@ -39,11 +39,8 @@ public class QueryServiceImplTest {
   @Mock
   ResourceResolverFactory resourceResolverFactory;
 
-  @BeforeEach
-  public void setup() {
-    queryService.setQueryBuilder(queryBuilder);
-    queryService.setResovlerFactory(resourceResolverFactory);
-  }
+  @InjectMocks
+  QueryServiceImpl queryService;
 
   @Test
   void testGetNumOfTotalPages() throws Exception {
@@ -72,5 +69,31 @@ public class QueryServiceImplTest {
         assertEquals(0, queryService.getNumOfTotalPages());
       }
     }
+  }
+
+  @Test
+  void testPagesByTemplates() throws RepositoryException {
+    MockedStatic<ResolverUtil> mockResolver = mockStatic(ResolverUtil.class);
+    ResourceResolver resourceResolver = mock(ResourceResolver.class);
+    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenReturn(resourceResolver);
+
+    Session session = mock(Session.class);
+    when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+
+    Query query = mock(Query.class);
+    when(queryBuilder.createQuery(any(), eq(session))).thenReturn(query);
+
+    Hit hit = mock(Hit.class);
+    when(hit.getPath()).thenReturn("/test/path");
+
+    SearchResult result = mock(SearchResult.class);
+    when(result.getHits()).thenReturn(List.of(hit));
+
+    when(query.getResult()).thenReturn(result);
+
+    List<String> paths = queryService.getPagesByTemplates(new String[]{"template/path"});
+    assertEquals("/test/path", paths.get(0));
+    verify(session).logout();
+
   }
 }

@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.models;
 
+import java.util.List;
+
 public interface CoveoStatusModel {
 
     /**
@@ -29,4 +31,11 @@ public interface CoveoStatusModel {
      * @return coveo server status.
      */
     boolean getServerStatus();
+
+    /**
+     * Gets the page templates.
+     *
+     * @return List of templates.
+     */
+    List<String> getTemplates();
 }

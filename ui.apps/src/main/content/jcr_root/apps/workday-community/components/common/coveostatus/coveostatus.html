@@ -12,8 +12,18 @@
     <div class="cmp-coveo-status__info-item" data-sly-test="${!coveo.serverStatus}"><strong>${'Server index status: ' @ i18n, context='text'}</strong>${'There is an error while fetching the server index status.' @ i18n, context='text'} <a href="https://www.coveo.com">More information</a></div> 
   </div>
 
+  <div id="coveoIndexTemplateList" data-sly-test="${coveo.templates}" data-pages="${coveo.templates}">
+    <div class="cmp-coveo-status__info-item">${'Template List:' @ i18n, context='text'}</div>
+    <ul data-sly-list.template="${coveo.templates}">
+      <li>${template}</li>
+    </ul>
+    <p id="indexError"></p>
+  </div>
+
   <div class="cmp-coveo-status__actions">
-    <span><a href="#" class="cmp-coveo-status__action-reindex">${'Reindex all contents' @ i18n, context='text'}</a></span>
-    <span><a href="#" class="cmp-coveo-status__action-clear">${'Clear all indexed data' @ i18n, context='text'}</a></span>
+    <span><a href="#" id="coveoIndexAllButton" class="cmp-coveo-status__action-reindex"  value="Submit">${'Reindex all contents' @ i18n, context='text'}</a></span>
+    <span><a href="#" id="coveoDeleteAllButton" class="cmp-coveo-status__action-clear" value="Submit">${'Clear all indexed data' @ i18n, context='text'}</a></span>
   </div>
 </div>
+<sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html" 
+    data-sly-call="${clientlib.all @ categories='workday-community.coveo.indexing'}"/>

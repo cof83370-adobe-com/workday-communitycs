@@ -1,10 +1,13 @@
 package com.workday.community.aem.core.models.impl;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
+import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 
 import com.workday.community.aem.core.models.CoveoStatusModel;
 import com.workday.community.aem.core.services.QueryService;
@@ -30,6 +33,9 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     /** The total indexed pages. */
     private long indexedPages;
+
+    @ValueMapValue
+    private List<String> templates;
 
     private boolean serverStatus;
 
@@ -63,5 +69,10 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     @Override
     public boolean getServerStatus() {
         return serverStatus;
-    } 
+    }
+
+    @Override
+    public List<String> getTemplates() {
+        return templates;
+    }
 }
