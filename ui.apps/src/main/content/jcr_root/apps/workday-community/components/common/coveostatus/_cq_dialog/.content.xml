@@ -31,64 +31,10 @@
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/container">
                                         <items jcr:primaryType="nt:unstructured">
-                                            <listFrom
-                                                granite:class="cq-dialog-dropdown-showhide"
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                fieldLabel="Page Options"
-                                                name="./listFrom">
-                                                <granite:data
-                                                    jcr:primaryType="nt:unstructured"
-                                                    cq-dialog-dropdown-showhide-target=".list-option-listfrom-showhide-target"/>
-                                                <items jcr:primaryType="nt:unstructured">
-                                                    <children
-                                                        granite:hide="${cqDesign.disableChildren}"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        text="Child pages"
-                                                        value="children"/>
-                                                    <static
-                                                        granite:hide="${cqDesign.disableStatic}"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        text="Fixed list"
-                                                        value="static"/>
-                                                </items>
-                                            </listFrom>
-                                            <setChildren
-                                                granite:class="hide list-option-listfrom-showhide-target foundation-layout-util-vmargin"
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/container">
-                                                <granite:data
-                                                    jcr:primaryType="nt:unstructured"
-                                                    showhidetargetvalue="children"/>
-                                                <items jcr:primaryType="nt:unstructured">
-                                                    <heading
-                                                        granite:class="coral-Heading coral-Heading--4"
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/heading"
-                                                        level="{Long}4"
-                                                        text="Options for Child Pages"/>
-                                                    <well
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/well">
-                                                        <items jcr:primaryType="nt:unstructured">
-                                                            <parentPage
-                                                                jcr:primaryType="nt:unstructured"
-                                                                sling:resourceType="cq/gui/components/coral/common/form/pagefield"
-                                                                fieldDescription="Leave empty to use current page"
-                                                                fieldLabel="Parent Page"
-                                                                name="./parentPage"
-                                                                rootPath="/content"/>
-                                                        </items>
-                                                    </well>
-                                                </items>
-                                            </setChildren>
                                             <setStatic
                                                 granite:class="hide list-option-listfrom-showhide-target foundation-layout-util-vmargin"
                                                 jcr:primaryType="nt:unstructured"
                                                 sling:resourceType="granite/ui/components/coral/foundation/container">
-                                                <granite:data
-                                                    jcr:primaryType="nt:unstructured"
-                                                    showhidetargetvalue="static"/>
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <heading
                                                         granite:class="coral-Heading coral-Heading--4"
@@ -126,8 +72,8 @@
                                                 sling:resourceType="granite/ui/components/coral/foundation/form/select"
                                                 fieldDescription="Choose template based on content type"
                                                 fieldLabel="Select Template"
-                                                name="[./templates]"
                                                 multiple="{Boolean}true"
+                                                name="[./templates]"
                                                 required="{Boolean}true">
                                                 <datasource
                                                     jcr:primaryType="nt:unstructured"
