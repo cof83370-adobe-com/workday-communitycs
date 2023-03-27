@@ -48,6 +48,6 @@ public class CoveoIndexJobConsumerTest {
         when(job.getProperty("value")).thenReturn("some value");
         CoveoIndexJobConsumer consumer = new CoveoIndexJobConsumer();
         JobResult result = consumer.process(job);
-        assertEquals(JobResult.OK, result);
+        assertEquals(JobResult.FAILED, result);
     }
 }

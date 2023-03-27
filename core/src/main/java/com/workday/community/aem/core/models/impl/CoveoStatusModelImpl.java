@@ -10,6 +10,7 @@ import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 
 import com.workday.community.aem.core.models.CoveoStatusModel;
+import com.workday.community.aem.core.services.CoveoSourceApiService;
 import com.workday.community.aem.core.services.QueryService;
 
 /**
@@ -28,24 +29,30 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     @OSGiService 
     private QueryService queryService;
 
+    /** The query service. */
+    @OSGiService 
+    private CoveoSourceApiService coveoSourceApiService;
+
     /** The total pages. */
     private long totalPages;
 
     /** The total indexed pages. */
     private long indexedPages;
-
     @ValueMapValue
     private List<String> templates;
 
     private boolean serverStatus;
 
+    /** The coveo source server status. */
+    private boolean serverHasError;
+
     @PostConstruct
     private void init() {
         totalPages = queryService.getNumOfTotalPages();
+        long number = coveoSourceApiService.getTotalIndexedNumber();
         
-        // @todo Once we have coveo service, then we can get dynamic data.
-        serverStatus = true;
-        indexedPages = 2;
+        serverHasError = number == -1 ? true : false;
+        indexedPages = number == -1 ? 0 : number;
     }
 
     @Override
@@ -74,5 +81,9 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     @Override
     public List<String> getTemplates() {
         return templates;
+    }
+
+    public boolean getServerHasError() {
+        return serverHasError;
     }
 }

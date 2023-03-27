@@ -28,8 +28,9 @@ public interface CoveoStatusModel {
     /**
      * Gets the coveo server status.
      *
-     * @return coveo server status.
+     * @return Cover server has error or not.
      */
+
     boolean getServerStatus();
 
     /**
@@ -38,4 +39,6 @@ public interface CoveoStatusModel {
      * @return List of templates.
      */
     List<String> getTemplates();
+
+    boolean getServerHasError();
 }
