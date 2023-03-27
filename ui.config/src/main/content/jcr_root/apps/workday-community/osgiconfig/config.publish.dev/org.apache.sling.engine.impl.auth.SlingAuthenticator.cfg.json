@@ -3,8 +3,7 @@
   "auth.sudo.cookie":"sling.sudo",
   "auth.http.realm":"Sling (Development)",
   "sling.auth.requirements":[
-    "+/",
-    "+/content/workday-community",
+    "+/content/workday-communityxyz",
     "+/libs/granite/oauth/content/authorization",
     "+/bin"
   ],
