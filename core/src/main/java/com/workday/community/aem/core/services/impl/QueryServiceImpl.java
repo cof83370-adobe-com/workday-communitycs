@@ -76,8 +76,8 @@ public class QueryServiceImpl implements QueryService {
                 queryMap.put(String.format("group.%d_property", i), "jcr:content/cq:template");
                 queryMap.put(String.format("group.%d_property.value", i), templates[i]);
             }
-            queryMap.put("1_property", "cq:lastReplicationAction");
-            queryMap.put("1_property.value", "Activate");
+            // queryMap.put("1_property", "cq:lastReplicationAction");
+            // queryMap.put("1_property.value", "Activate");
             queryMap.put("p.limit", "-1");
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult searchResult = query.getResult();
