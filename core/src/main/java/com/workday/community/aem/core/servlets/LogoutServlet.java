@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.utils.HttpUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -53,14 +54,21 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     response.setContentType(APPLICATION_SLASH_JSON);
     response.setCharacterEncoding(utfName);
 
-    String logoutUrl = String.format("%s/login/signout?fromURI=%s",
-      oktaService.getCustomDomain(),
-      oktaService.getRedirectUri()
-    );
-    response.sendRedirect(logoutUrl);
+    String oktaDomain = oktaService.getCustomDomain();
+    String redirectUri = oktaService.getRedirectUri();
+
+    if (StringUtils.isEmpty(oktaDomain) || StringUtils.isEmpty(redirectUri)) {
+      return;
+    }
+
+    String logoutUrl = String.format("%s/login/signout?fromURI=%s", oktaDomain, redirectUri);
+
     int count = HttpUtils.dropCookies(request, response, "/");
     if (count == 0) {
       logger.debug("no custom cookie to be dropped");
     }
+
+    // Then redirect
+    response.sendRedirect(logoutUrl);
   }
 }
