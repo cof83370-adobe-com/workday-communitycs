@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.models.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -76,7 +77,7 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     @Override
     public List<String> getTemplates() {
-        return templates;
+        return new ArrayList<String>(templates);
     }
 
     @Override

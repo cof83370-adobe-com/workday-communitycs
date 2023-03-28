@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.event.jobs.JobManager;
@@ -10,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -18,7 +18,6 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 class IndexServicesImplTest {
-    private Page rootPage;
     @Mock
     JobManager jobManager;
 
@@ -27,7 +26,9 @@ class IndexServicesImplTest {
 
     @Test
     void indexPagesTest() {
-        List<String> paths = List.of("/page/path");
+        List<String> paths = new ArrayList();
+        paths.add("/page/path");
+        indexServices.batchSize = 20;
         indexServices.indexPages(paths);
         verify(jobManager).addJob(eq(GlobalConstants.COMMUNITY_COVEO_JOB), anyMap());
     }

@@ -1,10 +1,13 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.workday.community.aem.core.config.CoveoIndexApiConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.IndexServices;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.JobManager;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 import java.util.ArrayList;
@@ -23,6 +26,14 @@ public class IndexServicesImpl implements IndexServices {
     @Reference
     JobManager jobManager;
 
+    int batchSize;
+
+    @Activate
+    @Modified
+    protected void activate(CoveoIndexApiConfig coveoIndexApiConfig){
+        batchSize = coveoIndexApiConfig.batchSize();
+    }
+
     /**
      * Create Index jobs for the pages.
      *
@@ -32,7 +43,7 @@ public class IndexServicesImpl implements IndexServices {
         ArrayList<String> pagePaths = new ArrayList<>();
         for (int i = 0; i < paths.size(); i++) {
             pagePaths.add(paths.get(i));
-            if (i + 1 % IndexServices.BATCH_SIZE == 0) {
+            if (i + 1 % batchSize == 0) {
                 if (createJobs(pagePaths) != null) {
                     pagePaths.clear();
                 }

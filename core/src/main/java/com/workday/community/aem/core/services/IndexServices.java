@@ -6,9 +6,6 @@ import java.util.List;
 
 @ProviderType
 public interface IndexServices {
-    /** The Constant index BATCH_SIZE. */
-    Integer BATCH_SIZE = 20;
-
     /**
      * Create Index jobs for the page, and it's child pages.
      *
