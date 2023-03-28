@@ -7,7 +7,7 @@ const signOutObject = {
     icon: 'signoutIcon',
     order: 170,
     description: 'Where user unauthenticated platform',
-    href: '/user/logout',
+    href: '/bin/user/logout',
     children: [],
 };
 

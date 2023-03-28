@@ -28,7 +28,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.APPLICAT
   property = {
     org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Logout Servlet",
       "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-      "sling.servlet.paths=" + "/user/logout"
+      "sling.servlet.paths=" + "/bin/user/logout"
   }
 )
 public class LogoutServlet extends SlingAllMethodsServlet {
