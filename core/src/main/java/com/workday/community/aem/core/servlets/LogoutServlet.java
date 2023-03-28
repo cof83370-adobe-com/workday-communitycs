@@ -7,6 +7,7 @@ import com.workday.community.aem.core.utils.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
@@ -14,11 +15,14 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.Session;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
+import static com.workday.community.aem.core.constants.HttpConstants.LOGIN_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
 
 /**
@@ -63,12 +67,24 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
     String logoutUrl = String.format("%s/login/signout?fromURI=%s", oktaDomain, redirectUri);
 
-    int count = HttpUtils.dropCookies(request, response, "/");
+    // 1: Drop cookies
+    // TODO need check in the future in case needs add more inclusion here.
+    String[] deleteList = new String[] { LOGIN_COOKIE_NAME, COVEO_COOKIE_NAME };
+    int count = HttpUtils.dropCookies(request, response, "/", deleteList);
     if (count == 0) {
       logger.debug("no custom cookie to be dropped");
     }
 
-    // Then redirect
+    // 2: Invalid current AEM session
+    ResourceResolver resourceResolver = request.getResourceResolver();
+    if (resourceResolver != null) {
+      Session session = resourceResolver.adaptTo(Session.class);
+      if (session != null) {
+        session.logout();
+      }
+    }
+
+    // 3: Redirect to Okta logout to invalid Okta session.
     response.sendRedirect(logoutUrl);
   }
 }

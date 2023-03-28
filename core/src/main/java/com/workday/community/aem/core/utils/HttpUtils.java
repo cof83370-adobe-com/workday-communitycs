@@ -8,8 +8,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static com.adobe.acs.commons.util.CookieUtil.addCookie;
-import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 
 /**
  * Utility class for Http request/response related code.
@@ -70,25 +72,28 @@ public class HttpUtils {
    * @return the number of cookies being dropped.
    */
   public static int dropCookies(final HttpServletRequest request, final HttpServletResponse response,
-                                final String cookiePath) {
+                                final String cookiePath, String[] deleteList) {
     final Cookie[] cookies = request.getCookies();
     if (cookies == null) {
       return 0;
     }
 
     int count = 0;
-    for (final Cookie cookie : cookies) {
-      if (cookie == null || cookie.getName().equalsIgnoreCase(EMAIL_NAME)) {
-        continue;
+    boolean hasDeleteList = deleteList != null && deleteList.length > 0;
+    if (hasDeleteList) {
+      List<String> deleteNames = Arrays.asList(deleteList);
+
+      for (final Cookie cookie : cookies) {
+        if (deleteNames.contains(cookie.getName())) {
+          final Cookie responseCookie = (Cookie) cookie.clone();
+          responseCookie.setMaxAge(0);
+          responseCookie.setPath(cookiePath);
+          responseCookie.setValue("");
+
+          addCookie(responseCookie, response);
+          count++;
+        }
       }
-
-      final Cookie responseCookie = (Cookie) cookie.clone();
-      responseCookie.setMaxAge(0);
-      responseCookie.setPath(cookiePath);
-      responseCookie.setValue("");
-
-      addCookie(responseCookie, response);
-      count++;
     }
 
     return count;

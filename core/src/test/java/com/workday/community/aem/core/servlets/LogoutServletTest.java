@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -38,7 +39,7 @@ public class LogoutServletTest {
     when(oktaService.getRedirectUri()).thenReturn("/redirect/uri");
 
     try (MockedStatic<HttpUtils>  mocked = mockStatic(HttpUtils.class)) {
-      mocked.when( ()-> HttpUtils.dropCookies(eq(request), eq(response), anyString())).thenReturn(0);
+      mocked.when( ()-> HttpUtils.dropCookies(eq(request), eq(response), anyString(), any())).thenReturn(0);
       logoutServlet.doGet(request, response);
     }
   }

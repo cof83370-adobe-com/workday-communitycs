@@ -49,7 +49,7 @@ public class HttpUtilsTest {
 
   @Test
   public void testDropCookies() {
-    int count = HttpUtils.dropCookies(request, response, "/");
+    int count = HttpUtils.dropCookies(request, response, "/", new String[]{"test", "testName"});
     assertEquals(2, count);
   }
 }
