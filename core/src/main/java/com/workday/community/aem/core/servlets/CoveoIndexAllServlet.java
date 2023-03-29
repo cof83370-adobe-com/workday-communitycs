@@ -39,6 +39,9 @@ public class CoveoIndexAllServlet extends SlingAllMethodsServlet {
      */
     @Override
     public void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
+        if (!indexServices.isCoveoEnabled()) {
+            return;
+        }
         PrintWriter printOut = response.getWriter();
         response.setContentType("text/html");
         String[] templates = request.getParameterValues("templates");

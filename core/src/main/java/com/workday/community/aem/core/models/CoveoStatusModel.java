@@ -44,4 +44,11 @@ public interface CoveoStatusModel {
      * @return server status.
      */
     boolean getServerHasError();
+
+    /**
+     * Check Coveo enabled or not.
+     *
+     * @return Coveo indexing status.
+     */
+    boolean isCoveoEnabled();
 }

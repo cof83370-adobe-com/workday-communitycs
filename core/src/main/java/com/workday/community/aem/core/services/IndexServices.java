@@ -6,6 +6,14 @@ import java.util.List;
 
 @ProviderType
 public interface IndexServices {
+
+    /**
+     * Returns Coveo indexing enabled oe not.
+     *
+     * @return Coveo enabled.
+     */
+    boolean isCoveoEnabled();
+
     /**
      * Create Index jobs for the page, and it's child pages.
      *

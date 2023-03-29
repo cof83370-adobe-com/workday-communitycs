@@ -50,6 +50,9 @@ class CoveoIndexAllServletTest {
         when(request.getParameterValues("templates")).thenReturn(templates);
 
         MockSlingHttpServletResponse response = mock(MockSlingHttpServletResponse.class);
+
+        when(indexServices.isCoveoEnabled()).thenReturn(true);
+
         PrintWriter printWriter = mock(PrintWriter.class);
         when(response.getWriter()).thenReturn(printWriter);
 

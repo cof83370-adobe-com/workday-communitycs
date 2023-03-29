@@ -20,7 +20,7 @@
     <p id="indexError"></p>
   </div>
 
-  <div class="cmp-coveo-status__actions">
+  <div class="cmp-coveo-status__actions" data-sly-test="${coveo.coveoEnabled}">
     <span><a href="#" id="coveoIndexAllButton" class="cmp-coveo-status__action-reindex"  value="Submit">${'Reindex all contents' @ i18n, context='text'}</a></span>
     <span><a href="#" id="coveoDeleteAllButton" class="cmp-coveo-status__action-clear" value="Submit">${'Clear all indexed data' @ i18n, context='text'}</a></span>
   </div>

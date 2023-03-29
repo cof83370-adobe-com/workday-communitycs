@@ -26,19 +26,25 @@ public class IndexServicesImpl implements IndexServices {
     @Reference
     JobManager jobManager;
 
+    /** Coveo index batch size. */
     int batchSize;
+
+    /** Coveo index enabled. */
+    boolean isCoveoEnabled;
 
     @Activate
     @Modified
     protected void activate(CoveoIndexApiConfig coveoIndexApiConfig){
         batchSize = coveoIndexApiConfig.batchSize();
+        isCoveoEnabled = coveoIndexApiConfig.isCoveoIndexingEnabled();
     }
 
-    /**
-     * Create Index jobs for the pages.
-     *
-     * @param paths
-     */
+    @Override
+    public boolean isCoveoEnabled() {
+        return isCoveoEnabled;
+    }
+
+    @Override
     public void indexPages(List<String> paths) {
         ArrayList<String> pagePaths = new ArrayList<>();
         for (int i = 0; i < paths.size(); i++) {

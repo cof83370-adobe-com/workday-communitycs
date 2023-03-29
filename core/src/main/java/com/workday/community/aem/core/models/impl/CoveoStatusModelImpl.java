@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import com.workday.community.aem.core.services.IndexServices;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
@@ -37,6 +38,10 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     @OSGiService 
     private CoveoSourceApiService coveoSourceApiService;
 
+    /** The query service. */
+    @OSGiService
+    private IndexServices indexServices;
+
     /** The total pages. */
     private long totalPages;
 
@@ -52,7 +57,6 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     private void init() {
         totalPages = queryService.getNumOfTotalPages();
         long number = coveoSourceApiService.getTotalIndexedNumber();
-        
         serverHasError = number == -1 ? true : false;
         indexedPages = number == -1 ? 0 : number;
     }
@@ -84,4 +88,10 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     public boolean getServerHasError() {
         return serverHasError;
     }
+
+    @Override
+    public boolean isCoveoEnabled() {
+        return indexServices.isCoveoEnabled();
+    }
+
 }

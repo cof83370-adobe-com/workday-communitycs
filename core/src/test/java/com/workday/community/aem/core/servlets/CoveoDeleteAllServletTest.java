@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.servlets;
 
 import com.workday.community.aem.core.services.CoveoPushApiService;
+import com.workday.community.aem.core.services.IndexServices;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
@@ -18,6 +19,10 @@ import static org.mockito.Mockito.*;
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class CoveoDeleteAllServletTest {
 
+    /** Index service. */
+    @Mock
+    private IndexServices indexServices;
+
     /** The push API service. */
     @Mock
     private CoveoPushApiService coveoPushApiService;
@@ -31,6 +36,8 @@ class CoveoDeleteAllServletTest {
         MockSlingHttpServletResponse response = mock(MockSlingHttpServletResponse.class);
         PrintWriter printWriter = mock(PrintWriter.class);
         when(response.getWriter()).thenReturn(printWriter);
+
+        when(indexServices.isCoveoEnabled()).thenReturn(true);
 
         servlet.doDelete(request, response);
         verify(coveoPushApiService).callDeleteAllItemsUri();
