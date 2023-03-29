@@ -1,0 +1,5 @@
+{
+    "apiUri":"$[env:USER_GROUP_URI]",
+    "xApiKey":"$[secret:USER_GROUP_X_API_KEY",
+    "token":"$[secret:USER_GROUP_AUTHORIZATION]"
+  }
