@@ -1,6 +1,6 @@
 {
-  "alloworigin":["https://preview.workdayit5.com","preview.workdayit5.com"],
-  "alloworiginregexp":[".*","*.*","*"],
+  "alloworigin":["https://preview.workdayit5.com"],
+  "alloworiginregexp":[""],
   "allowedpaths":[ ".*/saml_login",".*","*.*","*"],
   "exposedheaders":[
     ""
