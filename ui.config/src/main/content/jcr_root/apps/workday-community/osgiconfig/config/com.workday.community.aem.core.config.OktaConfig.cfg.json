@@ -1,0 +1,4 @@
+{
+    "customDomain":"the Okta domain",
+    "redirectUri":"the-okta-logout-redirect-path"
+}
