@@ -1,5 +1,5 @@
 {
-  "alloworigin":["https://preview.workdayit5.com","preview.workdayit5.com"],
+  "alloworigin":["$[env:oktaAllowOrigin]"],
   "alloworiginregexp":[".*","*.*","*"],
   "allowedpaths":[ ".*/saml_login",".*","*.*","*"],
   "exposedheaders":[
@@ -13,8 +13,7 @@
     "Content-Type",
     "Access-Control-Request-Method",
     "Access-Control-Request-Headers",
-    "Authorization",
-    "CSRF-Token"
+    "Authorization"
   ],
   "supportedmethods":[
     "GET",
