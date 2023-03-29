@@ -26,7 +26,7 @@ public interface CoveoStatusModel {
     /**
      * Gets the coveo server status.
      *
-     * @return coveo server status.
+     * @return Cover server has error or not.
      */
-    boolean getServerStatus();
+    boolean getServerHasError();
 }

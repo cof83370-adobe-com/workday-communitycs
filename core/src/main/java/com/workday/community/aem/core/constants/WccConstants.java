@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.constants;
 
-public class WCCConstants {
+public class WccConstants {
 
     public static final String PROFILE_SOURCE_ID	= "./profile/sourceId";
 

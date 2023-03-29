@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.utils;
 
 
-import com.workday.community.aem.core.constants.WCCConstants;
+import com.workday.community.aem.core.constants.WccConstants;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -23,7 +23,7 @@ public class CommonUtils {
 		String sfId = null;
 		try {
 			User user = (User) userManager.getAuthorizable(session.getUserID());
-			sfId = user.getProperty(WCCConstants.PROFILE_SOURCE_ID) != null ? user.getProperty(WCCConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+			sfId = user.getProperty(WccConstants.PROFILE_SOURCE_ID) != null ? user.getProperty(WccConstants.PROFILE_SOURCE_ID)[0].getString() : null;
 		} catch (RepositoryException e) {
 			LOGGER.error("Exception in getLoggedInUserSourceId method %s",e.getMessage());
 		}
@@ -36,7 +36,7 @@ public class CommonUtils {
 		String userId = null;
 		try {
 			User user = (User) userManager.getAuthorizable(session.getUserID());
-			userId =user.getProperty(WCCConstants.PROFILE_OKTA_ID)!=null?user.getProperty(WCCConstants.PROFILE_OKTA_ID)[0].getString():null;
+			userId =user.getProperty(WccConstants.PROFILE_OKTA_ID)!=null?user.getProperty(WccConstants.PROFILE_OKTA_ID)[0].getString():null;
 		} catch (RepositoryException e) {
 			LOGGER.error("Exception in getLoggedInUserSourceId method = {}",e.getMessage());
 		}
@@ -50,7 +50,7 @@ public class CommonUtils {
 		String ccType = null;
 		try {
 			User user = (User) userManager.getAuthorizable(session.getUserID());
-			ccType =user.getProperty(WCCConstants.CC_TYPE)!=null?user.getProperty(WCCConstants.CC_TYPE)[0].getString():null;
+			ccType =user.getProperty(WccConstants.CC_TYPE)!=null?user.getProperty(WccConstants.CC_TYPE)[0].getString():null;
 		} catch (RepositoryException e) {
 			LOGGER.error("Exception in getLoggedInUserSourceId method = {}",e.getMessage());
 		}

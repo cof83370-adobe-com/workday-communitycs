@@ -1,0 +1,28 @@
+<div class="cmp-metadata" data-cmp-is="cmp-metadata"  data-sly-use.metadata="${'com.workday.community.aem.core.models.Metadata'}">
+    <span class="cmp-metadata__item" data-sly-test.postedDate="${metadata.postedDate}">
+        <span class="cmp-metadata__item-label">${'Posted' @ i18n, context='text'} </span>
+        <span class="cmp-metadata__item-output" data-cmp-hook-metadata="posted">${'MMM dd, YYYY' @ format=postedDate}</span>
+    </span>
+    <span class="cmp-metadata__item" data-sly-test.updatedDate="${metadata.updatedDate}">
+        <span class="cmp-metadata__item-label">${'Updated' @ i18n, context='text'} </span>
+        <span class="cmp-metadata__item-output" data-cmp-hook-metadata="updated">${'MMM dd, YYYY' @ format=updatedDate}</span>
+    </span>
+    <span class="cmp-metadata__item" data-sly-test.authorName="${metadata.authorName}">
+        <span class="cmp-metadata__item-label">${'Posted By' @ i18n, context='text'}:</span>
+        <span class="cmp-metadata__item-output" data-cmp-hook-metadata="postedby">${authorName @ context ='text'}</span>
+    </span>
+    <span class="cmp-metadata__item"  data-sly-test="${pageProperties.readCount}">
+        <span class="cmp-metadata__item-label">${'Read' @ i18n, context='text'}</span>
+        <span class="cmp-metadata__item-output" data-cmp-hook-metadata="read">${pageProperties.readCount @ i18n, context='text'} 
+        <sly data-sly-test="${pageProperties.readCount > 1}" >
+          ${'times' @ i18n, context='text'}
+        </sly> 
+        <sly data-sly-test="${pageProperties.readCount <= 1}" >
+          ${'time' @ i18n, context='text'}
+        </sly> 
+        </span>
+    </span>
+</div>
+
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
+    data-sly-call="${template.placeholder @ isEmpty = !metadata.authorName, classAppend='cmp-metadata'}"></sly>
