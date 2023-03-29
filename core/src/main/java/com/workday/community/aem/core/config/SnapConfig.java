@@ -13,7 +13,13 @@ public @interface SnapConfig {
   String snapUrl();
 
   @AttributeDefinition(name = "Snap logic Context API Url", description = "Sanplogic Context Url.", type = AttributeType.STRING)
-  String snapContextUrl();
+  String snapContextUrl() default "/ipe/qa/contact/context?id=%s";
+
+  @AttributeDefinition(name = "Snap logic context Api Token", description = "Nav menu api token.", type = AttributeType.STRING)
+  String snapContextApiToken();
+
+  @AttributeDefinition(name = "Snap logic Context Api key", description = "Snap logic Context API key.", type = AttributeType.STRING)
+  String snapContextApiKey();
 
   @AttributeDefinition(name = "Nav API", description = "Nav menu api endpoint.", type = AttributeType.STRING)
   String navApi() default "/contact/menu?id=%s";
@@ -24,17 +30,14 @@ public @interface SnapConfig {
   @AttributeDefinition(name = "Nav Api Token", description = "Nav menu api token.", type = AttributeType.STRING)
   String navApiToken();
 
-  @AttributeDefinition(name = "Snap logic context Api Token", description = "Nav menu api token.", type = AttributeType.STRING)
-  String snapContextApiToken();
-
   @AttributeDefinition(name = "Profile Avatar Url endpoint", description = "Profile Avatar Url endpoint", type = AttributeType.STRING)
   String sfdcUserAvatarUrl();
 
   @AttributeDefinition(name = "Profile Avatar Url  Token", description = "Profile Avatar Url token.", type = AttributeType.STRING)
   String sfdcUserAvatarToken();
 
-  @AttributeDefinition(name = "Sfdc Api key", description = "Sfdc Api key.", type = AttributeType.STRING)
-  String sfdcApiKey();
+  @AttributeDefinition(name = "Profile Avatar Api key", description = "Profile Avatar Api key.", type = AttributeType.STRING)
+  String sfdcUserAvatarApiKey();
 
   @AttributeDefinition(name = "Fallback Menu Data", description = "Fallback Menu Data.", type = AttributeType.STRING)
   String fallbackMenuData() default "/content/dam/workday-community/jcr-content/FailStateHeaderData.json";

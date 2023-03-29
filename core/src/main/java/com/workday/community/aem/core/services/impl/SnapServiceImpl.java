@@ -112,8 +112,8 @@ public class SnapServiceImpl implements SnapService {
   public JsonObject getUserContext(String sfId) {
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
-      String url = String.format(config.snapUrl()+ config.snapContextUrl(), sfId);
-      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.sfdcApiKey());
+      String url = String.format(config.snapUrl() + config.snapContextUrl(), sfId);
+      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);
     } catch (Exception e) {
       logger.error("Error in getUserContext method :: {}", e.getMessage());
@@ -136,7 +136,7 @@ public class SnapServiceImpl implements SnapService {
 
     try {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto()..." + config.snapUrl() + config.sfdcUserAvatarUrl());
-      String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcApiKey());
+      String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
       if (jsonResponse != null) {
         return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
       }

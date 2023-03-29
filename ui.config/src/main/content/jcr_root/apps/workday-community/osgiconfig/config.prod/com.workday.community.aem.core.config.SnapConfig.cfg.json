@@ -1,0 +1,16 @@
+
+{
+    "snapUrl":"$[env:snapUrl]",
+    "snapContextUrl":"/ipe/qa/contact/context?id=%s",
+    "snapContextApiToken":"$[secret:snapContextApiToken]",
+    "snapContextApiKey":"$[secret:snapContextApiKey]",
+    "navApi":"replace-with-real-snap-navigation-api-endpoint",
+    "navApiKey":"replace-with-real-nav-api-key",
+    "navApiToken":"replace-with-real-nav-api-token",
+    "sfdcUserAvatarUrl": "replace-with-real-sf-user-avatar-endpoint",
+    "sfdcUserAvatarToken": "replace-with-real-sf-user-avatar-api-token",
+    "sfdcUserAvatarApiKey": "replace-with-real-sf-api-token",
+    "fallbackMenuData": "/content/dam/workday-community/jcr-content/FailStateHeaderData.json",
+    "fallbackMenuServiceUser": "navserviceuser",
+    "beta": true
+}

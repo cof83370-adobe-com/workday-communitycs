@@ -1,5 +1,0 @@
-{
-    "apiUri":"$[env:ourmUserGroupUri]",
-    "xApiKey":"$[secret:ourmUserGroupXApiKey",
-    "token":"$[secret:ourmUserGroupToken]"
-  }

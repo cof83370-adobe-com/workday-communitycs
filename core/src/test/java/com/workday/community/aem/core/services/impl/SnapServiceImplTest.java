@@ -111,8 +111,12 @@ public class SnapServiceImplTest {
         return "TestPhotoToken";
       }
 
-      public String sfdcApiKey() {
-        return "testSfApiToken";
+      public String snapContextApiKey() {
+        return "testSnapContextApiKey";
+      }
+
+      public String sfdcUserAvatarApiKey() {
+        return "testSfdcUserAvatarApiKey";
       }
 
       @Override
