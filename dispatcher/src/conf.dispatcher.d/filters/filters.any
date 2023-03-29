@@ -6,7 +6,8 @@
 
 $include "./default_filters.any"
 
-/0100 { /type "allow" /method "POST" /url "*/saml_login" }
+#Enable SAML
+/0100 { /type "allow" /method "POST" /url "/content/workday-community/saml_login" }
 
 # Allow components JSON model
 /0101 { /type "allow" /extension "json" /selectors "model" /path "/content/*" }
@@ -14,18 +15,11 @@ $include "./default_filters.any"
 # Allow manifest.webmanifest files located in the content
 /0102 { /type "allow" /extension "webmanifest" /path "/content/*/manifest" }
 
-#Enable SAML
-/0203 { /type "allow" /method "POST" /url "/content/workday-community/saml_login" }
-/0204 { /type "allow" /method "GET" /path "/bin/user/logout*" }
-/0205 { /type "allow" /method "GET" /path "/bin/user/session*" }
+
+
 
 #Enable DAM Access
 /0220 { /type "allow" /method "GET" /path "/content/dam/workday-community/*" }
-
-/0121 { /type "allow" /method "GET" /path "/bin/locations" }
-
-#User Token and Context
-/0122 { /type "allow" /method "GET" /path "/bin/search" }
 
 
 /0998 { /type "deny" /method "GET" /url "/etc/cloudsettings.kernel.js*" }
