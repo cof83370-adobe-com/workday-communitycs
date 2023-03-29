@@ -30,6 +30,12 @@ public @interface SnapConfig {
   @AttributeDefinition(name = "Nav Api Token", description = "Nav menu api token.", type = AttributeType.STRING)
   String navApiToken();
 
+  @AttributeDefinition(name = "Fallback Menu Data", description = "Fallback Menu Data.", type = AttributeType.STRING)
+  String navFallbackMenuData() default "/content/dam/workday-community/jcr-content/FailStateHeaderData.json";
+
+  @AttributeDefinition(name = "Fallback Menu Service user", description = "Fallback Menu service user.", type = AttributeType.STRING)
+  String navFallbackMenuServiceUser() default "navserviceuser";
+
   @AttributeDefinition(name = "Profile Avatar Url endpoint", description = "Profile Avatar Url endpoint", type = AttributeType.STRING)
   String sfdcUserAvatarUrl();
 
@@ -38,12 +44,6 @@ public @interface SnapConfig {
 
   @AttributeDefinition(name = "Profile Avatar Api key", description = "Profile Avatar Api key.", type = AttributeType.STRING)
   String sfdcUserAvatarApiKey();
-
-  @AttributeDefinition(name = "Fallback Menu Data", description = "Fallback Menu Data.", type = AttributeType.STRING)
-  String fallbackMenuData() default "/content/dam/workday-community/jcr-content/FailStateHeaderData.json";
-
-  @AttributeDefinition(name = "Fallback Menu Service user", description = "Fallback Menu service user.", type = AttributeType.STRING)
-  String fallbackMenuServiceUser() default "navserviceuser";
 
   @AttributeDefinition(name = "enable AEM beta", description = "AEM Beta?", type = AttributeType.STRING)
   boolean beta() default true;

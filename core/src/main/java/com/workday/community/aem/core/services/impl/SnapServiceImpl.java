@@ -149,8 +149,8 @@ public class SnapServiceImpl implements SnapService {
   private String getMergedHeaderMenu(JsonObject sfNavObj) {
     // Reading the JSON File from DAM
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
-      config.fallbackMenuServiceUser())) {
-      Resource resource = resourceResolver.getResource(config.fallbackMenuData());
+      config.navFallbackMenuServiceUser())) {
+      Resource resource = resourceResolver.getResource(config.navFallbackMenuData());
       Asset asset = resource.adaptTo(Asset.class);
       Resource original = asset.getOriginal();
       InputStream content = original.adaptTo(InputStream.class);
