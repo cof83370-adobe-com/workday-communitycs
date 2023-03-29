@@ -67,6 +67,12 @@ public class CoveoIndexJobConsumer implements JobConsumer {
 
     /**
 	 * Start coveo deleteing.
+     * 
+     * @param paths Page paths
+     * @param resolverFactory The resolverFactory service
+     * @param externalizer Externalizer service
+     * @param coveoPushApiService The coveoPushApiService
+	 * @return Job result
 	 */
     public JobResult startCoveoDelete(ArrayList<String> paths, ResourceResolverFactory resolverFactory, Externalizer externalizer, CoveoPushApiService coveoPushApiService) {
         Boolean hasError = false;
@@ -83,6 +89,11 @@ public class CoveoIndexJobConsumer implements JobConsumer {
 
     /**
 	 * Start coveo indexing.
+     * 
+     * @param paths Page paths
+     * @param extractPagePropertiesService The extractPagePropertiesService
+     * @param coveoPushApiService The coveoPushApiService
+	 * @return Job result
 	 */
     public JobResult startCoveoIndex(ArrayList<String> paths, ExtractPagePropertiesService extractPagePropertiesService, CoveoPushApiService coveoPushApiService) {
         ArrayList<Object> payload = new ArrayList<Object>();
