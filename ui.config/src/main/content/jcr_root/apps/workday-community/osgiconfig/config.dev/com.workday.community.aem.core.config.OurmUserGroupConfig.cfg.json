@@ -1,5 +1,5 @@
 {
-    "apiUri":"$[env:OURM_USER_GROUP_URI]",
-    "xApiKey":"$[secret:OURM_USER_GROUP_X_API_KEY",
-    "token":"$[secret:OURM_USER_GROUP_AUTHORIZATION]"
+    "apiUri":"$[env:ourmUserGroupUri]",
+    "xApiKey":"$[secret:ourmUserGroupXApiKey",
+    "token":"$[secret:ourmUserGroupToken]"
   }
