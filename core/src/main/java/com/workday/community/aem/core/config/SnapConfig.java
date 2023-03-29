@@ -13,7 +13,7 @@ public @interface SnapConfig {
   String snapUrl();
 
   @AttributeDefinition(name = "Snap logic Context API Url", description = "Sanplogic Context Url.", type = AttributeType.STRING)
-  String snapContextUrl() default "/ipe/qa/contact/context?id=%s";
+  String snapContextUrl();
 
   @AttributeDefinition(name = "Snap logic context Api Token", description = "Nav menu api token.", type = AttributeType.STRING)
   String snapContextApiToken();

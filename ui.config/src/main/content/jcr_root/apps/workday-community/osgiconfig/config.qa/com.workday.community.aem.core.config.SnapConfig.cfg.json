@@ -1,7 +1,7 @@
 
 {
     "snapUrl":"$[env:snapUrl]",
-    "snapContextUrl":"/ipe/qa/contact/context?id=%s",
+    "snapContextUrl":"$[env:snapContextUrl]",
     "snapContextApiToken":"$[secret:snapContextApiToken]",
     "snapContextApiKey":"$[secret:snapContextApiKey]",
     "navApi":"replace-with-real-snap-navigation-api-endpoint",
