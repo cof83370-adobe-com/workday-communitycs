@@ -111,17 +111,21 @@ public class SnapServiceImplTest {
         return "TestPhotoToken";
       }
 
-      public String sfdcApiKey() {
-        return "testSfApiToken";
+      public String snapContextApiKey() {
+        return "testSnapContextApiKey";
+      }
+
+      public String sfdcUserAvatarApiKey() {
+        return "testSfdcUserAvatarApiKey";
       }
 
       @Override
-      public String fallbackMenuData() {
+      public String navFallbackMenuData() {
         return "/content/dam/workday-community/jcr:content/FailStateHeaderData.json";
       }
 
       @Override
-      public String fallbackMenuServiceUser() {
+      public String navFallbackMenuServiceUser() {
         return "navserviceuser";
       }
 
