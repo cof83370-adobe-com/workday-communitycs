@@ -1,10 +1,16 @@
 package com.workday.community.aem.core.models.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 
+import com.workday.community.aem.core.services.IndexServices;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
+import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 
 import com.workday.community.aem.core.models.CoveoStatusModel;
 import com.workday.community.aem.core.services.CoveoSourceApiService;
@@ -16,7 +22,9 @@ import com.workday.community.aem.core.services.QueryService;
 @Model(
         adaptables = SlingHttpServletRequest.class,
         adapters = {CoveoStatusModel.class},
-        resourceType = {CoveoStatusModelImpl.RESOURCE_TYPE})
+        resourceType = {CoveoStatusModelImpl.RESOURCE_TYPE},
+        defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     /** The Constant RESOURCE_TYPE. */
@@ -30,11 +38,17 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     @OSGiService 
     private CoveoSourceApiService coveoSourceApiService;
 
+    /** The query service. */
+    @OSGiService
+    private IndexServices indexServices;
+
     /** The total pages. */
     private long totalPages;
 
     /** The total indexed pages. */
     private long indexedPages;
+    @ValueMapValue
+    private List<String> templates;
 
     /** The coveo source server status. */
     private boolean serverHasError;
@@ -43,7 +57,6 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     private void init() {
         totalPages = queryService.getNumOfTotalPages();
         long number = coveoSourceApiService.getTotalIndexedNumber();
-        
         serverHasError = number == -1 ? true : false;
         indexedPages = number == -1 ? 0 : number;
     }
@@ -64,10 +77,21 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
             return (float) 0.0;
         }
         return (float) indexedPages / totalPages;
-    } 
+    }
+
+    @Override
+    public List<String> getTemplates() {
+        return new ArrayList<String>(templates);
+    }
 
     @Override
     public boolean getServerHasError() {
         return serverHasError;
-    } 
+    }
+
+    @Override
+    public boolean isCoveoEnabled() {
+        return indexServices.isCoveoEnabled();
+    }
+
 }

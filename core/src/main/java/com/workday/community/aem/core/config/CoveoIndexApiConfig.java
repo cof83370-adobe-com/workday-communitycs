@@ -51,4 +51,11 @@ public @interface CoveoIndexApiConfig {
         type = AttributeType.STRING
     )
     String sourceId();
+
+    @AttributeDefinition (
+            name = "Batch size",
+            description = "Coveo job batch size.",
+            type = AttributeType.INTEGER
+    )
+    int batchSize() default 50;
 }
