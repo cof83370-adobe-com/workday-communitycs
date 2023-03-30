@@ -112,8 +112,8 @@ public class SnapServiceImpl implements SnapService {
   public JsonObject getUserContext(String sfId) {
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
-      String url = String.format(config.snapUrl()+ config.snapContextUrl(), sfId);
-      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.sfdcApiKey());
+      String url = String.format(config.snapUrl() + config.snapContextUrl(), sfId);
+      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);
     } catch (Exception e) {
       logger.error("Error in getUserContext method :: {}", e.getMessage());
@@ -136,7 +136,7 @@ public class SnapServiceImpl implements SnapService {
 
     try {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto()..." + config.snapUrl() + config.sfdcUserAvatarUrl());
-      String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcApiKey());
+      String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
       if (jsonResponse != null) {
         return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
       }
@@ -149,8 +149,8 @@ public class SnapServiceImpl implements SnapService {
   private String getMergedHeaderMenu(JsonObject sfNavObj) {
     // Reading the JSON File from DAM
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
-      config.fallbackMenuServiceUser())) {
-      Resource resource = resourceResolver.getResource(config.fallbackMenuData());
+      config.navFallbackMenuServiceUser())) {
+      Resource resource = resourceResolver.getResource(config.navFallbackMenuData());
       Asset asset = resource.adaptTo(Asset.class);
       Resource original = asset.getOriginal();
       InputStream content = original.adaptTo(InputStream.class);
