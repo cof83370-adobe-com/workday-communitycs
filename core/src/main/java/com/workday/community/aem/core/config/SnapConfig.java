@@ -34,7 +34,7 @@ public @interface SnapConfig {
   String navFallbackMenuData() default "/content/dam/workday-community/jcr-content/FailStateHeaderData.json";
 
   @AttributeDefinition(name = "Fallback Menu Service user", description = "Fallback Menu service user.", type = AttributeType.STRING)
-  String navFallbackMenuServiceUser() default "navserviceuser";
+  String navFallbackMenuServiceUser() default "readserviceuser";
 
   @AttributeDefinition(name = "Profile Avatar Url endpoint", description = "Profile Avatar Url endpoint", type = AttributeType.STRING)
   String sfdcUserAvatarUrl();
