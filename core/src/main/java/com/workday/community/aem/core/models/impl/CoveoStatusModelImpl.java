@@ -55,7 +55,7 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     @PostConstruct
     private void init() {
-        totalPages = queryService.getNumOfTotalPages();
+        totalPages = queryService.getNumOfTotalPublishedPages();
         long number = coveoSourceApiService.getTotalIndexedNumber();
         serverHasError = number == -1 ? true : false;
         indexedPages = number == -1 ? 0 : number;

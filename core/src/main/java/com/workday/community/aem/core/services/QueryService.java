@@ -4,16 +4,16 @@ import java.util.List;
 
 public interface QueryService {
     /**
-	 * Gets the total number of pages.
+	 * Gets the total number of published pages.
 	 *
 	 * @return The total number of pages.
 	 */
-    long getNumOfTotalPages();
+    long getNumOfTotalPublishedPages();
 
 	/**
 	 * Gets the pages by templates.
 	 *
 	 * @return List of page path.
 	 */
-	List getPagesByTemplates(String[] templates);
+	List<String> getPagesByTemplates(String[] templates);
 }

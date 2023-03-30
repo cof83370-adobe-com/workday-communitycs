@@ -71,11 +71,11 @@ class QueryServiceImplTest {
       lenient().when(query.getResult()).thenReturn(result);
       lenient().when(result.getTotalMatches()).thenReturn(10l);
 
-      assertEquals(10, queryService.getNumOfTotalPages());
+      assertEquals(10, queryService.getNumOfTotalPublishedPages());
 
       // case 1
       mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenThrow(new RuntimeException());
-      assertEquals(0, queryService.getNumOfTotalPages());
+      assertEquals(0, queryService.getNumOfTotalPublishedPages());
     }
   }
 

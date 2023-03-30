@@ -42,16 +42,18 @@ public class QueryServiceImpl implements QueryService {
     ResourceResolverFactory resourceResolverFactory;
 
     /** The service user. */
-    public static final String SERVICE_USER = "queryserviceuser";
+    public static final String SERVICE_USER = "readserviceuser";
 
     @Override
-    public long getNumOfTotalPages() {
+    public long getNumOfTotalPublishedPages() {
         long totalResults = 0;
         Session session;
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
             queryMap.put("type", "cq:Page");
+            queryMap.put("1_property", "cq:lastReplicationAction");
+            queryMap.put("1_property.value", "Activate");
 
             session = resourceResolver.adaptTo(Session.class);
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
@@ -64,7 +66,7 @@ public class QueryServiceImpl implements QueryService {
     }
 
     @Override
-    public List getPagesByTemplates(String[] templates) {
+    public List<String> getPagesByTemplates(String[] templates) {
         Session session = null;
         List<String> paths = new ArrayList<>();
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {

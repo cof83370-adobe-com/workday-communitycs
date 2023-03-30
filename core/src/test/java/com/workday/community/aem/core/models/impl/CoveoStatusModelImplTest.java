@@ -42,7 +42,7 @@ public class CoveoStatusModelImplTest {
         context.registerService(QueryService.class, queryService);
         context.registerService(CoveoSourceApiService.class, coveoSourceApiService);
         lenient().when(coveoSourceApiService.getTotalIndexedNumber()).thenReturn((long) 2);
-        lenient().when(queryService.getNumOfTotalPages()).thenReturn((long) 20);
+        lenient().when(queryService.getNumOfTotalPublishedPages()).thenReturn((long) 20);
         context.registerService(Page.class, currentPage);
     }
 
