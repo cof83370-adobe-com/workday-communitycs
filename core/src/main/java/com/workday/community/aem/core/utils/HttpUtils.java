@@ -68,6 +68,7 @@ public class HttpUtils {
    * @param request The HttpServletRequest object.
    * @param response The HttpServletResponse object.
    * @param cookiePath The Cookie path.
+   * @param deleteList the list of cookie names to be deleted.
    *
    * @return the number of cookies being dropped.
    */

@@ -62,6 +62,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     String redirectUri = oktaService.getRedirectUri();
 
     if (StringUtils.isEmpty(oktaDomain) || StringUtils.isEmpty(redirectUri)) {
+      logger.error("Okta domain and logout redirect Url are not configured, please contact admin.");
       return;
     }
 
