@@ -5,5 +5,6 @@
     "sourceApiUri":"https://platform.cloud.coveo.com/rest/organizations/",
     "organizationId":"Test organization id",
     "sourceId":"Test source id",
-    "apiKey":"Test api key"
+    "apiKey":"Test api key",
+    "batchSize": 50
   }

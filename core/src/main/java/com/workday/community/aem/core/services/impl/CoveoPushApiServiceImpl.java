@@ -110,7 +110,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     }
 
     @Override
-    public void callDeleteAllItemsUri() {
+    public Integer callDeleteAllItemsUri() {
         // Coveo reference https://docs.coveo.com/en/131/index-content/deleting-old-items-in-a-push-source.
         HashMap<String, String> header = new HashMap<String, String>();
         header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
@@ -119,10 +119,11 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
             logger.error("Deleting all items from coveo failed with status code {}: {}.", response.get("statusCode"), response.get("response").toString());
         }
+        return (Integer) response.get("statusCode");
     }
 
     @Override
-    public void callDeleteSingleItemUri(String documentId) {
+    public Integer callDeleteSingleItemUri(String documentId) {
         // Coveo reference https://docs.coveo.com/en/171/index-content/deleting-an-item-and-optionally-its-children-in-a-push-source.
         HashMap<String, String> header = new HashMap<String, String>();
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
@@ -130,6 +131,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
             logger.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId, response.get("statusCode"), response.get("response").toString());
         }
+        return (Integer) response.get("statusCode");
     }
 
     @Override

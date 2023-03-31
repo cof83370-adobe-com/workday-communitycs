@@ -12,19 +12,19 @@ public interface CoveoSourceApiService {
 	 *
 	 * @return The api uri
 	 */
-    public String generateSourceApiUri();
+    String generateSourceApiUri();
 
 	/**
 	 * Call Api.
 	 *
 	 * @return The api response
 	 */
-    public HashMap<String, Object> callApi();
+    HashMap<String, Object> callApi();
 
     /**
 	 * Get total indexed number.
 	 *
 	 * @return The number of indexed pages
 	 */
-    public long getTotalIndexedNumber();
+    long getTotalIndexedNumber();
 }
