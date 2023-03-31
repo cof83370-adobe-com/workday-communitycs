@@ -600,6 +600,32 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:styleGroups jcr:primaryType="nt:unstructured">
                             <item0
+                                cq:styleGroupLabel="Container Styles"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="col-equal-33-33-33"
+                                        cq:styleId="1680281702241"
+                                        cq:styleLabel="33/33/33"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="col-left-33-right-66"
+                                        cq:styleId="1680281868041"
+                                        cq:styleLabel="33/66"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="col-left-66-right-33"
+                                        cq:styleId="1680281906479"
+                                        cq:styleLabel="66/33"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item3
+                                        cq:styleClasses="icon-card "
+                                        cq:styleId="1680282107912"
+                                        cq:styleLabel="Icon Card"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                            <item1
                                 cq:styleGroupLabel="Spacing"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
@@ -684,7 +710,7 @@
                                         cq:styleLabel="Add margin bottom 8px"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item0>
+                            </item1>
                         </cq:styleGroups>
                     </policy_1809301152227968>
                     <policy_1678388306174
