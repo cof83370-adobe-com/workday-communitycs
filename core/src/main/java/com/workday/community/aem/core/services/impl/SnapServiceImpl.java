@@ -43,18 +43,21 @@ import java.util.Date;
 )
 @Designate(ocd = SnapConfig.class)
 public class SnapServiceImpl implements SnapService {
+
+  /** The logger. */
   private final static Logger logger = LoggerFactory.getLogger(SnapService.class);
 
-  /**
-   * The resource resolver factory.
-   */
+  /** The resource resolver factory. */
   @Reference
   ResourceResolverFactory resResolverFactory;
 
+  /** The snap Config. */
   private SnapConfig config;
 
+  /** The ObjectMapper serice. */
   private ObjectMapper objectMapper;
 
+  /** The gson service. */
   private final Gson gson = new Gson();
 
   @Activate
@@ -71,19 +74,20 @@ public class SnapServiceImpl implements SnapService {
     this.resResolverFactory = resourceResolverFactory;
   }
 
+  @Override
   public String getUserHeaderMenu(String sfId) {
     String snapUrl = config.snapUrl(), navApi = config.navApi(),
       apiToken = config.navApiToken(), apiKey = config.navApiKey();
 
     if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(snapUrl) ||
       StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
-      // No Snap configuration provided, just return the default one
+      // No Snap configuration provided, just return the default one.
       return this.getMergedHeaderMenu(null);
     }
 
     try {
       String url = CommunityUtils.formUrl(snapUrl, navApi);
-      url = String.format("%s/%s", url, sfId);
+      url = String.format(url, sfId);
 
       String traceId = "Community AEM-" + new Date().getTime();
       // Execute the request.
@@ -127,12 +131,9 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public ProfilePhoto getProfilePhoto(String userId) {
     String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
-    if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(avatarUrl)) {
-      return null;
-    }
 
     String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
-    url = String.format("%s/%s", url, userId);
+    url = String.format(url, userId);
 
     try {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto()..." + config.snapUrl() + config.sfdcUserAvatarUrl());
@@ -146,6 +147,12 @@ public class SnapServiceImpl implements SnapService {
     return null;
   }
 
+  /**
+   * Get merged header menu.
+   * 
+   * @param sfNavObj The json object of nav.
+   * @return The menu.
+   */
   private String getMergedHeaderMenu(JsonObject sfNavObj) {
     // Reading the JSON File from DAM
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
@@ -155,7 +162,7 @@ public class SnapServiceImpl implements SnapService {
       Resource original = asset.getOriginal();
       InputStream content = original.adaptTo(InputStream.class);
       if (content == null) {
-        logger.error("content is null in SnaServiceImpl");
+        logger.error("Content is null in SnaServiceImpl.");
         return "";
       }
       StringBuilder sb = new StringBuilder();
