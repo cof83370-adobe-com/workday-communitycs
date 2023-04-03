@@ -52,7 +52,7 @@ public class QueryServiceImpl implements QueryService {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
             queryMap.put("type", "cq:Page");
-            queryMap.put("1_property", "cq:lastReplicationAction");
+            queryMap.put("1_property", "jcr:content/cq:lastReplicationAction");
             queryMap.put("1_property.value", "Activate");
 
             session = resourceResolver.adaptTo(Session.class);
@@ -78,7 +78,7 @@ public class QueryServiceImpl implements QueryService {
                 queryMap.put(String.format("group.%d_property", i), "jcr:content/cq:template");
                 queryMap.put(String.format("group.%d_property.value", i), templates[i]);
             }
-            queryMap.put("1_property", "cq:lastReplicationAction");
+            queryMap.put("1_property", "jcr:content/cq:lastReplicationAction");
             queryMap.put("1_property.value", "Activate");
             queryMap.put("p.limit", "-1");
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
