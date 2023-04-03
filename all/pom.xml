@@ -233,7 +233,7 @@
         <dependency>
                 <groupId>com.workday.community.migration</groupId>
                 <artifactId>workday-community-migration</artifactId>
-                <version>0.0.12-SNAPSHOT</version>
+                <version>0.0.13-SNAPSHOT</version>
                 <type>jar</type>
         </dependency>
         <dependency>
