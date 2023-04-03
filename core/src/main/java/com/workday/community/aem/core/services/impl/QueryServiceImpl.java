@@ -72,7 +72,7 @@ public class QueryServiceImpl implements QueryService {
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             session = resourceResolver.adaptTo(Session.class);
             Map<String, String> queryMap = new HashMap<>();
-            queryMap.put("type", "cq:page");
+            queryMap.put("type", "cq:Page");
             queryMap.put("group.p.or", "true");
             for (int i = 0; i < templates.length; i++) {
                 queryMap.put(String.format("group.%d_property", i), "jcr:content/cq:template");
