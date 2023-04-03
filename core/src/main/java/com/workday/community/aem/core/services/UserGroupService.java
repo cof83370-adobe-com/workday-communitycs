@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services;
 
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.osgi.annotation.versioning.ProviderType;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface UserGroupService {
      * @param sfId
      * @return User groups
      */
-    List<String> getUserGroupsBySfId(String sfId);
+    List<String> getUserGroupsBySfId(String sfId, SlingHttpServletRequest request);
 }

@@ -4,21 +4,18 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
-import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.jackrabbit.api.JackrabbitSession;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Repository;
-import javax.jcr.Session;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -40,9 +37,10 @@ public class UserGroupServiceImpl implements UserGroupService {
     public static final String SERVICE_USER = "readserviceuser";
 
     public List<String> getUserGroupsBySfId(String sfId, SlingHttpServletRequest request) {
+        List<String> userGroups = new ArrayList<>();
         try {
             HttpSession session = request.getSession();
-            List<String> userGroups = (List<String>) session.getAttribute("userGroups");
+            userGroups = (List<String>) session.getAttribute("userGroups");
             if (!userGroups.isEmpty()) {
                 return userGroups;
             }
@@ -71,9 +69,15 @@ public class UserGroupServiceImpl implements UserGroupService {
         } catch (Exception e) {
             logger.error("Exception in Loading the user", e);
         }
-
+        return userGroups;
     }
 
+    /**
+     * Get user groups groups from API.
+     *
+     * @param sfId
+     * @return
+     */
     public List<String> getUserGroupsFromSnap(String sfId) {
         JsonObject context = snapService.getUserContext(sfId);
         JsonElement contextInfo = context.get("contextInfo");
