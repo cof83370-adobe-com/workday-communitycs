@@ -4,27 +4,41 @@
 
     .cmp-tabs{
         position: relative;
+       
         
         // shared
         .--hidden {
             display: none;
         }
+
+        &__tab 
+        {
+             display:flex;
+             padding:1rem 2.5rem 1rem 1rem;
+             align-items: center;
+             width:auto;
+             flex-grow:1;
+
+             &:hover 
+             {
+                background-color:  #E8EBED;
+             }
+         
+             &--active 
+             {
+                color:#0875E1;;
+                border-bottom: 2px solid #0875E1;
+             }
+             
+        }
+       
         
         // primary
         &__tablist {
             display: flex;
             margin-bottom: 0px;
-            
-            > li {
-                flex-grow: 1;
-                display: flex;
-                align-items: center;
-                width: auto;
-                
-                + li {
-                    border-left: 0px solid #000;
-                }
-            }
+            border-bottom: 2px solid #CED3D9;
+        
             
             .-more {
                 
@@ -37,7 +51,7 @@
                     background: transparent;
                     border: 0;
                     cursor: pointer;
-                    color: $color-link;
+                    color: #000;
                 }
             }
         }
