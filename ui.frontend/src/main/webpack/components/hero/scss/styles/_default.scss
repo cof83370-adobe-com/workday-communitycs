@@ -1,7 +1,7 @@
 .hero {
     background-color: $wdc-color-blueberry-400;
     border-top: 1px solid rgba(255,255,255,0.2);
-    padding: 32px 16px;
+    padding: $pg-top-32 $pg-left-16;
 
     .cmp-teaser {
         display: flex;
