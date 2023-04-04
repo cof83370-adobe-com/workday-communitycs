@@ -13,7 +13,7 @@ public @interface CoveoIndexApiConfig {
     @AttributeDefinition (
         name = "Enabled",
         description = "Is coveo indexing enabled",
-        type = AttributeType.STRING
+        type = AttributeType.BOOLEAN
     )
     boolean isCoveoIndexingEnabled() default false;
 
@@ -22,7 +22,7 @@ public @interface CoveoIndexApiConfig {
         description = "Coveo api key.",
         type = AttributeType.STRING
     )
-    String apiKey();
+    String coveoApiKey();
 
     @AttributeDefinition (
         name = "Push Api Uri",
@@ -53,9 +53,9 @@ public @interface CoveoIndexApiConfig {
     String sourceId();
 
     @AttributeDefinition (
-            name = "Batch size",
-            description = "Coveo job batch size.",
-            type = AttributeType.INTEGER
+        name = "Batch size",
+        description = "Coveo job batch size.",
+        type = AttributeType.INTEGER
     )
     int batchSize() default 50;
 }
