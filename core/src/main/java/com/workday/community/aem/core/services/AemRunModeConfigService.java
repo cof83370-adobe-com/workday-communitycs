@@ -12,7 +12,8 @@ import com.workday.community.aem.core.config.AemRunModeConfig;
  */
 @Component(
     service = AemRunModeConfigService.class,
-    immediate = true
+    immediate = true,
+    configurationPid = "com.workday.community.aem.core.config.AemRunModeConfig"
 )
 @Designate(ocd = AemRunModeConfig.class)
 public class AemRunModeConfigService {
