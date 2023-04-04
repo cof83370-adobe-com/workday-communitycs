@@ -32,7 +32,8 @@ import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_T
  */
 @Component(
     service = CoveoPushApiService.class,
-    immediate = true
+    immediate = true,
+    configurationPid = "com.workday.community.aem.core.config.CoveoIndexApiConfig"
 )
 @Designate(ocd = CoveoIndexApiConfig.class)
 public class CoveoPushApiServiceImpl implements CoveoPushApiService {
