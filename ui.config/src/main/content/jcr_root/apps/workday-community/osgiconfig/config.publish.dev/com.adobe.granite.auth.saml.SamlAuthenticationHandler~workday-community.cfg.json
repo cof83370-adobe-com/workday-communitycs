@@ -1,19 +1,19 @@
 {
   "identitySyncType":"default",
-  "keyStorePassword":"19#c8nTy8EgR",
+  "keyStorePassword":"$[secret:keyStorePassword]",
   "service.ranking:Integer":5002,
   "idpHttpRedirect":false,
   "createUser":true,
   "defaultRedirectUrl":"/content/workday-community/en-us.html",
   "userIDAttribute":"uid",
-  "idpIdentifier":"http://www.okta.com/exk1lbix0amhXXIuR0h8",
+  "idpIdentifier":"$[env:idpIdentifier]",
   "assertionConsumerServiceURL":"",
   "defaultGroups":[
     "everyone"
   ],
   "storeSAMLResponse":false,
   "signatureMethod":"http://www.w3.org/2001/04/xmldsig-more#rsa-sha256",
-  "idpCertAlias":"certalias___1679517629889",
+  "idpCertAlias":"$[env:idpCertAlias]",
   "addGroupMemberships":true,
   "path":[
     "/content/workday-community-xyz"
@@ -25,9 +25,9 @@
   ],
   "clockTolerance:Integer":60,
   "groupMembershipAttribute":"groupMembership",
-  "idpUrl":"https://preview.workdayit5.com/app/workday-ciam-preview_communityaemdev_1/exk1lcnb9mvRSd61g0h8/sso/saml",
+  "idpUrl":"$[env:idpUrl]",
   "logoutUrl":"",
-  "serviceProviderEntityId":"https://publish-p85402-e766370.adobeaemcloud.com/",
+  "serviceProviderEntityId":"$[env:,serviceProviderEntityId]",
   "handleLogout":false,
   "userIntermediatePath":"workdaycommunity/okta",
   "spPrivateKeyAlias":"",

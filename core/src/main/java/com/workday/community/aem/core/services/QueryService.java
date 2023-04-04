@@ -1,26 +1,19 @@
 package com.workday.community.aem.core.services;
 
-import com.day.cq.search.QueryBuilder;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import java.util.List;
 
 public interface QueryService {
-	/**
-	 *
-	 * @param queryBuilder Object
-	 */
-	void setQueryBuilder(QueryBuilder queryBuilder);
-
-	/**
-	 *
-	 * @param resourceResolverFactory ResourceResolverFactory Object
-	 */
-	void setResovlerFactory(ResourceResolverFactory resourceResolverFactory);
-
-
     /**
-	 * Gets the total number of pages.
+	 * Gets the total number of published pages.
 	 *
 	 * @return The total number of pages.
 	 */
-    public long getNumOfTotalPages();
+    long getNumOfTotalPublishedPages();
+
+	/**
+	 * Gets the pages by templates.
+	 *
+	 * @return List of page path.
+	 */
+	List<String> getPagesByTemplates(String[] templates);
 }

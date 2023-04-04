@@ -1,9 +1,0 @@
-
-{
-    "isEnabled":false,
-    "pushApiUri":"https://api.cloud.coveo.com/push/v1/organizations/",
-    "sourceApiUri":"https://platform.cloud.coveo.com/rest/organizations/",
-    "organizationId":"Test organization id",
-    "sourceId":"Test source id",
-    "apiKey":"Test api key"
-  }

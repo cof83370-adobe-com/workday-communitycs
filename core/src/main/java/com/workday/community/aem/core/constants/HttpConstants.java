@@ -12,4 +12,9 @@ public interface HttpConstants {
    */
   String COVEO_COOKIE_NAME = "coveo-info";
 
+  /**
+   * The login cookie name.
+   */
+  String LOGIN_COOKIE_NAME = "login-token";
+
 }
