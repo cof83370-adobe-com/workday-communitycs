@@ -42,40 +42,6 @@ public class UserServiceImpl implements UserService {
     public static final String SERVICE_USER = "adminusergroup";
 
     @Override
-    public void createUser(String userId, Map<String, String> fields, List<String> groups) {
-        Session session = null;
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
-            UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-            session = resourceResolver.adaptTo(Session.class);
-            User user = userManager.createUser(userId, null);
-            ValueFactory valueFactory = session.getValueFactory();
-            for (Map.Entry<String, String> entry : fields.entrySet()) {
-                Value fieldValue = valueFactory.createValue(entry.getValue(), PropertyType.STRING);
-                user.setProperty(entry.getKey(), fieldValue);
-            }
-            session.save();
-            if (!groups.isEmpty()) {
-                for (String groupId: groups) {
-                    Group group = (Group) userManager.getAuthorizable(groupId);
-                    if (group == null) {
-                        group = userManager.createGroup(groupId);
-                    }
-                    group.addMember(user);
-                }
-                session.save();
-            }
-        } 
-        catch (Exception e) {
-            logger.error("Exception occurred when create user {}: {} ", userId, e.getMessage());
-        }
-        finally {
-            if (session != null && session.isLive()) {
-				session.logout();
-			}
-        }
-    }
-
-    @Override
     public void updateUser(String userId, Map<String, String> fields, List<String> groups) {
         Session session = null;
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {

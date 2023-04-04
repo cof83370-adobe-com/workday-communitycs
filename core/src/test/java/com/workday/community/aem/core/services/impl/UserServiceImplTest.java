@@ -58,13 +58,16 @@ public class UserServiceImplTest {
     /** The ResourceResolver class. */
     @Mock
     ResourceResolver resourceResolver;
-
+    
+    /** The UserManager class. */
     @Mock
     UserManager userManager;
-
+    
+    /** The Session class. */
     @Mock 
     Session session;
-
+    
+    /** The mocked user. */
     @Mock
     User user;
     
@@ -79,33 +82,6 @@ public class UserServiceImplTest {
         user = mock(User.class);
         lenient().when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
         lenient().when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
-    }
-
-    /**
-     * Test createUser method.
-     * 
-     * @throws AuthorizableExistsException
-     * @throws RepositoryException
-     */
-    @Test
-    public void testCreateUser() throws AuthorizableExistsException, RepositoryException {
-        String userId = "testUser";
-        String groupId = "dummyGroup";
-        String email = "test@workday.com";
-        Map<String, String> fields = new HashMap<String, String>();
-        fields.put("email", email);
-        List<String> groups = new ArrayList<String>();
-        groups.add(groupId);
-        Group group = mock(Group.class);
-        lenient().when(userManager.createUser(userId, null)).thenReturn(user);
-        lenient().when(userManager.getAuthorizable(groupId)).thenReturn(group);
-        ValueFactory valueFactory = mock(ValueFactory.class);
-        Value value = valueFactory.createValue(email, PropertyType.STRING);
-        lenient().when(session.getValueFactory()).thenReturn(valueFactory);
-        userService.createUser(userId, fields, groups);
-        verify(userManager).createUser(userId, null);
-        verify(user).setProperty("email", value);
-        verify(group).addMember(user);
     }
 
     /**
