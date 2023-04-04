@@ -2,7 +2,9 @@ package com.workday.community.aem.core.servlets;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.workday.community.aem.core.services.AemRunModeConfigService;
 import com.workday.community.aem.core.services.OktaService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -37,10 +39,21 @@ import static com.workday.community.aem.core.constants.RestApiConstants.APPLICAT
   }
 )
 public class LogoutServlet extends SlingAllMethodsServlet {
+
+  /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(LogoutServlet.class);
 
+  /** The OktaService. */
   @Reference
   transient OktaService oktaService;
+
+  /** The UserService. */
+  @Reference
+  UserService userService;
+
+  /** The AemRunModeConfigService. */
+  @Reference
+  AemRunModeConfigService aemRunModeConfigService;
 
   private transient final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -80,7 +93,12 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     ResourceResolver resourceResolver = request.getResourceResolver();
     if (resourceResolver != null) {
       Session session = resourceResolver.adaptTo(Session.class);
+      // Delete user on pubilsh instance.
       if (session != null) {
+        if (aemRunModeConfigService.getAemInstance() == "publish") { 
+          String userId = session.getUserID();
+          userService.deleteUser(userId);
+        }
         session.logout();
       }
     }
