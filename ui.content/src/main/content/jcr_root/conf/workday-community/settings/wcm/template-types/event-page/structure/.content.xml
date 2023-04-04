@@ -4,7 +4,7 @@
     <jcr:content
         cq:deviceGroups="[mobile/groups/responsive]"
         jcr:primaryType="cq:PageContent"
-        sling:resourceType="workday-community/components/structure/page">
+        sling:resourceType="workday-community/components/structure/eventspage">
         <root
             jcr:primaryType="nt:unstructured"
             sling:resourceType="workday-community/components/core/container"
