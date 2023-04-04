@@ -17,7 +17,7 @@
              padding:1rem 2.5rem 1rem 1rem;
              align-items: center;
              width:auto;
-             flex-grow:1;
+             
 
              &:hover 
              {
@@ -27,7 +27,7 @@
              &--active 
              {
                 color:#0875E1;;
-                border-bottom: 2px solid #0875E1;
+                border-bottom: 4px solid #0875E1;
              }
              
         }
@@ -44,7 +44,6 @@
                 
                 max-width: 150px;
 
-
                 > button  {
                     width: 100%;
                     height: 100%;
@@ -52,6 +51,14 @@
                     border: 0;
                     cursor: pointer;
                     color: #000;
+
+                    &::after {
+                        content: url('../resources/images/wd-icon-chevron-grey-down.svg');
+                        font-size: 23px;
+                        margin-left: 10px;
+    
+                    }
+    
                 }
             }
         }
