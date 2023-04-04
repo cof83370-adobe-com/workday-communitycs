@@ -7,7 +7,7 @@
     "navApi":"replace-with-real-snap-navigation-api-endpoint",
     "navApiKey":"replace-with-real-nav-api-key",
     "navApiToken":"replace-with-real-nav-api-token",
-    "navFallbackMenuData": "/content/dam/workday-community/jcr-content/FailStateHeaderData.json",
+    "navFallbackMenuData": "/content/dam/workday-community/resources/local-header-data.json.json",
     "navFallbackMenuServiceUser": "readserviceuser",
     "sfdcUserAvatarUrl": "replace-with-real-sf-user-avatar-endpoint",
     "sfdcUserAvatarToken": "replace-with-real-sf-user-avatar-api-token",
