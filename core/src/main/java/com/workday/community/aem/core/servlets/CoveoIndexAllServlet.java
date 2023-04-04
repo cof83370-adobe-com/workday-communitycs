@@ -22,11 +22,11 @@ public class CoveoIndexAllServlet extends SlingAllMethodsServlet {
 
     /** Index service. */
     @Reference
-    private IndexServices indexServices;
+    private transient IndexServices indexServices;
 
     /** Query service. */
     @Reference
-    private QueryService queryService;
+    private transient QueryService queryService;
 
     /**
      * Servlet POST request handler.

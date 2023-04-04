@@ -20,11 +20,11 @@ public class CoveoDeleteAllServlet extends SlingAllMethodsServlet {
 
     /** The push API service. */
     @Reference
-    private CoveoPushApiService coveoPushApiService;
+    private transient CoveoPushApiService coveoPushApiService;
 
     /** The Coveo index all service. */
     @Reference
-    private IndexServices indexServices;
+    private transient IndexServices indexServices;
 
     /**
      * Delete all contents from coveo.

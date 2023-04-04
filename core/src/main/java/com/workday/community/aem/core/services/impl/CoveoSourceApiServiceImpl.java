@@ -73,7 +73,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
 	 * @return The api header
 	 */
     protected HashMap<String, String> generateHeader() {
-        HashMap<String, String> header = new HashMap<String, String>();
+        HashMap<String, String> header = new HashMap<>();
         header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
         header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
@@ -106,7 +106,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
             }
         }
         else {
-            logger.error("Get number of indexed pages from coveo failed with status code {}: {}", response.get("statusCode"), response.get("response").toString());
+            logger.error("Get number of indexed pages from coveo failed with status code {}: {}", response.get("statusCode"), response.get("response"));
         }
         return totalNumberOfIndexedItems;
     }

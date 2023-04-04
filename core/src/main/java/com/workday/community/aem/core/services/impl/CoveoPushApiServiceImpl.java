@@ -117,7 +117,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header, "DELETE", "");
         if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
-            logger.error("Deleting all items from coveo failed with status code {}: {}.", response.get("statusCode"), response.get("response").toString());
+            logger.error("Deleting all items from coveo failed with status code {}: {}.", response.get("statusCode"), response.get("response"));
         }
         return (Integer) response.get("statusCode");
     }
@@ -125,11 +125,11 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     @Override
     public Integer callDeleteSingleItemUri(String documentId) {
         // Coveo reference https://docs.coveo.com/en/171/index-content/deleting-an-item-and-optionally-its-children-in-a-push-source.
-        HashMap<String, String> header = new HashMap<String, String>();
+        HashMap<String, String> header = new HashMap<>();
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
         HashMap<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header, "DELETE", "");
         if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
-            logger.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId, response.get("statusCode"), response.get("response").toString());
+            logger.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId, response.get("statusCode"), response.get("response"));
         }
         return (Integer) response.get("statusCode");
     }
@@ -153,10 +153,10 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
             if ((Integer) uploadFileResponse.get("statusCode") == HttpStatus.SC_OK) {
                 HashMap<String, Object> batchUploadResponse = callBatchUploadUri(fileId);
                 if ((Integer) batchUploadResponse.get("statusCode") == HttpStatus.SC_ACCEPTED) {
-                    return apiStatusCode = HttpStatus.SC_ACCEPTED;
+                    return HttpStatus.SC_ACCEPTED;
                 }
                 else {
-                    logger.error("Triggering batch ingestion failed with status code {}: {}.", batchUploadResponse.get("statusCode"), batchUploadResponse.get("response").toString()); 
+                    logger.error("Triggering batch ingestion failed with status code {}: {}.", batchUploadResponse.get("statusCode"), batchUploadResponse.get("response"));
                 }
             }
             else if ((Integer) uploadFileResponse.get("statusCode") == HttpStatus.SC_REQUEST_TOO_LONG) {
@@ -173,11 +173,11 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
                 return chunckStatusCode;
             }
             else {
-                logger.error("Uploading batch file to file container failed with status code {}: {}.", uploadFileResponse.get("statusCode"), uploadFileResponse.get("response").toString());
+                logger.error("Uploading batch file to file container failed with status code {}: {}.", uploadFileResponse.get("statusCode"), uploadFileResponse.get("response"));
             }
         }
         else {
-            logger.error("Creating push container failed with status code {}: {}.", createContainerResponse.get("statusCode"), createContainerResponse.get("response").toString());
+            logger.error("Creating push container failed with status code {}: {}.", createContainerResponse.get("statusCode"), createContainerResponse.get("response"));
         }
 
         return apiStatusCode;
@@ -220,7 +220,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
             return transformedResponse;
         }
 
-        HashMap<String, String> header = new HashMap<String, String>();
+        HashMap<String, String> header = new HashMap<>();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             header = objectMapper.readValue(requiredHeaders, new TypeReference<HashMap<String, String>>() {});

@@ -49,10 +49,8 @@ public class IndexServicesImpl implements IndexServices {
         ArrayList<String> pagePaths = new ArrayList<>();
         for (int i = 0; i < paths.size(); i++) {
             pagePaths.add(paths.get(i));
-            if (i + 1 % batchSize == 0) {
-                if (createJobs(pagePaths) != null) {
-                    pagePaths.clear();
-                }
+            if (i + 1 % batchSize == 0 && createJobs(pagePaths) != null) {
+                pagePaths.clear();
             }
         }
 
