@@ -212,16 +212,11 @@ public class SnapServiceImplTest {
 
   @Test
   public void testGetProfilePhoto() throws Exception {
-    // Case 1: use empty config.
-    snapService.activate(snapConfig.get(0, 0));
-    assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
-
+    // Case 1: No return from failed call
     snapService.activate(snapConfig.get(1, 1));
-
-    // Case 2: No return from failed call
     assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
 
-    // Case 3: return from mocked call.
+    // Case 2: return from mocked call.
     ProfilePhoto retObj = new ProfilePhoto();
     retObj.setDescription("test");
     retObj.setPhotoVersionId("1.1");

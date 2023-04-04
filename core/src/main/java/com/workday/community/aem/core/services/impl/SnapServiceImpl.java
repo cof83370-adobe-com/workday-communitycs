@@ -82,7 +82,7 @@ public class SnapServiceImpl implements SnapService {
     if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(snapUrl) ||
       StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
       // No Snap configuration provided, just return the default one.
-      return this.getMergedHeaderMenu(null);
+      return this.getDefaultHeaderMenu();
     }
 
     try {
@@ -95,28 +95,29 @@ public class SnapServiceImpl implements SnapService {
 
       if (StringUtils.isEmpty(snapRes.getResponseBody())) {
         logger.debug("Sfdc menu fetch is empty, fallback to use local default");
-        return this.getMergedHeaderMenu(null);
+        return this.getDefaultHeaderMenu();
       }
 
       // Gson object for json handling.
       JsonObject navResponseObj = gson.fromJson(snapRes.getResponseBody(), JsonObject.class);
       // Need to make merge with beta support.
       if (config.beta()) {
-        return getMergedHeaderMenu(navResponseObj);
+        return this.getMergedHeaderMenu(navResponseObj);
       }
 
     } catch (Exception e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
     }
 
-    return this.getMergedHeaderMenu(null);
+    return this.getDefaultHeaderMenu();
   }
 
   @Override
   public JsonObject getUserContext(String sfId) {
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
-      String url = String.format(config.snapUrl() + config.snapContextUrl(), sfId);
+      String url = CommunityUtils.formUrl(config.snapUrl() , config.snapContextUrl());
+      url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);
     } catch (Exception e) {
@@ -136,7 +137,7 @@ public class SnapServiceImpl implements SnapService {
     url = String.format(url, userId);
 
     try {
-      logger.info("SnapImpl: Calling SNAP getProfilePhoto()..." + config.snapUrl() + config.sfdcUserAvatarUrl());
+      logger.info("SnapImpl: Calling SNAP getProfilePhoto(), url is {}", url);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
       if (jsonResponse != null) {
         return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
@@ -148,15 +149,13 @@ public class SnapServiceImpl implements SnapService {
   }
 
   /**
-   * Get merged header menu.
-   * 
-   * @param sfNavObj The json object of nav.
+   * Get default header menu.
+   *
    * @return The menu.
    */
-  private String getMergedHeaderMenu(JsonObject sfNavObj) {
+  private String getDefaultHeaderMenu() {
     // Reading the JSON File from DAM
-    try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
-      config.navFallbackMenuServiceUser())) {
+    try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory, config.navFallbackMenuServiceUser())) {
       Resource resource = resourceResolver.getResource(config.navFallbackMenuData());
       Asset asset = resource.adaptTo(Asset.class);
       Resource original = asset.getOriginal();
@@ -167,8 +166,7 @@ public class SnapServiceImpl implements SnapService {
       }
       StringBuilder sb = new StringBuilder();
       String line;
-      BufferedReader br = new BufferedReader(new InputStreamReader(
-        content, StandardCharsets.UTF_8));
+      BufferedReader br = new BufferedReader(new InputStreamReader(content, StandardCharsets.UTF_8));
 
       while (true) {
         if ((line = br.readLine()) == null) {
@@ -176,23 +174,35 @@ public class SnapServiceImpl implements SnapService {
         }
         sb.append(line);
       }
+      content.close();
+      br.close();
 
       // Gson object for json handling.
       Gson gson = new Gson();
       JsonObject navResponseObj = gson.fromJson(sb.toString(), JsonObject.class);
-
-      if (sfNavObj != null && config.beta()) {
-         if (navResponseObj == null) {
-           return gson.toJson(sfNavObj);
-         }
-         // TODO Merge local default to sfNavObj and return the merged result (once nav model strategy is finalized).
-      }
-
       return gson.toJson(navResponseObj);
-
     } catch (Exception e) {
       logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
       return "";
     }
+  }
+
+  /**
+   * Get merged header menu.
+   * 
+   * @param sfNavObj The json object of nav.
+   * @return The menu.
+   */
+  private String getMergedHeaderMenu(JsonObject sfNavObj) {
+    String defaultHeaderMenu = getDefaultHeaderMenu();
+    if (sfNavObj != null && config.beta()) {
+      if (defaultHeaderMenu.isEmpty()) {
+        return gson.toJson(sfNavObj);
+      }
+      // TODO Merge local default to sfNavObj and return the merged result (once nav model strategy is finalized).
+      return gson.toJson(sfNavObj);
+   }
+
+   return defaultHeaderMenu;
   }
 }
