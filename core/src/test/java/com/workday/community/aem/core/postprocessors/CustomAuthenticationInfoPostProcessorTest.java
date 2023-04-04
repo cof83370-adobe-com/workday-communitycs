@@ -63,7 +63,7 @@ public class CustomAuthenticationInfoPostProcessorTest {
         when(resolver.isLive()).thenReturn(true);
 
         when(userManager.getAuthorizable("testuser")).thenReturn(authorizable);
-        when(authorizable.getPath()).thenReturn("/workday/okta/testuser");
+        when(authorizable.getPath()).thenReturn("/workdaycommunity/okta/testuser");
 
         Value[] sourceValueArray = new Value[]{sourceValue};
 

@@ -40,21 +40,23 @@ public class CustomAuthenticationInfoPostProcessor implements AuthenticationInfo
     @Override
     public void postProcess(AuthenticationInfo info, HttpServletRequest req, HttpServletResponse res)
             throws LoginException {
+        LOG.info("inside  CustomAuthenticationInfoPostProcessor.postProcess()");
         if (oktaService.isOktaIntegrationEnabled() && null != info && StringUtils.isNotBlank(info.getUser())) {
             String userId = info.getUser();
             try {
-                LOG.error("User ID: {}", userId);
+                LOG.info("User ID: {}", userId);
                 Map<String, Object> serviceParams = new HashMap<>();
                 serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
                 resolver = resolverFactory.getServiceResourceResolver(serviceParams);
                 UserManager userManager = resolver.adaptTo(UserManager.class);
                 Authorizable user = userManager.getAuthorizable(userId);
 
-                if (null != user && user.getPath().contains("/workday")) {
+                if (null != user && user.getPath().contains("/workdaycommunity")) {
                     Value[] valueArray = user.getProperty("profile/sourceId");
                     if(null !=valueArray && null != valueArray[0])
                     {
                         sourceId = valueArray[0].getString();
+                        LOG.info("sourceId: {}", sourceId);
                         LOG.error("sourceId: {}", sourceId);
                     }
                 }
