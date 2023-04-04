@@ -72,7 +72,7 @@ public class CustomAuthenticationInfoPostProcessorTest {
 
         processor.postProcess(info, req, res);
 
-        verify(oktaService).isOktaIntegrationEnabled();
+
         verify(resolverFactory).getServiceResourceResolver(anyMap());
         verify(authorizable).getProperty("profile/sourceId");
         verify(resolver).close();

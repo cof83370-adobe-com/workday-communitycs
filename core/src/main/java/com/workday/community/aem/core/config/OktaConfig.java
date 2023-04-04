@@ -15,7 +15,7 @@ public @interface OktaConfig {
   @AttributeDefinition (
           name = "Okta Integration Enabled",
           description = "Is OURM enabled",
-          type = AttributeType.STRING
+          type = AttributeType.BOOLEAN
   )
   boolean isOktaIntegrationEnabled() default false;
 }
