@@ -6,7 +6,7 @@
 				<ul class="cmp-book__firstlevellist" data-sly-list.booklink="${booksMultifield.getChildren}">
 					<li class="cmp-book__firstlevelitem"><a class="cmp-book__firstlevelitem-link"
 							target="${booklink.newTab}"
-							data-sly-use.bookPathMainTitle="${'com.workday.community.aem.core.models.BookPathModel' @ pagePath=booklink.mainpagepath }"
+							data-sly-use.bookPathMainTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=booklink.mainpagepath }"
 							href="${booklink.mainpagepath}.html"><span
 								class="cmp-book__firstlevelitem-title">${bookPathMainTitle.pageTitle}</span></a>
 						<div class="cmp-book__secondlevelheading"
@@ -16,7 +16,7 @@
 									data-sly-list.secondlink="${secondlevelMultifield.getChildren}">
 									<li class="cmp-book__secondlevelitem"><a class="cmp-book__secondlevelitem-link"
 											target="${secondlink.newTab}"
-											data-sly-use.bookPathSecondTitle="${'com.workday.community.aem.core.models.BookPathModel' @ pagePath=secondlink.secondpagepath}"
+											data-sly-use.bookPathSecondTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=secondlink.secondpagepath}"
 											href="${secondlink.secondpagepath}.html"><span
 												class="cmp-book__secondlevelitem-title">${bookPathSecondTitle.pageTitle}</span></a>
 										<div class="cmp-book__thirdlevelheading"
@@ -26,7 +26,7 @@
 												<ul class="cmp-book__thirdlevellist"
 													data-sly-list.thirdlink="${thirdlevelMultifield.getChildren}">
 													<li class="cmp-book__thirdlevelitem"><a
-															data-sly-use.bookPathThirdTitle="${'com.workday.community.aem.core.models.BookPathModel' @ pagePath=thirdlink.thirdpagepath}"
+															data-sly-use.bookPathThirdTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=thirdlink.thirdpagepath}"
 															class="cmp-book__thirdlevelitem-link"
 															target="${thirdlink.newTab}"
 															href="${thirdlink.thirdpagepath}.html"><span

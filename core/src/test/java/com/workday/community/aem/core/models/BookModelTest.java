@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author uttej.vardineni
  */
 @ExtendWith(AemContextExtension.class)
-public class BookPathModelTest {
+public class BookModelTest {
 
     /** The context. */
     private final AemContext context = new AemContext();
@@ -28,7 +28,7 @@ public class BookPathModelTest {
 
     private MockSlingHttpServletRequest request;
 
-    private BookPathModel bookPathModelTest;
+    private BookModel bookPathModelTest;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -44,7 +44,7 @@ public class BookPathModelTest {
 
     @Test
     public void testPageTitle() {
-        bookPathModelTest = request.adaptTo(BookPathModel.class);
+        bookPathModelTest = request.adaptTo(BookModel.class);
         String title = bookPathModelTest.getPageTitle();
         assertEquals("Accordion image test", title);
     }

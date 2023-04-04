@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 @Model(adaptables = { SlingHttpServletRequest.class }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
-public class BookPathModel {
+public class BookModel {
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
