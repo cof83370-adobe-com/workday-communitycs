@@ -41,7 +41,7 @@ public class CustomAuthenticationInfoPostProcessor implements AuthenticationInfo
     public void postProcess(AuthenticationInfo info, HttpServletRequest req, HttpServletResponse res)
             throws LoginException {
         LOG.info("inside  CustomAuthenticationInfoPostProcessor.postProcess() {}",info.getUser());
-        LOG.info("inside  oktaService {}",oktaService.isOktaIntegrationEnabled());
+        LOG.info("isOktaIntegrationEnabled {}",oktaService.isOktaIntegrationEnabled());
         if (oktaService.isOktaIntegrationEnabled() && null != info && StringUtils.isNotBlank(info.getUser())) {
             String userId = info.getUser();
             try {
