@@ -35,4 +35,11 @@ public class OktaServiceImpl implements OktaService {
   public String getCustomDomain() {
     return config.customDomain();
   }
+
+  @Override
+  public boolean isOktaIntegrationEnabled() {
+    return config.isOktaIntegrationEnabled();
+  }
+
+
 }
