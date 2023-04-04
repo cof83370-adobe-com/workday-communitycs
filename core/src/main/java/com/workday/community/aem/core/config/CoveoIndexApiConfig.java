@@ -13,7 +13,7 @@ public @interface CoveoIndexApiConfig {
     @AttributeDefinition (
         name = "Enabled",
         description = "Is coveo indexing enabled",
-        type = AttributeType.STRING
+        type = AttributeType.BOOLEAN
     )
     boolean isCoveoIndexingEnabled() default false;
 
