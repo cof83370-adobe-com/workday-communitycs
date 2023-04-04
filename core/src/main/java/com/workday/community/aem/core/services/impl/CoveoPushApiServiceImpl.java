@@ -61,7 +61,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     protected void activate(CoveoIndexApiConfig coveoIndexApiConfig){
         this.pushApiUri = coveoIndexApiConfig.pushApiUri();
         this.organizationId = coveoIndexApiConfig.organizationId();
-        this.apiKey = coveoIndexApiConfig.apiKey();
+        this.apiKey = coveoIndexApiConfig.coveoApiKey();
         this.sourceId = coveoIndexApiConfig.sourceId();
     }
 

@@ -57,7 +57,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
     protected void activate(CoveoIndexApiConfig coveoIndexApiConfig){
         this.sourceApiUri = coveoIndexApiConfig.sourceApiUri();
         this.organizationId = coveoIndexApiConfig.organizationId();
-        this.apiKey = coveoIndexApiConfig.apiKey();
+        this.apiKey = coveoIndexApiConfig.coveoApiKey();
         this.sourceId = coveoIndexApiConfig.sourceId();
     }
 
