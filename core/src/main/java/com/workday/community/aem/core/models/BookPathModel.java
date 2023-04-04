@@ -1,7 +1,8 @@
 package com.workday.community.aem.core.models;
 
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
@@ -38,9 +39,10 @@ public class BookPathModel {
             logger.error("ResourceResolver is not injected (null) in BookPathModel init method.");
             throw new RuntimeException();
         }
-        Resource res = resourceResolver.getResource(pagePath + "/jcr:content");
-        if (res != null) {
-            ValueMap properties = res.adaptTo(ValueMap.class);
+        PageManager pm = resourceResolver.adaptTo(PageManager.class);
+        Page page = pm.getPage(pagePath);
+        if (page != null && page.hasContent()) {
+            ValueMap properties = pm.getPage(pagePath).getContentResource().adaptTo(ValueMap.class);
             pageTitle = properties.get("jcr:title", String.class);
             if (pageTitle == null) {
                 pageTitle = pagePath;
