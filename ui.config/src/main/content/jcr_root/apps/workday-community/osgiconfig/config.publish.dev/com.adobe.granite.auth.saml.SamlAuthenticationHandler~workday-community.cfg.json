@@ -27,7 +27,7 @@
   "groupMembershipAttribute":"groupMembership",
   "idpUrl":"$[env:idpUrl]",
   "logoutUrl":"",
-  "serviceProviderEntityId":"$[env:,serviceProviderEntityId]",
+  "serviceProviderEntityId":"$[env:serviceProviderEntityId]",
   "handleLogout":false,
   "userIntermediatePath":"workdaycommunity/okta",
   "spPrivateKeyAlias":"",
