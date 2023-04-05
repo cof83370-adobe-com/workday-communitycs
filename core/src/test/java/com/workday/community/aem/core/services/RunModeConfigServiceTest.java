@@ -9,40 +9,40 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.workday.community.aem.core.config.AemRunModeConfig;
+import com.workday.community.aem.core.config.RunModeConfig;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
- * The Class ExtractPagePropertiesServiceImplTest.
+ * The Class RunModeConfigServiceTest.
  */
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
-public class AemRunModeConfigServiceTest {
+public class RunModeConfigServiceTest {
 
-    /** The service aemRunModeConfigService. */
-    private final AemRunModeConfigService aemRunModeConfigService = new AemRunModeConfigService();
+    /** The service runModeConfigService. */
+    private final RunModeConfigService runModeConfigService = new RunModeConfigService();
 
-    /** The config aemRunModeConfig. */
-    private final AemRunModeConfig testConfig = new AemRunModeConfig() {
+    /** The config runModeConfig. */
+    private final RunModeConfig testConfig = new RunModeConfig() {
         @Override
         public Class<? extends Annotation> annotationType() {
             return null;
         }
 
         @Override
-        public String aemEnv() {
+        public String env() {
             return "dev";
         }
 
         @Override
-        public String aemInstance() {
+        public String instance() {
             return "publish";
         }
     };
 
     @BeforeEach
     public void setup() {
-        ((AemRunModeConfigService) aemRunModeConfigService).activate(testConfig);
+        ((RunModeConfigService) runModeConfigService).activate(testConfig);
     }
 
     /**
@@ -50,8 +50,8 @@ public class AemRunModeConfigServiceTest {
      */
     @Test
     public void testAllMethods() {
-        assertEquals(aemRunModeConfigService.getAemEnv(), testConfig.aemEnv());
-        assertEquals(aemRunModeConfigService.getAemInstance(), testConfig.aemInstance());
+        assertEquals(runModeConfigService.getEnv(), testConfig.env());
+        assertEquals(runModeConfigService.getInstance(), testConfig.instance());
     }
 
 }

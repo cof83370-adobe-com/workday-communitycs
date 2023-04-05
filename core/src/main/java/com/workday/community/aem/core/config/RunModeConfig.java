@@ -5,23 +5,23 @@ import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition(
-    name = "AEM run mode configuration",
-    description = "AEM run mode configuration."
+    name = "Run mode configuration",
+    description = "Run mode configuration."
 )
-public @interface AemRunModeConfig {
+public @interface RunModeConfig {
 
     @AttributeDefinition (
-        name = "AEM Instance",
-        description = "AEM Instance values: author, publish.",
+        name = "The Instance",
+        description = "The Instance values: author, publish.",
         type = AttributeType.STRING
     )
-    String aemInstance();
+    String instance();
 
     @AttributeDefinition (
-        name = "AEM Environment",
-        description = "AEM Environment values: dev, qa, stage, prod.",
+        name = "The Environment",
+        description = "The Environment values: dev, qa, stage, prod.",
         type = AttributeType.STRING
     )
-    String aemEnv();
+    String env();
     
 }

@@ -2,7 +2,7 @@ package com.workday.community.aem.core.servlets;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workday.community.aem.core.services.AemRunModeConfigService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
@@ -51,9 +51,9 @@ public class LogoutServlet extends SlingAllMethodsServlet {
   @Reference
   UserService userService;
 
-  /** The AemRunModeConfigService. */
+  /** The RunModeConfigService. */
   @Reference
-  AemRunModeConfigService aemRunModeConfigService;
+  RunModeConfigService runModeConfigService;
 
   private transient final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -95,7 +95,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
       Session session = resourceResolver.adaptTo(Session.class);
       // Delete user on pubilsh instance.
       if (session != null) {
-        if (aemRunModeConfigService.getAemInstance() == "publish") { 
+        if (runModeConfigService.getInstance().equals("publish")) { 
           String userId = session.getUserID();
           userService.deleteUser(userId);
         }
