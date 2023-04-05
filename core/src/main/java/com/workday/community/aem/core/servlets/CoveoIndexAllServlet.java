@@ -34,7 +34,7 @@ public class CoveoIndexAllServlet extends SlingAllMethodsServlet {
 
     /** The CoveoIndexApiConfigService service. */
     @Reference
-    private CoveoIndexApiConfigService coveoIndexApiConfigService;
+    private transient CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     /**
      * Servlet POST request handler.
