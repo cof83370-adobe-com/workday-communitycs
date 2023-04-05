@@ -9,7 +9,6 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,8 +16,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workday.community.aem.core.config.CoveoIndexApiConfig;
 import com.workday.community.aem.core.services.HttpsURLConnectionService;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoSourceApiService;
 import com.workday.community.aem.core.constants.RestApiConstants;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
@@ -28,10 +27,8 @@ import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_T
  */
 @Component(
     service = CoveoSourceApiService.class,
-    immediate = true,
-    configurationPid = "com.workday.community.aem.core.config.CoveoIndexApiConfig"
+    immediate = true
 )
-@Designate(ocd = CoveoIndexApiConfig.class)
 public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
 
     /** The logger. */
@@ -53,13 +50,17 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
     @Reference
     private HttpsURLConnectionService restApiService;
 
+    /** The CoveoIndexApiConfigService. */
+    @Reference 
+    private CoveoIndexApiConfigService coveoIndexApiConfigService;
+
     @Activate
     @Modified
-    protected void activate(CoveoIndexApiConfig coveoIndexApiConfig){
-        this.sourceApiUri = coveoIndexApiConfig.sourceApiUri();
-        this.organizationId = coveoIndexApiConfig.organizationId();
-        this.apiKey = coveoIndexApiConfig.coveoApiKey();
-        this.sourceId = coveoIndexApiConfig.sourceId();
+    protected void activate(){
+        this.sourceApiUri = coveoIndexApiConfigService.getSourceApiUri();
+        this.organizationId = coveoIndexApiConfigService.getOrganizationId();
+        this.apiKey = coveoIndexApiConfigService.getCoveoApiKey();
+        this.sourceId = coveoIndexApiConfigService.getSourceId();
     }
 
 
