@@ -1,10 +1,11 @@
 package com.workday.community.aem.core.models;
 
-import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.utils.PageUtils;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.RequestAttribute;
@@ -32,29 +33,14 @@ public class BookModel {
     @PostConstruct
     protected void init() {
         logger.debug("Initializing BookPathModel ....");
-        if (pagePath == null || pagePath.isEmpty())
+        if (StringUtils.isEmpty(pagePath))
             return;
 
-        if (resourceResolver == null) {
-            logger.error("ResourceResolver is not injected (null) in BookPathModel init method.");
-            throw new RuntimeException();
-        }
         PageManager pm = resourceResolver.adaptTo(PageManager.class);
-        Page page = pm.getPage(pagePath);
-        if (page != null && page.hasContent()) {
-            ValueMap properties = pm.getPage(pagePath).getContentResource().adaptTo(ValueMap.class);
-            pageTitle = properties.get("jcr:title", String.class);
-            if (pageTitle == null) {
-                pageTitle = pagePath;
-            }
-        }
+        pageTitle = PageUtils.getPageProperty(pm, pagePath, "jcr:title");
     }
 
     public String getPageTitle() {
         return pageTitle;
-    }
-
-    public void setPageTitle(String pageTitle) {
-        this.pageTitle = pageTitle;
     }
 }
