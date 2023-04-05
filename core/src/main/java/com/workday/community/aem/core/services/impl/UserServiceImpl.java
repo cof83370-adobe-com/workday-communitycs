@@ -54,7 +54,6 @@ public class UserServiceImpl implements UserService {
                     Value fieldValue = valueFactory.createValue(entry.getValue(), PropertyType.STRING);
                     user.setProperty(entry.getKey(), fieldValue);
                 }  
-                session.save();
                 if (!groups.isEmpty()) {
                     Iterator<Group> groupsIt = user.memberOf();
                     while (groupsIt.hasNext()) {
@@ -66,10 +65,10 @@ public class UserServiceImpl implements UserService {
                         if (group == null) {
                             group = userManager.createGroup(groupId);
                         }
-                        group.addMember(user);
+                        group.removeMember(user);
                     }
-                    session.save();
                 }
+                session.save();
             }
             else {
                 logger.error("Cannot find user with id {} ", userId);
