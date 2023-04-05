@@ -54,7 +54,7 @@ public class BookModelTest {
     @Test
     public void testPageTitle() {
         bookModelTest = request.adaptTo(BookModel.class);
-        String title = bookModelTest.getPageTitle();
-        assertEquals("Accordion image test", title);
+        Page bookPage = bookModelTest.getBookPage();
+        assertEquals("Accordion image test", bookPage.getTitle());
     }
 }
