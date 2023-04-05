@@ -8,11 +8,11 @@ import java.util.Map;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.SlingException;
+import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -105,10 +105,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 String[] taxonomyIds = data.get(taxonomyField, String[].class);
                 if (taxonomyIds != null && taxonomyIds.length > 0) {
                     ArrayList<String> value = processTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
-                    if (taxonomyField == "usingWorkday") {
+                    if (taxonomyField.equals("usingWorkday")) {
                         properties.put("usingWorkdayTags", value);
                     }
-                    else if (taxonomyField == "programsTools") {
+                    else if (taxonomyField.equals("programsTools")) {
                         properties.put("programsToolsTags", value);
                     }
                     else {
@@ -121,14 +121,14 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             Resource resource = resourceResolver.getResource( path + "/jcr:content");
             Node node = resource.adaptTo(Node.class);
             NodeIterator it = node.getNodes();
-            ArrayList<String> textlist = new ArrayList<>();
-            processTextComponnet(it, textlist);
-            if (textlist.size() > 0) {
-                String description = String.join(" ", textlist);
+            ArrayList<String> textList = new ArrayList<>();
+            processTextComponnet(it, textList);
+            if (textList.size() > 0) {
+                String description = String.join(" ", textList);
                 properties.put("description", description);
             }
         }
-        catch (Exception e){
+        catch (LoginException | RepositoryException | SlingException e){
             logger.error("Extract page properties {} failed: {}", path, e.getMessage());
             return properties;
         }
@@ -183,7 +183,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 value = data.get("jcr:title", null);
             }
             if (value != null) {
-                if (stringField == "cq:template") {
+                if (stringField.equals("cq:template")) {
                     properties.put("contentType", contentTypeMapping.get(value));
                 }
                 else {
@@ -240,7 +240,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 NodeIterator childIt = childNode.getNodes();
                 processTextComponnet(childIt, textlist);
             }
-            catch(Exception e) {
+            catch(RepositoryException e) {
                 logger.error("Iterator page jcr:content failed: {}", e.getMessage());
             }
         }
@@ -259,7 +259,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 email = user.getProperty("./profile/email") !=null ? user.getProperty("./profile/email")[0].getString() : null;
                 properties.put("authorLink", "https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115");
             }
-            catch(Exception e) {
+            catch(RepositoryException e) {
                 logger.error("Extract user email and contact number failed: {}", e.getMessage());
                 return email;
             }

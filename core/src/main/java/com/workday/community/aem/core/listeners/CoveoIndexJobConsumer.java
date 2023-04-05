@@ -81,7 +81,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
             Integer status = coveoPushApiService.callDeleteSingleItemUri(documentId); 
             if (status != HttpStatus.SC_ACCEPTED) {
                 hasError = true;
-                logger.error("Error occured in coveo job consumer when deleteing path: {}", path);
+                logger.error("Error occurred in coveo job consumer when deleting path: {}", path);
             }
         }
         return hasError ? JobResult.FAILED : JobResult.OK;
@@ -102,7 +102,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
         }
         Integer status = coveoPushApiService.indexItems(payload);
         if (status != HttpStatus.SC_ACCEPTED) {
-            logger.error("Error occured in coveo job consumer when indexing paths: {}", paths.toArray());
+            logger.error("Error occurred in coveo job consumer when indexing paths: {}", paths.toArray());
             return JobResult.FAILED;
         }
         return JobResult.OK;

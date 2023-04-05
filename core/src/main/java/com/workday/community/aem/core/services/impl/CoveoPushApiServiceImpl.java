@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -215,8 +216,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
             uploadUri = node.get("uploadUri").asText();
             requiredHeaders = node.get("requiredHeaders").toPrettyString();
         }
-        catch (Exception e) {
-            logger.error("Parse create container reponse failed: {}", e.getMessage());
+        catch (IOException e) {
+            logger.error("Parse create container response failed: {}", e.getMessage());
             return transformedResponse;
         }
 
@@ -225,7 +226,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         try {
             header = objectMapper.readValue(requiredHeaders, new TypeReference<HashMap<String, String>>() {});
         } 
-        catch (Exception e) {
+        catch (JsonProcessingException e) {
             logger.error("Generate requiredheader array failed: {}", e.getMessage());
             return transformedResponse;
         }

@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
 import com.day.cq.search.result.Hit;
+import org.apache.sling.api.resource.LoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,7 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 /**
@@ -59,7 +61,7 @@ public class QueryServiceImpl implements QueryService {
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult result = query.getResult();
             totalResults = result.getTotalMatches();
-        } catch (Exception e) {
+        } catch (LoginException e) {
             logger.error("Exception occurred when running query to get total number of pages {} ", e.getMessage());
         }
         return totalResults;
@@ -88,7 +90,7 @@ public class QueryServiceImpl implements QueryService {
                 String path = hit.getPath();
                 paths.add(path);
             }
-        } catch (Exception e) {
+        } catch (LoginException | RepositoryException e) {
             logger.error("Exception occurred when running query to get pages {} ", e.getMessage());
         } finally {
             if(session != null) {
