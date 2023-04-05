@@ -16,6 +16,7 @@ import javax.jcr.Value;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static com.workday.community.aem.core.constants.WccConstants.PROFILE_SOURCE_ID;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,14 +68,14 @@ public class CustomAuthenticationInfoPostProcessorTest {
 
         Value[] sourceValueArray = new Value[]{sourceValue};
 
-        when(authorizable.getProperty("profile/sourceId")).thenReturn(sourceValueArray);
+        when(authorizable.getProperty(PROFILE_SOURCE_ID)).thenReturn(sourceValueArray);
         when(sourceValueArray[0].getString()).thenReturn("testSourceValue");
 
         processor.postProcess(info, req, res);
 
 
         verify(resolverFactory).getServiceResourceResolver(anyMap());
-        verify(authorizable).getProperty("profile/sourceId");
+        verify(authorizable).getProperty(PROFILE_SOURCE_ID);
         verify(resolver).close();
     }
 }
