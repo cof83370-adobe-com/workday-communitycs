@@ -15,9 +15,8 @@ $include "./default_filters.any"
 # Allow manifest.webmanifest files located in the content
 /0102 { /type "allow" /extension "webmanifest" /path "/content/*/manifest" }
 
-#Enable Community Migration Servlet
-/0103 { /type "allow" /method "GET" /url "/bin/migrate-books" }
-/0104 { /type "allow" /method "GET" /url "/bin/dataimporter" }
+#Enable Registration Servlet
+
 
 #Enable DAM Access
 /0220 { /type "allow" /method "GET" /path "/content/dam/workday-community/*" }
