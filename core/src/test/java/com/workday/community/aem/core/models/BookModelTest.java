@@ -29,7 +29,7 @@ public class BookModelTest {
     private MockSlingHttpServletRequest request;
 
     /** The book path model test. */
-    private BookModel bookPathModelTest;
+    private BookModel bookModelTest;
 
     /**
      * Sets the BookModelTest.
@@ -53,8 +53,8 @@ public class BookModelTest {
      */
     @Test
     public void testPageTitle() {
-        bookPathModelTest = request.adaptTo(BookModel.class);
-        String title = bookPathModelTest.getPageTitle();
+        bookModelTest = request.adaptTo(BookModel.class);
+        String title = bookModelTest.getPageTitle();
         assertEquals("Accordion image test", title);
     }
 }
