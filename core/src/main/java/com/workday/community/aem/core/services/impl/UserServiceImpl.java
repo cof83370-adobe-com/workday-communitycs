@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
                         if (group == null) {
                             group = userManager.createGroup(groupId);
                         }
-                        group.removeMember(user);
+                        group.addMember(user);
                     }
                 }
                 session.save();
