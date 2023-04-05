@@ -75,7 +75,7 @@ public class SnapServiceImpl implements SnapService {
     String snapUrl = config.snapUrl(), navApi = config.navApi(),
       apiToken = config.navApiToken(), apiKey = config.navApiKey();
 
-    if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(snapUrl) ||
+    if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi) ||
       StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
       // No Snap configuration provided, just return the default one
       return this.getMergedHeaderMenu(null);
@@ -112,7 +112,7 @@ public class SnapServiceImpl implements SnapService {
   public JsonObject getUserContext(String sfId) {
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
-      String url = String.format(config.snapUrl() + config.snapContextUrl(), sfId);
+      String url = String.format(config.snapUrl(), config.snapContextUrl(), sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);
     } catch (Exception e) {
@@ -135,7 +135,7 @@ public class SnapServiceImpl implements SnapService {
     url = String.format("%s/%s", url, userId);
 
     try {
-      logger.info("SnapImpl: Calling SNAP getProfilePhoto()..." + config.snapUrl() + config.sfdcUserAvatarUrl());
+      logger.info("SnapImpl: Calling SNAP getProfilePhoto()...{}", config.snapUrl() + config.sfdcUserAvatarUrl());
       String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
       if (jsonResponse != null) {
         return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
@@ -170,14 +170,10 @@ public class SnapServiceImpl implements SnapService {
         sb.append(line);
       }
 
-      // Gson object for json handling.
-      Gson gson = new Gson();
       JsonObject navResponseObj = gson.fromJson(sb.toString(), JsonObject.class);
 
-      if (sfNavObj != null && config.beta()) {
-         if (navResponseObj == null) {
-           return gson.toJson(sfNavObj);
-         }
+      if (sfNavObj != null && config.beta() && navResponseObj == null) {
+        return gson.toJson(sfNavObj);
          // TODO Merge local default to sfNavObj and return the merged result (once nav model strategy is finalized).
       }
 

@@ -8,6 +8,8 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.*;
 import org.apache.http.util.EntityUtils;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -92,13 +94,11 @@ public class RestApiUtil {
       logger.debug("HTTP response code : {}", response.getStatusLine().getStatusCode());
       apiresponse.setResponseCode(response.getStatusLine().getStatusCode());
       apiresponse.setResponseBody(EntityUtils.toString(response.getEntity()));
-    } catch (Exception e) {
+    } catch (IOException | URISyntaxException e) {
       logger.error("Exception in executeGetRequest method while executing the request = {}", e.getMessage());
     }
-
     return apiresponse;
   }
-
 
   private static APIRequest getMenuApiRequest(String url, String authToken, String xapiKey, String traceId) {
     APIRequest apiRequestInfo = new APIRequest();

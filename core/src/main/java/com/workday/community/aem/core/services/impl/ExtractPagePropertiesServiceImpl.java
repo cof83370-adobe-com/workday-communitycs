@@ -25,7 +25,12 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.utils.ResolverUtil;
+
+import static com.adobe.acs.commons.mcp.form.ContainerComponent.JCR_TITLE;
+import static com.day.cq.wcm.api.constants.NameConstants.NN_TEMPLATE;
+import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
 import static com.workday.community.aem.core.services.impl.QueryServiceImpl.SERVICE_USER;
+import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -63,7 +68,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "usingWorkday"));
 
     /** The stringFields. */
-    private ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", "cq:template", "eventHost", "eventLocation"));
+    private ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
 
     /** The contentTypeMapping. */
     private Map<String,String> contentTypeMapping = Map.of(
@@ -180,10 +185,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         for (String stringField: stringFields) {
             String value = data.get(stringField, null);
             if (stringField == "pageTitle" && value == null) {
-                value = data.get("jcr:title", null);
+                value = data.get(JCR_TITLE, null);
             }
             if (value != null) {
-                if (stringField.equals("cq:template")) {
+                if (stringField.equals(NN_TEMPLATE)) {
                     properties.put("contentType", contentTypeMapping.get(value));
                 }
                 else {
@@ -230,8 +235,8 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         while(it.hasNext()) {
             Node childNode = it.nextNode();
             try {
-                if (childNode.hasProperty("sling:resourceType")) {
-                    String resourceType = childNode.getProperty("sling:resourceType").getValue().getString();
+                if (childNode.hasProperty(SLING_RESOURCE_TYPE_PROPERTY)) {
+                    String resourceType = childNode.getProperty(SLING_RESOURCE_TYPE_PROPERTY).getValue().getString();
                     if (resourceType.equals(TEXT_COMPONENT)) {
                         String text = childNode.getProperty("text").getValue().getString();
                         textlist.add(text);
@@ -248,7 +253,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
     @Override
     public String processUserFields(ValueMap data, UserManager userManager, HashMap<String, Object> properties) {
-        String userName = data.get("cq:lastModifiedBy", String.class);
+        String userName = data.get(PN_PAGE_LAST_MOD_BY, String.class);
         String email = "";
         if (userName != null) {
             properties.put("author", userName);

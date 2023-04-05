@@ -26,6 +26,8 @@ import com.workday.community.aem.core.utils.ResolverUtil;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
+import static com.day.cq.wcm.api.constants.NameConstants.NT_PAGE;
+
 /**
  * The Class QueryServiceImpl.
  */
@@ -53,7 +55,7 @@ public class QueryServiceImpl implements QueryService {
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
-            queryMap.put("type", "cq:Page");
+            queryMap.put("type", NT_PAGE);
             queryMap.put("1_property", "jcr:content/cq:lastReplicationAction");
             queryMap.put("1_property.value", "Activate");
 
@@ -75,7 +77,7 @@ public class QueryServiceImpl implements QueryService {
             session = resourceResolver.adaptTo(Session.class);
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
-            queryMap.put("type", "cq:Page");
+            queryMap.put("type", NT_PAGE);
             queryMap.put("group.p.or", "true");
             for (int i = 0; i < templates.length; i++) {
                 queryMap.put(String.format("group.%d_property", i), "jcr:content/cq:template");
