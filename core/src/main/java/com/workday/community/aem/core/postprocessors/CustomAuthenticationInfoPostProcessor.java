@@ -20,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.workday.community.aem.core.constants.WccConstants.PROFILE_SOURCE_ID;
+
 @Component(name = "CustomAuthenticationInfoPostProcessor",
         service = AuthenticationInfoPostProcessor.class,
         immediate = true
@@ -55,7 +57,7 @@ public class CustomAuthenticationInfoPostProcessor implements AuthenticationInfo
                 LOG.info("After user");
                 if (null != user && user.getPath().contains("/workdaycommunity")) {
                     LOG.info("userpath: {}", user.getPath());
-                    Value[] valueArray = user.getProperty("profile/sourceId");
+                    Value[] valueArray = user.getProperty(PROFILE_SOURCE_ID);
                     if(null !=valueArray && null != valueArray[0])
                     {
                         sourceId = valueArray[0].getString();
