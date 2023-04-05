@@ -22,7 +22,7 @@ public @interface SnapConfig {
   String snapContextApiKey();
 
   @AttributeDefinition(name = "Nav API", description = "Nav menu api endpoint.", type = AttributeType.STRING)
-  String navApi() default "/contact/menu?id=%s";
+  String navApi();
 
   @AttributeDefinition(name = "Nav Api Key", description = "Nav menu api key.", type = AttributeType.STRING)
   String navApiKey();
@@ -31,7 +31,7 @@ public @interface SnapConfig {
   String navApiToken();
 
   @AttributeDefinition(name = "Fallback Menu Data", description = "Fallback Menu Data.", type = AttributeType.STRING)
-  String navFallbackMenuData() default "/content/dam/workday-community/jcr-content/FailStateHeaderData.json";
+  String navFallbackMenuData() default "/content/dam/workday-community/resources/local-header-data.json";
 
   @AttributeDefinition(name = "Fallback Menu Service user", description = "Fallback Menu service user.", type = AttributeType.STRING)
   String navFallbackMenuServiceUser() default "readserviceuser";

@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-import com.workday.community.aem.core.services.IndexServices;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
@@ -13,6 +12,7 @@ import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 
 import com.workday.community.aem.core.models.CoveoStatusModel;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoSourceApiService;
 import com.workday.community.aem.core.services.QueryService;
 
@@ -40,7 +40,7 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     /** The query service. */
     @OSGiService
-    private IndexServices indexServices;
+    private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     /** The total pages. */
     private long totalPages;
@@ -91,7 +91,7 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     @Override
     public boolean isCoveoEnabled() {
-        return indexServices.isCoveoEnabled();
+        return coveoIndexApiConfigService.isCoveoIndexEnabled();
     }
 
 }
