@@ -121,7 +121,7 @@ public class SnapServiceImplTest {
 
       @Override
       public String navFallbackMenuData() {
-        return "/content/dam/workday-community/jcr:content/FailStateHeaderData.json";
+        return "/content/dam/workday-community/resources/local-header-data.json";
       }
 
       @Override

@@ -88,7 +88,7 @@ public class CoveoSourceApiServiceImplTest {
     private CoveoSourceApiServiceImpl registerService() {
         AemContext context = new AemContext(); 
         HashMap<String, String> properties = new HashMap<>();
-        properties.put("apiKey", "apiKey");
+        properties.put("coveoApiKey", "apiKey");
         properties.put("sourceApiUri", "https://www.test.com/");
         properties.put("organizationId", "organizationId");
         properties.put("sourceId", "sourceId");
