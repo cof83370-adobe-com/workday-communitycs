@@ -23,6 +23,7 @@ import javax.servlet.ServletException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import com.workday.community.aem.core.constants.GlobalConstants;
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.HttpConstants.LOGIN_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
@@ -95,7 +96,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
       Session session = resourceResolver.adaptTo(Session.class);
       // Delete user on pubilsh instance.
       if (session != null) {
-        if (runModeConfigService.getInstance().equals("publish")) { 
+        if (runModeConfigService.getInstance().equals(GlobalConstants.PUBLISH)) { 
           String userId = session.getUserID();
           userService.deleteUser(userId);
         }
