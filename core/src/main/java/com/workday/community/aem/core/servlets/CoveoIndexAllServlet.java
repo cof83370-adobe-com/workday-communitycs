@@ -2,6 +2,7 @@ package com.workday.community.aem.core.servlets;
 
 import javax.servlet.Servlet;
 
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.IndexServices;
 import com.workday.community.aem.core.services.QueryService;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -14,6 +15,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+/**
+ * The Class CoveoIndexAllServlet.
+ */
 @Component(service = {Servlet.class}, property = {"sling.servlet.paths=" + CoveoIndexAllServlet.RESOURCE_PATH, "sling.servlet.methods=POST"})
 public class CoveoIndexAllServlet extends SlingAllMethodsServlet {
 
@@ -28,6 +32,10 @@ public class CoveoIndexAllServlet extends SlingAllMethodsServlet {
     @Reference
     private transient QueryService queryService;
 
+    /** The CoveoIndexApiConfigService service. */
+    @Reference
+    private CoveoIndexApiConfigService coveoIndexApiConfigService;
+
     /**
      * Servlet POST request handler.
      *
@@ -39,7 +47,7 @@ public class CoveoIndexAllServlet extends SlingAllMethodsServlet {
      */
     @Override
     public void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
-        if (!indexServices.isCoveoEnabled()) {
+        if (!coveoIndexApiConfigService.isCoveoIndexEnabled()) {
             return;
         }
         PrintWriter printOut = response.getWriter();

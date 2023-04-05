@@ -5,7 +5,7 @@
         cq:deviceGroups="[mobile/groups/responsive]"
         cq:template="/conf/workday-community/settings/wcm/templates/kits-and-tools"
         jcr:primaryType="cq:PageContent"
-        sling:resourceType="workday-community/components/structure/page">
+        sling:resourceType="workday-community/components/structure/kitsandtoolspage">
         <root
             jcr:primaryType="nt:unstructured"
             sling:resourceType="workday-community/components/core/container"

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <workspaceFilter version="1.0">
-    <filter root="/conf/workday-community" mode="merge"/>
+    <filter root="/conf/workday-community" mode="update"/>
     <filter root="/content/workday-community" mode="merge"/>
     <filter root="/content/dam/workday-community" mode="merge">
         <exclude pattern="/content/dam/workday-community(/.*)?"/>
         <include pattern="/content/dam/workday-community/jcr:content(/.*)?"/>
+        <include pattern="/content/dam/workday-community/resources(/.*)?"/>
     </filter>
     <filter root="/content/cq:tags/event" mode="merge"/>
     <filter root="/content/cq:tags/user" mode="merge"/>
