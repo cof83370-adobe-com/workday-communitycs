@@ -51,6 +51,11 @@ public class BookModel {
         Page page = pm.getPage(pagePath);
 
         pageTitle = PageUtils.getPageProperty(page, pagePath, "jcr:title");
+
+        if (pageTitle == null) {
+            pageTitle = pagePath;
+        }
+
     }
 
     /**
@@ -60,14 +65,5 @@ public class BookModel {
      */
     public String getPageTitle() {
         return pageTitle;
-    }
-
-    /**
-     * Sets the page title.
-     *
-     * @param pageTitle the new page title
-     */
-    public void setPageTitle(String pageTitle) {
-        this.pageTitle = pageTitle;
     }
 }
