@@ -22,13 +22,13 @@ public class PageUtils {
      * @param property the property
      * @return the page property
      */
-    public static String getPageProperty(Page page, String pagePath, String property) {
+    public static String getPageProperty(Page page, String property) {
         String pageProperty = null;
         if (page != null && page.hasContent()) {
             ValueMap properties = page.getContentResource().adaptTo(ValueMap.class);
             pageProperty = properties.get(property, String.class);
         } else {
-            logger.error("\n Error occured while getting Page object - {} ", pagePath);
+            logger.error("\n Error occured either Page is Null or no content available");
         }
         return pageProperty;
     }

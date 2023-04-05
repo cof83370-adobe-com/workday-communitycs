@@ -50,7 +50,7 @@ public class BookModel {
         PageManager pm = resourceResolver.adaptTo(PageManager.class);
         Page page = pm.getPage(pagePath);
 
-        pageTitle = PageUtils.getPageProperty(page, pagePath, "jcr:title");
+        pageTitle = PageUtils.getPageProperty(page, "jcr:title");
 
         if (pageTitle == null) {
             pageTitle = pagePath;
