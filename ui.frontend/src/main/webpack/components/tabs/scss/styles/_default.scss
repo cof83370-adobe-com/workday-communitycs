@@ -16,18 +16,18 @@
             padding: 1rem 2.5rem 1rem 1rem;
             align-items: center;
             width: auto;
-            border-bottom: 4px solid #fff;
+            border-bottom: 4px solid $wdc-color-french-vanilla-100;
 
 
             &:hover {
-                background-color: #E8EBED;
-                border-bottom: 4px solid #E8EBED;
+                background-color: $wdc-color-soap-300;
+                border-bottom: 4px solid $wdc-color-soap-300;
             }
 
             &--active {
-                color: #0875E1;
+                color: $wdc-color-blueberry-400;
                 ;
-                border-bottom: 4px solid #0875E1;
+                border-bottom: 4px solid $wdc-color-blueberry-400;
 
                 &:hover {
                     border-bottom-color: currentColor;
@@ -41,12 +41,12 @@
         &__tablist {
             display: flex;
             margin-bottom: 0px;
-            border-bottom: 1px solid #CED3D9;
+            border-bottom: 1px solid $wdc-color-soap-500;
 
 
             .-more {
                 max-width: 150px;
-                border-bottom: 4px solid #fff;
+                border-bottom: 4px solid $wdc-color-french-vanilla-100;
                 position: relative;
 
                 >button {
@@ -55,7 +55,7 @@
                     background: transparent;
                     border: 0;
                     cursor: pointer;
-                    color: #000;
+                    color: $wdc-color-black-pepper-600;
 
                     &::after {
                         content: url('../resources/images/wd-icon-chevron-grey-down.svg');
@@ -85,9 +85,9 @@
             list-style: none;
             margin: 0;
             padding: 0;
-            box-shadow: 0 0.3em 0.5em rgba(#000, 0.3);
+            box-shadow: 0 0.3em 0.5em rgba($wdc-color-black-pepper-600, 0.3);
             animation: nav-secondary 0.2s;
-            border: 1px solid #ced3d9;
+            border: 1px solid $wdc-color-soap-500;
             border-radius: 4px;
 
             li {
@@ -96,7 +96,7 @@
                 border-bottom: 0px;
 
                 &:hover {
-                    background: #E8EBED;
+                    background: $wdc-color-soap-300;
                     border-bottom: 0px;
                 }
 
