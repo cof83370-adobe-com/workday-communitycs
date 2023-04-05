@@ -45,14 +45,16 @@ public class CustomAuthenticationInfoPostProcessor implements AuthenticationInfo
         if (oktaService.isOktaIntegrationEnabled() && null != info && StringUtils.isNotBlank(info.getUser())) {
             String userId = info.getUser();
             try {
-                LOG.info("User ID: {}", userId);
+                LOG.info("inside User ID: {}", userId);
                 Map<String, Object> serviceParams = new HashMap<>();
                 serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
                 resolver = resolverFactory.getServiceResourceResolver(serviceParams);
+                LOG.info("After resolver");
                 UserManager userManager = resolver.adaptTo(UserManager.class);
                 Authorizable user = userManager.getAuthorizable(userId);
-
+                LOG.info("After user");
                 if (null != user && user.getPath().contains("/workdaycommunity")) {
+                    LOG.info("userpath: {}", user.getPath());
                     Value[] valueArray = user.getProperty("profile/sourceId");
                     if(null !=valueArray && null != valueArray[0])
                     {
@@ -65,6 +67,7 @@ public class CustomAuthenticationInfoPostProcessor implements AuthenticationInfo
                 LOG.error("Error in CustomAuthenticationInfoPostProcessor {}", e.getMessage());
             } finally {
                 if (resolver != null && resolver.isLive()) {
+                    LOG.error("Final Block CustomAuthenticationInfoPostProcessor");
                     resolver.close();
                     resolver = null;
                 }
