@@ -178,11 +178,6 @@ public class SnapServiceImpl implements SnapService {
       br.close();
 
       JsonObject navResponseObj = gson.fromJson(sb.toString(), JsonObject.class);
-
-      if (sfNavObj != null && config.beta() && navResponseObj == null) {
-        return gson.toJson(sfNavObj);
-         // TODO Merge local default to sfNavObj and return the merged result (once nav model strategy is finalized).
-      }
       return gson.toJson(navResponseObj);
     } catch (Exception e) {
       logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
