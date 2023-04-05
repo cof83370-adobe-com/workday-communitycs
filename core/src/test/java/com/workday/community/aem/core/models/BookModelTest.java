@@ -13,9 +13,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * The Class BookPathModelTest.
- * 
- * @author uttej.vardineni
+ * The Class BookModelTest.
+ *  @author uttej.vardineni
  */
 @ExtendWith(AemContextExtension.class)
 public class BookModelTest {
@@ -26,10 +25,17 @@ public class BookModelTest {
     /** The current page. */
     private Page currentPage;
 
+    /** The request. */
     private MockSlingHttpServletRequest request;
 
+    /** The book path model test. */
     private BookModel bookPathModelTest;
 
+    /**
+     * Sets the BookModelTest.
+     *
+     * @throws Exception the exception
+     */
     @BeforeEach
     public void setUp() throws Exception {
         context.addModelsForPackage("com.workday.community.aem.core.models");
@@ -42,6 +48,9 @@ public class BookModelTest {
         context.registerService(Page.class, currentPage);
     }
 
+    /**
+     * Test page title.
+     */
     @Test
     public void testPageTitle() {
         bookPathModelTest = request.adaptTo(BookModel.class);
