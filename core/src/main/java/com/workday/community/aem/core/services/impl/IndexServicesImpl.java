@@ -19,7 +19,11 @@ import java.util.Map;
 /**
  * The Class IndexServicesImpl.
  */
-@Component(service = IndexServices.class, immediate = true)
+@Component(
+    service = IndexServices.class, 
+    immediate = true,
+    configurationPid = "com.workday.community.aem.core.config.CoveoIndexApiConfig"
+)
 public class IndexServicesImpl implements IndexServices {
 
     /** The jobManager service. */
