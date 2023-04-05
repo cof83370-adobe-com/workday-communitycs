@@ -47,6 +47,7 @@ Include conf.d/variables/custom.vars
 		RewriteEngine	on
 		Include conf.d/rewrites/rewrite.rules
 	</IfModule>
+	ErrorDocument 400 ${404_PAGE}
 	ErrorDocument 403 ${404_PAGE}
 	ErrorDocument 404 ${404_PAGE}
 	ErrorDocument 500 ${500_PAGE}
