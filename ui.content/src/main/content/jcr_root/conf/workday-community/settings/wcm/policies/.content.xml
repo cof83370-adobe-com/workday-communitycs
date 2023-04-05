@@ -844,6 +844,66 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy>
                 </page>
+                <eventspage jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries for Event pages."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </eventspage>
+                <kitsandtoolspage jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries for Kits and Tools pages."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Kits and Tools Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </kitsandtoolspage>
+                <referencepage jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries for Reference pages."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Reference Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </referencepage>
+                <faqpage jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries for FAQ pages."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="FAQ Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </faqpage>
+                <troubleshooting jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries for Troubleshooting pages."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Troubleshooting Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </troubleshooting>
             </structure>
         </components>
     </workday-community>

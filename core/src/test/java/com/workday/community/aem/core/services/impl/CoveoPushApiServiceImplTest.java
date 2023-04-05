@@ -164,7 +164,7 @@ public class CoveoPushApiServiceImplTest {
     private CoveoPushApiServiceImpl registerService() {
         AemContext context = new AemContext(); 
         HashMap<String, String> properties = new HashMap<>();
-        properties.put("apiKey", "apiKey");
+        properties.put("coveoApiKey", "apiKey");
         properties.put("pushApiUri", "https://www.test.com/");
         properties.put("organizationId", "organizationId");
         properties.put("sourceId", "sourceId");

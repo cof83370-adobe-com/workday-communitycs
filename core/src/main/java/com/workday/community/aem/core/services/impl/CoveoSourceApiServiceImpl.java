@@ -28,7 +28,8 @@ import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_T
  */
 @Component(
     service = CoveoSourceApiService.class,
-    immediate = true
+    immediate = true,
+    configurationPid = "com.workday.community.aem.core.config.CoveoIndexApiConfig"
 )
 @Designate(ocd = CoveoIndexApiConfig.class)
 public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
@@ -57,7 +58,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
     protected void activate(CoveoIndexApiConfig coveoIndexApiConfig){
         this.sourceApiUri = coveoIndexApiConfig.sourceApiUri();
         this.organizationId = coveoIndexApiConfig.organizationId();
-        this.apiKey = coveoIndexApiConfig.apiKey();
+        this.apiKey = coveoIndexApiConfig.coveoApiKey();
         this.sourceId = coveoIndexApiConfig.sourceId();
     }
 

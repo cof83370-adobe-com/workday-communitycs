@@ -52,7 +52,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
         ArrayList<String> paths = (ArrayList<String>) job.getProperty("paths");
         String op = (String) job.getProperty("op");
         if (op != null && paths != null) {
-            if (op == "delete") {
+            if (op.equals("delete")) {
                 return startCoveoDelete(paths, resolverFactory, externalizer, coveoPushApiService);
             }
             else {

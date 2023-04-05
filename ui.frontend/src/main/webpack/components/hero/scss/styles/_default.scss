@@ -1,0 +1,49 @@
+.hero {
+    background-color: $wdc-color-blueberry-400;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    padding: $pg-top-32 $pg-left-16;
+
+    .cmp-teaser {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: left;
+        align-items: $align-center;
+
+        &__content {
+            display: inline-block;
+        }
+
+        &__title {
+            font-style: $font-style-normal;
+            font-weight: $font-weight-bold;
+            font-size: 28px;
+            line-height: 34px;
+            color: $wdc-color-french-vanilla-100;
+            margin: 0;
+        }
+
+        &__description {
+            font-style: $font-style-normal;
+            font-weight: $font-weight-normal;
+            font-size: 15px;
+            line-height: 22px;
+            letter-spacing: 0.2px;
+            color: $wdc-color-french-vanilla-100;
+            margin-top: 12px;
+
+            p {
+                margin: 0;
+            }
+        }
+
+        &__image {
+            display: inline-block;
+            margin-right: 24px;
+
+            .cmp-image__image {
+                width: 40px;
+            }
+        }
+    }
+
+}
