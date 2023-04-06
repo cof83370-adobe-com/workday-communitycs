@@ -41,7 +41,7 @@
 
         const tocGroup = document.getElementsByClassName('cmp-toc__group');
 
-        if(tocGroup.length == 0) {
+        if(tocGroup.length == 0 && leftContainerPanel !== undefined) {
             leftContainerPanel.classList.remove(`${aemGridColumn}--3`, `${aemGridColumn}--1`, 'collapse', `${container}__left-rail`);
             leftContainerPanel.classList.add(`${aemGridColumn}--0`);
             if(tocElement) {
