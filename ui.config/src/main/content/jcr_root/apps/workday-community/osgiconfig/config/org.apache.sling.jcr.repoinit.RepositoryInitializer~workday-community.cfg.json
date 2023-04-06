@@ -8,6 +8,7 @@
     "create path (sling:OrderedFolder) /content/dam/workday-community",
     "create path (nt:unstructured) /content/dam/workday-community/jcr:content",
     "set properties on /content/dam/workday-community/jcr:content\r\n  set cq:conf{String} to /conf/workday-community\r\n  set jcr:title{String} to \"Workday Community Site\"\r\nend",
-    "create service user read-service-user\r\nset ACL on /content/workday-community,/content/cq:tags,/home,/content/dam/workday-community\r\n allow jcr:read for read-service-user\r\nend"
+    "create service user read-service-user\r\nset ACL on /content/workday-community,/content/cq:tags,/home,/content/dam/workday-community\r\n allow jcr:read for read-service-user\r\nend",
+    "create service user admin-user-group\r\nset ACL on /home\r\n allow jcr:all for admin-user-group\r\nend"
   ]
 }
