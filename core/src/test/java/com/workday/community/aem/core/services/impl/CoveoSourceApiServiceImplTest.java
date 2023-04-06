@@ -14,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.HttpsURLConnectionService;
 import com.workday.community.aem.core.constants.RestApiConstants;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
@@ -34,6 +35,9 @@ public class CoveoSourceApiServiceImplTest {
     @Mock
     HttpsURLConnectionService restApiService;
 
+    /** The service CoveoIndexApiConfigService. */
+    @Mock
+    CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     /**
      * Test generateSourceApiUri.
@@ -41,7 +45,8 @@ public class CoveoSourceApiServiceImplTest {
     @Test
     public void testGenerateSourceApiUri() {
         service = this.registerService();
-        assertEquals("https://www.test.com/organizationId/sources/sourceId", service.generateSourceApiUri());
+        String expected = coveoIndexApiConfigService.getSourceApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/sources/" + coveoIndexApiConfigService.getSourceId();
+        assertEquals(expected, service.generateSourceApiUri());
     }
 
     /**
@@ -53,7 +58,7 @@ public class CoveoSourceApiServiceImplTest {
         HashMap<String, String> header = service.generateHeader();
         assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(HttpConstants.HEADER_ACCEPT));
         assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(RestApiConstants.CONTENT_TYPE));
-        assertEquals(BEARER_TOKEN.token("apiKey"), header.get(RestApiConstants.AUTHORIZATION));
+        assertEquals(BEARER_TOKEN.token(coveoIndexApiConfigService.getCoveoApiKey()), header.get(RestApiConstants.AUTHORIZATION));
     }
 
     /**
@@ -87,13 +92,9 @@ public class CoveoSourceApiServiceImplTest {
 	 */
     private CoveoSourceApiServiceImpl registerService() {
         AemContext context = new AemContext(); 
-        HashMap<String, String> properties = new HashMap<>();
-        properties.put("coveoApiKey", "apiKey");
-        properties.put("sourceApiUri", "https://www.test.com/");
-        properties.put("organizationId", "organizationId");
-        properties.put("sourceId", "sourceId");
+        coveoIndexApiConfigService = context.registerInjectActivateService(new CoveoIndexApiConfigService());
         restApiService = context.registerInjectActivateService(new HttpsURLConnectionService());
-        return context.registerInjectActivateService(new CoveoSourceApiServiceImpl(), properties);
+        return context.registerInjectActivateService(new CoveoSourceApiServiceImpl());
     }
     
 }

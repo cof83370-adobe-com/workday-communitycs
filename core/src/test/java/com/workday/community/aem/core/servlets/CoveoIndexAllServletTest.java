@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.IndexServices;
 import com.workday.community.aem.core.services.QueryService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -18,6 +19,9 @@ import java.util.*;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * The Class CoveoIndexAllServletTest.
+ */
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class CoveoIndexAllServletTest {
 
@@ -29,9 +33,17 @@ class CoveoIndexAllServletTest {
     @Mock
     private QueryService queryService;
 
+    /** CoveoIndexApiConfigService service. */
+    @Mock
+    private CoveoIndexApiConfigService coveoIndexApiConfigService;
+
+    /** The servlet CoveoIndexAllServlet. */
     @InjectMocks
     CoveoIndexAllServlet servlet;
 
+    /**
+     * Test doPost.
+     */
     @ParameterizedTest(name = "Test {0}")
     @CsvSource({
             "Template value is empty,true,false",
@@ -51,7 +63,7 @@ class CoveoIndexAllServletTest {
 
         MockSlingHttpServletResponse response = mock(MockSlingHttpServletResponse.class);
 
-        when(indexServices.isCoveoEnabled()).thenReturn(true);
+        when(coveoIndexApiConfigService.isCoveoIndexEnabled()).thenReturn(true);
 
         PrintWriter printWriter = mock(PrintWriter.class);
         when(response.getWriter()).thenReturn(printWriter);

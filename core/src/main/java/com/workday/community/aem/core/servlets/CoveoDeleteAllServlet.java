@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoPushApiService;
 import com.workday.community.aem.core.services.IndexServices;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -26,6 +27,10 @@ public class CoveoDeleteAllServlet extends SlingAllMethodsServlet {
     @Reference
     private IndexServices indexServices;
 
+    /** The CoveoIndexApiConfigService service. */
+    @Reference
+    private CoveoIndexApiConfigService coveoIndexApiConfigService;
+
     /**
      * Delete all contents from coveo.
      *
@@ -35,7 +40,7 @@ public class CoveoDeleteAllServlet extends SlingAllMethodsServlet {
      */
     @Override
     public void doDelete(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
-        if (!indexServices.isCoveoEnabled()) {
+        if (!coveoIndexApiConfigService.isCoveoIndexEnabled()) {
             return;
         }
         PrintWriter printOut = response.getWriter();
