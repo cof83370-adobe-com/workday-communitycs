@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoPushApiService;
 import com.workday.community.aem.core.services.IndexServices;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -16,6 +17,9 @@ import java.io.PrintWriter;
 
 import static org.mockito.Mockito.*;
 
+/**
+ * The Class CoveoDeleteAllServletTest.
+ */
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class CoveoDeleteAllServletTest {
 
@@ -27,9 +31,17 @@ class CoveoDeleteAllServletTest {
     @Mock
     private CoveoPushApiService coveoPushApiService;
 
+    /** The servlet CoveoDeleteAllServlet. */
     @InjectMocks
     CoveoDeleteAllServlet servlet;
 
+    /** The CoveoIndexApiConfigService service. */
+    @Mock
+    private CoveoIndexApiConfigService coveoIndexApiConfigService;
+
+    /**
+     * Test doDelete.
+     */
     @Test
     public void testDoDelete() throws IOException {
         MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
@@ -37,7 +49,7 @@ class CoveoDeleteAllServletTest {
         PrintWriter printWriter = mock(PrintWriter.class);
         when(response.getWriter()).thenReturn(printWriter);
 
-        when(indexServices.isCoveoEnabled()).thenReturn(true);
+        when(coveoIndexApiConfigService.isCoveoIndexEnabled()).thenReturn(true);
 
         servlet.doDelete(request, response);
         verify(coveoPushApiService).callDeleteAllItemsUri();

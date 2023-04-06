@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.HttpsURLConnectionService;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -34,13 +35,18 @@ public class CoveoPushApiServiceImplTest {
     @Mock
     HttpsURLConnectionService restApiService;
 
+    /** The service CoveoIndexApiConfigService. */
+    @Mock
+    CoveoIndexApiConfigService coveoIndexApiConfigService;
+
     /**
      * Test generateBatchUploadUri.
      */
     @Test
     public void testGenerateBatchUploadUri() {
         service = this.registerService();
-        assertEquals("https://www.test.com/organizationId/sources/sourceId/documents/batch?fileId=file1", service.generateBatchUploadUri("file1"));
+        String expected = coveoIndexApiConfigService.getPushApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/sources/" + coveoIndexApiConfigService.getSourceId() + "/documents/batch?fileId=file1";
+        assertEquals(expected, service.generateBatchUploadUri("file1"));
     }
 
     /**
@@ -49,7 +55,8 @@ public class CoveoPushApiServiceImplTest {
     @Test
     public void testGenerateContainerUri() {
         service = this.registerService();
-        assertEquals("https://www.test.com/organizationId/files", service.generateContainerUri());
+        String expected = coveoIndexApiConfigService.getPushApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/files";
+        assertEquals(expected, service.generateContainerUri());
     }
 
     /**
@@ -59,7 +66,8 @@ public class CoveoPushApiServiceImplTest {
     public void testGenerateDeleteAllItemsUri() {
         service = this.registerService();
         String uri = service.generateDeleteAllItemsUri();
-        assertTrue(uri.contains("https://www.test.com/organizationId/sources/sourceId/documents/olderthan?orderingId="));
+        String expected = coveoIndexApiConfigService.getPushApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/sources/" + coveoIndexApiConfigService.getSourceId() + "/documents/olderthan?orderingId=";
+        assertTrue(uri.contains(expected));
     }
 
     /**
@@ -68,7 +76,8 @@ public class CoveoPushApiServiceImplTest {
     @Test
     public void testGenerateDeleteSingleItemUri() {
         service = this.registerService();
-        assertEquals("https://www.test.com/organizationId/sources/sourceId/documents?deleteChildren=false&documentId=item1", service.generateDeleteSingleItemUri("item1"));
+        String expected = coveoIndexApiConfigService.getPushApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/sources/" + coveoIndexApiConfigService.getSourceId() + "/documents?deleteChildren=false&documentId=item1";
+        assertEquals(expected, service.generateDeleteSingleItemUri("item1"));
     }
 
     /**
@@ -163,13 +172,9 @@ public class CoveoPushApiServiceImplTest {
 	 */
     private CoveoPushApiServiceImpl registerService() {
         AemContext context = new AemContext(); 
-        HashMap<String, String> properties = new HashMap<>();
-        properties.put("coveoApiKey", "apiKey");
-        properties.put("pushApiUri", "https://www.test.com/");
-        properties.put("organizationId", "organizationId");
-        properties.put("sourceId", "sourceId");
         restApiService = context.registerInjectActivateService(new HttpsURLConnectionService());
-        return context.registerInjectActivateService(new CoveoPushApiServiceImpl(), properties);
+        coveoIndexApiConfigService = context.registerInjectActivateService(new CoveoIndexApiConfigService());
+        return context.registerInjectActivateService(new CoveoPushApiServiceImpl());
     }
     
 }

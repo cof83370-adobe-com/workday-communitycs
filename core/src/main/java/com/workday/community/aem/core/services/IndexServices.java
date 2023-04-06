@@ -8,13 +8,6 @@ import java.util.List;
 public interface IndexServices {
 
     /**
-     * Returns Coveo indexing enabled oe not.
-     *
-     * @return Coveo enabled.
-     */
-    boolean isCoveoEnabled();
-
-    /**
      * Create Index jobs for the page, and it's child pages.
      *
      * @param paths

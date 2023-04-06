@@ -22,7 +22,7 @@ public @interface SnapConfig {
   String snapContextApiKey();
 
   @AttributeDefinition(name = "Nav API", description = "Nav menu api endpoint.", type = AttributeType.STRING)
-  String navApi() default "/contact/menu?id=%s";
+  String navApi();
 
   @AttributeDefinition(name = "Nav Api Key", description = "Nav menu api key.", type = AttributeType.STRING)
   String navApiKey();

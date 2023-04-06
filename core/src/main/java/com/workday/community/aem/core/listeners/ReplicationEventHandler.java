@@ -5,21 +5,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.sling.event.jobs.JobManager;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
-import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.day.cq.replication.ReplicationAction;
 import com.day.cq.replication.ReplicationActionType;
-import com.workday.community.aem.core.config.CoveoIndexApiConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 
 /**
  * The Class ReplicationEventHandler.
@@ -30,7 +27,6 @@ import com.workday.community.aem.core.constants.GlobalConstants;
     property = {
         EventConstants.EVENT_TOPIC + "=" + ReplicationAction.EVENT_TOPIC,
     })
-@Designate(ocd = CoveoIndexApiConfig.class)
 public class ReplicationEventHandler implements EventHandler {
     
     /** The logger. */
@@ -40,17 +36,9 @@ public class ReplicationEventHandler implements EventHandler {
     @Reference
     JobManager jobManager;
 
-    /** The coveoApiConfig. */
-    private CoveoIndexApiConfig coveoIndexApiConfig;
-
-    /**
-	 * Activate the config.
-	 */
-    @Activate
-    @Modified
-    protected void activate(CoveoIndexApiConfig coveoIndexApiConfig) {
-        this.coveoIndexApiConfig = coveoIndexApiConfig;
-    }
+    /** The CoveoIndexApiConfigService. */
+    @Reference 
+    private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     /**
 	 * Get coveo indexing is enabled or not.
@@ -58,7 +46,7 @@ public class ReplicationEventHandler implements EventHandler {
 	 * @return Coveo indexing is enabled or not.
 	 */
     public boolean isCoveoEnabled() {
-        return coveoIndexApiConfig.isCoveoIndexingEnabled();
+        return coveoIndexApiConfigService.isCoveoIndexEnabled();
     }
     
     @Override
@@ -66,9 +54,10 @@ public class ReplicationEventHandler implements EventHandler {
         if (isCoveoEnabled()) {
             try {
                 ReplicationAction action = getAction(event);
-                if (action.getType().equals(ReplicationActionType.ACTIVATE) ||
+                if (action.getPath().contains(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH) && 
+                    (action.getType().equals(ReplicationActionType.ACTIVATE) ||
                     action.getType().equals(ReplicationActionType.DEACTIVATE) ||
-                    action.getType().equals(ReplicationActionType.DELETE)
+                    action.getType().equals(ReplicationActionType.DELETE))
                 ) {
                     startCoveoJob(action);
                 }
