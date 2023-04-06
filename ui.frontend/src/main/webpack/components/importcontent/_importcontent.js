@@ -1,10 +1,7 @@
 (function() {
     'use strict';
     var selectors = {
-        self:      '[data-cmp-is="importcontent"]',
-        file:  '[data-cmp-hook-importcontent="file"]',
-        template:   '[data-cmp-hook-importcontent="template"]',
-        pagePath:   '[data-cmp-hook-importcontent="pagePath"]'
+        self:      '[data-cmp-is="importcontent"]'
     };
     
     
@@ -13,20 +10,11 @@
         function init(config) {
             config.element.removeAttribute('data-cmp-is');
             document.getElementById('cmp_importcontent_button').onclick = function() {
-			
-			var file = config.element.querySelectorAll(selectors.file);
-			file = file.length == 1 ? file[0].textContent : null;
-			
-			var template = config.element.querySelectorAll(selectors.template);
-			template = template.length == 1 ? template[0].textContent : null;
-			
-			var pagePath = config.element.querySelectorAll(selectors.pagePath);
-			pagePath = pagePath.length == 1 ? pagePath[0].textContent : null;
 
-			var xhr = new XMLHttpRequest();
+            var xhr = new XMLHttpRequest();
 
 			// Making our connection  
-			var url = '/bin/dataimporter?source='+file+'&template='+template+'&pagePath='+pagePath;
+			var url = '/bin/dataimporter';
 			xhr.open('GET', url, true);
 
 			// function execute after request is successful 

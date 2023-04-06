@@ -1,19 +1,6 @@
 <div class="cmp-importcontent" data-cmp-is="importcontent">
-    
-    <div class="cmp-importcontent__item" data-sly-test="${properties.chooseSourceFile}">
-        <p class="cmp-importcontent__item-label">${properties.chooseSourceFileLabel || 'Given File' @ i18n, context='text'}:</p>
-        <pre class="cmp-importcontent__item-output" data-cmp-hook-importcontent="file">${properties.chooseSourceFile}</pre>
-    </div>
-    <div class="cmp-importcontent__item" data-sly-test="${properties.chooseTemplate}">
-        <p class="cmp-importcontent__item-label">${properties.chooseTemplateLabel || 'Given Template' @ i18n, context='text'}:</p>
-        <pre class="cmp-importcontent__item-output" data-cmp-hook-importcontent="template">${properties.chooseTemplate}</pre>
-    </div>
-    <div class="cmp-importcontent__item" data-sly-test="${properties.pagePath}">
-        <p class="cmp-importcontent__item-label">${properties.pagePathLabel || 'Given Page Path' @ i18n, context='text'}:</p>
-        <pre class="cmp-importcontent__item-output" data-cmp-hook-importcontent="pagePath">${properties.pagePath}</pre>
-    </div>
     <div class="cmp-importcontent__item" >
         <span><a href="#" id="cmp_importcontent_button" class="cmp-importcontent__item-submit-button" value="Submit">${properties.buttonLabel || 'Import Content' @ i18n, context='text'}</a></span>
     </div>
 </div>
-<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html" data-sly-call="${template.placeholder @ isEmpty=!properties.chooseSourceFile, classAppend='cmp-importcontent'}"></sly>
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html" data-sly-call="${template.placeholder @ isEmpty=!properties.buttonLabel, classAppend='cmp-importcontent'}"></sly>
