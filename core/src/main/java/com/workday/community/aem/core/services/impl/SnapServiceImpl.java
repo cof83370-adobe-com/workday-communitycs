@@ -2,16 +2,20 @@ package com.workday.community.aem.core.services.impl;
 
 import com.adobe.xfa.ut.StringUtils;
 import com.day.cq.dam.api.Asset;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
+import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -25,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -105,7 +110,7 @@ public class SnapServiceImpl implements SnapService {
         return this.getMergedHeaderMenu(navResponseObj);
       }
 
-    } catch (Exception e) {
+    } catch (SnapException e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
     }
 
@@ -120,7 +125,7 @@ public class SnapServiceImpl implements SnapService {
       url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);
-    } catch (Exception e) {
+    } catch (SnapException | JsonSyntaxException e) {
       logger.error("Error in getUserContext method :: {}", e.getMessage());
     }
 
@@ -142,7 +147,7 @@ public class SnapServiceImpl implements SnapService {
       if (jsonResponse != null) {
         return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
       }
-    } catch (Exception e) {
+    } catch (SnapException | JsonProcessingException e) {
       logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
     }
     return null;
@@ -179,7 +184,7 @@ public class SnapServiceImpl implements SnapService {
 
       JsonObject navResponseObj = gson.fromJson(sb.toString(), JsonObject.class);
       return gson.toJson(navResponseObj);
-    } catch (Exception e) {
+    } catch (IOException | LoginException e) {
       logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
       return "";
     }
