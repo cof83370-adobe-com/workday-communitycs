@@ -42,34 +42,31 @@ public class CustomAuthenticationInfoPostProcessor implements AuthenticationInfo
     @Override
     public void postProcess(AuthenticationInfo info, HttpServletRequest req, HttpServletResponse res)
             throws LoginException {
-        LOG.info("inside  CustomAuthenticationInfoPostProcessor.postProcess() {}",info.getUser());
-        LOG.info("isOktaIntegrationEnabled {}",oktaService.isOktaIntegrationEnabled());
+        LOG.info("inside  CustomAuthenticationInfoPostProcessor.postProcess()");
+        LOG.info("isOktaIntegrationEnabled {}", oktaService.isOktaIntegrationEnabled());
         if (oktaService.isOktaIntegrationEnabled() && null != info && StringUtils.isNotBlank(info.getUser())) {
             String userId = info.getUser();
             try {
-                LOG.info("inside User ID: {}", userId);
+                LOG.info("User ID: {}", userId);
                 Map<String, Object> serviceParams = new HashMap<>();
                 serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
                 resolver = resolverFactory.getServiceResourceResolver(serviceParams);
-                LOG.info("After resolver");
                 UserManager userManager = resolver.adaptTo(UserManager.class);
                 Authorizable user = userManager.getAuthorizable(userId);
-                LOG.info("After user");
                 if (null != user && user.getPath().contains("/workdaycommunity")) {
                     LOG.info("userpath: {}", user.getPath());
                     Value[] valueArray = user.getProperty(PROFILE_SOURCE_ID);
-                    if(null !=valueArray && null != valueArray[0])
-                    {
+                    if (null != valueArray && null != valueArray[0]) {
+                        //TODO Source ID should be taken care in next sprint
                         sourceId = valueArray[0].getString();
                         LOG.info("sourceId: {}", sourceId);
-                        LOG.error("sourceId: {}", sourceId);
                     }
                 }
             } catch (Exception e) {
                 LOG.error("Error in CustomAuthenticationInfoPostProcessor {}", e.getMessage());
             } finally {
                 if (resolver != null && resolver.isLive()) {
-                    LOG.error("Final Block CustomAuthenticationInfoPostProcessor");
+                    LOG.info("Final Block CustomAuthenticationInfoPostProcessor");
                     resolver.close();
                     resolver = null;
                 }
