@@ -54,9 +54,10 @@ public class ReplicationEventHandler implements EventHandler {
         if (isCoveoEnabled()) {
             try {
                 ReplicationAction action = getAction(event);
-                if (action.getType().equals(ReplicationActionType.ACTIVATE) ||
+                if (action.getPath().contains(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH) && 
+                    (action.getType().equals(ReplicationActionType.ACTIVATE) ||
                     action.getType().equals(ReplicationActionType.DEACTIVATE) ||
-                    action.getType().equals(ReplicationActionType.DELETE)
+                    action.getType().equals(ReplicationActionType.DELETE))
                 ) {
                     startCoveoJob(action);
                 }

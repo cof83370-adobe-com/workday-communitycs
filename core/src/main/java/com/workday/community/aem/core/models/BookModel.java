@@ -2,9 +2,7 @@ package com.workday.community.aem.core.models;
 
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
-import com.workday.community.aem.core.utils.PageUtils;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
@@ -35,8 +33,8 @@ public class BookModel {
     @Inject
     private ResourceResolver resourceResolver;
 
-    /** The page title. */
-    private String pageTitle;
+    /** The Page Object */
+    private Page bookPage;
 
     /**
      * Inits the BookModel.
@@ -44,26 +42,15 @@ public class BookModel {
     @PostConstruct
     protected void init() {
         logger.debug("Initializing BookModel ....");
-        if (StringUtils.isEmpty(pagePath))
-            return;
-
-        PageManager pm = resourceResolver.adaptTo(PageManager.class);
-        Page page = pm.getPage(pagePath);
-
-        pageTitle = PageUtils.getPageProperty(page, "jcr:title");
-
-        if (pageTitle == null) {
-            pageTitle = pagePath;
-        }
-
     }
 
     /**
-     * Gets the page title.
+     * Gets the book page object.
      *
-     * @return the page title
+     * @return the page
      */
-    public String getPageTitle() {
-        return pageTitle;
+    public Page getBookPage() {
+        PageManager pm = resourceResolver.adaptTo(PageManager.class);
+        return pm.getPage(pagePath);
     }
 }
