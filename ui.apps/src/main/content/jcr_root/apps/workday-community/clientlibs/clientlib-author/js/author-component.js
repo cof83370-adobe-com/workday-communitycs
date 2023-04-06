@@ -4,7 +4,7 @@ function hideElements() {
     const doc = iframe.contentDocument;
     const elements = doc.body.querySelectorAll('.new.newpar.section');
     const filteredElements = Array.from(elements).filter(element => {
-        return element.classList.length === 3 && element.classList.contains('new') && element.classList.contains('newpar') && element.classList.contains('section');
+        return element.classList.length === 3;
     });
 
     for (const filterElement of filteredElements) {
@@ -12,8 +12,4 @@ function hideElements() {
     }
 }
 
-if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
-    hideElements();
-} else {
-    iframe.addEventListener('load', hideElements);
-}
+iframe.addEventListener('load', hideElements);
