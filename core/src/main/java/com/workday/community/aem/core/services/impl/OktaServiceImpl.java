@@ -14,7 +14,6 @@ import org.osgi.service.metatype.annotations.Designate;
  */
 @Component(
         service=OktaService.class,
-        configurationPolicy= ConfigurationPolicy.OPTIONAL,
         immediate=true,
         configurationPid = "com.workday.community.aem.core.config.OktaConfig"
 )
