@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
@@ -22,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import java.util.*;
 
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_ROLE_KEY;
@@ -86,23 +86,20 @@ public class UserGroupServiceImpl implements UserGroupService {
 
             Iterator<Group> groups = user.memberOf();
             boolean hasSfRoles = false;
-            if (groups != null) {
-                Group group;
-                while(groups.hasNext()) {
-                    group = groups.next();
-                    groupIds.add(group.getID());
-                    if (!ArrayUtils.contains(AEM_DEFAULT_GROUPS, group.getID())) {
-                        hasSfRoles = true;
-                    }
+            while(groups.hasNext()) {
+                String groupId = groups.next().getID();
+                groupIds.add(groupId);
+                if (!ArrayUtils.contains(AEM_DEFAULT_GROUPS, groupId)) {
+                    hasSfRoles = true;
                 }
             }
 
-            if (hasSfRoles == false) {
-                String sfId = user.getProperty(WccConstants.PROFILE_SOURCE_ID) != null ?
-                        user.getProperty(WccConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+            if (!hasSfRoles) {
+                Value[] values = user.getProperty(WccConstants.PROFILE_SOURCE_ID);
+                String sfId = values != null && values.length > 0 ? values[0].getString() : null;
                 if (sfId != null) {
                     groupIds.addAll(this.getUserGroupsFromSnap(sfId));
-                    if (groupIds.size() > 0) {
+                    if (!groupIds.isEmpty()) {
                         groupIds = this.convertSfGroupsToAemGroups(groupIds);
                         userService.updateUser(user.getID(), Map.<String, String>of(), groupIds);
                     }
@@ -117,8 +114,8 @@ public class UserGroupServiceImpl implements UserGroupService {
     /**
      * Get user groups groups from API.
      *
-     * @param sfId
-     * @return
+     * @param sfId User's Salesforce id.
+     * @return List of user groups from snap.
      */
     protected List<String> getUserGroupsFromSnap(String sfId) {
         JsonObject context = snapService.getUserContext(sfId);
@@ -126,18 +123,17 @@ public class UserGroupServiceImpl implements UserGroupService {
         JsonObject contextInfoObj  = contextInfo.getAsJsonObject();
         JsonElement groups = contextInfoObj.get(USER_CONTACT_ROLE_KEY);
         Optional<String> groupsString = Optional.ofNullable(groups.getAsString());
-        List<String> groupsArray = groupsString.map(value -> List.of(value.split(";")))
+        return groupsString.map(value -> List.of(value.split(";")))
                         .orElseGet(() -> {
                             logger.info("Value not found");
-                            return new ArrayList<String>();
+                            return new ArrayList<>();
                         });
-        return groupsArray;
     }
 
     /**
      * Map the SF roles to aem roles.
      *
-     * @param groups
+     * @param groups List user groups object
      * @return AEM roles
      */
     protected List<String> convertSfGroupsToAemGroups(List<String> groups) {
@@ -146,6 +142,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
             JsonObject json = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
             for (String sfGroup : groups) {
+                assert json != null;
                 if (!json.get(sfGroup).isJsonNull()) {
                     if (json.get(sfGroup).isJsonArray()) {
                         for (JsonElement aemGroup : json.getAsJsonArray(sfGroup)) {

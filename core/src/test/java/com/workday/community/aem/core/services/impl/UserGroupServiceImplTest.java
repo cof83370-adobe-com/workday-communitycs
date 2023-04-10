@@ -25,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -91,7 +92,7 @@ class UserGroupServiceImplTest {
 
         String userId = "test-user";
         User mockUser = mock(User.class);
-        when(mockUser.memberOf()).thenReturn(null);
+        when(mockUser.memberOf()).thenReturn(Collections.emptyIterator());
         when(mockUser.getProperty(eq(WccConstants.PROFILE_SOURCE_ID))).thenReturn(values);
         when(mockUser.getID()).thenReturn(userId);
 
