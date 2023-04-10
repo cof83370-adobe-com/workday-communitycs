@@ -2,23 +2,34 @@ package com.workday.community.aem.core.services.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.config.SnapConfig;
+import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
-import org.apache.jackrabbit.api.JackrabbitSession;
-import org.apache.jackrabbit.api.security.user.Authorizable;
+import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.utils.CommonUtils;
+import com.workday.community.aem.core.utils.DamUtils;
+import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.jackrabbit.api.security.user.Group;
-import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import javax.jcr.RepositoryException;
+import java.util.*;
 
+/**
+ * The Class UserGroupServiceImpl.
+ */
+@Component(
+        service = UserGroupService.class,
+        immediate = true
+)
 public class UserGroupServiceImpl implements UserGroupService {
 
     /** The logger. */
@@ -30,46 +41,57 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Reference
     SnapService snapService;
 
+    /**
+     * The user service.
+     */
+    @Reference
+    UserService userService;
+
     @Reference
     ResourceResolverFactory resourceResolverFactory;
 
-    /** The service user. */
-    public static final String SERVICE_USER = "readserviceuser";
+    /** The snap Config. */
+    @Reference
+    private SnapConfig config;
 
-    public List<String> getUserGroupsBySfId(String sfId, SlingHttpServletRequest request) {
-        List<String> userGroups = new ArrayList<>();
-        try {
-            HttpSession session = request.getSession();
-            userGroups = (List<String>) session.getAttribute("userGroups");
-            if (!userGroups.isEmpty()) {
-                return userGroups;
-            }
+    /** The user service user. */
+    public static final String USER_SERVICE_USER = "adminusergroup";
 
-            if (userGroups.isEmpty()) {
-                userGroups = getUserGroupsFromSnap(sfId);
-            }
+    /** The user service user. */
+    public static final String READ_SERVICE_USER = "readserviceuser";
 
-            if (!userGroups.isEmpty()) {
-                UserManager userManager = ((JackrabbitSession) session).getUserManager();
-                Authorizable user = userManager.getAuthorizable(((JackrabbitSession) session).getUserID());
-                Iterator<Group> groups = user.memberOf();
-                while (groups.hasNext()) {
-                    Group group = groups.next();
-                    group.removeMember(user);
-                }
-                for(String groupId: userGroups) {
-                    Group group = (Group) userManager.getAuthorizable(groupId);
-                    if (group == null) {
-                        group = userManager.createGroup(groupId);
+    /**
+     * Returns current logged-in users groups.
+     *
+     * @return User group list.
+     */
+    public List<String> getLoggedInUsersGroups() {
+        List<String> groupIds = new ArrayList<>();
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, USER_SERVICE_USER)) {
+            User user = CommonUtils.getLoggedInUser(resourceResolver);
+            Iterator<Group> groups = user.memberOf();
+            if (groups == null || !groups.hasNext()) {
+                String sfId = user.getProperty(WccConstants.PROFILE_SOURCE_ID) != null ?
+                        user.getProperty(WccConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+                if (sfId != null) {
+                    groupIds = this.getUserGroupsFromSnap(sfId);
+                    if (groupIds.size() > 0) {
+                        groupIds = this.convertSfGroupsToAemGroups(groupIds);
+                        userService.updateUser(user.getID(), Map.<String, String>of(), groupIds);
                     }
-                    group.addMember(user);
                 }
             }
-            session.setAttribute("userGroups", userGroups);
-        } catch (Exception e) {
-            logger.error("Exception in Loading the user", e);
+            else {
+                Group group;
+                while(groups.hasNext()) {
+                    group = groups.next();
+                    groupIds.add(group.getID());
+                }
+            }
+        } catch (LoginException | RepositoryException e) {
+            throw new RuntimeException(e);
         }
-        return userGroups;
+        return groupIds;
     }
 
     /**
@@ -78,12 +100,48 @@ public class UserGroupServiceImpl implements UserGroupService {
      * @param sfId
      * @return
      */
-    public List<String> getUserGroupsFromSnap(String sfId) {
+    protected List<String> getUserGroupsFromSnap(String sfId) {
         JsonObject context = snapService.getUserContext(sfId);
         JsonElement contextInfo = context.get("contextInfo");
         JsonObject contextInfoObj  = contextInfo.getAsJsonObject();
         JsonElement groups = contextInfoObj.get("contactRole");
         String[] groupsArray = groups.getAsString().split(",");
         return List.of(groupsArray);
+    }
+
+    /**
+     * Map the SF roles to aem roles.
+     *
+     * @param groups
+     * @return AEM roles
+     */
+    protected List<String> convertSfGroupsToAemGroups(List<String> groups) {
+        List<String> groupIds = new ArrayList<>();
+        // Reading the JSON File from DAM
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
+            JsonObject json = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
+            for (String sfGroup : groups) {
+                if (!json.get(sfGroup).isJsonNull()) {
+                    if (json.get(sfGroup).isJsonArray()) {
+                        for (JsonElement aemGroup : json.getAsJsonArray(sfGroup)) {
+                            String aemGroupId = aemGroup.getAsString();
+                            if (aemGroupId.length() > 0) {
+                                groupIds.add(aemGroupId);
+                            }
+                        }
+                    }
+                    else {
+                        String aemGroupId = json.get(sfGroup).getAsString();
+                        if (aemGroupId.length() > 0) {
+                            groupIds.add(aemGroupId);
+                        }
+                    }
+                }
+            }
+        }
+        catch (RuntimeException | LoginException e) {
+            logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
+        }
+        return groupIds;
     }
 }

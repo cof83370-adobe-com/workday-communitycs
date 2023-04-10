@@ -115,6 +115,11 @@ public class SnapServiceImplTest {
         return "testSnapContextApiKey";
       }
 
+      @Override
+      public String sfToAemUserGroupMap() {
+        return "";
+      }
+
       public String sfdcUserAvatarApiKey() {
         return "testSfdcUserAvatarApiKey";
       }

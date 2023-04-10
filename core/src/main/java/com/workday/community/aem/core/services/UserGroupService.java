@@ -10,8 +10,7 @@ public interface UserGroupService {
     /**
      * List of user groups from SF.
      *
-     * @param sfId
      * @return User groups
      */
-    List<String> getUserGroupsBySfId(String sfId, SlingHttpServletRequest request);
+    List<String> getLoggedInUsersGroups();
 }
