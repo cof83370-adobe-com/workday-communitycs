@@ -111,7 +111,7 @@ public class SnapServiceImpl implements SnapService {
   public JsonObject getUserContext(String sfId) {
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
-      String url = CommunityUtils.formUrl(config.snapUrl() , config.snapContextUrl());
+      String url = CommunityUtils.formUrl(config.snapUrl() , config.snapContextPath());
       url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);

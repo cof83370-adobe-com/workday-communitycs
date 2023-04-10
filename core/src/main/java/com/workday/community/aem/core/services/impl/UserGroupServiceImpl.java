@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
@@ -10,13 +11,13 @@ import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,7 +32,8 @@ import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEX
  */
 @Component(
         service = UserGroupService.class,
-        immediate = true
+        immediate = true,
+        configurationPolicy = ConfigurationPolicy.OPTIONAL
 )
 public class UserGroupServiceImpl implements UserGroupService {
 
@@ -54,7 +56,6 @@ public class UserGroupServiceImpl implements UserGroupService {
     ResourceResolverFactory resourceResolverFactory;
 
     /** The snap Config. */
-    @Reference
     private SnapConfig config;
 
     /** The user service user. */
@@ -62,6 +63,16 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     /** The user service user. */
     public static final String READ_SERVICE_USER = "readserviceuser";
+
+    /** The AEM default user groups. */
+    public static final String[] AEM_DEFAULT_GROUPS = { "everyone" };
+
+    @Activate
+    @Modified
+    @Override
+    public void activate(SnapConfig config) {
+        this.config = config;
+    }
 
     /**
      * Returns current logged-in users groups.
@@ -72,23 +83,29 @@ public class UserGroupServiceImpl implements UserGroupService {
         List<String> groupIds = new ArrayList<>();
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, USER_SERVICE_USER)) {
             User user = CommonUtils.getLoggedInUser(resourceResolver);
+
             Iterator<Group> groups = user.memberOf();
-            if (groups == null || !groups.hasNext()) {
-                String sfId = user.getProperty(WccConstants.PROFILE_SOURCE_ID) != null ?
-                        user.getProperty(WccConstants.PROFILE_SOURCE_ID)[0].getString() : null;
-                if (sfId != null) {
-                    groupIds = this.getUserGroupsFromSnap(sfId);
-                    if (groupIds.size() > 0) {
-                        groupIds = this.convertSfGroupsToAemGroups(groupIds);
-                        userService.updateUser(user.getID(), Map.<String, String>of(), groupIds);
-                    }
-                }
-            }
-            else {
+            boolean hasSfRoles = false;
+            if (groups != null) {
                 Group group;
                 while(groups.hasNext()) {
                     group = groups.next();
                     groupIds.add(group.getID());
+                    if (!ArrayUtils.contains(AEM_DEFAULT_GROUPS, group.getID())) {
+                        hasSfRoles = true;
+                    }
+                }
+            }
+
+            if (hasSfRoles == false) {
+                String sfId = user.getProperty(WccConstants.PROFILE_SOURCE_ID) != null ?
+                        user.getProperty(WccConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+                if (sfId != null) {
+                    groupIds.addAll(this.getUserGroupsFromSnap(sfId));
+                    if (groupIds.size() > 0) {
+                        groupIds = this.convertSfGroupsToAemGroups(groupIds);
+                        userService.updateUser(user.getID(), Map.<String, String>of(), groupIds);
+                    }
                 }
             }
         } catch (LoginException | RepositoryException e) {
@@ -152,4 +169,5 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
         return groupIds;
     }
+
 }
