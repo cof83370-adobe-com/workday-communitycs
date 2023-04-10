@@ -95,9 +95,11 @@
                 font-size: 0.9rem;
                 border-bottom: 0px;
 
-                &:hover {
+                &:hover,
+                &.cmp-tabs__tab--active {
                     background: $wdc-color-soap-300;
-                    border-bottom: 0px;
+                    border-bottom: 0;
+                    color: inherit;
                 }
 
             }
@@ -105,6 +107,13 @@
 
         &.--show-secondary .-secondary {
             display: block;
+        }
+
+        .cmp-tabs__tabpanel {
+            &.cmp-tabs__tab--active {
+                display: block;
+                border-bottom: 0;
+            }
         }
     }
 }

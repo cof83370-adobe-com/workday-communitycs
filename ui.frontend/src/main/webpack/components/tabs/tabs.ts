@@ -12,18 +12,45 @@ if (container !== null) {
     const allItems = container.querySelectorAll('li');
     const moreLi = primary.querySelector('.-more');
     const moreBtn = moreLi.querySelector('button');
+
+    secondary.classList.remove('cmp-tabs__tab--active');
+
     moreBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        e.stopPropagation();
         container.classList.toggle('--show-secondary');
     });
+
+    const setTabActive = (el) => {
+        const elemID = el.id;
+        const tabContainer = document.querySelectorAll('.cmp-tabs__tabpanel');
+        tabContainer.forEach(el => {
+            el.classList.remove('cmp-tabs__tab--active');
+        });
+        document.querySelector('#' + elemID + 'panel').classList.add('cmp-tabs__tab--active');
+    }
+
     //Hide Secondary on click  on visible tabs
     visibleItems.forEach(el => el.addEventListener('click', event => {
         event.preventDefault();
         if (container.classList.contains('--show-secondary')) {
             container.classList.toggle('--show-secondary');
         }
+        setTabActive(el);
+
     }));
 
+    const setActive = el => {
+        [...el.parentElement.children].forEach(sib => sib.classList.remove('cmp-tabs__tab--active'));
+        el.classList.add('cmp-tabs__tab--active')
+    }
+
+    //Hide Secondary on click  on visible tabs
+    secondaryItems.forEach(el => el.addEventListener('click', event => {
+        event.preventDefault();
+        setActive(el);
+        setTabActive(el);
+    }));
 
     // adapt tabs
 
