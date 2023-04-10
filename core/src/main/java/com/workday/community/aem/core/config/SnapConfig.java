@@ -12,7 +12,7 @@ public @interface SnapConfig {
   @AttributeDefinition(name = "Snap logic API Url", description = "Sanplogic API Url.", type = AttributeType.STRING)
   String snapUrl();
 
-  @AttributeDefinition(name = "Snap logic Context API Url", description = "Sanplogic Context Url.", type = AttributeType.STRING)
+  @AttributeDefinition(name = "Snap logic Context API Path", description = "Snap logic Context Path.", type = AttributeType.STRING)
   String snapContextPath();
 
   @AttributeDefinition(name = "Snap logic context Api Token", description = "Nav menu api token.", type = AttributeType.STRING)
