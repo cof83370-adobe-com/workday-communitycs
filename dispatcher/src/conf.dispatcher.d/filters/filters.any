@@ -15,7 +15,7 @@ $include "./default_filters.any"
 # Allow manifest.webmanifest files located in the content
 /0102 { /type "allow" /extension "webmanifest" /path "/content/*/manifest" }
 
-
+#Enable Registration Servlet
 
 
 #Enable DAM Access
