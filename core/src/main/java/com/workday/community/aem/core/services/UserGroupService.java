@@ -9,6 +9,11 @@ import java.util.List;
 
 @ProviderType
 public interface UserGroupService {
+    /**
+     * Activate user group service.
+     *
+     * @param config Snap config.
+     */
     void activate(SnapConfig config);
 
     /**
