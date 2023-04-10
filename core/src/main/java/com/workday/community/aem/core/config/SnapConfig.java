@@ -21,7 +21,7 @@ public @interface SnapConfig {
   @AttributeDefinition(name = "Snap logic Context Api key", description = "Snap logic Context API key.", type = AttributeType.STRING)
   String snapContextApiKey();
 
-  @AttributeDefinition (name = "SF roles to AEM groups map", description = "file path for SF roles to AEM groups map json.", type = AttributeType.STRING)
+  @AttributeDefinition (name = "SF roles to AEM groups map", description = "SF roles to AEM groups map json file path.", type = AttributeType.STRING)
   String sfToAemUserGroupMap() default "/content/dam/workday-community/resources/sf-to-aem-group-map.json";
 
   @AttributeDefinition(name = "Nav API", description = "Nav menu api endpoint.", type = AttributeType.STRING)
