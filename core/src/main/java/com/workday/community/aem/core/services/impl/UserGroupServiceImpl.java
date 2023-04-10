@@ -105,7 +105,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         JsonElement contextInfo = context.get("contextInfo");
         JsonObject contextInfoObj  = contextInfo.getAsJsonObject();
         JsonElement groups = contextInfoObj.get("contactRole");
-        String[] groupsArray = groups.getAsString().split(",");
+        String[] groupsArray = groups.getAsString().split(";");
         return List.of(groupsArray);
     }
 
