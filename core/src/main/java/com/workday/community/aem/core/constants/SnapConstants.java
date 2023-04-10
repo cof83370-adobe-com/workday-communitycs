@@ -11,4 +11,13 @@ public interface SnapConstants {
    */
   String DEFAULT_SFID_MASTER = "masterdata";
 
+  /**
+   * The user contenxt info key.
+   */
+  String USER_CONTEXT_INFO_KEY = "contextInfo";
+
+  /**
+   * The user context info key.
+   */
+  String USER_CONTACT_ROLE_KEY = "contactRole";
 }

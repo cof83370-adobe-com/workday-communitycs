@@ -23,6 +23,9 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_ROLE_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
+
 /**
  * The Class UserGroupServiceImpl.
  */
@@ -102,13 +105,13 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     protected List<String> getUserGroupsFromSnap(String sfId) {
         JsonObject context = snapService.getUserContext(sfId);
-        JsonElement contextInfo = context.get("contextInfo");
+        JsonElement contextInfo = context.get(USER_CONTEXT_INFO_KEY);
         JsonObject contextInfoObj  = contextInfo.getAsJsonObject();
-        JsonElement groups = contextInfoObj.get("contactRole");
+        JsonElement groups = contextInfoObj.get(USER_CONTACT_ROLE_KEY);
         Optional<String> groupsString = Optional.ofNullable(groups.getAsString());
         List<String> groupsArray = groupsString.map(value -> List.of(value.split(";")))
                         .orElseGet(() -> {
-                            logger.info("value not found");
+                            logger.info("Value not found");
                             return new ArrayList<String>();
                         });
         return groupsArray;
