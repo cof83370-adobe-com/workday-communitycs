@@ -1,0 +1,5 @@
+{
+	"Named Support Contact" : ["customer_named_support_contact"],
+    "Security Lead" : ["customer_security_lead"],
+    "Community Org Administrator" : ["organization_administrator"],
+}
