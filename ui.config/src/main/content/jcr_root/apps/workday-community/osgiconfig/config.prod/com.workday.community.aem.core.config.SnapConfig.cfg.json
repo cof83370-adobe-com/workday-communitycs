@@ -1,7 +1,7 @@
 
 {
     "snapUrl":"$[env:snapUrl]",
-    "snapContextUrl":"$[env:snapContextUrl]",
+    "snapContextPath":"$[env:snapContextPath]",
     "snapContextApiToken":"$[secret:snapContextApiToken]",
     "snapContextApiKey":"$[secret:snapContextApiKey]",
     "navFallbackMenuData": "/content/dam/workday-community/resources/local-header-data.json",

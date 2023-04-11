@@ -121,6 +121,7 @@ class UserGroupServiceImplTest {
 
         testGroupMap = "{\"test sf group\" : \"aem-group\"}";
         testGroupObj = gson.fromJson(testGroupMap, JsonObject.class);
+        userGroupService.groupMap = null;
         mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver), eq("/path/to/file"))).thenReturn(testGroupObj);
         assertEquals(List.of("aem-group"), userGroupService.convertSfGroupsToAemGroups(List.of("test sf group")));
     }

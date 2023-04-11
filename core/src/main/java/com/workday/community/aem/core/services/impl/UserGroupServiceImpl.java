@@ -67,6 +67,9 @@ public class UserGroupServiceImpl implements UserGroupService {
     /** The AEM default user groups. */
     public static final String[] AEM_DEFAULT_GROUPS = { "everyone" };
 
+    /** The group map json */
+    JsonObject groupMap = null;
+
     @Activate
     @Modified
     @Override
@@ -98,9 +101,9 @@ public class UserGroupServiceImpl implements UserGroupService {
                 Value[] values = user.getProperty(WccConstants.PROFILE_SOURCE_ID);
                 String sfId = values != null && values.length > 0 ? values[0].getString() : null;
                 if (sfId != null) {
-                    groupIds.addAll(this.getUserGroupsFromSnap(sfId));
-                    if (!groupIds.isEmpty()) {
-                        groupIds = this.convertSfGroupsToAemGroups(groupIds);
+                    List<String> sfGroupsIds =  this.getUserGroupsFromSnap(sfId);
+                    if (!sfGroupsIds.isEmpty()) {
+                        groupIds.addAll(this.convertSfGroupsToAemGroups(sfGroupsIds));
                         userService.updateUser(user.getID(), Map.<String, String>of(), groupIds);
                     }
                 }
@@ -140,12 +143,14 @@ public class UserGroupServiceImpl implements UserGroupService {
         List<String> groupIds = new ArrayList<>();
         // Reading the JSON File from DAM
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
-            JsonObject json = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
+            if (groupMap == null) {
+                groupMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
+            }
             for (String sfGroup : groups) {
-                assert json != null;
-                if (!json.get(sfGroup).isJsonNull()) {
-                    if (json.get(sfGroup).isJsonArray()) {
-                        for (JsonElement aemGroup : json.getAsJsonArray(sfGroup)) {
+                assert groupMap != null;
+                if (!groupMap.get(sfGroup).isJsonNull()) {
+                    if (groupMap.get(sfGroup).isJsonArray()) {
+                        for (JsonElement aemGroup : groupMap.getAsJsonArray(sfGroup)) {
                             String aemGroupId = aemGroup.getAsString();
                             if (aemGroupId.length() > 0) {
                                 groupIds.add(aemGroupId);
@@ -153,7 +158,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                         }
                     }
                     else {
-                        String aemGroupId = json.get(sfGroup).getAsString();
+                        String aemGroupId = groupMap.get(sfGroup).getAsString();
                         if (aemGroupId.length() > 0) {
                             groupIds.add(aemGroupId);
                         }

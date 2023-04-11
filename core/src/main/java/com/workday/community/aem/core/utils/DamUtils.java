@@ -22,7 +22,7 @@ public class DamUtils {
 	
 	private static final Logger LOGGER = LoggerFactory.getLogger(DamUtils.class);
 
-	public static JsonObject readJsonFromDam(ResourceResolver resourceResolver, String path) {
+	public static JsonObject readJsonFromDam(ResourceResolver resourceResolver, String path) throws RuntimeException {
 		try {
 			Resource resource = resourceResolver.getResource(path);
 			Asset asset = resource.adaptTo(Asset.class);

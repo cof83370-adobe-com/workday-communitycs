@@ -1,7 +1,7 @@
 
 {
     "snapUrl":"$[env:snapUrl]",
-    "snapContextUrl":"$[env:snapContextUrl]",
+    "snapContextPath":"$[env:snapContextPath]",
     "snapContextApiToken":"$[secret:snapContextApiToken]",
     "snapContextApiKey":"$[secret:snapContextApiKey]",
     "sfToAemUserGroupMap":"/content/dam/workday-community/resources/sf-to-aem-group-map.json",
