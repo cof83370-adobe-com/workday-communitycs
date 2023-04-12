@@ -520,7 +520,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676937205547>
@@ -530,7 +530,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676938889768>
@@ -540,7 +540,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676940689642>
@@ -560,7 +560,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678149939855>
