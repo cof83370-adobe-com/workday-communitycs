@@ -25,7 +25,7 @@ public class CommonUtils {
 			User user = (User) userManager.getAuthorizable(session.getUserID());
 			sfId = user.getProperty(WccConstants.PROFILE_SOURCE_ID) != null ? user.getProperty(WccConstants.PROFILE_SOURCE_ID)[0].getString() : null;
 		} catch (RepositoryException e) {
-			LOGGER.error("Exception in getLoggedInUserSourceId method %s",e.getMessage());
+			LOGGER.error("Exception in getLoggedInUserSourceId method {}", e.getMessage());
 		}
 		return sfId;
 	}
@@ -77,11 +77,13 @@ public class CommonUtils {
 		Node userNode = null;
 		try {
 			 user=getLoggedInUser(resourceResolver);
-			 String userPath = user.getPath();
-			 LOGGER.debug("getLoggedInUserAsNode userPath--"+userPath);
-		      userNode = resourceResolver.getResource(userPath).adaptTo(Node.class);
+			 if (user != null) {
+				 String userPath = user.getPath();
+				 LOGGER.debug("getLoggedInUserAsNode userPath--{}", userPath);
+				 userNode = resourceResolver.getResource(userPath).adaptTo(Node.class);
+			 }
 		} catch (RepositoryException e) {
-			LOGGER.error("Exception in getLoggedInUser method = {}",e.getMessage());
+			LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());
 		}
 		return userNode;
 		
