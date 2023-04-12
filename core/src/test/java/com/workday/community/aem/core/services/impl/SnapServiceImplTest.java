@@ -77,8 +77,7 @@ public class SnapServiceImplTest {
         return x == 0 ? null : x == 1 ? "http://test/snap" : "http://test/snap/";
       }
 
-      @Override
-      public String snapContextUrl() {
+      public String snapContextPath() {
         return "http://testContextendpoint";
       }
 
@@ -113,6 +112,11 @@ public class SnapServiceImplTest {
 
       public String snapContextApiKey() {
         return "testSnapContextApiKey";
+      }
+
+      @Override
+      public String sfToAemUserGroupMap() {
+        return "";
       }
 
       public String sfdcUserAvatarApiKey() {
