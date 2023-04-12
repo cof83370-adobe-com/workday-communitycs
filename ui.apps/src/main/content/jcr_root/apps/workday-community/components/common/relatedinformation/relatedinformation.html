@@ -4,19 +4,30 @@
 		<div class="cmp-related-info__heading">
 			<h3 data-sly-test="${properties.title}" class="cmp-related-info__heading-title">${properties.title}</h3>
 		</div>
-		<sly data-sly-test="${properties.type=='static'}"> 
-			<div class="cmp-related-info__content"
-				data-sly-list.urllinkMultifield="${resource.getChildren}">
-				<ul class="cmp-related-info__list"
-					data-sly-list.urllink="${urllinkMultifield.getChildren}">
-					<li class="cmp-related-info__item"><a
-						class="cmp-related-info__item-link" href="${urllink.pagepath}.html"><span
-							class="cmp-related-info__item-title">${urllink.linktitle}</span></a></li>
+		<sly data-sly-test="${properties.description}">
+			<div class="cmp-related-info-curated__desc">${properties.description @ context='html'}</div>
+		</sly>
+		<sly data-sly-test="${properties.fileReference}">
+			<div class="cmp-related-info-curated__image">
+				<img src="${properties.fileReference}" alt="${properties.alttext || true}"
+					class="cmp-related-info-curated__imagesrc" />
+			</div>
+		</sly>
+		<sly data-sly-test="${properties.type=='static'}">
+			<div class="cmp-related-info__content" data-sly-list.urllinkMultifield="${resource.getChildren}">
+				<ul class="cmp-related-info__list" data-sly-list.urllink="${urllinkMultifield.getChildren}">
+					<li class="cmp-related-info__item"><a class="cmp-related-info__item-link" target="${urllink.newTab}"
+							href="${urllink.pagepath}.html"><span
+								class="cmp-related-info__item-title">${urllink.linktitle}</span></a></li>
 				</ul>
 			</div>
 		</sly>
+		<sly data-sly-test="${properties.footerlinktext && properties.footerlinkurl}">
+			<div class="cmp-related-info-curated__footer"><a class="cmp-related-info-curated__footer-link"
+					target="${properties.footernewTab}" href="${properties.footerlinkurl}.html"><span
+						class="cmp-related-info-curated__footer-title">${properties.footerlinktext}</span></a></div>
+		</sly>
 	</sly>
 </div>
-<sly
-	data-sly-use.template="core/wcm/components/commons/v1/templates.html"
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
 	data-sly-call="${template.placeholder  @ isEmpty=!resource.getChildren, classAppend='cmp-related-info'}"></sly>
