@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
 import com.adobe.xfa.ut.StringUtils;
-import com.day.cq.dam.api.Asset;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -12,11 +12,11 @@ import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommunityUtils;
+import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
@@ -28,11 +28,6 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -121,7 +116,7 @@ public class SnapServiceImpl implements SnapService {
   public JsonObject getUserContext(String sfId) {
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
-      String url = CommunityUtils.formUrl(config.snapUrl() , config.snapContextUrl());
+      String url = CommunityUtils.formUrl(config.snapUrl() , config.snapContextPath());
       url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);
@@ -161,30 +156,9 @@ public class SnapServiceImpl implements SnapService {
   private String getDefaultHeaderMenu() {
     // Reading the JSON File from DAM
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory, config.navFallbackMenuServiceUser())) {
-      Resource resource = resourceResolver.getResource(config.navFallbackMenuData());
-      Asset asset = resource.adaptTo(Asset.class);
-      Resource original = asset.getOriginal();
-      InputStream content = original.adaptTo(InputStream.class);
-      if (content == null) {
-        logger.error("Content is null in SnaServiceImpl.");
-        return "";
-      }
-      StringBuilder sb = new StringBuilder();
-      String line;
-      BufferedReader br = new BufferedReader(new InputStreamReader(content, StandardCharsets.UTF_8));
-
-      while (true) {
-        if ((line = br.readLine()) == null) {
-          break;
-        }
-        sb.append(line);
-      }
-      content.close();
-      br.close();
-
-      JsonObject navResponseObj = gson.fromJson(sb.toString(), JsonObject.class);
-      return gson.toJson(navResponseObj);
-    } catch (IOException | LoginException e) {
+      JsonObject navResponseObj = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
+      return navResponseObj.isJsonNull() ? "" : gson.toJson(navResponseObj);
+    } catch (RuntimeException | LoginException e) {
       logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
       return "";
     }

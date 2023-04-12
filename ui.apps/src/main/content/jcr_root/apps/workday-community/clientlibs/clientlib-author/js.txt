@@ -1,2 +1,3 @@
 #base=js
 multifield-min-max.js
+author-component.js

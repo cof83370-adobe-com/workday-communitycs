@@ -17,4 +17,12 @@ public interface OktaService {
      * @return Custom Domain Url.
      */
     String getCustomDomain();
+
+    /**
+     * Check Okta integration is enabled or not.
+     * ( alternative to Sling settings service To test whether it is author mode or publish mode)
+     *
+     * @return boolean.
+     */
+    boolean isOktaIntegrationEnabled();
 }

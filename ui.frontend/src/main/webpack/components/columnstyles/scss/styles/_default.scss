@@ -1,15 +1,3 @@
-.col33 {
-    @media (min-width: $screen-small) {
-        width: 33% !important;
-    }
-}
-
-.col66 {
-    @media (min-width: $screen-small) {
-        width: 66% !important;
-    }
- }
-
 .spacing-left {
     @media (min-width: $screen-small) {
         padding-left: 32px;

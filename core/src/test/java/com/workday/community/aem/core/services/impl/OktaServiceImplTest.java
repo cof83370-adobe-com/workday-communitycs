@@ -30,6 +30,13 @@ public class OktaServiceImplTest {
     public String customDomain() {
       return "community";
     }
+
+    @Override
+    public boolean isOktaIntegrationEnabled() {
+      return false;
+    }
+
+
   };
 
   @BeforeEach

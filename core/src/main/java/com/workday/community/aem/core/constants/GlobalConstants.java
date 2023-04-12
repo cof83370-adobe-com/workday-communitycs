@@ -35,4 +35,7 @@ public interface GlobalConstants {
 
   /** The Constant PROP_POSTED_DATE. */
   String PROP_POSTED_DATE = "postedDate";
+
+  /** The Constant PUBLISH. */
+  String PUBLISH = "publish";
 }
