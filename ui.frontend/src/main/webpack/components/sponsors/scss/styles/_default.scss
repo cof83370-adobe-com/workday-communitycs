@@ -3,16 +3,18 @@
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
     margin-top: 32px;
 
-    .cmp-title {
+    .cmp-text {
         padding-top: 18px;
         padding-bottom: 24px;
-        &__text {
+        margin-left: 24px;
+
+        h3 {
             font-style: $font-style-normal;
             font-weight: $font-weight-bold;
             font-size: 20px;
             line-height: 26px;
             color: $wdc-color-black-pepper-600;
-            margin-left: 24px;
+            margin: 0;
         }
     }
 
