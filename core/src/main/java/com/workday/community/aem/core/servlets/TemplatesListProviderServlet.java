@@ -57,16 +57,18 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
             ResourceResolver resourceResolver = request.getResourceResolver();
             List<KeyValue> dropDownList = new ArrayList<>();
             Resource resource = resourceResolver.getResource(TEMPLATES_PATH);
-            assert resource != null;
-            Iterator<Resource> iterator = resource.listChildren();
-            List<Resource> list = new ArrayList<>();
-            iterator.forEachRemaining(list::add);
-            list.forEach(res -> {
-                String title = res.getName();
-                if (StringUtils.isNotBlank(title) && !title.equalsIgnoreCase("rep:policy")) {
-                    dropDownList.add(new KeyValue(res.getPath(), title));
+            Iterator<Resource> iterator;
+            if (resource != null) {
+                iterator = resource.listChildren();
+                while (iterator.hasNext()) {
+                    Resource res = iterator.next();
+                    String title = res.getName();
+                    if (StringUtils.isNotBlank(title) && !title.equalsIgnoreCase("rep:policy")) {
+                        dropDownList.add(new KeyValue(res.getPath(), title));
+                    }
                 }
-            });
+            }
+
             log.debug("DropdownList:: {}", dropDownList);
 
             DataSource ds = new SimpleDataSource(new TransformIterator<>(dropDownList.iterator(), input -> {
