@@ -8,6 +8,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
@@ -39,7 +40,7 @@ public class OurmUtils {
 
         sfId = user.getProperty(SnapConstants.PROFILE_SOURCE_ID) != null ?
             user.getProperty(SnapConstants.PROFILE_SOURCE_ID)[0].getString() : null;
-      } catch (Exception e) {
+      } catch (RepositoryException | RuntimeException e) {
         logger.error(String.format("getSalesForceId fails with error: %s", e.getMessage()));
       }
     }

@@ -12,6 +12,7 @@ import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.junit.jupiter.api.AfterEach;
@@ -74,7 +75,7 @@ class QueryServiceImplTest {
       assertEquals(10, queryService.getNumOfTotalPublishedPages());
 
       // case 1
-      mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenThrow(new RuntimeException());
+      mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenThrow(new LoginException());
       assertEquals(0, queryService.getNumOfTotalPublishedPages());
     }
   }
