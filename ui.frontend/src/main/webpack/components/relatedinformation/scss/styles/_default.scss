@@ -3,7 +3,6 @@
 
     &__heading {
         padding-bottom: 11px;
-        margin: 0 24px;
 
         &-title {
             font-style: $font-style-normal;
@@ -16,7 +15,7 @@
     }
 
     &__content {
-        margin: 0 32px 24px 24px;
+        margin: 0 32px 24px 0;
     }
 
     &__list {
