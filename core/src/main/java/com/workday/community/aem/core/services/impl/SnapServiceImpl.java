@@ -11,12 +11,14 @@ import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import org.apache.sling.api.resource.LoginException;
+import org.apache.commons.collections4.map.LRUMap;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
@@ -47,6 +49,10 @@ public class SnapServiceImpl implements SnapService {
   /** The logger. */
   private final static Logger logger = LoggerFactory.getLogger(SnapService.class);
 
+  private JsonObject defaultMenu;
+
+  private LRUMap<String, String> snapCache;
+
   /** The resource resolver factory. */
   @Reference
   ResourceResolverFactory resResolverFactory;
@@ -65,6 +71,7 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public void activate(SnapConfig config) {
     this.config = config;
+    this.snapCache = new LRUMap<>(config.maxMenuCache());
     this.objectMapper = new ObjectMapper();
     logger.info("SnapService is activated.");
   }
@@ -76,13 +83,19 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getUserHeaderMenu(String sfId) {
+    String cacheKey = String.format("menu_%s", sfId);
+    String cachedResult = snapCache.get(cacheKey);
+    if ( cachedResult != null) {
+      return cachedResult;
+    }
+
     String snapUrl = config.snapUrl(), navApi = config.navApi(),
       apiToken = config.navApiToken(), apiKey = config.navApiKey();
 
     if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi) ||
       StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
       // No Snap configuration provided, just return the default one.
-      return this.getDefaultHeaderMenu();
+      return gson.toJson(this.getDefaultHeaderMenu());
     }
 
     try {
@@ -92,24 +105,29 @@ public class SnapServiceImpl implements SnapService {
       String traceId = "Community AEM-" + new Date().getTime();
       // Execute the request.
       APIResponse snapRes = RestApiUtil.doGetMenu(url, apiToken, apiKey, traceId);
-
+      JsonObject defaultMenu = this.getDefaultHeaderMenu();
       if (StringUtils.isEmpty(snapRes.getResponseBody())) {
         logger.debug("Sfdc menu fetch is empty, fallback to use local default");
-        return this.getDefaultHeaderMenu();
+        return gson.toJson(defaultMenu);
       }
 
       // Gson object for json handling.
-      JsonObject navResponseObj = gson.fromJson(snapRes.getResponseBody(), JsonObject.class);
-      // Need to make merge with beta support.
+      JsonObject sfMenu = gson.fromJson(snapRes.getResponseBody(), JsonObject.class);
+      // Need to make merge sfMenu with local cache with beta experience.
       if (config.beta()) {
-        return this.getMergedHeaderMenu(navResponseObj);
+        String finalMenu = this.getMergedHeaderMenu(sfMenu, defaultMenu);
+        snapCache.put(cacheKey, finalMenu);
+        return finalMenu;
       }
+
+      // Non-Beta will directly return the sf menu
+      return gson.toJson(sfMenu);
 
     } catch (SnapException e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
     }
 
-    return this.getDefaultHeaderMenu();
+    return gson.toJson(this.getDefaultHeaderMenu());
   }
 
   @Override
@@ -153,14 +171,17 @@ public class SnapServiceImpl implements SnapService {
    *
    * @return The menu.
    */
-  private String getDefaultHeaderMenu() {
+  private JsonObject getDefaultHeaderMenu() {
+    if (defaultMenu != null) {
+      return defaultMenu;
+    }
+
     // Reading the JSON File from DAM
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory, config.navFallbackMenuServiceUser())) {
-      JsonObject navResponseObj = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
-      return navResponseObj.isJsonNull() ? "" : gson.toJson(navResponseObj);
+      return defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
     } catch (RuntimeException | LoginException e) {
       logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
-      return "";
+      return new JsonObject();
     }
   }
 
@@ -170,16 +191,12 @@ public class SnapServiceImpl implements SnapService {
    * @param sfNavObj The json object of nav.
    * @return The menu.
    */
-  private String getMergedHeaderMenu(JsonObject sfNavObj) {
-    String defaultHeaderMenu = getDefaultHeaderMenu();
+  private String getMergedHeaderMenu(JsonObject sfNavObj, JsonObject defaultMenu) {
     if (sfNavObj != null && config.beta()) {
-      if (defaultHeaderMenu.isEmpty()) {
-        return gson.toJson(sfNavObj);
-      }
-      // TODO Merge local default to sfNavObj and return the merged result (once nav model strategy is finalized).
+      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu);
       return gson.toJson(sfNavObj);
-   }
+    }
 
-   return defaultHeaderMenu;
+   return gson.toJson(sfNavObj);
   }
 }

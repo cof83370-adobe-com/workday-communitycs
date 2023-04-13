@@ -138,6 +138,11 @@ public class SnapServiceImplTest {
       public boolean beta() {
         return true;
       }
+
+      @Override
+      public int maxMenuCache() {
+        return 100;
+      }
     };
   }
 
@@ -231,8 +236,6 @@ public class SnapServiceImplTest {
       APIResponse response = mock(APIResponse.class);
       mocked.when(() -> RestApiUtil.doGetMenu(anyString(), anyString(), anyString(), anyString())).thenThrow(new SnapException());
       lenient().when(response.getResponseBody()).thenReturn(menuData2);
-      content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
-      when(original.adaptTo(any())).thenReturn(content);
       String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(menuData2, menuData3);
     }

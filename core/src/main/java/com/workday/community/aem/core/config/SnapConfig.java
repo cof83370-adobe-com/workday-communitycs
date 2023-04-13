@@ -50,4 +50,7 @@ public @interface SnapConfig {
 
   @AttributeDefinition(name = "enable AEM beta", description = "AEM Beta?", type = AttributeType.STRING)
   boolean beta() default true;
+
+  @AttributeDefinition(name = "max menu cache size", description = "Max Menu Cache size", type = AttributeType.INTEGER)
+  int maxMenuCache() default 100;
 }
