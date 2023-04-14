@@ -51,6 +51,9 @@ public @interface SnapConfig {
   @AttributeDefinition(name = "enable AEM beta", description = "AEM Beta?", type = AttributeType.STRING)
   boolean beta() default true;
 
-  @AttributeDefinition(name = "max menu cache size", description = "Max Menu Cache size", type = AttributeType.INTEGER)
-  int maxMenuCache() default 100;
+  @AttributeDefinition(name = "User max menu cache size", description = "User Max Menu Cache size", type = AttributeType.INTEGER)
+  int menuCacheMax() default 100;
+
+  @AttributeDefinition(name = "User menu cache timeout duration", description = "User Menu Cache Timeout Duration (mills)", type = AttributeType.LONG)
+  long menuCacheTimeout() default 86400000L; // Default to one day.
 }
