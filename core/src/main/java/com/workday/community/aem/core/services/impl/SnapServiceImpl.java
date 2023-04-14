@@ -14,11 +14,11 @@ import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.DamUtils;
+import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import org.apache.sling.api.resource.LoginException;
-import org.apache.commons.collections4.map.LRUMap;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
@@ -51,7 +51,7 @@ public class SnapServiceImpl implements SnapService {
 
   private JsonObject defaultMenu;
 
-  private LRUMap<String, String> snapCache;
+  private LRUCacheWithTimeout<String, String> snapCache;
 
   /** The resource resolver factory. */
   @Reference
@@ -60,7 +60,7 @@ public class SnapServiceImpl implements SnapService {
   /** The snap Config. */
   private SnapConfig config;
 
-  /** The ObjectMapper serice. */
+  /** The ObjectMapper service. */
   private ObjectMapper objectMapper;
 
   /** The gson service. */
@@ -71,7 +71,7 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public void activate(SnapConfig config) {
     this.config = config;
-    this.snapCache = new LRUMap<>(config.maxMenuCache());
+    this.snapCache = new LRUCacheWithTimeout<>(config.menuCacheMax(), config.menuCacheTimeout());
     this.objectMapper = new ObjectMapper();
     logger.info("SnapService is activated.");
   }
@@ -85,7 +85,7 @@ public class SnapServiceImpl implements SnapService {
   public String getUserHeaderMenu(String sfId) {
     String cacheKey = String.format("menu_%s", sfId);
     String cachedResult = snapCache.get(cacheKey);
-    if ( cachedResult != null) {
+    if ( cachedResult != null ) {
       return cachedResult;
     }
 

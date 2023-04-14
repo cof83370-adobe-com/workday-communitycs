@@ -50,11 +50,11 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
   /** The UserService. */
   @Reference
-  UserService userService;
+  transient UserService userService;
 
   /** The RunModeConfigService. */
   @Reference
-  RunModeConfigService runModeConfigService;
+  transient RunModeConfigService runModeConfigService;
 
   private transient final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -94,7 +94,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     ResourceResolver resourceResolver = request.getResourceResolver();
     if (resourceResolver != null) {
       Session session = resourceResolver.adaptTo(Session.class);
-      // Delete user on pubilsh instance.
+      // Delete user on publish instance.
       if (session != null) {
         if (runModeConfigService.getInstance().equals(GlobalConstants.PUBLISH)) { 
           String userId = session.getUserID();
