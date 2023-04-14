@@ -140,8 +140,13 @@ public class SnapServiceImplTest {
       }
 
       @Override
-      public int maxMenuCache() {
+      public int menuCacheMax() {
         return 100;
+      }
+
+      @Override
+      public long menuCacheTimeout() {
+        return 10000;
       }
     };
   }
@@ -298,6 +303,7 @@ public class SnapServiceImplTest {
 
   private ByteArrayInputStream getTestContent(String jsonFile) {
     InputStream inputStream = getClass().getResourceAsStream(jsonFile);
+    assert inputStream != null;
 
     byte[] buffer = new byte[1024];
     int length;
