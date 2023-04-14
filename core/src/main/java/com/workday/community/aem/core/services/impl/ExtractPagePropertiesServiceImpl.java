@@ -1,14 +1,9 @@
 package com.workday.community.aem.core.services.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 import org.apache.sling.api.SlingException;
@@ -45,7 +40,7 @@ import org.apache.jackrabbit.api.security.user.UserManager;
 public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesService {
 
     /** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /** The resource resolver factory. */
     @Reference
@@ -57,21 +52,24 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
     // @Todo Once Tek system unifies the tag format, we can remove duplicate tags here.
     /** The taxonomyFields. */
-    private ArrayList<String> taxonomyFields = new ArrayList<>(
+    private final ArrayList<String> taxonomyFields = new ArrayList<>(
         Arrays.asList("productTags", "usingWorkday", "usingWorkdayTags", "programsTools", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountry", "eventAudience", "eventFormat")
     );
 
     /** The dateFields. */
-    private ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("startDate", "endDate", "postedDate", "updatedDate"));
+    private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("startDate", "endDate", "postedDate", "updatedDate"));
 
     /** The hierarchyFields. */
-    private ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "usingWorkday"));
+    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "usingWorkday"));
 
     /** The stringFields. */
-    private ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
+    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation", "registrationUrl"));
+
+    /** The custom components. */
+    private final ArrayList<String> customComponents = new ArrayList<>(Arrays.asList("root/container/eventregistration/button"));
 
     /** The contentTypeMapping. */
-    private Map<String,String> contentTypeMapping = Map.of(
+    private final Map<String,String> contentTypeMapping = Map.of(
         "/conf/community/settings/wcm/templates/event-page-template", "Calendar Event", 
         "/conf/community/settings/wcm/templates/faq", "FAQ", 
         "/conf/community/settings/wcm/templates/kits-and-tools", "Kits and Tools", 
@@ -80,32 +78,37 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     /** The TEXT_COMPONENT. */
     public static final String TEXT_COMPONENT = "community/components/text";
 
-    /** The IDENTITY_TYPE_GROU. */
+    /** The IDENTITY_TYPE_GROUP. */
     public static final String IDENTITY_TYPE_GROUP = "GROUP";
 
     /** The IDENTITY_TYPE_USER. */
     public static final String IDENTITY_TYPE_USER = "USER";
 
-    /** The SECURITY_INDETITY_PROVIDER. */
-    private static final String SECURITY_INDETITY_PROVIDER = "Community_Secured_Identity_Provider";
+    /** The SECURITY_IDENTITY_PROVIDER. */
+    private static final String SECURITY_IDENTITY_PROVIDER = "Community_Secured_Identity_Provider";
 
     @Override
     public HashMap<String, Object> extractPageProperties(String path) {
-        HashMap<String, Object> properties = new HashMap<String, Object>();
+        HashMap<String, Object> properties = new HashMap<>();
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-            Page page = pageManager.getPage(path);
+            Page page = null;
+            if (pageManager != null) {
+                page = pageManager.getPage(path);
+            }
+            if (page == null) {
+                throw new ResourceNotFoundException("Page not found");
+            }
             TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
             ValueMap data = page.getProperties();
-
             String documentId = externalizer.publishLink(resourceResolverFactory.getThreadResourceResolver(), path) + ".html";
             properties.put("documentId", documentId);
             properties.put("isAem", true);
             processDateFields(data, properties);
             processStringFields(data, properties);
+            processCustomComponents(page, properties);
             String email = processUserFields(data, userManager, properties);
-               
             for (String taxonomyField: taxonomyFields) {
                 String[] taxonomyIds = data.get(taxonomyField, String[].class);
                 if (taxonomyIds != null && taxonomyIds.length > 0) {
@@ -124,11 +127,18 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             processPermission(data, properties, email);
 
             Resource resource = resourceResolver.getResource( path + "/jcr:content");
-            Node node = resource.adaptTo(Node.class);
-            NodeIterator it = node.getNodes();
+            Node node = null;
+            if (resource != null) {
+                node = resource.adaptTo(Node.class);
+            }
+
             ArrayList<String> textList = new ArrayList<>();
-            processTextComponnet(it, textList);
-            if (textList.size() > 0) {
+            if (node != null) {
+                NodeIterator it = node.getNodes();
+                processTextComponent(it, textList);
+            }
+
+            if (!textList.isEmpty()) {
                 String description = String.join(" ", textList);
                 properties.put("description", description);
             }
@@ -143,7 +153,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     @Override
     public void processDateFields(ValueMap data, HashMap<String, Object> properties) {
         for (String dateField: dateFields) {
-            GregorianCalendar value = data.get(dateField, null);
+            GregorianCalendar value = data.get(dateField, GregorianCalendar.class);
             if (value != null) {
                 long time = value.getTimeInMillis() / 1000;
                 properties.put(dateField, time);
@@ -157,22 +167,22 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         // @Todo Once we set the page access(it will be the same as drupal, using access control tag 
         // map it to AME groups) rewrite this function, right now it is hard coded, 
         // allow authenticated user to view.
-        HashMap<String, Object> permissionGroup21 = new HashMap<String, Object>();
+        HashMap<String, Object> permissionGroup21 = new HashMap<>();
         permissionGroup21.put("identity", "authenticated");
         permissionGroup21.put("identityType", IDENTITY_TYPE_GROUP);
-        permissionGroup21.put("securityProvider", SECURITY_INDETITY_PROVIDER);
+        permissionGroup21.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
 
-        ArrayList<Object> permissionGroup2 = new ArrayList<Object>();
+        ArrayList<Object> permissionGroup2 = new ArrayList<>();
         permissionGroup2.add(permissionGroup21);
-        if (email.trim().length() > 0) {
-            HashMap<String, Object> permissionGroup22 = new HashMap<String, Object>();
+        if (email != null && email.trim().length() > 0) {
+            HashMap<String, Object> permissionGroup22 = new HashMap<>();
             permissionGroup22.put("identity", email);
             permissionGroup22.put("identityType", IDENTITY_TYPE_USER); 
-            permissionGroup22.put("securityProvider", SECURITY_INDETITY_PROVIDER);
+            permissionGroup22.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
             permissionGroup2.add(permissionGroup22);
         }
         
-        HashMap<String, Object> permissionGroup = new HashMap<String, Object>();
+        HashMap<String, Object> permissionGroup = new HashMap<>();
         permissionGroup.put("allowAnonymous", false);
         permissionGroup.put("allowedPermissions", permissionGroup2);
         ArrayList<Object> permission = new ArrayList<>();
@@ -183,9 +193,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     @Override
     public void processStringFields(ValueMap data, HashMap<String, Object> properties) {
         for (String stringField: stringFields) {
-            String value = data.get(stringField, null);
-            if (stringField == "pageTitle" && value == null) {
-                value = data.get(JCR_TITLE, null);
+            String value = data.get(stringField, String.class);
+            if (stringField.equals("pageTitle") && value == null) {
+                value = data.get(JCR_TITLE, String.class);
             }
             if (value != null) {
                 if (stringField.equals(NN_TEMPLATE)) {
@@ -199,24 +209,24 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     }
 
     @Override
-    public ArrayList<String> processTaxonomyFields (TagManager tagManager, String[] taxonomyTagIds, String taxonomyField) {
-        ArrayList<String> processedTags = new ArrayList<String>();
+    public ArrayList<String> processTaxonomyFields(TagManager tagManager, String[] taxonomyTagIds, String taxonomyField) {
+        ArrayList<String> processedTags = new ArrayList<>();
         for (String tagIdString: taxonomyTagIds) {
             if (hierarchyFields.contains(taxonomyField)) {
                 int index = tagIdString.indexOf("/");
-                ArrayList<String> tagIdsList = new ArrayList<String>();
+                ArrayList<String> tagIdsList = new ArrayList<>();
                 while(index >= 0) {
                     tagIdsList.add(tagIdString.substring(0, index));
                     index = tagIdString.indexOf("/", index + 1);
                 }
                 tagIdsList.add(tagIdString);
-                ArrayList<String> tagString = new ArrayList<String>();
+                ArrayList<String> tagString = new ArrayList<>();
                 for(String tagId: tagIdsList) {
                     Tag tag = tagManager.resolve(tagId);
                     if (tag != null) {
                         tagString.add(tag.getTitle());  
-                        String record = String.join("|", tagString);
-                        processedTags.add(record);
+                        String tagPath = String.join("|", tagString);
+                        processedTags.add(tagPath);
                     }
                 }
             }
@@ -231,7 +241,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     }
 
     @Override
-    public void processTextComponnet(NodeIterator it, ArrayList<String> textlist) {
+    public void processTextComponent(NodeIterator it, ArrayList<String> textList) {
         while(it.hasNext()) {
             Node childNode = it.nextNode();
             try {
@@ -239,11 +249,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                     String resourceType = childNode.getProperty(SLING_RESOURCE_TYPE_PROPERTY).getValue().getString();
                     if (resourceType.equals(TEXT_COMPONENT)) {
                         String text = childNode.getProperty("text").getValue().getString();
-                        textlist.add(text);
+                        textList.add(text);
                     }
                 }
                 NodeIterator childIt = childNode.getNodes();
-                processTextComponnet(childIt, textlist);
+                processTextComponent(childIt, textList);
             }
             catch(RepositoryException e) {
                 logger.error("Iterator page jcr:content failed: {}", e.getMessage());
@@ -261,7 +271,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 User user = (User) userManager.getAuthorizable(userName);
                 // @Todo When we do the author migration, need to pass author profile link, contact id is needed.
                 // Example link: https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115.
-                email = user.getProperty("./profile/email") !=null ? user.getProperty("./profile/email")[0].getString() : null;
+                email = (user != null && user.getProperty("./profile/email") != null) ? Objects.requireNonNull(user.getProperty("./profile/email"))[0].getString() : null;
                 properties.put("authorLink", "https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115");
             }
             catch(RepositoryException e) {
@@ -271,5 +281,18 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         }
         return email;
     }
-    
+
+    @Override
+    public void processCustomComponents(Page page, HashMap<String, Object> properties) {
+        for(String path : customComponents) {
+            Resource res = page.getContentResource(path);
+            if (res != null) {
+                String url = (String) res.getValueMap().get("linkURL");
+                if (url != null) {
+                    properties.put("registrationLink", url);
+                }
+            }
+        }
+    }
+
 }

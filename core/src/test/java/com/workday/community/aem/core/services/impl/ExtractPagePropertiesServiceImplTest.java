@@ -100,7 +100,7 @@ public class ExtractPagePropertiesServiceImplTest {
         NodeIterator it = Mockito.mock(NodeIterator.class);
         ArrayList<String> textlist = new ArrayList<String>();
         doReturn(false).when(it).hasNext();
-        extract.processTextComponnet(it, textlist);
+        extract.processTextComponent(it, textlist);
         assertEquals(0, textlist.size());
     }
 
@@ -122,9 +122,9 @@ public class ExtractPagePropertiesServiceImplTest {
     public void testPorcessStringFields() {
         ValueMap data = Mockito.mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<String, Object>();
-        doReturn("/conf/community/settings/wcm/templates/event-page-template").when(data).get("cq:template", null);
-        doReturn("Page title").when(data).get("jcr:title", null);
-        doReturn(null).when(data).get("pageTitle", null);
+        doReturn("/conf/community/settings/wcm/templates/event-page-template").when(data).get("cq:template", String.class);
+        doReturn("Page title").when(data).get("jcr:title", String.class);
+        doReturn(null).when(data).get("pageTitle", String.class);
         extract.processStringFields(data, properties);
         assertEquals(properties.get("pageTitle"), "Page title");
         assertEquals(properties.get("contentType"), "Calendar Event");
@@ -138,7 +138,7 @@ public class ExtractPagePropertiesServiceImplTest {
         ValueMap data = Mockito.mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<String, Object>();
         GregorianCalendar value = new GregorianCalendar();
-        doReturn(value).when(data).get("startDate", null);
+        doReturn(value).when(data).get("startDate", GregorianCalendar.class);
         extract.processDateFields(data, properties);
         assertEquals(properties.get("startDate"), value.getTimeInMillis() / 1000);
     }
