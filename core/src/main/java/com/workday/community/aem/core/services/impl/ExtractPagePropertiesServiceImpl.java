@@ -38,9 +38,8 @@ import org.apache.jackrabbit.api.security.user.UserManager;
     immediate = true
 )
 public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesService {
-
     /** The logger. */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private static final Logger logger = LoggerFactory.getLogger(ExtractPagePropertiesServiceImpl.class);
 
     /** The resource resolver factory. */
     @Reference
