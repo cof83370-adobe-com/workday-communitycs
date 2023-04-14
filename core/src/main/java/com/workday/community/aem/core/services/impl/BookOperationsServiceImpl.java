@@ -80,7 +80,7 @@ public class BookOperationsServiceImpl implements BookOperationsService {
                     try {
                         List<String> bookPathDataList = getBookPathListFromJson(bookRequestJsonStr);
 
-                        if (Collections.isEmpty(bookPathDataList)) {
+                        if (bookPathDataList == null || bookPathDataList.size() == 0) {
                             success = false;
                         }
 
