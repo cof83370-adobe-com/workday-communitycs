@@ -32,10 +32,12 @@ public class LRUCacheWithTimeout<K, V> extends LRUMap<K, V> {
     }
 
     V value = super.get(key, updateToMRU);
-    Long keyTimeStamp = this.keyTimeStamps.get(key.toString());
+    String ks = key.toString();
+    Long keyTimeStamp = this.keyTimeStamps.get(ks);
     if (value != null && keyTimeStamp != null && isExpired(keyTimeStamp)) {
       // If the retrieved item has expired, remove it from the cache and return null.
       remove(key);
+      this.keyTimeStamps.remove(ks);
       return null;
     }
 
