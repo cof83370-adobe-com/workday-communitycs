@@ -22,7 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * The Class BookOperationsServlet.
  */
 @Component(service = Servlet.class, 	property={
         Constants.SERVICE_DESCRIPTION + "= Update Book Paths on the given page.",
@@ -33,13 +33,24 @@ import org.slf4j.LoggerFactory;
 
 public class BookOperationsServlet extends SlingAllMethodsServlet {
 
+    /** The Constant LOG. */
     private static final Logger LOG = LoggerFactory.getLogger(BookOperationsServlet.class);
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
+    /** The book operations service. */
     @Reference
     private BookOperationsService bookOperationsService;
 
+    /**
+     * Do get.
+     *
+     * @param req the req
+     * @param resp the resp
+     * @throws ServletException the servlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     @Override
     protected void doGet(final SlingHttpServletRequest req, final SlingHttpServletResponse resp) throws ServletException, IOException {
         long start = System.currentTimeMillis();
@@ -65,6 +76,14 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
         resp.getWriter().write(jsonResponse.toString());
     }
 
+    /**
+     * Do post.
+     *
+     * @param req the req
+     * @param resp the resp
+     * @throws ServletException the servlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     @Override
     protected void doPost(final SlingHttpServletRequest req, final SlingHttpServletResponse resp) throws ServletException, IOException {
         doGet(req, resp);

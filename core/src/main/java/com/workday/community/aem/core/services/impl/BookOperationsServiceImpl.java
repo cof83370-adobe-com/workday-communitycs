@@ -4,9 +4,6 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.workday.community.aem.core.services.BookOperationsService;
 import com.workday.community.aem.core.services.QueryService;
-
-import acscommons.io.jsonwebtoken.lang.Collections;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -26,6 +23,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * The Class BookOperationsServiceImpl.
+ */
 @Component(
         // Provide the service property, and list of service interfaces if this
         // @Component should be registered as a service
@@ -36,21 +36,28 @@ import java.util.Set;
 
 )
 public class BookOperationsServiceImpl implements BookOperationsService {
+    
+    /** The Constant LOG. */
     private static final Logger LOG = LoggerFactory.getLogger(BookOperationsServiceImpl.class);
-    /**
-     * The service user.
-     */
+
+    /** The Constant SERVICE_USER. */
     public static final String SERVICE_USER = "adminusergroup";
 
-    /**
-     * The resource resolver factory.
-     */
+
+    /** The resource resolver factory. */
     @Reference
     ResourceResolverFactory resourceResolverFactory;
 
+    /** The query service. */
     @Reference
     QueryService queryService;
 
+    /**
+     * Process book paths.
+     *
+     * @param req the req
+     * @return the sets the
+     */
     @Override
     public Set<String> processBookPaths(SlingHttpServletRequest req) {
         Set<String> activatePaths = new HashSet<>();
@@ -109,6 +116,12 @@ public class BookOperationsServiceImpl implements BookOperationsService {
         return activatePaths;
     }
 
+    /**
+     * Gets the book path list from json.
+     *
+     * @param bookRequestJsonStr the book request json str
+     * @return the book path list from json
+     */
     protected List<String> getBookPathListFromJson(String bookRequestJsonStr) {
         Gson gson = new Gson();
         Type type = new TypeToken<List<String>>() {

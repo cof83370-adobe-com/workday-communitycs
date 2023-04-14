@@ -102,6 +102,13 @@ public class QueryServiceImpl implements QueryService {
         return paths;
     }
 
+    /**
+     * Gets the book nodes by path.
+     *
+     * @param bookPagePath the book page path
+     * @param currentPath the current path
+     * @return the book nodes by path
+     */
     @Override
     public List<String> getBookNodesByPath(String bookPagePath, String currentPath) {
         Session session = null;
