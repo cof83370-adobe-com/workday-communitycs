@@ -28,7 +28,7 @@ import com.workday.community.aem.core.services.QueryService;
 public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     /** The Constant RESOURCE_TYPE. */
-    final protected static String RESOURCE_TYPE = "workday-community/components/common/coveostatus";
+    protected static final String RESOURCE_TYPE = "workday-community/components/common/coveostatus";
 
     /** The query service. */
     @OSGiService 
@@ -57,7 +57,7 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     private void init() {
         totalPages = queryService.getNumOfTotalPublishedPages();
         long number = coveoSourceApiService.getTotalIndexedNumber();
-        serverHasError = number == -1 ? true : false;
+        serverHasError = (number == -1);
         indexedPages = number == -1 ? 0 : number;
     }
 
@@ -81,7 +81,7 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
 
     @Override
     public List<String> getTemplates() {
-        return new ArrayList<String>(templates);
+        return new ArrayList<>(templates);
     }
 
     @Override

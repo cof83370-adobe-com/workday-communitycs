@@ -37,10 +37,8 @@ public class IndexServicesImpl implements IndexServices {
         Integer batchSize = coveoIndexApiConfigService.getBatchSize();
         for (int i = 0; i < paths.size(); i++) {
             pagePaths.add(paths.get(i));
-            if (i + 1 % batchSize == 0) {
-                if (createJobs(pagePaths) != null) {
-                    pagePaths.clear();
-                }
+            if (i + 1 % batchSize == 0 && createJobs(pagePaths) != null) {
+                pagePaths.clear();
             }
         }
 

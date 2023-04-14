@@ -65,18 +65,17 @@
                         background: $wdc-color-blueberry-100;
                         color: $wdc-color-blueberry-400;
                         border-left: 5px solid $wdc-color-blueberry-400;
-                        padding: 0.5rem 0rem 0.5rem 0rem;
+                        padding: 0.5rem 0rem 0.5rem 1.5rem;
                     }
 
-                    &::before {
+                    &:has(+ ul)::before {
                         content: url('../resources/images/wd-icon-chevron-right.svg');
                         font-size: 23px;
                         color: $wdc-color-black-pepper-600;
                         margin-right: 15px;
-
                     }
 
-                    &.active::before {
+                    &.active:has(+ ul)::before {
                         content: url('../resources/images/wd-icon-chevron-blue.svg');
                         margin-right: 15px;
                         font-size:23px;
@@ -115,7 +114,7 @@
                                 padding: 0.25rem 0rem 0.25rem 0rem;
                             }
 
-                            &::before {
+                            &:has(+ ul)::before {
                                 content: url('../resources/images/wd-icon-chevron-right-small.svg');
                                 font-size: 23px;
                                 color: $wdc-color-black-pepper-600;
@@ -123,7 +122,7 @@
                                 vertical-align: middle;
                             }
 
-                            &.active::before {
+                            &.active:has(+ ul)::before {
                                 content: url('../resources/images/wd-icon-chevron-down-small.svg');
                                 margin-right: 12px;
                             }
@@ -162,7 +161,7 @@
                                        padding:0.25rem 0rem 0.25rem 0rem;
                                     }
 
-                                    &::before {
+                                    &:has(+ ul)::before {
                                         content: url('../resources/images/wd-icon-chevron-right-small.svg');
                                         font-size: 23px;
                                         color: $wdc-color-black-pepper-600;
@@ -170,7 +169,7 @@
                                         vertical-align: middle;
                                     }
 
-                                    &.active::before {
+                                    &.active:has(+ ul)::before {
                                         content: url('../resources/images/wd-icon-chevron-blue-small.svg');
                                         margin-right: 12px;
                                     }
@@ -187,10 +186,6 @@
         .cmp-title {
             margin: 0;
         }
-    }
-
-    &__right-rail {
-        padding-left: 29px;
     }
 
     .hide {

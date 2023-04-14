@@ -61,8 +61,7 @@ public class HeaderModelImpl implements HeaderModel {
   protected void init() {
     logger.debug("Initializing HeaderModel ....");
     if (resourceResolver == null) {
-      logger.error("ResourceResolver is not injected (null) in HeaderModelImpl init method.");
-      throw new RuntimeException();
+      throw new RuntimeException("ResourceResolver is not injected (null) in HeaderModelImpl init method.");
     }
 
     sfId = OurmUtils.getSalesForceId(resourceResolver);
