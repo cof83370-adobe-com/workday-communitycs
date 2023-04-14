@@ -16,4 +16,6 @@ public interface QueryService {
 	 * @return List of page path.
 	 */
 	List<String> getPagesByTemplates(String[] templates);
+
+	List<String> getBookNodesByPath(String bookPath, String currentPath);
 }

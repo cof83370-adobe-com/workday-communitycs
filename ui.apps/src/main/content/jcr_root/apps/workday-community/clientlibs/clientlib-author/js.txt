@@ -1,3 +1,4 @@
 #base=js
 multifield-min-max.js
+book-page-operations.js
 author-component.js
