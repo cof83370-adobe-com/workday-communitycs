@@ -55,5 +55,5 @@ public @interface SnapConfig {
   int menuCacheMax() default 100;
 
   @AttributeDefinition(name = "User menu cache timeout duration", description = "User Menu Cache Timeout Duration (mills)", type = AttributeType.LONG)
-  long menuCacheTimeout() default 86400;
+  long menuCacheTimeout() default 86400000; // Default to one day.
 }
