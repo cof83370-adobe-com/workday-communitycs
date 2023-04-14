@@ -4,6 +4,9 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.workday.community.aem.core.services.BookOperationsService;
 import com.workday.community.aem.core.services.QueryService;
+
+import acscommons.io.jsonwebtoken.lang.Collections;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -17,21 +20,23 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Component(
         // Provide the service property, and list of service interfaces if this
         // @Component should be registered as a service
-        service = {BookOperationsService.class},
+        service = { BookOperationsService.class },
 
         // Set the configurationPolicy
         configurationPolicy = ConfigurationPolicy.OPTIONAL
 
 )
-public class BookOperationServiceImpl implements BookOperationsService {
-    private static final Logger LOG = LoggerFactory.getLogger(BookOperationServiceImpl.class);
+public class BookOperationsServiceImpl implements BookOperationsService {
+    private static final Logger LOG = LoggerFactory.getLogger(BookOperationsServiceImpl.class);
     /**
      * The service user.
      */
@@ -47,7 +52,7 @@ public class BookOperationServiceImpl implements BookOperationsService {
     QueryService queryService;
 
     @Override
-    public Set<String>  processBookPaths(SlingHttpServletRequest req) {
+    public Set<String> processBookPaths(SlingHttpServletRequest req) {
         Set<String> activatePaths = new HashSet<>();
         boolean success = true; // We will set success as false on any failures or issues.
         try (ResourceResolver resourceResolver = req.getResourceResolver()) {
@@ -66,11 +71,9 @@ public class BookOperationServiceImpl implements BookOperationsService {
                 // check incoming json String and create a JSON List object.
                 if (StringUtils.isNotBlank(bookRequestJsonStr)) {
                     try {
-                        Gson gson = new Gson();
-                        Type type = new TypeToken<List<String>>() {
-                        }.getType();
-                        List<String> bookPathDataList = gson.fromJson(bookRequestJsonStr, type);
-                        if (bookPathDataList == null || bookPathDataList.size() == 0) {
+                        List<String> bookPathDataList = getBookPathListFromJson(bookRequestJsonStr);
+
+                        if (Collections.isEmpty(bookPathDataList)) {
                             success = false;
                         }
 
@@ -104,5 +107,13 @@ public class BookOperationServiceImpl implements BookOperationsService {
             LOG.error("Exception occurred when update book: {} ", e.getMessage());
         }
         return activatePaths;
+    }
+
+    protected List<String> getBookPathListFromJson(String bookRequestJsonStr) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<String>>() {
+        }.getType();
+        List<String> bookPathDataList = gson.fromJson(bookRequestJsonStr, type);
+        return Optional.ofNullable(bookPathDataList).orElse(new ArrayList<>());
     }
 }
