@@ -65,7 +65,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation", "registrationUrl"));
 
     /** The custom components. */
-    private final ArrayList<String> customComponents = new ArrayList<>(Arrays.asList("root/container/eventregistration/button"));
+    private static final Map<String, String> customComponents =  new HashMap<>();
+    static {
+        customComponents.put("root/container/eventregistration/button", "registrationLink");
+    }
 
     /** The contentTypeMapping. */
     private final Map<String,String> contentTypeMapping = Map.of(
@@ -283,12 +286,12 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
     @Override
     public void processCustomComponents(Page page, HashMap<String, Object> properties) {
-        for(String path : customComponents) {
-            Resource res = page.getContentResource(path);
+        for(Map.Entry<String, String> component : customComponents.entrySet()) {
+            Resource res = page.getContentResource(component.getKey());
             if (res != null) {
                 String url = (String) res.getValueMap().get("linkURL");
                 if (url != null) {
-                    properties.put("registrationLink", url);
+                    properties.put(component.getValue(), url);
                 }
             }
         }
