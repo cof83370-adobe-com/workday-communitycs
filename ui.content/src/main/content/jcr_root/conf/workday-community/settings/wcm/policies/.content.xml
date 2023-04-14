@@ -520,7 +520,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676937205547>
@@ -530,7 +530,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676938889768>
@@ -540,7 +540,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676940689642>
@@ -560,7 +560,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678149939855>
@@ -905,6 +905,29 @@
                     </policy>
                 </troubleshooting>
             </structure>
+            <common jcr:primaryType="nt:unstructured">
+                <relatedinformation jcr:primaryType="nt:unstructured">
+                    <policy_1681242291110
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Content Page - Related Information"
+                        sling:resourceType="wcm/core/components/policy/policy">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Variation"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="curated_block"
+                                        cq:styleId="1681242331239"
+                                        cq:styleLabel="Curated Block"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_1681242291110>
+                </relatedinformation>
+            </common>
         </components>
     </workday-community>
 </jcr:root>

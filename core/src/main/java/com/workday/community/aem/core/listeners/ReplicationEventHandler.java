@@ -62,7 +62,7 @@ public class ReplicationEventHandler implements EventHandler {
                     startCoveoJob(action);
                 }
             } catch (Exception e) {
-                logger.error("\n Error occured while Publishing/Unpublishing page - {} " , e.getMessage());
+                logger.error("\n Error occurred while Publishing/Unpublishing page - {} " , e.getMessage());
             }
         }    
     }

@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.constants;
 
+import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED_BY;
+
 /**
  * The Class GlobalConstants.
  *
@@ -26,7 +28,7 @@ public interface GlobalConstants {
   String PROP_AUTHOR = "author";
 
   /** The Constant PROP_JCR_CREATED_BY. */
-  String PROP_JCR_CREATED_BY = "jcr:createdBy";
+  String PROP_JCR_CREATED_BY = JCR_CREATED_BY;
 
   /** The Constant PROP_UPDATED_DATE. */
   String PROP_UPDATED_DATE = "updatedDate";

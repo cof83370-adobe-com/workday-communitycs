@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
 import com.day.cq.search.result.Hit;
+import org.apache.sling.api.resource.LoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,10 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import static com.day.cq.wcm.api.constants.NameConstants.NT_PAGE;
 
 /**
  * The Class QueryServiceImpl.
@@ -51,7 +55,7 @@ public class QueryServiceImpl implements QueryService {
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
-            queryMap.put("type", "cq:Page");
+            queryMap.put("type", NT_PAGE);
             queryMap.put("1_property", "jcr:content/cq:lastReplicationAction");
             queryMap.put("1_property.value", "Activate");
 
@@ -59,7 +63,7 @@ public class QueryServiceImpl implements QueryService {
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult result = query.getResult();
             totalResults = result.getTotalMatches();
-        } catch (Exception e) {
+        } catch (LoginException e) {
             logger.error("Exception occurred when running query to get total number of pages {} ", e.getMessage());
         }
         return totalResults;
@@ -73,7 +77,7 @@ public class QueryServiceImpl implements QueryService {
             session = resourceResolver.adaptTo(Session.class);
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
-            queryMap.put("type", "cq:Page");
+            queryMap.put("type", NT_PAGE);
             queryMap.put("group.p.or", "true");
             for (int i = 0; i < templates.length; i++) {
                 queryMap.put(String.format("group.%d_property", i), "jcr:content/cq:template");
@@ -88,7 +92,7 @@ public class QueryServiceImpl implements QueryService {
                 String path = hit.getPath();
                 paths.add(path);
             }
-        } catch (Exception e) {
+        } catch (LoginException | RepositoryException e) {
             logger.error("Exception occurred when running query to get pages {} ", e.getMessage());
         } finally {
             if(session != null) {

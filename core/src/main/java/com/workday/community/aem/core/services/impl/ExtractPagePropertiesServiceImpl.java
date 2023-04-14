@@ -8,11 +8,11 @@ import java.util.Map;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.SlingException;
+import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -25,7 +25,12 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.utils.ResolverUtil;
+
+import static com.adobe.acs.commons.mcp.form.ContainerComponent.JCR_TITLE;
+import static com.day.cq.wcm.api.constants.NameConstants.NN_TEMPLATE;
+import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
 import static com.workday.community.aem.core.services.impl.QueryServiceImpl.SERVICE_USER;
+import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -63,7 +68,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "usingWorkday"));
 
     /** The stringFields. */
-    private ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", "cq:template", "eventHost", "eventLocation"));
+    private ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
 
     /** The contentTypeMapping. */
     private Map<String,String> contentTypeMapping = Map.of(
@@ -105,10 +110,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 String[] taxonomyIds = data.get(taxonomyField, String[].class);
                 if (taxonomyIds != null && taxonomyIds.length > 0) {
                     ArrayList<String> value = processTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
-                    if (taxonomyField == "usingWorkday") {
+                    if (taxonomyField.equals("usingWorkday")) {
                         properties.put("usingWorkdayTags", value);
                     }
-                    else if (taxonomyField == "programsTools") {
+                    else if (taxonomyField.equals("programsTools")) {
                         properties.put("programsToolsTags", value);
                     }
                     else {
@@ -121,14 +126,14 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             Resource resource = resourceResolver.getResource( path + "/jcr:content");
             Node node = resource.adaptTo(Node.class);
             NodeIterator it = node.getNodes();
-            ArrayList<String> textlist = new ArrayList<>();
-            processTextComponnet(it, textlist);
-            if (textlist.size() > 0) {
-                String description = String.join(" ", textlist);
+            ArrayList<String> textList = new ArrayList<>();
+            processTextComponnet(it, textList);
+            if (textList.size() > 0) {
+                String description = String.join(" ", textList);
                 properties.put("description", description);
             }
         }
-        catch (Exception e){
+        catch (LoginException | RepositoryException | SlingException e){
             logger.error("Extract page properties {} failed: {}", path, e.getMessage());
             return properties;
         }
@@ -180,10 +185,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         for (String stringField: stringFields) {
             String value = data.get(stringField, null);
             if (stringField == "pageTitle" && value == null) {
-                value = data.get("jcr:title", null);
+                value = data.get(JCR_TITLE, null);
             }
             if (value != null) {
-                if (stringField == "cq:template") {
+                if (stringField.equals(NN_TEMPLATE)) {
                     properties.put("contentType", contentTypeMapping.get(value));
                 }
                 else {
@@ -230,8 +235,8 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         while(it.hasNext()) {
             Node childNode = it.nextNode();
             try {
-                if (childNode.hasProperty("sling:resourceType")) {
-                    String resourceType = childNode.getProperty("sling:resourceType").getValue().getString();
+                if (childNode.hasProperty(SLING_RESOURCE_TYPE_PROPERTY)) {
+                    String resourceType = childNode.getProperty(SLING_RESOURCE_TYPE_PROPERTY).getValue().getString();
                     if (resourceType.equals(TEXT_COMPONENT)) {
                         String text = childNode.getProperty("text").getValue().getString();
                         textlist.add(text);
@@ -240,7 +245,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 NodeIterator childIt = childNode.getNodes();
                 processTextComponnet(childIt, textlist);
             }
-            catch(Exception e) {
+            catch(RepositoryException e) {
                 logger.error("Iterator page jcr:content failed: {}", e.getMessage());
             }
         }
@@ -248,7 +253,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
     @Override
     public String processUserFields(ValueMap data, UserManager userManager, HashMap<String, Object> properties) {
-        String userName = data.get("cq:lastModifiedBy", String.class);
+        String userName = data.get(PN_PAGE_LAST_MOD_BY, String.class);
         String email = "";
         if (userName != null) {
             properties.put("author", userName);
@@ -259,7 +264,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 email = user.getProperty("./profile/email") !=null ? user.getProperty("./profile/email")[0].getString() : null;
                 properties.put("authorLink", "https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115");
             }
-            catch(Exception e) {
+            catch(RepositoryException e) {
                 logger.error("Extract user email and contact number failed: {}", e.getMessage());
                 return email;
             }

@@ -1,6 +1,8 @@
 package com.workday.community.aem.core.utils;
 
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.WccConstants;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -11,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
 
 public class CommonUtils {
 	
@@ -25,7 +26,7 @@ public class CommonUtils {
 			User user = (User) userManager.getAuthorizable(session.getUserID());
 			sfId = user.getProperty(WccConstants.PROFILE_SOURCE_ID) != null ? user.getProperty(WccConstants.PROFILE_SOURCE_ID)[0].getString() : null;
 		} catch (RepositoryException e) {
-			LOGGER.error("Exception in getLoggedInUserSourceId method %s",e.getMessage());
+			LOGGER.error("Exception in getLoggedInUserSourceId method {}", e.getMessage());
 		}
 		return sfId;
 	}
@@ -77,15 +78,53 @@ public class CommonUtils {
 		Node userNode = null;
 		try {
 			 user=getLoggedInUser(resourceResolver);
-			 String userPath = user.getPath();
-			 LOGGER.debug("getLoggedInUserAsNode userPath--"+userPath);
-		      userNode = resourceResolver.getResource(userPath).adaptTo(Node.class);
+			 if (user != null) {
+				 String userPath = user.getPath();
+				 LOGGER.debug("getLoggedInUserAsNode userPath--{}", userPath);
+				 userNode = resourceResolver.getResource(userPath).adaptTo(Node.class);
+			 }
 		} catch (RepositoryException e) {
-			LOGGER.error("Exception in getLoggedInUser method = {}",e.getMessage());
+			LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());
 		}
 		return userNode;
-		
 	}
 
-    
+	/**
+	 * Replace all values in the source Json object from the corresponding target Json object, given them
+	 * have some json structure.
+	 * @param source The source Json object.
+	 * @param target The target Json object.
+	 */
+	public static void  updateSourceFromTarget(JsonObject source, JsonObject target) {
+		for (String key : target.keySet()) {
+			if (source.has(key)) {
+				JsonElement valSource = source.get(key);
+				JsonElement valTarget = target.get(key);
+
+				if (valSource instanceof JsonObject && valTarget instanceof JsonObject) {
+					updateSourceFromTarget((JsonObject)valSource, (JsonObject)valTarget);
+				} else if (valSource instanceof JsonArray && valTarget instanceof JsonArray) {
+					updateSourceFromTarget((JsonArray)valSource, (JsonArray)valTarget);
+				} else if (valTarget != null && (valSource == null || !valSource.equals(valTarget))) {
+					source.add(key, valTarget);
+				}
+			}
+		}
+	}
+
+	public static void updateSourceFromTarget(JsonArray source, JsonArray target) {
+		for (int i=0; i<source.size(); i++) {
+			JsonElement valSource = source.get(i);
+			JsonElement valTarget = target.get(i);
+
+			if (valSource instanceof JsonObject && valTarget instanceof JsonObject) {
+				updateSourceFromTarget((JsonObject)valSource, (JsonObject)valTarget);
+			} else if (valSource instanceof JsonArray && valTarget instanceof JsonArray) {
+				updateSourceFromTarget((JsonArray)valSource, (JsonArray)valTarget);
+			} else if (valTarget != null && (valSource == null || !valSource.equals(valTarget))) {
+				source.set(i, valTarget);
+			}
+		}
+	}
+
 }
