@@ -69,7 +69,6 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
             activatePaths = bookOperationsService.processBookPaths(req.getResourceResolver(), bookResourcePath, bookRequestJsonStr);
         } catch (Exception e) {
             success = false;
-            logger.debug("Error while processing Book Paths - success status: " + success);
             logger.error("Error while processing Book Paths :" + req.getResource().getPath());
         }
 
