@@ -47,7 +47,7 @@ import java.util.Date;
 public class SnapServiceImpl implements SnapService {
 
   /** The logger. */
-  private final static Logger logger = LoggerFactory.getLogger(SnapService.class);
+  private static final Logger logger = LoggerFactory.getLogger(SnapServiceImpl.class);
 
   private JsonObject defaultMenu;
 

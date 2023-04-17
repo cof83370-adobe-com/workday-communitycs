@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import javax.jcr.NodeIterator;
 
+import com.day.cq.wcm.api.Page;
 import org.apache.sling.api.resource.ValueMap;
 
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -64,7 +65,7 @@ public interface ExtractPagePropertiesService {
      * @param it The node iterator
      * @param textlist List of text value
 	 */
-    void processTextComponnet(NodeIterator it, ArrayList<String> textlist);
+    void processTextComponent(NodeIterator it, ArrayList<String> textlist);
 
     /**
 	 * Process user fields.
@@ -75,4 +76,12 @@ public interface ExtractPagePropertiesService {
      * @return The user's email
 	 */
     String processUserFields(ValueMap data, UserManager userManager, HashMap<String, Object> properties);
+
+	/**
+	 * Process custom components and extract values.
+	 *
+	 * @param page page we are indexing.
+	 * @param properties Collected values.
+	 */
+	void processCustomComponents(Page page, HashMap<String, Object> properties);
 }
