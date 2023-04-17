@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.utils;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,9 +11,15 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import com.google.gson.reflect.TypeToken;
+import java.lang.reflect.Type;
 
 public class CommonUtils {
 	
@@ -126,5 +133,20 @@ public class CommonUtils {
 			}
 		}
 	}
+
+
+    /**
+     * Gets the path list from json string.
+     *
+     * @param jsonStr from the request json str
+     * @return the path list from json
+     */
+    public static List<String> getPathListFromJsonString(String jsonStr) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<List<String>>() {
+        }.getType();
+        List<String> pathDataList = gson.fromJson(jsonStr, type);
+        return Optional.ofNullable(pathDataList).orElse(new ArrayList<>());
+    }
 
 }

@@ -34,7 +34,7 @@ import com.day.cq.search.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class QueryServiceImplTest {
 
   @Mock
@@ -101,8 +101,38 @@ class QueryServiceImplTest {
 
     when(query.getResult()).thenReturn(result);
 
-    List<String> paths = queryService.getPagesByTemplates(new String[]{"template/path"});
+    List<String> paths = queryService.getPagesByTemplates(new String[] { "template/path" });
     assertEquals("/test/path", paths.get(0));
+    verify(session).logout();
+
+  }
+
+  @Test
+  void testgetPagesByBookPath() throws RepositoryException {
+    ResourceResolver resourceResolver = mock(ResourceResolver.class);
+    String hitResultPath = "/content/workday-community/en-us/thomas-sandbox/test-download-component/jcr:content/root/container/container/book/firstlevel/item1";
+
+    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenReturn(resourceResolver);
+
+    Session session = mock(Session.class);
+    when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+
+    Query query = mock(Query.class);
+    when(queryBuilder.createQuery(any(), eq(session))).thenReturn(query);
+
+    Hit hit = mock(Hit.class);
+    when(hit.getPath()).thenReturn(hitResultPath);
+
+    SearchResult result = mock(SearchResult.class);
+    List<Hit> hitList = new ArrayList<>();
+    hitList.add(hit);
+    when(result.getHits()).thenReturn(hitList);
+
+    when(query.getResult()).thenReturn(result);
+
+    List<String> paths = queryService.getBookNodesByPath("/content/workday-community/en-us/sprint-17/cmtyaem-341",
+        "/content/workday-community/en-us/products/human-capital-management/resources/next-level/faq");
+    assertEquals(hitResultPath, paths.get(0));
     verify(session).logout();
 
   }

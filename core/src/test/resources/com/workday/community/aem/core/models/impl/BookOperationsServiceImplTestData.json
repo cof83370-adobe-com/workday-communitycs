@@ -1,0 +1,160 @@
+{
+  "book-faq-page": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:createdBy": "admin",
+    "jcr:created": "Fri Mar 31 2023 11:59:15 GMT+0530",
+    "jcr:content": {
+      "jcr:primaryType": "cq:PageContent",
+      "jcr:createdBy": "admin",
+      "jcr:title": "FAQs",
+      "cq:template": "/conf/workday-community/settings/wcm/templates/page-content",
+      "jcr:created": "Fri Mar 31 2023 11:59:15 GMT+0530",
+      "cq:lastModified": "Fri Apr 14 2023 09:18:08 GMT-0400",
+      "sling:resourceType": "workday-community/components/structure/page",
+      "cq:lastModifiedBy": "admin",
+      "root": {
+        "jcr:primaryType": "nt:unstructured",
+        "layout": "responsiveGrid",
+        "sling:resourceType": "workday-community/components/core/container",
+        "container": {
+          "jcr:primaryType": "nt:unstructured",
+          "layout": "responsiveGrid",
+          "sling:resourceType": "workday-community/components/core/container",
+          "title": {
+            "jcr:primaryType": "nt:unstructured",
+            "sling:resourceType": "workday-community/components/core/title"
+          },
+          "container": {
+            "jcr:primaryType": "nt:unstructured",
+            "layout": "responsiveGrid",
+            "sling:resourceType": "workday-community/components/core/container",
+            "book": {
+              "jcr:primaryType": "nt:unstructured",
+              "jcr:createdBy": "admin",
+              "jcr:lastModifiedBy": "admin",
+              "jcr:created": "Fri Mar 31 2023 12:01:05 GMT+0530",
+              "class": "bookComp",
+              "jcr:lastModified": "Fri Apr 14 2023 09:17:47 GMT-0400",
+              "sling:resourceType": "workday-community/components/common/book",
+              "firstlevel": {
+                "jcr:primaryType": "nt:unstructured",
+                "item0": {
+                  "jcr:primaryType": "nt:unstructured",
+                  "mainpagepath": "/content/workday-community/en-us/thomas-sandbox/accordion-image-test",
+                  "secondlevel": {
+                    "jcr:primaryType": "nt:unstructured",
+                    "item0": {
+                      "jcr:primaryType": "nt:unstructured",
+                      "secondpagepath": "/content/workday-community/en-us/sprint-17/cmtyaem-341/considerations-when-translating-BIRT-output",
+                      "thirdlevel": {
+                        "jcr:primaryType": "nt:unstructured",
+                        "item0": {
+                          "jcr:primaryType": "nt:unstructured",
+                          "thirdpagepath": "/content/workday-community/en-us/thomas-sandbox/test-2/workday-mobile-authentication-and-security-faq"
+                        },
+                        "item1": {
+                          "jcr:primaryType": "nt:unstructured",
+                          "thirdpagepath": "/content/workday-community/en-us/thomas-sandbox/test/getting-started-on-prism-analytics"
+                        }
+                      }
+                    },
+                    "item1": {
+                      "jcr:primaryType": "nt:unstructured",
+                      "secondpagepath": "/content/workday-community/en-us/thomas-sandbox/test-2/cloudLoader-advanced-load-tips-and-tricks"
+                    }
+                  }
+                },
+                "item1": {
+                  "jcr:primaryType": "nt:unstructured",
+                  "mainpagepath": "/content/workday-community/en-us/sprint-17/cmtyaem-341",
+                  "secondlevel": {
+                    "jcr:primaryType": "nt:unstructured",
+                    "item0": {
+                      "jcr:primaryType": "nt:unstructured",
+                      "secondpagepath": "/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+
+  "book-download-page": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:createdBy": "admin",
+    "jcr:created": "Fri Mar 31 2023 11:59:17 GMT+0530",
+    "jcr:content": {
+      "jcr:primaryType": "cq:PageContent",
+      "jcr:createdBy": "admin",
+      "jcr:title": "test download component",
+      "cq:template": "/conf/workday-community/settings/wcm/templates/page-content",
+      "jcr:created": "Fri Mar 31 2023 11:59:17 GMT+0530",
+      "cq:lastModified": "Fri Apr 14 2023 11:33:24 GMT-0400",
+      "sling:resourceType": "workday-community/components/structure/page",
+      "cq:lastModifiedBy": "admin",
+      "root": {
+        "jcr:primaryType": "nt:unstructured",
+        "layout": "responsiveGrid",
+        "sling:resourceType": "workday-community/components/core/container",
+        "container": {
+          "jcr:primaryType": "nt:unstructured",
+          "layout": "responsiveGrid",
+          "sling:resourceType": "workday-community/components/core/container",
+          "title": {
+            "jcr:primaryType": "nt:unstructured",
+            "sling:resourceType": "workday-community/components/core/title"
+          },
+          "container": {
+            "jcr:primaryType": "nt:unstructured",
+            "layout": "responsiveGrid",
+            "sling:resourceType": "workday-community/components/core/container",
+            "book": {
+              "jcr:primaryType": "nt:unstructured",
+              "jcr:createdBy": "admin",
+              "jcr:lastModifiedBy": "admin",
+              "jcr:created": "Mon Apr 10 2023 15:55:39 GMT-0400",
+              "jcr:lastModified": "Fri Apr 14 2023 11:33:24 GMT-0400",
+              "sling:resourceType": "workday-community/components/common/book",
+              "firstlevel": {
+                "jcr:primaryType": "nt:unstructured",
+                "item0": {
+                  "jcr:primaryType": "nt:unstructured",
+                  "mainpagepath": "/content/workday-community/en-us/thomas-sandbox/test-2/adoption-kit-faq",
+                  "secondlevel": {
+                    "jcr:primaryType": "nt:unstructured",
+                    "item0": {
+                      "jcr:primaryType": "nt:unstructured",
+                      "secondpagepath": "/content/workday-community/en-us/thomas-sandbox/related-information-bug/reference-test",
+                      "thirdlevel": {
+                        "jcr:primaryType": "nt:unstructured",
+                        "item0": {
+                          "jcr:primaryType": "nt:unstructured",
+                          "thirdpagepath": "/content/workday-community/en-us/thomas-sandbox/test-2/leveraging-skills-interoperability-faq"
+                        }
+                      }
+                    }
+                  }
+                },
+                "item1": {
+                  "jcr:primaryType": "nt:unstructured",
+                  "mainpagepath": "/content/workday-community/en-us/sprint-17/cmtyaem-341",
+                  "secondlevel": {
+                    "jcr:primaryType": "nt:unstructured",
+                    "item0": {
+                      "jcr:primaryType": "nt:unstructured",
+                      "secondpagepath": "/content/workday-community/en-us/thomas-sandbox/test-download-component/brainstorm-overview3"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
