@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 @Component(service = Servlet.class, property = {
         Constants.SERVICE_DESCRIPTION + "= Update Book Paths on the given page.",
         "sling.servlet.methods=" + HttpConstants.METHOD_POST,
-        "sling.servlet.paths=" + "/bin/processBookPages",
+        "sling.servlet.resourceTypes=" + "workday-community/components/common/book",
         "sling.servlet.extensions=" + "json"
 })
 
@@ -45,7 +45,7 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
     private BookOperationsService bookOperationsService;
 
     /**
-     * Do get.
+     * Do Post.
      *
      * @param req  the req
      * @param resp the resp
@@ -53,7 +53,7 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
      * @throws IOException      Signals that an I/O exception has occurred.
      */
     @Override
-    protected void doGet(final SlingHttpServletRequest req, final SlingHttpServletResponse resp)
+    protected void doPost(final SlingHttpServletRequest req, final SlingHttpServletResponse resp)
             throws ServletException, IOException {
         long start = System.currentTimeMillis();
         logger.debug("Starting to process Book Paths");
@@ -82,19 +82,4 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
         logger.debug("Finished processing Book Paths");
         resp.getWriter().write(jsonResponse.toString());
     }
-
-    /**
-     * Do post.
-     *
-     * @param req  the req
-     * @param resp the resp
-     * @throws ServletException the servlet exception
-     * @throws IOException      Signals that an I/O exception has occurred.
-     */
-    @Override
-    protected void doPost(final SlingHttpServletRequest req, final SlingHttpServletResponse resp)
-            throws ServletException, IOException {
-        doGet(req, resp);
-    }
-
 }

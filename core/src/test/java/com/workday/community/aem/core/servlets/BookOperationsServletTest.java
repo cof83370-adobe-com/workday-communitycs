@@ -57,7 +57,7 @@ public class BookOperationsServletTest {
      */
     @Test
     public void testBookOperationServletDoGet() throws Exception {
-        bookOperationsServlet.doGet(mockSlingRequest, mockSlingResponse);
+        bookOperationsServlet.doPost(mockSlingRequest, mockSlingResponse);
         assertNotNull(mockSlingResponse);     
     }
 }

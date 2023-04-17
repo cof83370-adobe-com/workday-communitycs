@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.BookOperationsService;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.utils.CommonUtils;
@@ -61,7 +62,7 @@ public class BookOperationsServiceImpl implements BookOperationsService {
         try {
             Resource bookResource = resolver.getResource(bookResourcePath);
             if (bookResource != null) {
-                bookResourcePath = bookResource.getPath().split("/jcr:content")[0];
+                bookResourcePath = bookResource.getPath().split(GlobalConstants.JCR_CONTENT_PATH)[0];
                 // check incoming json String and create a JSON List object.
                 if (StringUtils.isNotBlank(bookRequestJsonStr)) {
                     List<String> bookPathDataList = CommonUtils.getPathListFromJsonString(bookRequestJsonStr);
@@ -76,7 +77,7 @@ public class BookOperationsServiceImpl implements BookOperationsService {
                             if (resolver.getResource(path) != null) {
                                 Node root = resolver.getResource(path).adaptTo(Node.class);
                                 if (root != null) {
-                                    activatePaths.add(root.getPath().split("/jcr:content")[0]);
+                                    activatePaths.add(root.getPath().split(GlobalConstants.JCR_CONTENT_PATH)[0]);
                                     root.remove();
                                 }
                             }

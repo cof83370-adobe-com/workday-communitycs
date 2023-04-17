@@ -44,7 +44,6 @@ $(document).on('dialog-ready', function () {
           dataType: 'json',
           success: function (response) {
             if ('success' in response && response.success === true) {
-              console.log(MODULE_NAME, response);
               // Create a Foundation UI Prompt, display feedback to the user, and refresh the page when the user clicks 'Ok'
               FOUNDATION_UI.prompt(NOTIFY_TITLE, `Please activate listed books to make the updates complete ${response.pagePaths}.`, 'success', [{
                 id: 'accept',
@@ -52,11 +51,9 @@ $(document).on('dialog-ready', function () {
               }]);
             } else {
               FOUNDATION_UI.alert(NOTIFY_TITLE, 'Failed!', 'error');
-              console.error(MODULE_NAME, 'AJAX success block but something went wrong on the server: ', response);
             }
           },
           error: function (jqXHR, textStatus, errorThrown) {
-            console.error(MODULE_NAME, jqXHR, textStatus, errorThrown);
             FOUNDATION_UI.alert(NOTIFY_TITLE, 'Failed!', 'error');
           }
         });
@@ -68,12 +65,10 @@ $(document).on('dialog-ready', function () {
       function handleProcessClick($bookForm) {
         try {
           const BOOK_DATA = createBookData($bookForm);
-          const API_URL = '/bin/processBookPages';
           const BOOK_COMP_PATH = ns.DialogFrame.currentDialog.editable.config.path;
-          console.log(API_URL);
+          const API_URL = `${BOOK_COMP_PATH}.json`
           sendBookData(API_URL, BOOK_DATA, BOOK_COMP_PATH);
         } catch (error) {
-          console.error(MODULE_NAME, error);
         }
       }
 
