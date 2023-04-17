@@ -21,20 +21,21 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
 /**
  * The Class BookOperationsServlet.
  */
-@Component(service = Servlet.class, 	property={
+@Component(service = Servlet.class, property = {
         Constants.SERVICE_DESCRIPTION + "= Update Book Paths on the given page.",
         "sling.servlet.methods=" + HttpConstants.METHOD_POST,
-        "sling.servlet.paths="+ "/bin/processBookPages",
+        "sling.servlet.paths=" + "/bin/processBookPages",
         "sling.servlet.extensions=" + "json"
 })
 
 public class BookOperationsServlet extends SlingAllMethodsServlet {
 
-    /** The Constant LOG. */
-    private static final Logger LOG = LoggerFactory.getLogger(BookOperationsServlet.class);
+    /** The Constant logger. */
+    private static final Logger logger = LoggerFactory.getLogger(BookOperationsServlet.class);
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -46,46 +47,53 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
     /**
      * Do get.
      *
-     * @param req the req
+     * @param req  the req
      * @param resp the resp
      * @throws ServletException the servlet exception
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException      Signals that an I/O exception has occurred.
      */
     @Override
-    protected void doGet(final SlingHttpServletRequest req, final SlingHttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(final SlingHttpServletRequest req, final SlingHttpServletResponse resp)
+            throws ServletException, IOException {
         long start = System.currentTimeMillis();
-        LOG.debug("Starting to process Book Paths");
+        logger.debug("Starting to process Book Paths");
         boolean success = true;
         Set<String> activatePaths = new HashSet<>();
-        LOG.trace("Initial success status: " + success);
+        logger.trace("Initial success status: " + success);
         try {
-            activatePaths = bookOperationsService.processBookPaths(req);
+        	// Get Book Resource Path info from request.
+            String bookResourcePath = req.getParameter("bookResPath");
+            // Get Book Path info from request.
+            String bookRequestJsonStr = req.getParameter("bookPathData");
+
+            activatePaths = bookOperationsService.processBookPaths(req.getResourceResolver(), bookResourcePath, bookRequestJsonStr);
         } catch (Exception e) {
             success = false;
-            LOG.debug("Error while processing Book Paths - success status: " + success);
-            LOG.error("Error while processing Book Paths :" + req.getResource().getPath());
+            logger.debug("Error while processing Book Paths - success status: " + success);
+            logger.error("Error while processing Book Paths :" + req.getResource().getPath());
         }
 
         long end = System.currentTimeMillis();
-        LOG.debug("Time for Book Paths processing: " + Long.toString(end-start) + " ms");
+        logger.debug("Time for Book Paths processing: " + Long.toString(end - start) + " ms");
         JsonObject jsonResponse = new JsonObject();
         resp.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
         jsonResponse.addProperty("success", success);
         jsonResponse.addProperty("pagePaths", String.join(",", activatePaths));
-        LOG.debug("Finished processing Book Paths");
+        logger.debug("Finished processing Book Paths");
         resp.getWriter().write(jsonResponse.toString());
     }
 
     /**
      * Do post.
      *
-     * @param req the req
+     * @param req  the req
      * @param resp the resp
      * @throws ServletException the servlet exception
-     * @throws IOException Signals that an I/O exception has occurred.
+     * @throws IOException      Signals that an I/O exception has occurred.
      */
     @Override
-    protected void doPost(final SlingHttpServletRequest req, final SlingHttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(final SlingHttpServletRequest req, final SlingHttpServletResponse resp)
+            throws ServletException, IOException {
         doGet(req, resp);
     }
 
