@@ -1,0 +1,47 @@
+.cmp-importcontent__item-submit-button{
+    background-color: $wdc-color-blueberry-400;
+    border: none;
+    color: white;
+    padding: 5px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 30px;
+    margin-top: 24px;
+    margin-bottom: 12px;
+}
+
+#migration-report {
+    #report {
+        border-collapse: collapse;
+        width: 100%;
+        margin-top: 12px;
+        font-size: 14px;
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        tr {
+            &:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+            &:hover {
+                background-color: #ddd;
+            }
+            &:nth-child(1) {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: $wdc-color-blueberry-400;
+                color: white;
+            }
+        }
+    }
+}
+
+img#report-loader {
+	margin-top: 12px;
+	max-width: 75px;
+	max-height: 75px;
+}
