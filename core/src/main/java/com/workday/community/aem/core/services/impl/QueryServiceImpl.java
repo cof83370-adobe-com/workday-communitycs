@@ -118,9 +118,11 @@ public class QueryServiceImpl implements QueryService {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
             queryMap.put("fulltext", bookPagePath);
-            queryMap.put("group.1_group.p.not", "true");
-            queryMap.put("group.1_group.path", currentPath);
-            queryMap.put("group.1_group.path.self", "true");
+            if(currentPath != null) {
+                queryMap.put("group.1_group.p.not", "true");
+                queryMap.put("group.1_group.path", currentPath);
+                queryMap.put("group.1_group.path.self", "true");
+            }
             queryMap.put("p.limit", "-1");
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult searchResult = query.getResult();
