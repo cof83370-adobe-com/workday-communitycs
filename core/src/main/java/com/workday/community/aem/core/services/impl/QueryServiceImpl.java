@@ -88,14 +88,14 @@ public class QueryServiceImpl implements QueryService {
             queryMap.put("p.limit", "-1");
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult searchResult = query.getResult();
-            for(Hit hit : searchResult.getHits()) {
+            for (Hit hit : searchResult.getHits()) {
                 String path = hit.getPath();
                 paths.add(path);
             }
         } catch (LoginException | RepositoryException e) {
             logger.error("Exception occurred when running query to get pages {} ", e.getMessage());
         } finally {
-            if(session != null) {
+            if (session != null) {
                 session.logout();
             }
         }
@@ -106,7 +106,7 @@ public class QueryServiceImpl implements QueryService {
      * Gets the book nodes by path.
      *
      * @param bookPagePath the book page path
-     * @param currentPath the current path
+     * @param currentPath  the current path
      * @return the book nodes by path
      */
     @Override
@@ -118,20 +118,22 @@ public class QueryServiceImpl implements QueryService {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
             queryMap.put("fulltext", bookPagePath);
-            queryMap.put("group.1_group.p.not", "true");
-            queryMap.put("group.1_group.path", currentPath);
-            queryMap.put("group.1_group.path.self", "true");
+            if (currentPath != null) {
+                queryMap.put("group.1_group.p.not", "true");
+                queryMap.put("group.1_group.path", currentPath);
+                queryMap.put("group.1_group.path.self", "true");
+            }
             queryMap.put("p.limit", "-1");
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult searchResult = query.getResult();
-            for(Hit hit : searchResult.getHits()) {
+            for (Hit hit : searchResult.getHits()) {
                 String path = hit.getPath();
                 paths.add(path);
             }
-        } catch (Exception e) {
+        } catch (LoginException | RepositoryException e) {
             logger.error("Exception occurred when running query to get book pages {} ", e.getMessage());
         } finally {
-            if(session != null) {
+            if (session != null) {
                 session.logout();
             }
         }

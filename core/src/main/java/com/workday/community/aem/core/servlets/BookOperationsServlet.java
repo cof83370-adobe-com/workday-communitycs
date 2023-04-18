@@ -21,7 +21,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * The Class BookOperationsServlet.
  */
@@ -42,7 +41,7 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
 
     /** The book operations service. */
     @Reference
-    private BookOperationsService bookOperationsService;
+    private transient BookOperationsService bookOperationsService;
 
     /**
      * Do Post.
@@ -55,30 +54,23 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
     @Override
     protected void doPost(final SlingHttpServletRequest req, final SlingHttpServletResponse resp)
             throws ServletException, IOException {
-        long start = System.currentTimeMillis();
-        logger.debug("Starting to process Book Paths");
+        logger.info("Starting to process Book Paths");
         boolean success = true;
         Set<String> activatePaths = new HashSet<>();
-        logger.trace("Initial success status: " + success);
-        try {
-        	// Get Book Resource Path info from request.
-            String bookResourcePath = req.getParameter("bookResPath");
-            // Get Book Path info from request.
-            String bookRequestJsonStr = req.getParameter("bookPathData");
 
-            activatePaths = bookOperationsService.processBookPaths(req.getResourceResolver(), bookResourcePath, bookRequestJsonStr);
-        } catch (Exception e) {
-            success = false;
-            logger.error("Error while processing Book Paths :" + req.getResource().getPath());
-        }
+        // Get Book Resource Path info from request.
+        String bookResourcePath = req.getParameter("bookResPath");
+        // Get Book Path info from request.
+        String bookRequestJsonStr = req.getParameter("bookPathData");
 
-        long end = System.currentTimeMillis();
-        logger.debug("Time for Book Paths processing: " + Long.toString(end - start) + " ms");
+        activatePaths = bookOperationsService.processBookPaths(req.getResourceResolver(), bookResourcePath,
+                bookRequestJsonStr);
+
         JsonObject jsonResponse = new JsonObject();
         resp.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
         jsonResponse.addProperty("success", success);
         jsonResponse.addProperty("pagePaths", String.join(",", activatePaths));
-        logger.debug("Finished processing Book Paths");
+        logger.info("Finished processing Book Paths");
         resp.getWriter().write(jsonResponse.toString());
     }
 }
