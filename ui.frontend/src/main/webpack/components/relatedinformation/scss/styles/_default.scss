@@ -54,6 +54,7 @@
 
         &__heading {
             padding-top: 18px;
+            margin: 0 24px;
 
             &-title {
                 font-size: 20px;
@@ -125,4 +126,90 @@
     @media (min-width: $screen-small) {
         padding-left: 33px;
     }
+}
+
+.curated_block {
+    border: 1px solid $wdc-color-soap-500;
+    border-radius: 8px;
+    padding: 24px;
+
+    .cmp-related-info {
+        margin-top: 0;
+
+        &__heading {
+            padding-bottom: 0;
+
+            &-title {
+                font-style: $font-style-normal;
+                font-weight: $font-weight-bold;
+                font-size: 20px;
+                line-height: 26px;
+                color: $wdc-color-black-pepper-600;
+            }
+        }
+
+        &__content {
+            display: inline-block;
+            margin: 0;
+        }
+
+        &__item-link {
+            line-height: 0;
+        }
+
+        &__item-title {
+            font-style: $font-style-normal;
+            font-weight: $font-weight-bold;
+            font-size: $font-size-small;
+            line-height: 32px;
+            letter-spacing: 0.2px;
+            color: $wdc-color-blueberry-400;
+        }
+    }
+
+    .cmp-related-info-curated {
+        &__desc {
+            padding-top: 12px;
+            font-style: $font-style-normal;
+            font-weight: $font-weight-normal;
+            font-size: 15px;
+            line-height: 22px;
+            letter-spacing: 0.2px;
+            color: $wdc-color-black-pepper-600;
+        }
+
+        &__image-content {
+            margin-top: 24px;
+        }
+
+        &__image {
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 24px;
+        }
+
+        &__imagesrc {
+            width: 40px;
+        }
+
+        &__footer {
+            border-top: 1px solid $wdc-color-soap-500;
+            padding-top: $pg-top-24;
+            margin-top: 24px;
+        }
+
+        &__footer-link {
+            font-style: $font-style-normal;
+            font-weight: $font-weight-bold;
+            font-size: $font-size-small;
+            line-height: 32px;
+            letter-spacing: 0.2px;
+            text-decoration-line: underline;
+            color: $wdc-color-blueberry-400;
+        }
+    }
+}
+
+.cmp-link__screen-reader-only {
+    display: none;
 }

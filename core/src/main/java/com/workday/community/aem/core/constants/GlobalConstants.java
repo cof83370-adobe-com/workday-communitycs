@@ -38,4 +38,7 @@ public interface GlobalConstants {
 
   /** The Constant PUBLISH. */
   String PUBLISH = "publish";
+
+  /** The Constant JCR CONTENT NODE . */
+  String JCR_CONTENT_PATH = "/jcr:content";
 }
