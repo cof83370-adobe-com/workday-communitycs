@@ -1,7 +1,8 @@
 (function() {
     'use strict';
     var selectors = {
-        self:      '[data-cmp-is="importcontent"]'
+        self:      '[data-cmp-is="importcontent"]',
+        checkbox:  '[data-cmp-hook-importcontent="checkbox"]'
     };
     
     
@@ -11,10 +12,13 @@
             config.element.removeAttribute('data-cmp-is');
             document.getElementById('cmp_importcontent_button').onclick = function() {
 
+            var checkbox = config.element.querySelectorAll(selectors.checkbox);
+            checkbox = checkbox.length == 1 ? checkbox[0].checked : null;
+
             var xhr = new XMLHttpRequest();
 
 			// Making our connection  
-			var url = '/bin/dataimporter';
+            var url = '/bin/dataimporter?overWriteEnabled='+checkbox;
 			xhr.open('GET', url, true);
 
 			// function execute after request is successful 
