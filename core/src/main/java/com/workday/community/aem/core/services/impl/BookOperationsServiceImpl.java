@@ -6,9 +6,9 @@ import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.utils.CommonUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,10 +42,6 @@ public class BookOperationsServiceImpl implements BookOperationsService {
     /** The Constant SERVICE_USER. */
     public static final String SERVICE_USER = "adminusergroup";
 
-    /** The resource resolver factory. */
-    @Reference
-    ResourceResolverFactory resourceResolverFactory;
-
     /** The query service. */
     @Reference
     QueryService queryService;
@@ -51,8 +49,8 @@ public class BookOperationsServiceImpl implements BookOperationsService {
     /**
      * Process book paths.
      *
-     * @param resolver the resolver
-     * @param bookResourcePath the book resource path
+     * @param resolver           the resolver
+     * @param bookResourcePath   the book resource path
      * @param bookRequestJsonStr the book request json str
      * @return the sets the
      */
@@ -72,13 +70,15 @@ public class BookOperationsServiceImpl implements BookOperationsService {
                     }
 
                     for (String bookPagePath : bookPathDataList) {
-                        List<String> paths = queryService.getBookNodesByPath(bookPagePath, bookResourcePath);
-                        for (String path : paths) {
-                            if (resolver.getResource(path) != null) {
-                                Node root = resolver.getResource(path).adaptTo(Node.class);
-                                if (root != null) {
-                                    activatePaths.add(root.getPath().split(GlobalConstants.JCR_CONTENT_PATH)[0]);
-                                    root.remove();
+                        if (queryService != null) {
+                            List<String> paths = queryService.getBookNodesByPath(bookPagePath, bookResourcePath);
+                            for (String path : paths) {
+                                if (resolver.getResource(path) != null) {
+                                    Node root = resolver.getResource(path).adaptTo(Node.class);
+                                    if (root != null) {
+                                        activatePaths.add(root.getPath().split(GlobalConstants.JCR_CONTENT_PATH)[0]);
+                                        root.remove();
+                                    }
                                 }
                             }
                         }
@@ -89,7 +89,7 @@ public class BookOperationsServiceImpl implements BookOperationsService {
                     logger.trace("processBook...completeBookData ", bookPathDataList);
                 }
             }
-        } catch (Exception e) {
+        } catch (RepositoryException | PersistenceException e) {
             logger.error("Exception occurred when update book: {} ", e.getMessage());
         }
         return activatePaths;
