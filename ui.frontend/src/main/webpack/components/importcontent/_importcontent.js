@@ -1,7 +1,8 @@
 (function() {
     'use strict';
     var selectors = {
-        self:      '[data-cmp-is="importcontent"]'
+        self:      '[data-cmp-is="importcontent"]',
+        checkbox:  '[data-cmp-hook-importcontent="checkbox"]'
     };
     
     
@@ -14,10 +15,13 @@
             loaderImage.src = '/etc.clientlibs/workday-community/clientlibs/clientlib-site/resources/images/report-loading.gif';
             loaderImage.style.display = 'block';
 
+            var checkbox = config.element.querySelectorAll(selectors.checkbox);
+            checkbox = checkbox.length == 1 ? checkbox[0].checked : null;
+
             var xhr = new XMLHttpRequest();
 
 			// Making our connection  
-			var url = '/bin/dataimporter';
+            var url = '/bin/dataimporter?overWriteEnabled='+checkbox;
 			xhr.open('GET', url, true);
             //button style, loading gif
 

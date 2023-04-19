@@ -1,5 +1,9 @@
 <div class="cmp-importcontent" data-cmp-is="importcontent">
-    <div class="cmp-importcontent__item" >
+    <div class="cmp-importcontent__item">
+       <label for="Overwrite">Overwrite</label>
+       <input type="checkbox" id="cmp_importcontent_checkbox" class="cmp-importcontent__item-checkbox" data-cmp-hook-importcontent="checkbox">
+    </div>
+    <div class="cmp-importcontent__item">
         <span><a href="#" id="cmp_importcontent_button" class="cmp-importcontent__item-submit-button" value="Submit">${properties.buttonLabel || 'Import Content' @ i18n, context='text'}</a></span>
     </div>
 </div>
