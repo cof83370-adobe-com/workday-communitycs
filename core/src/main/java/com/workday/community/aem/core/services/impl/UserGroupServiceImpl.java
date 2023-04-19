@@ -2,6 +2,7 @@ package com.workday.community.aem.core.services.impl;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.services.SnapService;
@@ -121,16 +122,20 @@ public class UserGroupServiceImpl implements UserGroupService {
      * @return List of user groups from snap.
      */
     protected List<String> getUserGroupsFromSnap(String sfId) {
-        JsonObject context = snapService.getUserContext(sfId);
-        JsonElement contextInfo = context.get(USER_CONTEXT_INFO_KEY);
-        JsonObject contextInfoObj  = contextInfo.getAsJsonObject();
-        JsonElement groups = contextInfoObj.get(USER_CONTACT_ROLE_KEY);
-        Optional<String> groupsString = Optional.ofNullable(groups.getAsString());
-        return groupsString.map(value -> List.of(value.split(";")))
+        String profileString = snapService.getUserProfile(sfId);
+        if (profileString == null) {
+            return new ArrayList<>();
+        }
+        else {
+            JsonObject context = JsonParser.parseString(profileString).getAsJsonObject();
+            JsonElement groups = context.get(USER_CONTACT_ROLE_KEY);
+            Optional<String> groupsString = Optional.ofNullable(groups.getAsString());
+            return groupsString.map(value -> List.of(value.split(";")))
                         .orElseGet(() -> {
                             logger.info("Value not found");
                             return new ArrayList<>();
-                        });
+            });
+        }
     }
 
     /**

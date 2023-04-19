@@ -1,10 +1,9 @@
 package com.workday.community.aem.core.postprocessors;
 
 import com.workday.community.aem.core.services.OktaService;
-import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
+import com.workday.community.aem.core.services.UserService;
+
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.auth.core.spi.AuthenticationInfo;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,63 +18,58 @@ import javax.servlet.http.HttpServletResponse;
 import static com.workday.community.aem.core.constants.WccConstants.PROFILE_SOURCE_ID;
 import static org.mockito.Mockito.*;
 
+/**
+ * The Class CustomAuthenticationInfoPostProcessorTest.
+ */
 @ExtendWith(MockitoExtension.class)
 public class CustomAuthenticationInfoPostProcessorTest {
 
+    /** The okta service. */
     @Mock
     private OktaService oktaService;
 
+    /** The user service. */
+    @Mock
+    private UserService userService;
+
+    /** The AuthenticationInfo. */
     @Mock
     private AuthenticationInfo info;
 
+    /** The HttpServletRequest. */
     @Mock
     private HttpServletRequest req;
 
+    /** The HttpServletResponse. */
     @Mock
     private HttpServletResponse res;
 
+    /** The mocked user. */
     @Mock
-    private ResourceResolverFactory resolverFactory;
+    private User user;
 
-    @Mock
-    private ResourceResolver resolver;
-
-    @Mock
-    private UserManager userManager;
-
-    @Mock
-    private Authorizable authorizable;
-
-    /**
-     * The sourceValue .
-     */
+    /** The sourceValue. */
     @Mock
     Value sourceValue;
 
+    /** Index service. */
     @InjectMocks
     CustomAuthenticationInfoPostProcessor processor;
 
+    /**
+     * Test postProcess.
+     */
     @Test
     void testPostProcess() throws Exception {
+        Value[] sourceValueArray = new Value[]{sourceValue};
         when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
         when(info.getUser()).thenReturn("testuser");
-        when(resolverFactory.getServiceResourceResolver(anyMap())).thenReturn(resolver);
-        when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(resolver.isLive()).thenReturn(true);
-
-        when(userManager.getAuthorizable("testuser")).thenReturn(authorizable);
-        when(authorizable.getPath()).thenReturn("/workdaycommunity/okta/testuser");
-
-        Value[] sourceValueArray = new Value[]{sourceValue};
-
-        when(authorizable.getProperty(PROFILE_SOURCE_ID)).thenReturn(sourceValueArray);
+        when(user.getPath()).thenReturn("/workdaycommunity/okta/testuser");
+        when(userService.getUser(anyString())).thenReturn(user);
+        when(user.getProperty(PROFILE_SOURCE_ID)).thenReturn(sourceValueArray);
         when(sourceValueArray[0].getString()).thenReturn("testSourceValue");
 
         processor.postProcess(info, req, res);
-
-
-        verify(resolverFactory).getServiceResourceResolver(anyMap());
-        verify(authorizable).getProperty(PROFILE_SOURCE_ID);
-        verify(resolver).close();
+        verify(user).getProperty(PROFILE_SOURCE_ID);
     }
 }

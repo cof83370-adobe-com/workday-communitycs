@@ -1,12 +1,11 @@
 package com.workday.community.aem.core.postprocessors;
 
 import com.workday.community.aem.core.services.OktaService;
+import com.workday.community.aem.core.services.UserService;
+
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.auth.core.spi.AuthenticationInfo;
 import org.apache.sling.auth.core.spi.AuthenticationInfoPostProcessor;
 import org.osgi.service.component.annotations.Component;
@@ -14,12 +13,12 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 import static com.workday.community.aem.core.constants.WccConstants.PROFILE_SOURCE_ID;
 
 @Component(name = "CustomAuthenticationInfoPostProcessor",
@@ -28,15 +27,18 @@ import static com.workday.community.aem.core.constants.WccConstants.PROFILE_SOUR
 )
 public class CustomAuthenticationInfoPostProcessor implements AuthenticationInfoPostProcessor {
 
-    @Reference
-    private ResourceResolverFactory resolverFactory;
-
+    /** The okta service. */
     @Reference
     transient OktaService oktaService;
 
-    ResourceResolver resolver;
+    /** The user service. */
+    @Reference
+    UserService userService;
 
+    /** The sourceId. */
     String sourceId;
+
+    /** The logger. */
     public static final Logger LOG = LoggerFactory.getLogger(CustomAuthenticationInfoPostProcessor.class);
 
     @Override
@@ -46,33 +48,21 @@ public class CustomAuthenticationInfoPostProcessor implements AuthenticationInfo
         LOG.info("isOktaIntegrationEnabled {}", oktaService.isOktaIntegrationEnabled());
         if (oktaService.isOktaIntegrationEnabled() && null != info && StringUtils.isNotBlank(info.getUser())) {
             String userId = info.getUser();
+            User user = userService.getUser(userId);      
             try {
-                LOG.info("User ID: {}", userId);
-                Map<String, Object> serviceParams = new HashMap<>();
-                serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
-                resolver = resolverFactory.getServiceResourceResolver(serviceParams);
-                UserManager userManager = resolver.adaptTo(UserManager.class);
-                Authorizable user = userManager.getAuthorizable(userId);
-                if (null != user && user.getPath().contains("/workdaycommunity")) {
+                if (user != null && user.getPath().contains(OKTA_USER_PATH)) {
                     LOG.info("userpath: {}", user.getPath());
                     Value[] valueArray = user.getProperty(PROFILE_SOURCE_ID);
                     if (null != valueArray && null != valueArray[0]) {
-                        //TODO Source ID should be taken care in next sprint
+                        //TODO Source ID should be taken care in next sprint.
                         sourceId = valueArray[0].getString();
                         LOG.info("sourceId: {}", sourceId);
                     }
                 }
-            } catch (Exception e) {
-                LOG.error("Error in CustomAuthenticationInfoPostProcessor {}", e.getMessage());
-            } finally {
-                if (resolver != null && resolver.isLive()) {
-                    LOG.info("Final Block CustomAuthenticationInfoPostProcessor");
-                    resolver.close();
-                    resolver = null;
-                }
-
+            } 
+            catch (RepositoryException e) {
+                LOG.error("Error in CustomAuthenticationInfoPostProcessor {}", e.getMessage());          
             }
-
         }
     }
 

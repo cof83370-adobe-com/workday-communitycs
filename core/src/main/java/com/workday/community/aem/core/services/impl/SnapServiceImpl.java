@@ -5,7 +5,9 @@ import com.adobe.xfa.ut.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.exceptions.SnapException;
@@ -23,7 +25,6 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
@@ -31,6 +32,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+import java.util.HashMap;
+
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
 
 /**
  * The OSGi service implementation for snap logic.
@@ -40,7 +48,7 @@ import java.util.Date;
   property = {
     "service.pid=aem.core.services.snap"
   },
-  configurationPolicy = ConfigurationPolicy.OPTIONAL,
+  configurationPid = "com.workday.community.aem.core.config.SnapConfig",
   immediate = true
 )
 @Designate(ocd = SnapConfig.class)
@@ -198,5 +206,70 @@ public class SnapServiceImpl implements SnapService {
     }
 
    return gson.toJson(sfNavObj);
+  }
+
+  @Override
+  public String getUserProfile(String sfId) {
+    String cacheKey = String.format("profile_%s", sfId);
+    String cachedResult = snapCache.get(cacheKey);
+    if (cachedResult != null) {
+      return cachedResult;
+    }
+    try {
+      String url = CommunityUtils.formUrl(config.snapUrl() , config.snapProfilePath());
+      url = String.format(url, sfId);
+      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
+      snapCache.put(cacheKey, jsonResponse);
+      return jsonResponse;
+    } catch (SnapException | JsonSyntaxException e) {
+      logger.error("Error in getUserProfile method :: {}", e.getMessage());
+    }
+
+    logger.error("User profile data is not fetched from the snap profile API call without error, please contact admin.");
+    return null;
+  }
+
+  @Override
+  public HashMap<String, Object> getAdobeDigitalData(String sfId) {
+    String profileData = getUserProfile(sfId);
+    return generateAdobeDigitalData(profileData);
+  }
+
+  /**
+   * Generate adobe digital data.
+   * 
+   * @param profileData The user profile api response as string.
+   * @return The digital data.
+   */
+  private HashMap<String, Object> generateAdobeDigitalData(String profileData) {
+    HashMap<String, Object> digitalData = new HashMap<String, Object>();
+    HashMap<String, String> userProperties = new HashMap<String, String>();
+    HashMap<String, String> orgProperties = new HashMap<String, String>();
+    String contactRole = "";
+    String contactNumber = "";
+    String accountID = "";
+    String accountName = "";
+    String accountType = "";
+    if (profileData != null) {
+      JsonObject profileObject = JsonParser.parseString(profileData).getAsJsonObject();
+      contactRole = profileObject.get(CONTACT_ROLE).getAsString();
+      contactNumber = profileObject.get(CONTACT_NUMBER).getAsString();
+      userProperties.put(CONTACT_NUMBER, contactNumber);
+      userProperties.put(CONTACT_ROLE, contactRole);
+      digitalData.put("user", userProperties);
+
+      JsonElement wrcOrgId = profileObject.get("wrcOrgId");
+      accountID = wrcOrgId.isJsonNull() ? "" : wrcOrgId.getAsString();
+      JsonElement organizationName = profileObject.get("organizationName");
+      accountName = organizationName.isJsonNull() ? "" : organizationName.getAsString();
+      JsonElement isWorkmateElement = profileObject.get("isWorkmate");
+      Boolean isWorkdayMate = isWorkmateElement.isJsonNull() ? false : isWorkmateElement.getAsBoolean();
+      accountType = isWorkdayMate ? "workday" : profileObject.get("type").getAsString().toLowerCase();
+    }
+    orgProperties.put(ACCOUNT_ID, accountID);
+    orgProperties.put(ACCOUNT_NAME, accountName);
+    orgProperties.put(ACCOUNT_TYPE, accountType);
+    digitalData.put("org", orgProperties);
+    return digitalData;
   }
 }

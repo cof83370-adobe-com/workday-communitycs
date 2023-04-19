@@ -3,6 +3,9 @@ package com.workday.community.aem.core.services;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
+
+import java.util.HashMap;
+
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -35,10 +38,23 @@ public interface SnapService {
    */
   JsonObject getUserContext(String sfId);
 
-
   /**
    * @param sfId Salesforce Id.
    * @return The profile avatar icon data used for the profile in the global header of the page.
    */
   ProfilePhoto getProfilePhoto(String sfId);
+
+  /**
+   * @param sfId Salesforce Id.
+   * @return the user profile data.
+   */
+  String getUserProfile(String sfId);
+
+  /**
+	 * Get adobe digital data.
+	 *
+   * @param sfId Salesforce Id.
+	 * @return The adobe digital data.
+	 */
+  HashMap<String, Object> getAdobeDigitalData(String sfId);
 }

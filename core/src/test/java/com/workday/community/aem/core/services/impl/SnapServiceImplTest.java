@@ -120,6 +120,7 @@ public class SnapServiceImplTest {
         return "";
       }
 
+      @Override
       public String sfdcUserAvatarApiKey() {
         return "testSfdcUserAvatarApiKey";
       }
@@ -147,6 +148,21 @@ public class SnapServiceImplTest {
       @Override
       public long menuCacheTimeout() {
         return 10000;
+      }
+
+      @Override
+      public String snapProfilePath() {
+        return "snapProfilePath";
+      }
+
+      @Override
+      public String snapProfileApiToken() {
+        return "snapProfileApiToken";
+      }
+
+      @Override
+      public String snapProfileApiKey() {
+        return "snapProfileApiKey";
       }
     };
   }
@@ -297,6 +313,29 @@ public class SnapServiceImplTest {
     try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
       JsonObject ret = this.snapService.getUserContext(DEFAULT_SFID_MASTER);
+      assertNull(ret);
+    }
+  }
+
+  @Test
+  public void testGetUserProfile() {
+    snapService.activate(snapConfig.get(1, 1));
+    try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      String testUserContext = "{\"email\":\"foo@workday.com\"}";
+
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(testUserContext);
+
+      String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
+      assertEquals(testUserContext, ret.toString());
+    }
+  }
+
+  @Test
+  public void testGetUserProfileWithException() {
+    snapService.activate(snapConfig.get(1, 1));
+    try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
+      String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
       assertNull(ret);
     }
   }

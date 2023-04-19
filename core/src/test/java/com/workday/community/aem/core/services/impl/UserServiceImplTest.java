@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -123,9 +123,22 @@ public class UserServiceImplTest {
     public void testDeleteUser() throws RepositoryException {
         String userId = "testUser";
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
-        lenient().when(user.getPath()).thenReturn("/workday/okta");
+        lenient().when(user.getPath()).thenReturn("/workdaycommunity/okta");
         userService.deleteUser(userId);
         verify(user).remove();
+    }
+
+    /**
+     * Test getUser method.
+     * 
+     * @throws RepositoryException
+     */
+    @Test
+    public void testGetUser() throws RepositoryException {
+        String userId = "testUser";
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+        User test = userService.getUser(userId);
+        assertEquals(test, user); 
     }
 
     @AfterEach
