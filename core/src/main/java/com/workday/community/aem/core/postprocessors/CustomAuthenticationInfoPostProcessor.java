@@ -34,7 +34,7 @@ public class CustomAuthenticationInfoPostProcessor implements AuthenticationInfo
     @Reference
     transient OktaService oktaService;
 
-    ResourceResolver resolver;
+    transient ResourceResolver resolver;
 
     String sourceId;
     public static final Logger LOG = LoggerFactory.getLogger(CustomAuthenticationInfoPostProcessor.class);
