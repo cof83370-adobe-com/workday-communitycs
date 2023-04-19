@@ -14,8 +14,7 @@ public interface GlobalConstants {
    */
 
   String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
-  String COMMUNITY_CONTENT_BOOK_ROOT_PATH = "/content/workday-community/en-us/book-page-home";
-
+  
 	/** The Constant COMMUNITY_COVEO_JOB. */
 	String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
 
