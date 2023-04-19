@@ -62,19 +62,21 @@ public class PageResourceListener implements ResourceChangeListener {
             Map<String, Object> serviceParams = new HashMap<>();
             serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
             resolver = resolverFactory.getServiceResourceResolver(serviceParams);
-            List<String> paths = queryService.getBookNodesByPath(pagePath, null);
-            for (String path : paths) {
-                if (resolver.getResource(path) != null) {
-                    Node root = resolver.getResource(path).adaptTo(Node.class);
-                    if (root != null) {
-                        root.remove();
+            if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
+                List<String> paths = queryService.getBookNodesByPath(pagePath, null);
+                for (String path : paths) {
+                    if (resolver.getResource(path) != null) {
+                        Node root = resolver.getResource(path).adaptTo(Node.class);
+                        if (root != null) {
+                            root.remove();
+                        }
                     }
                 }
+                if (resolver.hasChanges()) {
+                    resolver.commit();
+                }
+                logger.info("Removed node for page {}", pagePath);
             }
-            if (resolver.hasChanges()) {
-                resolver.commit();
-            }
-            logger.info("Removed node for page {}", pagePath);
         } catch (PersistenceException | RepositoryException | LoginException e) {
             logger.error("Can't remove found nodes for page {}", pagePath);
         } finally {

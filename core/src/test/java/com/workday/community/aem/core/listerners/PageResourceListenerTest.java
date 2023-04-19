@@ -75,7 +75,7 @@ public class PageResourceListenerTest {
     void testRemoveBookNodes() throws Exception {
         when(resolverFactory.getServiceResourceResolver(anyMap())).thenReturn(resolver);
         when(resolver.isLive()).thenReturn(true);
-        pageResourceListener.removeBookNodes("/content/workday-community/en-us/thomas-sandbox/test-2/adoption-kit-faq");
+        pageResourceListener.removeBookNodes(context.currentPage().getPath());
         verify(resolverFactory).getServiceResourceResolver(anyMap());
         verify(resolver).close();
     }
