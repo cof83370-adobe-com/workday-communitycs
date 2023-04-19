@@ -29,8 +29,28 @@
                     const response = JSON.parse(this.responseText);
                     const reportEntries = response.reportItemList;
                     if(reportDiv !== null && reportEntries.length > 0) {
+                        //Process Summary section
+                        const statusDiv = document.getElementById('migration-status');
+                        const statusHeader = '<div class="cmp-title__text">Migration Status Summary</div><div class="status-summary">';
+                        const statusSpan1 = '<div class="status">Total processed: '+response.totalCount+'</div>';
+                        const statusSpan2 = '<div class="status">Created with content: '+response.createdCount+'</div>';
+                        const statusSpan3 = '<div class="status">Replaced with new content: '+response.replacedCount+'</div>';
+                        const statusSpan4 = '<div class="status">Page already exists: '+response.existingCount+'</div>';
+                        const statusSpan5 = '<div class="status red">No mapping found: '+response.noMappingCount+'</div>';
+                        const statusSpan6 = '<div class="status red">Template validation failed: '+response.templateValidationCount+'</div>';
+                        const statusSpan7 = '<div class="status red">Page creation failed: '+response.pageCreationFailed+'</div>';
+                        const statusSpan8 = '<div class="status red">Error occured: '+response.errorCount+'</div>';
+                        const summaryCloseDiv = '</div>';
+                        if(statusDiv !== null){
+                            statusDiv.innerHTML  = statusHeader+
+                            statusSpan1+statusSpan2+statusSpan3+statusSpan4+
+                            statusSpan5+statusSpan6+statusSpan7+statusSpan8+summaryCloseDiv;
+                        }
+
+                        //Process report table section
                         const reportTable = document.createElement('table');
                         reportTable.id = 'report';
+                        reportDiv.innerHTML='';
                         reportDiv.appendChild(reportTable);
                         const td1 = '<td>Input File</td>';
                         const td2 = '<td>Drupal Node ID</td>';
@@ -45,14 +65,21 @@
                             const td2 = '<td>'+reportEntry['drupalNodeId']+'</td>';
                             const td3 = '<td>'+reportEntry['migrationStatus']+'</td>';
                             const td4 = '<td>'+reportEntry['templateName']+'</td>';
+                            //TODO: Make page clickable, add download report, table bottom padding
                             const td5 = '<td>'+reportEntry['aemPagePath']+'</td>';
                             let reportRow = document.createElement('tr');
                             reportRow.innerHTML = td1+td2+td3+td4+td5;
                             reportTable.appendChild(reportRow);
                         }
+                    } else if (reportDiv !== null) {
+                        reportDiv.innerHTML = '<h3><span>No report available. Check input files.</span></h3>';
                     }
                     loaderImage.style.display = 'none';
-				}
+				} else if (this.readyState == 4 && this.status == 500) {
+                    if (reportDiv !== null) {
+                        reportDiv.innerHTML = '<h3><span>Error occured during migration. Check error log.</span></h3>';
+                    }
+                }
 			};
 			// Sending our request 
 			xhr.send();

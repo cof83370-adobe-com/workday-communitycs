@@ -45,3 +45,17 @@ img#report-loader {
 	max-width: 75px;
 	max-height: 75px;
 }
+
+#migration-status {
+	margin-bottom: 12px;
+	.cmp-title__text {
+		margin-top: 12px;
+	}
+	.status-summary {
+		margin-top: 24px;
+		column-count: 4;
+		.red {
+			color: red;
+		}
+	}
+}
