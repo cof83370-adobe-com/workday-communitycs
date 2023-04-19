@@ -66,7 +66,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     public static final String READ_SERVICE_USER = "readserviceuser";
 
     /** The AEM default user groups. */
-    public static final String[] AEM_DEFAULT_GROUPS = { "everyone" };
+    protected static final String[] AEM_DEFAULT_GROUPS = { "everyone" };
 
     /** The group map json */
     JsonObject groupMap = null;
