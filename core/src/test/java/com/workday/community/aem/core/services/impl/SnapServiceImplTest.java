@@ -28,6 +28,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -318,25 +319,35 @@ public class SnapServiceImplTest {
   }
 
   @Test
-  public void testGetUserProfile() {
+  public void testGetAdobeDigitalData() {
     snapService.activate(snapConfig.get(1, 1));
     try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      String testUserContext = "{\"email\":\"foo@workday.com\"}";
+      String profileString = "{\"contactRole\":\"Workday\", \"contactNumber\":\"123\", \"wrcOrgId\":\"456\", \"organizationName\":\"organizationName\", \"isWorkmate\":true}";
 
-      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(testUserContext);
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(profileString);
 
       String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
-      assertEquals(testUserContext, ret.toString());
+      assertEquals(profileString, ret.toString());
+      HashMap<String, Object> adobeData = snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER);
+      HashMap<String, Object> user = (HashMap<String, Object>) adobeData.get("user");
+      HashMap<String, Object> org = (HashMap<String, Object>) adobeData.get("org");
+      assertEquals(user.get("contactNumber"), "123");
+      assertEquals(org.get("accountID"), "456");
     }
   }
 
   @Test
-  public void testGetUserProfileWithException() {
+  public void testGetAdobeDigitalDataWithException() {
     snapService.activate(snapConfig.get(1, 1));
     try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
       String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
       assertNull(ret);
+      HashMap<String, Object> adobeData = snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER);
+      HashMap<String, Object> user = (HashMap<String, Object>) adobeData.get("user");
+      HashMap<String, Object> org = (HashMap<String, Object>) adobeData.get("org");
+      assertEquals(user.get("contactNumber"), "");
+      assertEquals(org.get("accountID"), "");
     }
   }
 

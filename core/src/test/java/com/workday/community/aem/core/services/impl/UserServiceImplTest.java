@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
@@ -108,10 +109,12 @@ public class UserServiceImplTest {
         ValueFactory valueFactory = mock(ValueFactory.class);
         Value value = valueFactory.createValue("test@workday.com", PropertyType.STRING);
         lenient().when(session.getValueFactory()).thenReturn(valueFactory);
+        lenient().when(session.isLive()).thenReturn(true);
         userService.updateUser(userId, fields, groups);
         verify(user).setProperty("email", value);
         verify(userManager).createGroup(groupId);
         verify(group).addMember(user);
+        verify(session).logout();
     }
 
     /**
@@ -124,8 +127,10 @@ public class UserServiceImplTest {
         String userId = "testUser";
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
         lenient().when(user.getPath()).thenReturn("/workdaycommunity/okta");
+        lenient().when(session.isLive()).thenReturn(true);
         userService.deleteUser(userId);
         verify(user).remove();
+        verify(session).logout();
     }
 
     /**
@@ -135,10 +140,18 @@ public class UserServiceImplTest {
      */
     @Test
     public void testGetUser() throws RepositoryException {
+        // Success case.
         String userId = "testUser";
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+        lenient().when(session.isLive()).thenReturn(true);
         User test = userService.getUser(userId);
         assertEquals(test, user); 
+        verify(session).logout();
+
+        // Failed case.
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(null);
+        User fail = userService.getUser(userId);
+        assertNull(fail);
     }
 
     @AfterEach

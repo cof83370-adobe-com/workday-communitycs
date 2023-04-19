@@ -254,9 +254,6 @@ public class SnapServiceImpl implements SnapService {
       JsonObject profileObject = JsonParser.parseString(profileData).getAsJsonObject();
       contactRole = profileObject.get(CONTACT_ROLE).getAsString();
       contactNumber = profileObject.get(CONTACT_NUMBER).getAsString();
-      userProperties.put(CONTACT_NUMBER, contactNumber);
-      userProperties.put(CONTACT_ROLE, contactRole);
-      digitalData.put("user", userProperties);
 
       JsonElement wrcOrgId = profileObject.get("wrcOrgId");
       accountID = wrcOrgId.isJsonNull() ? "" : wrcOrgId.getAsString();
@@ -266,6 +263,9 @@ public class SnapServiceImpl implements SnapService {
       Boolean isWorkdayMate = isWorkmateElement.isJsonNull() ? false : isWorkmateElement.getAsBoolean();
       accountType = isWorkdayMate ? "workday" : profileObject.get("type").getAsString().toLowerCase();
     }
+    userProperties.put(CONTACT_NUMBER, contactNumber);
+    userProperties.put(CONTACT_ROLE, contactRole);
+    digitalData.put("user", userProperties);
     orgProperties.put(ACCOUNT_ID, accountID);
     orgProperties.put(ACCOUNT_NAME, accountName);
     orgProperties.put(ACCOUNT_TYPE, accountType);
