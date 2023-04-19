@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -52,17 +53,15 @@ public class ReplicationEventHandler implements EventHandler {
     @Override
     public void handleEvent(Event event) {
         if (isCoveoEnabled()) {
-            try {
-                ReplicationAction action = getAction(event);
-                if (action.getPath().contains(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH) && 
-                    (action.getType().equals(ReplicationActionType.ACTIVATE) ||
-                    action.getType().equals(ReplicationActionType.DEACTIVATE) ||
-                    action.getType().equals(ReplicationActionType.DELETE))
-                ) {
-                    startCoveoJob(action);
+            ReplicationAction action = getAction(event);
+            if (action.getPath().contains(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH) &&
+                (action.getType().equals(ReplicationActionType.ACTIVATE) ||
+                action.getType().equals(ReplicationActionType.DEACTIVATE) ||
+                action.getType().equals(ReplicationActionType.DELETE))
+            ) {
+                if (startCoveoJob(action) == null) {
+                    logger.error("\n Error occurred while Creating Coveo push job for page");
                 }
-            } catch (Exception e) {
-                logger.error("\n Error occurred while Publishing/Unpublishing page - {} " , e.getMessage());
             }
         }    
     }
@@ -73,23 +72,22 @@ public class ReplicationEventHandler implements EventHandler {
 	 * @return The ReplicationAction.
 	 */
     public ReplicationAction getAction(Event event) {
-        ReplicationAction action = ReplicationAction.fromEvent(event);
-        return action;
+        return ReplicationAction.fromEvent(event);
     }
 
     /**
 	 * Start coveo job for indexing or deleteing.
 	 */
-    public void startCoveoJob(ReplicationAction action) {
+    public Job startCoveoJob(ReplicationAction action) {
         Map<String, Object> jobProperties = new HashMap<>();
-        ArrayList<String> paths = new ArrayList<String>();
+        ArrayList<String> paths = new ArrayList<>();
         paths.add(action.getPath());
         String op = action.getType().equals(ReplicationActionType.ACTIVATE) ? "index" : "delete";
         jobProperties.put("op", op);
         jobProperties.put("paths", paths);
                 
         // Add this job to the job manager.
-        jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
+        return jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
     }
     
 }

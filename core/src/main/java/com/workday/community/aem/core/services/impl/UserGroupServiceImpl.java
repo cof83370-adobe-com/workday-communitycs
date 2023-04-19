@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
@@ -82,7 +83,7 @@ public class UserGroupServiceImpl implements UserGroupService {
      *
      * @return User group list.
      */
-    public List<String> getLoggedInUsersGroups() {
+    public List<String> getLoggedInUsersGroups() throws OurmException {
         List<String> groupIds = new ArrayList<>();
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, USER_SERVICE_USER)) {
             User user = CommonUtils.getLoggedInUser(resourceResolver);
@@ -109,7 +110,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 }
             }
         } catch (LoginException | RepositoryException e) {
-            throw new RuntimeException(e);
+            throw new OurmException(e.getMessage());
         }
         return groupIds;
     }

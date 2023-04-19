@@ -4,14 +4,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.jcr.PropertyType;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
+import javax.jcr.*;
 
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
@@ -68,13 +66,12 @@ public class UserServiceImpl implements UserService {
                         group.addMember(user);
                     }
                 }
-                session.save();
             }
             else {
                 logger.error("Cannot find user with id {} ", userId);
             }
         } 
-        catch (Exception e) {
+        catch (LoginException | RepositoryException e) {
             logger.error("Exception occurred when update user {}: {} ", userId, e.getMessage());
         }
         finally {
@@ -105,7 +102,7 @@ public class UserServiceImpl implements UserService {
             }  
             session.save(); 
         } 
-        catch (Exception e) {
+        catch (LoginException | RepositoryException e) {
             logger.error("Exception occurred when delete user {}: {} ", userId, e.getMessage());
         }
         finally {

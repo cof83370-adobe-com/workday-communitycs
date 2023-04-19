@@ -50,7 +50,7 @@ public class DamUtils {
 			Gson gson = new Gson();
 			return gson.fromJson(sb.toString(), JsonObject.class);
 		}  catch (IOException | SlingException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException();
 		}
 	}
     
