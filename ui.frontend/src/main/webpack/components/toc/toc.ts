@@ -68,8 +68,7 @@
     function onDocumentReady() {
         const tocClose = document.querySelector(tocSelectors.tocModalClose);
         let showModal = false;
-        //leftrailpanellevel1();
-        //leftrailpanellevel2();
+        
         if(showModal) {
             openTocModal();
         } else {
