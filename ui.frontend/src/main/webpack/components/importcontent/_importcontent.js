@@ -23,7 +23,6 @@
 			// Making our connection  
             var url = '/bin/dataimporter?overWriteEnabled='+checkbox;
 			xhr.open('GET', url, true);
-            //button style, loading gif
 
 			// function execute after request is successful 
 			xhr.onreadystatechange = function() {
@@ -35,7 +34,7 @@
                     if(reportDiv !== null && reportEntries.length > 0) {
                         //Process Summary section
                         const statusDiv = document.getElementById('migration-status');
-                        const statusHeader = '<div class="cmp-title__text">Migration Status Summary</div><div class="status-summary">';
+                        const statusHeader = '<div class="cmp-title__text">Migration Summary</div><a class="report-download" href="'+response.reportUrl+'"title="Download Migration Report">Download Report</a><div class="status-summary">';
                         const statusSpan1 = '<div class="status">Total processed: '+response.totalCount+'</div>';
                         const statusSpan2 = '<div class="status">Created with content: '+response.createdCount+'</div>';
                         const statusSpan3 = '<div class="status">Replaced with new content: '+response.replacedCount+'</div>';
@@ -46,7 +45,7 @@
                         const statusSpan8 = '<div class="status red">Error occured: '+response.errorCount+'</div>';
                         const summaryCloseDiv = '</div>';
                         if(statusDiv !== null){
-                            statusDiv.innerHTML  = statusHeader+
+                            statusDiv.innerHTML  = '<hr/>'+statusHeader +
                             statusSpan1+statusSpan2+statusSpan3+statusSpan4+
                             statusSpan5+statusSpan6+statusSpan7+statusSpan8+summaryCloseDiv;
                         }
@@ -65,14 +64,29 @@
                         reportHeader.innerHTML = td1+td2+td3+td4+td5;
                         reportTable.appendChild(reportHeader);
                         for (const reportEntry of reportEntries) {
+                            const migrationStatus = reportEntry['migrationStatus'];
+                            let pagePath = reportEntry['aemPagePath'];
+                            if(pagePath.indexOf('/content/') === 0) {
+                                let pageLink = document.createElement('a');
+                                const hrefValue = pagePath+'.html';
+                                pageLink.href = hrefValue;
+                                pageLink.target = '_blank';
+                                pageLink.text = hrefValue;
+                                pagePath = pageLink.outerHTML;
+                            }
                             const td1 = '<td>'+reportEntry['inputFileName']+'</td>';
                             const td2 = '<td>'+reportEntry['drupalNodeId']+'</td>';
-                            const td3 = '<td>'+reportEntry['migrationStatus']+'</td>';
+                            const td3 = '<td>'+migrationStatus+'</td>';
                             const td4 = '<td>'+reportEntry['templateName']+'</td>';
-                            //TODO: Make page clickable, add download report, table bottom padding
-                            const td5 = '<td>'+reportEntry['aemPagePath']+'</td>';
+                            const td5 = '<td>'+pagePath+'</td>';
                             let reportRow = document.createElement('tr');
                             reportRow.innerHTML = td1+td2+td3+td4+td5;
+                            if (migrationStatus == 'Template Validation Failed' || 
+                                migrationStatus == 'No Page Mapping' || 
+                                migrationStatus == 'Page Creation Failed' || 
+                                migrationStatus == 'Error Occurred') {
+                                reportRow.style.color = 'red';
+                            }
                             reportTable.appendChild(reportRow);
                         }
                     } else if (reportDiv !== null) {

@@ -13,6 +13,7 @@
 }
 
 #migration-report {
+    padding-bottom: 24px;
     #report {
         border-collapse: collapse;
         width: 100%;
@@ -27,7 +28,7 @@
                 background-color: #f2f2f2;
             }
             &:hover {
-                background-color: #ddd;
+                background-color: $wdc-color-blueberry-300;
             }
             &:nth-child(1) {
                 padding-top: 12px;
@@ -50,6 +51,7 @@ img#report-loader {
 	margin-bottom: 12px;
 	.cmp-title__text {
 		margin-top: 12px;
+        margin-bottom: 24px
 	}
 	.status-summary {
 		margin-top: 24px;
