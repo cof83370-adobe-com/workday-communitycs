@@ -22,7 +22,7 @@ import java.util.List;
 public class CoveoIndexAllServlet extends SlingAllMethodsServlet {
 
     /** The Constant RESOURCE_PATH. */
-	public static final String RESOURCE_PATH = "/bin/coveo/index-all";
+    public static final String RESOURCE_PATH = "/bin/coveo/index-all";
 
     /** Index service. */
     @Reference
@@ -47,7 +47,7 @@ public class CoveoIndexAllServlet extends SlingAllMethodsServlet {
      */
     @Override
     public void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
-        if (!coveoIndexApiConfigService.isCoveoIndexEnabled()) {
+        if (Boolean.FALSE.equals(coveoIndexApiConfigService.isCoveoIndexEnabled())) {
             return;
         }
         PrintWriter printOut = response.getWriter();

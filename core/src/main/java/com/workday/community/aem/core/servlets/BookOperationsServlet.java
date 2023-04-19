@@ -56,7 +56,7 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
             throws ServletException, IOException {
         logger.info("Starting to process Book Paths");
         boolean success = true;
-        Set<String> activatePaths = new HashSet<>();
+        Set<String> activatePaths;
 
         // Get Book Resource Path info from request.
         String bookResourcePath = req.getParameter("bookResPath");
