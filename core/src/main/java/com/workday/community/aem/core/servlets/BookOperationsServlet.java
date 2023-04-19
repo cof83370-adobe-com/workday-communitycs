@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.servlet.Servlet;
@@ -56,14 +55,13 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
             throws ServletException, IOException {
         logger.info("Starting to process Book Paths");
         boolean success = true;
-        Set<String> activatePaths;
 
         // Get Book Resource Path info from request.
         String bookResourcePath = req.getParameter("bookResPath");
         // Get Book Path info from request.
         String bookRequestJsonStr = req.getParameter("bookPathData");
 
-        activatePaths = bookOperationsService.processBookPaths(req.getResourceResolver(), bookResourcePath,
+        Set<String> activatePaths = bookOperationsService.processBookPaths(req.getResourceResolver(), bookResourcePath,
                 bookRequestJsonStr);
 
         JsonObject jsonResponse = new JsonObject();

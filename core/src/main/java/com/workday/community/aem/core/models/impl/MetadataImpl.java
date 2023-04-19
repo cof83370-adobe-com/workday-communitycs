@@ -52,7 +52,6 @@ public class MetadataImpl implements Metadata {
      */
     @Override
     public String getAuthorName() {
-        try {
             String fullName = "";
             ValueMap currentPageProperties = currentPage.getProperties();
             if (null != currentPageProperties) {
@@ -67,9 +66,6 @@ public class MetadataImpl implements Metadata {
             if (StringUtils.isNotBlank(fullName)) {
                 authorName = StringUtils.trim(fullName);
             }
-        } catch (Exception e) {
-            LOG.error(String.format("Exception in MetadataImpl::getAuthorName: %s", e.getMessage()));
-        }
         return authorName;
     }
 
