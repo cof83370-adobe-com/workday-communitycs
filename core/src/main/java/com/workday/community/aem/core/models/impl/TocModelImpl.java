@@ -14,7 +14,11 @@ import org.slf4j.LoggerFactory;
 import javax.inject.Inject;
 import java.util.List;
 
-@Model(adaptables = {Resource.class, SlingHttpServletRequest.class}, adapters = {TocModel.class}, resourceType = {TocModelImpl.RESOURCE_TYPE}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+/**
+ * The Class TocModelImpl.
+ */
+@Model(adaptables = { Resource.class, SlingHttpServletRequest.class }, adapters = { TocModel.class }, resourceType = {
+        TocModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class TocModelImpl implements TocModel {
     /**
      * The Constant RESOURCE_TYPE.
@@ -37,6 +41,11 @@ public class TocModelImpl implements TocModel {
     @OSGiService
     private QueryService queryService;
 
+    /**
+     * Book resource path.
+     *
+     * @return the string
+     */
     @Override
     public String bookResourcePath() {
         String bookResourcePath = null;

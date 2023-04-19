@@ -65,8 +65,8 @@ public class TocModelmplTest {
     }
 
     /**
-     * Test bookResourcePath
-     */
+     * Test bookResourcePath NullPointer
+     */s
     @Test
     void testBookResourcePathNull() throws Exception {
         Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
