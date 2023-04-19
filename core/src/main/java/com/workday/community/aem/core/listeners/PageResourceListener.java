@@ -2,6 +2,8 @@ package com.workday.community.aem.core.listeners;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.utils.ResolverUtil;
+
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -36,10 +38,7 @@ public class PageResourceListener implements ResourceChangeListener {
     /** The resolver factory. */
     @Reference
     private ResourceResolverFactory resolverFactory;
-
-    /** The resolver. */
-    ResourceResolver resolver;
-
+   
     /** The query service. */
     @Reference
     QueryService queryService;
@@ -58,10 +57,8 @@ public class PageResourceListener implements ResourceChangeListener {
      * @param pagePath the page path
      */
     public void removeBookNodes(String pagePath) {
-        try {
-            Map<String, Object> serviceParams = new HashMap<>();
-            serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
-            resolver = resolverFactory.getServiceResourceResolver(serviceParams);
+
+        try(ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory, "workday-community-administrative-service")) {
             if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
                 List<String> paths = queryService.getBookNodesByPath(pagePath, null);
                 for (String path : paths) {
@@ -79,12 +76,6 @@ public class PageResourceListener implements ResourceChangeListener {
             }
         } catch (PersistenceException | RepositoryException | LoginException e) {
             logger.error("Can't remove found nodes for page {}", pagePath);
-        } finally {
-            if (resolver != null && resolver.isLive()) {
-                logger.info("Final Block PageResourceListener");
-                resolver.close();
-                resolver = null;
-            }
         }
     }
 }

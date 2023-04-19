@@ -1,29 +1,19 @@
 package com.workday.community.aem.core.models.impl;
 
 import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.models.CoveoStatusModel;
-import com.workday.community.aem.core.models.Metadata;
 import com.workday.community.aem.core.models.TocModel;
 import com.workday.community.aem.core.services.QueryService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 /**
@@ -33,8 +23,6 @@ import static org.mockito.Mockito.*;
 public class TocModelmplTest {
     /** The context. */
     private final AemContext context = new AemContext();
-    /** The currentPage. */
-    private Page currentPage;
 
     /**
      * Setup.
@@ -73,7 +61,8 @@ public class TocModelmplTest {
 
         QueryService queryService = mock(QueryService.class);
         context.registerService(QueryService.class, queryService);
-        lenient().when(queryService.getBookNodesByPath(currentPage.getPath(), null)).thenReturn(null);
+        List<String> paths = new ArrayList<>();
+        lenient().when(queryService.getBookNodesByPath(currentPage.getPath(), null)).thenReturn(paths);
         context.registerService(Page.class, currentPage);
         TocModel tocModel = context.request().adaptTo(TocModel.class);
         assertEquals(null, tocModel.bookResourcePath());
