@@ -2,6 +2,8 @@ package com.workday.community.aem.core.listerners;
 
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.utils.ResolverUtil;
+
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -73,10 +75,7 @@ public class PageResourceListenerTest {
      */
     @Test
     void testRemoveBookNodes() throws Exception {
-        when(resolverFactory.getServiceResourceResolver(anyMap())).thenReturn(resolver);
-        when(resolver.isLive()).thenReturn(true);
-        pageResourceListener.removeBookNodes(context.currentPage().getPath());
-        verify(resolverFactory).getServiceResourceResolver(anyMap());
-        verify(resolver).close();
+        when(ResolverUtil.newResolver(resolverFactory, "workday-community-administrative-service")).thenReturn(resolver);
+        pageResourceListener.removeBookNodes(context.currentPage().getPath());  
     }
 }

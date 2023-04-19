@@ -49,16 +49,12 @@ public class TocModelImpl implements TocModel {
     @Override
     public String bookResourcePath() {
         String bookResourcePath = null;
-        try {
             if (null != currentPage) {
                 List<String> bookPathList = queryService.getBookNodesByPath(currentPage.getPath(), null);
                 if (bookPathList.size() > 0) {
                     bookResourcePath = bookPathList.get(0).split("/firstlevel")[0];
                 }
             }
-        } catch (NullPointerException e) {
-            logger.error(String.format("RepositoryException in TocImpl::bookPathList: %s", e.getMessage()));
-        }
         return bookResourcePath;
     }
 }
