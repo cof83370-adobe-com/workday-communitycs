@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
@@ -62,7 +63,7 @@ class UserGroupServiceImplTest {
     }
 
     @Test
-    void getUserGroupsBySfIdUserHasGroupsAssignedInAem() throws RepositoryException {
+    void getUserGroupsBySfIdUserHasGroupsAssignedInAem() throws RepositoryException, OurmException {
         ResourceResolver resourceResolver = mock(ResourceResolver.class);
         mockResolver.when(() -> ResolverUtil.newResolver(any(), any())).thenReturn(resourceResolver);
 
@@ -82,7 +83,7 @@ class UserGroupServiceImplTest {
     }
 
     @Test
-    void getUserGroupsBySfIdUserNoGroupsAssignedInAem() throws RepositoryException {
+    void getUserGroupsBySfIdUserNoGroupsAssignedInAem() throws RepositoryException, OurmException {
         ResourceResolver resourceResolver = mock(ResourceResolver.class);
         mockResolver.when(() -> ResolverUtil.newResolver(any(), any())).thenReturn(resourceResolver);
 
