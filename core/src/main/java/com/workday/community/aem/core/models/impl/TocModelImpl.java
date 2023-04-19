@@ -48,6 +48,7 @@ public class TocModelImpl implements TocModel {
      */
     @Override
     public String bookResourcePath() {
+        logger.debug("bookResourcePath::Entry");
         String bookResourcePath = null;
             if (null != currentPage) {
                 List<String> bookPathList = queryService.getBookNodesByPath(currentPage.getPath(), null);

@@ -1,8 +1,9 @@
 package com.workday.community.aem.core.listeners;
 
-import com.workday.community.aem.core.constants.GlobalConstants;
-import com.workday.community.aem.core.services.QueryService;
-import com.workday.community.aem.core.utils.ResolverUtil;
+import java.util.List;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
@@ -16,11 +17,9 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.utils.ResolverUtil;
 
 /**
  * The Class PageResourceListener.
