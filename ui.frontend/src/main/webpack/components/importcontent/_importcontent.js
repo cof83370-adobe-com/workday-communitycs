@@ -90,6 +90,9 @@
                             reportTable.appendChild(reportRow);
                         }
                     } else if (reportDiv !== null) {
+                        const statusDiv = document.getElementById('migration-status');
+                        if (statusDiv !== null)
+                            statusDiv.innerHTML='';
                         reportDiv.innerHTML = '<h3><span>No report available. Check input files.</span></h3>';
                     }
                     loaderImage.style.display = 'none';
