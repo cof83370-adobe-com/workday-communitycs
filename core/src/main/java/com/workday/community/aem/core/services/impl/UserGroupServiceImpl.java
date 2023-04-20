@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
@@ -66,7 +67,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     public static final String READ_SERVICE_USER = "readserviceuser";
 
     /** The AEM default user groups. */
-    public static final String[] AEM_DEFAULT_GROUPS = { "everyone" };
+    protected static final String[] AEM_DEFAULT_GROUPS = { "everyone" };
 
     /** The group map json */
     JsonObject groupMap = null;
@@ -83,7 +84,7 @@ public class UserGroupServiceImpl implements UserGroupService {
      *
      * @return User group list.
      */
-    public List<String> getLoggedInUsersGroups() {
+    public List<String> getLoggedInUsersGroups() throws OurmException {
         List<String> groupIds = new ArrayList<>();
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, USER_SERVICE_USER)) {
             User user = CommonUtils.getLoggedInUser(resourceResolver);
@@ -110,7 +111,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 }
             }
         } catch (LoginException | RepositoryException e) {
-            throw new RuntimeException(e);
+            throw new OurmException(e.getMessage());
         }
         return groupIds;
     }

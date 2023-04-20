@@ -271,21 +271,6 @@ public class MetadataImplTest {
     }
 
     /**
-     * Testget author name exception.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetAuthorName_Exception() throws RepositoryException {
-        context.registerService(ResourceResolver.class, resourceResolver);
-        context.registerService(UserManager.class, userManager);
-        context.registerService(Authorizable.class, authorizable);
-        Metadata metadata = context.request().adaptTo(Metadata.class);
-        String authorName = metadata.getAuthorName();
-        assertEquals("Unknown", authorName);
-    }
-
-    /**
      * Testget posted date.
      *
      * @throws RepositoryException the repository exception

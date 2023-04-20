@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.services;
 
 import com.workday.community.aem.core.config.SnapConfig;
+import com.workday.community.aem.core.exceptions.OurmException;
 import org.osgi.annotation.versioning.ProviderType;
 
 import java.util.List;
@@ -19,5 +20,5 @@ public interface UserGroupService {
      *
      * @return User groups
      */
-    List<String> getLoggedInUsersGroups();
+    List<String> getLoggedInUsersGroups() throws OurmException;
 }

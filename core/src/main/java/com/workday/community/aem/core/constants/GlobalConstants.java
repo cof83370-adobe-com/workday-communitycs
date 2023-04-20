@@ -13,9 +13,9 @@ public interface GlobalConstants {
 
   /** The Constant COMMUNITY_CONTENT_ROOT_PATH. */
   String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
-  
-	/** The Constant COMMUNITY_COVEO_JOB. */
-	String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
+
+  /** The Constant COMMUNITY_COVEO_JOB. */
+  String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
 
   /** The Constant PROP_USER_PROFILE_GIVENNAME. */
   String PROP_USER_PROFILE_GIVENNAME = "./profile/givenName";
@@ -51,5 +51,4 @@ public interface GlobalConstants {
 
   /** The Constant OKTA_USER_PATH. */
   String OKTA_USER_PATH = "/workdaycommunity/okta";
-
 }
