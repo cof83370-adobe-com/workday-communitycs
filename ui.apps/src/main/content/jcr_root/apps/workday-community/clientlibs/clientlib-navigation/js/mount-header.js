@@ -19,7 +19,6 @@ function renderNavHeader() {
         let avatarUrl = headerDiv.getAttribute("data-model-avatar");
         let homePage = headerDiv.getAttribute("data-prop-home");
         let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
-        console.log(dataLayer);
         if (dataLayer) {
             let dataLayerObj = JSON.parse(dataLayer);
             window.digitalData = dataLayerObj.digitalData;

@@ -33,6 +33,7 @@ import java.util.HashMap;
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
@@ -322,17 +323,22 @@ public class SnapServiceImplTest {
   public void testGetAdobeDigitalData() {
     snapService.activate(snapConfig.get(1, 1));
     try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      String profileString = "{\"contactRole\":\"Workday\", \"contactNumber\":\"123\", \"wrcOrgId\":\"456\", \"organizationName\":\"organizationName\", \"isWorkmate\":true}";
+      String profileString = "{\"contactRole\":\"Workday\", \"contactNumber\":\"123\", \"wrcOrgId\":\"456\", \"organizationName\":\"Test organization\", \"isWorkmate\":true}";
 
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(profileString);
 
       String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
       assertEquals(profileString, ret.toString());
-      HashMap<String, Object> adobeData = snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER);
-      HashMap<String, Object> user = (HashMap<String, Object>) adobeData.get("user");
-      HashMap<String, Object> org = (HashMap<String, Object>) adobeData.get("org");
-      assertEquals(user.get("contactNumber"), "123");
-      assertEquals(org.get("accountID"), "456");
+      String pageTitle = "FAQ page";
+      String contentType = "FAQ";
+      String contactNumber = "123";
+      String organizationName = "Test organization";
+      String adobeData = snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER, pageTitle, contentType);
+      assertTrue(adobeData.contains(pageTitle));
+      assertTrue(adobeData.contains(contentType));
+      assertTrue(adobeData.contains(pageTitle));
+      assertTrue(adobeData.contains(contactNumber));
+      assertTrue(adobeData.contains(organizationName));
     }
   }
 
@@ -343,11 +349,11 @@ public class SnapServiceImplTest {
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
       String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
       assertNull(ret);
-      HashMap<String, Object> adobeData = snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER);
-      HashMap<String, Object> user = (HashMap<String, Object>) adobeData.get("user");
-      HashMap<String, Object> org = (HashMap<String, Object>) adobeData.get("org");
-      assertEquals(user.get("contactNumber"), "");
-      assertEquals(org.get("accountID"), "");
+      String pageTitle = "FAQ page";
+      String contentType = "FAQ";
+      String adobeData = snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER, pageTitle, contentType);
+      assertTrue(adobeData.contains(pageTitle));
+      assertTrue(adobeData.contains(contentType));
     }
   }
 

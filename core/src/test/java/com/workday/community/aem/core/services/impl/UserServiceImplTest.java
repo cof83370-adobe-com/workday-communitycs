@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
@@ -118,6 +119,32 @@ public class UserServiceImplTest {
     }
 
     /**
+     * Test updateUser method failed.
+     * 
+     * @throws AuthorizableExistsException
+     * @throws RepositoryException
+     */
+    @Test
+    public void testUpdateUserFail() throws AuthorizableExistsException, RepositoryException {
+        String userId = "testUser";
+        String groupId = "dummyGroup";
+        Map<String, String> fields = new HashMap<String, String>();
+        fields.put("email", "test@workday.com");
+        ValueFactory valueFactory = mock(ValueFactory.class);
+        Value value = valueFactory.createValue("test@workday.com", PropertyType.STRING);
+        List<String> groups = new ArrayList<String>();
+        groups.add(groupId);
+        Group group = mock(Group.class);
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(null);
+        lenient().when(session.isLive()).thenReturn(true);
+        userService.updateUser(userId, fields, groups);
+        verify(user, times(0)).setProperty("email", value);
+        verify(userManager, times(0)).createGroup(groupId);
+        verify(group, times(0)).addMember(user);
+        verify(session).logout();
+    }
+
+    /**
      * Test deleteUser method.
      * 
      * @throws RepositoryException
@@ -133,6 +160,22 @@ public class UserServiceImplTest {
         verify(session).logout();
     }
 
+     /**
+     * Test deleteUser method failed case.
+     * 
+     * @throws RepositoryException
+     */
+    @Test
+    public void testDeleteUserFail() throws RepositoryException {
+        String userId = "testTest";
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+        lenient().when(user.getPath()).thenReturn("/test");
+        lenient().when(session.isLive()).thenReturn(true);
+        userService.deleteUser(userId);
+        verify(user, times(0)).remove();
+        verify(session).logout();
+    }
+
     /**
      * Test getUser method.
      * 
@@ -143,10 +186,8 @@ public class UserServiceImplTest {
         // Success case.
         String userId = "testUser";
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
-        lenient().when(session.isLive()).thenReturn(true);
         User test = userService.getUser(userId);
         assertEquals(test, user); 
-        verify(session).logout();
 
         // Failed case.
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(null);

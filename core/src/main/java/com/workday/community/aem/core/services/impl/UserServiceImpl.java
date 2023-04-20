@@ -44,10 +44,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(String userId) {
-        Session session = null;
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-            session = resourceResolver.adaptTo(Session.class);
             User user = (User) userManager.getAuthorizable(userId);
             if (user != null) {
                 return user;
@@ -56,13 +54,8 @@ public class UserServiceImpl implements UserService {
             return null;
         }
         catch (Exception e) {
-            logger.error("Exception occurred when fetch user {}: {}", userId, e.getMessage());
+            logger.error("Exception occurred when fetch user {}: {}.", userId, e.getMessage());
             return null;
-        }
-        finally {
-            if (session != null && session.isLive()) {
-				session.logout();
-			}
         }
     }
 

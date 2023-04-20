@@ -54,7 +54,9 @@ public interface SnapService {
 	 * Get adobe digital data.
 	 *
    * @param sfId Salesforce Id.
+   * @param pageTitle Page title.
+   * @param contentType Content type.
 	 * @return The adobe digital data.
 	 */
-  HashMap<String, Object> getAdobeDigitalData(String sfId);
+  String getAdobeDigitalData(String sfId, String pageTitle, String contentType);
 }

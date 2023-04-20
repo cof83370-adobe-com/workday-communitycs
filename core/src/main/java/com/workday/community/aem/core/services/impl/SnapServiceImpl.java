@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.exceptions.SnapException;
@@ -32,8 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
-import java.util.HashMap;
 
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
@@ -230,9 +230,23 @@ public class SnapServiceImpl implements SnapService {
   }
 
   @Override
-  public HashMap<String, Object> getAdobeDigitalData(String sfId) {
-    String profileData = getUserProfile(sfId);
-    return generateAdobeDigitalData(profileData);
+  public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
+    String cacheKey = String.format("adobeAnalytics_%s", sfId);
+    String cachedResult = snapCache.get(cacheKey);
+    JsonObject digitalData;
+    if (cachedResult != null) {
+      digitalData = gson.fromJson(cachedResult, JsonObject.class);
+    }
+    else {
+      String profileData = getUserProfile(sfId);
+      digitalData = generateAdobeDigitalData(profileData);
+      snapCache.put(cacheKey, gson.toJson(digitalData));
+    }
+    JsonObject pageProperties = new JsonObject();
+    pageProperties.addProperty(CONTENT_TYPE, contentType);
+    pageProperties.addProperty(PAGE_NAME, pageTitle);
+    digitalData.add("page", pageProperties);
+    return String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
   }
 
   /**
@@ -241,17 +255,17 @@ public class SnapServiceImpl implements SnapService {
    * @param profileData The user profile api response as string.
    * @return The digital data.
    */
-  private HashMap<String, Object> generateAdobeDigitalData(String profileData) {
-    HashMap<String, Object> digitalData = new HashMap<String, Object>();
-    HashMap<String, String> userProperties = new HashMap<String, String>();
-    HashMap<String, String> orgProperties = new HashMap<String, String>();
+  private JsonObject generateAdobeDigitalData(String profileData) {
+    JsonObject digitalData = new JsonObject();
+    JsonObject userProperties = new JsonObject();
+    JsonObject orgProperties = new JsonObject();
     String contactRole = "";
     String contactNumber = "";
     String accountID = "";
     String accountName = "";
     String accountType = "";
     if (profileData != null) {
-      JsonObject profileObject = JsonParser.parseString(profileData).getAsJsonObject();
+      JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
       contactRole = profileObject.get(CONTACT_ROLE).getAsString();
       contactNumber = profileObject.get(CONTACT_NUMBER).getAsString();
 
@@ -263,13 +277,14 @@ public class SnapServiceImpl implements SnapService {
       Boolean isWorkdayMate = isWorkmateElement.isJsonNull() ? false : isWorkmateElement.getAsBoolean();
       accountType = isWorkdayMate ? "workday" : profileObject.get("type").getAsString().toLowerCase();
     }
-    userProperties.put(CONTACT_NUMBER, contactNumber);
-    userProperties.put(CONTACT_ROLE, contactRole);
-    digitalData.put("user", userProperties);
-    orgProperties.put(ACCOUNT_ID, accountID);
-    orgProperties.put(ACCOUNT_NAME, accountName);
-    orgProperties.put(ACCOUNT_TYPE, accountType);
-    digitalData.put("org", orgProperties);
+    userProperties.addProperty(CONTACT_ROLE, contactRole);
+    userProperties.addProperty(CONTACT_NUMBER, contactNumber);
+    orgProperties.addProperty(ACCOUNT_ID, accountID);
+    orgProperties.addProperty(ACCOUNT_NAME, accountName);
+    orgProperties.addProperty(ACCOUNT_TYPE, accountType);
+    digitalData.add("user", userProperties);
+    digitalData.add("org", orgProperties);
+
     return digitalData;
   }
 }

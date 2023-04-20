@@ -3,9 +3,6 @@ package com.workday.community.aem.core.models.impl;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workday.community.aem.core.config.RunModeConfig;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
@@ -25,13 +22,9 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
-
-import java.util.HashMap;
 
 /**
  * The model implementation class for the common nav header menus.
@@ -125,24 +118,14 @@ public class HeaderModelImpl implements HeaderModel {
 
   @Override
   public String getDataLayerData() {
-    HashMap<String, Object> digitalData = this.snapService.getAdobeDigitalData(sfId);
     String instance = runModeConfigService.getInstance();
     if (instance.equals(PUBLISH)) {
       Template template = currentPage.getTemplate();
       String pageTitle = currentPage.getTitle();
       String templatePath = template.getPath();
       String contentType = CONTENT_TYPE_MAPPING.get(templatePath);
-      HashMap<String, String> pageProperties = new HashMap<String, String>();
-      pageProperties.put(CONTENT_TYPE, contentType);
-      pageProperties.put(PAGE_NAME, pageTitle);
-      digitalData.put("page", pageProperties);
-      try {
-        String jsonString = String.format("{\"%s\":%s}", "digitalData", new ObjectMapper().writeValueAsString(digitalData));
-        return jsonString;
-      } catch (JsonProcessingException e) {
-        logger.error("Unable to generate dataLayer JSON string", e);
-        return null;
-      }
+      String digitalData = this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
+      return digitalData;
     }
     return null;
   }

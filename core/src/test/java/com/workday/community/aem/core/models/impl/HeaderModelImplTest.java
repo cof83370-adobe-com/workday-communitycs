@@ -2,6 +2,8 @@ package com.workday.community.aem.core.models.impl;
 
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
@@ -17,12 +19,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
-import java.util.HashMap;
-
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 
 /**
@@ -109,31 +116,44 @@ public class HeaderModelImplTest {
   @Test
   void testGetDataLayerData() {
     // Case 1: return data.
-    HashMap<String, Object> digitalData = new HashMap<String, Object>();
-    HashMap<String, String> userProperties = new HashMap<String, String>();
+    JsonObject digitalData = new JsonObject();
+    JsonObject userProperties = new JsonObject();
+    JsonObject orgProperties = new JsonObject();
+    JsonObject pageProperties = new JsonObject();
     String contactRole = "Training Coordinator; Named Support Contact; Community Org Administrator";
-    userProperties.put("contactNumber", "100001210867");
-    userProperties.put("contactRole", contactRole);
-    digitalData.put("user", userProperties);
-
-    HashMap<String, String> orgProperties = new HashMap<String, String>();
+    String contactNumber = "45689";
     String accountName = "McKee Foods Corporation";
-    orgProperties.put("accountName", accountName);
-    digitalData.put("org", orgProperties);
+    String accountId = "123";
+    String accountType = "customer";
+    String title = "FAQ";
+    Gson gson = new Gson();
+    userProperties.addProperty(CONTACT_ROLE, contactRole);
+    userProperties.addProperty(CONTACT_NUMBER, contactNumber);
+    orgProperties.addProperty(ACCOUNT_ID, accountId);
+    orgProperties.addProperty(ACCOUNT_NAME, accountName);
+    orgProperties.addProperty(ACCOUNT_TYPE, accountType);
+    pageProperties.addProperty(CONTENT_TYPE, title);
+    pageProperties.addProperty(PAGE_NAME, title);
+    digitalData.add("user", userProperties);
+    digitalData.add("org", orgProperties);
+    digitalData.add("page", pageProperties);
+    String digitalDataString = String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
     
     HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
     Template template = mock(Template.class);
-    String title = "FAQ";
     lenient().when(template.getPath()).thenReturn("/conf/workday-community/settings/wcm/templates/faq");
     lenient().when(currentPage.getTemplate()).thenReturn(template);
     lenient().when(currentPage.getTitle()).thenReturn(title);
-    lenient().when(snapService.getAdobeDigitalData(anyString())).thenReturn(digitalData);
+    lenient().when(snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER, title, title)).thenReturn(digitalDataString);
     lenient().when(runModeConfigService.getInstance()).thenReturn("publish");
     String data = headerModel.getDataLayerData();
-    assertTrue(data.contains(title));
+    assertTrue(data.contains(contactNumber));
     assertTrue(data.contains(contactRole));
+    assertTrue(data.contains(accountId));
     assertTrue(data.contains(accountName));
+    assertTrue(data.contains(accountType));
+    assertTrue(data.contains(title));
 
     // Case 2: return null.
     lenient().when(runModeConfigService.getInstance()).thenReturn("author");
