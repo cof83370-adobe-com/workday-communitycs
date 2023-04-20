@@ -1,11 +1,7 @@
 package com.workday.community.aem.core.listerners;
 
-import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.services.QueryService;
-import com.workday.community.aem.core.utils.ResolverUtil;
+import static org.mockito.Mockito.when;
 
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -15,10 +11,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.listeners.PageResourceListener;
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.verify;
+import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.utils.ResolverUtil;
+
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
  * The Class PageResourceListenerTest.
