@@ -36,6 +36,8 @@ import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.C
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.IS_NSC;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.NSC;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
@@ -264,10 +266,12 @@ public class SnapServiceImpl implements SnapService {
     String accountID = "";
     String accountName = "";
     String accountType = "";
+    Boolean isNSC = false;
     if (profileData != null) {
       JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
       contactRole = profileObject.get(CONTACT_ROLE).getAsString();
       contactNumber = profileObject.get(CONTACT_NUMBER).getAsString();
+      isNSC = contactRole.contains(NSC) ? true : false;
 
       JsonElement wrcOrgId = profileObject.get("wrcOrgId");
       accountID = wrcOrgId.isJsonNull() ? "" : wrcOrgId.getAsString();
@@ -279,6 +283,7 @@ public class SnapServiceImpl implements SnapService {
     }
     userProperties.addProperty(CONTACT_ROLE, contactRole);
     userProperties.addProperty(CONTACT_NUMBER, contactNumber);
+    userProperties.addProperty(IS_NSC, isNSC);
     orgProperties.addProperty(ACCOUNT_ID, accountID);
     orgProperties.addProperty(ACCOUNT_NAME, accountName);
     orgProperties.addProperty(ACCOUNT_TYPE, accountType);

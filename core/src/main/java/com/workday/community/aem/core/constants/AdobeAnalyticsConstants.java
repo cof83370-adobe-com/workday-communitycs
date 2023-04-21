@@ -14,6 +14,16 @@ public interface AdobeAnalyticsConstants {
      * The Constant CONTACT_ROLE.
      */
     String CONTACT_ROLE = "contactRole";
+
+    /**
+     * The Constant IS_NSC.
+     */
+    String IS_NSC = "isNSC";
+
+    /**
+     * The Constant NSC.
+     */
+    String NSC = "Named Support Contact";
     
     /**
      * The Constant ACCOUNT_ID.
