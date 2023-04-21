@@ -1,17 +1,18 @@
 (function() {
     const tocGroup = document.getElementsByClassName('cmp-toc__group');
-    const tocList = tocGroup.length == 1 ? tocGroup[0] : null;
+    const tocGroupElement = tocGroup.length == 1 ? tocGroup[0] : null;
+    const tocList = tocGroupElement.querySelectorAll('li');
 
     const prevBtn = document.getElementById('toc-previous') as HTMLButtonElement;
     const nextBtn = document.getElementById('toc-next') as HTMLButtonElement;
 
     function loadLinkForCurrentItem(currentIndex) {
-        const currentItem = tocList.children[parseInt(currentIndex, 10)];
+        const currentItem = tocList[currentIndex];
         const link = currentItem.querySelector('a');
         window.location.href = link.href;
     }
 
-    function updateButtonState(currentIndex): void {
+    function updateButtonState(currentIndex) {
         if (parseInt(currentIndex, 10) === 0) {
             prevBtn.disabled = true;
             prevBtn.classList.add('btn-disable');
@@ -19,7 +20,7 @@
             prevBtn.disabled = false;
             prevBtn.classList.remove('btn-disable');
         }
-        if (parseInt(currentIndex, 10) === tocList.children.length - 1) {
+        if (parseInt(currentIndex, 10) === tocList.length - 1) {
             nextBtn.disabled = true;
             nextBtn.classList.add('btn-disable');
         } else {
@@ -38,7 +39,7 @@
             if (currentUrl.indexOf(linkUrl) !== -1) {
                 const liElement = links[i].parentNode as HTMLElement;
                 liElement.classList.add('active');
-                activeIndex = Array.prototype.indexOf.call(liElement.parentNode.children, liElement);
+                activeIndex = Array.from(tocList).indexOf(liElement as HTMLLIElement);
                 localStorage.setItem('activeIndex', activeIndex);
                 break;
             }
@@ -60,7 +61,7 @@
 
 
     function onDocumentReady() {
-        if(tocGroup) {
+        if(tocList) {
             getActiveItem();
             const currentIndex = localStorage.getItem('activeIndex') || '0';
 
