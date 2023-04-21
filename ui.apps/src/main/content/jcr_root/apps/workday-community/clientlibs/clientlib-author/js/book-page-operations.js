@@ -12,7 +12,7 @@
       // on submit of the book component that will be registered for click event.
       $(BOOK_COMP_CLASS).parents().find(CQ_DIALOG_SUBMIT_CLASS).click(function () {
         //Check Validators for coral mutlifield and coral multifield inputs
-        if ($(BOOK_COMP_CLASS).find(CORAL_MULTI_CLASS).checkValidity() && $(this).find(CORAL_MULTI_INPUT).adaptTo('foundation-validation').checkValidity()) {
+        if ($(this).find(CORAL_MULTI_CLASS).checkValidity() && $(this).find(CORAL_MULTI_INPUT).adaptTo('foundation-validation').checkValidity()) {
           //Get the book dialog form
           const $form = $(this).closest('form.foundation-form'); //get jquery variable based on 'richtext'
           const MODULE_NAME = 'Book Operations';
