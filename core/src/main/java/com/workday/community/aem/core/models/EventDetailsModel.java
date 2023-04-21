@@ -15,6 +15,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.workday.community.aem.core.constants.EventDetailsConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -26,7 +27,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.utils.CommunityUtils;
 
 /**
@@ -111,33 +111,33 @@ public class EventDetailsModel {
 	 * @throws ParseException the parse exception
 	 */
 	private void calculateRequired(final String eventStartDate, final String eventEndDate) throws ParseException {
-		DateFormat formatter = new SimpleDateFormat(GlobalConstants.EventDetailsConstants.DATE_TIME_FORMAT);
+		DateFormat formatter = new SimpleDateFormat(EventDetailsConstants.DATE_TIME_FORMAT);
 		Date formattedStartDate = formatter.parse(eventStartDate);
 		LocalDateTime startDateAndTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault())
 				.toLocalDateTime();
 
-		dateFormat = DateTimeFormatter.ofPattern(GlobalConstants.EventDetailsConstants.REQ_DATE_FORMAT)
+		dateFormat = DateTimeFormatter.ofPattern(EventDetailsConstants.REQ_DATE_FORMAT)
 				.format(startDateAndTime);
-		timeFormat = DateTimeFormatter.ofPattern(GlobalConstants.EventDetailsConstants.REQ_TIME_FORMAT)
+		timeFormat = DateTimeFormatter.ofPattern(EventDetailsConstants.REQ_TIME_FORMAT)
 				.format(startDateAndTime);
 
 		Date formattedEndDate = formatter.parse(eventEndDate);
 		LocalDateTime endDateAndTime = formattedEndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
 		long lengthInMinutes = ChronoUnit.MINUTES.between(startDateAndTime, endDateAndTime);
-		if (lengthInMinutes > 0 && lengthInMinutes <= GlobalConstants.EventDetailsConstants.MINUTES_IN_8_HOURS) {
-			eventLengthHours = lengthInMinutes / GlobalConstants.EventDetailsConstants.MINUTES_IN_1_HOUR;
-			eventLengthMinutes = lengthInMinutes % GlobalConstants.EventDetailsConstants.MINUTES_IN_1_HOUR;
-			hoursLabel = (eventLengthHours <= 1) ? GlobalConstants.EventDetailsConstants.HOUR_LABEL
-					: GlobalConstants.EventDetailsConstants.HOURS_LABEL;
+		if (lengthInMinutes > 0 && lengthInMinutes <= EventDetailsConstants.MINUTES_IN_8_HOURS) {
+			eventLengthHours = lengthInMinutes / EventDetailsConstants.MINUTES_IN_1_HOUR;
+			eventLengthMinutes = lengthInMinutes % EventDetailsConstants.MINUTES_IN_1_HOUR;
+			hoursLabel = (eventLengthHours <= 1) ? EventDetailsConstants.HOUR_LABEL
+					: EventDetailsConstants.HOURS_LABEL;
 
-			minutesLabel = (eventLengthMinutes <= 1) ? GlobalConstants.EventDetailsConstants.MINUTE_LABEL
-					: GlobalConstants.EventDetailsConstants.MINUTES_LABEL;
+			minutesLabel = (eventLengthMinutes <= 1) ? EventDetailsConstants.MINUTE_LABEL
+					: EventDetailsConstants.MINUTES_LABEL;
 		} else {
-			eventLengthDays = lengthInMinutes / GlobalConstants.EventDetailsConstants.MINUTES_IN_24_HOURS;
-			if (lengthInMinutes % GlobalConstants.EventDetailsConstants.MINUTES_IN_24_HOURS > 0)
+			eventLengthDays = lengthInMinutes / EventDetailsConstants.MINUTES_IN_24_HOURS;
+			if (lengthInMinutes % EventDetailsConstants.MINUTES_IN_24_HOURS > 0)
 				eventLengthDays++;
-			daysLabel = (eventLengthDays <= 1) ? GlobalConstants.EventDetailsConstants.DAY_LABEL
-					: GlobalConstants.EventDetailsConstants.DAYS_LABEL;
+			daysLabel = (eventLengthDays <= 1) ? EventDetailsConstants.DAY_LABEL
+					: EventDetailsConstants.DAYS_LABEL;
 		}
 	}
 

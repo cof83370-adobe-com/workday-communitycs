@@ -434,7 +434,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools - Page Title &amp; Metadata"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        components="[/apps/workday-community/components/common/metadata,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_115140473724791>
@@ -462,7 +462,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Page Title &amp; Metadata"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        components="[/apps/workday-community/components/common/metadata,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_135140973724596>
@@ -510,7 +510,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ - Page Title &amp; Metadata"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        components="[/apps/workday-community/components/common/metadata,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676931538182>
@@ -520,7 +520,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676937205547>
@@ -530,7 +530,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676938889768>
@@ -540,7 +540,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676940689642>
@@ -560,7 +560,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="/apps/workday-community/components/core/text"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678149939855>
@@ -569,7 +569,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Page Title &amp; Metadata"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/eventmetadata,/apps/workday-community/components/core/title]"
+                        components="[/apps/workday-community/components/common/metadata,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678150225585>
@@ -600,6 +600,43 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:styleGroups jcr:primaryType="nt:unstructured">
                             <item0
+                                cq:styleGroupLabel="Teaser Styles"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="hero"
+                                        cq:styleId="1680289048710"
+                                        cq:styleLabel="Hero"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                            <item1
+                                cq:styleGroupLabel="Container Styles"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="icon-card "
+                                        cq:styleId="1680282107912"
+                                        cq:styleLabel="Icon Card"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="col-equal-33-33-33"
+                                        cq:styleId="1680281702241"
+                                        cq:styleLabel="33/33/33"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="col-left-33-right-66"
+                                        cq:styleId="1680281868041"
+                                        cq:styleLabel="33/66"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item3
+                                        cq:styleClasses="col-left-66-right-33"
+                                        cq:styleId="1680281906479"
+                                        cq:styleLabel="66/33"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
+                            <item2
                                 cq:styleGroupLabel="Spacing"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
@@ -684,7 +721,7 @@
                                         cq:styleLabel="Add margin bottom 8px"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item0>
+                            </item2>
                         </cq:styleGroups>
                     </policy_1809301152227968>
                     <policy_1678388306174
@@ -718,6 +755,14 @@
                             </item0>
                         </cq:styleGroups>
                     </policy_1678388306174>
+                    <policy_856086685582958
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Book"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/common/book,/apps/workday-community/components/core/title]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_856086685582958>
                 </container>
                 <teaser jcr:primaryType="nt:unstructured">
                     <policy_1575031387650
@@ -799,7 +844,90 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy>
                 </page>
+                <eventspage jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries for Event pages."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </eventspage>
+                <kitsandtoolspage jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries for Kits and Tools pages."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Kits and Tools Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </kitsandtoolspage>
+                <referencepage jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries for Reference pages."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Reference Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </referencepage>
+                <faqpage jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries for FAQ pages."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="FAQ Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </faqpage>
+                <troubleshooting jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:description="Includes the required client libraries for Troubleshooting pages."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Troubleshooting Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </troubleshooting>
             </structure>
+            <common jcr:primaryType="nt:unstructured">
+                <relatedinformation jcr:primaryType="nt:unstructured">
+                    <policy_1681242291110
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Content Page - Related Information"
+                        sling:resourceType="wcm/core/components/policy/policy">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Variation"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="curated_block"
+                                        cq:styleId="1681242331239"
+                                        cq:styleLabel="Curated Block"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_1681242291110>
+                </relatedinformation>
+            </common>
         </components>
     </workday-community>
 </jcr:root>

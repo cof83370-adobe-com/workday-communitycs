@@ -1,0 +1,131 @@
+// tabs
+.tabs {
+    margin-bottom: 400px;
+
+    .cmp-tabs {
+        position: relative;
+
+
+        // shared
+        .--hidden {
+            display: none;
+        }
+
+        &__tab {
+            display: flex;
+            padding: 1rem;
+            align-items: center;
+            width: auto;
+            border-bottom: 4px solid $wdc-color-french-vanilla-100;
+
+
+            &:hover {
+                background-color: $wdc-color-soap-300;
+                border-bottom: 4px solid $wdc-color-soap-300;
+            }
+
+            &--active {
+                color: $wdc-color-blueberry-400;
+                ;
+                border-bottom: 4px solid $wdc-color-blueberry-400;
+
+                &:hover {
+                    border-bottom-color: currentColor;
+                }
+            }
+
+        }
+
+
+        // primary
+        &__tablist {
+            display: flex;
+            margin-bottom: 0px;
+            border-bottom: 1px solid $wdc-color-soap-500;
+
+
+            .-more {
+                max-width: 150px;
+                border-bottom: 4px solid $wdc-color-french-vanilla-100;
+                position: relative;
+
+                >button {
+                    width: 100%;
+                    height: 100%;
+                    background: transparent;
+                    border: 0;
+                    cursor: pointer;
+                    color: $wdc-color-black-pepper-600;
+
+                    &::after {
+                        content: url('../resources/images/wd-icon-chevron-grey-down.svg');
+                        margin-left: 10px;
+                        display: inline-block;
+                        transition: all 0.2s ease-in;
+
+                    }
+
+                }
+            }
+        }
+
+        &.--show-secondary .cmp-tabs__tablist {
+            .-more>button::after {
+                transform: rotate(-180deg);
+            }
+        }
+
+        // secondary  
+        .-secondary {
+            width: 200px;
+            display: none;
+            position: absolute;
+            top: 58px;
+            right: 0px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            box-shadow: 0 0.3em 0.5em rgba($wdc-color-black-pepper-600, 0.3);
+            animation: nav-secondary 0.2s;
+            border: 1px solid $wdc-color-soap-500;
+            border-radius: 4px;
+
+            li {
+                padding: 0.7rem 1.5rem 0.7rem 1rem;
+                font-size: 0.9rem;
+                border-bottom: 0px;
+
+                &:hover,
+                &.cmp-tabs__tab--active {
+                    background: $wdc-color-soap-300;
+                    border-bottom: 0;
+                    color: inherit;
+                }
+
+            }
+        }
+
+        &.--show-secondary .-secondary {
+            display: block;
+        }
+
+        .cmp-tabs__tabpanel {
+            &.cmp-tabs__tab--active {
+                display: block;
+                border-bottom: 0;
+            }
+        }
+    }
+}
+
+@keyframes nav-secondary {
+    0% {
+        opacity: 0;
+        transform: translateY(-1em);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

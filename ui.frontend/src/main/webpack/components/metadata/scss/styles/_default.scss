@@ -1,0 +1,38 @@
+.cmp-metadata {
+
+    @media (max-width: $screen-small) {
+        margin-top: 12px;
+        margin-bottom: 24px;
+    }
+
+    @media (min-width: $screen-small) {
+        margin-top: 24px;
+        margin-bottom: 32px;
+    }
+
+    &__item {
+        font-style: $font-style-normal;
+        font-weight: 500;
+        font-size: $font-size-xsmall;
+        line-height: 22px;
+        letter-spacing: 0.5px;
+        color: $wdc-color-licorice-300;
+
+        &:before {
+            content: '|';
+            padding: 10px;
+        }
+
+        &:first-child {
+            padding-left: 0;
+      
+            &:before {
+              content: none;
+            }
+        }
+
+        &__item-label {
+            padding-right: 5px;
+        }
+    }
+}

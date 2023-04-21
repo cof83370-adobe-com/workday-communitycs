@@ -1,0 +1,17 @@
+
+{
+    "snapUrl":"$[env:snapUrl]",
+    "snapContextPath":"$[env:snapContextPath]",
+    "snapContextApiToken":"$[secret:snapContextApiToken]",
+    "snapContextApiKey":"$[secret:snapContextApiKey]",
+    "navFallbackMenuData": "/content/dam/workday-community/resources/local-header-data.json",
+    "navApi":"$[env:navApi]",
+    "navApiKey":"$[secret:navApiKey]",
+    "navApiToken":"$[secret:navApiToken]",
+    "navFallbackMenuData": "/content/dam/workday-community/resources/local-header-data.json",
+    "navFallbackMenuServiceUser": "readserviceuser",
+    "sfdcUserAvatarUrl": "$[env:sfdcUserAvatarUrl]",
+    "sfdcUserAvatarToken": "$[secret:sfdcUserAvatarToken]",
+    "sfdcUserAvatarApiKey": "$[secret:sfdcUserAvatarApiKey]",
+    "beta": true
+}

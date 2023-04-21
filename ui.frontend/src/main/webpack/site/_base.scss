@@ -19,14 +19,7 @@ main {
     max-width: 1200px;
     margin: 0 auto;
     float: none !important;
-
-    @media (max-width: $screen-small) {
-        padding: 6.25em 1em 0;
-    }
-
-    @media (min-width: $screen-small) {
-        padding: 6.25em 3.5em 0;
-    }
+    padding: 6.25em 1em 0;
 }
 
 a {

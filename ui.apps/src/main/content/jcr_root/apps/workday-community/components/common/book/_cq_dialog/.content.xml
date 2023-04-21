@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="nt:unstructured"
+    jcr:title="Book Management"
+    sling:resourceType="cq/gui/components/authoring/dialog">
+    <content
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/coral/foundation/container">
+        <items jcr:primaryType="nt:unstructured">
+            <tabs
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="granite/ui/components/coral/foundation/tabs"
+                maximized="{Boolean}true">
+                <items jcr:primaryType="nt:unstructured">
+                    <bookTab
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Parent Pages"
+                        sling:resourceType="granite/ui/components/coral/foundation/container"
+                        margin="{Boolean}true">
+                        <items jcr:primaryType="nt:unstructured">
+                            <book
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
+                                composite="{Boolean}true"
+                                granite:class="book-comp-class"
+                                fieldLabel="Parent Pages">
+                                <granite:data
+                                    jcr:primaryType="nt:unstructured"
+                                    min-item="2"/>
+                                <field
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="granite/ui/components/coral/foundation/container"
+                                    name="./firstlevel">
+                                    <items jcr:primaryType="nt:unstructured">
+                                        <mainpagepath
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="cq/gui/components/coral/common/form/pagefield"
+                                            emptyText="First Level Page Path"
+                                            name="./mainpagepath"
+                                            required="{Boolean}true"
+                                            rootPath="/content"/>
+                                        <secondlevel
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
+                                            composite="{Boolean}true"
+                                            fieldLabel="Childern Pages">
+                                            <field
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/container"
+                                                name="./secondlevel">
+                                                <items jcr:primaryType="nt:unstructured">
+                                                    <secondpagepath
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="cq/gui/components/coral/common/form/pagefield"
+                                                        emptyText="Second Level Page Path"
+                                                        name="./secondpagepath"
+                                                        required="{Boolean}true"
+                                                        rootPath="/content"/>
+                                                    <thirdlevel
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
+                                                        composite="{Boolean}true"
+                                                        fieldLabel="Grand Childern Pages">
+                                                        <field
+                                                            jcr:primaryType="nt:unstructured"
+                                                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                                                            name="./thirdlevel">
+                                                            <items jcr:primaryType="nt:unstructured">
+                                                                <thirdpagepath
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="cq/gui/components/coral/common/form/pagefield"
+                                                                    emptyText="Third Level Page Path"
+                                                                    name="./thirdpagepath"
+                                                                    required="{Boolean}true"
+                                                                    rootPath="/content"/>
+                                                            </items>
+                                                        </field>
+                                                    </thirdlevel>
+                                                </items>
+                                            </field>
+                                        </secondlevel>
+                                    </items>
+                                </field>
+                            </book>
+                        </items>
+                    </bookTab>
+                </items>
+            </tabs>
+        </items>
+    </content>
+</jcr:root>

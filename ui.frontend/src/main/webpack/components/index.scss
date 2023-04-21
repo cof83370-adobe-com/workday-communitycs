@@ -1,10 +1,12 @@
 @import '~@workday/canvas-kit-css-core';
 @import '~@workday/canvas-kit-css-core/lib/colors.scss';
 
+@import 'importcontent/scss';
 @import 'breadcrumb/scss';
 @import 'title/scss';
 @import 'text/scss';
 @import 'events';
+@import 'metadata/scss';
 @import 'sponsors/scss';
 @import 'accordion/scss';
 @import 'separator/scss';
@@ -18,3 +20,9 @@
 @import 'coveostatus/scss';
 @import 'toc/scss';
 @import 'image/scss';
+@import 'troubleshooting/scss';
+@import 'faq/scss';
+@import 'iconcard/scss';
+@import 'hero/scss';
+@import 'tabs/scss';
+@import 'columnstyles/scss';

@@ -6,8 +6,28 @@
 
 $include "./default_filters.any"
 
+#Enable SAML
+/0100 { /type "allow" /method "POST" /url "/content/workday-community/saml_login" }
+
 # Allow components JSON model
 /0101 { /type "allow" /extension "json" /selectors "model" /path "/content/*" }
 
 # Allow manifest.webmanifest files located in the content
 /0102 { /type "allow" /extension "webmanifest" /path "/content/*/manifest" }
+
+#Enable Registration Servlet
+
+
+#Enable DAM Access
+/0220 { /type "allow" /method "GET" /path "/content/dam/workday-community/*" }
+
+
+/0998 { /type "deny" /method "GET" /url "/etc/cloudsettings.kernel.js*" }
+/0999 { /type "allow" /url " * /libs/granite/csrf/token.json*" }
+
+#Enable Settings Page Privacy Servlet
+/0124 { /type "allow" /method "POST" /url "/bin/privacy" }
+
+
+#Enable Settings Page MultiFactor Authentication Servlet
+/0126 { /type "allow" /method "POST" /path "/bin/multifactorauthentication" }

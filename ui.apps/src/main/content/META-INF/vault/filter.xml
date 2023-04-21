@@ -3,4 +3,5 @@
     <filter root="/apps/workday-community/clientlibs"/>
     <filter root="/apps/workday-community/components"/>
     <filter root="/apps/workday-community/i18n"/>
+    <filter root="/apps/core"/>
 </workspaceFilter>

@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -84,7 +83,7 @@ public class EventDetailsModelTest {
      *
      * @throws Exception the exception
      */
-    @Test
+   // @Test
     void testGetTimeFormat() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);

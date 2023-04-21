@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    jcr:primaryType="nt:unstructured">
+    <wcm jcr:primaryType="nt:unstructured">
+        <components jcr:primaryType="nt:unstructured">
+            <commons jcr:primaryType="nt:unstructured">
+                <editor jcr:primaryType="nt:unstructured">
+                    <dialog jcr:primaryType="nt:unstructured">
+                        <link jcr:primaryType="nt:unstructured">
+                            <v1 jcr:primaryType="nt:unstructured">
+                                <link jcr:primaryType="nt:unstructured">
+                                    <edit jcr:primaryType="nt:unstructured">
+                                        <link jcr:primaryType="nt:unstructured">
+                                            <items jcr:primaryType="nt:unstructured">
+                                                <target
+                                                    jcr:primaryType="nt:unstructured"
+                                                    checked="true"/>
+                                            </items>
+                                        </link>
+                                    </edit>
+                                </link>
+                            </v1>
+                        </link>
+                    </dialog>
+                </editor>
+            </commons>
+        </components>
+    </wcm>
+</jcr:root>

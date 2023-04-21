@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0"
+    xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:primaryType="nt:unstructured"
     jcr:title="Related Information"
-    sling:resourceType="cq/gui/components/authoring/dialog"
-    extraClientlibs="[]">
+    sling:resourceType="cq/gui/components/authoring/dialog">
     <content
         granite:class="cmp-list__editor"
         jcr:primaryType="nt:unstructured"
@@ -14,9 +15,9 @@
                 sling:resourceType="granite/ui/components/coral/foundation/tabs"
                 maximized="{Boolean}true">
                 <items jcr:primaryType="nt:unstructured">
-                    <listSettings
+                    <relatedinfo
                         jcr:primaryType="nt:unstructured"
-                        jcr:title="List Settings"
+                        jcr:title="General"
                         sling:resourceType="granite/ui/components/coral/foundation/container"
                         margin="{Boolean}true">
                         <items jcr:primaryType="nt:unstructured">
@@ -35,7 +36,8 @@
                                                 emptyText="Title"
                                                 fieldDescription="Enter the Title"
                                                 fieldLabel="Title"
-                                                name="./title"/>
+                                                name="./title" />
+
                                             <listFrom
                                                 granite:class="cq-dialog-dropdown-showhide"
                                                 jcr:primaryType="nt:unstructured"
@@ -44,18 +46,18 @@
                                                 name="./type">
                                                 <granite:data
                                                     jcr:primaryType="nt:unstructured"
-                                                    cq-dialog-dropdown-showhide-target=".list-option-listfrom-showhide-target"/>
+                                                    cq-dialog-dropdown-showhide-target=".list-option-listfrom-showhide-target" />
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <static
                                                         granite:hide="${cqDesign.disableStatic}"
                                                         jcr:primaryType="nt:unstructured"
                                                         text="Manual"
-                                                        value="static"/>
+                                                        value="static" />
                                                     <dynamic
                                                         granite:hide="${cqDesign.disableChildren}"
                                                         jcr:primaryType="nt:unstructured"
                                                         text="Dynamic"
-                                                        value="dynamic"/>
+                                                        value="dynamic" />
                                                 </items>
                                             </listFrom>
                                             <setStatic
@@ -64,15 +66,16 @@
                                                 sling:resourceType="granite/ui/components/coral/foundation/container">
                                                 <granite:data
                                                     jcr:primaryType="nt:unstructured"
-                                                    showhidetargetvalue="static"/>
+                                                    showhidetargetvalue="static" />
                                                 <items jcr:primaryType="nt:unstructured">
                                                     <urllink
-                                                        granite:class="granite-ui-validation-multifield-max-items"
                                                         jcr:primaryType="nt:unstructured"
                                                         sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                                                         composite="{Boolean}true"
-                                                        fieldLabel="Links"
-                                                        validation="max-items-4">
+                                                        fieldLabel="Links">
+                                                        <granite:data
+                                                            jcr:primaryType="nt:unstructured"
+                                                            max-item="4" />
                                                         <field
                                                             jcr:primaryType="nt:unstructured"
                                                             sling:resourceType="granite/ui/components/coral/foundation/container"
@@ -83,14 +86,22 @@
                                                                     sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                                                                     emptyText="Link Title"
                                                                     name="./linktitle"
-                                                                    required="{Boolean}true"/>
+                                                                    required="{Boolean}true" />
                                                                 <pagepath
                                                                     jcr:primaryType="nt:unstructured"
                                                                     sling:resourceType="cq/gui/components/coral/common/form/pagefield"
                                                                     emptyText="Page Path"
                                                                     name="./pagepath"
                                                                     required="{Boolean}true"
-                                                                    rootPath="/content"/>
+                                                                    rootPath="/content" />
+                                                                <newTab
+                                                                    jcr:primaryType="nt:unstructured"
+                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                                                    text="Open link in new tab"
+                                                                    name="./newTab"
+                                                                    uncheckedValue="_self"
+                                                                    value="_blank"
+                                                                    checked="true" />
                                                             </items>
                                                         </field>
                                                     </urllink>
@@ -101,7 +112,87 @@
                                 </items>
                             </columns>
                         </items>
-                    </listSettings>
+                    </relatedinfo>
+                    <curatedblock
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Curated Block"
+                        sling:resourceType="granite/ui/components/coral/foundation/container"
+                        margin="{Boolean}true">
+                        <items jcr:primaryType="nt:unstructured">
+                            <columns
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns"
+                                margin="{Boolean}true">
+                                <items jcr:primaryType="nt:unstructured">
+                                    <column
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/container">
+                                        <items jcr:primaryType="nt:unstructured">
+                                            <description
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/form/textarea"
+                                                emptyText="Detailed Description for the placeholder"
+                                                fieldDescription="Enter the Description"
+                                                fieldLabel="Description"
+                                                name="./description">
+                                            </description>
+                                            <file
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/foundation/form/fileupload"
+                                                autoStart="{Boolean}false"
+                                                class="cq-droptarget"
+                                                fieldLabel="Image asset"
+                                                fileNameParameter="./fileName"
+                                                fileReferenceParameter="./fileReference"
+                                                mimeTypes="[image]"
+                                                multiple="{Boolean}false"
+                                                name="./file"
+                                                title="Upload Image Asset"
+                                                uploadUrl="${suffix.path}"
+                                                useHTML5="{Boolean}true" />
+                                            <imgalttitle
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                emptyText="Alternative image text for accessibility "
+                                                fieldDescription="Alternative image text for accessibility "
+                                                fieldLabel="Alternative Image Alt Text"
+                                                name="./alttext" />
+                                            <curatedfooter
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/well">
+                                                <items jcr:primaryType="nt:unstructured">
+                                                    <footerlinktext
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                        emptyText="Footer Link Text"
+                                                        fieldLabel="Footer"
+                                                        name="./footerlinktext" />
+                                                    <footerlinkurl
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="cq/gui/components/coral/common/form/pagefield"
+                                                        emptyText="Footer Link URL"
+                                                        name="./footerlinkurl"
+                                                        rootPath="/content" />
+                                                    <footernewTab
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                                        text="Open link in new tab"
+                                                        name="./footernewTab"
+                                                        uncheckedValue="_self"
+                                                        value="_blank"
+                                                        checked="true" />
+                                                </items>
+                                            </curatedfooter>
+                                        </items>
+                                    </column>
+                                </items>
+                            </columns>
+                        </items>
+                    </curatedblock>
+                    <cq:styles
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/include"
+                        path="/mnt/overlay/cq/gui/components/authoring/dialog/style/tab_edit/styletab"/>
                 </items>
             </tabs>
         </items>
