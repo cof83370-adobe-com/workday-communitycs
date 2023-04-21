@@ -5,14 +5,14 @@
   $(document).on('dialog-ready', function () {
     const BOOK_COMP_CLASS = '.book-comp-class';
     const CORAL_MULTI_CLASS = 'coral-multifield';
-    const CORAL_MULTI_INPUT = 'coral-multifield input';
+    const CORAL_MULTI_INPUT = '.coral-Form-field';
     const CQ_DIALOG_SUBMIT_CLASS = '.cq-dialog-submit';
     // Only do custom logic if we're using our book component. The below id
     if ($(BOOK_COMP_CLASS).length > 0) {
       // on submit of the book component that will be registered for click event.
       $(BOOK_COMP_CLASS).parents().find(CQ_DIALOG_SUBMIT_CLASS).click(function () {
         //Check Validators for coral mutlifield and coral multifield inputs
-        if ($(CORAL_MULTI_CLASS).checkValidity() && $(CORAL_MULTI_INPUT).willValidate()) {
+        if ($(BOOK_COMP_CLASS).find(CORAL_MULTI_CLASS).checkValidity() && $(this).find(CORAL_MULTI_INPUT).adaptTo('foundation-validation').checkValidity()) {
           //Get the book dialog form
           const $form = $(this).closest('form.foundation-form'); //get jquery variable based on 'richtext'
           const MODULE_NAME = 'Book Operations';
@@ -51,7 +51,7 @@
                   // Create a Foundation UI Prompt, display feedback to the user, and refresh the page when the user clicks 'Ok'
                   const pathArr = response.pagePaths.split(",");
                   let txt = "";
-                  pathArr.forEach(function (e) {
+                  pathArr.forEach(function (value) {
                     txt += `<li>${e.value}</li>`
                   });
                   FOUNDATION_UI.prompt(NOTIFY_TITLE, `Please activate listed books to make the updates complete.<ul>${txt}</ul>`, 'success', [{

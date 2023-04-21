@@ -117,7 +117,7 @@ public class QueryServiceImpl implements QueryService {
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             session = resourceResolver.adaptTo(Session.class);
             Map<String, String> queryMap = new HashMap<>();
-            queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
+            queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_BOOK_ROOT_PATH);
             queryMap.put("fulltext", bookPagePath);
             if(StringUtils.isNotBlank(currentPath)) {
                 queryMap.put("group.1_group.p.not", "true");

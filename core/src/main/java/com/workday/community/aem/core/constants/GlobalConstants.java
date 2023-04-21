@@ -41,4 +41,7 @@ public interface GlobalConstants {
 
   /** The Constant JCR CONTENT NODE . */
   String JCR_CONTENT_PATH = "/jcr:content/";
+
+  /** The Constant COMMUNITY_BOOK_ROOT_PATH. */
+  String COMMUNITY_CONTENT_BOOK_ROOT_PATH ="/content/workday-community/en-us/admin-tools/books";
 }
