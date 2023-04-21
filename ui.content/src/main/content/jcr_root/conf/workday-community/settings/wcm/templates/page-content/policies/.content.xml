@@ -55,6 +55,12 @@
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="wcm/core/components/policies/mapping" />
                             </core>
+                            <common jcr:primaryType="nt:unstructured">
+                                <relatedinformation
+                                    cq:policy="workday-community/components/common/relatedinformation/policy_1681242291110"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="wcm/core/components/policies/mapping"/>
+                            </common>
                         </components>
                     </workday-community>
                     <workday-community jcr:primaryType="nt:unstructured">

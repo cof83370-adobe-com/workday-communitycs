@@ -9,13 +9,17 @@
     const tocButton = document.querySelector(tocSelectors.tocModalButton);
 
     function openTocModal() {
-        tocButton.classList.add('hide-modal');
-        tocModalContainer.classList.remove('hide-modal');
+        if (tocModalContainer !== null) {
+            tocButton.classList.add('hide-modal');
+            tocModalContainer.classList.remove('hide-modal');
+        }
     }
 
     function closeTocModal() {
-        tocModalContainer.classList.add('hide-modal');
-        tocButton.classList.remove('hide-modal');
+        if (tocModalContainer !== null) {
+            tocModalContainer.classList.add('hide-modal');
+            tocButton.classList.remove('hide-modal');
+        }
     }
 
     function leftrailpanellevel1() {
@@ -64,8 +68,7 @@
     function onDocumentReady() {
         const tocClose = document.querySelector(tocSelectors.tocModalClose);
         let showModal = false;
-        leftrailpanellevel1();
-        leftrailpanellevel2();
+        
         if(showModal) {
             openTocModal();
         } else {

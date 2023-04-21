@@ -22,6 +22,7 @@
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                                 composite="{Boolean}true"
+                                granite:class="book-comp-class"
                                 fieldLabel="Parent Pages">
                                 <granite:data
                                     jcr:primaryType="nt:unstructured"
@@ -38,14 +39,6 @@
                                             name="./mainpagepath"
                                             required="{Boolean}true"
                                             rootPath="/content"/>
-                                        <newTab
-                                            jcr:primaryType="nt:unstructured"
-                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                            text="Open link in new tab"
-                                            name="./newTab"
-                                            uncheckedValue="_self"
-                                            value="_blank"
-                                            checked="false"/>
                                         <secondlevel
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
@@ -63,14 +56,6 @@
                                                         name="./secondpagepath"
                                                         required="{Boolean}true"
                                                         rootPath="/content"/>
-                                                    <newTab
-                                                        jcr:primaryType="nt:unstructured"
-                                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                                        text="Open link in new tab"
-                                                        name="./newTab"
-                                                        uncheckedValue="_self"
-                                                        value="_blank"
-                                                        checked="false"/>    
                                                     <thirdlevel
                                                         jcr:primaryType="nt:unstructured"
                                                         sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
@@ -88,14 +73,6 @@
                                                                     name="./thirdpagepath"
                                                                     required="{Boolean}true"
                                                                     rootPath="/content"/>
-                                                                <newTab
-                                                                    jcr:primaryType="nt:unstructured"
-                                                                    sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                                                    text="Open link in new tab"
-                                                                    name="./newTab"
-                                                                    uncheckedValue="_self"
-                                                                    value="_blank"
-                                                                    checked="false"/>
                                                             </items>
                                                         </field>
                                                     </thirdlevel>

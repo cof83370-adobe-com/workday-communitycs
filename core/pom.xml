@@ -88,6 +88,7 @@
 					<excludes>
 						<exclude>com/workday/community/aem/core/constants/*</exclude>
                         <exclude>com/workday/community/aem/core/pojos/**/*</exclude>
+                        <exclude>com/workday/community/aem/core/exceptions/**/*</exclude>
                         <exclude>META-INF/**</exclude>
 					</excludes>
 				</configuration>
@@ -125,12 +126,12 @@
 										<limit>
 											<counter>LINE</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.00</minimum>
+											<minimum>0.30</minimum>
 										</limit>
 										<limit>
 											<counter>BRANCH</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.00</minimum>
+											<minimum>0.30</minimum>
 										</limit>
 									</limits>
 								</rule>
@@ -172,6 +173,14 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
+        </dependency>
 
         <!-- Testing -->
         <dependency>
@@ -182,7 +191,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-inline</artifactId>
-            <version>3.9.0</version>
+            <version>5.2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>

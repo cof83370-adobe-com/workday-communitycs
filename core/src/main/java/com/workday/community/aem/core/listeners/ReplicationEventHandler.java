@@ -4,22 +4,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.JobManager;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
-import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.day.cq.replication.ReplicationAction;
 import com.day.cq.replication.ReplicationActionType;
-import com.workday.community.aem.core.config.CoveoApiConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 
 /**
  * The Class ReplicationEventHandler.
@@ -30,7 +28,6 @@ import com.workday.community.aem.core.constants.GlobalConstants;
     property = {
         EventConstants.EVENT_TOPIC + "=" + ReplicationAction.EVENT_TOPIC,
     })
-@Designate(ocd = CoveoApiConfig.class)
 public class ReplicationEventHandler implements EventHandler {
     
     /** The logger. */
@@ -40,17 +37,9 @@ public class ReplicationEventHandler implements EventHandler {
     @Reference
     JobManager jobManager;
 
-    /** The coveoApiConfig. */
-    private CoveoApiConfig coveoApiConfig;
-
-    /**
-	 * Activate the config.
-	 */
-    @Activate
-    @Modified
-    protected void activate(CoveoApiConfig coveoApiConfig) {
-        this.coveoApiConfig = coveoApiConfig;
-    }
+    /** The CoveoIndexApiConfigService. */
+    @Reference 
+    private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     /**
 	 * Get coveo indexing is enabled or not.
@@ -58,22 +47,21 @@ public class ReplicationEventHandler implements EventHandler {
 	 * @return Coveo indexing is enabled or not.
 	 */
     public boolean isCoveoEnabled() {
-        return coveoApiConfig.isEnabled();
+        return coveoIndexApiConfigService.isCoveoIndexEnabled();
     }
     
     @Override
     public void handleEvent(Event event) {
         if (isCoveoEnabled()) {
-            try {
-                ReplicationAction action = getAction(event);
-                if (action.getType().equals(ReplicationActionType.ACTIVATE) ||
-                    action.getType().equals(ReplicationActionType.DEACTIVATE) ||
-                    action.getType().equals(ReplicationActionType.DELETE)
-                ) {
-                    startCoveoJob(action);
+            ReplicationAction action = getAction(event);
+            if (action.getPath().contains(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH) &&
+                (action.getType().equals(ReplicationActionType.ACTIVATE) ||
+                action.getType().equals(ReplicationActionType.DEACTIVATE) ||
+                action.getType().equals(ReplicationActionType.DELETE))
+            ) {
+                if (startCoveoJob(action) == null) {
+                    logger.error("\n Error occurred while Creating Coveo push job for page");
                 }
-            } catch (Exception e) {
-                logger.error("\n Error occured while Publishing/Unpublishing page - {} " , e.getMessage());
             }
         }    
     }
@@ -84,23 +72,22 @@ public class ReplicationEventHandler implements EventHandler {
 	 * @return The ReplicationAction.
 	 */
     public ReplicationAction getAction(Event event) {
-        ReplicationAction action = ReplicationAction.fromEvent(event);
-        return action;
+        return ReplicationAction.fromEvent(event);
     }
 
     /**
 	 * Start coveo job for indexing or deleteing.
 	 */
-    public void startCoveoJob(ReplicationAction action) {
+    public Job startCoveoJob(ReplicationAction action) {
         Map<String, Object> jobProperties = new HashMap<>();
-        ArrayList<String> paths = new ArrayList<String>();
+        ArrayList<String> paths = new ArrayList<>();
         paths.add(action.getPath());
         String op = action.getType().equals(ReplicationActionType.ACTIVATE) ? "index" : "delete";
         jobProperties.put("op", op);
         jobProperties.put("paths", paths);
                 
         // Add this job to the job manager.
-        jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
+        return jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
     }
     
 }

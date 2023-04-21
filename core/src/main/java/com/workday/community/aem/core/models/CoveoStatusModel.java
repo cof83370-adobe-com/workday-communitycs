@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.models;
 
+import java.util.List;
+
 public interface CoveoStatusModel {
 
     /**
@@ -26,7 +28,27 @@ public interface CoveoStatusModel {
     /**
      * Gets the coveo server status.
      *
-     * @return coveo server status.
+     * @return Cover server has error or not.
      */
-    boolean getServerStatus();
+
+    /**
+     * Gets the page templates.
+     *
+     * @return List of templates.
+     */
+    List<String> getTemplates();
+
+    /**
+     * Get server status.
+     *
+     * @return server status.
+     */
+    boolean getServerHasError();
+
+    /**
+     * Check Coveo enabled or not.
+     *
+     * @return Coveo indexing status.
+     */
+    boolean isCoveoEnabled();
 }
