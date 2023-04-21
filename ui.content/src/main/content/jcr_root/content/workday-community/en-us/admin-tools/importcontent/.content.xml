@@ -26,10 +26,22 @@
                     layout="responsiveGrid">
                     <title
                         jcr:primaryType="nt:unstructured"
-                        sling:resourceType="workday-community/components/core/title"/>
+                        jcr:title="Migration Tool"
+                        sling:resourceType="workday-community/components/core/title"
+                        linkTarget="_self"
+                        type="h2"/>
+                    <container
+                        cq:styleIds="[1678325127281]"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/core/container"/>
                     <importcontent
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="workday-community/components/common/importcontent"/>
+                    <embed
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/core/embed"
+                        html="&lt;img src=&quot;&quot; alt=&quot;report loading...&quot; id=&quot;report-loader&quot; style=&quot;display:none&quot;>&lt;/img>&#xd;&#xa;&lt;div id=&quot;migration-status&quot;>&#xd;&#xa;      &lt;div style=&quot;display:none&quot;>embed placeholder&lt;/div>&#xd;&#xa;&lt;/div>&#xd;&#xa;&lt;div id=&quot;migration-report&quot;>&lt;/div>"
+                        type="html"/>
                 </container>
             </container>
         </root>
