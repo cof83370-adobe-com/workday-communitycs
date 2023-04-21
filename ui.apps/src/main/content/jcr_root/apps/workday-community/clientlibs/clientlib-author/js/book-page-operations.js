@@ -27,7 +27,6 @@
             $formFields.each(function () {
               if (!$(this).checkValidity()) {
                 valid = false;
-                return valid;
               }
             });
             return valid;
