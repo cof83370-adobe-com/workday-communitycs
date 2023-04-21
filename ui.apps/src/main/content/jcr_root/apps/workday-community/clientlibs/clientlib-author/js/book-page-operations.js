@@ -4,13 +4,15 @@
 
   $(document).on('dialog-ready', function () {
     const BOOK_COMP_CLASS = '.book-comp-class';
-    const selector = 'coral-multifield';
+    const CORAL_MULTI_CLASS = 'coral-multifield';
+    const CORAL_MULTI_INPUT = 'coral-multifield input';
     const CQ_DIALOG_SUBMIT_CLASS = '.cq-dialog-submit';
     // Only do custom logic if we're using our book component. The below id
     if ($(BOOK_COMP_CLASS).length > 0) {
       // on submit of the book component that will be registered for click event.
       $(BOOK_COMP_CLASS).parents().find(CQ_DIALOG_SUBMIT_CLASS).click(function () {
-        if ($(selector).checkValidity()) {
+        //Check Validators for coral mutlifield and coral multifield inputs
+        if ($(CORAL_MULTI_CLASS).checkValidity() && $(CORAL_MULTI_INPUT).willValidate()) {
           //Get the book dialog form
           const $form = $(this).closest('form.foundation-form'); //get jquery variable based on 'richtext'
           const MODULE_NAME = 'Book Operations';
