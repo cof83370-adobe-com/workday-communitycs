@@ -5,6 +5,7 @@ import com.adobe.xfa.ut.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
@@ -23,7 +24,6 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
@@ -31,6 +31,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
+
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.IS_NSC;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.NSC;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
 
 /**
  * The OSGi service implementation for snap logic.
@@ -40,7 +50,7 @@ import java.util.Date;
   property = {
     "service.pid=aem.core.services.snap"
   },
-  configurationPolicy = ConfigurationPolicy.OPTIONAL,
+  configurationPid = "com.workday.community.aem.core.config.SnapConfig",
   immediate = true
 )
 @Designate(ocd = SnapConfig.class)
@@ -198,5 +208,88 @@ public class SnapServiceImpl implements SnapService {
     }
 
    return gson.toJson(sfNavObj);
+  }
+
+  @Override
+  public String getUserProfile(String sfId) {
+    String cacheKey = String.format("profile_%s", sfId);
+    String cachedResult = snapCache.get(cacheKey);
+    if (cachedResult != null) {
+      return cachedResult;
+    }
+    try {
+      String url = CommunityUtils.formUrl(config.snapUrl() , config.snapProfilePath());
+      url = String.format(url, sfId);
+      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
+      snapCache.put(cacheKey, jsonResponse);
+      return jsonResponse;
+    } catch (SnapException | JsonSyntaxException e) {
+      logger.error("Error in getUserProfile method :: {}", e.getMessage());
+    }
+
+    logger.error("User profile data is not fetched from the snap profile API call without error, please contact admin.");
+    return null;
+  }
+
+  @Override
+  public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
+    String cacheKey = String.format("adobeAnalytics_%s", sfId);
+    String cachedResult = snapCache.get(cacheKey);
+    JsonObject digitalData;
+    if (cachedResult != null) {
+      digitalData = gson.fromJson(cachedResult, JsonObject.class);
+    }
+    else {
+      String profileData = getUserProfile(sfId);
+      digitalData = generateAdobeDigitalData(profileData);
+      snapCache.put(cacheKey, gson.toJson(digitalData));
+    }
+    JsonObject pageProperties = new JsonObject();
+    pageProperties.addProperty(CONTENT_TYPE, contentType);
+    pageProperties.addProperty(PAGE_NAME, pageTitle);
+    digitalData.add("page", pageProperties);
+    return String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
+  }
+
+  /**
+   * Generate adobe digital data.
+   * 
+   * @param profileData The user profile api response as string.
+   * @return The digital data.
+   */
+  private JsonObject generateAdobeDigitalData(String profileData) {
+    JsonObject digitalData = new JsonObject();
+    JsonObject userProperties = new JsonObject();
+    JsonObject orgProperties = new JsonObject();
+    String contactRole = "";
+    String contactNumber = "";
+    String accountID = "";
+    String accountName = "";
+    String accountType = "";
+    Boolean isNSC = false;
+    if (profileData != null) {
+      JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
+      contactRole = profileObject.get(CONTACT_ROLE).getAsString();
+      contactNumber = profileObject.get(CONTACT_NUMBER).getAsString();
+      isNSC = contactRole.contains(NSC) ? true : false;
+
+      JsonElement wrcOrgId = profileObject.get("wrcOrgId");
+      accountID = wrcOrgId.isJsonNull() ? "" : wrcOrgId.getAsString();
+      JsonElement organizationName = profileObject.get("organizationName");
+      accountName = organizationName.isJsonNull() ? "" : organizationName.getAsString();
+      JsonElement isWorkmateElement = profileObject.get("isWorkmate");
+      Boolean isWorkdayMate = isWorkmateElement.isJsonNull() ? false : isWorkmateElement.getAsBoolean();
+      accountType = isWorkdayMate ? "workday" : profileObject.get("type").getAsString().toLowerCase();
+    }
+    userProperties.addProperty(CONTACT_ROLE, contactRole);
+    userProperties.addProperty(CONTACT_NUMBER, contactNumber);
+    userProperties.addProperty(IS_NSC, isNSC);
+    orgProperties.addProperty(ACCOUNT_ID, accountID);
+    orgProperties.addProperty(ACCOUNT_NAME, accountName);
+    orgProperties.addProperty(ACCOUNT_TYPE, accountType);
+    digitalData.add("user", userProperties);
+    digitalData.add("org", orgProperties);
+
+    return digitalData;
   }
 }
