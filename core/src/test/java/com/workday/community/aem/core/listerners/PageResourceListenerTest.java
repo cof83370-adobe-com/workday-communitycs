@@ -1,7 +1,9 @@
 package com.workday.community.aem.core.listerners;
 
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
-
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -11,12 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.listeners.PageResourceListener;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.utils.ResolverUtil;
-
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
@@ -63,7 +63,7 @@ public class PageResourceListenerTest {
     public void setUp() throws Exception {
         context.load().json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
                 "/content");
-        Page currentPage = context.currentResource("/content/book-faq-page").adaptTo(Page.class);
+        Page currentPage = context.currentResource("/content/book-faq-page").adaptTo(Page.class);        
         context.registerService(Page.class, currentPage);
         context.registerService(ResourceResolver.class, resolver);
     }
@@ -76,6 +76,9 @@ public class PageResourceListenerTest {
     @Test
     void testRemoveBookNodes() throws Exception {
         when(ResolverUtil.newResolver(resolverFactory, "workday-community-administrative-service")).thenReturn(resolver);
+        List<String> pathList = new ArrayList<>();
+        pathList.add("/content/book-1/jcr:content/root/container/container/book");
+        lenient().when(queryService.getBookNodesByPath(context.currentPage().getPath(), null)).thenReturn(pathList);
         pageResourceListener.removeBookNodes(context.currentPage().getPath());  
     }
 }

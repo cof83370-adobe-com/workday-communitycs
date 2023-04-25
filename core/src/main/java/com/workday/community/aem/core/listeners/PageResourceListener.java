@@ -27,6 +27,7 @@ import com.workday.community.aem.core.utils.ResolverUtil;
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
         ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
         ResourceChangeListener.CHANGES + "=" + "REMOVED",
+        ResourceChangeListener.CHANGES + "=" + "ADDED",
 })
 
 @ServiceDescription("PageResourceListener")
@@ -37,16 +38,17 @@ public class PageResourceListener implements ResourceChangeListener {
     /** The resolver factory. */
     @Reference
     private ResourceResolverFactory resolverFactory;
-   
+
     /** The query service. */
     @Reference
     QueryService queryService;
 
     @Override
     public void onChange(List<ResourceChange> changes) {
-
         changes.forEach(change -> {
-            removeBookNodes(change.getPath());
+            if (change.getType().toString() == "REMOVED" && changes.size() == 1 ) {
+                removeBookNodes(change.getPath());
+            }
         });
     }
 
@@ -57,7 +59,8 @@ public class PageResourceListener implements ResourceChangeListener {
      */
     public void removeBookNodes(String pagePath) {
 
-        try(ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory, "workday-community-administrative-service")) {
+        try (ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory,
+                "workday-community-administrative-service")) {
             if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
                 List<String> paths = queryService.getBookNodesByPath(pagePath, null);
                 for (String path : paths) {
