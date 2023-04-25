@@ -124,9 +124,10 @@ public class QueryServiceImpl implements QueryService {
             SearchResult searchResult = query.getResult();
             for (Hit hit : searchResult.getHits()) {
                 String path = hit.getPath();
-                if (StringUtils.isNotEmpty(currentPath) && !path.contains(currentPath)) {
-                    paths.add(path);
+                if (StringUtils.isNotEmpty(currentPath) && path.contains(currentPath)) {
+                    continue;
                 }
+                paths.add(path);
             }
         } catch (LoginException | RepositoryException e) {
             logger.error("Exception occurred when running query to get book pages {} ", e.getMessage());
