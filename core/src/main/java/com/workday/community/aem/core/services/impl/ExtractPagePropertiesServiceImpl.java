@@ -30,6 +30,8 @@ import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOU
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
+
 /**
  * The Class ExtractPagePropertiesServiceImpl.
  */
@@ -69,13 +71,6 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     static {
         customComponents.put("root/container/eventregistration/button", "registrationLink");
     }
-
-    /** The contentTypeMapping. */
-    private final Map<String,String> contentTypeMapping = Map.of(
-        "/conf/community/settings/wcm/templates/event-page-template", "Calendar Event", 
-        "/conf/community/settings/wcm/templates/faq", "FAQ", 
-        "/conf/community/settings/wcm/templates/kits-and-tools", "Kits and Tools", 
-        "/conf/community/settings/wcm/templates/reference", "Reference");
 
     /** The TEXT_COMPONENT. */
     public static final String TEXT_COMPONENT = "community/components/text";
@@ -201,7 +196,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             }
             if (value != null) {
                 if (stringField.equals(NN_TEMPLATE)) {
-                    properties.put("contentType", contentTypeMapping.get(value));
+                    properties.put("contentType", CONTENT_TYPE_MAPPING.get(value));
                 }
                 else {
                     properties.put(stringField, value);

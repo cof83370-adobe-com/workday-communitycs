@@ -19,5 +19,11 @@ public interface HeaderModel {
    *
    * @return The profile avatar icon data used for the profile in the global header of the page.
    */
-  String getUserAvatarUrl();
+  String getUserAvatar();
+
+  /**
+   *
+   * @return The data layer data.
+   */
+  String getDataLayerData();
 }
