@@ -49,11 +49,9 @@ public class AuthorizationFilter implements Filter {
     @Reference
     private ResourceResolverFactory resolverFactory;
 
-    ResourceResolver resourceResolver;
+    private transient ResourceResolver resourceResolver;
 
-    transient Session jcrSession;
-
-    transient Session session;
+    private transient Session session;
 
     @Reference
     transient OktaService oktaService;
@@ -79,7 +77,7 @@ public class AuthorizationFilter implements Filter {
 
             Map<String, Object> serviceParams = new HashMap<>();
             serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
-            jcrSession = slingRequest.getResourceResolver().adaptTo(Session.class);
+            Session jcrSession = slingRequest.getResourceResolver().adaptTo(Session.class);
             String userId = jcrSession.getUserID();
             boolean isValid = true;
             try {
@@ -110,6 +108,11 @@ public class AuthorizationFilter implements Filter {
                     session.logout();
                     session = null;
                 }
+                if (jcrSession != null && jcrSession.isLive()) {
+                    jcrSession.logout();
+                    jcrSession = null;
+                }
+
             }
 
         }
