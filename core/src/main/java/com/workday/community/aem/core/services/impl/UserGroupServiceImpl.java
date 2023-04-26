@@ -12,6 +12,7 @@ import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.resource.LoginException;
@@ -103,6 +104,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 String sfId = values != null && values.length > 0 ? values[0].getString() : null;
                 if (sfId != null) {
                     List<String> sfGroupsIds =  this.getUserGroupsFromSnap(sfId);
+                    logger.info("Salesforce roles "+ StringUtils.join(",",sfGroupsIds));
                     if (!sfGroupsIds.isEmpty()) {
                         groupIds.addAll(this.convertSfGroupsToAemGroups(sfGroupsIds));
                         userService.updateUser(user.getID(), Map.<String, String>of(), groupIds);

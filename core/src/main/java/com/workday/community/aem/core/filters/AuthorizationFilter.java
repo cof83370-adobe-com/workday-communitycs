@@ -6,6 +6,8 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.day.cq.wcm.api.constants.NameConstants;
 import com.workday.community.aem.core.services.OktaService;
+import com.workday.community.aem.core.services.UserGroupService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -24,10 +26,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.servlet.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -47,19 +46,20 @@ public class AuthorizationFilter implements Filter {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private String groupName = "workday-admin";
-
     @Reference
     private ResourceResolverFactory resolverFactory;
 
     ResourceResolver resourceResolver;
 
-    Session jcrSession;
+    transient Session jcrSession;
 
-    Session session;
+    transient Session session;
 
     @Reference
     transient OktaService oktaService;
+
+    @Reference
+    transient UserGroupService userGroupService;
 
 
     @Override
@@ -73,8 +73,7 @@ public class AuthorizationFilter implements Filter {
 
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
         String pagePath = slingRequest.getRequestPathInfo().getResourcePath();
-        logger.error("request for {}, with selector {}",
-                pagePath, slingRequest.getRequestPathInfo().getSelectorString());
+        logger.error("request for {}, with selector {}", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
 
         if (oktaService.isOktaIntegrationEnabled() && pagePath.contains("/content/workday-community") && !pagePath.contains("/errors/")) {
 
@@ -130,8 +129,10 @@ public class AuthorizationFilter implements Filter {
                 Page pageObject = pageManager.getPage(pagePath);
                 if (null != pageObject) {
                     List<String> tagsList = getTagIds(pageObject);
-
-                    if (!(tagsList.contains("everyone") || tagsList.contains(groupName))) {
+                    logger.error("---> Tags List.. {}", StringUtils.join(tagsList,","));
+                    List<String> groupsList = userGroupService.getLoggedInUsersGroups();
+                    logger.error("---> Groups List.. {}", StringUtils.join(groupsList,","));
+                    if (!(tagsList.contains("everyone") || !Collections.disjoint(tagsList,groupsList))) {
                         isValid = false;
                     }
                 }
