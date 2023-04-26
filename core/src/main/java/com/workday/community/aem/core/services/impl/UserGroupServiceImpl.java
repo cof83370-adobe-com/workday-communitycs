@@ -105,7 +105,9 @@ public class UserGroupServiceImpl implements UserGroupService {
             if (!hasSfRoles) {
                 logger.error("user has sf role--->}");
                 Value[] values = user.getProperty(WccConstants.PROFILE_SOURCE_ID);
+                logger.error("after user has sf role reading PROFILE_SOURCE_ID --->}");
                 String sfId = values != null && values.length > 0 ? values[0].getString() : null;
+                logger.error(" after values sfid --->}"+sfId);
                 if (sfId != null) {
                     logger.error("user  sf id--->"+sfId);
                     List<String> sfGroupsIds =  this.getUserGroupsFromSnap(sfId);
