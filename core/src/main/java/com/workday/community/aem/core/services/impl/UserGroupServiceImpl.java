@@ -85,6 +85,7 @@ public class UserGroupServiceImpl implements UserGroupService {
      * @return User group list.
      */
     public List<String> getLoggedInUsersGroups() throws OurmException {
+        logger.error("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
         List<String> groupIds = new ArrayList<>();
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, USER_SERVICE_USER)) {
             User user = CommonUtils.getLoggedInUser(resourceResolver);
@@ -93,19 +94,24 @@ public class UserGroupServiceImpl implements UserGroupService {
             boolean hasSfRoles = false;
             while(groups.hasNext()) {
                 String groupId = groups.next().getID();
+                logger.error("from  UserGroupServiceImpl user group id"+ groupId);
                 groupIds.add(groupId);
                 if (!ArrayUtils.contains(AEM_DEFAULT_GROUPS, groupId)) {
+                    logger.error("user sf role " +groupId);
                     hasSfRoles = true;
                 }
             }
 
             if (!hasSfRoles) {
+                logger.error("user has sf role--->}");
                 Value[] values = user.getProperty(WccConstants.PROFILE_SOURCE_ID);
                 String sfId = values != null && values.length > 0 ? values[0].getString() : null;
                 if (sfId != null) {
+                    logger.error("user  sf id--->"+sfId);
                     List<String> sfGroupsIds =  this.getUserGroupsFromSnap(sfId);
-                    logger.info("Salesforce roles "+ StringUtils.join(",",sfGroupsIds));
+                    logger.error("Salesforce roles "+ StringUtils.join(",",sfGroupsIds));
                     if (!sfGroupsIds.isEmpty()) {
+                        logger.error("sfGroupsIds is not empty");
                         groupIds.addAll(this.convertSfGroupsToAemGroups(sfGroupsIds));
                         userService.updateUser(user.getID(), Map.<String, String>of(), groupIds);
                     }
