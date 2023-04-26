@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.listerners;
 
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +80,7 @@ public class PageResourceListenerTest {
         List<String> pathList = new ArrayList<>();
         pathList.add("/content/book-1/jcr:content/root/container/container/book");
         lenient().when(queryService.getBookNodesByPath(context.currentPage().getPath(), null)).thenReturn(pathList);
-        pageResourceListener.removeBookNodes(context.currentPage().getPath());  
+        pageResourceListener.removeBookNodes(context.currentPage().getPath());
+        verify(resolver).close();  
     }
 }
