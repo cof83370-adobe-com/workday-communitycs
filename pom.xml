@@ -202,11 +202,6 @@
 							<artifactId>scriptingbundle-maven-plugin</artifactId>
 							<version>0.5.0</version>
 						</dependency>
-						<dependency>
-							<groupId>com.workday.community</groupId>
-							<artifactId>khoros-sdk</artifactId>
-							<version>1.1-release</version>
-						</dependency>
 					</dependencies>
 				</plugin>
 				<plugin>
