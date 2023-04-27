@@ -5,6 +5,9 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -19,6 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 
 /**
@@ -45,11 +49,55 @@ public class PageResourceListener implements ResourceChangeListener {
 
     @Override
     public void onChange(List<ResourceChange> changes) {
-        changes.forEach(change -> {
-            if (change.getType().toString() == "REMOVED" && changes.size() == 1 ) {
-                removeBookNodes(change.getPath());
+        if (changes.size() == 1 && changes.get(0).getType().toString().equals("REMOVED")) {
+            removeBookNodes(changes.get(0).getPath());
+            return;
+        }
+
+        changes.stream()
+                .filter(item -> item.getType().toString() == "ADDED"
+                        && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
+                .forEach(change -> addAuthorProperty(change.getPath()));
+    }
+
+    public void addAuthorProperty(String path) {
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resolverFactory,
+                "workday-community-administrative-service")) {
+            if (resourceResolver.getResource(path) != null) {
+                Node root = resourceResolver.getResource(path).adaptTo(Node.class);
+                String createdUserId = root.hasProperty("jcr:createdBy") ? root.getProperty("jcr:createdBy").getString()
+                        : CommonUtils.getLoggedInUserId(resourceResolver);
+                UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+
+                Authorizable authorizable = userManager.getAuthorizable(createdUserId);
+
+                if (authorizable == null) {
+                    logger.warn("No such user: ${userId}");
+                    root.setProperty("author", createdUserId);
+                } else {
+                    if (null != authorizable && !authorizable.isGroup()) {
+                        String firstName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME) != null
+                                ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME)[0].getString()
+                                : null;
+                        String lastName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME) != null
+                                ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME)[0].getString()
+                                : null;
+                        if (null != firstName || null != lastName) {
+                            String fullName = String.format("%s %s", StringUtils.trimToEmpty(firstName),
+                                    StringUtils.trimToEmpty(lastName));
+                            if (!root.hasProperty("author")) {
+                                root.setProperty("author", fullName);
+                            }
+                        }
+                    }
+                }
             }
-        });
+            if (resourceResolver.hasChanges()) {
+                resourceResolver.commit();
+            }
+        } catch (PersistenceException | RepositoryException | LoginException e) {
+            logger.error("Exception occurred when running query to get total number of pages {} ", e.getMessage());
+        }
     }
 
     /**
