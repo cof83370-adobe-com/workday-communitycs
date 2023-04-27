@@ -25,24 +25,44 @@ import org.slf4j.LoggerFactory;
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.SimpleDataSource;
 import com.adobe.granite.ui.components.ds.ValueMapResource;
+
 /**
+ * The Class CoveoEventsTypeServlet.
+ *
  * @author Thabrez
  */
 @Component(service = Servlet.class, property = {Constants.SERVICE_DESCRIPTION + "= Coveo Events type Dropdown Service",
         "sling.servlet.paths=" + "/bin/coveoEventsDropdown", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
 public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
+    
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventsTypeServlet.class);
+    
+    /** The resource resolver. */
     transient ResourceResolver resourceResolver;
+    
+    /** The path resource. */
     transient Resource pathResource;
+    
+    /** The value map. */
     transient ValueMap valueMap;
+    
+    /** The resource list. */
     transient List<Resource> resourceList;
+    
+    /**
+     * Do get.
+     *
+     * @param request the request
+     * @param response the response
+     */
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
         try {
             resourceResolver = request.getResourceResolver();
             resourceList = new ArrayList<>();
-            //TO-DO :: Coveo Service Integration - to fetch the event types dynamically
+            //TODO: Coveo Service Integration - to fetch the event types dynamically
             Map<String, String > coveoEventsType = new HashMap<>();
             coveoEventsType.put("eventtype1","Event Type 1");
             coveoEventsType.put("eventtype2","Event Type 2");
@@ -62,8 +82,8 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
             /*Create a DataSource that is used to populate the drop-down control*/
             DataSource dataSource = new SimpleDataSource(resourceList.iterator());
             request.setAttribute(DataSource.class.getName(), dataSource);
-        } catch (Exception e) {
-            LOGGER.error("Error in Json Data Exporting : {}", e.getMessage());
+        } catch (Exception exception) {
+            LOGGER.error("Error Occured in DoGet Method : {}", exception.getMessage());
         }
     }
 }
