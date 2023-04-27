@@ -26,9 +26,7 @@ import com.workday.community.aem.core.utils.ResolverUtil;
  */
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
         ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
-        ResourceChangeListener.CHANGES + "=" + "REMOVED",
-        ResourceChangeListener.CHANGES + "=" + "ADDED",
-})
+        ResourceChangeListener.CHANGES + "=" + "REMOVED" })
 
 @ServiceDescription("PageResourceListener")
 public class PageResourceListener implements ResourceChangeListener {
@@ -45,11 +43,10 @@ public class PageResourceListener implements ResourceChangeListener {
 
     @Override
     public void onChange(List<ResourceChange> changes) {
-        changes.forEach(change -> {
-            if (change.getType().toString() == "REMOVED" && changes.size() == 1 ) {
-                removeBookNodes(change.getPath());
-            }
-        });
+        if (changes.size() == 1 && changes.get(0).getType().toString() == "REMOVED") {
+            removeBookNodes(changes.get(0).getPath());
+            return;
+        }
     }
 
     /**
