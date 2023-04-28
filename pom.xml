@@ -202,6 +202,11 @@
 							<artifactId>scriptingbundle-maven-plugin</artifactId>
 							<version>0.5.0</version>
 						</dependency>
+						<dependency>
+							<groupId>com.workday.community</groupId>
+							<artifactId>khoros-sdk</artifactId>
+							<version>1.1-release</version>
+						</dependency>
 					</dependencies>
 				</plugin>
 				<plugin>
@@ -388,6 +393,74 @@
 		</pluginManagement>
 	</build>
 	<profiles>
+		<profile>
+			<id>cmBuild</id>
+			<activation>
+				<property>
+					<name>env.CM_BUILD</name>
+				</property>
+			</activation>
+
+			<repositories>
+				<repository>
+					<id>community-workday-community-libs-jdk</id>
+					<url>https://community-workday-210939474461.d.codeartifact.us-west-2.amazonaws.com/maven/community-libs-jdk/</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>community-workday-community-libs-jdk</id>
+					<url>https://community-workday-210939474461.d.codeartifact.us-west-2.amazonaws.com/maven/community-libs-jdk/</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</pluginRepository>
+			</pluginRepositories>
+
+		</profile>
+		<profile>
+			<id>NotcmBuild</id>
+			<activation>
+				<property>
+					<name>!env.CM_BUILD</name>
+				</property>
+			</activation>
+
+			<repositories>
+				<repository>
+					<id>community-workday-community-libs-jdk</id>
+					<url>https://community-workday-210939474461.d.codeartifact.us-west-2.amazonaws.com/maven/community-libs-jdk/</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</repository>
+			</repositories>
+			<pluginRepositories>
+				<pluginRepository>
+					<id>community-workday-community-libs-jdk</id>
+					<url>https://community-workday-210939474461.d.codeartifact.us-west-2.amazonaws.com/maven/community-libs-jdk/</url>
+					<snapshots>
+						<enabled>true</enabled>
+					</snapshots>
+					<releases>
+						<enabled>true</enabled>
+					</releases>
+				</pluginRepository>
+			</pluginRepositories>
+
+		</profile>
 		<!-- Development profile: install only the bundle -->
 		<profile>
 			<id>autoInstallBundle</id>

@@ -117,18 +117,16 @@ public class QueryServiceImpl implements QueryService {
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             session = resourceResolver.adaptTo(Session.class);
             Map<String, String> queryMap = new HashMap<>();
-            queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
+            queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_BOOK_ROOT_PATH);
             queryMap.put("fulltext", bookPagePath);
-            if(StringUtils.isNotBlank(currentPath)) {
-                queryMap.put("group.1_group.p.not", "true");
-                queryMap.put("group.1_group.path", currentPath);
-                queryMap.put("group.1_group.path.self", "true");
-            }
             queryMap.put("p.limit", "-1");
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult searchResult = query.getResult();
             for (Hit hit : searchResult.getHits()) {
                 String path = hit.getPath();
+                if (StringUtils.isNotEmpty(currentPath) && path.contains(currentPath)) {
+                    continue;
+                }
                 paths.add(path);
             }
         } catch (LoginException | RepositoryException e) {
