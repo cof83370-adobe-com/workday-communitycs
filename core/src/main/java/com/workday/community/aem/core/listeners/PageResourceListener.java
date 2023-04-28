@@ -62,7 +62,7 @@ public class PageResourceListener implements ResourceChangeListener {
         }
 
         changes.stream()
-                .filter(item -> item.getType().toString() == "ADDED"
+                .filter(item -> "ADDED".equals(item.getType().toString() )
                         && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
                 .forEach(change -> addAuthorPropertyToContentNode(change.getPath()));
     }
