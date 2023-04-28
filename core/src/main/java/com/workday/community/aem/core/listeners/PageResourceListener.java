@@ -23,11 +23,12 @@ import org.slf4j.LoggerFactory;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.QueryService;
-import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 
 /**
  * The Class PageResourceListener.
+ *
+ * @see PageResourceEvent
  */
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
         ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
@@ -48,6 +49,11 @@ public class PageResourceListener implements ResourceChangeListener {
     @Reference
     QueryService queryService;
 
+    /**
+     * On change.
+     *
+     * @param changes the changes
+     */
     @Override
     public void onChange(List<ResourceChange> changes) {
         if (changes.size() == 1 && changes.get(0).getType().toString().equals("REMOVED")) {
@@ -61,14 +67,18 @@ public class PageResourceListener implements ResourceChangeListener {
                 .forEach(change -> addAuthorPropertyToContentNode(change.getPath()));
     }
 
+    /**
+     * Adds the author property to content node.
+     *
+     * @param path the path
+     */
     public void addAuthorPropertyToContentNode(String path) {
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resolverFactory,
                 "workday-community-administrative-service")) {
             if (resourceResolver.getResource(path) != null) {
                 Node root = resourceResolver.getResource(path).adaptTo(Node.class);
-                String createdUserId = root.hasProperty(JcrConstants.JCR_CREATED_BY)
-                        ? root.getProperty(JcrConstants.JCR_CREATED_BY).getString()
-                        : CommonUtils.getLoggedInUserId(resourceResolver);
+                String createdUserId = root.getProperty(JcrConstants.JCR_CREATED_BY).getString();
+
                 UserManager userManager = resourceResolver.adaptTo(UserManager.class);
 
                 Authorizable authorizable = userManager.getAuthorizable(createdUserId);
