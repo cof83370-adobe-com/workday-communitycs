@@ -58,6 +58,9 @@ public class CommunityUtils {
      * @return The combined url string
      */
     public static String formUrl(String baseUrl, String path) {
+        if (baseUrl == null) return null;
+        if (path == null) return baseUrl;
+
         baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length()-1) : baseUrl;
         path = path.startsWith("/") ? path : ('/' + path);
         path = path.endsWith("/") ? path.substring(0, path.length()-1) : path;

@@ -36,6 +36,12 @@ public class SearchApiConfigServiceImpl implements SearchApiConfigService {
   }
 
   @Override
+  public String getSearchHub() { return config.searchHub(); }
+
+  @Override
+  public String getDefaultEmail() { return config.defaultEmail(); }
+
+  @Override
   public String getSearchTokenAPI() {
     return config.tokenApi();
   }

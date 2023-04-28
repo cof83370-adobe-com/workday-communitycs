@@ -145,6 +145,10 @@ public class SnapServiceImpl implements SnapService {
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
       String url = CommunityUtils.formUrl(config.snapUrl() , config.snapContextPath());
+      if (url == null) {
+        return new JsonObject();
+      }
+
       url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);
@@ -153,8 +157,7 @@ public class SnapServiceImpl implements SnapService {
     }
 
     logger.error("User context is not fetched from the snap context API call without error, please contact admin.");
-
-    return null;
+    return new JsonObject();
   }
 
   @Override

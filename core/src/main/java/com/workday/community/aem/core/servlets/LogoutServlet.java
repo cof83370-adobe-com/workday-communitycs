@@ -35,8 +35,8 @@ import static com.workday.community.aem.core.constants.RestApiConstants.APPLICAT
   service = Servlet.class,
   property = {
     org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Logout Servlet",
-      "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-      "sling.servlet.paths=" + "/bin/user/logout"
+    "sling.servlet.methods=" + HttpConstants.METHOD_GET,
+    "sling.servlet.paths=" + "/bin/user/logout"
   }
 )
 public class LogoutServlet extends SlingAllMethodsServlet {
@@ -50,11 +50,11 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
   /** The UserService. */
   @Reference
-  transient UserService userService;
+  private transient UserService userService;
 
   /** The RunModeConfigService. */
   @Reference
-  transient RunModeConfigService runModeConfigService;
+  private transient RunModeConfigService runModeConfigService;
 
   private transient final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -96,7 +96,9 @@ public class LogoutServlet extends SlingAllMethodsServlet {
       Session session = resourceResolver.adaptTo(Session.class);
       // Delete user on publish instance.
       if (session != null) {
-        if (runModeConfigService.getInstance().equals(GlobalConstants.PUBLISH)) { 
+        String ins = runModeConfigService.getInstance();
+
+        if (ins != null && ins.equals(GlobalConstants.PUBLISH)) {
           String userId = session.getUserID();
           userService.deleteUser(userId);
         }

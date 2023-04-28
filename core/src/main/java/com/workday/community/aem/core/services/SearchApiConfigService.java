@@ -13,6 +13,18 @@ public interface SearchApiConfigService {
   String getOrgId();
 
   /**
+   * Get the search hub
+   * @return the search hub name.
+   */
+  String getSearchHub();
+
+  /**
+   *  Get the default email
+   * @return the default email
+   */
+  String getDefaultEmail();
+
+  /**
    * Get the Coveo search token API endpoint from the configuration.
    *
    * @return the Coveo search API endpoint.
