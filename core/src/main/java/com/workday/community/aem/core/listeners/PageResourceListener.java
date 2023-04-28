@@ -8,6 +8,7 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.vault.util.JcrConstants;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -57,15 +58,16 @@ public class PageResourceListener implements ResourceChangeListener {
         changes.stream()
                 .filter(item -> item.getType().toString() == "ADDED"
                         && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
-                .forEach(change -> addAuthorProperty(change.getPath()));
+                .forEach(change -> addAuthorPropertyToContentNode(change.getPath()));
     }
 
-    public void addAuthorProperty(String path) {
+    public void addAuthorPropertyToContentNode(String path) {
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resolverFactory,
                 "workday-community-administrative-service")) {
             if (resourceResolver.getResource(path) != null) {
                 Node root = resourceResolver.getResource(path).adaptTo(Node.class);
-                String createdUserId = root.hasProperty("jcr:createdBy") ? root.getProperty("jcr:createdBy").getString()
+                String createdUserId = root.hasProperty(JcrConstants.JCR_CREATED_BY)
+                        ? root.getProperty(JcrConstants.JCR_CREATED_BY).getString()
                         : CommonUtils.getLoggedInUserId(resourceResolver);
                 UserManager userManager = resourceResolver.adaptTo(UserManager.class);
 
@@ -85,9 +87,7 @@ public class PageResourceListener implements ResourceChangeListener {
                         if (null != firstName || null != lastName) {
                             String fullName = String.format("%s %s", StringUtils.trimToEmpty(firstName),
                                     StringUtils.trimToEmpty(lastName));
-                            if (!root.hasProperty("author")) {
-                                root.setProperty("author", fullName);
-                            }
+                            root.setProperty("author", fullName);
                         }
                     }
                 }
@@ -96,7 +96,7 @@ public class PageResourceListener implements ResourceChangeListener {
                 resourceResolver.commit();
             }
         } catch (PersistenceException | RepositoryException | LoginException e) {
-            logger.error("Exception occurred when running query to get total number of pages {} ", e.getMessage());
+            logger.error("Exception occurred when adding author property to page {} ", e.getMessage());
         }
     }
 
