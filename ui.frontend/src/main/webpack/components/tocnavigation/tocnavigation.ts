@@ -1,6 +1,10 @@
 (function() {
     const tocGroup = document.getElementsByClassName('cmp-toc__group');
     const tocGroupElement = tocGroup.length == 1 ? tocGroup[0] : null;
+    if (!tocGroupElement) {
+        return;
+    }
+
     const tocList = tocGroupElement.querySelectorAll('li');
 
     const prevBtn = document.getElementById('toc-previous') as HTMLButtonElement;

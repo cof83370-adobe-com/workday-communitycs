@@ -31,10 +31,10 @@ public @interface CoveoSearchConfig {
   String upcomingEventApiKey();
 
   @AttributeDefinition(name = "Organization Id", description = "Organization Id")
-  String orgId();
+  String orgId() default "workdayp3sqtwnv";
 
   @AttributeDefinition(name = "Search Hub", description = "Search Hub", type = AttributeType.STRING)
-  String searchHub();
+  String searchHub() default "communityv1";
 
   @AttributeDefinition(name = "Token Valid period", description = "Time token is valid for (ms)",  type = AttributeType.INTEGER)
   int tokenValidTime() default 60 * 1000;
