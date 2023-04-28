@@ -1,0 +1,8 @@
+ 
+<div class="cmp-eventsfeed" data-cmp-is="cmp-eventsfeed">
+   <div>Coveo Events: ${properties.coveoevents}</div> 
+   <div>Event Type: ${properties.eventtype}</div>
+   <div>Featured Events: ${properties.featuredevent}</div>
+</div>
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
+   data-sly-call="${template.placeholder  @ isEmpty =! properties.coveoevents , classAppend='cmp-eventsfeed'}"></sly> 
