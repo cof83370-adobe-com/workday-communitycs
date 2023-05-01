@@ -3,12 +3,15 @@ package com.workday.community.aem.core.filters;
 import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.OktaService;
+import com.workday.community.aem.core.services.UserGroupService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.request.RequestPathInfo;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
@@ -30,8 +33,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class AuthorizationFilterTest {
@@ -43,6 +45,9 @@ public class AuthorizationFilterTest {
 
     @Mock
     ResourceResolver resolver;
+
+    @Mock
+    UserGroupService userGroupService;
 
     @Mock
     Session jcrSession;
@@ -86,11 +91,9 @@ public class AuthorizationFilterTest {
 
 
     @Test
-    void testdoFilterWithoutValidUser() throws ServletException, IOException, RepositoryException, org.apache.sling.api.resource.LoginException {
+    void testD0FilterWithoutValidUser() throws ServletException, IOException, RepositoryException, org.apache.sling.api.resource.LoginException, OurmException {
 
         authorizationFilter.init(filterConfig);
-
-        final ServletOutputStream outputStream = mock(ServletOutputStream.class);
 
         Map<String, Object> serviceParams = new HashMap<>();
         serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
@@ -98,49 +101,86 @@ public class AuthorizationFilterTest {
         when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
         when(request.getRequestPathInfo()).thenReturn(requestPathInfo);
         when(request.getRequestPathInfo().getResourcePath()).thenReturn("/content/workday-community/test");
-        //when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(request.getResourceResolver()).thenReturn(resolver);
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
-        when(jcrSession.getUserID()).thenReturn("admin");
+        when(jcrSession.getUserID()).thenReturn("test-user1");
         when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
         when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("admin")).thenReturn(user);
+        when(userManager.getAuthorizable("test-user1")).thenReturn(user);
+        when(user.getPath()).thenReturn("home/users/test-user1");
+
 
         authorizationFilter.doFilter(request, response, filterChain);
 
+        verify(userGroupService, times(0)).getLoggedInUsersGroups(any());
 
     }
 
 
     @Test
-    void testdoFilterWithValidUser() throws ServletException, IOException, RepositoryException, org.apache.sling.api.resource.LoginException {
+    void testDoFilterWithValidUserAndEveryoneTag() throws ServletException, IOException, RepositoryException, LoginException, OurmException {
 
         authorizationFilter.init(filterConfig);
 
         final ServletOutputStream outputStream = mock(ServletOutputStream.class);
         String pagePath = "/content/workday-community/test";
-        Tag[] tags = new Tag[10];
+        Tag[] tags = new Tag[2];
         tags[0] = context.create().tag("work-day:groups/everyone");
-
+        tags[1] = context.create().tag("work-day:groups/workmate");
         Map<String, Object> serviceParams = new HashMap<>();
         serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
 
         when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
         when(request.getRequestPathInfo()).thenReturn(requestPathInfo);
-        when(request.getRequestPathInfo().getResourcePath()).thenReturn("/content/workday-community/test");
-        //when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
+        when(request.getRequestPathInfo().getResourcePath()).thenReturn(pagePath);
         when(request.getResourceResolver()).thenReturn(resolver);
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
-        when(jcrSession.getUserID()).thenReturn("admin");
+        when(jcrSession.getUserID()).thenReturn("workday-user1");
         when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
         when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("admin")).thenReturn(user);
-        //when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
-        //when(pageManager.getPage(pagePath)).thenReturn(pageObj);
-        //when(pageObj.getTags()).thenReturn(tags);
+        when(userManager.getAuthorizable("workday-user1")).thenReturn(user);
+        when(user.getPath()).thenReturn("home/users/workday-community/workday-user1");
+        when(jcrSession.itemExists(anyString())).thenReturn(true);
+        when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+        when(pageManager.getPage(anyString())).thenReturn(pageObj);
+        when(pageObj.getTags()).thenReturn(tags);
+
         authorizationFilter.doFilter(request, response, filterChain);
 
+        verify(userGroupService, times(0)).getLoggedInUsersGroups(any());
+    }
 
+    @Test
+    void testDoFilterWithValidUserAndWithOutEveryoneTag() throws ServletException, IOException, RepositoryException, LoginException, OurmException {
+
+        authorizationFilter.init(filterConfig);
+
+        final ServletOutputStream outputStream = mock(ServletOutputStream.class);
+        String pagePath = "/content/workday-community/test";
+        Tag[] tags = new Tag[2];
+        tags[0] = context.create().tag("work-day:groups/customer");
+        tags[1] = context.create().tag("work-day:groups/workmate");
+        Map<String, Object> serviceParams = new HashMap<>();
+        serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
+
+        when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
+        when(request.getRequestPathInfo()).thenReturn(requestPathInfo);
+        when(request.getRequestPathInfo().getResourcePath()).thenReturn(pagePath);
+        when(request.getResourceResolver()).thenReturn(resolver);
+        when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
+        when(jcrSession.getUserID()).thenReturn("workday-user1");
+        when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
+        when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
+        when(userManager.getAuthorizable("workday-user1")).thenReturn(user);
+        when(user.getPath()).thenReturn("home/users/workday-community/workday-user1");
+        when(jcrSession.itemExists(anyString())).thenReturn(true);
+        when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+        when(pageManager.getPage(anyString())).thenReturn(pageObj);
+        when(pageObj.getTags()).thenReturn(tags);
+
+        authorizationFilter.doFilter(request, response, filterChain);
+
+        verify(userGroupService, times(1)).getLoggedInUsersGroups(any());
     }
 
 }

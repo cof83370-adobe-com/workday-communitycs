@@ -5,9 +5,9 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.day.cq.wcm.api.constants.NameConstants;
+import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -51,6 +51,9 @@ public class AuthorizationFilter implements Filter {
 
     private transient ResourceResolver resourceResolver;
 
+
+    private transient ResourceResolver requestResourceResolver;
+
     private transient Session session;
 
     @Reference
@@ -77,28 +80,27 @@ public class AuthorizationFilter implements Filter {
 
             Map<String, Object> serviceParams = new HashMap<>();
             serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
-            Session jcrSession = slingRequest.getResourceResolver().adaptTo(Session.class);
-            String userId = jcrSession.getUserID();
-            boolean isValid = true;
+            requestResourceResolver = slingRequest.getResourceResolver();
+            Session userSession = requestResourceResolver.adaptTo(Session.class);
+            String userId = userSession.getUserID();
+            logger.error("current user  {}", userId);
+            boolean isInValid = true;
             try {
                 resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
 
                 UserManager userManager = resourceResolver.adaptTo(UserManager.class);
                 Authorizable user = userManager.getAuthorizable(userId);
 
-                if (null != user) {
-                    isValid = validateTheUser(pagePath);
-                } else {
-                    logger.error("current user  {}", userId);
+                if (null != user && user.getPath().contains("workday")) {
+                    isInValid = validateTheUser(pagePath);
                 }
-
-                if (!isValid) {
+                if (isInValid) {
                     SlingHttpServletResponse slingHttpServletResponse = (SlingHttpServletResponse) response;
-                    slingHttpServletResponse.sendRedirect("/content/workday-community/en-us/errors/403.html");
+                    slingHttpServletResponse.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
                 }
 
             } catch (LoginException | RepositoryException e) {
-                logger.error("---> Exception.. {}", e.getMessage());
+                logger.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
             } finally {
                 if (resourceResolver != null && resourceResolver.isLive()) {
                     resourceResolver.close();
@@ -107,10 +109,6 @@ public class AuthorizationFilter implements Filter {
                 if (session != null && session.isLive()) {
                     session.logout();
                     session = null;
-                }
-                if (jcrSession != null && jcrSession.isLive()) {
-                    jcrSession.logout();
-                    jcrSession = null;
                 }
 
             }
@@ -121,42 +119,57 @@ public class AuthorizationFilter implements Filter {
     }
 
 
+    /**
+     * Validates the user based on Roles tagged to the page and User roles from Salesforce.
+     *
+     * @param pagePath : The Requested page path.
+     * @return boolean: True if user has permissions otherwise false.
+     */
     private boolean validateTheUser(String pagePath) {
-        logger.error(" inside assignTheUserToGroup");
-        boolean isValid = true;
+        logger.error(" inside validateTheUser method-->");
+        boolean isInValid = true;
         try {
-            session = resourceResolver.adaptTo(Session.class);
-            if (session.itemExists(pagePath)) {
-
-                PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-                Page pageObject = pageManager.getPage(pagePath);
-                if (null != pageObject) {
-                    List<String> tagsList = getTagIds(pageObject);
-                    logger.error("---> Tags List.. {}", StringUtils.join(tagsList,","));
-                    List<String> groupsList = userGroupService.getLoggedInUsersGroups();
-                    logger.error("---> Groups List.. {}", StringUtils.join(groupsList,","));
-                    if (!(tagsList.contains("everyone") || !Collections.disjoint(tagsList,groupsList))) {
-                        isValid = false;
+            List<String> tagsList = getTagsList(pagePath);
+            if (!tagsList.isEmpty()) {
+                logger.info("---> Tags List.. {}", tagsList);
+                if (tagsList.contains("everyone")) {
+                    isInValid = false;
+                } else {
+                    List<String> groupsList = userGroupService.getLoggedInUsersGroups(requestResourceResolver);
+                    logger.info("---> Groups List..{}", groupsList);
+                    if (!Collections.disjoint(tagsList, groupsList)) {
+                        isInValid = false;
                     }
                 }
-
             }
-
-
         } catch (Exception e) {
             logger.error("---> Not able to perform User Management..");
             logger.error("---> Exception.. {}", e.getMessage());
         }
 
-        return isValid;
+        return isInValid;
     }
 
-    private List<String> getTagIds(Page page) {
-        final List<String> tagIds = new ArrayList<>();
-        for (Tag tag : page.getTags()) {
-            tagIds.add(tag.getName());
+
+    /**
+     * Get the Tags list attached to the page.
+     *
+     * @param pagePath: The Requested page path.
+     * @return tagTitlesList.
+     */
+    private List<String> getTagsList(String pagePath) throws RepositoryException {
+        final List<String> tagTitlesList = new ArrayList<>();
+        session = resourceResolver.adaptTo(Session.class);
+        if (session.itemExists(pagePath)) {
+            PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
+            Page pageObject = pageManager.getPage(pagePath);
+            if (null != pageObject) {
+                for (Tag tag : pageObject.getTags()) {
+                    tagTitlesList.add(tag.getTitle());
+                }
+            }
         }
-        return tagIds;
+        return tagTitlesList;
     }
 
     @Override
