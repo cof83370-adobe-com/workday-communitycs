@@ -3,6 +3,8 @@ package com.workday.community.aem.core.models;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.servlethelpers.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockRequestPathInfo;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,6 +33,9 @@ public class AuthorTitleRenderConditionModelTest {
     /** The request. */
     private MockSlingHttpServletRequest request;
 
+    /** The resource. */
+    private Resource resource;
+
     /**
      * Setup.
      *
@@ -40,15 +45,12 @@ public class AuthorTitleRenderConditionModelTest {
     public void setup() throws Exception {
         context.addModelsForClasses(EventDetailsModel.class);
         Map<String, Object> pageProperties = new HashMap<>();
-        pageProperties.put("startDate", "2022-11-22T00:44:02.000+05:30");
-        pageProperties.put("endDate", "2022-11-24T00:54:02.000+05:30");
-        pageProperties.put("eventLocation", "California");
-        pageProperties.put("eventHost", "workday");
-        pageProperties.put("eventFormat", new String[] { "event:event-format/webinar" });
+
         currentPage = context.create().page("/content/workday-community/event",
                 "/conf/workday-community/settings/wcm/templates/event-page-template", pageProperties);
-
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
+        resource = context.create().resource(currentPage, "eventspage",
+        "sling:resourceType", "workday-community/components/structure/eventspage","showAuthorInAdvanced","[/conf/workday-community/settings/wcm/templates/page-content]");
         context.registerService(Page.class, currentPage);
     }
 
@@ -59,10 +61,9 @@ public class AuthorTitleRenderConditionModelTest {
      */
     @Test
     void testAuthorTitleRenderConditionModel() throws Exception {
-        request = context.request();
-        MockRequestPathInfo requestPathInfo = (MockRequestPathInfo) request.getRequestPathInfo();
+        context.request().setResource(resource);
+        MockRequestPathInfo requestPathInfo = (MockRequestPathInfo) context.request().getRequestPathInfo();
         requestPathInfo.setSuffix("/conf/workday-community/settings/wcm/templates/kits-and-tools");
-
         authorTitleRenderConditionModelTest = context.request().adaptTo(AuthorTitleRenderConditionModel.class);
         assertNotNull(authorTitleRenderConditionModelTest);
     }

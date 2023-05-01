@@ -28,6 +28,14 @@
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
+                                    <author
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        emptyText="Enter Author Name"
+                                        fieldDescription="Enter Author Name."
+                                        fieldLabel="Author Name"
+                                        name="./author"/>  
                                     <startdate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -247,15 +255,7 @@
                                         sling:resourceType="granite/ui/components/foundation/form/hidden"
                                         ignoreData="{Boolean}true"
                                         name="./readCount@TypeHint"
-                                        value="Long"/>
-                                    <author
-                                        cq:showOnCreate="{Boolean}true"
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                        emptyText="Enter Author Name"
-                                        fieldDescription="Enter Author Name."
-                                        fieldLabel="Author Name"
-                                        name="./author"/>                                        
+                                        value="Long"/>                                      
                                 </items>
                             </column>
                         </items>

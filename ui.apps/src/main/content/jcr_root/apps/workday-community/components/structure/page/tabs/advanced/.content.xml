@@ -27,7 +27,7 @@
                         <granite:rendercondition
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="workday-community/renderconditions/authorTitleRender"
-                                showAuthorInAdvanced ="[/conf/workday-community/settings/wcm/templates/page-content]"/>
+                                showAuthorInAdvanced ="/conf/workday-community/settings/wcm/templates/page-content"/>
                         </author>
                         <language
                                 granite:class="language"

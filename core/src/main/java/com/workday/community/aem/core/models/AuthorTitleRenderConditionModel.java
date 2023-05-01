@@ -54,6 +54,7 @@ public class AuthorTitleRenderConditionModel {
                 page = pm.getPage(pagePath);
             }
             if (page == null) {
+                logger.info("Page not found");
                 throw new ResourceNotFoundException("Page not found");
             }
 
