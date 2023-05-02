@@ -4,5 +4,4 @@
     <filter root="/apps/workday-community/components"/>
     <filter root="/apps/workday-community/i18n"/>
     <filter root="/apps/core"/>
-    <filter root="/apps/workday-community/renderconditions"/>
 </workspaceFilter>
