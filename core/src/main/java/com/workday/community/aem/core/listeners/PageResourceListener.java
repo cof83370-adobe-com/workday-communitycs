@@ -44,9 +44,8 @@ public class PageResourceListener implements ResourceChangeListener {
 
     @Override
     public void onChange(List<ResourceChange> changes) {
-        if (changes.size() == 1 && changes.get(0).getType().toString() == "REMOVED") {
+        if (changes.size() == 1 && changes.get(0).getType().toString().equals("REMOVED")) {
             removeBookNodes(changes.get(0).getPath());
-            return;
         }
     }
 

@@ -27,7 +27,6 @@ import javax.jcr.Value;
 import java.util.*;
 
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_ROLE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
 
 /**
  * The Class UserGroupServiceImpl.
@@ -106,7 +105,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                     List<String> sfGroupsIds =  this.getUserGroupsFromSnap(sfId);
                     if (!sfGroupsIds.isEmpty()) {
                         groupIds.addAll(this.convertSfGroupsToAemGroups(sfGroupsIds));
-                        userService.updateUser(user.getID(), Map.<String, String>of(), groupIds);
+                        userService.updateUser(user.getID(), Map.of(), groupIds);
                     }
                 }
             }

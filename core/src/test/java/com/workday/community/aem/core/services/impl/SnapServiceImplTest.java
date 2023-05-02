@@ -328,7 +328,7 @@ public class SnapServiceImplTest {
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(profileString);
 
       String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
-      assertEquals(profileString, ret.toString());
+      assertEquals(profileString, ret);
       String pageTitle = "FAQ page";
       String contentType = "FAQ";
       String contactNumber = "123";

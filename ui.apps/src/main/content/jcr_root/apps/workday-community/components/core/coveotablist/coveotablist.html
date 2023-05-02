@@ -5,7 +5,7 @@
         <span id="compPropertiesData"  data-comp-props-data="${model.compConfig}" />
         <span id="productCriteriaData" data-product-criteria="${model.productCriteria}" />
         <span id="fieldsData" data-field-criteria="${model.fields}" />
-        <span id="extraCriteriaData" extra-criteria="${model.extraCriteria}" />
+        <span id="extraCriteriaData" data-extra-criteria="${model.extraCriteria}" />
 
         <!-- start of the tab -->
         <nav class="multi-tab-navbar" id="multiTabListContainerId" aria-label="Multi-tab navigation">
@@ -87,7 +87,7 @@
                                         atomic-result-fields-list {
                                             height: auto !important;
                                         }
-                                        @media (min-width: 1024px) {
+                                        @media not all and (min-width: 1024px) {
                                             .result-root.with-sections.display-list.density-normal
                                             atomic-result-section-excerpt,
                                             .result-root.with-sections.display-list.density-normal
@@ -100,17 +100,9 @@
                                             }
                                             .list-root.display-list.density-normal
                                             [part~="outline"]::before {
-                                                margin: 24px 0px !important;
+                                                margin: 24px 0 !important;
                                                 background: #ced3d9 !important;
                                             }
-                                            .list-root .display-list .image-icon {
-                                                display: inline-block;
-                                                width: 100%;
-                                            }
-                                        }
-                                        .list-root .display-list .image-icon {
-                                            display: inline-block;
-                                            width: 100%;
                                         }
                                     </style>
                                     <atomic-result-section-title>
@@ -163,11 +155,6 @@
                         <atomic-no-results>
                         </atomic-no-results>
                     </atomic-layout-section>
-
-                    <atomic-layout-section section="pagination" class="multi-tab-pagination">
-                        <!-- TODO this is from the configuration-->
-                        <atomic-results-per-page choices-displayed="8"></atomic-results-per-page>
-                    </atomic-layout-section>
                 </atomic-layout-section>
             </atomic-search-layout>
         </atomic-search-interface>
@@ -185,7 +172,7 @@
             const component_properties = JSON.parse(compDataAttr);
 
             const productCriteria = document.getElementById("productCriteriaData").getAttribute("data-product-criteria");
-            const extraCriteria = document.getElementById("extraCriteriaData").getAttribute("extra-criteria");
+            const extraCriteria = document.getElementById("extraCriteriaData").getAttribute("data-extra-criteria");
 
             // 2 Field definition is from Coveo, (predefined in model/service?)
             const search_fields = JSON.parse("[".concat(document.getElementById("fieldsData").getAttribute("data-field-criteria")).concat("]"));
@@ -253,7 +240,16 @@
             }
 
             function getVisibleTabs(tabContainer, tab) {
-                const totalWidth = tabContainer.clientWidth;
+                let totalWidth = tabContainer.clientWidth;
+                const ml = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("margin-left");
+                const mr = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("margin-right");
+                const pl = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("padding-left");
+                const pr = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("padding-right");
+                if (ml) { totalWidth += parseFloat(ml); }
+                if (mr) { totalWidth += parseFloat(mr); }
+                if (pl) { totalWidth += parseFloat(pl); }
+                if (pr) { totalWidth += parseFloat(pr); }
+
                 let fields = [];
                 let accuWidth = 0;
                 for (let index in tab.childNodes) {
@@ -261,33 +257,16 @@
                     if (curElem.tagName === 'LI') {
                         const tabWidth = curElem.getBoundingClientRect().width;
                         let marginLeft = document.defaultView.getComputedStyle(curElem).getPropertyValue("margin-left");
-                        if (marginLeft)  {
-                            marginLeft = parseFloat(marginLeft);
-                        } else {
-                            marginLeft = 0;
-                        }
+                        marginLeft = marginLeft ? parseFloat(marginLeft) : 0;
 
                         let marginRight = document.defaultView.getComputedStyle(curElem).getPropertyValue("margin-right");
-                        if (marginRight)  {
-                            marginRight = parseFloat(marginRight);
-                        } else {
-                            marginRight = 0;
-                        }
+                        marginRight = marginRight ? parseFloat(marginRight) : 0;
 
                         let paddingLeft = document.defaultView.getComputedStyle(curElem).getPropertyValue("padding-left");
-                        if (paddingLeft)  {
-                            paddingLeft = parseFloat(paddingLeft);
-                        } else {
-                            paddingLeft = 0;
-                        }
+                        paddingLeft = paddingLeft ? parseFloat(paddingLeft) : 0;
 
                         let paddingRight = document.defaultView.getComputedStyle(curElem).getPropertyValue("padding-right");
-                        if (paddingRight)  {
-                            paddingRight = parseFloat(paddingRight);
-                        } else {
-                            paddingRight = 0;
-                        }
-
+                        paddingRight = paddingRight ? parseFloat(paddingRight) : 0;
 
                         accuWidth += tabWidth + marginRight + marginLeft + paddingLeft + paddingRight;
 
@@ -494,10 +473,19 @@
                     searchInterface.executeFirstSearch();
 
                     window.addEventListener('resize', () => buildTabs (buildTab, engine));
+
+                    window.addEventListener('click', function(e){
+                        const dropDown = document.getElementById('navMoreDropDownId');
+                        const parent = document.getElementById('navTabMoreId');
+                        if (parent && dropDown && !dropDown.contains(e.target) && !parent.contains(e.target)) {
+                            if (parent.children.length === 2) {
+                                parent.removeChild(parent.children[1]);
+                            }
+                        }
+                    });
                 };
 
                 main().then(() => {
-                    return;
                 });
             });
         </script>

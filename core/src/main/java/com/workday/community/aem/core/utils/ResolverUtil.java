@@ -22,8 +22,7 @@ public class ResolverUtil {
         paramMap.put(ResourceResolverFactory.SUBSERVICE, serviceUser);
 
         // Fetches the service resolver using service user.
-        ResourceResolver resolver = resourceResolverFactory.getServiceResourceResolver(paramMap);
-        return resolver;
+        return resourceResolverFactory.getServiceResourceResolver(paramMap);
     }
 
 }

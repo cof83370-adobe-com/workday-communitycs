@@ -17,5 +17,5 @@ public interface BookOperationsService {
      * @param bookRequestJsonStr the book request json str
      * @return the sets the
      */
-    public Set<String> processBookPaths(ResourceResolver resolver, String bookResourcePath, String bookRequestJsonStr);
+    Set<String> processBookPaths(ResourceResolver resolver, String bookResourcePath, String bookRequestJsonStr);
 }

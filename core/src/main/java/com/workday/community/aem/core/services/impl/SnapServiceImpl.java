@@ -274,14 +274,14 @@ public class SnapServiceImpl implements SnapService {
       JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
       contactRole = profileObject.get(CONTACT_ROLE).getAsString();
       contactNumber = profileObject.get(CONTACT_NUMBER).getAsString();
-      isNSC = contactRole.contains(NSC) ? true : false;
+      isNSC = contactRole.contains(NSC);
 
       JsonElement wrcOrgId = profileObject.get("wrcOrgId");
       accountID = wrcOrgId.isJsonNull() ? "" : wrcOrgId.getAsString();
       JsonElement organizationName = profileObject.get("organizationName");
       accountName = organizationName.isJsonNull() ? "" : organizationName.getAsString();
       JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-      Boolean isWorkdayMate = isWorkmateElement.isJsonNull() ? false : isWorkmateElement.getAsBoolean();
+      Boolean isWorkdayMate = !isWorkmateElement.isJsonNull() && isWorkmateElement.getAsBoolean();
       accountType = isWorkdayMate ? "workday" : profileObject.get("type").getAsString().toLowerCase();
     }
     userProperties.addProperty(CONTACT_ROLE, contactRole);

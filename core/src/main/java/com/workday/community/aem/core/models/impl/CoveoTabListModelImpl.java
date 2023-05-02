@@ -3,7 +3,6 @@ package com.workday.community.aem.core.models.impl;
 import com.adobe.xfa.ut.StringUtils;
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.CoveoTabListModel;
@@ -15,8 +14,9 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
-import org.apache.sling.models.annotations.injectorspecific.RequestAttribute;
 import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import java.util.Iterator;
@@ -28,6 +28,7 @@ import java.util.Iterator;
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoTabListModelImpl implements CoveoTabListModel {
+  private static final Logger logger = LoggerFactory.getLogger(CoveoTabListModelImpl.class);
 
   protected static final String RESOURCE_TYPE = "workday-community/components/common/coveotablist";
   private static final String MODEL_CONFIG_FILE = "/content/dam/workday-community/resources/tab-list-criteria-data.json";
@@ -38,15 +39,12 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   @OSGiService
   private SearchApiConfigService searchConfigService;
 
-  private LRUCacheWithTimeout<String, String> cache = new LRUCacheWithTimeout(100, 60 * 1000);
-
-  private Gson gson = new Gson();
+  private final LRUCacheWithTimeout<String, String> cache = new LRUCacheWithTimeout(100, 60 * 1000);
 
   private JsonObject modelConfig;
 
   // TODO: this should inject from component property
-  @RequestAttribute
-  private String product = "Financial Management";
+  private final String product = "Financial Management";
 
   @PostConstruct
   private void init() {
@@ -72,24 +70,31 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     return props;
   }
 
+  //TODO this is to be used by both component editor and htl
+  @Override
   public JsonArray fields() {
     return this.modelConfig.getAsJsonArray("fields");
   }
 
   @Override
   public String productCriteria() {
-    ResourceResolver resourceResolver = request.getResourceResolver();
+    ResourceResolver resourceResolver = this.request.getResourceResolver();
     TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
-    Tag productTag = tagManager.resolve("/content/cq:tags/product");
-    if (productTag != null) {
-      Iterator<Tag> products = productTag.listAllSubTags();
+    try {
+      Tag productTag = tagManager.resolve("/content/cq:tags/product");
+      if (productTag != null) {
+        Iterator<Tag> products = productTag.listAllSubTags();
 
-      while (products != null && products.hasNext()) {
-        Tag pro = products.next();
-        if (pro.getTitle().equals(product)) {
-          return getProductCriteria(pro);
+        while (products != null && products.hasNext()) {
+          Tag pro = products.next();
+          if (pro.getTitle().equals(product)) {
+            return getProductCriteria(pro);
+          }
         }
       }
+    } catch (NullPointerException e) {
+      logger.error("ProductCriteria retrieve fails with exception: " + e.getMessage());
+      return "";
     }
 
     return "";
@@ -111,8 +116,9 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
       Iterator<Tag> children = product.listAllSubTags();
       while (children != null && children.hasNext()) {
         Tag child = children.next();
-        sb.append("\"").append(prodTitle + "|" + child.getTitle()).append("\",");
-      };
+        String cp = prodTitle + "|" + child.getTitle();
+        sb.append("\"").append(cp).append("\",");
+      }
 
       sb.deleteCharAt(sb.length()-1);
       sb.append("))");
