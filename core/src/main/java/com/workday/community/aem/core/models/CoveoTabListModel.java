@@ -17,6 +17,10 @@ public interface CoveoTabListModel {
    // TODO this should come from component editor
    JsonObject compConfig();
 
+   /**
+    * Get field criteria
+    * @return field criteria as string.
+    */
    JsonObject fieldCriteria();
 
    /**

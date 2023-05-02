@@ -6,12 +6,14 @@ import com.day.cq.tagging.TagManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.CoveoTabListModel;
+import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.RequestAttribute;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 
@@ -32,6 +34,9 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   @Self
   private SlingHttpServletRequest request;
 
+  @OSGiService
+  private SearchApiConfigService searchConfigService;
+
   private LRUCacheWithTimeout<String, String> cache = new LRUCacheWithTimeout(100, 60 * 1000);
 
   private Gson gson = new Gson();
@@ -50,8 +55,8 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   @Override
   public JsonObject searchConfig() {
     JsonObject config = new JsonObject();
-    config.addProperty("orgId", "workdayp3sqtwnv");
-    config.addProperty("searchHub", "communityv1");
+    config.addProperty("orgId", searchConfigService.getOrgId());
+    config.addProperty("searchHub", searchConfigService.getSearchHub());
     config.addProperty("analytics", true);
 
     return config;
