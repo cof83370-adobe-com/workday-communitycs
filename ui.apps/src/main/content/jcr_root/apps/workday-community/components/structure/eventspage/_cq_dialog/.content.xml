@@ -20,9 +20,7 @@
                 <items jcr:primaryType="nt:unstructured">
                     <general
                         jcr:primaryType="nt:unstructured"
-                        sling:hideResource="{Boolean}true"
-                        sling:resourceType="granite/ui/components/coral/foundation/include"
-                        path="/apps/workday-community/components/structure/page/tabs/general">
+                        sling:hideResource="{Boolean}true">
                     </general>
                     <eventconfig
                         jcr:primaryType="nt:unstructured"
