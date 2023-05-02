@@ -3,6 +3,9 @@ package com.workday.community.aem.core.models;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+/**
+ * The sling model for Coveo tab list component.
+ */
 public interface CoveoTabListModel {
    /**
     * Get search configuration.

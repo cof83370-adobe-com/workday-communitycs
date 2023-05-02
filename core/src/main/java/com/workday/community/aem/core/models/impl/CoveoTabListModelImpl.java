@@ -32,7 +32,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
 
   protected static final String RESOURCE_TYPE = "workday-community/components/common/coveotablist";
   private static final String MODEL_CONFIG_FILE = "/content/dam/workday-community/resources/tab-list-criteria-data.json";
-
+  private static final String PROJECT_PATH  = "/content/cq:tags/product";
   @Self
   private SlingHttpServletRequest request;
 
@@ -81,7 +81,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     ResourceResolver resourceResolver = this.request.getResourceResolver();
     TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
     try {
-      Tag productTag = tagManager.resolve("/content/cq:tags/product");
+      Tag productTag = tagManager.resolve(PROJECT_PATH);
       if (productTag != null) {
         Iterator<Tag> products = productTag.listAllSubTags();
 

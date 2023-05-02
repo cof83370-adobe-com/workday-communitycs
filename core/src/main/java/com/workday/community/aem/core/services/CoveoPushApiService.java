@@ -41,13 +41,13 @@ public interface CoveoPushApiService {
 	/**
 	 * Call Api.
 	 * 
-	 * @param url The api url
+	 * @param uri The api url
 	 * @param header  The api header
      * @param httpMethod The api call method
      * @param payload The api call payload
 	 * @return The api response
 	 */
-    HashMap<String, Object> callApi(String url, HashMap<String, String> header, String httpMethod, String payload);
+    HashMap<String, Object> callApi(String uri, HashMap<String, String> header, String httpMethod, String payload);
 
 	/**
 	 * Call batch upload item Api.
