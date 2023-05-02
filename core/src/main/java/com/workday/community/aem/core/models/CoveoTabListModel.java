@@ -29,4 +29,10 @@ public interface CoveoTabListModel {
     * @return product criteria portion as a search criteria string.
     */
    String productCriteria();
+
+   /**
+    * Get extra custom criteria portion
+    * @return Extra custom criteria as string.
+    */
+   String extraCriteria();
 }

@@ -5,6 +5,7 @@
         <span id="compPropertiesData"  data-comp-props-data="${model.compConfig}" />
         <span id="productCriteriaData" data-product-criteria="${model.productCriteria}" />
         <span id="fieldsData" data-field-criteria="${model.fields}" />
+        <span id="extraCriteriaData" extra-criteria="${model.extraCriteria}" />
 
         <!-- start of the tab -->
         <nav class="multi-tab-navbar" id="multiTabListContainerId" aria-label="Multi-tab navigation">
@@ -102,10 +103,14 @@
                                                 margin: 24px 0px !important;
                                                 background: #ced3d9 !important;
                                             }
-                                            .list-root.display-list.image-icon {
+                                            .list-root .display-list .image-icon {
                                                 display: inline-block;
                                                 width: 100%;
                                             }
+                                        }
+                                        .list-root .display-list .image-icon {
+                                            display: inline-block;
+                                            width: 100%;
                                         }
                                     </style>
                                     <atomic-result-section-title>
@@ -156,51 +161,6 @@
                         <atomic-query-error></atomic-query-error>
                         <!--No Result Section-->
                         <atomic-no-results>
-                            <div class="no-result-root">
-                                <div class="no-result-summary">No Results for <span class="no-result-keyword" id="keyword"></span></div>
-                                <div>
-                                    <form id="no-result-search-form">
-                                        <div class="search-root">
-                                            <span class="search-mag-icon">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" focusable="false" role="presentation"
-                                                 viewBox="0 0 24 24">
-                                                    <g fill-rule="evenodd">
-                                                        <path fill-rule="nonzero"
-                                                              d="M17.32 15.906l2.859 2.858a.5.5 0 0 1 .003.717l-.7.7a.5.5 0 0 1-.718-.002l-2.858-2.86a8 8 0 1 1 1.414-1.414zM11 17a6 6 0 1 0 0-12 6 6 0 0 0 0 12z"
-                                                              class="wd-icon-fill">
-                                                        </path>
-                                                    </g>
-                                                </svg>
-                                            </span>
-                                            <input class="search-box" id="no-result-search" type="text" />
-                                            <span class="search-close-icon">
-                                                <button class="search-close-icon" type="reset">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" focusable="false" role="presentation"
-                                                     viewBox="0 0 24 24">
-                                                        <g fill-rule="evenodd">
-                                                            <path
-                                                                    d="M5.996 4.582a.5.5 0 0 0-.717-.003l-.7.7a.504.504 0 0 0 .003.717L10.586 12l-6.004 6.004a.5.5 0 0 0-.003.717l.7.7c.197.197.514.2.717-.003L12 13.414l6.004 6.004a.5.5 0 0 0 .717.003l.7-.7a.504.504 0 0 0-.003-.717L13.414 12l6.004-6.004a.5.5 0 0 0 .003-.717l-.7-.7a.504.504 0 0 0-.717.003L12 10.586 5.996 4.582z"
-                                                                    class="wd-icon-fill">
-                                                            </path>
-                                                        </g>
-                                                    </svg>
-                                                </button>
-                                            </span>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="no-result-box">
-                                    <h1 class="heading-no-result">Suggestions</h1>
-                                    <ul class="body-no-result">
-                                        <li>Check your spelling</li>
-                                        <li>Trying using more general words</li>
-                                        <li>Try using different keywords</li>
-                                        <li>Try searching <a href="https://www.google.com" class="link-no-result">retired content</a></li>
-                                    </ul>
-                                    <h1 class="heading-no-result">Need More Help?</h1>
-                                    <p class="body-no-result">View our <a href="https://www.google.com" class="link-no-result">Search Tips</a> page to learn how to best use search.</p>
-                                </div>
-                            </div>
                         </atomic-no-results>
                     </atomic-layout-section>
 
@@ -224,23 +184,12 @@
             const compDataAttr = document.getElementById("compPropertiesData").getAttribute("data-comp-props-data");
             const component_properties = JSON.parse(compDataAttr);
 
+            const productCriteria = document.getElementById("productCriteriaData").getAttribute("data-product-criteria");
+            const extraCriteria = document.getElementById("extraCriteriaData").getAttribute("extra-criteria");
+
             // 2 Field definition is from Coveo, (predefined in model/service?)
             const search_fields = JSON.parse("[".concat(document.getElementById("fieldsData").getAttribute("data-field-criteria")).concat("]"));
-            // const search_fields = [
-            //     { name: 'question', desc: 'Forum Discussions', selected: false, dataExpression: fieldCriterAttr.question },
-            //     { name: 'idea', desc: 'Brainstorms', selected: false, dataExpression: fieldCriterAttr.idea },
-            //     { name: 'contributed_solution', desc: 'Contributed Solutions', selected: false, dataExpression: fieldCriterAttr.contributed_solution },
-            //     { name: 'group_post', desc: 'User Group Discussions', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Group Post) OR @filetype==(group_post))' },
-            //     { name: 'article', desc: 'Reference', selected: false, dataExpression: fieldCriterAttr.article },
-            //     { name: 'question', desc: 'FAQ', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-            //     { name: 'idea', desc: 'Troubleshooting', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-            //     { name: 'contributed_solution', desc: 'Kits & Tools', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-            //     { name: 'article', desc: 'Training Catalog', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-            //     { name: 'group_post', desc: 'Release Notes', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-            //     { name: 'group_post', desc: 'Events', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-            //
-            // ];
-
+            search_fields.forEach( field => field['dataExpression'] = field['dataExpression'] + productCriteria + extraCriteria);
             // 3 From the service
             const searchConfigNode = document.getElementById("searchConfigData");
             const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
@@ -365,7 +314,7 @@
                     tab.removeChild(tab.firstChild);
                 }
 
-                search_fields.forEach((field, index) => {
+                search_fields.forEach((field) => {
                     const li = document.createElement("li");
                     li.setAttribute("class", "nav-tab-item");
                     const button = document.createElement("button");

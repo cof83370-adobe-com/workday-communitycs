@@ -95,21 +95,27 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     return "";
   }
 
+  @Override
+  public String extraCriteria() {
+    return this.modelConfig.getAsJsonObject("extraCriteria").get("value").getAsString();
+  }
+
   private String getProductCriteria(Tag product) {
     String productCriteria = cache.get(this.product);
 
     if (StringUtils.isEmpty(productCriteria)) {
       StringBuilder sb = new StringBuilder();
       String prodTitle = product.getTitle();
-      sb.append(prodTitle).append(",");
+      sb.append("(@druproducthierarchy==(\"").append(prodTitle).append("\",");
 
       Iterator<Tag> children = product.listAllSubTags();
       while (children != null && children.hasNext()) {
         Tag child = children.next();
-        sb.append(prodTitle + "|" + child.getTitle()).append(",");
+        sb.append("\"").append(prodTitle + "|" + child.getTitle()).append("\",");
       };
 
       sb.deleteCharAt(sb.length()-1);
+      sb.append("))");
       productCriteria = sb.toString();
       cache.put(this.product, productCriteria);
     }
