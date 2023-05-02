@@ -4,7 +4,6 @@ package com.workday.community.aem.core.services;
  * The Coveo search service definition class.
  */
 public interface SearchApiConfigService {
-
   /**
    * Get the Organization id.
    *
@@ -17,6 +16,18 @@ public interface SearchApiConfigService {
    * @return the search hub name.
    */
   String getSearchHub();
+
+  /**
+   * Get user id provider
+   * @return the user id provider.
+   */
+  String getUserIdProvider();
+
+  /**
+   * Get user id type
+   * @return the user id type.
+   */
+  String getUserIdType();
 
   /**
    *  Get the default email

@@ -8,12 +8,13 @@ import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -31,7 +32,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
@@ -41,7 +41,6 @@ import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_T
 import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static com.workday.community.aem.core.constants.SearchConstants.SEARCH_EMAIL_SECURITY_PROVIDER;
-import static com.workday.community.aem.core.constants.SearchConstants.SEARCH_TOKEN_USER_TYPE;
 
 /**
  * The search Token servlet class.
@@ -63,8 +62,6 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   @Reference
   private transient SnapService snapService;
 
-  private transient HttpClient httpClient;
-
   private transient ObjectMapper objectMapper = new ObjectMapper();
 
   private final transient Gson gson = new Gson();
@@ -80,7 +77,6 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    this.httpClient = HttpClientBuilder.create().build();
     logger.debug("initialize Search token service");
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
@@ -95,6 +91,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   protected void doGet(SlingHttpServletRequest request,
                        SlingHttpServletResponse response) throws ServletException, IOException {
     logger.debug("start to receive request for fetching search token");
+    CloseableHttpClient httpClient = HttpClients.createDefault();
 
     String utfName = StandardCharsets.UTF_8.name();
     response.setContentType(APPLICATION_SLASH_JSON);
@@ -114,15 +111,15 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     JsonObject userContext = this.snapService.getUserContext(sfId);
     String email = userContext.has(EMAIL_NAME) ?  userContext.get(EMAIL_NAME).getAsString()
         : this.searchApiConfigService.getDefaultEmail();
-      String searchToken = getToken(email, this.searchApiConfigService.getSearchTokenAPIKey());
-      String recommendationToken = getToken(email, this.searchApiConfigService.getRecommendationAPIKey());
-      String upcomingEventToken = getToken(email, this.searchApiConfigService.getUpcomingEventAPIKey());
+      String searchToken = getToken(httpClient, email, this.searchApiConfigService.getSearchTokenAPIKey());
+      String recommendationToken = getToken(httpClient, email, this.searchApiConfigService.getRecommendationAPIKey());
+      String upcomingEventToken = getToken(httpClient, email, this.searchApiConfigService.getUpcomingEventAPIKey());
 
       userContext.addProperty("searchToken", searchToken);
       userContext.addProperty("recommendationToken", recommendationToken);
       userContext.addProperty("upcomingEventToken", upcomingEventToken);
       userContext.addProperty("orgId", this.searchApiConfigService.getOrgId());
-      userContext.addProperty("expiresAt", new Date().getTime() + this.searchApiConfigService.getTokenValidTime());
+      userContext.addProperty("validFor", this.searchApiConfigService.getTokenValidTime());
       userContext.remove("contactId");
       userContext.remove("email");
       String coveoInfo = gson.toJson(userContext);
@@ -130,17 +127,18 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
       Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", this.searchApiConfigService.isDevMode());
       response.setStatus(HttpStatus.SC_OK);
+      httpClient.close();
       response.getWriter().write(coveoInfo);
   }
 
-  private String getToken(String email, String apiKey) throws IOException {
+  private String getToken(CloseableHttpClient httpClient, String email, String apiKey) throws IOException {
     HashMap<String, String> result;
 
     HttpPost request = new HttpPost(searchApiConfigService.getSearchTokenAPI());
     StringEntity entity = new StringEntity(getTokenPayload(email));
 
     request.addHeader(AUTHORIZATION, BEARER_TOKEN.token(apiKey));
-    request.addHeader(HttpConstants.HEADER_ACCEPT, APPLICATION_SLASH_JSON);
+    request.addHeader(HttpConstants.HEADER_ACCEPT, "*/*");
     request.addHeader(CONTENT_TYPE, APPLICATION_SLASH_JSON);
     request.setEntity(entity);
 
@@ -162,8 +160,11 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     HashMap<String, Object> payloadMap = new HashMap<>();
 
     userMap.put("name", email);
-    userMap.put("provider", SEARCH_EMAIL_SECURITY_PROVIDER);
-    userMap.put("type", SEARCH_TOKEN_USER_TYPE);
+    userMap.put("provider", this.searchApiConfigService.getUserIdProvider());
+    String userIdType = this.searchApiConfigService.getUserIdType();
+    if (!StringUtils.isBlank(userIdType)) {
+      userMap.put("type", userIdType);
+    }
 
     String jsonString = gson.toJson(userMap);
     ArrayList<String> userArray = new ArrayList<>();

@@ -54,6 +54,16 @@ public class SearchApiConfigServiceImplTest {
     }
 
     @Override
+    public String userIdProvider() {
+      return null;
+    }
+
+    @Override
+    public String userType() {
+      return null;
+    }
+
+    @Override
     public String searchHub() {
       return "searchHub";
     }

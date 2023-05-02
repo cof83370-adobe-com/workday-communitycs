@@ -16,13 +16,13 @@ import static com.workday.community.aem.core.constants.SearchConstants.SEARCH_EM
 public @interface CoveoSearchConfig {
 
   @AttributeDefinition(name = "Search token Api endpoint", description = "Search Token api endpoint")
-  String tokenApi() default "https://platform.cloud.coveo.com/rest/search/v2/token";
+  String tokenApi();
 
   @AttributeDefinition(name = "Search token API Key", description = "Search API Key")
-  String tokenApiKey() default "xx2b1507e9-0e42-4f7f-845c-9d0fbabae3c9";
+  String tokenApiKey();
 
   @AttributeDefinition(name = "Default email", description = "Default email for fetching token")
-  String defaultEmail() default "wangchun.zhang@workday.com.uat";
+  String defaultEmail();
 
   @AttributeDefinition(name = "Recommendation API Key", description = "Recommendation API Key")
   String recommendationApiKey();
@@ -31,10 +31,16 @@ public @interface CoveoSearchConfig {
   String upcomingEventApiKey();
 
   @AttributeDefinition(name = "Organization Id", description = "Organization Id")
-  String orgId() default "workdayp3sqtwnv";
+  String orgId();
+
+  @AttributeDefinition(name = "Token user id provider", description = "Token user id provider")
+  String userIdProvider() default SEARCH_EMAIL_SECURITY_PROVIDER;
+
+  @AttributeDefinition(name = "Token user type", description = "Token user type")
+  String userType();
 
   @AttributeDefinition(name = "Search Hub", description = "Search Hub", type = AttributeType.STRING)
-  String searchHub() default "communityv1";
+  String searchHub();
 
   @AttributeDefinition(name = "Token Valid period", description = "Time token is valid for (ms)",  type = AttributeType.INTEGER)
   int tokenValidTime() default 60 * 1000;

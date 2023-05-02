@@ -1,0 +1,11 @@
+{
+  "fieldCriteria" : {
+    "question": "(@commcontenttype==(Question) OR @filetype==(question))",
+    "idea": "(@commcontenttype==(Brainstorm) OR @filetype==(idea))",
+    "contributed_solution": "(@commcontenttype==(Contributed Solution) OR @filetype==(contributed_solution))",
+    "article": "(@commcontenttype==(Article) OR @filetype==(article))"
+  },
+  "additionalCriteria" : {
+    "value" : "(NOT @druwdcworkflowworkflowstate==retired)"
+  } 
+}

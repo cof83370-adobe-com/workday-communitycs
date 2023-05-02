@@ -1,6 +1,11 @@
 <sly data-sly-use.model="com.workday.community.aem.core.models.CoveoTabListModel">
+
     <div class="multi-tab-container">
-        <span id="searchConfigData" data-model-search-config="${model.searchConfig}"/>
+        <span id="searchConfigData" data-model-search-config="${model.searchConfig}" />
+        <span id="compPropertiesData"  data-comp-props-data="${model.compConfig}" />
+        <span id="productCriteriaData" data-product-criteria="${model.productCriteria}" />
+        <span id="fieldCriteriaData" data-field-criteria="${model.fieldCriteria}" />
+
         <!-- start of the tab -->
         <nav class="multi-tab-navbar" id="multiTabListContainerId" aria-label="Multi-tab navigation">
             <ul class="multi-tab-list" id="multiTabsCompId"></ul>
@@ -41,10 +46,6 @@
                                             margin-right: 0.25rem;
                                             font-family: "WorkdayAdelleSans-bold" !important;
                                             font-weight: 400 !important;
-                                        }
-
-                                        .result-root.image-icon .icon {
-                                            display: inline-block;
                                         }
 
                                         atomic-result-link a {
@@ -100,6 +101,10 @@
                                             [part~="outline"]::before {
                                                 margin: 24px 0px !important;
                                                 background: #ced3d9 !important;
+                                            }
+                                            .list-root.display-list.image-icon {
+                                                display: inline-block;
+                                                width: 100%;
                                             }
                                         }
                                     </style>
@@ -216,17 +221,16 @@
             } from 'https://static.cloud.coveo.com/atomic/v1.86.0/headless/headless.esm.js';
 
             //1 This should come from component editor dialog.
-            const component_properties = {
-                containerWidth: `100px`,
-                displayRecords: 8,
-            }
+            const compDataAttr = document.getElementById("compPropertiesData").getAttribute("data-comp-props-data");
+            const component_properties = JSON.parse(compDataAttr);
 
             // 2 Field definition is from Coveo, (predefined in model/service?)
+            const fieldCriterAttr = JSON.parse(document.getElementById("fieldCriteriaData").getAttribute("data-field-criteria"));
             const search_fields = [
-                { name: 'question', desc: 'Forum', selected: false, dataExpression: '(@commcontenttype==(Question) OR @filetype==(question))' },
-                { name: 'idea', desc: 'Brainstorms', selected: false, dataExpression: '(@commcontenttype==(Brainstorm) OR @filetype==(idea))' },
-                { name: 'contributed_solution', desc: 'Contributed Solutions', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Contributed Solution) OR @filetype==(contributed_solution))' },
-                { name: 'article', desc: 'Articles', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Article) OR @filetype==(article))' },
+                { name: 'question', desc: 'Forum', selected: false, dataExpression: fieldCriterAttr.question },
+                { name: 'idea', desc: 'Brainstorms', selected: false, dataExpression: fieldCriterAttr.idea },
+                { name: 'contributed_solution', desc: 'Contributed Solutions', selected: false, dataExpression: fieldCriterAttr.contributed_solution },
+                { name: 'article', desc: 'Articles', selected: false, dataExpression: fieldCriterAttr.article },
                 { name: 'group_post', desc: 'User Groups', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Group Post) OR @filetype==(group_post))' },
                 { name: 'question', desc: 'Forum 1', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
                 { name: 'idea', desc: 'Brainstorms 1', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
@@ -237,13 +241,7 @@
 
             // 3 From the service
             const searchConfigNode = document.getElementById("searchConfigData");
-            const search_configStr = searchConfigNode.getAttribute("data-model-search-config");
-            const search_config = {
-                "searchHub": "communityv1",
-                "analytics": true,
-                "resultsPerPage": 5,
-                "orgId": 'workdayp3sqtwnv'
-            }
+            const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
 
             function setActive(currentTab) {
                 if (!currentTab.className.includes("item-button-active")) {
@@ -453,7 +451,17 @@
                 try {
                     const response = await fetch(tokenUrl);
                     const res = await response.json();
-                    return res.searchToken;
+                    const output = res['searchToken'];
+                    const searchToken = {
+                        token: output,
+                        expiresAt: Date.now() + res['validFor'],
+                    };
+                    window.localStorage.setItem(
+                        'searchToken',
+                        JSON.stringify(searchToken)
+                    );
+
+                    return res['searchToken'];
                 } catch (err) {
                     console.error('Error from getRequest -> ', err.message || err.responseText);
                 }
@@ -475,7 +483,18 @@
 
             document.addEventListener('DOMContentLoaded', () => {
                 const main = async () => {
-                    const token = await getToken();
+                    let token =
+                        'searchToken' in window.localStorage
+                            ? JSON.parse(window.localStorage.getItem('searchToken'))
+                            : {};
+                    let isExpired = 'expiresAt' in token ?
+                        parseInt(token.expiresAt) < parseInt(Date.now()) ? true : false : true;
+
+                    if (token === null || isExpired) {
+                        token = await getToken();
+                    } else {
+                        token = token.token;
+                    }
 
                     await customElements.whenDefined('atomic-search-interface');
 
@@ -491,7 +510,7 @@
                                 const body = JSON.parse(request.body);
                                 // body.q = undefined;
                                 body.maximumAge=30000;
-                                body.numberOfResults = component_properties.displayRecords;
+                                body.numberOfResults = component_properties.rows;
                                 request.body = JSON.stringify(body);
                             }
 
@@ -535,6 +554,6 @@
 </sly>
 
 <sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"
-     data-sly-call="${clientlib.all @ categories='workday-community.coveo.search'}"/>
+     data-sly-call="${clientlib.all @categories='workday-community.coveo.search'}"/>
 
 
