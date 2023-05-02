@@ -69,7 +69,7 @@ if (container !== null) {
         primaryItems.forEach((item, i) => {
 
             if (primaryWidth >= stopWidth + item.clientWidth) {
-                stopWidth += item.clientWidth;
+                stopWidth += item.clientWidth + 16;
             } else {
                 item.classList.add('--hidden');
                 hiddenItems.push(i);
