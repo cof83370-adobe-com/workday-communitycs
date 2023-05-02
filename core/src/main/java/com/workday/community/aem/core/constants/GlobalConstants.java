@@ -2,6 +2,8 @@ package com.workday.community.aem.core.constants;
 
 import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED_BY;
 
+import java.util.Map;
+
 /**
  * The Class GlobalConstants.
  *
@@ -9,10 +11,7 @@ import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED_BY;
  */
 public interface GlobalConstants {
 
-  /**
-   * The Constant COMMUNITY_CONTENT_ROOT_PATH.
-   */
-
+  /** The Constant COMMUNITY_CONTENT_ROOT_PATH. */
   String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
   /** The Constant COMMUNITY_COVEO_JOB. */
@@ -39,6 +38,20 @@ public interface GlobalConstants {
   /** The Constant PUBLISH. */
   String PUBLISH = "publish";
 
-  /** The Constant JCR CONTENT NODE . */
-  String JCR_CONTENT_PATH = "/jcr:content/";
+  /** The Constant JCR CONTENT NODE. */
+  String JCR_CONTENT_PATH = "/jcr:content";
+
+  /** The Constant CONTENT_TYPE_MAPPING. */
+  Map<String, String> CONTENT_TYPE_MAPPING = Map.of(
+    "/conf/workday-community/settings/wcm/templates/event-page-template", "Calendar Event", 
+    "/conf/workday-community/settings/wcm/templates/faq", "FAQ", 
+    "/conf/workday-community/settings/wcm/templates/kits-and-tools", "Kits and Tools", 
+    "/conf/workday-community/settings/wcm/templates/reference", "Reference"
+  );
+
+  /** The Constant OKTA_USER_PATH. */
+  String OKTA_USER_PATH = "/workdaycommunity/okta";
+
+  /** The Constant COMMUNITY_BOOK_ROOT_PATH. */
+  String COMMUNITY_CONTENT_BOOK_ROOT_PATH ="/content/workday-community/en-us/admin-tools/books";
 }

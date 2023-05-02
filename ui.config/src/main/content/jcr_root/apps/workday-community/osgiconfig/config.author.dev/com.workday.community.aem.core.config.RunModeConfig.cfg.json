@@ -1,0 +1,6 @@
+
+{
+    "instance":"author",
+    "env":"dev",
+    "adobeAnalyticsUri":"$[env:adobeAnalyticsUri]"
+}

@@ -28,10 +28,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
@@ -120,6 +122,7 @@ public class SnapServiceImplTest {
         return "";
       }
 
+      @Override
       public String sfdcUserAvatarApiKey() {
         return "testSfdcUserAvatarApiKey";
       }
@@ -147,6 +150,21 @@ public class SnapServiceImplTest {
       @Override
       public long menuCacheTimeout() {
         return 10000;
+      }
+
+      @Override
+      public String snapProfilePath() {
+        return "snapProfilePath";
+      }
+
+      @Override
+      public String snapProfileApiToken() {
+        return "snapProfileApiToken";
+      }
+
+      @Override
+      public String snapProfileApiKey() {
+        return "snapProfileApiKey";
       }
     };
   }
@@ -298,6 +316,44 @@ public class SnapServiceImplTest {
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
       JsonObject ret = this.snapService.getUserContext(DEFAULT_SFID_MASTER);
       assertNull(ret);
+    }
+  }
+
+  @Test
+  public void testGetAdobeDigitalData() {
+    snapService.activate(snapConfig.get(1, 1));
+    try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      String profileString = "{\"contactRole\":\"Workday\", \"contactNumber\":\"123\", \"wrcOrgId\":\"456\", \"organizationName\":\"Test organization\", \"isWorkmate\":true}";
+
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(profileString);
+
+      String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
+      assertEquals(profileString, ret.toString());
+      String pageTitle = "FAQ page";
+      String contentType = "FAQ";
+      String contactNumber = "123";
+      String organizationName = "Test organization";
+      String adobeData = snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER, pageTitle, contentType);
+      assertTrue(adobeData.contains(pageTitle));
+      assertTrue(adobeData.contains(contentType));
+      assertTrue(adobeData.contains(pageTitle));
+      assertTrue(adobeData.contains(contactNumber));
+      assertTrue(adobeData.contains(organizationName));
+    }
+  }
+
+  @Test
+  public void testGetAdobeDigitalDataWithException() {
+    snapService.activate(snapConfig.get(1, 1));
+    try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
+      String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
+      assertNull(ret);
+      String pageTitle = "FAQ page";
+      String contentType = "FAQ";
+      String adobeData = snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER, pageTitle, contentType);
+      assertTrue(adobeData.contains(pageTitle));
+      assertTrue(adobeData.contains(contentType));
     }
   }
 

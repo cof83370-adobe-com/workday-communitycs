@@ -15,11 +15,20 @@ public @interface SnapConfig {
   @AttributeDefinition(name = "Snap logic Context API Path", description = "Snap logic Context Path.", type = AttributeType.STRING)
   String snapContextPath();
 
-  @AttributeDefinition(name = "Snap logic context Api Token", description = "Nav menu api token.", type = AttributeType.STRING)
+  @AttributeDefinition(name = "Snap logic context Api Token", description = "Snap logic Context api token.", type = AttributeType.STRING)
   String snapContextApiToken();
 
   @AttributeDefinition(name = "Snap logic Context Api key", description = "Snap logic Context API key.", type = AttributeType.STRING)
   String snapContextApiKey();
+
+  @AttributeDefinition(name = "Snap logic Profile API Path", description = "Snap logic Profile Path.", type = AttributeType.STRING)
+  String snapProfilePath();
+
+  @AttributeDefinition(name = "Snap logic Profile Api Token", description = "Snap logic Profile api token.", type = AttributeType.STRING)
+  String snapProfileApiToken();
+
+  @AttributeDefinition(name = "Snap logic Profile Api key", description = "Snap logic Profile API key.", type = AttributeType.STRING)
+  String snapProfileApiKey();
 
   @AttributeDefinition (name = "SF roles to AEM groups map", description = "SF roles to AEM groups map json file path.", type = AttributeType.STRING)
   String sfToAemUserGroupMap() default "/content/dam/workday-community/resources/sf-to-aem-group-map.json";

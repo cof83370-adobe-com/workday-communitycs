@@ -18,6 +18,11 @@ function renderNavHeader() {
         let headerStringData = headerDiv.getAttribute('data-model-property');
         let avatarUrl = headerDiv.getAttribute("data-model-avatar");
         let homePage = headerDiv.getAttribute("data-prop-home");
+        let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
+        if (dataLayer) {
+            let dataLayerObj = JSON.parse(dataLayer);
+            window.digitalData = dataLayerObj.digitalData;
+        }
 
         let headerMenu;
         if (stringValid(headerStringData)) {
