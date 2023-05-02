@@ -1,12 +1,5 @@
 (function() {
-    const tocGroup = document.getElementsByClassName('cmp-toc__group');
-    const tocGroupElement = tocGroup.length == 1 ? tocGroup[0] : null;
-    if (!tocGroupElement) {
-        return;
-    }
-
-    const tocList = tocGroupElement.querySelectorAll('li');
-
+    const tocList = document.querySelectorAll('.cmp-toc__group li');
     const prevBtn = document.getElementById('toc-previous') as HTMLButtonElement;
     const nextBtn = document.getElementById('toc-next') as HTMLButtonElement;
 
@@ -65,7 +58,7 @@
 
 
     function onDocumentReady() {
-        if(tocList) {
+        if(tocList && tocList.length !== 0) {
             getActiveItem();
             const currentIndex = localStorage.getItem('activeIndex') || '0';
 
