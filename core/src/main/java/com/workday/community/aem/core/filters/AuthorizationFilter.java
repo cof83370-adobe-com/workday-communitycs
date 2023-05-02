@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.filters;
 
-
 import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
@@ -28,6 +27,9 @@ import javax.servlet.*;
 import java.io.IOException;
 import java.util.*;
 
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_ERROR_PAGES_FORMAT;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_ROOT_PAGE_PATH;
+
 
 /**
  * Authorization servlet filter component that checks the authorization for incoming requests.
@@ -44,13 +46,12 @@ import java.util.*;
         })
 public class AuthorizationFilter implements Filter {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private static final Logger logger = LoggerFactory.getLogger(AuthorizationFilter.class);
 
     @Reference
     private ResourceResolverFactory resolverFactory;
 
     private transient ResourceResolver resourceResolver;
-
 
     private transient ResourceResolver requestResourceResolver;
 
@@ -62,10 +63,9 @@ public class AuthorizationFilter implements Filter {
     @Reference
     transient UserGroupService userGroupService;
 
-
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        // do nothing
+        logger.debug("AuthorizationFilter is initialized");
     }
 
     @Override
@@ -74,23 +74,21 @@ public class AuthorizationFilter implements Filter {
 
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
         String pagePath = slingRequest.getRequestPathInfo().getResourcePath();
-        logger.error("request for {}, with selector {}", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
+        logger.info("request for {}, with selector {}", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
 
-        if (oktaService.isOktaIntegrationEnabled() && pagePath.contains("/content/workday-community") && !pagePath.contains("/errors/")) {
-
+        if (oktaService.isOktaIntegrationEnabled() && pagePath.contains(WORKDAY_ROOT_PAGE_PATH) &&
+                !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT)) {
             Map<String, Object> serviceParams = new HashMap<>();
             serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
             requestResourceResolver = slingRequest.getResourceResolver();
             Session userSession = requestResourceResolver.adaptTo(Session.class);
             String userId = userSession.getUserID();
-            logger.error("current user  {}", userId);
+            logger.info("current user  {}", userId);
             boolean isInValid = true;
             try {
                 resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
-
                 UserManager userManager = resourceResolver.adaptTo(UserManager.class);
                 Authorizable user = userManager.getAuthorizable(userId);
-
                 if (null != user && user.getPath().contains("workday")) {
                     isInValid = validateTheUser(pagePath);
                 }
@@ -174,8 +172,7 @@ public class AuthorizationFilter implements Filter {
 
     @Override
     public void destroy() {
-        // do nothing
+        logger.debug("calling AuthorizationFilter destroy()");
     }
-
 
 }

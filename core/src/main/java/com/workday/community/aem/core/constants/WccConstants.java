@@ -14,4 +14,10 @@ public class WccConstants {
     /** The Constant ROLES. */
     public static final String ROLES = "roles";
 
+    /** The Constant ROLES. */
+    public static final String WORKDAY_ROOT_PAGE_PATH = "/content/workday-community";
+
+    /** The Constant ROLES. */
+    public static final String WORKDAY_ERROR_PAGES_FORMAT = "/errors/";
+
 }
