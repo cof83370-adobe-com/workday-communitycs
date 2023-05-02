@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.models.impl;
 
-import com.adobe.xfa.ut.StringUtils;
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.google.gson.JsonArray;
@@ -9,6 +8,7 @@ import com.workday.community.aem.core.models.CoveoTabListModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
