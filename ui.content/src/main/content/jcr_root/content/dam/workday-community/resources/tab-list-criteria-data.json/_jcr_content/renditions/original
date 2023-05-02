@@ -1,11 +1,18 @@
 {
-  "fieldCriteria" : {
-    "question": "(@commcontenttype==(Question) OR @filetype==(question))",
-    "idea": "(@commcontenttype==(Brainstorm) OR @filetype==(idea))",
-    "contributed_solution": "(@commcontenttype==(Contributed Solution) OR @filetype==(contributed_solution))",
-    "article": "(@commcontenttype==(Article) OR @filetype==(article))"
-  },
-  "additionalCriteria" : {
+  "fields" : [
+    { "name": "question", "desc": "Forum Discussions", "selected": "false", "dataExpression": "(@commcontenttype==(Question) OR @filetype==(question))" },
+    { "name": "idea", "desc": "Brainstorms", "selected": "false", "dataExpression": "(@commcontenttype==(Brainstorm) OR @filetype==(idea))" },
+    { "name": "contributed_solution", "desc": "Contributed Solutions", "selected": "false", "dataExpression": "(@commcontenttype==(Contributed Solution) OR @filetype==(contributed_solution))"},
+    { "name": "group_post", "desc": "User Group Discussions", "selected": "false", "dataExpression": "(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Group Post) OR @filetype==(group_post))" },
+    { "name": "article", "desc": "Reference", "selected": "false", "dataExpression": "(@commcontenttype==(Article) OR @filetype==(article))" },
+    { "name": "question", "desc": "FAQ", "selected": "false", "dataExpression": "(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))" },
+    { "name": "idea", "desc": "Troubleshooting", "selected": "false", "dataExpression": "(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))" },
+    { "name": "contributed_solution", "desc": "Kits & Tools", "selected": "false", "dataExpression": "(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))" },
+    { "name": "article", "desc": "Training Catalog", "selected": "false", "dataExpression": "(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))" },
+    { "name": "group_post", "desc": "Release Notes", "selected": "false", "dataExpression": "(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))" },
+    { "name": "group_post", "desc": "Events", "selected": "false", "dataExpression": "(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))" }
+  ],
+  "extraCriteria" : {
     "value" : "(NOT @druwdcworkflowworkflowstate==retired)"
   } 
 }

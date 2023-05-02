@@ -4,6 +4,7 @@ import com.adobe.xfa.ut.StringUtils;
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.CoveoTabListModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
@@ -66,13 +67,13 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   public JsonObject compConfig() {
     JsonObject props = new JsonObject();
     props.addProperty("containerWidth", "400px");
-    props.addProperty("rows", 8);
+    props.addProperty("rows", 5);
     props.addProperty("product", this.product);
     return props;
   }
 
-  public JsonObject fieldCriteria() {
-    return this.modelConfig.getAsJsonObject("fieldCriteria");
+  public JsonArray fields() {
+    return this.modelConfig.getAsJsonArray("fields");
   }
 
   @Override

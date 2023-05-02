@@ -4,7 +4,7 @@
         <span id="searchConfigData" data-model-search-config="${model.searchConfig}" />
         <span id="compPropertiesData"  data-comp-props-data="${model.compConfig}" />
         <span id="productCriteriaData" data-product-criteria="${model.productCriteria}" />
-        <span id="fieldCriteriaData" data-field-criteria="${model.fieldCriteria}" />
+        <span id="fieldsData" data-field-criteria="${model.fields}" />
 
         <!-- start of the tab -->
         <nav class="multi-tab-navbar" id="multiTabListContainerId" aria-label="Multi-tab navigation">
@@ -225,19 +225,21 @@
             const component_properties = JSON.parse(compDataAttr);
 
             // 2 Field definition is from Coveo, (predefined in model/service?)
-            const fieldCriterAttr = JSON.parse(document.getElementById("fieldCriteriaData").getAttribute("data-field-criteria"));
-            const search_fields = [
-                { name: 'question', desc: 'Forum', selected: false, dataExpression: fieldCriterAttr.question },
-                { name: 'idea', desc: 'Brainstorms', selected: false, dataExpression: fieldCriterAttr.idea },
-                { name: 'contributed_solution', desc: 'Contributed Solutions', selected: false, dataExpression: fieldCriterAttr.contributed_solution },
-                { name: 'article', desc: 'Articles', selected: false, dataExpression: fieldCriterAttr.article },
-                { name: 'group_post', desc: 'User Groups', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Group Post) OR @filetype==(group_post))' },
-                { name: 'question', desc: 'Forum 1', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-                { name: 'idea', desc: 'Brainstorms 1', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-                { name: 'contributed_solution', desc: 'Contributed Solutions 1', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-                { name: 'article', desc: 'Articles 1', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-                { name: 'group_post', desc: 'User Groups 1', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
-            ];
+            const search_fields = JSON.parse("[".concat(document.getElementById("fieldsData").getAttribute("data-field-criteria")).concat("]"));
+            // const search_fields = [
+            //     { name: 'question', desc: 'Forum Discussions', selected: false, dataExpression: fieldCriterAttr.question },
+            //     { name: 'idea', desc: 'Brainstorms', selected: false, dataExpression: fieldCriterAttr.idea },
+            //     { name: 'contributed_solution', desc: 'Contributed Solutions', selected: false, dataExpression: fieldCriterAttr.contributed_solution },
+            //     { name: 'group_post', desc: 'User Group Discussions', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Group Post) OR @filetype==(group_post))' },
+            //     { name: 'article', desc: 'Reference', selected: false, dataExpression: fieldCriterAttr.article },
+            //     { name: 'question', desc: 'FAQ', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
+            //     { name: 'idea', desc: 'Troubleshooting', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
+            //     { name: 'contributed_solution', desc: 'Kits & Tools', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
+            //     { name: 'article', desc: 'Training Catalog', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
+            //     { name: 'group_post', desc: 'Release Notes', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
+            //     { name: 'group_post', desc: 'Events', selected: false, dataExpression: '(NOT @druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question) OR @filetype==(question))' },
+            //
+            // ];
 
             // 3 From the service
             const searchConfigNode = document.getElementById("searchConfigData");
@@ -372,7 +374,7 @@
                     button.setAttribute("data-expression", field["dataExpression"]);
 
                     const buildTabProps = getTabProps(button);
-                    customFunctions[button.name] = tabHandler(buildTab, engine, buildTabProps);;
+                    customFunctions[button.name] = tabHandler(buildTab, engine, buildTabProps);
 
                     if (field["selected"]) {
                         button.setAttribute("class", "item-button active");

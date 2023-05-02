@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.models;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public interface CoveoTabListModel {
@@ -18,10 +19,10 @@ public interface CoveoTabListModel {
    JsonObject compConfig();
 
    /**
-    * Get field criteria
-    * @return field criteria as string.
+    * Get field
+    * @return fields as string.
     */
-   JsonObject fieldCriteria();
+   JsonArray fields();
 
    /**
     * Get product criteria portion.
