@@ -18,6 +18,10 @@
                 sling:resourceType="granite/ui/components/coral/foundation/tabs"
                 size="L">
                 <items jcr:primaryType="nt:unstructured">
+                    <general
+                        jcr:primaryType="nt:unstructured"
+                        sling:hideResource="{Boolean}true">
+                    </general>
                     <faqconfig
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ"
