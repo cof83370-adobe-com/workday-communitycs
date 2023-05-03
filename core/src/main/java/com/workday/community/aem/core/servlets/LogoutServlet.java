@@ -6,14 +6,18 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
+import org.apache.sling.api.auth.Authenticator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
+import org.apache.sling.auth.core.AuthUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +50,10 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
   /** The OktaService. */
   @Reference
-  transient OktaService oktaService;
+  private transient OktaService oktaService;
+
+  @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
+  private volatile Authenticator authenticator;
 
   /** The UserService. */
   @Reference
@@ -107,6 +114,11 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     }
 
     // 3: Redirect to Okta logout to invalid Okta session.
-    response.sendRedirect(logoutUrl);
+    if (this.authenticator != null) {
+      AuthUtil.setLoginResourceAttribute(request, logoutUrl);
+      authenticator.logout(request, response);
+    } else {
+      response.sendRedirect(logoutUrl);
+    }
   }
 }

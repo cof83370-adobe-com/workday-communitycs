@@ -52,7 +52,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   }
 
   @Override
-  public JsonObject searchConfig() {
+  public JsonObject getSearchConfig() {
     JsonObject config = new JsonObject();
     config.addProperty("orgId", searchConfigService.getOrgId());
     config.addProperty("searchHub", searchConfigService.getSearchHub());
@@ -62,7 +62,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   }
 
   @Override
-  public JsonObject compConfig() {
+  public JsonObject getCompConfig() {
     JsonObject props = new JsonObject();
     props.addProperty("containerWidth", "400px");
     props.addProperty("rows", 5);
@@ -72,12 +72,12 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
 
   //TODO this is to be used by both component editor and htl
   @Override
-  public JsonArray fields() {
+  public JsonArray getFields() {
     return this.modelConfig.getAsJsonArray("fields");
   }
 
   @Override
-  public String productCriteria() {
+  public String getProductCriteria() {
     ResourceResolver resourceResolver = this.request.getResourceResolver();
     TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
     try {
@@ -101,7 +101,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   }
 
   @Override
-  public String extraCriteria() {
+  public String getExtraCriteria() {
     return this.modelConfig.getAsJsonObject("extraCriteria").get("value").getAsString();
   }
 

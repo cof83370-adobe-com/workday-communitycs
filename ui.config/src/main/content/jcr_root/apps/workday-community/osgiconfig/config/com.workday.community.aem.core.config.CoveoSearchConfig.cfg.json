@@ -5,8 +5,10 @@
     "defaultEmail":"coveo-default-email",
     "recommendationApiKey":"coveo-search-recommendation-api-key",
     "upcomingEventApiKey":"coveo-search-upcoming-event-api-key",
-    "userIdProvider":null,
     "orgId":"coveo-search-org-id",
     "tokenValidTime": 15000,
-    "devMode": false
+    "devMode": false,
+    "userIdProvider": "Email Security Provider",
+    "userType": null,
+    "searchHub": null
   }

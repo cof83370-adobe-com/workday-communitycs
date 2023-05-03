@@ -1,11 +1,11 @@
 <sly data-sly-use.model="com.workday.community.aem.core.models.CoveoTabListModel">
 
     <div class="multi-tab-container">
-        <span id="searchConfigData" data-model-search-config="${model.searchConfig}" />
-        <span id="compPropertiesData"  data-comp-props-data="${model.compConfig}" />
-        <span id="productCriteriaData" data-product-criteria="${model.productCriteria}" />
-        <span id="fieldsData" data-field-criteria="${model.fields}" />
-        <span id="extraCriteriaData" data-extra-criteria="${model.extraCriteria}" />
+        <span id="searchConfigData" data-model-search-config="${model.getSearchConfig}" />
+        <span id="compPropertiesData"  data-comp-props-data="${model.getCompConfig}" />
+        <span id="productCriteriaData" data-product-criteria="${model.getProductCriteria}" />
+        <span id="fieldsData" data-field-criteria="${model.getFields}" />
+        <span id="extraCriteriaData" data-extra-criteria="${model.getExtraCriteria}" />
 
         <!-- start of the tab -->
         <nav class="multi-tab-navbar" id="multiTabListContainerId" aria-label="Multi-tab navigation">
