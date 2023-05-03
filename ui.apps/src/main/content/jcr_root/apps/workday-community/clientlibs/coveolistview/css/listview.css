@@ -1,0 +1,882 @@
+:root {
+  --spacing: 16px;
+  --search-box-width: 50%px;
+  --atomic-primary: #0875e1;
+  --atomic-font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+  --atomic-font-family: 'WorkdayAdelleSans-Regular' !important
+}
+
+atomic-did-you-mean::part(no-results) {
+  font-size: 20px;
+  line-height: 26px;
+  color: #000;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-family: 'WorkdayAdelleSans-Regular'
+}
+
+.breadcrumb > nav > ol.cmp-breadcrumb__list {
+  margin-top: 28px
+}
+
+atomic-category-facet::part(leaf-value)::before {
+  content: "";
+  margin-right: 17px
+}
+
+atomic-category-facet::part(value-link) {
+  padding-left: 0
+}
+
+atomic-category-facet::part(value-link node-value)::before {
+  content: url('../../../../etc.clientlibs/workday/components/atomicsearch/clientlibs/resources/images/searchRightArrow.svg');
+  width: 7px;
+  margin-right: 10px;
+  height: 17px;
+  -webkit-font-smoothing: antialiased
+}
+
+atomic-category-facet::part(active-parent node-value)::before {
+  content: url('../../../../etc.clientlibs/workday/components/atomicsearch/clientlibs/resources/images/searchDownArrow.svg');
+  margin-top: 0;
+  margin-right: 11px;
+  width: 12px;
+  -webkit-font-smoothing: antialiased
+}
+
+atomic-category-facet::part(active-parent node-value) {
+  padding-left: 0 !important;
+  width: 107% !important;
+  margin-left: -16px
+}
+
+@media (max-width: 992px) {
+  atomic-category-facet::part(active-parent node-value) {
+    width: 104.5% !important
+  }
+}
+
+@media (max-width: 478px) {
+  atomic-category-facet::part(active-parent node-value) {
+    width: 105.6% !important
+  }
+}
+
+@media (max-width: 420px) {
+  atomic-category-facet::part(active-parent node-value) {
+    width: 107% !important
+  }
+}
+
+atomic-category-facet::part(show-more) {
+  margin-left: 6px !important
+}
+
+atomic-category-facet::part(search-wrapper) {
+  margin-bottom: 14px !important
+}
+
+atomic-facet::part(label-button-icon), atomic-category-facet::part(label-button-icon) {
+  content: url('../../../../workday-community/clientlibs/coveolistview/resources/searchBigDownArrow.svg');
+  height: 24px;
+  width: 24px;
+  max-width: 24px;
+  margin-top: -0.5px
+}
+
+atomic-category-facet::part(active-parent leaf-value)::before {
+  content: "";
+  margin-right: 0;
+  -webkit-font-smoothing: antialiased
+}
+
+atomic-category-facet::part(value-count) {
+  margin-left: 32px !important
+}
+
+atomic-category-facet::part(back-arrow) {
+  display: none !important
+}
+
+atomic-category-facet::part(all-categories-button) {
+  color: #0875e1;
+  margin-left: 0;
+  font-weight: 700
+}
+
+atomic-category-facet::part(all-categories-button)::before {
+  content: url('../../../../workday-community/clientlibs/coveolistview/resources/searchLeftDoubleArrow.svg');
+  height: 24px;
+  width: 24px;
+  margin-left: -22px;
+  margin-right: 6px
+}
+
+atomic-category-facet::part(parent-button)::before {
+  content: url('../../../../workday-community/clientlibs/coveolistview/resources/searchLeftArrow.svg');
+  width: 7px;
+  height: 20px;
+  margin-right: 12px;
+  margin-left: -12px
+}
+
+atomic-category-facet::part(values) {
+  margin-top: -4px !important;
+  margin-left: 12px
+}
+
+.box-shadow  atomic-facet::part(value-label), atomic-category-facet::part(value-label) {
+  font-weight: 400 !important
+}
+
+@font-face {
+  font-family: 'WorkdayAdelleSans-Regular';
+  font-style: normal;
+  font-weight: 400;
+  src: url('https://static.workday.com/fonts/Workday_Adelle_Sans/Workday_Adelle_Sans-Regular.woff2')
+}
+
+@font-face {
+  font-family: 'WorkdayAdelleSans-Medium';
+  font-style: medium;
+  font-weight: 400;
+  src: url('https://static.workday.com/fonts/Workday_Adelle_Sans/Workday_Adelle_Sans-Medium.woff2')
+}
+
+@font-face {
+  font-family: 'WorkdayAdelleSans-Bold';
+  font-style: bold;
+  font-weight: 400;
+  src: url('https://static.workday.com/fonts/Workday_Adelle_Sans/Workday_Adelle_Sans-Bold.woff2')
+}
+
+.root {
+  background-color: #fff !important
+}
+
+.font-weight-medium {
+  font-family: 'WorkdayAdelleSans-Medium' !important;
+  font-weight: 400
+}
+
+.font-weight-bold, strong, b {
+  font-family: 'WorkdayAdelleSans-Bold' !important;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400
+}
+
+
+atomic-search-layout atomic-layout-section[section='pagination'] > * {
+  margin-top: 16px !important
+}
+
+atomic-pager::part(page-button) {
+  font-size: 14px;
+  color: #000;
+  border: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  border: 2px solid #fff;
+  font-family: 'WorkdayAdelleSans-Regular' !important
+}
+
+atomic-pager::part(page-button):hover {
+  background: #005cb9;
+  color: #fff
+}
+
+atomic-pager::part(page-button):focus {
+  box-shadow: 0 0 0 2px #0875e1
+}
+
+atomic-pager::part(page-button active-page-button) {
+  background: #0875e1;
+  color: #fff;
+  font-weight: 400;
+  border-radius: 6px
+}
+
+atomic-pager::part(next-button), atomic-pager::part(previous-button) {
+  border: 0;
+  color: #7b858f;
+  transform: scale(0.8);
+  margin-top: 2px
+}
+
+atomic-results-per-page::part(label) {
+  color: #000;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px
+}
+
+atomic-results-per-page::part(label)::after {
+  content: ':'
+}
+
+atomic-results-per-page::part(button), atomic-results-per-page::part(button active-button) {
+  width: auto;
+  height: auto;
+  font-size: 14px;
+  color: #7b858f;
+  border: 0;
+  font-family: 'WorkdayAdelleSans-Regular' !important
+}
+
+atomic-results-per-page::part(button active-button) {
+  text-decoration: underline;
+  color: #000;
+  text-underline-offset: 2px
+}
+
+atomic-query-summary::part(results) {
+  font-size: 15px;
+  color: #000;
+  font-family: 'WorkdayAdelleSans-Regular' !important
+}
+
+atomic-query-summary::part(highlight) {
+  font-weight: 400
+}
+
+atomic-query-summary::part(query) {
+  font-family: 'WorkdayAdelleSans-Bold'
+}
+
+.mt-32 {
+  margin-top: 32px !important
+}
+
+.mt-21 {
+  margin-top: 21px
+}
+
+.mx-20 {
+  margin-left: 20px !important;
+  margin-right: 20px !important
+}
+
+.mx-24 {
+  margin-left: 24px !important;
+  margin-right: 24px !important
+}
+
+.mx-0 {
+  margin-left: 0;
+  margin-right: 0
+}
+
+.mb-0 {
+  margin-bottom: 0
+}
+
+.fs-28 {
+  font-size: 28px !important
+}
+
+.nav-tab-item {
+  display: flex;
+  flex-direction: column
+}
+
+atomic-facet::part(facet), atomic-category-facet::part(facet) {
+  border: 0;
+  border-radius: 0;
+  padding: 16px 8px;
+  position: relative
+}
+
+atomic-facet:not(:last-child)::part(facet):after, atomic-category-facet::part(facet):after {
+  content: '';
+  display: block;
+  width: calc(100% - 32px);
+  height: 1px;
+  background: #cad4d9;
+  position: absolute;
+  bottom: 0;
+  left: 16px
+}
+
+atomic-search-layout atomic-layout-section[section='facets'] * {
+  margin-bottom: 0
+}
+
+atomic-layout-section[section='facets'] {
+  margin-top: 12px
+}
+
+.facet-heading {
+  padding-top: 18px;
+  left: 16px;
+  font-size: 22px;
+  line-height: 28px;
+  font-family: 'WorkdayAdelleSans-Bold';
+  color: #000 !important;
+  background: transparent !important;
+  padding-right: 65px;
+  position: relative
+}
+
+atomic-facet::part(label-button), atomic-category-facet::part(label-button) {
+  font-size: 16px;
+  line-height: 22px;
+  font-family: 'WorkdayAdelleSans-Bold';
+  color: #000 !important;
+  background: transparent !important;
+  padding-right: 65px;
+  position: relative;
+  justify-content: flex-start !important
+}
+
+atomic-facet::part(value-checkbox-label), atomic-category-facet::part(value-link) {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  font-family: 'WorkdayAdelleSans-Regular';
+  color: #000 !important;
+  background: transparent !important
+}
+
+atomic-facet::part(value-checkbox-label) {
+  padding-left: 34px
+}
+
+atomic-timeframe-facet::part(value-label), atomic-facet::part(value-label), atomic-category-facet::part(value-label) {
+  color: #000 !important;
+  width: 100%
+}
+
+atomic-facet::part(values), atomic-timeframe-facet::part(values), atomic-category-facet::part(values) {
+  margin-top: 8px
+}
+
+atomic-facet::part(value-checkbox) {
+  border-radius: 2px;
+  width: 18px;
+  height: 18px;
+  border-color: #7b858f !important
+}
+
+atomic-category-facet::part(clear-button), atomic-timeframe-facet::part(clear-button), atomic-facet::part(clear-button) {
+  font-size: 14px;
+  font-family: 'WorkdayAdelleSans-Bold';
+  background: transparent !important;
+  padding: 0;
+  width: 50px;
+  overflow: hidden;
+  height: 20px;
+  position: absolute;
+  right: 8px;
+  top: 20px
+}
+
+atomic-facet::part(clear-button-icon), atomic-category-facet::part(clear-button-icon) {
+  display: none
+}
+
+atomic-facet::part(label-button-icon), atomic-category-facet::part(label-button-icon) {
+  order: -1;
+  margin-left: 0;
+  margin-right: 1rem
+}
+
+atomic-facet[is-collapsed]::part(label-button-icon), atomic-category-facet[is-collapsed]::part(label-button-icon) {
+  transform: rotate(-90deg) !important;
+  -webkit-transform: rotate(-90deg) !important;
+  -moz-transform: rotate(-90deg) !important;
+  -ms-transform: rotate(-90deg) !important;
+  -o-transform: rotate(-90deg) !important
+}
+
+atomic-facet::part(show-more), atomic-category-facet::part(show-more), atomic-timeframe-facet::part(show-less), atomic-facet::part(show-less), atomic-category-facet::part(show-less) {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  color: #0875e1;
+  align-items: center
+}
+
+atomic-facet::part(show-more-less-icon), atomic-category-facet::part(show-more-less-icon) {
+  height: 16px;
+  width: 16px;
+  padding: 2px;
+  border: 2px solid #0875e1;
+  border-radius: 8px
+}
+
+atomic-breadbox::part(label) {
+  font-size: 15px;
+  font-family: 'WorkdayAdelleSans-Regular';
+  font-weight: 400;
+  color: #000;
+  padding-top: 0
+}
+
+atomic-breadbox::part(breadcrumb-button) {
+  font-size: 10px;
+  font-family: 'WorkdayAdelleSans-Medium';
+  text-transform: uppercase;
+  padding: 4px 6px;
+  border-radius: 3px;
+  border-color: #ced3d9;
+  color: #000 !important;
+  background: transparent !important
+}
+
+atomic-breadbox::part(breadcrumb-label), atomic-breadbox::part(breadcrumb-value) {
+  line-height: normal;
+  color: #000 !important
+}
+
+atomic-breadbox::part(show-more), atomic-breadbox::part(show-less), atomic-breadbox::part(clear) {
+  font-size: 15px;
+  color: #0875e1 !important;
+  background: transparent !important;
+  border: 0;
+  padding: 0;
+  font-family: 'WorkdayAdelleSans-Regular';
+  margin-left: 5px
+}
+
+atomic-breadbox::part(clear) {
+  font-size: 14px;
+  font-family: 'WorkdayAdelleSans-Bold'
+}
+
+atomic-sort-dropdown::part(label) {
+  font-size: 15px;
+  font-family: 'WorkdayAdelleSans-Regular';
+  font-weight: 400
+}
+
+atomic-sort-dropdown::part(select) {
+  font-size: 15px;
+  font-family: 'WorkdayAdelleSans-Bold';
+  color: #000 !important;
+  border-color: #ced3d9 !important
+}
+
+atomic-sort-dropdown::part(select-separator) {
+  color: #000 !important;
+  border-color: #ced3d9 !important
+}
+
+@media only screen and (min-width: 1024px) {
+  .desktop {
+    display: block
+  }
+
+  .mobile {
+    display: none
+  }
+
+  .custom-header {
+    margin-left: 56px;
+    margin-right: 56px
+  }
+
+  atomic-search-layout {
+    grid-template-columns: 30px minmax(17rem, 22rem) minmax(60%, 100%) 30px !important
+  }
+
+  custom-bread-box {
+    grid-area: atomic-breadbox
+  }
+
+  atomic-search-layout atomic-layout-section[section='pagination'] {
+    border-top: 1px solid #ced3d9 !important;
+    margin: 24px 0
+  }
+}
+
+@media only screen and (max-width: 1023px) {
+  .desktop {
+    display: none
+  }
+
+  .mobile {
+    display: block
+  }
+
+  .custom-header {
+    margin-left: 16px;
+    margin-right: 16px
+  }
+
+  atomic-sort-dropdown, atomic-sort-expression {
+    display: inherit !important
+  }
+
+  atomic-sort-dropdown::part(label) {
+    display: none
+  }
+
+  .topbar {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    grid-template-areas: 'atomic-did-you-mean' 'summary' 'sort' 'refiner' 'breadbox' !important
+  }
+
+  atomic-query-summary {
+    grid-area: summary !important
+  }
+
+  atomic-sort-dropdown {
+    grid-area: sort !important
+  }
+
+  atomic-refine-toggle {
+    grid-area: refiner !important
+  }
+
+  atomic-breadbox {
+    grid-area: breadbox !important
+  }
+
+  atomic-refine-toggle, atomic-sort-dropdown, atomic-query-summary {
+    margin: 5px 0
+  }
+
+  atomic-sort-dropdown, atomic-sort-dropdown::part(select-box), atomic-sort-dropdown::part(select) {
+    width: 100% !important
+  }
+
+  custom-bread-box {
+    grid-area: breadbox;
+    display: none
+  }
+}
+
+atomic-no-results::part(icon), atomic-no-results::part(no-results), atomic-no-results::part(search-tips), atomic-no-results::part(cancel-button) {
+  display: none
+}
+
+.no-result-root {
+  margin-top: -7px
+}
+
+.no-result-summary {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 26px;
+  margin-bottom: -5px
+}
+
+.no-result-search-box {
+  margin-bottom: 34px
+}
+
+.no-result-keyword {
+  font-weight: 700
+}
+
+.search-root {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  position: relative;
+  margin: 32px 0
+}
+
+span.search-mag-icon, span.search-close-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  padding: 4px;
+  color: #dadada;
+  margin: 0 8px
+}
+
+span.search-mag-icon {
+  left: 0
+}
+
+span.search-close-icon {
+  right: 0
+}
+
+button.search-close-icon {
+  background: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  height: 20px;
+  width: 20px
+}
+
+input.search-box {
+  border: 1px solid #7b858f;
+  width: 100%;
+  border-radius: 40px;
+  height: 40px;
+  padding: 0 40px
+}
+
+atomic-layout-section[section='no-result-search'] {
+  flex-grow: 1
+}
+
+atomic-layout-section[section='no-result-search'] atomic-search-box::part(wrapper) {
+  background-color: transparent;
+  border: 0
+}
+
+atomic-layout-section[section='no-result-search'] atomic-search-box::part(input) {
+  border: 1px solid red;
+  width: 100%;
+  border-radius: 40px;
+  height: 40px;
+  padding: 0 40px;
+}
+
+atomic-layout-section[section='no-result-search'] atomic-search-box::part(wrapper):focus-within, atomic-layout-section[section='no-result-search'] atomic-search-box::part(wrapper):focus {
+  box-shadow: none
+}
+
+atomic-layout-section[section='no-result-search'] atomic-search-box::part(clear-button), atomic-layout-section[section='no-result-search'] atomic-search-box::part(suggestions-wrapper) {
+  display: none
+}
+
+
+.no-result-box {
+  padding: 30px 24px 29px 24px;
+  background-color: #f0f1f2
+}
+
+.heading-no-result {
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 26px;
+  margin-bottom: 6px
+}
+
+.body-no-result {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: .2px;
+  color: #000;
+  margin-top: 6px;
+  margin-bottom: 26px;
+  padding-inline-start: 32px
+}
+
+.body-no-result-search-tips {
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: .2px;
+  color: #000
+}
+
+a.link-no-result {
+  font-weight: 700;
+  color: #0875e1;
+  text-decoration: none
+}
+
+a.link-no-result:hover {
+  font-weight: 700;
+  color: #005cb9;
+  text-decoration: underline
+}
+
+atomic-refine-modal::part(section-title), atomic-refine-modal::part(sort-section), atomic-refine-modal::part(footer-button-count) {
+  display: none
+}
+
+atomic-refine-toggle::part(button) {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 32px 12px 24px;
+  gap: 8px;
+  width: 135px;
+  height: 48px;
+  border: 1px solid #333;
+  border-radius: 24px;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: .16px;
+  color: #333
+}
+
+.page-main-container > .cmp-container {
+  flex: 1 !important
+}
+
+atomic-search-layout atomic-layout-section[section='status'] {
+  grid-template-areas: 'atomic-breadbox atomic-breadbox' 'atomic-did-you-mean atomic-did-you-mean' 'atomic-query-summary atomic-sort'
+}
+
+#root-search-container {
+  max-width: 1280px;
+  margin: 0 auto
+}
+
+atomic-facet::part(search-icon), atomic-category-facet::part(search-icon) {
+  content: url('../../../../workday-community/clientlibs/coveolistview/resources/search.svg');
+  left: 12px;
+  height: 40px;
+  width: 20px;
+  color: #dadada
+}
+
+atomic-category-facet::part(value-label) {
+  flex-grow: 1
+}
+
+atomic-category-facet::part(active-parent node-value) {
+  width: 100%
+}
+
+atomic-facet::part(search-clear-button), atomic-category-facet::part(search-clear-button) {
+  background: transparent
+}
+
+atomic-facet::part(search-input), atomic-category-facet::part(search-input) {
+  border-radius: 40px !important;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: .2px;
+  height: 40px;
+  border: 1px solid rgba(123, 133, 143, 1);
+  color: #000
+}
+
+atomic-facet::part(search-input):focus-visible, atomic-category-facet::part(search-input):focus-visible {
+  border: 2px solid #0875e1 !important;
+  box-shadow: none !important
+}
+
+custom-bread-box {
+  margin-bottom: 0 !important
+}
+
+atomic-refine-modal::part(header) {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 34px
+}
+
+atomic-refine-modal::part(filter-clear-all) {
+  margin-left: auto;
+  margin-right: 12px;
+  font-style: normal;
+  text-decoration-line: underline;
+  color: #0875e1;
+  font-size: .875rem;
+  line-height: normal;
+  letter-spacing: .015rem;
+  font-weight: 700
+}
+
+atomic-refine-modal::part(footer-button) {
+  background: #0875e1;
+  border-radius: 24px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: .16px
+}
+
+atomic-category-facet::part(active-parent), atomic-category-facet::part(all-categories-button), atomic-category-facet::part(parent-button) {
+  font-size: 14px
+}
+
+atomic-category-facet::part(search-result-path) {
+  display: none !important
+}
+
+atomic-notifications::part(icon) {
+  display: none
+}
+
+atomic-notifications::part(notification) {
+  padding: 8px 16px !important;
+  border: none !important;
+  box-shadow: none !important;
+  background-color: #f0f1f2
+}
+
+atomic-notifications::part(notifications) {
+  margin: 12px 0 32px 0;
+  border: 0
+}
+
+atomic-layout-section.facet-section.hydrated {
+  box-shadow: 0px 1px 8px rgba(134, 149, 158, 0.5);
+}
+
+atomic-sort-dropdown.hydrated, atomic-search-box.hydrated {
+  width: 48%;
+  display: inline-flex;
+}
+
+atomic-sort-dropdown.hydrated {
+  float: right;
+  width: max-content;
+}
+
+atomic-layout-section.hydrated {
+  margin-top: 12px;
+}
+
+atomic-search-layout atomic-layout-section[section='search'] {
+  margin-bottom: 12px;
+}
+
+atomic-search-layout atomic-layout-section[section='search']  input {
+  border-radius: 40px !important;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: .2px;
+  height: 40px;
+  border: 1px solid rgba(123,133,143,1);
+  color: #000;
+}
+
+atomic-search-box::part(input) {
+  border-radius: 40px !important;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: .2px;
+  height: 40px;
+  border: 1px solid rgba(123,133,143,1);
+  color: #000;
+  background: url('../../../../workday-community/clientlibs/coveolistview/resources/search.svg') no-repeat 10px 8px;
+  padding-left: 40px;
+}
+
+atomic-search-box::part(submit-button) {
+  display: none;
+}
+
+atomic-search-box::part(clear-button) {
+  margin-left: -40px;
+}
+
+atomic-search-box::part(wrapper) {
+  border-radius: 40px;
+}
+
+atomic-result-multi-value-text::part(result-multi-value-text-value) {
+  background-color: red;
+}
