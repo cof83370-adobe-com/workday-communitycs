@@ -85,7 +85,6 @@ public class PageResourceListener implements ResourceChangeListener {
 
                 if (authorizable == null) {
                     logger.warn("No such user: ${userId}");
-                    root.setProperty("author", createdUserId);
                 } else {
                     if (null != authorizable && !authorizable.isGroup()) {
                         String firstName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME) != null
