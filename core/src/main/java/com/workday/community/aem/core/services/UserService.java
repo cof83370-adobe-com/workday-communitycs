@@ -22,12 +22,12 @@ public interface UserService {
 	/**
 	 * Get user.
 	 *
+	 * @param resourceResolver the ResourceResolver object.
 	 * @param userId The user id
-	 * @param resourceResolver
 	 *
 	 * @return The user
 	 */
-	User getUser(String userId, ResourceResolver resourceResolver);
+	User getUser(ResourceResolver resourceResolver, String userId);
 
     /**
 	 * Update user.

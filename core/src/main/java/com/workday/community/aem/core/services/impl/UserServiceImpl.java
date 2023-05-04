@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(String userId, ResourceResolver resourceResolver) {
+    public User getUser(ResourceResolver resourceResolver, String userId) {
         try {
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
             User user = (User) userManager.getAuthorizable(userId);

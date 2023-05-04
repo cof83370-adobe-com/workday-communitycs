@@ -55,8 +55,6 @@ public class AuthorizationFilter implements Filter {
 
     private transient ResourceResolver requestResourceResolver;
 
-    private transient Session session;
-
     @Reference
     transient OktaService oktaService;
 
@@ -74,11 +72,9 @@ public class AuthorizationFilter implements Filter {
     @Override
     public void doFilter(final ServletRequest request, final ServletResponse response,
                          final FilterChain filterChain) throws IOException, ServletException {
-
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
         String pagePath = slingRequest.getRequestPathInfo().getResourcePath();
-        logger.info("request for {}, with selector {}", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
-
+        logger.debug("request for {}, with selector {}", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
         if (oktaService.isOktaIntegrationEnabled() && pagePath.contains(WORKDAY_ROOT_PAGE_PATH) &&
                 !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT)) {
             Map<String, Object> serviceParams = new HashMap<>();
@@ -90,15 +86,13 @@ public class AuthorizationFilter implements Filter {
             boolean isInValid = true;
             try {
                 resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
-                User user = userService.getUser(userId,resourceResolver );
+                User user = userService.getUser(resourceResolver, userId);
                 if (null != user && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
                     isInValid = validateTheUser(pagePath);
                 }
                 if (isInValid) {
-                    SlingHttpServletResponse slingHttpServletResponse = (SlingHttpServletResponse) response;
-                    slingHttpServletResponse.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+                    ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
                 }
-
             } catch (LoginException | RepositoryException e) {
                 logger.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
             } finally {
@@ -106,18 +100,10 @@ public class AuthorizationFilter implements Filter {
                     resourceResolver.close();
                     resourceResolver = null;
                 }
-                if (session != null && session.isLive()) {
-                    session.logout();
-                    session = null;
-                }
-
             }
-
         }
-
         filterChain.doFilter(request, response);
     }
-
 
     /**
      * Validates the user based on Roles tagged to the page and User roles from Salesforce.
@@ -126,17 +112,17 @@ public class AuthorizationFilter implements Filter {
      * @return boolean: True if user has permissions otherwise false.
      */
     private boolean validateTheUser(String pagePath) {
-        logger.error(" inside validateTheUser method-->");
+        logger.debug(" inside validateTheUser method-->");
         boolean isInValid = true;
         try {
             List<String> pageTagsTitlesList = PageUtils.getPageTagsTitleList(pagePath, resourceResolver);
             if (!pageTagsTitlesList.isEmpty()) {
-                logger.info("---> Tags List.. {}", pageTagsTitlesList);
-                if (pageTagsTitlesList.contains("everyone")) {
+                logger.debug("---> Tags List.. {}", pageTagsTitlesList);
+                if (pageTagsTitlesList.contains(EVERYONE)) {
                     isInValid = false;
                 } else {
                     List<String> groupsList = userGroupService.getLoggedInUsersGroups(requestResourceResolver);
-                    logger.info("---> Groups List..{}", groupsList);
+                    logger.debug("---> Groups List..{}", groupsList);
                     if (!Collections.disjoint(pageTagsTitlesList, groupsList)) {
                         isInValid = false;
                     }
@@ -152,6 +138,10 @@ public class AuthorizationFilter implements Filter {
     @Override
     public void destroy() {
         logger.debug("calling AuthorizationFilter destroy()");
+        if (resourceResolver != null && resourceResolver.isLive()) {
+            resourceResolver.close();
+            resourceResolver = null;
+        }
     }
 
 }

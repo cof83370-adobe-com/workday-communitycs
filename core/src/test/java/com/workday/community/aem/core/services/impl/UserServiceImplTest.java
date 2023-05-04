@@ -205,12 +205,12 @@ public class UserServiceImplTest {
         // Success case.
         String userId = "testUser";
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
-        User test = userService.getUser(userId,resourceResolver);
+        User test = userService.getUser(resourceResolver, userId);
         assertEquals(test, user);
 
         // Failed case.
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(null);
-        User fail = userService.getUser(userId, resourceResolver);
+        User fail = userService.getUser(resourceResolver, userId);
         assertNull(fail);
     }
 

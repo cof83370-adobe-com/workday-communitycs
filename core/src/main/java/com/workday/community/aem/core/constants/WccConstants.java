@@ -23,4 +23,10 @@ public class WccConstants {
     /** The Constant WORKDAY_OKTA_USERS_ROOT_PATH. */
     public static final String WORKDAY_OKTA_USERS_ROOT_PATH = "/okta";
 
+    /** The Constant WORKDAY_OKTA_USERS_ROOT_PATH. */
+    public static final String WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE = "workday-community-administrative-service";
+
+    /** The Constant WORKDAY_OKTA_USERS_ROOT_PATH. */
+    public static final String EVERYONE = "everyone";
+
 }
