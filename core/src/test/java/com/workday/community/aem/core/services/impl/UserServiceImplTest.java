@@ -96,12 +96,12 @@ public class UserServiceImplTest {
     public void testUpdateUser() throws AuthorizableExistsException, RepositoryException {
         String userId = "testUser";
         String groupId = "dummyGroup";
-        Map<String, String> fields = new HashMap<String, String>();
+        Map<String, String> fields = new HashMap<>();
         fields.put("email", "test@workday.com");
-        List<String> groups = new ArrayList<String>();
+        List<String> groups = new ArrayList<>();
         groups.add(groupId);
         Group group = mock(Group.class);
-        List<Group> userGroups = new ArrayList<Group>();
+        List<Group> userGroups = new ArrayList<>();
         Iterator<Group> it = userGroups.iterator();
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
         lenient().when(userManager.getAuthorizable(groupId)).thenReturn(null);
@@ -128,11 +128,11 @@ public class UserServiceImplTest {
     public void testUpdateUserFail() throws AuthorizableExistsException, RepositoryException {
         String userId = "testUser";
         String groupId = "dummyGroup";
-        Map<String, String> fields = new HashMap<String, String>();
+        Map<String, String> fields = new HashMap<>();
         fields.put("email", "test@workday.com");
         ValueFactory valueFactory = mock(ValueFactory.class);
         Value value = valueFactory.createValue("test@workday.com", PropertyType.STRING);
-        List<String> groups = new ArrayList<String>();
+        List<String> groups = new ArrayList<>();
         groups.add(groupId);
         Group group = mock(Group.class);
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(null);

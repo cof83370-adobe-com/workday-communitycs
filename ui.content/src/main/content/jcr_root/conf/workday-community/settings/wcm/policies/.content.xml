@@ -97,11 +97,38 @@
                                         cq:styleClasses="enable-expand"
                                         cq:styleId="1678916140198"
                                         cq:styleLabel="Enable Expand"
-                                        jcr:primaryType="nt:unstructured"/>
+                                        jcr:primaryType="nt:unstructured"/>  
                                 </cq:styles>
                             </item0>
                         </cq:styleGroups>
                     </policy_12512096045080>
+                    <policy_1683056605181
+                        cq:styleDefaultClasses="enable-expand"
+                        jcr:description="This policy defines default expand image configurations of Image components in the Community site. This also have option to disable the Expand Image style for the Community site, where authors can select them."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Community Image - Expand"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        allowUpload="false"
+                        altValueFromDAM="true"
+                        disableLazyLoading="false"
+                        displayPopupTitle="true"
+                        isDecorative="false"
+                        titleValueFromDAM="true">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Image Expand"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="disable-expand"
+                                        cq:styleId="1683050599"
+                                        cq:styleLabel="Disable Expand"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_1683056605181>
                 </image>
                 <text jcr:primaryType="nt:unstructured">
                     <policy_641562756958017

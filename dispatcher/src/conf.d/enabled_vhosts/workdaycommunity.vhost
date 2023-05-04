@@ -55,6 +55,19 @@ Include conf.d/variables/custom.vars
 	ErrorDocument 503 ${503_PAGE}
 	ErrorDocument 504 ${504_PAGE}
 
+  <IfModule mod_proxy.c>
+    SSLProxyEngine On
+    ProxyRequests On
+    <LocationMatch "/coveo/static/(.+)">
+      ProxyPassMatch "https://static.cloud.coveo.com/$1"
+      ProxyPassReverse "https://static.cloud.coveo.com/$1"
+    </LocationMatch>
+    <LocationMatch "/coveo/platform/(.+)">
+      ProxyPassMatch "https://platform.cloud.coveo.com/$1"
+      ProxyPassReverse "https://platform.cloud.coveo.com/$1"
+    </LocationMatch>
+  </IfModule>
+
 	# Theme Sources via Clientlib: cache mutable resources for 24h on CDN and background refresh to avoid MISS
 	<LocationMatch "^/etc\.clientlibs/.*\.(?i:json|png|gif|jpe?g|svg)$">
       Header set Cache-Control "max-age=7200,s-maxage=86400,stale-while-revalidate=43200,stale-if-error=43200,public"

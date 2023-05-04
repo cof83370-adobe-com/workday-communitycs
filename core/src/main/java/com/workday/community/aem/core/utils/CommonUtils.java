@@ -81,7 +81,7 @@ public class CommonUtils {
 	
 	public static Node getLoggedInUserAsNode(ResourceResolver resourceResolver) {
 		
-		User user = null;
+		User user;
 		Node userNode = null;
 		try {
 			 user=getLoggedInUser(resourceResolver);

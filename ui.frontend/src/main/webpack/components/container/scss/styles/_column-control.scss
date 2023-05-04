@@ -1,28 +1,40 @@
 .container {
     @media (min-width: $screen-small) {
         &.col-equal-33-33-33 {
-            .container {
-                width: 33% !important;
+            >.cmp-container {
+                >.aem-Grid {
+                    >.container {
+                        width: 33% !important;
+                    }
+                }
             }
         }
 
         &.col-left-33-right-66 {
-            .container:first-child {
-                width: 33% !important;
-            }
+            >.cmp-container {
+                >.aem-Grid {
+                    >.container:first-of-type {
+                        width: 33% !important;
+                    }
 
-            .container:nth-child(2) {
-                width: 66% !important;
+                    >.container:nth-of-type(2) {
+                        width: 66% !important;
+                    }
+                }
             }
         }
 
         &.col-left-66-right-33 {
-            .container:first-child {
-                width: 66% !important;
-            }
+            >.cmp-container {
+                >.aem-Grid {
+                    >.container:first-of-type {
+                        width: 66% !important;
+                    }
 
-            .container:nth-child(2) {
-                width: 33% !important;
+                    >.container:nth-of-type(2) {
+                        width: 33% !important;
+                    }
+                }
             }
         }
     }
