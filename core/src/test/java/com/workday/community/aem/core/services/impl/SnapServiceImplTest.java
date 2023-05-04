@@ -315,7 +315,7 @@ public class SnapServiceImplTest {
     try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
       JsonObject ret = this.snapService.getUserContext(DEFAULT_SFID_MASTER);
-      assertNull(ret);
+      assertEquals(ret, new JsonObject());
     }
   }
 

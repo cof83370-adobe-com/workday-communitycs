@@ -62,6 +62,8 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   @Reference
   private transient SnapService snapService;
 
+  private transient CloseableHttpClient httpClient = HttpClients.createDefault();
+
   private transient ObjectMapper objectMapper = new ObjectMapper();
 
   private final transient Gson gson = new Gson();
@@ -91,7 +93,6 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   protected void doGet(SlingHttpServletRequest request,
                        SlingHttpServletResponse response) throws ServletException, IOException {
     logger.debug("start to receive request for fetching search token");
-    CloseableHttpClient httpClient = HttpClients.createDefault();
 
     String utfName = StandardCharsets.UTF_8.name();
     response.setContentType(APPLICATION_SLASH_JSON);

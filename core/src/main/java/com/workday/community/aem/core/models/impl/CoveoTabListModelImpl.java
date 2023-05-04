@@ -70,7 +70,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     return props;
   }
 
-  //TODO this is to be used by both component editor and htl
+  //TODO this is to be used by both component editor dialog and htl
   @Override
   public JsonArray getFields() {
     return this.modelConfig.getAsJsonArray("fields");

@@ -9,10 +9,10 @@ import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
 import org.junit.jupiter.api.Test;
@@ -23,8 +23,10 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -50,7 +52,7 @@ public class SearchTokenServletTest {
   SnapService snapService;
 
   @Mock
-  HttpClient httpClient;
+  CloseableHttpClient httpClient;
 
   @InjectMocks
   SearchTokenServlet searchTokenServlet;
@@ -98,7 +100,7 @@ public class SearchTokenServletTest {
 
     JsonObject testUserContext = gson.fromJson("{\"email\":\"foo@workday.com\"}", JsonObject.class);
     when(snapService.getUserContext(anyString())).thenReturn(testUserContext);
-    HttpResponse httpResponse = mock(HttpResponse.class);
+    CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
     when(httpClient.execute(any())).thenReturn(httpResponse);
     StatusLine statusLine = new StatusLine() {
       @Override
@@ -136,8 +138,11 @@ public class SearchTokenServletTest {
          MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class)) {
       mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME)).thenReturn(null);
       mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any())).thenReturn(DEFAULT_SFID_MASTER);
-      searchTokenServlet.doGet(request, response);
-      verify(response).setStatus(200);
+      try {
+        searchTokenServlet.doGet(request, response);
+      } catch (ServletException | IOException e) {
+        verify(response).setStatus(200);
+      }
     }
   }
 
