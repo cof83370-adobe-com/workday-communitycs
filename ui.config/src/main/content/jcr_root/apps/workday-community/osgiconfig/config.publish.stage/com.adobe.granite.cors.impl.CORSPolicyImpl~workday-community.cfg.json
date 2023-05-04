@@ -1,0 +1,27 @@
+{
+  "alloworigin":["$[env:oktaAllowOrigin]"],
+  "alloworiginregexp":[".*","*.*","*"],
+  "allowedpaths":[ ".*/saml_login",".*","*.*","*"],
+  "exposedheaders":[
+    ""
+  ],
+  "maxage": 1800,
+  "supportedheaders":[
+    "Origin",
+    "Accept",
+    "X-Requested-With",
+    "Content-Type",
+    "Access-Control-Request-Method",
+    "Access-Control-Request-Headers",
+    "Authorization"
+  ],
+  "supportedmethods":[
+    "GET",
+    "HEAD",
+    "POST",
+    "DELETE",
+    "OPTIONS",
+    "PUT"
+  ],
+  "supportscredentials":true
+}

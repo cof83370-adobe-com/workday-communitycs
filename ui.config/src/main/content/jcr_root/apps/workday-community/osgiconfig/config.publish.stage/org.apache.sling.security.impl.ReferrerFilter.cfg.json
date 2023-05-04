@@ -1,0 +1,21 @@
+{
+  "allow.hosts.regexp":[
+    ""
+  ],
+  "allow.hosts":[
+    "ciamstage.workdayinternal.com",
+    "publish-p85402-e730588.adobeaemcloud.com",
+    "stage-content.workday.com"
+  ],
+  "filter.methods":[
+    "POST",
+    "PUT",
+    "DELETE",
+    "COPY",
+    "MOVE"
+  ],
+  "exclude.agents.regexp":[
+    ""
+  ],
+  "allow.empty":true
+}
