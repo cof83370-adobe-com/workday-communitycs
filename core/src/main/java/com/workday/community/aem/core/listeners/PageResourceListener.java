@@ -58,7 +58,6 @@ public class PageResourceListener implements ResourceChangeListener {
     public void onChange(List<ResourceChange> changes) {
         if (changes.size() == 1 && changes.get(0).getType().toString().equals("REMOVED")) {
             removeBookNodes(changes.get(0).getPath());
-            return;
         }
 
         changes.stream()

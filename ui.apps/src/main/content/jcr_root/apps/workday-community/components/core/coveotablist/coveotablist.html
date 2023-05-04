@@ -1,0 +1,498 @@
+<sly data-sly-use.model="com.workday.community.aem.core.models.CoveoTabListModel">
+
+    <div class="multi-tab-container">
+        <span id="searchConfigData" data-model-search-config="${model.getSearchConfig}" />
+        <span id="compPropertiesData"  data-comp-props-data="${model.getCompConfig}" />
+        <span id="productCriteriaData" data-product-criteria="${model.getProductCriteria}" />
+        <span id="fieldsData" data-field-criteria="${model.getFields}" />
+        <span id="extraCriteriaData" data-extra-criteria="${model.getExtraCriteria}" />
+
+        <!-- start of the tab -->
+        <nav class="multi-tab-navbar" id="multiTabListContainerId" aria-label="Multi-tab navigation">
+            <ul class="multi-tab-list" id="multiTabsCompId"></ul>
+        </nav>
+        <br />
+        <!-- start of the list -->
+        <atomic-search-interface id="multiTabSearchId">
+            <atomic-search-layout>
+                <!--Atomic facets section-->
+                <atomic-layout-section section="main">
+                    <atomic-layout-section class="multi-tab-actionbar">
+                        <atomic-layout-section section="search" class="multi-tab-search">
+                            <atomic-search-box></atomic-search-box>
+                        </atomic-layout-section>
+                        <!--Status section-->
+                        <atomic-layout-section section="status" class="multi-tab-sort">
+                            <atomic-sort-dropdown>
+                                <atomic-sort-expression label="Relevance" expression="relevancy">
+                                </atomic-sort-expression>
+                                <atomic-sort-expression label="Newest" expression="date descending">
+                                </atomic-sort-expression>
+                            </atomic-sort-dropdown>
+                        </atomic-layout-section>
+                    </atomic-layout-section>
+                    <!--Results section-->
+                    <atomic-layout-section section="results">
+                        <atomic-result-list display="list" image-size="icon" density="normal">
+                            <atomic-result-template>
+                                <template>
+                                    <style>
+                                        .field {
+                                            display: inline-flex;
+                                            align-items: center;
+                                        }
+
+                                        .field-label {
+                                            font-weight: bold;
+                                            margin-right: 0.25rem;
+                                            font-family: "WorkdayAdelleSans-bold" !important;
+                                            font-weight: 400 !important;
+                                        }
+
+                                        atomic-result-link a {
+                                            font-family: "WorkdayAdelleSans-Regular";
+                                            color: #0875e1 !important;
+                                            font-size: 20px !important;
+                                            letter-spacing: 0.5px !important;
+                                            line-height: 21px !important;
+                                        }
+
+                                        .result-root.with-sections.display-list.density-normal
+                                        atomic-result-section-excerpt {
+                                            margin-top: 16px !important;
+                                            font-family: "WorkdayAdelleSans-Regular";
+                                            color: #000 !important;
+                                            font-size: 15px !important;
+                                            letter-spacing: 0.2px !important;
+                                            line-height: 22px !important;
+                                            max-height: 3rem !important;
+                                        }
+                                        .result-root.with-sections.display-list.density-normal
+                                        atomic-result-section-bottom-metadata {
+                                            margin-top: 16px !important;
+                                            font-family: "WorkdayAdelleSans-Regular";
+                                            color: #5e6a75 !important;
+                                            font-size: 12px !important;
+                                            letter-spacing: 0.5px !important;
+                                            line-height: 22px !important;
+                                            max-height: 100% !important;
+                                        }
+                                        atomic-result-fields-list > *::after {
+                                            width: 3px !important;
+                                            height: 3px !important;
+                                            border-radius: 100%;
+                                            margin: 0 10px !important;
+                                            background-color: #5e6a75 !important;
+                                        }
+                                        atomic-result-fields-list {
+                                            height: auto !important;
+                                        }
+                                        @media not all and (min-width: 1024px) {
+                                            .result-root.with-sections.display-list.density-normal
+                                            atomic-result-section-excerpt,
+                                            .result-root.with-sections.display-list.density-normal
+                                            atomic-result-section-bottom-metadata {
+                                                max-height: 3rem !important;
+                                            }
+                                            .result-root.with-sections.display-list.density-normal
+                                            atomic-result-section-bottom-metadata {
+                                                max-height: 100% !important;
+                                            }
+                                            .list-root.display-list.density-normal
+                                            [part~="outline"]::before {
+                                                margin: 24px 0 !important;
+                                                background: #ced3d9 !important;
+                                            }
+                                        }
+                                    </style>
+                                    <atomic-result-section-title>
+                                        <atomic-result-link target="_blank"></atomic-result-link>
+                                    </atomic-result-section-title>
+                                    <atomic-result-section-excerpt>
+                                        <atomic-result-text field="excerpt"></atomic-result-text>
+                                    </atomic-result-section-excerpt>
+                                    <atomic-result-section-bottom-metadata>
+                                        <atomic-result-fields-list>
+                                            <!--this value is conditionally generated based on druauthororgid's value as "581" which is Workday org id -->
+                                            <atomic-field-condition class="field" if-defined="druauthororgid" must-match-commonsource="Community" must-match-druauthororgid="581">
+                                                <span>Workday</span>
+                                            </atomic-field-condition>
+
+                                            <atomic-field-condition class="field" if-defined="commoncontenttype">
+                                                <span class="field-label"><atomic-text value="Content Type"></atomic-text>:</span>
+                                                <atomic-result-text field="commoncontenttype"/>
+                                            </atomic-field-condition>
+
+                                            <atomic-field-condition class="field" if-defined="commoncreateddate">
+                                                <span class="field-label"><atomic-text value="Created On"></atomic-text>:</span>
+                                                <atomic-result-date field="commoncreateddate" format="ddd MMM, D YYYY"/>
+                                            </atomic-field-condition>
+
+                                            <atomic-field-condition class="field" if-defined="commonmodifieddate">
+                                                <span class="field-label"><atomic-text value="Updated On"></atomic-text>:</span>
+                                                <atomic-result-date field="commonmodifieddate" format="ddd MMM, D YYYY"/>
+                                            </atomic-field-condition>
+                                        </atomic-result-fields-list>
+                                        <atomic-result-fields-list>
+                                            <atomic-field-condition class="field" if-defined="sfproductc">
+                                                <span class="field-label"><atomic-text value="Product"></atomic-text>:</span>
+                                                <atomic-result-text field="sfproductc"/>
+                                            </atomic-field-condition>
+                                        </atomic-result-fields-list>
+                                        <atomic-field-condition class="field" if-defined="sfhasvideo">
+                                            <atomic-icon icon="./assets/images/video.svg"></atomic-icon>
+                                        </atomic-field-condition>
+                                        <atomic-field-condition class="field" if-defined="sfhasattachments">
+                                            <atomic-icon icon="./assets/images/attach.svg"></atomic-icon>
+                                        </atomic-field-condition>
+                                    </atomic-result-section-bottom-metadata>
+                                </template>
+                            </atomic-result-template>
+                            <!-- ========= DEFAULT template - END  ==========================================-->
+                        </atomic-result-list>
+                        <atomic-query-error></atomic-query-error>
+                        <!--No Result Section-->
+                        <atomic-no-results>
+                        </atomic-no-results>
+                    </atomic-layout-section>
+                </atomic-layout-section>
+            </atomic-search-layout>
+        </atomic-search-interface>
+
+        <script type="module">
+            import {
+                loadContextActions,
+                loadFieldActions,
+                buildTab,
+                loadGenericAnalyticsActions,
+            } from 'https://static.cloud.coveo.com/atomic/v1.86.0/headless/headless.esm.js';
+
+            //1 This should come from component editor dialog.
+            const compDataAttr = document.getElementById("compPropertiesData").getAttribute("data-comp-props-data");
+            const component_properties = JSON.parse(compDataAttr);
+
+            const productCriteria = document.getElementById("productCriteriaData").getAttribute("data-product-criteria");
+            const extraCriteria = document.getElementById("extraCriteriaData").getAttribute("data-extra-criteria");
+
+            // 2 Field definition is from Coveo, (predefined in model/service?)
+            const search_fields = JSON.parse("[".concat(document.getElementById("fieldsData").getAttribute("data-field-criteria")).concat("]"));
+            search_fields.forEach( field => field['dataExpression'] = field['dataExpression'] + productCriteria + extraCriteria);
+            // 3 From the service
+            const searchConfigNode = document.getElementById("searchConfigData");
+            const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
+
+            function setActive(currentTab) {
+                if (!currentTab.className.includes("item-button-active")) {
+                    currentTab.classList.add("item-button-active");
+                }
+
+                let tabs = document.getElementsByClassName("item-button");
+                for (let i = 0; i < tabs.length; i++) {
+                    const tab = tabs[i];
+                    if (currentTab.name !== tab.name) {
+                        tab.classList.remove("item-button-active");
+                    }
+                }
+            }
+
+            function getActive() {
+                let tabs = document.getElementsByClassName("item-button");
+                for (let i = 0; i < tabs.length; i++) {
+                    const tab = tabs[i];
+                    if (tab.className.includes("item-button-active")) {
+                        return tab;
+                    }
+                }
+
+                return tabs[0];
+            }
+
+            function tabHandler(buildTab, engine, buildTabProps) {
+                const controller = buildTab(engine, buildTabProps);
+                const clickHandler = function (event) {
+                    controller.select();
+                    setActive(event.target);
+
+                    // if the tab is in dropdown, dismiss it.
+                    const parent = event.target.parentNode;
+                    if (parent.className === 'popup-item') {
+                        const moreButton = parent.parentNode.parentNode.parentNode;
+                        moreButton.removeChild(moreButton.children[1]);
+                    }
+                };
+                return clickHandler;
+            }
+            function getTabProps(tabButton) {
+                const active = tabButton.getAttribute('data-is-active');
+                const id = tabButton.getAttribute("name");
+                const expression = tabButton.getAttribute("data-expression");
+
+                const btProps = {
+                    initialState: {
+                        isActive: active === "true" ? true : false
+                    },
+                    options: {
+                        id,
+                        expression,
+                    }
+                }
+                return btProps;
+            }
+
+            function getVisibleTabs(tabContainer, tab) {
+                let totalWidth = tabContainer.clientWidth;
+                const ml = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("margin-left");
+                const mr = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("margin-right");
+                const pl = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("padding-left");
+                const pr = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("padding-right");
+                if (ml) { totalWidth += parseFloat(ml); }
+                if (mr) { totalWidth += parseFloat(mr); }
+                if (pl) { totalWidth += parseFloat(pl); }
+                if (pr) { totalWidth += parseFloat(pr); }
+
+                let fields = [];
+                let accuWidth = 0;
+                for (let index in tab.childNodes) {
+                    const curElem = tab.childNodes[index];
+                    if (curElem.tagName === 'LI') {
+                        const tabWidth = curElem.getBoundingClientRect().width;
+                        let marginLeft = document.defaultView.getComputedStyle(curElem).getPropertyValue("margin-left");
+                        marginLeft = marginLeft ? parseFloat(marginLeft) : 0;
+
+                        let marginRight = document.defaultView.getComputedStyle(curElem).getPropertyValue("margin-right");
+                        marginRight = marginRight ? parseFloat(marginRight) : 0;
+
+                        let paddingLeft = document.defaultView.getComputedStyle(curElem).getPropertyValue("padding-left");
+                        paddingLeft = paddingLeft ? parseFloat(paddingLeft) : 0;
+
+                        let paddingRight = document.defaultView.getComputedStyle(curElem).getPropertyValue("padding-right");
+                        paddingRight = paddingRight ? parseFloat(paddingRight) : 0;
+
+                        accuWidth += tabWidth + marginRight + marginLeft + paddingLeft + paddingRight;
+
+                        if (accuWidth < totalWidth) {
+                            fields.push(tab.childNodes[index]);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+
+                if (fields.length === 0) {
+                    fields.push(tab.childNodes[0]);
+                }
+
+                return fields;
+            }
+
+            // Render tab bar
+            function buildTabs(buildTab, engine) {
+                const tab = document.getElementById("multiTabsCompId");
+                // Delete tab children as it may be different every time when you resize the view.
+                while (tab.firstChild) {
+                    tab.removeChild(tab.firstChild);
+                }
+
+                search_fields.forEach((field) => {
+                    const li = document.createElement("li");
+                    li.setAttribute("class", "nav-tab-item");
+                    const button = document.createElement("button");
+                    button.setAttribute("name", field["name"]);
+                    button.setAttribute("id", field["name"]);
+                    button.setAttribute("data-expression", field["dataExpression"]);
+
+                    const buildTabProps = getTabProps(button);
+                    customFunctions[button.name] = tabHandler(buildTab, engine, buildTabProps);
+
+                    if (field["selected"]) {
+                        button.setAttribute("class", "item-button active");
+                        button.setAttribute("data-is-active", "true");
+                    } else {
+                        button.setAttribute("class", "item-button");
+                        button.setAttribute("data-is-active", "false");
+                    }
+                    button.addEventListener("click", ($event) => {
+                        customFunctions[field["name"]]($event);
+                    });
+                    button.textContent = field["desc"];
+                    li.append(button);
+                    tab.append(li);
+                })
+
+                const tabContainer = document.getElementsByClassName("multi-tab-container")[0];
+                const visibleTabs = getVisibleTabs(tabContainer, tab);
+                if (visibleTabs.length === 1) {
+                    return;
+                }
+
+                const hiddenElements = [];
+                const moreTab = document.createElement("li");
+                moreTab.setAttribute("id", "navTabMoreId");
+                moreTab.setAttribute("class", "nav-tab-item");
+                const button = document.createElement("button");
+                button.setAttribute("name", "moreButton");
+                button.setAttribute("class", "item-button");
+                button.textContent = "More>>";
+                button.addEventListener("click", ()=> {
+                    toggleDropDown(moreTab, hiddenElements);
+                });
+                moreTab.append(button);
+
+                search_fields.forEach((field, index) => {
+                    if (index >= visibleTabs.length -1) {
+                        hiddenElements.push(tab.childNodes[index])
+                    }
+                })
+
+                for (let index = 0; index < hiddenElements.length; index ++) {
+                    tab.removeChild(hiddenElements[index]);
+                }
+
+                if (hiddenElements.length > 0) {
+                    tab.appendChild(moreTab);
+                }
+            }
+
+            function toggleDropDown(parent, hiddenElements) {
+                if (parent.children.length === 2) {
+                    //clean up the existing content and return
+                    parent.removeChild(parent.children[1]);
+                    return;
+                }
+
+                const dropDownContent = document.createElement("div");
+                dropDownContent.setAttribute("class", "more-drop-down");
+                dropDownContent.setAttribute("id", "navMoreDropDownId");
+
+                if (hiddenElements && hiddenElements.length > 0) {
+                    const ul = document.createElement('ul');
+                    ul.setAttribute("class", "popup-items");
+                    for (let i=0; i<hiddenElements.length; i++) {
+                        hiddenElements[i].setAttribute("class", "popup-item");
+                        ul.append(hiddenElements[i]);
+                    }
+                    dropDownContent.append(ul);
+                }
+
+                parent.appendChild(dropDownContent);
+            }
+            const getToken = async () => {
+                const tokenUrl = '/bin/search/token';
+                try {
+                    const response = await fetch(tokenUrl);
+                    const res = await response.json();
+                    const output = res['searchToken'];
+                    const searchToken = {
+                        token: output,
+                        expiresAt: Date.now() + res['validFor'],
+                    };
+                    window.localStorage.setItem(
+                        'searchToken',
+                        JSON.stringify(searchToken)
+                    );
+
+                    return res['searchToken'];
+                } catch (err) {
+                    console.error('Error from getRequest -> ', err.message || err.responseText);
+                }
+            };
+            const setContext = (engine) => {
+                const ctx = {
+                    location: 'USA.CA.Pleasanton',
+                    costCenter: 'Community, CX',
+                };
+                const action = loadContextActions(engine).setContext(ctx);
+                engine.dispatch(action);
+            };
+            const registerFields = (engine) => {
+                const action = loadFieldActions(engine).enableFetchAllFields();
+                if (action) {
+                    engine.dispatch(action);
+                }
+            };
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const main = async () => {
+                    let token =
+                        'searchToken' in window.localStorage
+                            ? JSON.parse(window.localStorage.getItem('searchToken'))
+                            : {};
+                    let isExpired = 'expiresAt' in token ?
+                        parseInt(token.expiresAt) < parseInt(Date.now()) ? true : false : true;
+
+                    if (token === null || isExpired) {
+                        token = await getToken();
+                    } else {
+                        token = token.token;
+                    }
+
+                    await customElements.whenDefined('atomic-search-interface');
+
+                    const searchInterface = document.querySelector('atomic-search-interface');
+                    await searchInterface.initialize({
+                        accessToken: token,
+                        searchHub: search_config["searchHub"],
+                        analytics: search_config["analytics"],
+                        organizationId: search_config["orgId"],
+                        renewAccessToken: getToken,
+                        preprocessRequest: (request, clientOrigin) => {
+                            if (clientOrigin === 'searchApiFetch') {
+                                const body = JSON.parse(request.body);
+                                // body.q = undefined;
+                                body.maximumAge=30000;
+                                body.numberOfResults = component_properties.rows;
+                                request.body = JSON.stringify(body);
+                            }
+
+                            return request;
+                        },
+                    });
+
+                    searchInterface?.i18n.addResourceBundle('en', 'translation', {
+                        'sort-and-filter': 'Filters',
+                        clear: 'Clear All Filters',
+                        'past-day': 'Past 24 hours',
+                    });
+
+                    const engine = searchInterface.engine;
+
+                    setContext(engine);
+                    registerFields(engine);
+
+                    const { logClickEvent, logCustomEvent } = loadGenericAnalyticsActions(engine);
+
+                    window.customFunctions = {
+                        ...(window.customFunctions ? window.customFunctions : {}),
+                        logClickEvent,
+                        logCustomEvent,
+                        engine,
+                    };
+
+                    buildTabs(buildTab, engine);
+
+                    searchInterface.executeFirstSearch();
+
+                    window.addEventListener('resize', () => buildTabs (buildTab, engine));
+
+                    window.addEventListener('click', function(e){
+                        const dropDown = document.getElementById('navMoreDropDownId');
+                        const parent = document.getElementById('navTabMoreId');
+                        if (parent && dropDown && !dropDown.contains(e.target) && !parent.contains(e.target)) {
+                            if (parent.children.length === 2) {
+                                parent.removeChild(parent.children[1]);
+                            }
+                        }
+                    });
+                };
+
+                main().then(() => {
+                });
+            });
+        </script>
+    </div>
+</sly>
+
+<sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"
+     data-sly-call="${clientlib.all @categories='workday-community.coveo.search'}"/>
+
+
