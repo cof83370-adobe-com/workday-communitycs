@@ -6,9 +6,10 @@ import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
+import com.workday.community.aem.core.services.UserService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.request.RequestPathInfo;
 import org.apache.sling.api.resource.LoginException;
@@ -50,6 +51,9 @@ public class AuthorizationFilterTest {
     UserGroupService userGroupService;
 
     @Mock
+    UserService userService;
+
+    @Mock
     Session jcrSession;
 
     @Mock
@@ -58,13 +62,11 @@ public class AuthorizationFilterTest {
     @Mock
     PageManager pageManager;
 
-
     @Mock
-    Authorizable user;
+    User user;
 
     @Mock
     Page pageObj;
-
 
     @Spy
     @InjectMocks
@@ -89,7 +91,6 @@ public class AuthorizationFilterTest {
     @InjectMocks
     private AuthorizationFilter authorizationFilter;
 
-
     @Test
     void testD0FilterWithoutValidUser() throws ServletException, IOException, RepositoryException, org.apache.sling.api.resource.LoginException, OurmException {
 
@@ -105,17 +106,13 @@ public class AuthorizationFilterTest {
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(jcrSession.getUserID()).thenReturn("test-user1");
         when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
-        when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("test-user1")).thenReturn(user);
+        when(userService.getUser(anyString(),any())).thenReturn(user);
         when(user.getPath()).thenReturn("home/users/test-user1");
-
 
         authorizationFilter.doFilter(request, response, filterChain);
 
         verify(userGroupService, times(0)).getLoggedInUsersGroups(any());
-
     }
-
 
     @Test
     void testDoFilterWithValidUserAndEveryoneTag() throws ServletException, IOException, RepositoryException, LoginException, OurmException {
@@ -137,9 +134,8 @@ public class AuthorizationFilterTest {
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(jcrSession.getUserID()).thenReturn("workday-user1");
         when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
-        when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("workday-user1")).thenReturn(user);
-        when(user.getPath()).thenReturn("home/users/workday-community/workday-user1");
+        when(userService.getUser(anyString(),any())).thenReturn(user);
+        when(user.getPath()).thenReturn("home/users/workdaycommunity/okta/workday-user1");
         when(jcrSession.itemExists(anyString())).thenReturn(true);
         when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
         when(pageManager.getPage(anyString())).thenReturn(pageObj);
@@ -170,9 +166,8 @@ public class AuthorizationFilterTest {
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(jcrSession.getUserID()).thenReturn("workday-user1");
         when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
-        when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("workday-user1")).thenReturn(user);
-        when(user.getPath()).thenReturn("home/users/workday-community/workday-user1");
+        when(userService.getUser(anyString(),any())).thenReturn(user);
+        when(user.getPath()).thenReturn("home/users/workdaycommunity/okta/workday-user1");
         when(jcrSession.itemExists(anyString())).thenReturn(true);
         when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
         when(pageManager.getPage(anyString())).thenReturn(pageObj);

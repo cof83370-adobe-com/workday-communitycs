@@ -20,4 +20,7 @@ public class WccConstants {
     /** The Constant ROLES. */
     public static final String WORKDAY_ERROR_PAGES_FORMAT = "/errors/";
 
+    /** The Constant WORKDAY_OKTA_USERS_ROOT_PATH. */
+    public static final String WORKDAY_OKTA_USERS_ROOT_PATH = "/okta";
+
 }

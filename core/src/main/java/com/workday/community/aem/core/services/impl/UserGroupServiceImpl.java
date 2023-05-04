@@ -101,7 +101,7 @@ public class UserGroupServiceImpl implements UserGroupService {
             Value[] values = user.getProperty(WccConstants.PROFILE_SOURCE_ID);
             String sfId = values != null && values.length > 0 ? values[0].getString() : null;
             if (sfId != null) {
-                logger.info("user  sfid {} ", sfId);
+                logger.debug("user  sfid {} ", sfId);
                 Node userNode = resourceResolver.getResource(user.getPath()).adaptTo(Node.class);
                 if (userNode.hasProperty(ROLES) && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
                         userNode.getProperty(ROLES).getString().split(";").length > 0) {

@@ -195,6 +195,25 @@ public class UserServiceImplTest {
         assertNull(fail);
     }
 
+    /**
+     * Test getUser method.
+     *
+     * @throws RepositoryException
+     */
+    @Test
+    public void testGetUserWithResourceResolver() throws RepositoryException {
+        // Success case.
+        String userId = "testUser";
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+        User test = userService.getUser(userId,resourceResolver);
+        assertEquals(test, user);
+
+        // Failed case.
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(null);
+        User fail = userService.getUser(userId, resourceResolver);
+        assertNull(fail);
+    }
+
     @AfterEach
     public void tearDown() {
         resolver.close();

@@ -129,5 +129,22 @@ public class UserServiceImpl implements UserService {
 			}
         }
     }
+
+    @Override
+    public User getUser(String userId, ResourceResolver resourceResolver) {
+        try {
+            UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+            User user = (User) userManager.getAuthorizable(userId);
+            if (user != null) {
+                return user;
+            }
+            logger.error("Cannot find user with id {}.", userId);
+            return null;
+        }
+        catch (RepositoryException e) {
+            logger.error("Exception occurred when fetch user {}: {}.", userId, e.getMessage());
+            return null;
+        }
+    }
     
 }

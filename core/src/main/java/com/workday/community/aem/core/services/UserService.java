@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.jackrabbit.api.security.user.User;
+import org.apache.sling.api.resource.ResourceResolver;
 
 /**
  * The UserService interface.
@@ -17,6 +18,16 @@ public interface UserService {
 	 * @return The user
 	 */
 	User getUser(String userId);
+
+	/**
+	 * Get user.
+	 *
+	 * @param userId The user id
+	 * @param resourceResolver
+	 *
+	 * @return The user
+	 */
+	User getUser(String userId, ResourceResolver resourceResolver);
 
     /**
 	 * Update user.

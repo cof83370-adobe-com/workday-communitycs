@@ -1,14 +1,12 @@
 package com.workday.community.aem.core.filters;
 
-import com.day.cq.tagging.Tag;
-import com.day.cq.wcm.api.Page;
-import com.day.cq.wcm.api.PageManager;
 import com.day.cq.wcm.api.constants.NameConstants;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
-import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.jackrabbit.api.security.user.UserManager;
+import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.utils.PageUtils;
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -25,10 +23,12 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.servlet.*;
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_ERROR_PAGES_FORMAT;
-import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_ROOT_PAGE_PATH;
+import static com.workday.community.aem.core.constants.WccConstants.*;
 
 
 /**
@@ -63,6 +63,9 @@ public class AuthorizationFilter implements Filter {
     @Reference
     transient UserGroupService userGroupService;
 
+    @Reference
+    transient UserService userService;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         logger.debug("AuthorizationFilter is initialized");
@@ -83,13 +86,12 @@ public class AuthorizationFilter implements Filter {
             requestResourceResolver = slingRequest.getResourceResolver();
             Session userSession = requestResourceResolver.adaptTo(Session.class);
             String userId = userSession.getUserID();
-            logger.info("current user  {}", userId);
+            logger.debug("current user  {}", userId);
             boolean isInValid = true;
             try {
                 resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
-                UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-                Authorizable user = userManager.getAuthorizable(userId);
-                if (null != user && user.getPath().contains("workday")) {
+                User user = userService.getUser(userId,resourceResolver );
+                if (null != user && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
                     isInValid = validateTheUser(pagePath);
                 }
                 if (isInValid) {
@@ -127,47 +129,24 @@ public class AuthorizationFilter implements Filter {
         logger.error(" inside validateTheUser method-->");
         boolean isInValid = true;
         try {
-            List<String> tagsList = getTagsList(pagePath);
-            if (!tagsList.isEmpty()) {
-                logger.info("---> Tags List.. {}", tagsList);
-                if (tagsList.contains("everyone")) {
+            List<String> pageTagsTitlesList = PageUtils.getPageTagsTitleList(pagePath, resourceResolver);
+            if (!pageTagsTitlesList.isEmpty()) {
+                logger.info("---> Tags List.. {}", pageTagsTitlesList);
+                if (pageTagsTitlesList.contains("everyone")) {
                     isInValid = false;
                 } else {
                     List<String> groupsList = userGroupService.getLoggedInUsersGroups(requestResourceResolver);
                     logger.info("---> Groups List..{}", groupsList);
-                    if (!Collections.disjoint(tagsList, groupsList)) {
+                    if (!Collections.disjoint(pageTagsTitlesList, groupsList)) {
                         isInValid = false;
                     }
                 }
             }
         } catch (Exception e) {
-            logger.error("---> Not able to perform User Management..");
             logger.error("---> Exception.. {}", e.getMessage());
         }
 
         return isInValid;
-    }
-
-
-    /**
-     * Get the Tags list attached to the page.
-     *
-     * @param pagePath: The Requested page path.
-     * @return tagTitlesList.
-     */
-    private List<String> getTagsList(String pagePath) throws RepositoryException {
-        final List<String> tagTitlesList = new ArrayList<>();
-        session = resourceResolver.adaptTo(Session.class);
-        if (session.itemExists(pagePath)) {
-            PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-            Page pageObject = pageManager.getPage(pagePath);
-            if (null != pageObject) {
-                for (Tag tag : pageObject.getTags()) {
-                    tagTitlesList.add(tag.getTitle());
-                }
-            }
-        }
-        return tagTitlesList;
     }
 
     @Override
