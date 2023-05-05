@@ -100,12 +100,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String userId) {
+    public void deleteUser(String userId, boolean isPath) {
         Session session = null;
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
             session = resourceResolver.adaptTo(Session.class);
-            User user = (User) userManager.getAuthorizable(userId);
+            User user;
+            if (isPath) {
+                user = (User) userManager.getAuthorizableByPath(userId);
+            }
+            else {
+               user = (User) userManager.getAuthorizable(userId);
+            }
             if (user != null) {
                 String path = user.getPath();
                 if (path.contains(OKTA_USER_PATH)) {
