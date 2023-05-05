@@ -41,9 +41,9 @@ public interface UserService {
     /**
 	 * Delete user.
 	 *
-	 * @param userId The user id
+	 * @param userParam The user is or user path
 	 * @param isPath Is the user path
 	 */
-    void deleteUser(String userId, boolean isPath);
+    void deleteUser(String userParam, boolean isPath);
     
 }
