@@ -20,7 +20,7 @@
 							<ul class="cmp-related-info__list" data-sly-list.urllink="${urllinkMultifield.getChildren}">
 								<li class="cmp-related-info__item"><a class="cmp-related-info__item-link" target="${urllink.newTab}"
 										href="${urllink.pagepath}.html"><span
-											class="cmp-related-info__item-title">${urllink.linktitle}</span></a></li>
+											class="cmp-related-info__item-title">${urllink.linktitle @ context='html'}</span></a></li>
 							</ul>
 						</div>
 					</sly>
