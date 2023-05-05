@@ -38,10 +38,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
     
     /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventsTypeServlet.class);
-    
-    /** The resource resolver. */
-    transient ResourceResolver resourceResolver;
-    
+
     /** The path resource. */
     transient Resource pathResource;
     
@@ -60,7 +57,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
         try {
-            resourceResolver = request.getResourceResolver();
+            ResourceResolver resourceResolver = request.getResourceResolver();
             resourceList = new ArrayList<>();
             //TODO: Coveo Service Integration - to fetch the event types dynamically
             Map<String, String > coveoEventsType = new HashMap<>();
