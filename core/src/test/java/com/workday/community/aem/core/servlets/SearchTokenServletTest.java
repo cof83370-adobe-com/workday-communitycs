@@ -13,6 +13,7 @@ import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
 import org.junit.jupiter.api.Test;
@@ -50,9 +51,6 @@ public class SearchTokenServletTest {
 
   @Mock
   SnapService snapService;
-
-  @Mock
-  CloseableHttpClient httpClient;
 
   @InjectMocks
   SearchTokenServlet searchTokenServlet;
@@ -100,8 +98,9 @@ public class SearchTokenServletTest {
 
     JsonObject testUserContext = gson.fromJson("{\"email\":\"foo@workday.com\"}", JsonObject.class);
     when(snapService.getUserContext(anyString())).thenReturn(testUserContext);
+    CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
     CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
-    when(httpClient.execute(any())).thenReturn(httpResponse);
+
     StatusLine statusLine = new StatusLine() {
       @Override
       public ProtocolVersion getProtocolVersion() {
@@ -135,9 +134,12 @@ public class SearchTokenServletTest {
 
     // Invoke your servlet
     try (MockedStatic<HttpUtils> mockHttpUtils = mockStatic(HttpUtils.class);
-         MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class)) {
+         MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class);
+         MockedStatic<HttpClients> mockHttpClients = mockStatic(HttpClients.class)) {
       mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME)).thenReturn(null);
       mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any())).thenReturn(DEFAULT_SFID_MASTER);
+      mockHttpClients.when(() ->HttpClients.createDefault()).thenReturn(httpClient);
+      when(httpClient.execute(any())).thenReturn(httpResponse);
       try {
         searchTokenServlet.doGet(request, response);
       } catch (ServletException | IOException e) {

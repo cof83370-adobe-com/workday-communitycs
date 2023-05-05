@@ -64,6 +64,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   @Override
   public JsonObject getCompConfig() {
     JsonObject props = new JsonObject();
+    props.addProperty("title", "Financial Management Activity");
     props.addProperty("containerWidth", "400px");
     props.addProperty("rows", 5);
     props.addProperty("product", this.product);

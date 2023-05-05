@@ -62,8 +62,6 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   @Reference
   private transient SnapService snapService;
 
-  private transient CloseableHttpClient httpClient = HttpClients.createDefault();
-
   private transient ObjectMapper objectMapper = new ObjectMapper();
 
   private final transient Gson gson = new Gson();
@@ -110,30 +108,35 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     int tokenExpiryTime = this.searchApiConfigService.getTokenValidTime() / 1000;
 
     JsonObject userContext = this.snapService.getUserContext(sfId);
-    String email = userContext.has(EMAIL_NAME) ?  userContext.get(EMAIL_NAME).getAsString()
+    String email = userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
         : this.searchApiConfigService.isDevMode() ? this.searchApiConfigService.getDefaultEmail() : null;
     if (email == null) {
       throw new ServletException("User email is not in session, please contact admin");
     }
 
-    String searchToken = getToken(httpClient, email, this.searchApiConfigService.getSearchTokenAPIKey());
-    String recommendationToken = getToken(httpClient, email, this.searchApiConfigService.getRecommendationAPIKey());
-    String upcomingEventToken = getToken(httpClient, email, this.searchApiConfigService.getUpcomingEventAPIKey());
+    CloseableHttpClient httpClient = HttpClients.createDefault();
 
-    userContext.addProperty("searchToken", searchToken);
-    userContext.addProperty("recommendationToken", recommendationToken);
-    userContext.addProperty("upcomingEventToken", upcomingEventToken);
-    userContext.addProperty("orgId", this.searchApiConfigService.getOrgId());
-    userContext.addProperty("validFor", this.searchApiConfigService.getTokenValidTime());
-    userContext.remove("contactId");
-    userContext.remove("email");
-    String coveoInfo = gson.toJson(userContext);
+    try {
+      String searchToken = getToken(httpClient, email, this.searchApiConfigService.getSearchTokenAPIKey());
+      String recommendationToken = getToken(httpClient, email, this.searchApiConfigService.getRecommendationAPIKey());
+      String upcomingEventToken = getToken(httpClient, email, this.searchApiConfigService.getUpcomingEventAPIKey());
 
-    Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
-    HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", this.searchApiConfigService.isDevMode());
-    response.setStatus(HttpStatus.SC_OK);
-    httpClient.close();
-    response.getWriter().write(coveoInfo);
+      userContext.addProperty("searchToken", searchToken);
+      userContext.addProperty("recommendationToken", recommendationToken);
+      userContext.addProperty("upcomingEventToken", upcomingEventToken);
+      userContext.addProperty("orgId", this.searchApiConfigService.getOrgId());
+      userContext.addProperty("validFor", this.searchApiConfigService.getTokenValidTime());
+      userContext.remove("contactId");
+      userContext.remove("email");
+      String coveoInfo = gson.toJson(userContext);
+
+      Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
+      HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", this.searchApiConfigService.isDevMode());
+      response.setStatus(HttpStatus.SC_OK);
+      response.getWriter().write(coveoInfo);
+    } finally {
+      httpClient.close();
+    }
   }
 
   private String getToken(CloseableHttpClient httpClient, String email, String apiKey) throws IOException {
