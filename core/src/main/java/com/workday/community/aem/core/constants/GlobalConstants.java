@@ -54,4 +54,10 @@ public interface GlobalConstants {
 
   /** The Constant COMMUNITY_BOOK_ROOT_PATH. */
   String COMMUNITY_CONTENT_BOOK_ROOT_PATH ="/content/workday-community/en-us/admin-tools/books";
+
+  /** Workflow Process Label */
+  String PROCESS_LABEL = "process.label";
+
+  /** Equals */
+  String EQUALS = "=";
 }

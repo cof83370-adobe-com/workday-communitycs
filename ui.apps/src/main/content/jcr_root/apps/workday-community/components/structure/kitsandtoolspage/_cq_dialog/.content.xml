@@ -48,6 +48,15 @@
                                         fieldDescription="Enter Author Name."
                                         fieldLabel="Author Name"
                                         name="./author"/>
+                                    <overrideDate
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        fieldDescription="If checked, page modified date"
+                                        name="./overrideDate"
+                                        renderReadOnly="{Boolean}true"
+                                        text="Check Page Modified Date"
+                                        value="true">
+                                    </overrideDate>                                        
                                     <posteddate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
