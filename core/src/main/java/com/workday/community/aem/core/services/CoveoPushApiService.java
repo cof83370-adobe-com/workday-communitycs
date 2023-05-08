@@ -41,7 +41,7 @@ public interface CoveoPushApiService {
 	/**
 	 * Call Api.
 	 * 
-	 * @param url The api url
+	 * @param uri The api url
 	 * @param header  The api header
      * @param httpMethod The api call method
      * @param payload The api call payload

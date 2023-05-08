@@ -34,6 +34,11 @@ public class SearchApiConfigServiceImplTest {
     }
 
     @Override
+    public String defaultEmail() {
+      return "foo@workday.com";
+    }
+
+    @Override
     public String recommendationApiKey() {
       return "recommendationApiKey";
     }
@@ -46,6 +51,21 @@ public class SearchApiConfigServiceImplTest {
     @Override
     public String orgId() {
       return "orgId";
+    }
+
+    @Override
+    public String userIdProvider() {
+      return null;
+    }
+
+    @Override
+    public String userType() {
+      return null;
+    }
+
+    @Override
+    public String searchHub() {
+      return "searchHub";
     }
 
     @Override

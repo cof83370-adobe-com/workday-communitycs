@@ -67,7 +67,7 @@ public class CoveoIndexApiConfigServiceTest {
 
   @BeforeEach
   public void setup() {
-    ((CoveoIndexApiConfigService)service).activate(mockConfig);
+    service.activate(mockConfig);
   }
 
   /**
