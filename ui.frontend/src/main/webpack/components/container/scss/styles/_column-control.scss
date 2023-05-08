@@ -5,6 +5,10 @@
                 >.aem-Grid {
                     >.container {
                         width: 33% !important;
+                        margin-right: 32px;
+                        &:nth-of-type(3){
+                            margin-right: 0px;
+                        }
                     }
                 }
             }
@@ -15,6 +19,7 @@
                 >.aem-Grid {
                     >.container:first-of-type {
                         width: 33% !important;
+                        margin-right: 32px;
                     }
 
                     >.container:nth-of-type(2) {
@@ -29,6 +34,7 @@
                 >.aem-Grid {
                     >.container:first-of-type {
                         width: 66% !important;
+                        margin-right: 32px;
                     }
 
                     >.container:nth-of-type(2) {
