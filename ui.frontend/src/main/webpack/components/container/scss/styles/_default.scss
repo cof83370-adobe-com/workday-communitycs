@@ -52,6 +52,13 @@
                 text-decoration: none;
                 padding: 0.5rem 0rem 0.5rem 0rem;
 
+                &.active {
+                    .cmp-toc__item-link {
+                        color: $wdc-color-black-pepper-600;
+                        font-weight: $font-weight-bold;
+                    }
+                }
+
                 .cmp-toc__item-link {
                     color: $wdc-color-black-pepper-400;
                     font-weight: 700;
@@ -66,21 +73,27 @@
                         color: $wdc-color-blueberry-400;
                         border-left: 5px solid $wdc-color-blueberry-400;
                         padding: 0.5rem 0rem 0.5rem 1.5rem;
-                    }
 
-                    &:has(+ ul)::before {
-                        content: url('../resources/images/wd-icon-chevron-right.svg');
-                        font-size: 23px;
-                        color: $wdc-color-black-pepper-600;
-                        margin-right: 15px;
+                        .cmp-toc__chevron::before {
+                            content: url('../resources/images/wd-icon-chevron-blue.svg');
+                            margin-right: 15px;
+                            font-size:23px;
+                            margin-left: 7px;
+                            pointer-events: auto;
+                        }
                     }
+                }
 
-                    &.active:has(+ ul)::before {
-                        content: url('../resources/images/wd-icon-chevron-blue.svg');
-                        margin-right: 15px;
-                        font-size:23px;
-                        margin-left: 7px;
-                    }
+                .cmp-toc__chevron::before {
+                    content: url('../resources/images/wd-icon-chevron-right.svg');
+                    font-size: 23px;
+                    color: $wdc-color-black-pepper-600;
+                    margin-right: 15px;
+                    pointer-events: auto;
+                }
+
+                .cmp-toc__chevron {
+                    float: left;
                 }
 
                 .cmp-toc__group-1 {
@@ -101,6 +114,13 @@
                         text-decoration: none;
                         padding: 0.25rem 0rem 0.25rem 0rem;
 
+                        &.active {
+                            .cmp-toc__item-link-1 {
+                                color: $wdc-color-black-pepper-600;
+                                font-weight: $font-weight-bold;
+                            }
+                        }
+
                         .cmp-toc__item-link-1 {
                             color: $wdc-color-black-pepper-400;
                             font-weight: 400;
@@ -109,23 +129,28 @@
                             width: 100%;
                             font-size: 18px;
 
-                            &.active
-                            {
+                            &.active {
                                 padding: 0.25rem 0rem 0.25rem 0rem;
-                            }
 
-                            &:has(+ ul)::before {
-                                content: url('../resources/images/wd-icon-chevron-right-small.svg');
-                                font-size: 23px;
-                                color: $wdc-color-black-pepper-600;
-                                margin-right: 12px;
-                                vertical-align: middle;
+                                .cmp-toc__chevron::before {
+                                    content: url('../resources/images/wd-icon-chevron-down-small.svg');
+                                    margin-right: 12px;
+                                    pointer-events: auto;
+                                }
                             }
+                        }
 
-                            &.active:has(+ ul)::before {
-                                content: url('../resources/images/wd-icon-chevron-down-small.svg');
-                                margin-right: 12px;
-                            }
+                        .cmp-toc__chevron::before {
+                            content: url('../resources/images/wd-icon-chevron-right-small.svg');
+                            font-size: 23px;
+                            color: $wdc-color-black-pepper-600;
+                            margin-right: 12px;
+                            vertical-align: middle;
+                            pointer-events: auto;
+                        }
+
+                        .cmp-toc__chevron {
+                            float: left;
                         }
 
                         .cmp-toc__group-2 {
@@ -146,6 +171,13 @@
                                 text-decoration: none;
                                 padding: 0.5rem 0rem 0.5rem 0rem;
 
+                                &.active {
+                                    .cmp-toc__item-link-2 {
+                                        color: $wdc-color-black-pepper-600;
+                                        font-weight: $font-weight-bold;
+                                    }
+                                }
+
                                 .cmp-toc__item-link-2 {
                                     color: $wdc-color-black-pepper-400;
                                     font-weight: 400;
@@ -158,21 +190,27 @@
                                         background: $wdc-color-blueberry-100;
                                         color:$wdc-color-blueberry-400;
                                         border-left:5px solid $wdc-color-blueberry-400;
-                                       padding:0.25rem 0rem 0.25rem 0rem;
-                                    }
+                                        padding:0.25rem 0rem 0.25rem 0rem;
 
-                                    &:has(+ ul)::before {
-                                        content: url('../resources/images/wd-icon-chevron-right-small.svg');
-                                        font-size: 23px;
-                                        color: $wdc-color-black-pepper-600;
-                                        margin-right: 12px;
-                                        vertical-align: middle;
+                                       .cmp-toc__chevron::before {
+                                            content: url('../resources/images/wd-icon-chevron-blue-small.svg');
+                                            margin-right: 12px;
+                                            pointer-events: auto;
+                                       }
                                     }
+                                }
 
-                                    &.active:has(+ ul)::before {
-                                        content: url('../resources/images/wd-icon-chevron-blue-small.svg');
-                                        margin-right: 12px;
-                                    }
+                                .cmp-toc__chevron::before {
+                                    content: url('../resources/images/wd-icon-chevron-right-small.svg');
+                                    font-size: 23px;
+                                    color: $wdc-color-black-pepper-600;
+                                    margin-right: 12px;
+                                    vertical-align: middle;
+                                    pointer-events: auto;
+                                }
+
+                                .cmp-toc__chevron {
+                                    float: left;
                                 }
                             }
                         }

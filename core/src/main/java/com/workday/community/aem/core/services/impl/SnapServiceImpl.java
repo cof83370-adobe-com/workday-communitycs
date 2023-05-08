@@ -145,6 +145,10 @@ public class SnapServiceImpl implements SnapService {
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
       String url = CommunityUtils.formUrl(config.snapUrl() , config.snapContextPath());
+      if (url == null) {
+        return new JsonObject();
+      }
+
       url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);
@@ -153,8 +157,7 @@ public class SnapServiceImpl implements SnapService {
     }
 
     logger.error("User context is not fetched from the snap context API call without error, please contact admin.");
-
-    return null;
+    return new JsonObject();
   }
 
   @Override
@@ -271,14 +274,14 @@ public class SnapServiceImpl implements SnapService {
       JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
       contactRole = profileObject.get(CONTACT_ROLE).getAsString();
       contactNumber = profileObject.get(CONTACT_NUMBER).getAsString();
-      isNSC = contactRole.contains(NSC) ? true : false;
+      isNSC = contactRole.contains(NSC);
 
       JsonElement wrcOrgId = profileObject.get("wrcOrgId");
       accountID = wrcOrgId.isJsonNull() ? "" : wrcOrgId.getAsString();
       JsonElement organizationName = profileObject.get("organizationName");
       accountName = organizationName.isJsonNull() ? "" : organizationName.getAsString();
       JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-      Boolean isWorkdayMate = isWorkmateElement.isJsonNull() ? false : isWorkmateElement.getAsBoolean();
+      Boolean isWorkdayMate = !isWorkmateElement.isJsonNull() && isWorkmateElement.getAsBoolean();
       accountType = isWorkdayMate ? "workday" : profileObject.get("type").getAsString().toLowerCase();
     }
     userProperties.addProperty(CONTACT_ROLE, contactRole);

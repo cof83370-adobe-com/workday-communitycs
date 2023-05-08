@@ -47,7 +47,7 @@ public class RunModeConfigServiceTest {
 
     @BeforeEach
     public void setup() {
-        ((RunModeConfigService) runModeConfigService).activate(testConfig);
+        runModeConfigService.activate(testConfig);
     }
 
     /**

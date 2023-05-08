@@ -70,7 +70,7 @@ class QueryServiceImplTest {
       lenient().when(queryBuilder.createQuery(eq(pg), eq(session))).thenReturn(query);
       SearchResult result = mock(SearchResult.class);
       lenient().when(query.getResult()).thenReturn(result);
-      lenient().when(result.getTotalMatches()).thenReturn(10l);
+      lenient().when(result.getTotalMatches()).thenReturn(10L);
 
       assertEquals(10, queryService.getNumOfTotalPublishedPages());
 

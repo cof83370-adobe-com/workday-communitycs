@@ -642,26 +642,31 @@
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
                                     <item0
+                                        cq:styleClasses="news-promo"
+                                        cq:styleId="1683220026903"
+                                        cq:styleLabel="News &amp; Promo"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
                                         cq:styleClasses="icon-card "
                                         cq:styleId="1680282107912"
                                         cq:styleLabel="Icon Card"
                                         jcr:primaryType="nt:unstructured"/>
-                                    <item1
+                                    <item2
                                         cq:styleClasses="col-equal-33-33-33"
                                         cq:styleId="1680281702241"
                                         cq:styleLabel="33/33/33"
                                         jcr:primaryType="nt:unstructured"/>
-                                    <item2
+                                    <item3
                                         cq:styleClasses="col-left-33-right-66"
                                         cq:styleId="1680281868041"
                                         cq:styleLabel="33/66"
                                         jcr:primaryType="nt:unstructured"/>
-                                    <item3
+                                    <item4
                                         cq:styleClasses="col-left-66-right-33"
                                         cq:styleId="1680281906479"
                                         cq:styleLabel="66/33"
                                         jcr:primaryType="nt:unstructured"/>
-                                </cq:styles>
+                            </cq:styles>
                             </item1>
                             <item2
                                 cq:styleGroupLabel="Spacing"

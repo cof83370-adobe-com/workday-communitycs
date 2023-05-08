@@ -65,6 +65,31 @@
         }
     }
 
+    function addChevronImage() {
+        const tocListItems = document.querySelectorAll('.cmp-toc__group li a:has(+ ul)');
+
+        if(tocListItems && tocListItems.length != 0) {
+            tocListItems.forEach(function(item) {
+                const listChevron = document.createElement('span');
+                listChevron.classList.add('cmp-toc__chevron');
+                item.appendChild(listChevron);
+            });
+        }
+    }
+
+    function expandCollapseChevron() {
+        const tocChevronIcons = document.querySelectorAll('.cmp-toc__chevron');
+
+        if(tocChevronIcons  && tocChevronIcons.length != 0) {
+            tocChevronIcons.forEach(icon => {
+                icon.addEventListener('click', () => {
+                    event.preventDefault();
+                });
+            });
+        }
+
+    }
+
     function onDocumentReady() {
         const tocClose = document.querySelector(tocSelectors.tocModalClose);
         let showModal = false;
@@ -74,6 +99,11 @@
         } else {
             closeTocModal();
         }
+
+        addChevronImage();
+        expandCollapseChevron();
+        leftrailpanellevel1();
+        leftrailpanellevel2();
 
         if(tocButton) {
             tocButton.addEventListener('click', function(){

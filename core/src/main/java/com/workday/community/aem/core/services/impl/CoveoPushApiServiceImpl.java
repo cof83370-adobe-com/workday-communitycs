@@ -208,9 +208,9 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
         ObjectMapper mapper = new ObjectMapper();
         JsonFactory factory = mapper.getFactory();
-        String requiredHeaders = "";
-        String fileId = "";
-        String uploadUri = "";
+        String requiredHeaders;
+        String fileId;
+        String uploadUri;
         try {
             JsonParser jsonParser = factory.createParser(response);
             JsonNode node = mapper.readTree(jsonParser);
@@ -223,7 +223,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
             return transformedResponse;
         }
 
-        HashMap<String, String> header = new HashMap<>();
+        HashMap<String, String> header;
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             header = objectMapper.readValue(requiredHeaders, new TypeReference<HashMap<String, String>>() {});
