@@ -306,6 +306,16 @@ atomic-layout-section[section='facets'] {
   margin-top: 12px
 }
 
+span.facet-header {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 29px;
+  color: #000000;
+  display: block;
+  padding: 19px 0 0 16px;
+}
+
 .facet-heading {
   padding-top: 18px;
   left: 16px;
