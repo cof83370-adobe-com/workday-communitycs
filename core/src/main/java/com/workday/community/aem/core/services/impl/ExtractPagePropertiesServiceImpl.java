@@ -292,4 +292,39 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         }
     }
 
+    @Override
+    public void processPageTags(Page page, Map<String, Object> properties) {
+        Tag[] tags = page.getTags();
+        for (Tag tag: tags) {
+           String namespace = tag.getNamespace().getName();
+           String field = pageTagMap.get(namespace);
+           Object tagList;
+           if (pageTagMap.get(namespace) != null) {
+               if (hierarchyFields.contains(field)) {
+                   List<String> tagPaths = new ArrayList<>();
+                   while(!tag.isNamespace()) {
+                       Tag finalTag = tag;
+                       tagPaths.replaceAll(path -> finalTag.getTitle() + "|" + path);
+                       tagPaths.add(tag.getTitle());
+                       tag = tag.getParent();
+                   }
+
+                   tagList = properties.get(field + "Hierarchy");
+                   if (tagList instanceof Collection) {
+                       tagPaths.addAll((Collection<? extends String>) tagList);
+                   }
+                   properties.put(field + "Hierarchy", tagPaths);
+               }
+
+               tagList = properties.get(field);
+               List<String> tagNameList = new ArrayList<>();
+               tagNameList.add(tag.getTitle());
+               if (tagList instanceof Collection) {
+                   tagNameList.addAll((Collection<? extends String>) tagList);
+               }
+               properties.put(field, tagNameList);
+           }
+        }
+
+    }
 }
