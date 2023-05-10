@@ -3,12 +3,12 @@
         &.col-equal-33-33-33 {
             >.cmp-container {
                 >.aem-Grid {
-                    >.container {
-                        width: 33% !important;
-                        margin-right: 32px;
-                        &:nth-of-type(3){
-                            margin-right: 0px;
-                        }
+                    display: flex;
+                    gap: 32px;
+
+                    &:before,
+                    &:after {
+                        display: none;
                     }
                 }
             }
@@ -19,7 +19,6 @@
                 >.aem-Grid {
                     >.container:first-of-type {
                         width: 33% !important;
-                        margin-right: 32px;
                     }
 
                     >.container:nth-of-type(2) {
@@ -34,12 +33,23 @@
                 >.aem-Grid {
                     >.container:first-of-type {
                         width: 66% !important;
-                        margin-right: 32px;
                     }
 
                     >.container:nth-of-type(2) {
                         width: 33% !important;
                     }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 767px) {
+
+        &.col-equal-33-33-33 {
+            >.cmp-container {
+                >.aem-Grid {
+                    gap: 0px;
+                    flex-direction: column;
                 }
             }
         }
