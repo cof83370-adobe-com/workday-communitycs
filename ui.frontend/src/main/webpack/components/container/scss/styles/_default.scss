@@ -224,6 +224,10 @@
         .cmp-title {
             margin: 0;
         }
+
+        a {
+            overflow-wrap: break-word;
+        }
     }
 
     .hide {
