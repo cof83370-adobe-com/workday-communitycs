@@ -85,4 +85,16 @@
             }
         }
     }
+
+    &.col-equal-33-33-33,
+    &.col-left-66-right-33,
+    &.col-left-33-right-66 {
+        &.cq-Editable-dom.cq-Editable-dom--container {
+            >.cmp-container {
+                >.aem-Grid {
+                    display: block;
+                }
+            }
+        }
+    }
 }
