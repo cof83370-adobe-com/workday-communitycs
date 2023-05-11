@@ -48,3 +48,10 @@
         cursor: pointer;
     }
 }
+
+.enable-expand {
+    .cmp-image__image {
+        max-width: 335px;
+        width: auto;
+    }
+}
