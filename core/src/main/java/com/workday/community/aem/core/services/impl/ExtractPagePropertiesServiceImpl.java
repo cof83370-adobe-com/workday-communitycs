@@ -170,6 +170,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     public void processDateFields(ValueMap data, HashMap<String, Object> properties) {
         for (String dateField: dateFields) {
             GregorianCalendar value = data.get(dateField, GregorianCalendar.class);
+            if (value == null && dateField.equals("postedDate")) {
+                value = data.get("jcr:created", GregorianCalendar.class);
+            }
             if (value != null) {
                 long time = value.getTimeInMillis() / 1000;
                 properties.put(dateField, time);
@@ -323,6 +326,14 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
            String field = pageTagMap.get(namespace);
            Object tagList;
            if (pageTagMap.get(namespace) != null) {
+               tagList = properties.get(field);
+               List<String> tagNameList = new ArrayList<>();
+               tagNameList.add(tag.getTitle());
+               if (tagList instanceof Collection) {
+                   tagNameList.addAll((Collection<? extends String>) tagList);
+               }
+               properties.put(field, tagNameList);
+
                if (hierarchyFields.contains(field)) {
                    List<String> tagPaths = new ArrayList<>();
                    while(!tag.isNamespace()) {
@@ -339,13 +350,6 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                    properties.put(field + "Hierarchy", tagPaths);
                }
 
-               tagList = properties.get(field);
-               List<String> tagNameList = new ArrayList<>();
-               tagNameList.add(tag.getTitle());
-               if (tagList instanceof Collection) {
-                   tagNameList.addAll((Collection<? extends String>) tagList);
-               }
-               properties.put(field, tagNameList);
            }
         }
 
