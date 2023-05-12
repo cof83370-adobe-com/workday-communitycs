@@ -64,7 +64,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "usingWorkday", "industryTags", "userTags", "programsTools", "programsToolsTags", "regionCountry", "trainingTags"));
 
     /** The stringFields. */
-    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation", "registrationUrl"));
+    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
 
     /** The page tags. */
     private static final Map<String, String> pageTagMap = Map.of("product", "productTags",
