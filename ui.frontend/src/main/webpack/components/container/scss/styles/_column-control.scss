@@ -31,12 +31,12 @@
                     }
 
                     >.container:first-of-type {
-                        width: 33% !important;
+                        width: 33%;
                         max-width: 100%;
                     }
 
                     >.container:nth-of-type(2) {
-                        width: 66% !important;
+                        width: 66%;
                         max-width: 100%;
                     }
                 }
@@ -55,12 +55,12 @@
                     }
 
                     >.container:first-of-type {
-                        width: 66% !important;
+                        width: 66%;
                         max-width: 100%;
                     }
 
                     >.container:nth-of-type(2) {
-                        width: 33% !important;
+                        width: 33%;
                         max-width: 100%;
                     }
                 }
@@ -81,18 +81,6 @@
                     >.container {
                         width: 100%
                     }
-                }
-            }
-        }
-    }
-
-    &.col-equal-33-33-33,
-    &.col-left-66-right-33,
-    &.col-left-33-right-66 {
-        &.cq-Editable-dom.cq-Editable-dom--container {
-            >.cmp-container {
-                >.aem-Grid {
-                    display: block;
                 }
             }
         }
