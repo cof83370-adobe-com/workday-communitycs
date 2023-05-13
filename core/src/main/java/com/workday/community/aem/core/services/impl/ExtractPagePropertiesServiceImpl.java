@@ -54,14 +54,14 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     // @Todo Once Tek system unifies the tag format, we can remove duplicate tags here.
     /** The taxonomyFields. */
     private final ArrayList<String> taxonomyFields = new ArrayList<>(
-        Arrays.asList("productTags", "usingWorkday", "usingWorkdayTags", "programsTools", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountry", "eventAudience", "eventFormat")
+        Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "eventAudience", "eventFormat")
     );
 
     /** The dateFields. */
     private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("startDate", "endDate", "postedDate", "updatedDate"));
 
     /** The hierarchyFields. */
-    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "usingWorkday"));
+    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags"));
 
     /** The stringFields. */
     private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation", "registrationUrl"));
@@ -110,15 +110,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 String[] taxonomyIds = data.get(taxonomyField, String[].class);
                 if (taxonomyIds != null && taxonomyIds.length > 0) {
                     ArrayList<String> value = processTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
-                    if (taxonomyField.equals("usingWorkday")) {
-                        properties.put("usingWorkdayTags", value);
-                    }
-                    else if (taxonomyField.equals("programsTools")) {
-                        properties.put("programsToolsTags", value);
-                    }
-                    else {
-                        properties.put(taxonomyField, value);
-                    }
+                    properties.put(taxonomyField, value);
                 }
             }
             processPermission(data, properties, email);

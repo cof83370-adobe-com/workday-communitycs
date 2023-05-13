@@ -43,7 +43,7 @@ public interface GlobalConstants {
 
   /** The Constant CONTENT_TYPE_MAPPING. */
   Map<String, String> CONTENT_TYPE_MAPPING = Map.of(
-    "/conf/workday-community/settings/wcm/templates/event-page-template", "Calendar Event", 
+    "/conf/workday-community/settings/wcm/templates/events", "Calendar Event", 
     "/conf/workday-community/settings/wcm/templates/faq", "FAQ", 
     "/conf/workday-community/settings/wcm/templates/kits-and-tools", "Kits and Tools", 
     "/conf/workday-community/settings/wcm/templates/reference", "Reference"

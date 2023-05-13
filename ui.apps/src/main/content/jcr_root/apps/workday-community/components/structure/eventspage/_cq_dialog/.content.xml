@@ -24,7 +24,7 @@
                     </general>
                     <eventconfig
                         jcr:primaryType="nt:unstructured"
-                        jcr:title="Event Details Config"
+                        jcr:title="Events"
                         sling:orderBefore="basic"
                         sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
                         <items jcr:primaryType="nt:unstructured">
@@ -162,7 +162,7 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose User Tags"
                                         fieldDescription="Choose user tags"
-                                        fieldLabel="Event Users"
+                                        fieldLabel="Users Tags"
                                         multiple="{Boolean}true"
                                         name="./userTags"
                                         rootPath="/content/cq:tags/user"/>
@@ -172,9 +172,9 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Region &amp; Country Tag"
                                         fieldDescription="Choose region &amp; country tag"
-                                        fieldLabel="Event Region &amp; Country"
+                                        fieldLabel="Region &amp; Country Tags"
                                         multiple="{Boolean}true"
-                                        name="./regionCountry"
+                                        name="./regionCountryTags"
                                         rootPath="/content/cq:tags/region-and-country"/>
                                     <industry
                                         cq:showOnCreate="{Boolean}true"
@@ -182,7 +182,7 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Industry Tags"
                                         fieldDescription="Choose industry tags"
-                                        fieldLabel="Event Industry"
+                                        fieldLabel="Industry Tags"
                                         multiple="{Boolean}true"
                                         name="./industryTags"
                                         rootPath="/content/cq:tags/industry"/>
@@ -192,7 +192,7 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Release Tags"
                                         fieldDescription="Choose release tags"
-                                        fieldLabel="Event Release"
+                                        fieldLabel="Release Tags"
                                         multiple="{Boolean}true"
                                         name="./releaseTags"
                                         rootPath="/content/cq:tags/release"/>
@@ -202,9 +202,9 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Using Workday Tags"
                                         fieldDescription="Choose using workday tags"
-                                        fieldLabel="Event Using Workday type"
+                                        fieldLabel="Using Workday Tags"
                                         multiple="{Boolean}true"
-                                        name="./usingWorkday"
+                                        name="./usingWorkdayTags"
                                         rootPath="/content/cq:tags/using-workday"/>
                                     <product
                                         cq:showOnCreate="{Boolean}true"
@@ -212,7 +212,7 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Product Tags"
                                         fieldDescription="Choose product tags"
-                                        fieldLabel="Event for Product"
+                                        fieldLabel="Product Tags"
                                         multiple="{Boolean}true"
                                         name="./productTags"
                                         rootPath="/content/cq:tags/product"/>
@@ -222,9 +222,9 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Programs &amp; Tools Tags"
                                         fieldDescription="Choose Programs &amp; Tools tags"
-                                        fieldLabel="Event for Programs &amp; Tools"
+                                        fieldLabel="Programs &amp; Tools Tags"
                                         multiple="{Boolean}true"
-                                        name="./programsTools"
+                                        name="./programsToolsTags"
                                         rootPath="/content/cq:tags/programs-tools"/>
                                     <retirementdate
                                         cq:showOnCreate="{Boolean}true"

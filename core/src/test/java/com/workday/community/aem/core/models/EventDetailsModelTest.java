@@ -71,7 +71,7 @@ public class EventDetailsModelTest {
         pageProperties.put("eventHost", "workday");
         pageProperties.put("eventFormat", new String[] { "event:event-format/webinar" });
         currentPage = context.create().page("/content/workday-community/event",
-                "/conf/workday-community/settings/wcm/templates/event-page-template", pageProperties);
+                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
         resource = context.create().resource(currentPage, "eventspage",
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
