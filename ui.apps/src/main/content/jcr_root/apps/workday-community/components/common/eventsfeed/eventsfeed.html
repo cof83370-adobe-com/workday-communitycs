@@ -1,8 +1,85 @@
- 
-<div class="cmp-eventsfeed" data-cmp-is="cmp-eventsfeed">
-   <div>Coveo Events: ${properties.coveoevents}</div> 
-   <div>Event Type: ${properties.eventtype}</div>
-   <div>Featured Events: ${properties.featuredevent}</div>
-</div>
+<sly data-sly-use.model="com.workday.community.aem.core.models.CoveoEventFeedModel">
+ <div class="cmp-eventsfeed-container">
+     <span id="searchConfigData" data-model-search-config="${model.getSearchConfig}" />
+     <!--/*    <div>Coveo Events: ${properties.coveoevents}</div>  */-->
+<!--/*    <div>Event Type: ${properties.eventtype}</div> */-->
+<!--/*    <div>Featured Events: ${properties.featuredevent}</div> */-->
+     <div class="cmp-eventsfeed-feature">
+         Feature event portion
+     </div>
+     <atomic-search-interface id="eventFeedSearchId">
+         <atomic-search-layout>
+             <atomic-layout-section section="results">
+                 <atomic-result-list display="list" image-size="icon" density="normal">
+                     <template>
+                         <style>
+                             .data-row {
+
+                             }
+                         </style>
+
+                         <div>
+
+                         </div>
+                         <div class="data-row">
+                           <div class="data-row-left">
+                               <atomic-field-condition class="field" if-defined="commoneventstartdate">
+                                   <atomic-result-date field="commoneventstartdate" format="ddd MMM"/>
+                               </atomic-field-condition>
+                           </div>
+                             <div class="data-row-right">
+                                 <atomic-result-section-title>
+                                     <atomic-result-link target="_blank"></atomic-result-link>
+                                 </atomic-result-section-title>
+                                 <atomic-field-condition class="field" if-defined="commoneventstartdate">
+                                     <atomic-result-date field="commoneventstartdate" format="ddd MMM, D YYYY"/>
+                                 </atomic-field-condition>
+                                 <span> - </span>
+                                 <atomic-field-condition class="field" if-defined="commoneventenddate">
+                                     <atomic-result-date field="commoneventenddate" format="ddd MMM, D YYYY"/>
+                                 </atomic-field-condition>
+                             </div>
+                         </div>
+                     </template>
+                 </atomic-result-list>
+                 <atomic-query-error></atomic-query-error>
+             </atomic-layout-section>
+         </atomic-search-layout>
+     </atomic-search-interface>
+     <script type="module">
+         document.addEventListener('DOMContentLoaded', () => {
+             const main = async () => {
+                 await customElements.whenDefined('atomic-search-interface');
+                 const searchConfigNode = document.getElementById("searchConfigData");
+                 const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
+
+
+                 const searchInterface = document.querySelector('atomic-search-interface');
+                 await searchInterface.initialize({
+                     accessToken: token,
+                     searchHub: search_config["searchHub"],
+                     analytics: search_config["analytics"],
+                     organizationId: search_config["orgId"],
+                     renewAccessToken: getToken,
+                     preprocessRequest: (request, clientOrigin) => {
+                         if (clientOrigin === 'searchApiFetch') {
+                             const body = JSON.parse(request.body);
+                             // body.q = undefined;
+                             body.maximumAge=30000;
+                             body.numberOfResults = properties.rows;
+                             request.body = JSON.stringify(body);
+                         }
+
+                         return request;
+                     },
+                 });
+             }
+             main().then(() => {
+             });
+         })
+     </script>
+ </div>
+</sly>
+
 <sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
    data-sly-call="${template.placeholder  @ isEmpty =! properties.coveoevents , classAppend='cmp-eventsfeed'}"></sly> 

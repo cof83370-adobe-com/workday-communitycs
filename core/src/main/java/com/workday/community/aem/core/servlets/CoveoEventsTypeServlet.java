@@ -1,8 +1,8 @@
 package com.workday.community.aem.core.servlets;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.Servlet;
@@ -43,7 +43,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_
  * @author Thabrez
  */
 @Component(service = Servlet.class, property = {Constants.SERVICE_DESCRIPTION + "= Coveo Events type Dropdown Service",
-        "sling.servlet.paths=" + "/bin/coveoEventsDropdown", "sling.servlet.methods=" + HttpConstants.METHOD_GET
+        "sling.servlet.paths=" + "/bin/eventTypes", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
 public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
     
@@ -53,6 +53,9 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
 
     /** The path resource. */
     private transient Resource pathResource;
+
+    @OSGiService
+    private transient SearchApiConfigService searchConfigService;
 
     private transient ObjectMapper objectMapper = new ObjectMapper();
 
