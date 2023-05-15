@@ -4,9 +4,7 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
-import com.workday.community.aem.core.models.CoveoTabListModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
@@ -18,28 +16,31 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.jcr.Session;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 @Model(
     adaptables = SlingHttpServletRequest.class,
-    adapters = { CoveoTabListModel.class },
+    adapters = { CoveoEventFeedModel.class },
     resourceType = { CoveoEventFeedModelImpl.RESOURCE_TYPE },
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   private static final Logger logger = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
-  protected static final String RESOURCE_TYPE = "workday-community/components/common/coveoeventfeed";
+  protected static final String RESOURCE_TYPE = "/content/workday-community/components/common/coveoeventfeed";
   @Self
   private SlingHttpServletRequest request;
 
   @Inject
-  private String[] eventType;
+  String eventtype;
 
   @Inject
-  private String featureEventPage = "/admin-tools/demo-event";
+  private String featureEventPage = "/content/workday-community/en-us/admin-tools/demo-event";
 
   @OSGiService
   private SearchApiConfigService searchConfigService;
@@ -62,20 +63,30 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   }
 
   @Override
-  public JsonObject getFeatureEvent() {
+  public Map<String, String> getFeatureEvent() {
     PageManager pageManager = this.request.getResourceResolver().adaptTo(PageManager.class);
     Page pageObject = pageManager.getPage(this.featureEventPage);
-    JsonObject ret = new JsonObject();
-    ret.addProperty("title", pageObject.getTitle());
-    ret.addProperty("link", this.featureEventPage);
-    ret.addProperty("eventStartDate", "");
-    ret.addProperty("eventEndDate", "");
-    ret.addProperty("image", pageObject.getProperties("cq:featuredimage").get("fileName").toString());
-    ret.addProperty("location", pageObject.getPath());
-    ret.addProperty("registerTitle", "");
-    ret.addProperty("registerLink", "");
 
-    return null;
+    GregorianCalendar startTime = (GregorianCalendar)pageObject.getProperties().get("startDate");
+    GregorianCalendar endTime = (GregorianCalendar)pageObject.getProperties().get("endDate");
+    SimpleDateFormat fmt = new SimpleDateFormat("MMM dd, yyyy");
+    fmt.setCalendar(startTime);
+    fmt.setCalendar(endTime);
+    String eventLocation = (String)pageObject.getProperties().get("eventLocation");
+    String eventHost = (String)pageObject.getProperties().get("eventHost");
+
+    Map<String, String> ret = new HashMap<>();
+    ret.put("title", pageObject.getTitle());
+    ret.put("link", this.featureEventPage);
+    ret.put("startDate", fmt.format(startTime.getTime()));
+    ret.put("endDate", fmt.format(endTime.getTime()));
+    ret.put("image", "");
+    ret.put("location", eventLocation);
+    ret.put("host", eventHost);
+    ret.put("registerTitle", "");
+    ret.put("registerLink", "");
+
+    return ret;
   }
 
   @Override
@@ -86,12 +97,13 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   @Override
   public String getEventCriteria() {
     LocalDate localDate = LocalDate.now();
-    ZonedDateTime startOfDay = localDate.atStartOfDay(ZoneId.of("PST"));
+    ZonedDateTime startOfDay = localDate.atStartOfDay(ZoneId.of("Z"));
     long today = startOfDay.toInstant().toEpochMilli();
-    return String.format("(@commcontenttype='Calendar Event' OR @drucontenttype=calendar_event)(@commoneventstartdate>=%s", today);
+    return "(@commcontenttype='Calendar Event' OR @drucontenttype=calendar_event)";
+
+    //TODO change to the correct one once there are data.
+    // return String.format("(@commcontenttype='Calendar Event' OR @drucontenttype=calendar_event)(@commoneventstartdate>=%s)", today);
   }
-
-
 
   @Override
   public String getExtraCriteria() {

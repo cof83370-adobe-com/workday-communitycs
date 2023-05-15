@@ -13,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
+import javax.servlet.ServletException;
+
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class CoveoEventsTypeServletTest {
 
@@ -21,7 +23,7 @@ public class CoveoEventsTypeServletTest {
   CoveoEventsTypeServlet coveoEventTypeServlet;
 
   @Test
-  public void testDoGet() throws IOException {
+  public void testDoGet() throws IOException, ServletException {
     SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
     SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
     coveoEventTypeServlet.doGet(request, response);

@@ -1,8 +1,8 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.adobe.xfa.ut.StringUtils;
 import com.workday.community.aem.core.config.CoveoSearchConfig;
 import com.workday.community.aem.core.services.SearchApiConfigService;
+import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;

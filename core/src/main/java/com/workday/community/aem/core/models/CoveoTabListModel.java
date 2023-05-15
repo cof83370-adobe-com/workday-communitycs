@@ -10,7 +10,7 @@ import com.workday.community.aem.core.config.CoveoSearchConfig;
 public interface CoveoTabListModel extends CoveoCommonModel {
    /**
     * Get component properties.
-    * @return compponent properties as a JSON object.
+    * @return component properties as a JSON object.
     */
    // TODO this should come from component editor
    JsonObject getCompConfig();

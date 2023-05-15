@@ -1,0 +1,90 @@
+.cmp-eventsfeed-container {
+  width: 600px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 19px 24px;
+  color: #000000;
+  font-family: "Workday Adelle Sans", Roboto, sans-serif;
+  background-color: #fff;
+
+  .feature-event {
+    width: 620px;
+    height: 260px;
+
+    .image {
+      height: 204px;
+      width: 255px;
+    }
+
+    .detail {
+      float: right;
+      width: 360px;
+
+      .title {
+          font-size: 32px;
+       }
+       .location {
+         font-size: 20px;
+       }
+       .timespan {
+         font-size: 20px;
+         margin-bottom: 20px;
+       }
+       .register {
+         min-width: 70px;
+         height: 30px;
+         padding: 0 8px;
+         font-size: 0.875rem;
+         line-height: normal;
+         letter-spacing: 0.015rem;
+         box-sizing: border-box;
+         display: inline-flex;
+         -webkit-box-align: center;
+         align-items: center;
+         -webkit-box-pack: center;
+         justify-content: center;
+         background: none transparent;
+         border-radius: 999px;
+         box-shadow: none;
+         position: relative;
+         cursor: pointer;
+         font-weight: 500;
+         outline: none;
+         vertical-align: middle;
+         border: 1px solid rgb(51, 51, 51);
+         overflow: hidden;
+         white-space: nowrap;
+         -webkit-font-smoothing: antialiased;
+         transition: box-shadow 120ms linear 0s, border 120ms linear 0s, background-color 120ms linear 0s, color 120ms linear 0s;
+       }
+     }
+  }
+
+  .all-events {
+    font-size: 2pc;
+    margin-top: 30px;
+
+    .event-text {
+      color: #2020e0;
+    }
+  }
+
+  p.subject {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 30px;
+    text-align: left;
+    margin-top: 0;
+    margin-bottom: 0 !important;
+    margin-left: 0;
+    margin-right: 0;
+    letter-spacing: inherit;
+  }
+
+  hr.separator {
+    color: #ced3d9;
+    margin: 20px 0 10px;
+    border-style: solid;
+    border-width: 1px 0 0;
+  }
+}
