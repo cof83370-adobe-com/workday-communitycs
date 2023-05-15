@@ -9,40 +9,40 @@ import java.util.Map;
  *
  * @author pepalla
  */
-public interface GlobalConstants {
+public final class GlobalConstants {
 
   /** The Constant COMMUNITY_CONTENT_ROOT_PATH. */
-  String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
+  public static final String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
   /** The Constant COMMUNITY_COVEO_JOB. */
-  String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
+  public static final String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
 
   /** The Constant PROP_USER_PROFILE_GIVENNAME. */
-  String PROP_USER_PROFILE_GIVENNAME = "./profile/givenName";
+  public static final String PROP_USER_PROFILE_GIVENNAME = "./profile/givenName";
 
   /** The Constant PROP_USER_PROFILE_FAMILYNAME. */
-  String PROP_USER_PROFILE_FAMILYNAME = "./profile/familyName";
+  public static String PROP_USER_PROFILE_FAMILYNAME = "./profile/familyName";
 
   /** The Constant PROP_AUTHOR. */
-  String PROP_AUTHOR = "author";
+  public static String PROP_AUTHOR = "author";
 
   /** The Constant PROP_JCR_CREATED_BY. */
-  String PROP_JCR_CREATED_BY = JCR_CREATED_BY;
+  public static String PROP_JCR_CREATED_BY = JCR_CREATED_BY;
 
   /** The Constant PROP_UPDATED_DATE. */
-  String PROP_UPDATED_DATE = "updatedDate";
+  public static String PROP_UPDATED_DATE = "updatedDate";
 
   /** The Constant PROP_POSTED_DATE. */
-  String PROP_POSTED_DATE = "postedDate";
+  public static String PROP_POSTED_DATE = "postedDate";
 
   /** The Constant PUBLISH. */
-  String PUBLISH = "publish";
+  public static String PUBLISH = "publish";
 
   /** The Constant JCR CONTENT NODE. */
-  String JCR_CONTENT_PATH = "/jcr:content";
+  public static String JCR_CONTENT_PATH = "/jcr:content";
 
   /** The Constant CONTENT_TYPE_MAPPING. */
-  Map<String, String> CONTENT_TYPE_MAPPING = Map.of(
+  public static final Map<String, String> CONTENT_TYPE_MAPPING = Map.of(
     "/conf/workday-community/settings/wcm/templates/event-page-template", "Calendar Event", 
     "/conf/workday-community/settings/wcm/templates/faq", "FAQ", 
     "/conf/workday-community/settings/wcm/templates/kits-and-tools", "Kits and Tools", 
@@ -50,8 +50,13 @@ public interface GlobalConstants {
   );
 
   /** The Constant OKTA_USER_PATH. */
-  String OKTA_USER_PATH = "/workdaycommunity/okta";
+  public static final String OKTA_USER_PATH = "/workdaycommunity/okta";
 
   /** The Constant COMMUNITY_BOOK_ROOT_PATH. */
-  String COMMUNITY_CONTENT_BOOK_ROOT_PATH ="/content/workday-community/en-us/admin-tools/books";
+  public static final String COMMUNITY_CONTENT_BOOK_ROOT_PATH ="/content/workday-community/en-us/admin-tools/books";
+
+  private GlobalConstants() {
+    throw new IllegalStateException("Utility class");
+  }
+
 }
