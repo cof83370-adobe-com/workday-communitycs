@@ -64,11 +64,16 @@ public class ExtractPagePropertiesServiceImplTest {
         doReturn("Product 1.2").when(tagTwo).getTitle();
         doReturn("Product 2").when(tagThree).getTitle();
 
-        ArrayList<String> values = extract.processTaxonomyFields(tagManager, taxonomyTagIds, "productTags");
+        ArrayList<String> values = extract.processHierarchyTaxonomyFields(tagManager, taxonomyTagIds, "productTags");
         assertTrue(values.contains("Product 1"));
         assertTrue(values.contains("Product 2"));
-        assertTrue(values.contains("Product 1|Product 1.2"));  
-        assertFalse(values.contains("Product 1.2")); 
+        assertTrue(values.contains("Product 1|Product 1.2"));
+        assertFalse(values.contains("Product 1.2"));
+
+        values = extract.processTaxonomyFields(tagManager, taxonomyTagIds, "productTags");
+        assertTrue(values.contains("Product 2"));
+        assertTrue(values.contains("Product 1.2"));
+        assertFalse(values.contains("Product 1"));
     }
 
     /**
@@ -88,7 +93,7 @@ public class ExtractPagePropertiesServiceImplTest {
 
         ArrayList<String> values = extract.processTaxonomyFields(tagManager, taxonomyTagIds, "releaseTags");
         assertTrue(values.contains("Release 1"));
-        assertTrue(values.contains("Release 1.2"));   
+        assertTrue(values.contains("Release 1.2"));
         assertFalse(values.contains("Release 1|Release 1.2"));
     }
 
@@ -118,7 +123,7 @@ public class ExtractPagePropertiesServiceImplTest {
     /**
      * Test process string fields.
      */
-    @Test 
+    @Test
     public void testPorcessStringFields() {
         ValueMap data = Mockito.mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<String, Object>();
@@ -133,7 +138,7 @@ public class ExtractPagePropertiesServiceImplTest {
     /**
      * Test process date fields.
      */
-    @Test 
+    @Test
     public void testPorcessDateFields() {
         ValueMap data = Mockito.mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<String, Object>();
@@ -147,7 +152,7 @@ public class ExtractPagePropertiesServiceImplTest {
      * Test process user fields.
      * @throws RepositoryException
      */
-    @Test 
+    @Test
     public void testPorcessUserFields() throws RepositoryException {
         ValueMap data = Mockito.mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<String, Object>();

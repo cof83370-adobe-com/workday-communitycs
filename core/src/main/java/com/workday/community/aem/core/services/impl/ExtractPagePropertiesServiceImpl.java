@@ -61,19 +61,22 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("startDate", "endDate", "postedDate", "updatedDate"));
 
     /** The hierarchyFields. */
-    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags"));
+    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "industryTags", "userTags", "programsToolsTags", "regionCountryTags", "trainingTags"));
 
     /** The stringFields. */
-    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation", "registrationUrl"));
+    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
+
+    /** The page tags. */
+    private static final Map<String, String> pageTagMap = Map.of("product", "productTags",
+            "using-workday", "usingWorkdayTags", "programs-and-tools", "programsToolsTags",
+            "release", "releaseTags", "industry", "industryTags", "user", "userTags",
+            "region-and-country", "regionCountryTags", "training", "trainingTags");
 
     /** The custom components. */
-    private static final Map<String, String> customComponents =  new HashMap<>();
-    static {
-        customComponents.put("root/container/eventregistration/button", "registrationLink");
-    }
+    private static final Map<String, String> customComponents =  Map.of("root/container/eventregistration/button", "registrationLink");
 
     /** The TEXT_COMPONENT. */
-    public static final String TEXT_COMPONENT = "community/components/text";
+    public static final String TEXT_COMPONENT = "workday-community/components/core/text";
 
     /** The IDENTITY_TYPE_GROUP. */
     public static final String IDENTITY_TYPE_GROUP = "GROUP";
@@ -111,8 +114,15 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 if (taxonomyIds != null && taxonomyIds.length > 0) {
                     ArrayList<String> value = processTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
                     properties.put(taxonomyField, value);
+                    if (hierarchyFields.contains(taxonomyField)) {
+                        value = processHierarchyTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
+                        properties.put(taxonomyField + "Hierarchy", value);
+                    }
                 }
             }
+
+            processPageTags(page, properties);
+
             processPermission(data, properties, email);
 
             Resource resource = resourceResolver.getResource( path + "/jcr:content");
@@ -143,6 +153,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     public void processDateFields(ValueMap data, HashMap<String, Object> properties) {
         for (String dateField: dateFields) {
             GregorianCalendar value = data.get(dateField, GregorianCalendar.class);
+            if (value == null && dateField.equals("postedDate")) {
+                value = data.get("jcr:created", GregorianCalendar.class);
+            }
             if (value != null) {
                 long time = value.getTimeInMillis() / 1000;
                 properties.put(dateField, time);
@@ -153,8 +166,8 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     @Override
     public void processPermission(ValueMap data, HashMap<String, Object> properties, String email) {
         // Coveo permission example: https://docs.coveo.com/en/107/cloud-v2-developers/simple-permission-model-definition-examples.
-        // @Todo Once we set the page access(it will be the same as drupal, using access control tag 
-        // map it to AME groups) rewrite this function, right now it is hard coded, 
+        // @Todo Once we set the page access(it will be the same as drupal, using access control tag
+        // map it to AME groups) rewrite this function, right now it is hard coded,
         // allow authenticated user to view.
         HashMap<String, Object> permissionGroup21 = new HashMap<>();
         permissionGroup21.put("identity", "authenticated");
@@ -166,11 +179,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         if (email != null && email.trim().length() > 0) {
             HashMap<String, Object> permissionGroup22 = new HashMap<>();
             permissionGroup22.put("identity", email);
-            permissionGroup22.put("identityType", IDENTITY_TYPE_USER); 
+            permissionGroup22.put("identityType", IDENTITY_TYPE_USER);
             permissionGroup22.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
             permissionGroup2.add(permissionGroup22);
         }
-        
+
         HashMap<String, Object> permissionGroup = new HashMap<>();
         permissionGroup.put("allowAnonymous", false);
         permissionGroup.put("allowedPermissions", permissionGroup2);
@@ -201,28 +214,32 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     public ArrayList<String> processTaxonomyFields(TagManager tagManager, String[] taxonomyTagIds, String taxonomyField) {
         ArrayList<String> processedTags = new ArrayList<>();
         for (String tagIdString: taxonomyTagIds) {
-            if (hierarchyFields.contains(taxonomyField)) {
-                int index = tagIdString.indexOf("/");
-                ArrayList<String> tagIdsList = new ArrayList<>();
-                while(index >= 0) {
-                    tagIdsList.add(tagIdString.substring(0, index));
-                    index = tagIdString.indexOf("/", index + 1);
-                }
-                tagIdsList.add(tagIdString);
-                ArrayList<String> tagString = new ArrayList<>();
-                for(String tagId: tagIdsList) {
-                    Tag tag = tagManager.resolve(tagId);
-                    if (tag != null) {
-                        tagString.add(tag.getTitle());  
-                        String tagPath = String.join("|", tagString);
-                        processedTags.add(tagPath);
-                    }
-                }
+            Tag tag = tagManager.resolve(tagIdString);
+            if (tag != null) {
+                processedTags.add(tag.getTitle());
             }
-            else {
-                Tag tag = tagManager.resolve(tagIdString); 
+        }
+        return processedTags;
+    }
+
+    @Override
+    public ArrayList<String> processHierarchyTaxonomyFields(TagManager tagManager, String[] taxonomyTagIds, String taxonomyField) {
+        ArrayList<String> processedTags = new ArrayList<>();
+        for (String tagIdString: taxonomyTagIds) {
+            int index = tagIdString.indexOf("/");
+            ArrayList<String> tagIdsList = new ArrayList<>();
+            while(index >= 0) {
+                tagIdsList.add(tagIdString.substring(0, index));
+                index = tagIdString.indexOf("/", index + 1);
+            }
+            tagIdsList.add(tagIdString);
+            ArrayList<String> tagString = new ArrayList<>();
+            for(String tagId: tagIdsList) {
+                Tag tag = tagManager.resolve(tagId);
                 if (tag != null) {
-                    processedTags.add(tag.getTitle());
+                    tagString.add(tag.getTitle());
+                    String tagPath = String.join("|", tagString);
+                    processedTags.add(tagPath);
                 }
             }
         }
@@ -282,6 +299,43 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 }
             }
         }
+    }
+
+    @Override
+    public void processPageTags(Page page, Map<String, Object> properties) {
+        Tag[] tags = page.getTags();
+        for (Tag tag: tags) {
+           String namespace = tag.getNamespace().getName();
+           String field = pageTagMap.get(namespace);
+           Object tagList;
+           if (pageTagMap.get(namespace) != null) {
+               tagList = properties.get(field);
+               List<String> tagNameList = new ArrayList<>();
+               tagNameList.add(tag.getTitle());
+               if (tagList instanceof Collection) {
+                   tagNameList.addAll((Collection<? extends String>) tagList);
+               }
+               properties.put(field, tagNameList);
+
+               if (hierarchyFields.contains(field)) {
+                   List<String> tagPaths = new ArrayList<>();
+                   while(!tag.isNamespace()) {
+                       Tag finalTag = tag;
+                       tagPaths.replaceAll(path -> finalTag.getTitle() + "|" + path);
+                       tagPaths.add(tag.getTitle());
+                       tag = tag.getParent();
+                   }
+
+                   tagList = properties.get(field + "Hierarchy");
+                   if (tagList instanceof Collection) {
+                       tagPaths.addAll((Collection<? extends String>) tagList);
+                   }
+                   properties.put(field + "Hierarchy", tagPaths);
+               }
+
+           }
+        }
+
     }
 
 }

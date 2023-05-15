@@ -51,18 +51,14 @@ public class AuthorizationFilter implements Filter {
     @Reference
     private ResourceResolverFactory resolverFactory;
 
-    private transient ResourceResolver resourceResolver;
-
-    private transient ResourceResolver requestResourceResolver;
+    @Reference
+    private transient OktaService oktaService;
 
     @Reference
-    transient OktaService oktaService;
+    private transient UserGroupService userGroupService;
 
     @Reference
-    transient UserGroupService userGroupService;
-
-    @Reference
-    transient UserService userService;
+    private transient UserService userService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -79,16 +75,21 @@ public class AuthorizationFilter implements Filter {
                 !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT)) {
             Map<String, Object> serviceParams = new HashMap<>();
             serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
-            requestResourceResolver = slingRequest.getResourceResolver();
+            ResourceResolver requestResourceResolver = slingRequest.getResourceResolver();
             Session userSession = requestResourceResolver.adaptTo(Session.class);
+            if (userSession == null) {
+                ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+                return;
+            }
             String userId = userSession.getUserID();
             logger.debug("current user  {}", userId);
             boolean isInValid = true;
+            ResourceResolver resourceResolver = null;
             try {
                 resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
                 User user = userService.getUser(resourceResolver, userId);
                 if (null != user && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
-                    isInValid = validateTheUser(pagePath);
+                    isInValid = validateTheUser(resourceResolver, requestResourceResolver, pagePath);
                 }
                 if (isInValid) {
                     ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
@@ -98,7 +99,6 @@ public class AuthorizationFilter implements Filter {
             } finally {
                 if (resourceResolver != null && resourceResolver.isLive()) {
                     resourceResolver.close();
-                    resourceResolver = null;
                 }
             }
         }
@@ -111,7 +111,9 @@ public class AuthorizationFilter implements Filter {
      * @param pagePath : The Requested page path.
      * @return boolean: True if user has permissions otherwise false.
      */
-    private boolean validateTheUser(String pagePath) {
+    private boolean validateTheUser(ResourceResolver resourceResolver,
+                                    ResourceResolver requestResourceResolver,
+                                    String pagePath) {
         logger.debug(" inside validateTheUser method-->");
         boolean isInValid = true;
         try {
@@ -137,11 +139,7 @@ public class AuthorizationFilter implements Filter {
 
     @Override
     public void destroy() {
-        logger.debug("calling AuthorizationFilter destroy()");
-        if (resourceResolver != null && resourceResolver.isLive()) {
-            resourceResolver.close();
-            resourceResolver = null;
-        }
+        logger.debug("Destroy");
     }
 
 }
