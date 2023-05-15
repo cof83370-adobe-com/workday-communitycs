@@ -29,6 +29,11 @@ public class SearchApiConfigServiceImplTest {
     }
 
     @Override
+    public String searchFieldLookupApi() {
+      return null;
+    }
+
+    @Override
     public String tokenApiKey() {
       return "tokenApiKey";
     }

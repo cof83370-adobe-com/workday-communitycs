@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.adobe.xfa.ut.StringUtils;
 import com.workday.community.aem.core.config.CoveoSearchConfig;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import org.osgi.service.component.annotations.Activate;
@@ -54,6 +55,16 @@ public class SearchApiConfigServiceImpl implements SearchApiConfigService {
   @Override
   public String getSearchTokenAPI() {
     return config.tokenApi();
+  }
+
+  @Override
+  public String getSearchFieldLookupAPI() {
+    String lookupApi = config.searchFieldLookupApi();
+    if (!StringUtils.isEmpty(lookupApi) && lookupApi.endsWith("/")) {
+      lookupApi = lookupApi.substring(0, lookupApi.length()-2);
+    }
+
+    return lookupApi;
   }
 
   @Override
