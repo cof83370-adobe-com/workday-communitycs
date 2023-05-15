@@ -46,7 +46,8 @@ public final class GlobalConstants {
     "/conf/workday-community/settings/wcm/templates/event-page-template", "Calendar Event", 
     "/conf/workday-community/settings/wcm/templates/faq", "FAQ", 
     "/conf/workday-community/settings/wcm/templates/kits-and-tools", "Kits and Tools", 
-    "/conf/workday-community/settings/wcm/templates/reference", "Reference"
+    "/conf/workday-community/settings/wcm/templates/reference", "Reference",
+    "/conf/workday-community/settings/wcm/templates/troubleshooting", "Troubleshooting"
   );
 
   /** The Constant OKTA_USER_PATH. */

@@ -2,6 +2,8 @@ package com.workday.community.aem.core.services;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.jcr.NodeIterator;
 
@@ -18,7 +20,7 @@ public interface ExtractPagePropertiesService {
 
     /**
 	 * Get page properties.
-     * 
+     *
      * @param path The page path
      * @return The page properties
 	 */
@@ -26,7 +28,7 @@ public interface ExtractPagePropertiesService {
 
     /**
 	 * Process date fields.
-     * 
+     *
      * @param data The value map data
      * @param properties The extracted page properties
 	 */
@@ -34,7 +36,7 @@ public interface ExtractPagePropertiesService {
 
     /**
 	 * Process page access permission.
-     * 
+     *
      * @param data The value map data
      * @param properties The extracted page properties
      * @param email Page author's email
@@ -43,7 +45,7 @@ public interface ExtractPagePropertiesService {
 
     /**
 	 * Process string fields.
-     * 
+     *
      * @param data The value map data
      * @param properties The extracted page properties
 	 */
@@ -51,7 +53,7 @@ public interface ExtractPagePropertiesService {
 
 	/**
 	 * Process taxonomy field.
-     * 
+     *
      * @param tagManager The tag manager
      * @param taxonomyTagIds Taxonomy ids
      * @param taxonomyField Taxonomy field name
@@ -60,8 +62,18 @@ public interface ExtractPagePropertiesService {
     ArrayList<String> processTaxonomyFields (TagManager tagManager, String[] taxonomyTagIds, String taxonomyField);
 
 	/**
+	 * Process taxonomy field Hierarchy.
+	 *
+	 * @param tagManager The tag manager
+	 * @param taxonomyTagIds Taxonomy ids
+	 * @param taxonomyField Taxonomy field name
+	 * @return The processed taxonomy values
+	 */
+	 List<String> processHierarchyTaxonomyFields(TagManager tagManager, String[] taxonomyTagIds, String taxonomyField);
+
+	/**
 	 * Process text field.
-     * 
+     *
      * @param it The node iterator
      * @param textlist List of text value
 	 */
@@ -69,7 +81,7 @@ public interface ExtractPagePropertiesService {
 
     /**
 	 * Process user fields.
-     * 
+     *
      * @param data The value map data
      * @param userManager The user manager
      * @param properties The extracted page properties
@@ -84,4 +96,12 @@ public interface ExtractPagePropertiesService {
 	 * @param properties Collected values.
 	 */
 	void processCustomComponents(Page page, HashMap<String, Object> properties);
+
+	/**
+	 * Process the page tags.
+	 *
+	 * @param page
+	 * @param properties
+	 */
+	void processPageTags(Page page, Map<String, Object> properties);
 }
