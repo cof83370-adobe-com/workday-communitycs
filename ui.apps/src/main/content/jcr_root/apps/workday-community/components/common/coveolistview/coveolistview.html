@@ -1,90 +1,3 @@
-<script type="module">
-    import {
-    loadContextActions,
-    loadFieldActions,
-    buildTab,
-    loadGenericAnalyticsActions,
-  } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
-    const getToken = async () => {
-      const tokenUrl = '/bin/search/token';
-      try {
-        const response = await fetch(tokenUrl);
-        const res = await response.json();
-        const output = res['searchToken'];
-        const searchToken = {
-          token: output,
-          expiresAt: Date.now() + res['validFor'],
-        };
-        window.localStorage.setItem('searchToken', JSON.stringify(searchToken));
-        return res['searchToken'];
-      } catch (err) {
-        console.error('Error from getRequest -> ', err.message || err.responseText);
-      }
-    };
-    const setContext = (engine) => {
-      const ctx = {
-        location: 'USA.CA.Pleasanton',
-        costCenter: 'Community, CX',
-      };
-      const action = loadContextActions(engine).setContext(ctx);
-      engine.dispatch(action);
-    };
-    const registerFields = (engine) => {
-      const action = loadFieldActions(engine).enableFetchAllFields();
-      if (action) {
-        engine.dispatch(action);
-      }
-    };
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const main = async () => {
-        let token = 'searchToken' in window.localStorage ? JSON.parse(window.localStorage.getItem('searchToken')) : {};
-        let isExpired = 'expiresAt' in token ? parseInt(token.expiresAt) < parseInt(Date.now()) : true;
-
-        if (token === null || isExpired) {
-          token = await getToken();
-        } else {
-          token = token.token;
-        }
-
-        await customElements.whenDefined('atomic-search-interface');
-
-        const searchInterface = document.querySelector('atomic-search-interface');
-        await searchInterface.initialize({
-          accessToken: token,
-          searchHub: "communityv1",
-          organizationId: "workdayp3sqtwnv",
-          renewAccessToken: getToken,
-          preprocessRequest: (request, clientOrigin) => {
-            if (clientOrigin === 'searchApiFetch') {
-              const body = JSON.parse(request.body);
-              body.maximumAge=30000;
-              request.body = JSON.stringify(body);
-            }
-
-            return request;
-          },
-        });
-
-        const engine = searchInterface.engine;
-
-        setContext(engine);
-        registerFields(engine);
-
-        const { logClickEvent, logCustomEvent } = loadGenericAnalyticsActions(engine);
-
-        window.customFunctions = {
-          ...(window.customFunctions ? window.customFunctions : {}),
-          logClickEvent,
-          logCustomEvent,
-          engine,
-        };
-
-        searchInterface.executeFirstSearch();
-      };
-      main().then(() => {});
-    });
-</script>
 <atomic-search-interface id="search" fields-to-include='["commonproducttags", "commonrecentactivitydate", "commcontenttype", "commonmodifieddate"]'>
   <atomic-search-layout>
     <atomic-layout-section section="facets" class="facet-section">
@@ -290,3 +203,76 @@
     </atomic-layout-section>
   </atomic-search-layout>
 </atomic-search-interface>
+<script type="module">
+  import {
+    loadContextActions,
+    loadFieldActions,
+    buildTab,
+    loadGenericAnalyticsActions,
+  } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
+  const getToken = async () => {
+    const tokenUrl = '/bin/search/token';
+    try {
+      const response = await fetch(tokenUrl);
+      const res = await response.json();
+      return res['searchToken'];
+    } catch (err) {
+      return '';
+    }
+  };
+  const setContext = (engine) => {
+    const ctx = {
+      location: 'USA.CA.Pleasanton',
+      costCenter: 'Community, CX',
+    };
+    const action = loadContextActions(engine).setContext(ctx);
+    engine.dispatch(action);
+  };
+  const registerFields = (engine) => {
+    const action = loadFieldActions(engine).enableFetchAllFields();
+    if (action) {
+      engine.dispatch(action);
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const main = async () => {
+      let token = await getToken();
+      await customElements.whenDefined('atomic-search-interface');
+
+      const searchInterface = document.querySelector('atomic-search-interface');
+      await searchInterface.initialize({
+        accessToken: token,
+        searchHub: "communityv1",
+        organizationId: "workdayp3sqtwnv",
+        renewAccessToken: getToken,
+        preprocessRequest: (request, clientOrigin) => {
+          if (clientOrigin === 'searchApiFetch') {
+            const body = JSON.parse(request.body);
+            body.maximumAge=30000;
+            request.body = JSON.stringify(body);
+          }
+
+          return request;
+        },
+      });
+
+      const engine = searchInterface.engine;
+
+      setContext(engine);
+      registerFields(engine);
+
+      const { logClickEvent, logCustomEvent } = loadGenericAnalyticsActions(engine);
+
+      window.customFunctions = {
+        ...(window.customFunctions ? window.customFunctions : {}),
+        logClickEvent,
+        logCustomEvent,
+        engine,
+      };
+
+      searchInterface.executeFirstSearch();
+    };
+    main().then(() => {});
+  });
+</script>
