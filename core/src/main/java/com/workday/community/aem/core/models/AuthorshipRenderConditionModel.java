@@ -68,9 +68,9 @@ public class AuthorshipRenderConditionModel {
             logger.info("User not found");
         }
         if (allowed) {
-            check = suffix.contains("ReadOnly") ? false : true;
+            check = suffix.endsWith("ReadOnly/granite:rendercondition") ? false : true;
         } else {
-            check = suffix.contains("ReadOnly") ? true : false;
+            check = suffix.endsWith("ReadOnly/granite:rendercondition") ? true : false;
         }
 
         request.setAttribute(RenderCondition.class.getName(), new SimpleRenderCondition(check));
