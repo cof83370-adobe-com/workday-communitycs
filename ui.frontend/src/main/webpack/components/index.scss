@@ -1,5 +1,6 @@
 @import '~@workday/canvas-kit-css-core';
 @import '~@workday/canvas-kit-css-core/lib/colors.scss';
+@import "~@workday/canvas-kit-css-core/lib/spacing.scss";
 @import 'coveotablist';
 @import 'importcontent/scss';
 @import 'breadcrumb/scss';
@@ -26,3 +27,4 @@
 @import 'hero/scss';
 @import 'tabs/scss';
 @import 'tocnavigation/scss';
+@import 'coveolistviews/scss';
