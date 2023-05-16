@@ -42,7 +42,7 @@
                                         name="./author">
                                            <granite:rendercondition
                                             jcr:primaryType="nt:unstructured"
-                                            editGroups="[cc-admin]"
+                                            editGroups="[CMTY CC Admin]"
                                             sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
                                     </author>
                                     <authorReadOnly
@@ -54,7 +54,7 @@
                                         name="./author">
                                         <granite:rendercondition
                                             jcr:primaryType="nt:unstructured"
-                                            editGroups="[cc-admin]"
+                                            editGroups="[CMTY CC Admin]"
                                             sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
                                     </authorReadOnly>                                      
                                     <startdate

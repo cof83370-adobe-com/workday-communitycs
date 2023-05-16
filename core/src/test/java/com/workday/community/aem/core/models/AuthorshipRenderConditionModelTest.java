@@ -86,7 +86,7 @@ public class AuthorshipRenderConditionModelTest {
 
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         resource = context.create().resource(currentPage, "eventspage",
-                "sling:resourceType", "workday-community/components/structure/eventspage", "editGroups", "[cc-admin]");
+                "sling:resourceType", "workday-community/components/structure/eventspage", "editGroups", "[CMTY CC Admin]");
         context.registerService(Page.class, currentPage);
     }
 
