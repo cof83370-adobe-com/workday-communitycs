@@ -110,9 +110,6 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
                             valueMap.put("text", value.getValue());
                             resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), "nt:unstructured", valueMap));
                         });
-
-                        String output = objectMapper.writeValueAsString(eventTypes);
-                        response.getWriter().write(output);
                     }
                 } finally {
                     httpClient.close();

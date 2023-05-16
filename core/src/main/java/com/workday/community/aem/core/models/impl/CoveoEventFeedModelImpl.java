@@ -31,7 +31,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Model(
-    adaptables = SlingHttpServletRequest.class,
+    adaptables = {Resource.class,
+        SlingHttpServletRequest.class
+    },
     adapters = { CoveoEventFeedModel.class },
     resourceType = { CoveoEventFeedModelImpl.RESOURCE_TYPE },
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
