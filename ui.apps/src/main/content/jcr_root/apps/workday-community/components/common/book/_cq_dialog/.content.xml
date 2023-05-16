@@ -23,7 +23,7 @@
                                 sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                                 composite="{Boolean}true"
                                 granite:class="book-comp-class"
-                                fieldLabel="Parent Pages">
+                                fieldLabel="Level 1">
                                 <granite:data
                                     jcr:primaryType="nt:unstructured"
                                     min-item="2"/>
@@ -43,7 +43,7 @@
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                                             composite="{Boolean}true"
-                                            fieldLabel="Childern Pages">
+                                            fieldLabel="Level 2">
                                             <field
                                                 jcr:primaryType="nt:unstructured"
                                                 sling:resourceType="granite/ui/components/coral/foundation/container"
@@ -60,7 +60,7 @@
                                                         jcr:primaryType="nt:unstructured"
                                                         sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                                                         composite="{Boolean}true"
-                                                        fieldLabel="Grand Childern Pages">
+                                                        fieldLabel="Level 3">
                                                         <field
                                                             jcr:primaryType="nt:unstructured"
                                                             sling:resourceType="granite/ui/components/coral/foundation/container"

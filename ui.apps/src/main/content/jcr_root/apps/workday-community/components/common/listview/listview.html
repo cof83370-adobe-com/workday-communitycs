@@ -1,0 +1,17 @@
+<!--/* List View Component */-->
+<div class="cmp-listview">
+	<sly data-sly-test="${resource.getChildren}">
+		<div class="cmp-listview" data-sly-list.categories="${resource.getChildren}">
+			<ul class="cmp-listview__list" data-sly-list.clist="${categories.getChildren}">
+				<li class="cmp-listview__item">
+					<span class="cmp-listview__item-category">Categorie(s):${clist.categories
+						@context='html'}</span><br />
+					<span class="cmp-listview__item-text">Search Help Text:${clist.searchHelpText
+						@context='html'}</span>
+				</li>
+			</ul>
+		</div>
+	</sly>
+</div>
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
+	data-sly-call="${template.placeholder  @ isEmpty =! properties.searchHelpText , classAppend='cmp-listview'}"></sly>
