@@ -44,11 +44,11 @@ public class AuthorshipRenderConditionModel {
     @ValueMapValue
     private List<String> editGroups;
 
-    /** The Render condition check. */
+    /** The rendered condition check. */
     Boolean check = false;
 
-    /** The author type. */
-    String authorType = "standard";
+    /** The allowed group condition check. */
+    Boolean allowed = false;
 
     /**
      * Inits the Model
@@ -67,14 +67,17 @@ public class AuthorshipRenderConditionModel {
             while (groups.hasNext()) {
                 Group g = groups.next();
                 if (editGroups.contains(g.getID())) {
-                    authorType = "CC-ADMIN";
+                    allowed = true;
                 }
             }
         } catch (RepositoryException e) {
             logger.info("User not found");
         }
-
-        check = suffix.contains("authorReadOnly") ? authorType.equals("standard") : !authorType.equals("standard");
+        if (allowed) {
+            check = suffix.contains("ReadOnly") ? false : true;
+        } else {
+            check = suffix.contains("ReadOnly") ? true : false;
+        }
 
         request.setAttribute(RenderCondition.class.getName(), new SimpleRenderCondition(check));
     }
