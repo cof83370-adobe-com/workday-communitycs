@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.models;
 
+import javax.jcr.RepositoryException;
 import java.util.Map;
 
 /**
@@ -8,9 +9,9 @@ import java.util.Map;
 public interface CoveoEventFeedModel extends CoveoCommonModel {
    /**
     * Get the FeatureEvent details.
-    * @return
+    * @return FeatureEvent details as a Map object.
     */
-   Map<String, String> getFeatureEvent();
+   Map<String, String> getFeatureEvent() throws RepositoryException;
 
    String getSortCriteria();
 
@@ -19,4 +20,10 @@ public interface CoveoEventFeedModel extends CoveoCommonModel {
     * @return the Event Criteria
     */
    String getEventCriteria();
+
+   /**
+    * Get all events Url.
+    * @return all events Url.
+    */
+   String getAllEventsUrl();
 }

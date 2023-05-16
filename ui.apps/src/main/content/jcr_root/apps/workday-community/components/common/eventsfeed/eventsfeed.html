@@ -1,13 +1,13 @@
 <sly data-sly-use.model="com.workday.community.aem.core.models.CoveoEventFeedModel">
  <div class="cmp-eventsfeed-container">
-     <span id="selectedEventTypes" data-property="${properties.eventtype}" />
-     <span id="searchConfigData" data-model-search-config="${model.getSearchConfig}" />
-     <span id="sortCriteria" data-model-sort-criteria="${model.sortCriteria}" />
-     <span id="extraCriteria" data-model-extra-criteria="${model.extraCriteria}" />
-     <span id="eventCriteria" data-model-event-criteria="${model.eventCriteria}" />
+     <span id="selectedEventTypes" data-property="${properties.eventTypes}"></span>
+     <span id="searchConfigData" data-model-search-config="${model.getSearchConfig}"></span>
+     <span id="sortCriteria" data-model-sort-criteria="${model.sortCriteria}"></span>
+     <span id="extraCriteria" data-model-extra-criteria="${model.extraCriteria}"></span>
+     <span id="eventCriteria" data-model-event-criteria="${model.eventCriteria}"></span>
 
      <div class="feature-event">
-         <image class="image" alt="feature event"/>
+         <image class="image" alt="feature event" src="${model.featureEvent.image}"/>
          <div class="detail">
              <h2 class="title">
                  <a href="${model.featureEvent.link}">${model.featureEvent.title}</a>
@@ -109,39 +109,29 @@
                                  </div>
                              </div>
                          </template>
-
                      </atomic-result-template>
                  </atomic-result-list>
                  <atomic-query-error></atomic-query-error>
                  <!--No Result Section-->
-                 <atomic-no-results></atomic-no-results>
+                 <atomic-no-results enable-cancel-last-action="false" search-tips=""></atomic-no-results>
              </atomic-layout-section>
 
          </atomic-search-layout>
      </atomic-search-interface>
 
-     <div class="all-events"><a href="http://foo">All Events</a> </div>
+     <div class="all-events">
+         <a href="${model.allEventsUrl}" class="event-text">All Events</a>
+     </div>
      <script type="module">
          import {
              loadFieldActions
          } from 'https://static.cloud.coveo.com/atomic/v1.86.0/headless/headless.esm.js';
 
-         const getToken = async () => {
-             const tokenUrl = '/bin/search/token';
+         const getRequest = async (url) => {
+             const tokenUrl = url;
              try {
                  const response = await fetch(tokenUrl);
-                 const res = await response.json();
-                 const output = res['searchToken'];
-                 const searchToken = {
-                     token: output,
-                     expiresAt: Date.now() + res['validFor'],
-                 };
-                 window.localStorage.setItem(
-                     'searchToken',
-                     JSON.stringify(searchToken)
-                 );
-
-                 return res['searchToken'];
+                 return await response.json();
              } catch (err) {
                  console.error('Error from getRequest -> ', err.message || err.responseText);
              }
@@ -156,26 +146,39 @@
 
          document.addEventListener('DOMContentLoaded', () => {
              const main = async () => {
+                 const tokenUrl = '/bin/search/token';
                  await customElements.whenDefined('atomic-search-interface');
                  const searchConfigNode = document.getElementById("searchConfigData");
                  const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
-                 let token =
-                     'EventSearchToken' in window.localStorage
-                         ? JSON.parse(window.localStorage.getItem('searchToken'))
-                         : {};
-                 let isExpired = 'expiresAt' in token ?
-                     parseInt(token.expiresAt) < parseInt(Date.now()) ? true : false : true;
+                 let token = await getRequest(tokenUrl);
+                 token = token['searchToken'];
 
-                 if (token === null || isExpired) {
-                     token = await getToken();
-                 } else {
-                     token = token.token;
-                 }
+                 // TODO we may need to merge if value and lookup value is different.
 
-
+                 const selectedEventType = document.getElementById('selectedEventTypes').getAttribute('data-property');
                  const sortCriteria = document.getElementById("sortCriteria").getAttribute("data-model-sort-criteria");
                  const extraCriteria = document.getElementById("extraCriteria").getAttribute("data-model-extra-criteria");
                  const eventCriteria = document.getElementById("eventCriteria").getAttribute("data-model-event-criteria");
+                 let facet = [];
+                 let currentValues;
+                 if (!selectedEventType) {
+                     let eventTypes = await getRequest('/bin/eventTypes')
+                     eventTypes = eventTypes['values'];
+                     currentValues = eventTypes.map( eventType => ({ "value": eventType.value, "state": "selected"}));
+                 } else {
+                     let parts = selectedEventType.split(",");
+                     currentValues = parts.map( part => ({ "value": part, "state": "selected"}));
+                 }
+
+                 facet = [
+                     {
+                         "facetId": "@commoneventtype",
+                         "field": "commoneventtype",
+                         "type": "specific",
+                         "injectionDepth": 5000,
+                         "currentValues": currentValues
+                     }
+                 ];
 
                  const searchInterface = document.querySelector('atomic-search-interface');
                  await searchInterface.initialize({
@@ -183,11 +186,12 @@
                      searchHub: search_config["searchHub"],
                      analytics: search_config["analytics"],
                      organizationId: search_config["orgId"],
-                     renewAccessToken: getToken,
+                     renewAccessToken: ()=>getRequest(tokenUrl),
                      preprocessRequest: (request, clientOrigin) => {
                          if (clientOrigin === 'searchApiFetch') {
                              const body = JSON.parse(request.body);
                              // body.q = undefined;
+                             body.facets = facet;
                              body.maximumAge=30000;
                              body.numberOfResults = 3;
                              body.sortCriteria = sortCriteria;
