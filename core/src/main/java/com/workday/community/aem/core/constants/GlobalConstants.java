@@ -45,8 +45,8 @@ public final class GlobalConstants {
   /** The Constant CONTENT_TYPE_MAPPING. */
   public static final Map<String, String> CONTENT_TYPE_MAPPING = Collections.unmodifiableMap(Map.of(
     "/conf/workday-community/settings/wcm/templates/event-page-template", "Calendar Event", 
-    "/conf/workday-community/settings/wcm/templates/faq", "FAQ", 
-    "/conf/workday-community/settings/wcm/templates/kits-and-tools", "Kits and Tools",
+    "/conf/workday-community/settings/wcm/templates/faq", "FAQ",
+    "/conf/workday-community/settings/wcm/templates/kits-and-tools", "Kits and Tools", 
     "/conf/workday-community/settings/wcm/templates/reference", "Reference",
     "/conf/workday-community/settings/wcm/templates/troubleshooting", "Troubleshooting"
   ));
