@@ -6,7 +6,7 @@
         <span id="productCriteriaData" data-product-criteria="${model.getProductCriteria}" />
         <span id="fieldsData" data-field-criteria="${model.getFields}" />
         <span id="extraCriteriaData" data-extra-criteria="${model.getExtraCriteria}" />
-
+        <div class="multi-tab-title">${model.compConfig.title}</div>
         <!-- start of the tab -->
         <nav class="multi-tab-navbar" id="multiTabListContainerId" aria-label="Multi-tab navigation">
             <ul class="multi-tab-list" id="multiTabsCompId"></ul>
@@ -165,7 +165,7 @@
                 loadFieldActions,
                 buildTab,
                 loadGenericAnalyticsActions,
-            } from 'https://static.cloud.coveo.com/atomic/v1.86.0/headless/headless.esm.js';
+            } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
 
             //1 This should come from component editor dialog.
             const compDataAttr = document.getElementById("compPropertiesData").getAttribute("data-comp-props-data");
@@ -320,6 +320,8 @@
                 })
 
                 const tabContainer = document.getElementsByClassName("multi-tab-container")[0];
+                const title = tabContainer.getElementsByClassName("multi-tab-title")[0];
+                title.innerText = component_properties.title;
                 const visibleTabs = getVisibleTabs(tabContainer, tab);
                 if (visibleTabs.length === 1) {
                     return;

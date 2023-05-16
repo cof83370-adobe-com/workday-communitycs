@@ -50,10 +50,6 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Reference
     ResourceResolverFactory resourceResolverFactory;
 
-    private transient Session jcrSession;
-
-    private transient ResourceResolver jcrSessionResourceResolver;
-
     /**
      * The snap Config.
      */
@@ -62,17 +58,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     /**
      * The user service user.
      */
-    public static final String USER_SERVICE_USER = "adminusergroup";
-
-    /**
-     * The user service user.
-     */
     public static final String READ_SERVICE_USER = "readserviceuser";
-
-    /**
-     * The AEM default user groups.
-     */
-    protected static final String[] AEM_DEFAULT_GROUPS = {"everyone"};
 
     /**
      * The group map json
@@ -93,6 +79,8 @@ public class UserGroupServiceImpl implements UserGroupService {
      * @return User group list.
      */
     public List<String> getLoggedInUsersGroups(ResourceResolver resourceResolver) throws OurmException {
+        ResourceResolver jcrSessionResourceResolver = null;
+        Session jcrSession = null;
         logger.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
         String userRole = StringUtils.EMPTY;
         List<String> groupIds = new ArrayList<>();
@@ -124,13 +112,10 @@ public class UserGroupServiceImpl implements UserGroupService {
         } finally {
             if (jcrSessionResourceResolver != null && jcrSessionResourceResolver.isLive()) {
                 jcrSessionResourceResolver.close();
-                jcrSessionResourceResolver = null;
             }
             if (jcrSession != null && jcrSession.isLive()) {
                 jcrSession.logout();
-                jcrSession = null;
             }
-
         }
         return groupIds;
     }
