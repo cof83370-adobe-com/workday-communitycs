@@ -2,6 +2,7 @@ package com.workday.community.aem.core.constants;
 
 import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED_BY;
 
+import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -21,34 +22,34 @@ public final class GlobalConstants {
   public static final String PROP_USER_PROFILE_GIVENNAME = "./profile/givenName";
 
   /** The Constant PROP_USER_PROFILE_FAMILYNAME. */
-  public static String PROP_USER_PROFILE_FAMILYNAME = "./profile/familyName";
+  public static final String PROP_USER_PROFILE_FAMILYNAME = "./profile/familyName";
 
   /** The Constant PROP_AUTHOR. */
-  public static String PROP_AUTHOR = "author";
+  public static final String PROP_AUTHOR = "author";
 
   /** The Constant PROP_JCR_CREATED_BY. */
-  public static String PROP_JCR_CREATED_BY = JCR_CREATED_BY;
+  public static final String PROP_JCR_CREATED_BY = JCR_CREATED_BY;
 
   /** The Constant PROP_UPDATED_DATE. */
-  public static String PROP_UPDATED_DATE = "updatedDate";
+  public static final String PROP_UPDATED_DATE = "updatedDate";
 
   /** The Constant PROP_POSTED_DATE. */
-  public static String PROP_POSTED_DATE = "postedDate";
+  public static final String PROP_POSTED_DATE = "postedDate";
 
   /** The Constant PUBLISH. */
-  public static String PUBLISH = "publish";
+  public static final String PUBLISH = "publish";
 
   /** The Constant JCR CONTENT NODE. */
-  public static String JCR_CONTENT_PATH = "/jcr:content";
+  public static final String JCR_CONTENT_PATH = "/jcr:content";
 
   /** The Constant CONTENT_TYPE_MAPPING. */
-  public static final Map<String, String> CONTENT_TYPE_MAPPING = Map.of(
+  public static final Map<String, String> CONTENT_TYPE_MAPPING = Collections.unmodifiableMap(Map.of(
     "/conf/workday-community/settings/wcm/templates/event-page-template", "Calendar Event", 
-    "/conf/workday-community/settings/wcm/templates/faq", "FAQ", 
+    "/conf/workday-community/settings/wcm/templates/faq", "FAQ",
     "/conf/workday-community/settings/wcm/templates/kits-and-tools", "Kits and Tools", 
     "/conf/workday-community/settings/wcm/templates/reference", "Reference",
     "/conf/workday-community/settings/wcm/templates/troubleshooting", "Troubleshooting"
-  );
+  ));
 
   /** The Constant OKTA_USER_PATH. */
   public static final String OKTA_USER_PATH = "/workdaycommunity/okta";
