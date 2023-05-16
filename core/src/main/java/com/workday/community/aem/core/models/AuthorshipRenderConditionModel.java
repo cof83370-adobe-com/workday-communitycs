@@ -24,24 +24,35 @@ import com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition;
 
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 
+/**
+ * The Class AuthorshipRenderConditionModel.
+ */
 @Model(adaptables = { SlingHttpServletRequest.class }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class AuthorshipRenderConditionModel {
 
+    /** The request. */
     @Self
     private SlingHttpServletRequest request;
     /** The logger. */
     private static final Logger logger = LoggerFactory.getLogger(AuthorshipRenderConditionModel.class);
 
+    /** The resolver. */
     @ScriptVariable
     ResourceResolver resolver;
 
+    /** The edit groups. */
     @ValueMapValue
     private List<String> editGroups;
 
+    /** The Render condition check. */
     Boolean check = false;
 
+    /** The author type. */
     String authorType = "standard";
 
+    /**
+     * Inits the Model
+     */
     @PostConstruct
     public void init() {
         String suffix = request.getRequestPathInfo().getResourcePath();
@@ -60,7 +71,7 @@ public class AuthorshipRenderConditionModel {
                 }
             }
         } catch (RepositoryException e) {
-            logger.info("Page not found");
+            logger.info("User not found");
         }
 
         check = suffix.contains("authorReadOnly") ? authorType.equals("standard") : !authorType.equals("standard");
