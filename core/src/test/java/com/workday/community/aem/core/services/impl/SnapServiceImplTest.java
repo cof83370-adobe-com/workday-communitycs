@@ -28,7 +28,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.annotation.Annotation;
-import java.util.HashMap;
 
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -52,7 +51,8 @@ public class SnapServiceImplTest {
   @Mock
   ResourceResolverFactory resResolverFactory;
 
-  private final ObjectMapper objectMapper = new ObjectMapper();
+  @Mock
+  ObjectMapper objectMapper;
 
   private GetSnapConfig snapConfig;
 

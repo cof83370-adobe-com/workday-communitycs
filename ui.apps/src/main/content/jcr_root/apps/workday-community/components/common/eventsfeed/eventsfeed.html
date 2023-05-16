@@ -19,7 +19,6 @@
      </div>
 
      <p class="subject">Upcoming Events</p>
-     <hr class="separator" />
 
      <atomic-search-interface id="eventFeedSearchId">
          <atomic-search-layout>
@@ -31,6 +30,7 @@
                                  .data-row {
                                      display: block;
                                      width: 620px;
+                                     padding: 0 30px;
                                  }
                                  .data-row-left {
                                      display: inline-block;
@@ -38,9 +38,8 @@
                                  }
                                  .data-row-right {
                                      display: inline-block;
-                                     float: right;
-                                     width: 500px;
-                                     margin-right: 20px;
+                                     margin-left: 30px;
+                                     max-width: 400px;
                                  }
 
                                  .field-left {
@@ -59,12 +58,18 @@
                                  }
                                  atomic-result-link a {
                                      font-family: "WorkdayAdelleSans-Regular";
-                                     color: rgb(8, 117, 225);
+                                     color: rgb(8, 117, 225) !important;
                                      font-style: normal;
                                      font-weight: 700;
                                      font-size: 16px;
                                      line-height: 20px;
                                      letter-spacing: 0.2px;
+                                 }
+                                 atomic-no-results {
+                                     width: 600px;
+                                 }
+                                 atomic-no-results div[part~="search-tips"] {
+                                     margin: 0 20px;
                                  }
                                  .up {
                                      background: none rgb(8, 117, 225);
@@ -74,6 +79,7 @@
                                      height: 30px;
                                      text-align: center;
                                      font-size: 18px;
+                                     border-radius: 10px 0 0 0;
                                  }
                                  .bottom {
                                      padding: 4px 4px 8px;
@@ -83,7 +89,6 @@
                                      font-size: 32px;
                                  }
                              </style>
-
                              <div class="data-row">
                                  <div class="data-row-left">
                                      <atomic-field-condition class="field-left" if-defined="commoneventstartdate">
@@ -113,14 +118,16 @@
                  </atomic-result-list>
                  <atomic-query-error></atomic-query-error>
                  <!--No Result Section-->
-                 <atomic-no-results enable-cancel-last-action="false" search-tips=""></atomic-no-results>
+                 <div style="width: 600px; padding: 0 10px;">
+                     <atomic-no-results enable-cancel-last-action="false" search-tips=""></atomic-no-results>
+                 </div>
              </atomic-layout-section>
-
          </atomic-search-layout>
      </atomic-search-interface>
 
+     <hr class="separator" />
      <div class="all-events">
-         <a href="${model.allEventsUrl}" class="event-text">All Events</a>
+         <span class="event-text"><a href="${model.allEventsUrl}">All Events</a></span>
      </div>
      <script type="module">
          import {
@@ -161,11 +168,7 @@
                  const eventCriteria = document.getElementById("eventCriteria").getAttribute("data-model-event-criteria");
                  let facet = [];
                  let currentValues;
-                 if (!selectedEventType) {
-                     let eventTypes = await getRequest('/bin/eventTypes')
-                     eventTypes = eventTypes['values'];
-                     currentValues = eventTypes.map( eventType => ({ "value": eventType.value, "state": "selected"}));
-                 } else {
+                 if (selectedEventType) {
                      let parts = selectedEventType.split(",");
                      currentValues = parts.map( part => ({ "value": part, "state": "selected"}));
                  }
@@ -190,8 +193,9 @@
                      preprocessRequest: (request, clientOrigin) => {
                          if (clientOrigin === 'searchApiFetch') {
                              const body = JSON.parse(request.body);
-                             // body.q = undefined;
-                             body.facets = facet;
+                             if (selectedEventType) {
+                                 body.facets = facet;
+                             }
                              body.maximumAge=30000;
                              body.numberOfResults = 3;
                              body.sortCriteria = sortCriteria;

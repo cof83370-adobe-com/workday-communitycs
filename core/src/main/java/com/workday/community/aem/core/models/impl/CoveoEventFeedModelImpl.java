@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 import javax.jcr.RepositoryException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -118,6 +117,10 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       }
     }
 
+    if (!StringUtils.isEmpty(registerPath) && !registerPath.endsWith(".html")) {
+      registerPath += ".html";
+    }
+
     Map<String, String> ret = new HashMap<>();
     ret.put("title", pageObject.getTitle());
     ret.put("link", this.featuredEvent);
@@ -164,5 +167,5 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   @Override
   public String getExtraCriteria() {
     return this.modelConfig.get("extraCriteria").getAsString();
-  };
+  }
 }

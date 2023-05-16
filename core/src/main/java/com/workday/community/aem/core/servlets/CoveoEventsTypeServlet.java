@@ -64,7 +64,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
 
     private transient ObjectMapper objectMapper = new ObjectMapper();
 
-    private transient Gson gson = new Gson();
+    private final transient Gson gson = new Gson();
 
     /** The value map. */
     private transient ValueMap valueMap;
@@ -78,10 +78,14 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
     @Reference
     private transient SnapService snapService;
 
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
     /**
      * Do get.
      *
-     * @param request the request
+     * @param request  the request
      * @param response the response
      */
     @Override

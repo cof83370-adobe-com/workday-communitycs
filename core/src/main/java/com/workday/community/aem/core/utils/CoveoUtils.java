@@ -67,7 +67,7 @@ public class CoveoUtils {
     try {
       String searchToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getSearchTokenAPIKey());
-      if (com.adobe.xfa.ut.StringUtils.isEmpty(searchToken)) {
+      if (StringUtils.isEmpty(searchToken)) {
         throw new ServletException("there is no search token generated, please contact community admin.");
       }
       String recommendationToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,

@@ -28,7 +28,7 @@ import com.workday.community.aem.core.utils.ResolverUtil;
 /**
  * The Class PageResourceListener.
  *
- * @see PageResourceEvent
+ * @see @PageResourceEvent
  */
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
         ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
