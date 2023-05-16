@@ -47,7 +47,24 @@
                                         emptyText="Enter Author Name"
                                         fieldDescription="Enter Author Name."
                                         fieldLabel="Author Name"
-                                        name="./author"/>
+                                        name="./author">
+                                           <granite:rendercondition
+                                            jcr:primaryType="nt:unstructured"
+                                            editGroups="[cc-admin]"
+                                            sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
+                                    </author>
+                                    <authorReadOnly
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        disabled="{Boolean}true"
+                                        fieldDescription="Enter Author Name."
+                                        fieldLabel="Author Name"
+                                        name="./author">
+                                        <granite:rendercondition
+                                            jcr:primaryType="nt:unstructured"
+                                            editGroups="[cc-admin]"
+                                            sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
+                                    </authorReadOnly>                                    
                                     <posteddate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
