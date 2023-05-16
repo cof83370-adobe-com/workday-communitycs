@@ -36,10 +36,6 @@ public class AuthorshipRenderConditionModel {
     /** The logger. */
     private static final Logger logger = LoggerFactory.getLogger(AuthorshipRenderConditionModel.class);
 
-    /** The resolver. */
-    @ScriptVariable
-    ResourceResolver resolver;
-
     /** The edit groups. */
     @ValueMapValue
     private List<String> editGroups;
@@ -57,8 +53,8 @@ public class AuthorshipRenderConditionModel {
     public void init() {
         String suffix = request.getRequestPathInfo().getResourcePath();
 
-        UserManager userManager = resolver.adaptTo(UserManager.class);
-        Session userSession = resolver.adaptTo(Session.class);
+        UserManager userManager = request.getResourceResolver().adaptTo(UserManager.class);
+        Session userSession = request.getResourceResolver().adaptTo(Session.class);
         String userId = userSession.getUserID();
         Authorizable auth;
         try {
