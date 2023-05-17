@@ -168,10 +168,6 @@
                             </column>
                         </items>
                     </referenceconfig>
-                    <general
-                        jcr:primaryType="nt:unstructured"
-                        sling:hideResource="{Boolean}true">
-                    </general>
                 </items>
             </tabs>
         </items>
