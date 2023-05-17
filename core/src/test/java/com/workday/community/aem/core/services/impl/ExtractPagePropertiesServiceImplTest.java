@@ -127,7 +127,7 @@ public class ExtractPagePropertiesServiceImplTest {
     public void testPorcessStringFields() {
         ValueMap data = Mockito.mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<String, Object>();
-        doReturn("/conf/workday-community/settings/wcm/templates/event-page-template").when(data).get("cq:template", String.class);
+        doReturn("/conf/workday-community/settings/wcm/templates/events").when(data).get("cq:template", String.class);
         doReturn("Page title").when(data).get("jcr:title", String.class);
         doReturn(null).when(data).get("pageTitle", String.class);
         extract.processStringFields(data, properties);
