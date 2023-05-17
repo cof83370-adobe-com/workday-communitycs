@@ -1,5 +1,11 @@
 <sly data-sly-use.taxonomyModel="${'com.workday.community.aem.core.models.TaxonomyModel'}"></sly>
 <div class="cmp-taxonomy" data-cmp-is="cmp-taxonomy">
+   <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.releaseTags}">
+      <p class="cmp-taxonomy__item-label">${'Release' @ i18n, context='text'}</p>
+      <sly data-sly-list.eachItem="${taxonomyModel.releaseTags}" data-sly-unwrap>  
+        <span class="cmp-taxonomy__item-output" data-cmp-hook-taxonomy="productTags">${eachItem @ i18n, context='text'}</span>  
+      </sly>
+   </div>
    <div class="cmp-taxonomy__item" data-sly-test="${pageProperties.programsToolsTags}">
       <p class="cmp-taxonomy__item-label">${'Program Type' @ i18n, context='text'}</p>
       <sly data-sly-list.eachItem="${taxonomyModel.programTypeTags}" data-sly-unwrap>   
