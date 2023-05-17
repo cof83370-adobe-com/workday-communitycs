@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:lastModified="{Date}2023-05-17T13:08:18.754-07:00"
+        cq:lastModifiedBy="admin"
+        cq:template="/conf/workday-community/settings/wcm/templates/page-content"
+        jcr:isCheckedOut="{Boolean}true"
+        jcr:mixinTypes="[mix:versionable]"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="403"
+        jcr:uuid="32fc2243-c85d-4d37-8de2-0621eaa2d47a"
+        sling:resourceType="workday-community/components/structure/page"
+        author=" Administrator">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="workday-community/components/core/container"
+            layout="responsiveGrid">
+            <container
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="workday-community/components/core/container"
+                layout="responsiveGrid">
+                <title
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="workday-community/components/core/title"/>
+                <container
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="workday-community/components/core/container"
+                    layout="responsiveGrid">
+                    <container
+                        jcr:lastModified="{Date}2023-05-17T13:03:47.220-07:00"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/core/container">
+                        <text_1801692435
+                            jcr:lastModified="{Date}2023-05-17T13:06:16.095-07:00"
+                            jcr:lastModifiedBy="admin"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/text"
+                            text="&lt;p>Home&lt;/p>&#xd;&#xa;"
+                            textIsRich="true"/>
+                        <title
+                            jcr:lastModified="{Date}2023-05-17T13:06:26.305-07:00"
+                            jcr:lastModifiedBy="admin"
+                            jcr:primaryType="nt:unstructured"
+                            jcr:title="Access Denied"
+                            sling:resourceType="workday-community/components/core/title"
+                            linkTarget="_blank"
+                            type="h2"/>
+                        <text
+                            jcr:lastModified="{Date}2023-05-17T13:07:53.598-07:00"
+                            jcr:lastModifiedBy="admin"
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/text"
+                            text="&lt;p>&amp;nbsp;&lt;/p>&#xd;&#xa;&lt;p>You do not have authorization to see this page&lt;/p>&#xd;&#xa;&lt;p>&lt;b>Restricted information&lt;/b>&lt;/p>&#xd;&#xa;&lt;p>If you are logged in and received this message, then it is possible you are trying to access restricted information. Some content on this community is available only to Workday consultants and partners or members of a specific group.&lt;/p>&#xd;&#xa;&lt;p>If you think this restriction is an error, then contact us. Include the URL of the page you were trying to see, as well as where you found this link so we can investigate.&lt;/p>&#xd;&#xa;&lt;p>Thank you.&lt;/p>&#xd;&#xa;"
+                            textIsRich="true"/>
+                        <cq:responsive jcr:primaryType="nt:unstructured">
+                            <default
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="12"/>
+                        </cq:responsive>
+                    </container>
+                </container>
+            </container>
+        </root>
+    </jcr:content>
+</jcr:root>
