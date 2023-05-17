@@ -2,6 +2,7 @@ package com.workday.community.aem.core.models;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -26,7 +27,7 @@ import com.workday.community.aem.core.utils.CommunityUtils;
 @Model(adaptables = { Resource.class,
         SlingHttpServletRequest.class }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class TaxonomyModel {
-    
+
     /** The current page. */
     @Inject
     private Page currentPage;
@@ -58,17 +59,17 @@ public class TaxonomyModel {
      */
     @PostConstruct
     protected void init() {
-            if (null != currentPage) {
-                final ValueMap map = currentPage.getProperties();
-                programTypeTags = CommunityUtils.getPageTagsList(map, "programsToolsTags", resolver);
-                releaseTags = CommunityUtils.getPageTagsList(map, "releaseTags", resolver);
-                productTags = CommunityUtils.getPageTagsList(map, "productTags", resolver);
-                industryTags = CommunityUtils.getPageTagsList(map, "industryTags", resolver);
-                usingWorkdayTags = CommunityUtils.getPageTagsList(map, "usingWorkdayTags", resolver);
-                this.hasContent = !programTypeTags.isEmpty() || !productTags.isEmpty() || !industryTags.isEmpty()
-                        || !usingWorkdayTags.isEmpty();
-            }
-        
+        if (null != currentPage) {
+            final ValueMap map = currentPage.getProperties();
+            programTypeTags = CommunityUtils.getPageTagsList(map, "programsToolsTags", resolver);
+            releaseTags = CommunityUtils.getPageTagsList(map, "releaseTags", resolver);
+            productTags = CommunityUtils.getPageTagsList(map, "productTags", resolver);
+            industryTags = CommunityUtils.getPageTagsList(map, "industryTags", resolver);
+            usingWorkdayTags = CommunityUtils.getPageTagsList(map, "usingWorkdayTags", resolver);
+            this.hasContent = !programTypeTags.isEmpty() || !productTags.isEmpty() || !industryTags.isEmpty()
+                    || !usingWorkdayTags.isEmpty();
+        }
+
     }
 
     /**
@@ -77,7 +78,8 @@ public class TaxonomyModel {
      * @return the program type tags
      */
     public List<String> getProgramTypeTags() {
-        return programTypeTags.stream().sorted().collect(Collectors.toUnmodifiableList());
+        return Optional.ofNullable(programTypeTags).orElseGet(ArrayList::new).stream().sorted()
+                .collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -86,16 +88,18 @@ public class TaxonomyModel {
      * @return the product tags
      */
     public List<String> getProductTags() {
-        return productTags.stream().sorted().collect(Collectors.toUnmodifiableList());
+        return Optional.ofNullable(productTags).orElseGet(ArrayList::new).stream().sorted()
+                .collect(Collectors.toUnmodifiableList());
     }
 
-     /**
+    /**
      * Gets the Release tags.
      *
      * @return the release tags
      */
     public List<String> getReleaseTags() {
-        return releaseTags.stream().sorted().collect(Collectors.toUnmodifiableList());
+        return Optional.ofNullable(releaseTags).orElseGet(ArrayList::new).stream().sorted()
+                .collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -104,7 +108,8 @@ public class TaxonomyModel {
      * @return the industry tags
      */
     public List<String> getIndustryTags() {
-        return industryTags.stream().sorted().collect(Collectors.toUnmodifiableList());
+        return Optional.ofNullable(industryTags).orElseGet(ArrayList::new).stream().sorted()
+                .collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -113,8 +118,9 @@ public class TaxonomyModel {
      * @return the using workday tags
      */
     public List<String> getUsingWorkdayTags() {
-        return usingWorkdayTags.stream().sorted().collect(Collectors.toUnmodifiableList());
-        
+        return Optional.ofNullable(usingWorkdayTags).orElseGet(ArrayList::new).stream().sorted()
+                .collect(Collectors.toUnmodifiableList());
+
     }
 
     /**
