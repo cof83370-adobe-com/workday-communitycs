@@ -56,7 +56,7 @@ public class EventLengthTest {
         pageProperties.put("startDate", "2022-11-22T00:44:02.000+05:30");
         pageProperties.put("endDate", "2022-11-22T05:54:02.000+05:30");
         currentPage = context.create().page("/content/workday-community/event",
-                "/conf/workday-community/settings/wcm/templates/event-page-template", pageProperties);
+                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
         resource = context.create().resource(currentPage, "eventslengthpage",
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
@@ -81,7 +81,7 @@ public class EventLengthTest {
         pageProperties.put("startDate", "2022-11-22T00:44:02.000+05:30");
         pageProperties.put("endDate", "2022-11-22T00:59:02.000+05:30");
         currentPage = context.create().page("/content/workday-community/event",
-                "/conf/workday-community/settings/wcm/templates/event-page-template", pageProperties);
+                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
         resource = context.create().resource(currentPage, "eventslengthpage",
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
@@ -106,7 +106,7 @@ public class EventLengthTest {
         pageProperties.put("startDate", "2022-11-22T00:44:02.000+05:30");
         pageProperties.put("endDate", "2022-11-23T00:44:02.000+05:30");
         currentPage = context.create().page("/content/workday-community/event",
-                "/conf/workday-community/settings/wcm/templates/event-page-template", pageProperties);
+                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
         resource = context.create().resource(currentPage, "eventslengthpage",
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
@@ -129,7 +129,7 @@ public class EventLengthTest {
         pageProperties.put("startDate", "2022-11-22T00:44:02.000+05:30");
         pageProperties.put("endDate", "2022-11-24T05:54:02.000+05:30");
         currentPage = context.create().page("/content/workday-community/event",
-                "/conf/workday-community/settings/wcm/templates/event-page-template", pageProperties);
+                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
         resource = context.create().resource(currentPage, "eventslengthpage",
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
@@ -151,7 +151,7 @@ public class EventLengthTest {
         pageProperties.put("startDate", "");
         pageProperties.put("endDate", "");
         currentPage = context.create().page("/content/workday-community/event",
-                "/conf/workday-community/settings/wcm/templates/event-page-template", pageProperties);
+                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
         resource = context.create().resource(currentPage, "eventslengthpage",
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);

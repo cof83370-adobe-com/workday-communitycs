@@ -10,7 +10,7 @@
                 "product:engage"
             ],
             "pwaOrientation": "any",
-            "cq:template": "/conf/workday-community/settings/wcm/templates/event-page-template",
+            "cq:template": "/conf/workday-community/settings/wcm/templates/events",
             "readCount": 1,
             "pwaDisplay": "standalone",
             "eventFormat": [

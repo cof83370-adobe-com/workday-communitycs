@@ -11,7 +11,7 @@
                 "product:engage"
             ],
             "pwaOrientation": "any",
-            "cq:template": "/conf/workday-community/settings/wcm/templates/event-page-template",
+            "cq:template": "/conf/workday-community/settings/wcm/templates/events",
             "readCount": 1,
             "updatedDate": "Mon Nov 21 2022 23:00:00 GMT-0600",
             "jcr:created": "Sat Jan 21 2023 07:14:52 GMT-0600",

@@ -54,23 +54,23 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     // @Todo Once Tek system unifies the tag format, we can remove duplicate tags here.
     /** The taxonomyFields. */
     private final ArrayList<String> taxonomyFields = new ArrayList<>(
-        Arrays.asList("productTags", "usingWorkday", "usingWorkdayTags", "programsTools", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountry", "eventAudience", "eventFormat")
+        Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "eventAudience", "eventFormat")
     );
 
     /** The dateFields. */
     private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("startDate", "endDate", "postedDate", "updatedDate"));
 
     /** The hierarchyFields. */
-    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "usingWorkday", "industryTags", "userTags", "programsTools", "programsToolsTags", "regionCountry", "trainingTags"));
+    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "industryTags", "userTags", "programsToolsTags", "regionCountryTags", "trainingTags"));
 
     /** The stringFields. */
     private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
 
     /** The page tags. */
     private static final Map<String, String> pageTagMap = Map.of("product", "productTags",
-            "using-workday", "usingWorkdayTags", "programs-and-tools", "programsTools",
+            "using-workday", "usingWorkdayTags", "programs-and-tools", "programsToolsTags",
             "release", "releaseTags", "industry", "industryTags", "user", "userTags",
-            "region-and-country", "regionCountry", "training", "trainingTags");
+            "region-and-country", "regionCountryTags", "training", "trainingTags");
 
     /** The custom components. */
     private static final Map<String, String> customComponents =  Map.of("root/container/eventregistration/button", "registrationLink");
@@ -113,27 +113,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 String[] taxonomyIds = data.get(taxonomyField, String[].class);
                 if (taxonomyIds != null && taxonomyIds.length > 0) {
                     ArrayList<String> value = processTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
-                    if (taxonomyField.equals("usingWorkday")) {
-                        properties.put("usingWorkdayTags", value);
-                    }
-                    else if (taxonomyField.equals("programsTools")) {
-                        properties.put("programsToolsTags", value);
-                    }
-                    else {
-                        properties.put(taxonomyField, value);
-                    }
-
+                    properties.put(taxonomyField, value);
                     if (hierarchyFields.contains(taxonomyField)) {
                         value = processHierarchyTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
-                        if (taxonomyField.equals("usingWorkday")) {
-                            properties.put("usingWorkdayTagsHierarchy", value);
-                        }
-                        else if (taxonomyField.equals("programsTools")) {
-                            properties.put("programsToolsTagsHierarchy", value);
-                        }
-                        else {
-                            properties.put(taxonomyField + "Hierarchy", value);
-                        }
+                        properties.put(taxonomyField + "Hierarchy", value);
                     }
                 }
             }
