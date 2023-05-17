@@ -26,9 +26,8 @@
       ],
       "drupalNodeId":1060265,
       "releaseTags":[
-         "release:114",
-         "release:141",
-         "release:148"
+         "release:149",
+         "release:165"
       ],
       "pwaCachestrategy":"staleWhileRevalidate",
       "drupalAccessControl":"Workday - all",

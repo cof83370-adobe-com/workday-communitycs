@@ -1,8 +1,8 @@
 package com.workday.community.aem.core.models;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -38,6 +38,9 @@ public class TaxonomyModel {
     /** The program type tags. */
     private List<String> programTypeTags = new ArrayList<>();
 
+    /** The Release tags. */
+    private List<String> releaseTags = new ArrayList<>();
+
     /** The product tags. */
     private List<String> productTags = new ArrayList<>();
 
@@ -58,6 +61,7 @@ public class TaxonomyModel {
             if (null != currentPage) {
                 final ValueMap map = currentPage.getProperties();
                 programTypeTags = CommunityUtils.getPageTagsList(map, "programsToolsTags", resolver);
+                releaseTags = CommunityUtils.getPageTagsList(map, "releaseTags", resolver);
                 productTags = CommunityUtils.getPageTagsList(map, "productTags", resolver);
                 industryTags = CommunityUtils.getPageTagsList(map, "industryTags", resolver);
                 usingWorkdayTags = CommunityUtils.getPageTagsList(map, "usingWorkdayTags", resolver);
@@ -73,7 +77,7 @@ public class TaxonomyModel {
      * @return the program type tags
      */
     public List<String> getProgramTypeTags() {
-        return Collections.unmodifiableList(programTypeTags);
+        return programTypeTags.stream().sorted().collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -82,7 +86,16 @@ public class TaxonomyModel {
      * @return the product tags
      */
     public List<String> getProductTags() {
-        return Collections.unmodifiableList(productTags);
+        return productTags.stream().sorted().collect(Collectors.toUnmodifiableList());
+    }
+
+     /**
+     * Gets the Release tags.
+     *
+     * @return the release tags
+     */
+    public List<String> getReleaseTags() {
+        return releaseTags.stream().sorted().collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -91,7 +104,7 @@ public class TaxonomyModel {
      * @return the industry tags
      */
     public List<String> getIndustryTags() {
-        return Collections.unmodifiableList(industryTags);
+        return industryTags.stream().sorted().collect(Collectors.toUnmodifiableList());
     }
 
     /**
@@ -100,7 +113,8 @@ public class TaxonomyModel {
      * @return the using workday tags
      */
     public List<String> getUsingWorkdayTags() {
-        return Collections.unmodifiableList(usingWorkdayTags);
+        return usingWorkdayTags.stream().sorted().collect(Collectors.toUnmodifiableList());
+        
     }
 
     /**
