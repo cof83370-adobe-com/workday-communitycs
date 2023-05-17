@@ -1,7 +1,5 @@
 package com.workday.community.aem.core.pojos;
 
-import com.workday.community.aem.core.pojos.restclient.EventTypeValue;
-
 import java.util.ArrayList;
 import java.util.List;
 

@@ -15,7 +15,7 @@ import java.util.HashMap;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.pojos.EventTypes;
-import com.workday.community.aem.core.pojos.restclient.EventTypeValue;
+import com.workday.community.aem.core.pojos.EventTypeValue;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.OurmUtils;

@@ -1,9 +1,10 @@
-package com.workday.community.aem.core.pojos.restclient;
+package com.workday.community.aem.core.pojos;
 
 public class EventTypeValue {
   String value;
   String lookupValue;
   int numberOfResults;
+  public EventTypeValue() {}
 
   public EventTypeValue(String value, String lookupValue) {
     this.value = value;
