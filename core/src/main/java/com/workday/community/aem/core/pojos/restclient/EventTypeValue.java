@@ -5,6 +5,11 @@ public class EventTypeValue {
   String lookupValue;
   int numberOfResults;
 
+  public EventTypeValue(String value, String lookupValue) {
+    this.value = value;
+    this.lookupValue = lookupValue;
+  }
+
   public String getValue() {
     return value;
   }

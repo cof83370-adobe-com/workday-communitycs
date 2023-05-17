@@ -1,32 +1,35 @@
 package com.workday.community.aem.core.models.impl;
 
 import com.day.cq.wcm.api.Page;
+
 import com.day.cq.wcm.api.PageManager;
+import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
+import org.apache.sling.models.factory.ModelFactory;
+import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.jcr.RepositoryException;
-import java.util.Collections;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Calendar.*;
 import static junitx.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
@@ -35,52 +38,70 @@ public class CoveoEventFeedModelImplTest {
   /**
    * AemContext
    */
-  private final AemContext context = new AemContext();
+  private final AemContext context = new AemContext(ResourceResolverType.RESOURCERESOLVER_MOCK);
 
   @Mock
-  JsonObject modelConfig = new JsonObject();
-
-  @Mock
-  SlingHttpServletRequest slingHttpServletRequest;
-
+  SlingHttpServletRequest request;
   @Mock
   SearchApiConfigService searchApiConfigService;
 
-  @InjectMocks
-  CoveoEventFeedModel model = new CoveoEventFeedModelImpl();
+  private CoveoEventFeedModel coveoEventFeedModel;
 
   @BeforeEach
   public void setup() {
-    Map<String, Object> value = new HashMap<>();
-    value.put("featureEvent", "featureEventPath");
-    value.put("eventTypes", new String[] {"test1", "test2"});
-    context.registerService(ValueMap.class, new ValueMapDecorator(value));
+    context.load().json("/com/workday/community/aem/core/models/impl/event-feed-test.json", "/content");
+    Resource res = context.request().getResourceResolver().getResource("/content/event-feed-page");
+    Page currentPage = res.adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(SearchApiConfigService.class, searchApiConfigService);
+    context.registerService(SlingHttpServletRequest.class, request);
+    context.addModelsForClasses(CoveoEventFeedModelImpl.class);
+
+    coveoEventFeedModel = context.getService(ModelFactory.class).createModel(res, CoveoEventFeedModel.class);
   }
 
   @Test
   void testGetSearchConfig() {
-    JsonObject searchConfig = model.getSearchConfig();
+    ((CoveoEventFeedModelImpl)coveoEventFeedModel).init(request);
+
+    JsonObject searchConfig = coveoEventFeedModel.getSearchConfig();
     assertEquals(3, searchConfig.size());
   }
 
   @Test
-  void testGetFeatureEvent() throws RepositoryException {
-    ResourceResolver resolverMock = mock(ResourceResolver.class);
+  void testGetFeatureEventNotResolved() throws RepositoryException {
+    ((CoveoEventFeedModelImpl)coveoEventFeedModel).init(request);
+
+    ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
     PageManager pageManager = mock(PageManager.class);
-    Page pageObject = mock(Page.class);
-    ValueMap valueMap = mock(ValueMap.class);
-    GregorianCalendar startTime =  new GregorianCalendar(2018, 6, 27, 16, 16, 47);
-    GregorianCalendar endTime =  new GregorianCalendar(2018, 7, 27, 16, 16, 47);
+    lenient().when(request.getResourceResolver()).thenReturn(mockResourceResolver);
+    lenient().when(mockResourceResolver.adaptTo(PageManager.class)).thenReturn(pageManager);
 
-    lenient().when(slingHttpServletRequest.getResourceResolver()).thenReturn(resolverMock);
-    lenient().when(resolverMock.adaptTo(PageManager.class)).thenReturn(pageManager);
-    lenient().when(pageManager.getPage(anyString())).thenReturn(pageObject);
-    lenient().when(pageObject.getProperties(anyString())).thenReturn(valueMap);
-    lenient().when(valueMap.get(eq("startDate"))).thenReturn(startTime);
-    lenient().when(valueMap.get(eq("endDate"))).thenReturn(endTime);
-    lenient().when(valueMap.get(eq("eventLocation"))).thenReturn("eventLocation");
-    lenient().when(valueMap.get(eq("eventHost"))).thenReturn("eventHost");
+    Map<String, String> test = coveoEventFeedModel.getFeatureEvent();
+    assertEquals(0, test.size());
+  }
 
-    Map<String, String> test = model.getFeatureEvent();
+  @Test
+  void testGetFeatureEventResolved() throws RepositoryException {
+    ((CoveoEventFeedModelImpl)coveoEventFeedModel).init(request);
+
+    ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
+    PageManager pageManager = mock(PageManager.class);
+    Page page = mock(Page.class);
+
+    ValueMap testValues = new ValueMapDecorator(ImmutableMap.of(
+        "startDate", new GregorianCalendar(2023, JUNE,3),
+        "endDate", new GregorianCalendar(2023, OCTOBER,3),
+        "eventLocation", "Bay area"
+    ));
+
+    lenient().when(request.getResourceResolver()).thenReturn(mockResourceResolver);
+    lenient().when(mockResourceResolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+    lenient().when(pageManager.getPage(anyString())).thenReturn(page);
+    lenient().when(page.getProperties()).thenReturn(testValues);
+
+    Map<String, String> test = coveoEventFeedModel.getFeatureEvent();
+    assertEquals(9, test.size());
+    assertEquals("featureEventPath.html", test.get("link"));
   }
 }

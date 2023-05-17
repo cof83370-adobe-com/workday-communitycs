@@ -14,6 +14,8 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.pojos.EventTypes;
+import com.workday.community.aem.core.pojos.restclient.EventTypeValue;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.OurmUtils;
@@ -37,7 +39,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
-import javax.inject.Inject;
 import javax.servlet.ServletException;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
@@ -76,7 +77,7 @@ public class CoveoEventsTypeServletTest {
       ourmUtilsMock.when(()-> OurmUtils.getSalesForceId(any())).thenReturn(DEFAULT_SFID_MASTER);
 
       CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
-      httpClientsMockedStatic.when(() -> HttpClients.createDefault()).thenReturn(httpClient);
+      httpClientsMockedStatic.when(HttpClients::createDefault).thenReturn(httpClient);
       lenient().when(searchApiConfigService.getSearchTokenAPI()).thenReturn("https://foo");
       lenient().when(snapService.getUserContext(anyString())).thenReturn(userObject);
       CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
@@ -91,7 +92,11 @@ public class CoveoEventsTypeServletTest {
       lenient().when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
       HashMap<String, String> result = new HashMap<>();
       result.put("token", "testToken");
+      EventTypes eventTypes = new EventTypes();
+      eventTypes.getValues().add(new EventTypeValue("test", "test"));
       lenient().when(objectMapper.readValue(inputStream, HashMap.class)).thenReturn(result);
+      lenient().when(objectMapper.readValue(inputStream, EventTypes.class)).thenReturn(eventTypes);
+
       coveoEventTypeServlet.setObjectMapper(this.objectMapper);
       coveoEventTypeServlet.doGet(request, response);
     }

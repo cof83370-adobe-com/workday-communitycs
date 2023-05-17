@@ -61,7 +61,7 @@ public class SearchApiConfigServiceImpl implements SearchApiConfigService {
   public String getSearchFieldLookupAPI() {
     String lookupApi = config.searchFieldLookupApi();
     if (!StringUtils.isEmpty(lookupApi) && lookupApi.endsWith("/")) {
-      lookupApi = lookupApi.substring(0, lookupApi.length()-2);
+      lookupApi = lookupApi.substring(0, lookupApi.length()-1);
     }
 
     return lookupApi;

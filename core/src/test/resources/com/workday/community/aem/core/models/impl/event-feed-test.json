@@ -3,6 +3,8 @@
     "jcr:primaryType": "cq:Page",
     "jcr:createdBy": "admin",
     "jcr:created": "Mon May 15 2023 23:12:37 GMT-0700",
+    "featuredEvent": "featureEventPath",
+    "eventTypes": ["test1", "test2"],
     "jcr:content": {
       "jcr:primaryType": "cq:PageContent",
       "jcr:createdBy": "admin",
