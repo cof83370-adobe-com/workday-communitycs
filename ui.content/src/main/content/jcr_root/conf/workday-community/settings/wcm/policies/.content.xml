@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal"
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:mixinTypes="[rep:AccessControllable]"
     jcr:primaryType="cq:Page">
     <rep:policy/>
@@ -97,7 +97,7 @@
                                         cq:styleClasses="enable-expand"
                                         cq:styleId="1678916140198"
                                         cq:styleLabel="Enable Expand"
-                                        jcr:primaryType="nt:unstructured"/>  
+                                        jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
                             </item0>
                         </cq:styleGroups>
@@ -231,13 +231,13 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_641475696923109>
                     <policy_641528232375303
-                        jcr:description="Allows all sizes, but not H1, which is reserved for the main page title."
+                        jcr:description="Allows all sizes, but not H1 &amp; H2, which is reserved for the main page title."
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Content Title"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        allowedTypes="[h2,h3,h4,h5,h6]"
+                        allowedTypes="[h3,h4,h5,h6]"
                         linkDisabled="false"
-                        type="h2">
+                        type="h3">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_641528232375303>
                     <policy_1678842595504
@@ -405,9 +405,9 @@
                     <policy_2067079264297100
                         cq:styleDefaultClasses="event-text"
                         jcr:primaryType="nt:unstructured"
-                        jcr:title="Event Description Container"
+                        jcr:title="Event Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_2067079264297100>
@@ -666,7 +666,7 @@
                                         cq:styleId="1680281906479"
                                         cq:styleLabel="66/33"
                                         jcr:primaryType="nt:unstructured"/>
-                            </cq:styles>
+                                </cq:styles>
                             </item1>
                             <item2
                                 cq:styleGroupLabel="Spacing"
@@ -795,6 +795,37 @@
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_856086685582958>
+                    <policy_602018341163504
+                        jcr:description="This policy defines style classes of containers within the content main section of an Event Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Content Sections"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Container Type"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="event-description"
+                                        cq:styleId="1683930780963"
+                                        cq:styleLabel="Event Description"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="preparation"
+                                        cq:styleId="1683930889156"
+                                        cq:styleLabel="Preparation"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="agenda"
+                                        cq:styleId="1683930920623"
+                                        cq:styleLabel="Agenda"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_602018341163504>
                 </container>
                 <teaser jcr:primaryType="nt:unstructured">
                     <policy_1575031387650

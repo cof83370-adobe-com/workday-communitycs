@@ -36,6 +36,7 @@
                         sling:resourceType="workday-community/components/core/container">
                         <relatedinformation
                             jcr:primaryType="nt:unstructured"
+                            title="Related Information"
                             sling:resourceType="workday-community/components/common/relatedinformation"/>
                     </container_rightrail>
                 </container>
