@@ -22,7 +22,7 @@
                             <atomic-search-box></atomic-search-box>
                         </atomic-layout-section>
                         <!--Status section-->
-                        <atomic-layout-section section="status" class="multi-tab-sort">
+                        <atomic-layout-section section="sort" class="multi-tab-sort">
                             <atomic-sort-dropdown>
                                 <atomic-sort-expression label="Relevance" expression="relevancy">
                                 </atomic-sort-expression>
@@ -86,6 +86,7 @@
                                         }
                                         atomic-result-fields-list {
                                             height: auto !important;
+                                            width: 600px;
                                         }
                                         @media not all and (min-width: 1024px) {
                                             .result-root.with-sections.display-list.density-normal
@@ -383,19 +384,9 @@
                 try {
                     const response = await fetch(tokenUrl);
                     const res = await response.json();
-                    const output = res['searchToken'];
-                    const searchToken = {
-                        token: output,
-                        expiresAt: Date.now() + res['validFor'],
-                    };
-                    window.localStorage.setItem(
-                        'searchToken',
-                        JSON.stringify(searchToken)
-                    );
 
                     return res['searchToken'];
                 } catch (err) {
-                    console.error('Error from getRequest -> ', err.message || err.responseText);
                 }
             };
             const setContext = (engine) => {
@@ -415,21 +406,8 @@
 
             document.addEventListener('DOMContentLoaded', () => {
                 const main = async () => {
-                    let token =
-                        'searchToken' in window.localStorage
-                            ? JSON.parse(window.localStorage.getItem('searchToken'))
-                            : {};
-                    let isExpired = 'expiresAt' in token ?
-                        parseInt(token.expiresAt) < parseInt(Date.now()) ? true : false : true;
-
-                    if (token === null || isExpired) {
-                        token = await getToken();
-                    } else {
-                        token = token.token;
-                    }
-
+                    let token = await getToken();
                     await customElements.whenDefined('atomic-search-interface');
-
                     const searchInterface = document.querySelector('atomic-search-interface');
                     await searchInterface.initialize({
                         accessToken: token,
@@ -440,7 +418,6 @@
                         preprocessRequest: (request, clientOrigin) => {
                             if (clientOrigin === 'searchApiFetch') {
                                 const body = JSON.parse(request.body);
-                                // body.q = undefined;
                                 body.maximumAge=30000;
                                 body.numberOfResults = component_properties.rows;
                                 request.body = JSON.stringify(body);
@@ -472,7 +449,9 @@
 
                     buildTabs(buildTab, engine);
 
-                    searchInterface.executeFirstSearch();
+                    const tab = document.getElementById("multiTabsCompId");
+                    // Click the first button
+                    tab.firstChild.firstChild.click();
 
                     window.addEventListener('resize', () => buildTabs (buildTab, engine));
 

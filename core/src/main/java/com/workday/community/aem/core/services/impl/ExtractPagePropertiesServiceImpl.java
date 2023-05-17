@@ -151,6 +151,8 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
     @Override
     public void processDateFields(ValueMap data, HashMap<String, Object> properties) {
+        if (data == null) return;
+
         for (String dateField: dateFields) {
             GregorianCalendar value = data.get(dateField, GregorianCalendar.class);
             if (value == null && dateField.equals("postedDate")) {
@@ -259,7 +261,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                     }
                 }
                 NodeIterator childIt = childNode.getNodes();
-                processTextComponent(childIt, textList);
+                if (childIt != null) {
+                    processTextComponent(childIt, textList);
+                }
             }
             catch(RepositoryException e) {
                 logger.error("Iterator page jcr:content failed: {}", e.getMessage());
@@ -319,7 +323,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
                if (hierarchyFields.contains(field)) {
                    List<String> tagPaths = new ArrayList<>();
-                   while(!tag.isNamespace()) {
+                   while( tag != null && !tag.isNamespace() ) {
                        Tag finalTag = tag;
                        tagPaths.replaceAll(path -> finalTag.getTitle() + "|" + path);
                        tagPaths.add(tag.getTitle());

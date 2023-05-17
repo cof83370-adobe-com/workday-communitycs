@@ -116,7 +116,7 @@ public class SnapServiceImpl implements SnapService {
       // Execute the request.
       APIResponse snapRes = RestApiUtil.doGetMenu(url, apiToken, apiKey, traceId);
       JsonObject defaultMenu = this.getDefaultHeaderMenu();
-      if (StringUtils.isEmpty(snapRes.getResponseBody())) {
+      if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())) {
         logger.debug("Sfdc menu fetch is empty, fallback to use local default");
         return gson.toJson(defaultMenu);
       }
@@ -269,7 +269,7 @@ public class SnapServiceImpl implements SnapService {
     String accountID = "";
     String accountName = "";
     String accountType = "";
-    Boolean isNSC = false;
+    boolean isNSC = false;
     if (profileData != null) {
       JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
       contactRole = profileObject.get(CONTACT_ROLE).getAsString();
@@ -281,7 +281,7 @@ public class SnapServiceImpl implements SnapService {
       JsonElement organizationName = profileObject.get("organizationName");
       accountName = organizationName.isJsonNull() ? "" : organizationName.getAsString();
       JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-      Boolean isWorkdayMate = !isWorkmateElement.isJsonNull() && isWorkmateElement.getAsBoolean();
+      boolean isWorkdayMate = !isWorkmateElement.isJsonNull() && isWorkmateElement.getAsBoolean();
       accountType = isWorkdayMate ? "workday" : profileObject.get("type").getAsString().toLowerCase();
     }
     userProperties.addProperty(CONTACT_ROLE, contactRole);

@@ -18,6 +18,9 @@ public @interface CoveoSearchConfig {
   @AttributeDefinition(name = "Search token Api endpoint", description = "Search Token api endpoint")
   String tokenApi();
 
+  @AttributeDefinition(name = "Search field look up API endpoint", description = "Search field lookup API endpoint")
+  String searchFieldLookupApi() default "https://platform.cloud.coveo.com/rest/search/values";
+
   @AttributeDefinition(name = "Search token API Key", description = "Search API Key")
   String tokenApiKey();
 

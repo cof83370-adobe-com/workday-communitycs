@@ -3,5 +3,4 @@
     cq:isContainer="{Boolean}true"
     jcr:primaryType="cq:Component"
     jcr:title="Coveo tab list"
-    sling:resourceSuperType="core/wcm/components/accordion/v1/coveotablist"
     componentGroup="Workday Community Site - Content"/>

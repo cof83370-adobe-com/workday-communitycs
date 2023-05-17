@@ -43,6 +43,13 @@ public interface SearchApiConfigService {
   String getSearchTokenAPI();
 
   /**
+   * Get the Coveo search event type API endpoint from the configuration.
+   *
+   * @return the Coveo search event type API endpoint
+   */
+  String getSearchFieldLookupAPI();
+
+  /**
    * Get the Coveo search token API key from the configuration.
    *
    * @return the Coveo search API key.

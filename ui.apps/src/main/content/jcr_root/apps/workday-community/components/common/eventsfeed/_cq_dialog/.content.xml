@@ -27,34 +27,24 @@
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/container">
                                         <items jcr:primaryType="nt:unstructured">
-                                            <coveoevents
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/select"
-                                                fieldDescription="Select the Coveo Events"
-                                                fieldLabel="Coveo Event Type "
-                                                multiple="{Boolean}true"
-                                                required="{Boolean}true" 
-                                                name="./coveoevents">
-                                                <datasource
-                                                    jcr:primaryType="nt:unstructured"
-                                                    sling:resourceType="/bin/coveoEventsDropdown"/>
-                                            </coveoevents>
                                             <eventtype
-                                                cq:showOnCreate="{Boolean}true"
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="cq/gui/components/coral/common/form/tagfield"
-                                                emptyText="Choose Event Type Tag(s)"
-                                                fieldDescription="Choose event type Tag(s)"
-                                                fieldLabel="Event Type Tag(s)"
-                                                multiple="{Boolean}true"
-                                                name="./eventtype"
-                                                rootPath="/content/cq:tags/event"/>
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                                    fieldDescription="Select the Coveo Event Types"
+                                                    fieldLabel="Coveo Event Type"
+                                                    multiple="{Boolean}true"
+                                                    required="{Boolean}true"
+                                                    name="./eventTypes">
+                                                <datasource
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="/bin/eventTypes"/>
+                                            </eventtype>
                                             <featuredevent
                                                 jcr:primaryType="nt:unstructured"
                                                 sling:resourceType="cq/gui/components/coral/common/form/pagefield"
                                                 emptyText="Featured Event"
                                                 fieldLabel="Featured Event"
-                                                name="./featuredevent"
+                                                name="./featuredEvent"
                                                 rootPath="/content" />    
                                         </items>
                                     </column>

@@ -20,12 +20,17 @@ public class SearchApiConfigServiceImplTest {
 
     @Override
     public Class<? extends Annotation> annotationType() {
-      return null;
+      return Annotation.class;
     }
 
     @Override
     public String tokenApi() {
       return "http://coveo/token";
+    }
+
+    @Override
+    public String searchFieldLookupApi() {
+      return "foo/";
     }
 
     @Override
@@ -55,12 +60,12 @@ public class SearchApiConfigServiceImplTest {
 
     @Override
     public String userIdProvider() {
-      return null;
+      return "null";
     }
 
     @Override
     public String userType() {
-      return null;
+      return "null";
     }
 
     @Override
@@ -93,5 +98,12 @@ public class SearchApiConfigServiceImplTest {
     assertEquals(searchApiConfigService.getUpcomingEventAPIKey(), testConfig.upcomingEventApiKey());
     assertEquals(searchApiConfigService.getOrgId(), testConfig.orgId());
     assertEquals(searchApiConfigService.isDevMode(), testConfig.devMode());
+
+    assertEquals(searchApiConfigService.getSearchHub(), testConfig.searchHub());
+    assertEquals(searchApiConfigService.getDefaultEmail(), testConfig.defaultEmail());
+    assertEquals(searchApiConfigService.getUserIdProvider(), testConfig.userIdProvider());
+    assertEquals(searchApiConfigService.getUserIdType(), testConfig.userType());
+    assertEquals(searchApiConfigService.getSearchFieldLookupAPI(), "foo");
+
   }
 }
