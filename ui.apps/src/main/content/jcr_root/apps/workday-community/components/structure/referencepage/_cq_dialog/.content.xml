@@ -25,6 +25,7 @@
                     <referenceconfig
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference"
+                        sling:orderBefore="basic"
                         sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
                         <items jcr:primaryType="nt:unstructured">
                             <column
@@ -133,6 +134,26 @@
                                         multiple="{Boolean}true"
                                         name="./programsToolsTags"
                                         rootPath="/content/cq:tags/programs-and-tools"/>
+                                    <usertags
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose User Tags"
+                                        fieldDescription="Choose user tags"
+                                        fieldLabel="Reference Users"
+                                        multiple="{Boolean}true"
+                                        name="./userTags"
+                                        rootPath="/content/cq:tags/user"/>
+                                    <regioncountry
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Region &amp; Country Tag"
+                                        fieldDescription="Choose region &amp; country tag"
+                                        fieldLabel="Reference Region &amp; Country"
+                                        multiple="{Boolean}true"
+                                        name="./regionCountry"
+                                        rootPath="/content/cq:tags/region-and-country"/>    
                                     <industry
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -147,6 +168,10 @@
                             </column>
                         </items>
                     </referenceconfig>
+                    <general
+                        jcr:primaryType="nt:unstructured"
+                        sling:hideResource="{Boolean}true">
+                    </general>
                 </items>
             </tabs>
         </items>
