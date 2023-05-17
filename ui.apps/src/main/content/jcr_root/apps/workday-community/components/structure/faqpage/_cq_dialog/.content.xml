@@ -169,7 +169,7 @@
                                         fieldDescription="Choose region &amp; country tag"
                                         fieldLabel="Faq Region &amp; Country"
                                         multiple="{Boolean}true"
-                                        name="./regionCountry"
+                                        name="./regionCountryTags"
                                         rootPath="/content/cq:tags/region-and-country"/>
                                     <industry
                                         cq:showOnCreate="{Boolean}true"
