@@ -58,7 +58,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     );
 
     /** The dateFields. */
-    private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("startDate", "endDate", "postedDate", "updatedDate"));
+    private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("eventStartDate", "eventEndDate", "postedDate", "updatedDate"));
 
     /** The hierarchyFields. */
     private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "industryTags", "userTags", "programsToolsTags", "regionCountryTags", "trainingTags"));
