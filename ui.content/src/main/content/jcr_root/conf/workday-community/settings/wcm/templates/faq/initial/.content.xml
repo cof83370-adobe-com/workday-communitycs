@@ -4,7 +4,8 @@
     <jcr:content
         cq:template="/conf/workday-community/settings/wcm/templates/faq"
         jcr:primaryType="cq:PageContent"
-        sling:resourceType="workday-community/components/structure/faqpage">
+        sling:resourceType="workday-community/components/structure/faqpage"
+        contentType="content-types:faq">
         <root
             jcr:primaryType="nt:unstructured"
             sling:resourceType="workday-community/components/core/container"
