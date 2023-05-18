@@ -27,7 +27,7 @@
                             <accordion
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="workday-community/components/core/accordion"
-                                collapseTitle="Collpase"
+                                collapseTitle="Collapse"
                                 headingElement="h4"
                                 singleExpansion="false">
                                 <item_1

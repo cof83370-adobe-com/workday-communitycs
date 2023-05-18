@@ -157,7 +157,7 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose User Tags"
                                         fieldDescription="Choose user tags"
-                                        fieldLabel="Faq Users"
+                                        fieldLabel="Users Tags"
                                         multiple="{Boolean}true"
                                         name="./userTags"
                                         rootPath="/content/cq:tags/user"/>
@@ -167,7 +167,7 @@
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                         emptyText="Choose Region &amp; Country Tag"
                                         fieldDescription="Choose region &amp; country tag"
-                                        fieldLabel="Faq Region &amp; Country"
+                                        fieldLabel="Region &amp; Country Tags"
                                         multiple="{Boolean}true"
                                         name="./regionCountryTags"
                                         rootPath="/content/cq:tags/region-and-country"/>
