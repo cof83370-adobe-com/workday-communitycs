@@ -89,8 +89,8 @@ public class EventDetailsModel {
 		if (null != currentPage) {
 			try {
 				final ValueMap map = currentPage.getProperties();
-				String startDateStr = map.get("startDate", String.class);
-				String endDateStr = map.get("endDate", String.class);
+				String startDateStr = map.get("eventStartDate", String.class);
+				String endDateStr = map.get("eventEndDate", String.class);
 				if (StringUtils.isNotBlank(startDateStr) && StringUtils.isNotBlank(endDateStr)) {
 					calculateRequired(startDateStr, endDateStr);
 				}

@@ -3,9 +3,9 @@
         "jcr:primaryType": "cq:Page",
         "jcr:content": {
             "jcr:primaryType": "cq:PageContent",
-            "startDate": "Tue Nov 22 2022 00:44:02 GMT-0600",
+            "eventStartDate": "Tue Nov 22 2022 00:44:02 GMT-0600",
             "jcr:title": "Test AEM content Demo 13",
-            "endDate": "Wed Nov 23 2022 00:44:48 GMT-0600",
+            "eventEndDate": "Wed Nov 23 2022 00:44:48 GMT-0600",
             "productTags": [
                 "product:engage"
             ],
