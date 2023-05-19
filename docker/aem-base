@@ -1,0 +1,44 @@
+FROM amazonlinux
+
+# Setting Variables
+ARG SDK_NAME="aem-sdk-2022.4.7138.20220427T075748Z-220401"
+ARG JDK_VERSION="11.0.19"
+ARG MAVEN="3.8.8"
+ARG AWS_PROFILE=$AWS_PROFILE
+
+# Install tools
+RUN yum install -y \
+    git \
+    procps-ng \
+    net-tools \
+    tar \
+    unzip  \
+    findutils.aarch64 && \
+  yum clean all && \
+  rm -rf /var/cache/yum
+
+# Setup AWS CLI
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip" \
+  && unzip awscliv2.zip \
+  && ./aws/install \
+  && rm -rf aws*
+
+# Install Oracle JDK from S3
+RUN --mount=type=secret,id=aws,required,target=/root/.aws/credentials aws s3 cp s3://community-aem/container/images/wc_aem_jdk/jdk-${JDK_VERSION}_linux-aarch64_bin.rpm .
+RUN rpm -ivh jdk-${JDK_VERSION}_linux-aarch64_bin.rpm && rm jdk-${JDK_VERSION}_linux-aarch64_bin.rpm
+
+# Setup Maven
+RUN curl -s -O https://downloads.apache.org/maven/maven-3/${MAVEN}/binaries/apache-maven-${MAVEN}-bin.tar.gz \
+  && tar -xzvf apache-maven-${MAVEN}-bin.tar.gz \
+  && mv apache-maven-${MAVEN} /opt \
+  && ln -s /opt/apache-maven-${MAVEN}/bin/mvn /usr/local/bin/mvn \
+  && rm -rf apache-maven*
+
+# Install AEM SDK from S#
+RUN --mount=type=secret,id=aws,required,target=/root/.aws/credentials aws s3 cp s3://community-aem/container/images/wc_aem_sdk/${SDK_NAME}.zip .
+RUN unzip ${SDK_NAME}.zip \
+  && mv aem-sdk-quickstart*.jar aem.jar \
+  && mv aem-sdk-dispatcher-tools-*-unix.sh aem-sdk-dispatcher-tools-unix.sh \
+  && rm -rf ${SDK_NAME}.zip aem-sdk-dispatcher-tools-*-windows.zip
+
+CMD ["./opt/aem/docker/scripts/init.sh"]

@@ -112,3 +112,6 @@ ui.tests/test-module/assets/form/themes/**/*current.png
 
 # AEM repo tool config
 .repo
+
+# Docker AEM packages
+docker/*-crx-quickstart.tar.gz
