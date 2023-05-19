@@ -22,9 +22,19 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import java.util.*;
 
+import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
+import static com.workday.community.aem.core.constants.WccConstants.INTERNAL_WORKMATES;
+import static com.workday.community.aem.core.constants.WccConstants.ROLES;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_ROLE_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
-import static com.workday.community.aem.core.constants.WccConstants.ROLES;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_TYPE_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_INFORMATION_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.NSC_SUPPORTING_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.CUSTOMER_ROLES_MAPPING;
+import static com.workday.community.aem.core.constants.SnapConstants.NSC_SUPPORTING_MAPPING;
+import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
 
 /**
  * The Class UserGroupServiceImpl.
@@ -122,22 +132,52 @@ public class UserGroupServiceImpl implements UserGroupService {
 
 
     /**
-     * Get user groups groups from API.
+     * Get user groups from API.
      *
      * @param sfId User's Salesforce id.
      * @return List of user groups from snap.
      */
     protected List<String> getUserGroupsFromSnap(String sfId) {
+        List<String> groups = new ArrayList<>();
         JsonObject context = snapService.getUserContext(sfId);
-        JsonElement contextInfo = context.get(USER_CONTEXT_INFO_KEY);
-        JsonObject contextInfoObj = contextInfo.getAsJsonObject();
-        JsonElement groups = contextInfoObj.get(USER_CONTACT_ROLE_KEY);
-        Optional<String> groupsString = Optional.ofNullable(groups.getAsString());
-        return groupsString.map(value -> List.of(value.split(";")))
-                .orElseGet(() -> {
-                    logger.info("Value not found");
-                    return new ArrayList<>();
-                });
+        
+        JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
+        JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
+        Boolean hasCommunityAccess = false;
+        if (!propertyAccess.isJsonNull() && propertyAccess.getAsString().contains(PROPERTY_ACCESS_COMMUNITY)) {
+            groups.add(AUTHENTICATED);
+            hasCommunityAccess = true;
+        }
+        JsonElement nscSupporting = contactInformation.get(NSC_SUPPORTING_KEY);
+        if (!nscSupporting.isJsonNull()) {
+            String nscSupportingString = nscSupporting.getAsString();
+            for (Map.Entry<String, String> entry : NSC_SUPPORTING_MAPPING.entrySet()) {
+                if (nscSupportingString.contains(entry.getKey())) {
+                    groups.add(entry.getValue());
+                }
+            }
+        }
+        JsonObject contextInfo = context.get(USER_CONTEXT_INFO_KEY).getAsJsonObject();
+        JsonElement contactRolesObj = contextInfo.get(USER_CONTACT_ROLE_KEY);
+        if (!contactRolesObj.isJsonNull()) {
+            String contactRoles = contactRolesObj.getAsString();
+            for (Map.Entry<String, String> entry : CUSTOMER_ROLES_MAPPING.entrySet()) {
+                if (contactRoles.contains(entry.getKey())) {
+                    groups.add(entry.getValue());
+                }
+            }
+        }
+        JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
+        if (!isWorkmate.isJsonNull() && isWorkmate.getAsBoolean()) {
+            groups.add(INTERNAL_WORKMATES);
+        }
+        else {
+            JsonElement type = contextInfo.get(USER_TYPE_KEY);
+            if (hasCommunityAccess && !type.isJsonNull()) {
+                groups.add(type.getAsString() + "_all");
+            }
+        }
+        return groups;
     }
 
     /**

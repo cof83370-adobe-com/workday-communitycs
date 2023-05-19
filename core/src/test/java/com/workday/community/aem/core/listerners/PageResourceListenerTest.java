@@ -10,7 +10,6 @@ import java.util.List;
 
 import javax.jcr.Node;
 import javax.jcr.Property;
-import javax.jcr.Value;
 
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -25,7 +24,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.apache.jackrabbit.vault.util.JcrConstants;
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.listeners.PageResourceListener;
 import com.workday.community.aem.core.services.QueryService;
