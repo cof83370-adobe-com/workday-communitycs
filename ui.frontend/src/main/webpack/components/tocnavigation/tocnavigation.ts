@@ -2,6 +2,7 @@
     const tocList = document.querySelectorAll('.cmp-toc__group li');
     const prevBtn = document.getElementById('toc-previous') as HTMLButtonElement;
     const nextBtn = document.getElementById('toc-next') as HTMLButtonElement;
+    const tocNav = document.getElementById('toc-navigation');
 
     function loadLinkForCurrentItem(currentIndex) {
         const currentItem = tocList[currentIndex];
@@ -34,11 +35,14 @@
             const linkUrl = links[i].getAttribute('href');
 
             if (currentUrl.indexOf(linkUrl) !== -1) {
+                tocNav.style.display = 'block';
                 const liElement = links[i].parentNode as HTMLElement;
                 liElement.classList.add('active');
                 activeIndex = Array.from(tocList).indexOf(liElement as HTMLLIElement);
                 localStorage.setItem('activeIndex', activeIndex);
                 break;
+            } else {
+                tocNav.style.display = 'none';
             }
         }
         updateButtonState(activeIndex);
@@ -69,6 +73,8 @@
             nextBtn.addEventListener('click', () => {
                 traverseLiItems(currentIndex, 'next');
             });
+        } else {
+            tocNav.style.display = 'none';
         }
     }
 
