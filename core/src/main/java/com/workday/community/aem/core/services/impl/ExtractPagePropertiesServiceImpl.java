@@ -18,10 +18,11 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 
-import static com.adobe.acs.commons.mcp.form.ContainerComponent.JCR_TITLE;
+
 import static com.day.cq.wcm.api.constants.NameConstants.NN_TEMPLATE;
 import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
 import static com.workday.community.aem.core.services.impl.QueryServiceImpl.SERVICE_USER;
@@ -199,7 +200,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         for (String stringField: stringFields) {
             String value = data.get(stringField, String.class);
             if (stringField.equals("pageTitle") && value == null) {
-                value = data.get(JCR_TITLE, String.class);
+                value = data.get(GlobalConstants.JCR_TITLE, String.class);
             }
             if (value != null) {
                 if (stringField.equals(NN_TEMPLATE)) {
