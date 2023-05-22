@@ -56,6 +56,19 @@
                                             letter-spacing: 0.5px !important;
                                             line-height: 21px !important;
                                         }
+
+                                        .metadata {
+                                            height: auto !important;
+                                        }
+
+                                        .products {
+                                            padding-bottom: 20px;
+                                        }
+
+                                        .field-products {
+                                            background-color: #f0f1f2;
+                                        }
+
                                     </style>
                                     <atomic-result-section-title>
                                         <atomic-result-link target="_blank" class="result-link"></atomic-result-link>
@@ -64,7 +77,7 @@
                                         <atomic-result-text field="excerpt"></atomic-result-text>
                                     </atomic-result-section-excerpt>
                                     <atomic-result-section-bottom-metadata>
-                                        <atomic-result-fields-list>
+                                        <atomic-result-fields-list class="metadata">
                                             <!--this value is conditionally generated based on druauthororgid's value as "581" which is Workday org id -->
                                             <atomic-field-condition class="field" if-defined="druauthororgid" must-match-commonsource="Community" must-match-druauthororgid="581">
                                                 <span>Workday &nbsp;</span>
