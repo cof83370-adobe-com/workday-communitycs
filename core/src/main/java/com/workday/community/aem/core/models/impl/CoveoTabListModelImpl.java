@@ -37,6 +37,9 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   @ValueMapValue
   String[] productTags;
 
+  @ValueMapValue
+  String[] feeds;
+
   @Self
   private SlingHttpServletRequest request;
 
@@ -62,11 +65,31 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     return config;
   }
 
-  //TODO this is to be used by both component editor dialog and htl
+
   @Override
   public JsonArray getFields() {
     return this.getModelConfig().getAsJsonArray("fields");
   }
+
+  @Override
+  public JsonArray getSelectedFields() {
+    JsonArray allFields = this.getModelConfig().getAsJsonArray("fields");
+    JsonArray selectedFields = new JsonArray();
+    if (feeds != null && feeds.length > 0 ) {
+       for (int i=0; i<allFields.size(); i++) {
+         for (int j=0; j< feeds.length; j++) {
+           JsonObject item = allFields.get(i).getAsJsonObject();
+           if (item.get("name").getAsString().equals(feeds[j])) {
+             selectedFields.add(item);
+           }
+         }
+       }
+    }
+
+    return selectedFields.isEmpty()? allFields : selectedFields;
+  }
+
+
 
   @Override
   public String getProductCriteria() {

@@ -40,8 +40,6 @@ public class CoveoTabListModelImplTest {
    * AemContext
    */
   private final AemContext context = new AemContext();
-
-  @Mock
   JsonObject modelConfig = new JsonObject();
 
   @Mock
@@ -65,7 +63,9 @@ public class CoveoTabListModelImplTest {
     coveoTabListModel = context.getService(ModelFactory.class).createModel(res, CoveoTabListModel.class);
 
     JsonArray fields = new JsonArray();
-    fields.add(new JsonObject());
+    JsonObject field = new JsonObject();
+    field.addProperty("name", "Question");
+    fields.add(field);
     modelConfig.add("fields", fields);
   }
 
@@ -80,9 +80,18 @@ public class CoveoTabListModelImplTest {
     try (MockedStatic<DamUtils> mocked = mockStatic(DamUtils.class)) {
       ((CoveoTabListModelImpl) coveoTabListModel).init(this.slingHttpServletRequest);
       mocked.when(() -> DamUtils.readJsonFromDam(eq(this.slingHttpServletRequest.getResourceResolver()), anyString())).thenReturn(modelConfig);
-
       JsonArray res = coveoTabListModel.getFields();
-      assertNull(res);
+      assertEquals(1, res.size());
+    }
+  }
+
+  @Test
+  void TestGetSelectedFields() {
+    try (MockedStatic<DamUtils> mocked = mockStatic(DamUtils.class)) {
+      ((CoveoTabListModelImpl) coveoTabListModel).init(this.slingHttpServletRequest);
+      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.slingHttpServletRequest.getResourceResolver()), anyString())).thenReturn(modelConfig);
+      JsonArray res = coveoTabListModel.getSelectedFields();
+      assertEquals(1, res.size());
     }
   }
 

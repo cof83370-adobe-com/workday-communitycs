@@ -6,6 +6,7 @@
     "featuredEvent": "featureEventPath",
     "eventTypes": ["test1", "test2"],
     "productTags": ["Financial Management"],
+    "feeds": ["Question"],
     "jcr:content": {
       "jcr:primaryType": "cq:PageContent",
       "jcr:createdBy": "admin",
