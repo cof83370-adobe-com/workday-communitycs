@@ -23,6 +23,11 @@
      <atomic-search-interface id="eventFeedSearchId">
          <atomic-search-layout>
              <atomic-layout-section section="results">
+                 <style>
+                     .query-error-custom {
+                        width: 600px;
+                     }
+                 </style>
                  <atomic-result-list display="list" image-size="icon" density="normal">
                      <atomic-result-template>
                          <template>
@@ -91,6 +96,9 @@
                                      text-align: center;
                                      font-size: 32px;
                                  }
+                                 .list-root atomic-result[part="outline"]{
+                                     border: 0 !important;
+                                 }
                              </style>
                              <div class="data-row">
                                  <div class="data-row-left">
@@ -119,7 +127,7 @@
                          </template>
                      </atomic-result-template>
                  </atomic-result-list>
-                 <atomic-query-error></atomic-query-error>
+                 <atomic-query-error class="query-error-custom"></atomic-query-error>
                  <!--No Result Section-->
                  <div style="width: 600px; padding: 0 10px;">
                      <atomic-no-results enable-cancel-last-action="false" search-tips=""></atomic-no-results>
@@ -153,7 +161,6 @@
                  engine.dispatch(action);
              }
          };
-
          document.addEventListener('DOMContentLoaded', () => {
              const main = async () => {
                  const tokenUrl = '/bin/search/token';

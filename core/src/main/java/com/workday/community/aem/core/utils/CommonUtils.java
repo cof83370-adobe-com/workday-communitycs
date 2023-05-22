@@ -148,5 +148,4 @@ public class CommonUtils {
         List<String> pathDataList = gson.fromJson(jsonStr, type);
         return Optional.ofNullable(pathDataList).orElse(new ArrayList<>());
     }
-
 }

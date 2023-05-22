@@ -5,6 +5,7 @@
     "jcr:created": "Mon May 15 2023 23:12:37 GMT-0700",
     "featuredEvent": "featureEventPath",
     "eventTypes": ["test1", "test2"],
+    "productTags": ["Financial Management"],
     "jcr:content": {
       "jcr:primaryType": "cq:PageContent",
       "jcr:createdBy": "admin",

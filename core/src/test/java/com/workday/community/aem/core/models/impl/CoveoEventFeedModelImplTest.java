@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
+import com.workday.community.aem.core.utils.DamUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -20,18 +21,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.jcr.RepositoryException;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Map;
 
 import static java.util.Calendar.*;
 import static junitx.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoEventFeedModelImplTest {
@@ -79,6 +82,35 @@ public class CoveoEventFeedModelImplTest {
 
     Map<String, String> test = coveoEventFeedModel.getFeatureEvent();
     assertEquals(0, test.size());
+  }
+
+  @Test
+  void testGetEventCriteria() {
+    try (MockedStatic<DamUtils> mocked = mockStatic(DamUtils.class)) {
+      ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(this.request);
+      JsonObject modelConfig = new JsonObject();
+      modelConfig.addProperty("eventCriteria", "foo");
+      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.request.getResourceResolver()), anyString())).thenReturn(modelConfig);
+
+      String res = coveoEventFeedModel.getEventCriteria();
+      assertEquals("(foo)", res);
+    }
+  }
+
+  @Test
+  void testOthers() {
+    try (MockedStatic<DamUtils> mocked = mockStatic(DamUtils.class)) {
+      ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(this.request);
+      JsonObject modelConfig = new JsonObject();
+      modelConfig.addProperty("sortCriteria", "foo");
+      modelConfig.addProperty("allEventsUrl", "foo1");
+      modelConfig.addProperty("extraCriteria", "foo2");
+      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.request.getResourceResolver()), anyString())).thenReturn(modelConfig);
+
+      assertEquals("foo", coveoEventFeedModel.getSortCriteria());
+      assertEquals("foo1", coveoEventFeedModel.getAllEventsUrl());
+      assertEquals("foo2", coveoEventFeedModel.getExtraCriteria());
+    }
   }
 
   @Test
