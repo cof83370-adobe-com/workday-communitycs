@@ -43,7 +43,7 @@ public final class GlobalConstants {
   public static final String JCR_CONTENT_PATH = "/jcr:content";
   
   /** The Constant JCR TITLE NODE. */
-  public static final String JCR_TITLE = "/jcr:title";
+  public static final String JCR_TITLE = "jcr:title";
 
   /** The Constant CONTENT_TYPE_MAPPING. */
   public static final Map<String, String> CONTENT_TYPE_MAPPING = Collections.unmodifiableMap(Map.of(
