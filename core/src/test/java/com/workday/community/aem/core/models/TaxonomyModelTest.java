@@ -55,6 +55,8 @@ public class TaxonomyModelTest {
         TagManager tm = context.resourceResolver().adaptTo(TagManager.class);
         tm.createTag("programs-and-tools:program-type", "Program Type", "Program Type");
         tm.createTag("programs-and-tools:program-type/the-next-level", "The Next Level", "the next level");
+        tm.createTag("release:149", "Workday 10 - Retired", "Workday 10 - Retired");
+        tm.createTag("release:165", "Workday 11 - Retired", "Workday 11 - Retired");
 
         tm.createTag("using-workday:workday-acquisition-integrations", "Workday Acquisition Integrations",
                 "Workday Acquisition Integrations");
@@ -68,16 +70,19 @@ public class TaxonomyModelTest {
         tm.createTag("industry:utilities", "Utilities", "Utilities");
 
         List<String> expectedIndustryTagsList = Arrays.asList("Education", "Utilities");
-        List<String> expectedProductTagsList = Arrays.asList("Connection to Workday Financial Management",
-                "Analytics & Reporting");
-        List<String> expectedUsingWorkdayTagsList = Arrays.asList("Workday Acquisition Integrations",
-                "Content Management");
+        List<String> expectedProductTagsList = Arrays.asList(  "Analytics & Reporting","Connection to Workday Financial Management"
+              );
+        List<String> expectedReleaseTagsList = Arrays.asList(  "Workday 10 - Retired","Workday 11 - Retired"
+        );
+        List<String> expectedUsingWorkdayTagsList = Arrays.asList("Content Management","Workday Acquisition Integrations"
+                );
         List<String> expectedProgramsAndToolsTagsList = Arrays.asList("Program Type", "The Next Level");
 
         TaxonomyModel taxonomyModel = context.request().adaptTo(TaxonomyModel.class);
 
         assertEquals(expectedIndustryTagsList, taxonomyModel.getIndustryTags());
         assertEquals(expectedProductTagsList, taxonomyModel.getProductTags());
+        assertEquals(expectedReleaseTagsList, taxonomyModel.getReleaseTags());
         assertEquals(expectedUsingWorkdayTagsList, taxonomyModel.getUsingWorkdayTags());
         assertEquals(expectedProgramsAndToolsTagsList, taxonomyModel.getProgramTypeTags());
         // hasContent method uses negation

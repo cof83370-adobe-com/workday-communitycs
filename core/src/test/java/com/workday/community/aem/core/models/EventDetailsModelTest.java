@@ -65,8 +65,8 @@ public class EventDetailsModelTest {
     public void setup() throws Exception {
         context.addModelsForClasses(EventDetailsModel.class);
         Map<String, Object> pageProperties = new HashMap<>();
-        pageProperties.put("startDate", "2022-11-22T00:44:02.000+05:30");
-        pageProperties.put("endDate", "2022-11-24T00:54:02.000+05:30");
+        pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
+        pageProperties.put("eventEndDate", "2022-11-24T00:54:02.000+05:30");
         pageProperties.put("eventLocation", "California");
         pageProperties.put("eventHost", "workday");
         pageProperties.put("eventFormat", new String[] { "event:event-format/webinar" });
@@ -88,7 +88,7 @@ public class EventDetailsModelTest {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		Date formattedStartDate = formatter.parse(currentPage.getProperties().get("startDate", String.class));
+		Date formattedStartDate = formatter.parse(currentPage.getProperties().get("eventStartDate", String.class));
 		ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
         ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
         assertEquals("00:44", DateTimeFormatter.ofPattern("HH:mm").format(originDatetime));

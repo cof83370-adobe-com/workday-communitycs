@@ -151,9 +151,9 @@ public class ExtractPagePropertiesServiceImplTest {
         ValueMap data = mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<>();
         GregorianCalendar value = new GregorianCalendar();
-        doReturn(value).when(data).get("startDate", GregorianCalendar.class);
+        doReturn(value).when(data).get("eventStartDate", GregorianCalendar.class);
         extract.processDateFields(data, properties);
-        assertEquals(properties.get("startDate"), value.getTimeInMillis() / 1000);
+        assertEquals(properties.get("eventStartDate"), value.getTimeInMillis() / 1000);
     }
 
     /**

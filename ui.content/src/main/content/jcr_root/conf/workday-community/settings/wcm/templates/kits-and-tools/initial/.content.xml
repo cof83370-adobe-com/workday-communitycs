@@ -4,7 +4,8 @@
     <jcr:content
         cq:template="/conf/workday-community/settings/wcm/templates/kits-and-tools"
         jcr:primaryType="cq:PageContent"
-        sling:resourceType="workday-community/components/structure/kitsandtoolspage">
+        sling:resourceType="workday-community/components/structure/kitsandtoolspage"
+        contentType="content-types:kits-and-tools">
         <root
             jcr:primaryType="nt:unstructured"
             sling:resourceType="workday-community/components/core/container"
