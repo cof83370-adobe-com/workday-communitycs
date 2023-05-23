@@ -172,7 +172,7 @@
                 }
             };
 
-            function waitForElementToDisplay(elmCallback, callback, checkFrequencyInMs = 100, timeoutInMs = 30000) {
+            function waitForElementToDisplay(elmCallback, callback, checkFrequencyInMs = 100, timeoutInMs = 50000) {
                 let startTimeInMs = Date.now();
                 let timeOutHandler;
                 (function loopSearch() {
@@ -217,6 +217,7 @@
                     facet = [
                         {
                             "facetId": "@commoneventtype",
+                            "numberOfValues": currentValues.length + 1,
                             "field": "commoneventtype",
                             "type": "specific",
                             "injectionDepth": 5000,
@@ -263,7 +264,7 @@
                 if (noResult && noResult.length == 1) {
                     noResult[0].style.width = cardWidth;
                 }
-                let queryErr = document.getElementsByClassName('no-query-error-custom');
+                let queryErr = document.getElementsByClassName('query-error-custom');
                 if (queryErr && queryErr.length == 1) {
                     queryErr[0].style.width = cardWidth;
                 }

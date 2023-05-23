@@ -408,7 +408,7 @@
                     engine.dispatch(action);
                 }
             };
-            function waitForElementToDisplay(selector, callback, checkFrequencyInMs = 100, timeoutInMs = 30000) {
+            function waitForElementToDisplay(selector, callback, checkFrequencyInMs = 100, timeoutInMs = 50000) {
                 let startTimeInMs = Date.now();
                 let timeOutHandler;
                 (function loopSearch() {
