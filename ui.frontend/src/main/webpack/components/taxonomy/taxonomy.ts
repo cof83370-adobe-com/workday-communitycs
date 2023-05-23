@@ -6,5 +6,5 @@
             taxonomyListContainer.children.length > 0 ? taxonomyContainer.classList.add('sectionSeparator')
                 : taxonomyContainer.classList.remove('sectionSeparator');
         }
-    }
+    };
 }());
