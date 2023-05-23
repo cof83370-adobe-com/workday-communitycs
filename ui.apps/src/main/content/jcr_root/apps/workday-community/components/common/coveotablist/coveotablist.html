@@ -298,25 +298,33 @@
                     let orgNum = Number(originWidth);
                     const searchSelector = 'atomic-search-box[data-atomic-loaded=true]';
                     const sortSelector = 'atomic-sort-dropdown[data-atomic-loaded=true]';
-                    if (orgNum <= 480) {
-                        waitForElementToDisplay(searchSelector, (elem) => {
+                    waitForElementToDisplay(searchSelector, (elem) => {
+                        if (orgNum <= 480) {
+                            if (elem.classList.contains('width-search-42')) {
+                                elem.classList.remove('width-search-42');
+                            }
                             elem.style.width = '100%';
-                        });
+                        } else {
+                            if (!elem.classList.contains('width-search-42')) {
+                                elem.classList.add('width-search-42');
+                            }
+                        }
+                    });
 
-                        waitForElementToDisplay(sortSelector, (elem) => {
+                    waitForElementToDisplay(sortSelector, (elem) => {
+                        if (orgNum <= 480) {
                             elem.style.padding = '10px 0';
                             if (elem.classList.contains('width-auto')) {
                                 elem.classList.remove('width-auto');
                             }
-                        });
-                    }
-                    if (orgNum > 480) {
-                        waitForElementToDisplay(sortSelector, (elem) => {
-                            if (!elem.classList.contains('width-auto')) {
-                                elem.classList.add('width-auto');
-                            }
-                        });
-                    }
+                        } else {
+                            waitForElementToDisplay(sortSelector, (elem) => {
+                                if (!elem.classList.contains('width-auto')) {
+                                    elem.classList.add('width-auto');
+                                }
+                            });
+                        }
+                    });
                 }
 
                 const title = tabContainer.getElementsByClassName("multi-tab-title")[0];
