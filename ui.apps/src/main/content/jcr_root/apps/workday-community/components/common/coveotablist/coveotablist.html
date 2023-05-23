@@ -68,6 +68,9 @@
                                         .field-products {
                                             background-color: #f0f1f2;
                                         }
+                                        .bottom-line {
+                                          max-height: none !important;
+                                        }
 
                                     </style>
                                     <atomic-result-section-title>
@@ -76,7 +79,7 @@
                                     <atomic-result-section-excerpt>
                                         <atomic-result-text field="excerpt"></atomic-result-text>
                                     </atomic-result-section-excerpt>
-                                    <atomic-result-section-bottom-metadata>
+                                    <atomic-result-section-bottom-metadata class="bottom-line">
                                         <atomic-result-fields-list class="metadata">
                                             <!--this value is conditionally generated based on druauthororgid's value as "581" which is Workday org id -->
                                             <atomic-field-condition class="field" if-defined="druauthororgid" must-match-commonsource="Community" must-match-druauthororgid="581">
