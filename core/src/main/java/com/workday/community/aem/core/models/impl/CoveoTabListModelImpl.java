@@ -77,9 +77,9 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     JsonArray selectedFields = new JsonArray();
     if (feeds != null && feeds.length > 0 ) {
        for (int i=0; i<allFields.size(); i++) {
-         for (int j=0; j< feeds.length; j++) {
+         for (String feed : feeds) {
            JsonObject item = allFields.get(i).getAsJsonObject();
-           if (item.get("name").getAsString().equals(feeds[j])) {
+           if (item.get("name").getAsString().equals(feed)) {
              selectedFields.add(item);
            }
          }
@@ -111,6 +111,11 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     sb.deleteCharAt(sb.length()-1);
     sb.append("))");
     return sb.toString();
+  }
+
+  @Override
+  public String getFeedUrlBase() {
+    return this.getModelConfig().getAsJsonObject("feedUrlBase").get("value").getAsString();
   }
 
   @Override

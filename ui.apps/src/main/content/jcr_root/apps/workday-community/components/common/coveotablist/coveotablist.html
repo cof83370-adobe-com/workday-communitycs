@@ -3,6 +3,7 @@
         <span id="titleId"  data-comp-props-data="${properties.title}"></span>
         <span id="widthId" data-comp-props-data="${properties.width}"></span>
         <span id="listRowsId" data-comp-props-data="${properties.rows}"></span>
+        <span id="feedAllUrlBase" data-comp-props-data="${model.feedUrlBase}"></span>
         <span id="searchConfigData" data-model-search-config="${model.getSearchConfig}"></span>
         <span id="productCriteriaData" data-product-criteria="${model.getProductCriteria}"></span>
         <span id="fieldsData" data-field-criteria="${model.getSelectedFields}"></span>
@@ -120,6 +121,9 @@
                 </atomic-layout-section>
             </atomic-search-layout>
         </atomic-search-interface>
+        <div class="all-events">
+            <span class="event-text"><a href="${model.allEventsUrl}">All Events</a></span>
+        </div>
 
         <script type="module">
             import {
@@ -157,6 +161,12 @@
                         tab.classList.remove("item-button-active");
                     }
                 }
+
+                // set active update all event
+                const allEventContainer = document.getElementsByClassName('event-text')[0];
+                const urlBase = document.getElementById("feedAllUrlBase").getAttribute("data-comp-props-data");
+                const innerHtml = "<a href=\"" + urlBase  + currentTab.textContent + "\">All " + currentTab.textContent + "</a>";
+                allEventContainer.innerHTML = innerHtml;
             }
             function getActive() {
                 let tabs = document.getElementsByClassName("item-button");

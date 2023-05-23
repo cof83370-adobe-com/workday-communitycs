@@ -126,5 +126,17 @@
         }
       }
     }
+
+    .all-events {
+      font-size: 2pc;
+      padding: 0 0 20px 10px !important;
+
+      .event-text {
+        color: #0875e1 !important;
+        font-size: 20px !important;
+        letter-spacing: 0.5px !important;
+        line-height: 21px !important;
+      }
+    }
   }
 }

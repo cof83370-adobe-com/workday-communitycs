@@ -24,4 +24,10 @@ public interface CoveoTabListModel extends CoveoCommonModel {
     * @return product criteria portion as a search criteria string.
     */
    String getProductCriteria();
+
+   /**
+    * Get all Url base for each feed field.
+    * @return all Url base for each feed field.
+    */
+   String getFeedUrlBase();
 }
