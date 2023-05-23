@@ -412,6 +412,7 @@
                         timeOutHandler = setTimeout(function () {
                             if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs) {
                                 clearTimeout(timeOutHandler);
+                                return;
                             }
                             loopSearch();
                         }, checkFrequencyInMs);
