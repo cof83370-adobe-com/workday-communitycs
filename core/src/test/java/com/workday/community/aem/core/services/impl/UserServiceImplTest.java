@@ -1,11 +1,13 @@
 package com.workday.community.aem.core.services.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.util.ArrayList;
@@ -94,12 +96,12 @@ public class UserServiceImplTest {
     public void testUpdateUser() throws AuthorizableExistsException, RepositoryException {
         String userId = "testUser";
         String groupId = "dummyGroup";
-        Map<String, String> fields = new HashMap<String, String>();
+        Map<String, String> fields = new HashMap<>();
         fields.put("email", "test@workday.com");
-        List<String> groups = new ArrayList<String>();
+        List<String> groups = new ArrayList<>();
         groups.add(groupId);
         Group group = mock(Group.class);
-        List<Group> userGroups = new ArrayList<Group>();
+        List<Group> userGroups = new ArrayList<>();
         Iterator<Group> it = userGroups.iterator();
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
         lenient().when(userManager.getAuthorizable(groupId)).thenReturn(null);
@@ -108,10 +110,38 @@ public class UserServiceImplTest {
         ValueFactory valueFactory = mock(ValueFactory.class);
         Value value = valueFactory.createValue("test@workday.com", PropertyType.STRING);
         lenient().when(session.getValueFactory()).thenReturn(valueFactory);
+        lenient().when(session.isLive()).thenReturn(true);
         userService.updateUser(userId, fields, groups);
         verify(user).setProperty("email", value);
         verify(userManager).createGroup(groupId);
         verify(group).addMember(user);
+        verify(session).logout();
+    }
+
+    /**
+     * Test updateUser method failed.
+     * 
+     * @throws AuthorizableExistsException
+     * @throws RepositoryException
+     */
+    @Test
+    public void testUpdateUserFail() throws AuthorizableExistsException, RepositoryException {
+        String userId = "testUser";
+        String groupId = "dummyGroup";
+        Map<String, String> fields = new HashMap<>();
+        fields.put("email", "test@workday.com");
+        ValueFactory valueFactory = mock(ValueFactory.class);
+        Value value = valueFactory.createValue("test@workday.com", PropertyType.STRING);
+        List<String> groups = new ArrayList<>();
+        groups.add(groupId);
+        Group group = mock(Group.class);
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(null);
+        lenient().when(session.isLive()).thenReturn(true);
+        userService.updateUser(userId, fields, groups);
+        verify(user, times(0)).setProperty("email", value);
+        verify(userManager, times(0)).createGroup(groupId);
+        verify(group, times(0)).addMember(user);
+        verify(session).logout();
     }
 
     /**
@@ -123,9 +153,65 @@ public class UserServiceImplTest {
     public void testDeleteUser() throws RepositoryException {
         String userId = "testUser";
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
-        lenient().when(user.getPath()).thenReturn("/workday/okta");
+        lenient().when(user.getPath()).thenReturn("/workdaycommunity/okta");
+        lenient().when(session.isLive()).thenReturn(true);
         userService.deleteUser(userId);
         verify(user).remove();
+        verify(session).logout();
+    }
+
+     /**
+     * Test deleteUser method failed case.
+     * 
+     * @throws RepositoryException
+     */
+    @Test
+    public void testDeleteUserFail() throws RepositoryException {
+        String userId = "testTest";
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+        lenient().when(user.getPath()).thenReturn("/test");
+        lenient().when(session.isLive()).thenReturn(true);
+        userService.deleteUser(userId);
+        verify(user, times(0)).remove();
+        verify(session).logout();
+    }
+
+    /**
+     * Test getUser method.
+     * 
+     * @throws RepositoryException
+     */
+    @Test
+    public void testGetUser() throws RepositoryException {
+        // Success case.
+        String userId = "testUser";
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+        User test = userService.getUser(userId);
+        assertEquals(test, user); 
+
+        // Failed case.
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(null);
+        User fail = userService.getUser(userId);
+        assertNull(fail);
+    }
+
+    /**
+     * Test getUser method.
+     *
+     * @throws RepositoryException
+     */
+    @Test
+    public void testGetUserWithResourceResolver() throws RepositoryException {
+        // Success case.
+        String userId = "testUser";
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+        User test = userService.getUser(resourceResolver, userId);
+        assertEquals(test, user);
+
+        // Failed case.
+        lenient().when(userManager.getAuthorizable(userId)).thenReturn(null);
+        User fail = userService.getUser(resourceResolver, userId);
+        assertNull(fail);
     }
 
     @AfterEach

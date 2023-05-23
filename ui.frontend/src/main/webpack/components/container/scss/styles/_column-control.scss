@@ -1,28 +1,87 @@
 .container {
     @media (min-width: $screen-small) {
         &.col-equal-33-33-33 {
-            .container {
-                width: 33% !important;
+            >.cmp-container {
+                >.aem-Grid {
+                    display: flex;
+                    gap: 32px;
+
+                    &:before,
+                    &:after {
+                        display: none;
+                    }
+
+                    >.container {
+                        width: 33%;
+                        max-width: 100%;
+                    }
+                }
             }
         }
 
         &.col-left-33-right-66 {
-            .container:first-child {
-                width: 33% !important;
-            }
+            >.cmp-container {
+                >.aem-Grid {
+                    display: flex;
+                    gap: 32px;
 
-            .container:nth-child(2) {
-                width: 66% !important;
+                    &:before,
+                    &:after {
+                        display: none;
+                    }
+
+                    >.container:first-of-type {
+                        width: 33%;
+                        max-width: 100%;
+                    }
+
+                    >.container:nth-of-type(2) {
+                        width: 66%;
+                        max-width: 100%;
+                    }
+                }
             }
         }
 
         &.col-left-66-right-33 {
-            .container:first-child {
-                width: 66% !important;
-            }
+            >.cmp-container {
+                >.aem-Grid {
+                    display: flex;
+                    gap: 32px;
 
-            .container:nth-child(2) {
-                width: 33% !important;
+                    &:before,
+                    &:after {
+                        display: none;
+                    }
+
+                    >.container:first-of-type {
+                        width: 66%;
+                        max-width: 100%;
+                    }
+
+                    >.container:nth-of-type(2) {
+                        width: 33%;
+                        max-width: 100%;
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 767px) {
+
+        &.col-equal-33-33-33,
+        &.col-left-66-right-33,
+        &.col-left-33-right-66 {
+            >.cmp-container {
+                >.aem-Grid {
+                    gap: 0px;
+                    flex-direction: column;
+
+                    >.container {
+                        width: 100%
+                    }
+                }
             }
         }
     }

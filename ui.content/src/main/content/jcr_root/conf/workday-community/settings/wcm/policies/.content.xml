@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal"
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:rep="internal" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:mixinTypes="[rep:AccessControllable]"
     jcr:primaryType="cq:Page">
     <rep:policy/>
@@ -102,6 +102,33 @@
                             </item0>
                         </cq:styleGroups>
                     </policy_12512096045080>
+                    <policy_1683056605181
+                        cq:styleDefaultClasses="enable-expand"
+                        jcr:description="This policy defines default expand image configurations of Image components in the Community site. This also have option to disable the Expand Image style for the Community site, where authors can select them."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Community Image - Expand"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        allowUpload="false"
+                        altValueFromDAM="true"
+                        disableLazyLoading="false"
+                        displayPopupTitle="true"
+                        isDecorative="false"
+                        titleValueFromDAM="true">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Image Expand"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="disable-expand"
+                                        cq:styleId="1683050599"
+                                        cq:styleLabel="Disable Expand"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_1683056605181>
                 </image>
                 <text jcr:primaryType="nt:unstructured">
                     <policy_641562756958017
@@ -204,13 +231,13 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_641475696923109>
                     <policy_641528232375303
-                        jcr:description="Allows all sizes, but not H1, which is reserved for the main page title."
+                        jcr:description="Allows all sizes, but not H1 &amp; H2, which is reserved for the main page title."
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Content Title"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        allowedTypes="[h2,h3,h4,h5,h6]"
+                        allowedTypes="[h3,h4,h5,h6]"
                         linkDisabled="false"
-                        type="h2">
+                        type="h3">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_641528232375303>
                     <policy_1678842595504
@@ -378,9 +405,9 @@
                     <policy_2067079264297100
                         cq:styleDefaultClasses="event-text"
                         jcr:primaryType="nt:unstructured"
-                        jcr:title="Event Description Container"
+                        jcr:title="Event Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_2067079264297100>
@@ -615,21 +642,26 @@
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
                                     <item0
+                                        cq:styleClasses="news-promo"
+                                        cq:styleId="1683220026903"
+                                        cq:styleLabel="News &amp; Promo"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
                                         cq:styleClasses="icon-card "
                                         cq:styleId="1680282107912"
                                         cq:styleLabel="Icon Card"
                                         jcr:primaryType="nt:unstructured"/>
-                                    <item1
+                                    <item2
                                         cq:styleClasses="col-equal-33-33-33"
                                         cq:styleId="1680281702241"
                                         cq:styleLabel="33/33/33"
                                         jcr:primaryType="nt:unstructured"/>
-                                    <item2
+                                    <item3
                                         cq:styleClasses="col-left-33-right-66"
                                         cq:styleId="1680281868041"
                                         cq:styleLabel="33/66"
                                         jcr:primaryType="nt:unstructured"/>
-                                    <item3
+                                    <item4
                                         cq:styleClasses="col-left-66-right-33"
                                         cq:styleId="1680281906479"
                                         cq:styleLabel="66/33"
@@ -763,6 +795,37 @@
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_856086685582958>
+                    <policy_602018341163504
+                        jcr:description="This policy defines style classes of containers within the content main section of an Event Page."
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Content Sections"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Container Type"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="event-description"
+                                        cq:styleId="1683930780963"
+                                        cq:styleLabel="Event Description"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="preparation"
+                                        cq:styleId="1683930889156"
+                                        cq:styleLabel="Preparation"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="agenda"
+                                        cq:styleId="1683930920623"
+                                        cq:styleLabel="Agenda"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_602018341163504>
                 </container>
                 <teaser jcr:primaryType="nt:unstructured">
                     <policy_1575031387650

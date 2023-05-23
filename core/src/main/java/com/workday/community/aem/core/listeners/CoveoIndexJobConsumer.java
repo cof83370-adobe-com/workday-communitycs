@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.listeners;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.resource.ResourceResolverFactory;

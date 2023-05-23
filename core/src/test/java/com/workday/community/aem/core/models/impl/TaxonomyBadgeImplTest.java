@@ -52,9 +52,8 @@ public class TaxonomyBadgeImplTest {
         Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
         final List<String> expectedBadges = Arrays.asList("Altitude", "Raising", "Elevate", "Training");
-        List<String> actualBadges = new ArrayList<>();
         TaxonomyBadge taxonomyBadge = context.request().adaptTo(TaxonomyBadge.class);
-        actualBadges = taxonomyBadge.getBadgeList();
+        List<String> actualBadges = taxonomyBadge.getBadgeList();
         assertEquals(expectedBadges, actualBadges);
     }
 
@@ -69,9 +68,8 @@ public class TaxonomyBadgeImplTest {
         Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
         final List<String> expectedBadges = Arrays.asList("Enhancement", "Fix", "What's Coming Next");
-        List<String> actualBadges = new ArrayList<>();
         TaxonomyBadge taxonomyBadge = context.request().adaptTo(TaxonomyBadge.class);
-        actualBadges = taxonomyBadge.getBadgeList();
+        List<String>  actualBadges = taxonomyBadge.getBadgeList();
         assertEquals(expectedBadges, actualBadges);
     }
 
@@ -86,9 +84,8 @@ public class TaxonomyBadgeImplTest {
         Page currentPage = context.currentResource("/content/training-catalog-page").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
         final List<String> expectedBadges = Arrays.asList("Learn On Demand", "Learn Virtual", "Workday Pro", "Refresher Training");
-        List<String> actualBadges = new ArrayList<>();
         TaxonomyBadge taxonomyBadge = context.request().adaptTo(TaxonomyBadge.class);
-        actualBadges = taxonomyBadge.getBadgeList();
+        List<String> actualBadges = taxonomyBadge.getBadgeList();
         assertEquals(expectedBadges, actualBadges);
     }
 
@@ -103,9 +100,8 @@ public class TaxonomyBadgeImplTest {
         Page currentPage = context.currentResource("/content/kits-and-tools-page").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
         final List<String> expectedBadges = new ArrayList<>();
-        List<String> actualBadges = new ArrayList<>();
         TaxonomyBadge taxonomyBadge = context.request().adaptTo(TaxonomyBadge.class);
-        actualBadges = taxonomyBadge.getBadgeList();
+        List<String> actualBadges = taxonomyBadge.getBadgeList();
         assertEquals(expectedBadges, actualBadges);
     }
 
@@ -120,9 +116,8 @@ public class TaxonomyBadgeImplTest {
         Page currentPage = context.currentResource("/content/untaged-event-page").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
         final List<String> expectedBadges = new ArrayList<>();
-        List<String> actualBadges = new ArrayList<>();
         TaxonomyBadge taxonomyBadge = context.request().adaptTo(TaxonomyBadge.class);
-        actualBadges = taxonomyBadge.getBadgeList();
+        List<String> actualBadges = taxonomyBadge.getBadgeList();
         assertEquals(expectedBadges, actualBadges);
     }
 

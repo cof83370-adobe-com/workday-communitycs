@@ -3,15 +3,15 @@
         "jcr:primaryType": "cq:Page",
         "jcr:content": {
             "jcr:primaryType": "cq:PageContent",
-            "startDate": "Tue Nov 22 2022 00:44:02 GMT-0600",
+            "eventStartDate": "Tue Nov 22 2022 00:44:02 GMT-0600",
             "jcr:createdBy": "admin",
             "jcr:title": "Test AEM content Demo 13",
-            "endDate": "Wed Nov 23 2022 00:44:48 GMT-0600",
+            "eventEndDate": "Wed Nov 23 2022 00:44:48 GMT-0600",
             "productTags": [
                 "product:engage"
             ],
             "pwaOrientation": "any",
-            "cq:template": "/conf/workday-community/settings/wcm/templates/event-page-template",
+            "cq:template": "/conf/workday-community/settings/wcm/templates/events",
             "readCount": 1,
             "updatedDate": "Mon Nov 21 2022 23:00:00 GMT-0600",
             "jcr:created": "Sat Jan 21 2023 07:14:52 GMT-0600",

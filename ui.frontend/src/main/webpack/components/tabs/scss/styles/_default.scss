@@ -17,7 +17,8 @@
             align-items: center;
             width: auto;
             border-bottom: 4px solid $wdc-color-french-vanilla-100;
-
+            margin-right: 16px;
+            white-space: nowrap;
 
             &:hover {
                 background-color: $wdc-color-soap-300;
@@ -42,12 +43,13 @@
             display: flex;
             margin-bottom: 0px;
             border-bottom: 1px solid $wdc-color-soap-500;
-
+            flex-wrap: initial;
 
             .-more {
                 max-width: 150px;
                 border-bottom: 4px solid $wdc-color-french-vanilla-100;
                 position: relative;
+                white-space: nowrap;
 
                 >button {
                     width: 100%;
@@ -100,6 +102,7 @@
                     background: $wdc-color-soap-300;
                     border-bottom: 0;
                     color: inherit;
+                    margin-right: 0;
                 }
 
             }

@@ -2,6 +2,7 @@ package com.workday.community.aem.core.services.impl;
 
 import com.workday.community.aem.core.config.CoveoSearchConfig;
 import com.workday.community.aem.core.services.SearchApiConfigService;
+import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -36,8 +37,34 @@ public class SearchApiConfigServiceImpl implements SearchApiConfigService {
   }
 
   @Override
+  public String getSearchHub() { return config.searchHub(); }
+
+  @Override
+  public String getDefaultEmail() { return config.defaultEmail(); }
+
+  @Override
+  public String getUserIdProvider() {
+    return config.userIdProvider();
+  }
+
+  @Override
+  public String getUserIdType() {
+    return config.userType();
+  }
+
+  @Override
   public String getSearchTokenAPI() {
     return config.tokenApi();
+  }
+
+  @Override
+  public String getSearchFieldLookupAPI() {
+    String lookupApi = config.searchFieldLookupApi();
+    if (!StringUtils.isEmpty(lookupApi) && lookupApi.endsWith("/")) {
+      lookupApi = lookupApi.substring(0, lookupApi.length()-1);
+    }
+
+    return lookupApi;
   }
 
   @Override

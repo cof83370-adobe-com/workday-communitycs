@@ -110,7 +110,6 @@ public class BookOperationsServiceImplTest {
         "/content/workday-community/en-us/sprint-17/cmtyaem-341",
         "/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test")
         .collect(Collectors.toList());
-    ;
     assertEquals(expectedPathList, actualPathList);
   }
 

@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.models.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
@@ -80,6 +81,6 @@ public class CoveoStatusModelImplTest {
     @Test
     void testGetServerHasError() throws Exception {
         CoveoStatusModel coveoModel = context.request().adaptTo(CoveoStatusModel.class);
-        assertEquals(false, coveoModel.getServerHasError());
+        assertFalse(coveoModel.getServerHasError());
     }
 }

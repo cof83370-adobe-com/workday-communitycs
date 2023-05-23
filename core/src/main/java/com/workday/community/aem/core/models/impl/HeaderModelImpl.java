@@ -1,8 +1,11 @@
 package com.workday.community.aem.core.models.impl;
 
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -17,8 +20,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
+import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
 
 /**
  * The model implementation class for the common nav header menus.
@@ -55,6 +61,12 @@ public class HeaderModelImpl implements HeaderModel {
   @OSGiService
   SnapService snapService;
 
+  @OSGiService
+  RunModeConfigService runModeConfigService;
+
+  @Inject
+  private Page currentPage;
+
   String sfId;
 
   @PostConstruct
@@ -81,7 +93,7 @@ public class HeaderModelImpl implements HeaderModel {
     return this.snapService.getUserHeaderMenu(sfId);
   }
 
-  public String getUserAvatarUrl() {
+  public String getUserAvatar() {
     String extension;
 
     try {
@@ -102,5 +114,18 @@ public class HeaderModelImpl implements HeaderModel {
     }
 
     return "";
+  }
+
+  @Override
+  public String getDataLayerData() {
+    String instance = runModeConfigService.getInstance();
+    if (instance.equals(PUBLISH)) {
+      Template template = currentPage.getTemplate();
+      String pageTitle = currentPage.getTitle();
+      String templatePath = template.getPath();
+      String contentType = CONTENT_TYPE_MAPPING.get(templatePath);
+      return this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
+    }
+    return null;
   }
 }

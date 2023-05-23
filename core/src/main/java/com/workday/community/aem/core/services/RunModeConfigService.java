@@ -44,4 +44,13 @@ public class RunModeConfigService {
     public String getInstance() {
         return config.instance();
     }  
+
+    /**
+     * Get adobe analytics script uri.
+     *
+     * @return The adobe analytics script uri.
+     */
+    public String getAdobeAnalyticsUri() {
+        return config.adobeAnalyticsUri();
+    }  
 }

@@ -4,31 +4,36 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.lenient;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.HttpsURLConnectionService;
 
-import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
  * The Class CoveoPushApiServiceImplTest.
  */
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoPushApiServiceImplTest {
 
     /** The service CoveoPushApiServiceImpl. */
-    @Spy 
+    @InjectMocks
     private CoveoPushApiServiceImpl service;
 
     /** The service HttpsURLConnectionService. */
@@ -44,7 +49,6 @@ public class CoveoPushApiServiceImplTest {
      */
     @Test
     public void testGenerateBatchUploadUri() {
-        service = this.registerService();
         String expected = coveoIndexApiConfigService.getPushApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/sources/" + coveoIndexApiConfigService.getSourceId() + "/documents/batch?fileId=file1";
         assertEquals(expected, service.generateBatchUploadUri("file1"));
     }
@@ -54,7 +58,6 @@ public class CoveoPushApiServiceImplTest {
      */
     @Test
     public void testGenerateContainerUri() {
-        service = this.registerService();
         String expected = coveoIndexApiConfigService.getPushApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/files";
         assertEquals(expected, service.generateContainerUri());
     }
@@ -64,7 +67,6 @@ public class CoveoPushApiServiceImplTest {
      */
     @Test
     public void testGenerateDeleteAllItemsUri() {
-        service = this.registerService();
         String uri = service.generateDeleteAllItemsUri();
         String expected = coveoIndexApiConfigService.getPushApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/sources/" + coveoIndexApiConfigService.getSourceId() + "/documents/olderthan?orderingId=";
         assertTrue(uri.contains(expected));
@@ -75,7 +77,6 @@ public class CoveoPushApiServiceImplTest {
      */
     @Test
     public void testGenerateDeleteSingleItemUri() {
-        service = this.registerService();
         String expected = coveoIndexApiConfigService.getPushApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/sources/" + coveoIndexApiConfigService.getSourceId() + "/documents?deleteChildren=false&documentId=item1";
         assertEquals(expected, service.generateDeleteSingleItemUri("item1"));
     }
@@ -83,65 +84,153 @@ public class CoveoPushApiServiceImplTest {
     /**
      * Test callDeleteAllItemsUri.
      */
-    @Test void testCallDeleteAllItemsUri() {
+    @Test 
+    public void testCallDeleteAllItemsUri() {
         HashMap<String, Object> response = new HashMap<>();
-        response.put("statusCode", HttpStatus.SC_ACCEPTED);
-        String responseString = "{\"success\": {\"message\": \"ok\"}}"; 
+        response.put("statusCode", HttpStatus.SC_FORBIDDEN);
+        String responseString = "{\"error\": {\"message\": \"fail\"}}"; 
         response.put("response", responseString);
-        doReturn(response).when(service).callApi(any(), any(), any(), any());
+        lenient().when(service.callApi(any(), any(), any(), any())).thenReturn(response);
         assertDoesNotThrow(() -> service.callDeleteAllItemsUri());
     }
 
     /**
      * Test callDeleteSingleItemUri.
      */
-    @Test void testCallDeleteSingleItemUri() {
+    @Test 
+    public void testCallDeleteSingleItemUri() {
         HashMap<String, Object> response = new HashMap<>();
         response.put("statusCode", HttpStatus.SC_FORBIDDEN);
         String responseString = "{\"error\": {\"message\": \"fail\"}}"; 
         response.put("response", responseString);
-        doReturn(response).when(service).callApi(any(), any(), any(), any());
+        lenient().when(service.callApi(any(), any(), any(), any())).thenReturn(response);
         assertDoesNotThrow(() -> service.callDeleteSingleItemUri("item1"));
+    }
+
+    /**
+     * Test callApi.
+     */
+    @Test
+    public void testCallApi() {
+        String uri = "uri";
+        HashMap<String, String> header = new HashMap<>();
+        String httpMethod = "get";
+        String payload = "";
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("statusCode", HttpStatus.SC_OK);
+        response.put("response", "successed");
+        lenient().when(restApiService.send(uri, header, httpMethod, payload)).thenReturn(response);
+        HashMap<String, Object> expected = service.callApi(uri, header, httpMethod, payload);
+        assertEquals(HttpStatus.SC_OK, expected.get("statusCode"));
+        assertEquals("successed", expected.get("response"));
+    }
+
+    /**
+     * Test callBatchUploadUri.
+     */
+    @Test
+    public void testCallBatchUploadUri() {
+        String fileId = "fileId";
+        String uri = service.generateBatchUploadUri(fileId);
+        HashMap<String, Object> response = new HashMap<>();
+        response.put("statusCode", HttpStatus.SC_OK);
+        response.put("response", "successed");
+        String apiKey = "apiKey";
+        lenient().when(coveoIndexApiConfigService.getCoveoApiKey()).thenReturn(apiKey);
+        service.activate();
+        HashMap<String, String> header = new HashMap<String, String>();
+        header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+        header.put(RestApiConstants.AUTHORIZATION, "Bearer apiKey");
+        lenient().when(service.callApi(uri, header, "PUT", "")).thenReturn(response);
+        HashMap<String, Object> expected = service.callBatchUploadUri(fileId);
+        assertEquals(HttpStatus.SC_OK, expected.get("statusCode"));
+        assertEquals("successed", expected.get("response"));
     }
 
     /**
      * Test IndexItems successed.
      */
-    @Test void testIndexItemsSuccessed() {
+    @Test 
+    public void testIndexItemsSuccessed() {
         HashMap<String, Object> createContainerResponse = new HashMap<String, Object>();
         createContainerResponse.put("statusCode", HttpStatus.SC_CREATED);
         String response = "{\"fileId\": \"fileId\",\"requiredHeaders\": {\"additionalProp1\": \"string\"},\"uploadUri\": \"uploadUri\"}"; 
         createContainerResponse.put("response", response);
-        doReturn(createContainerResponse).when(service).callCreateContainerUri();
+        lenient().when(service.callCreateContainerUri()).thenReturn(createContainerResponse);
 
         HashMap<String, Object> uploadFileResponse = new HashMap<String, Object>();
         uploadFileResponse.put("statusCode", HttpStatus.SC_OK);
         uploadFileResponse.put("response", "upload file successed");
-        doReturn(uploadFileResponse).when(service).callUploadFileUri(any(), any(), any());
+        String uploadUri = "uploadUri";
+        HashMap<String, String> uploadFileHeader = new HashMap<>();
+        uploadFileHeader.put("additionalProp1", "string");
+        List<Object> payload = new ArrayList<>();
+        lenient().when(service.callUploadFileUri(uploadUri, uploadFileHeader, payload)).thenReturn(uploadFileResponse);
 
         HashMap<String, Object> batchUploadResponse = new HashMap<String, Object>();
         batchUploadResponse.put("statusCode", HttpStatus.SC_ACCEPTED);
         batchUploadResponse.put("response", "batch upload successed");
-        doReturn(batchUploadResponse).when(service).callBatchUploadUri(any());
-        assertEquals(202, service.indexItems(any()));
+        lenient().when(service.callBatchUploadUri("fileId")).thenReturn(batchUploadResponse);
+        assertEquals(202, service.indexItems(payload));
     }
 
     /**
      * Test IndexItems failed.
      */
-    @Test void testIndexItemsFailed() {
+    @Test 
+    public void testIndexItemsFailed() {
+        List<Object> payload = new ArrayList<>();
+
+        // Create container call failed.
         HashMap<String, Object> createContainerResponse = new HashMap<String, Object>();
         createContainerResponse.put("statusCode", HttpStatus.SC_FORBIDDEN);
         createContainerResponse.put("response", "create container failed");
-        doReturn(createContainerResponse).when(service).callCreateContainerUri();
-        assertEquals(0, service.indexItems(any()));
+        lenient().when(service.callCreateContainerUri()).thenReturn(createContainerResponse);
+        assertEquals(0, service.indexItems(payload));
+
+        // Upload file call failed with status code 413.
+        HashMap<String, Object> createContainerPassResponse = new HashMap<String, Object>();
+        createContainerPassResponse.put("statusCode", HttpStatus.SC_CREATED);
+        String response = "{\"fileId\": \"fileId\",\"requiredHeaders\": {\"additionalProp1\": \"string\"},\"uploadUri\": \"uploadUri\"}"; 
+        createContainerPassResponse.put("response", response);
+        lenient().when(service.callCreateContainerUri()).thenReturn(createContainerPassResponse);
+
+        HashMap<String, Object> uploadFileFailResponse = new HashMap<String, Object>();
+        uploadFileFailResponse.put("statusCode", HttpStatus.SC_REQUEST_TOO_LONG);
+        uploadFileFailResponse.put("response", "upload file failed");
+        String uploadUri = "uploadUri";
+        HashMap<String, String> uploadFileHeader = new HashMap<>();
+        uploadFileHeader.put("additionalProp1", "string");
+        lenient().when(service.callUploadFileUri(uploadUri, uploadFileHeader, payload)).thenReturn(uploadFileFailResponse);
+        assertEquals(-1, service.indexItems(payload));
+
+        // Upload file call failed with other status code.
+        HashMap<String, Object> uploadFileFailResponse2 = new HashMap<String, Object>();
+        uploadFileFailResponse2.put("statusCode", HttpStatus.SC_BAD_GATEWAY);
+        uploadFileFailResponse2.put("response", "upload file failed");
+        lenient().when(service.callUploadFileUri(uploadUri, uploadFileHeader, payload)).thenReturn(uploadFileFailResponse2);
+        assertEquals(0, service.indexItems(payload));
+
+        // Batch upload failed.
+        HashMap<String, Object> uploadFilePassResponse = new HashMap<String, Object>();
+        uploadFilePassResponse.put("statusCode", HttpStatus.SC_OK);
+        uploadFilePassResponse.put("response", "upload file successed");
+        lenient().when(service.callUploadFileUri(uploadUri, uploadFileHeader, payload)).thenReturn(uploadFilePassResponse);
+
+        HashMap<String, Object> batchUploadResponse = new HashMap<String, Object>();
+        batchUploadResponse.put("statusCode", HttpStatus.SC_REQUEST_TOO_LONG);
+        batchUploadResponse.put("response", "batch upload fail");
+        lenient().when(service.callBatchUploadUri("fileId")).thenReturn(batchUploadResponse);
+        assertEquals(0, service.indexItems(payload));
     }
 
     /**
      * Test transformCreateContainerResponse.
+     * @throws IOException
+     * @throws JsonParseException
      */
-    @Test void testTransformCreateContainerResponse() {
-        service = this.registerService();
+    @Test 
+    public void testTransformCreateContainerResponse() throws JsonParseException, IOException {
         String response = "{\"fileId\": \"fileId\",\"requiredHeaders\": {\"additionalProp1\": \"string\"},\"uploadUri\": \"uploadUri\"}"; 
         HashMap<String, Object> result = service.transformCreateContainerResponse(response);
         assertEquals("fileId", result.get("fileId"));
@@ -152,9 +241,10 @@ public class CoveoPushApiServiceImplTest {
 
     /**
      * Test transformPayload.
+     * @throws JsonProcessingException
      */
-    @Test void testTransformPayload() {
-        service = this.registerService();
+    @Test 
+    public void testTransformPayload() throws JsonProcessingException {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("title", "Sample");
         ArrayList<Object> payload = new ArrayList<Object>();
@@ -164,17 +254,4 @@ public class CoveoPushApiServiceImplTest {
         String expected = "{\"addOrUpdate\":[{\"title\":\"Sample\"}]}";
         assertEquals(expected, service.transformPayload(payload));
     }
-
-    /**
-	 * Helper method to register service.
-	 *
-	 * @return The CoveoPushApiServiceImpl instance.
-	 */
-    private CoveoPushApiServiceImpl registerService() {
-        AemContext context = new AemContext(); 
-        restApiService = context.registerInjectActivateService(new HttpsURLConnectionService());
-        coveoIndexApiConfigService = context.registerInjectActivateService(new CoveoIndexApiConfigService());
-        return context.registerInjectActivateService(new CoveoPushApiServiceImpl());
-    }
-    
 }

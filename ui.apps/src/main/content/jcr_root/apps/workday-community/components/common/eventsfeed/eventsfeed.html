@@ -1,0 +1,225 @@
+<sly data-sly-use.model="com.workday.community.aem.core.models.CoveoEventFeedModel">
+ <div class="cmp-eventsfeed-container">
+     <span id="selectedEventTypes" data-property="${properties.eventTypes}"></span>
+     <span id="searchConfigData" data-model-search-config="${model.getSearchConfig}"></span>
+     <span id="sortCriteria" data-model-sort-criteria="${model.sortCriteria}"></span>
+     <span id="extraCriteria" data-model-extra-criteria="${model.extraCriteria}"></span>
+     <span id="eventCriteria" data-model-event-criteria="${model.eventCriteria}"></span>
+
+     <div class="feature-event">
+         <image class="image" alt="feature event" src="${model.featureEvent.image}"/>
+         <div class="detail">
+             <h2 class="title">
+                 <a href="${model.featureEvent.link}">${model.featureEvent.title}</a>
+             </h2>
+             <div class="location">${model.featureEvent.location}</div>
+             <div class="timespan"> ${model.featureEvent.startDate} - ${model.featureEvent.endDate}</div>
+             <a href="${model.featureEvent.registerLink}" class="register">Register</a>
+         </div>
+     </div>
+
+     <p class="subject">Upcoming Events</p>
+
+     <atomic-search-interface id="eventFeedSearchId">
+         <atomic-search-layout>
+             <atomic-layout-section section="results">
+                 <atomic-result-list display="list" image-size="icon" density="normal">
+                     <atomic-result-template>
+                         <template>
+                             <style>
+                                 .data-row {
+                                     display: block;
+                                     width: 620px;
+                                     padding: 0 30px;
+                                 }
+                                 .data-row-left {
+                                     display: inline-block;
+                                     float: left;
+                                 }
+                                 .data-row-right {
+                                     display: inline-block;
+                                     margin-left: 30px;
+                                     max-width: 400px;
+                                 }
+
+                                 .field-left {
+                                     display: block;
+                                 }
+
+                                 .field {
+                                     display: inline-flex;
+                                     align-items: center;
+                                 }
+                                 atomic-search-layout {
+                                     margin: 30px 0;
+                                 }
+                                 atomic-result-link {
+                                     display: block;
+                                 }
+                                 atomic-result-link a {
+                                     font-family: "WorkdayAdelleSans-Regular";
+                                     color: rgb(8, 117, 225) !important;
+                                     font-style: normal;
+                                     font-weight: 700;
+                                     font-size: 16px;
+                                     line-height: 20px;
+                                     letter-spacing: 0.2px;
+                                 }
+                                 atomic-no-results {
+                                     width: 600px;
+                                 }
+                                 atomic-result .list-root.display-list [part~="outline"]::before {
+                                     background-color: #f0f1f2;
+                                 }
+                                 atomic-no-results div[part~="search-tips"] {
+                                     margin: 0 20px;
+                                 }
+                                 .up {
+                                     background: none rgb(8, 117, 225);
+                                     color: rgb(255, 255, 255);
+                                     padding: 4px;
+                                     width: 66px;
+                                     height: 30px;
+                                     text-align: center;
+                                     font-size: 18px;
+                                     border-radius: 10px 10px 0 0;
+                                 }
+                                 .bottom {
+                                     padding: 4px 4px 8px;
+                                     width: 66px;
+                                     height: 30px;
+                                     text-align: center;
+                                     font-size: 32px;
+                                 }
+                             </style>
+                             <div class="data-row">
+                                 <div class="data-row-left">
+                                     <atomic-field-condition class="field-left" if-defined="commoneventstartdate">
+                                         <div class="up">
+                                             <atomic-result-date field="commoneventstartdate" format="MMM"/>
+                                         </div>
+                                         <div class="bottom">
+                                             <atomic-result-date field="commoneventstartdate" format="D"/>
+                                         </div>
+                                     </atomic-field-condition>
+                                 </div>
+                                 <div class="data-row-right">
+                                     <atomic-result-section-title class="title">
+                                         <atomic-result-link target="_blank"></atomic-result-link>
+                                     </atomic-result-section-title>
+                                     <atomic-field-condition class="field" if-defined="commoneventstartdate">
+                                         <atomic-result-date field="commoneventstartdate" format="ddd MMM, D YYYY"/>
+                                     </atomic-field-condition>
+                                     <span> - </span>
+                                     <atomic-field-condition class="field" if-defined="commoneventenddate">
+                                         <atomic-result-date field="commoneventenddate" format="ddd MMM, D YYYY"/>
+                                     </atomic-field-condition>
+                                 </div>
+                             </div>
+                         </template>
+                     </atomic-result-template>
+                 </atomic-result-list>
+                 <atomic-query-error></atomic-query-error>
+                 <!--No Result Section-->
+                 <div style="width: 600px; padding: 0 10px;">
+                     <atomic-no-results enable-cancel-last-action="false" search-tips=""></atomic-no-results>
+                 </div>
+             </atomic-layout-section>
+         </atomic-search-layout>
+     </atomic-search-interface>
+
+     <hr class="separator" />
+     <div class="all-events">
+         <span class="event-text"><a href="${model.allEventsUrl}">All Events</a></span>
+     </div>
+     <script type="module">
+         import {
+             loadFieldActions
+         } from 'https://static.cloud.coveo.com/atomic/v1.86.0/headless/headless.esm.js';
+
+         const getRequest = async (url) => {
+             const tokenUrl = url;
+             try {
+                 const response = await fetch(tokenUrl);
+                 return await response.json();
+             } catch (err) {
+                 console.error('Error from getRequest -> ', err.message || err.responseText);
+             }
+         };
+
+         const registerFields = (engine) => {
+             const action = loadFieldActions(engine).enableFetchAllFields();
+             if (action) {
+                 engine.dispatch(action);
+             }
+         };
+
+         document.addEventListener('DOMContentLoaded', () => {
+             const main = async () => {
+                 const tokenUrl = '/bin/search/token';
+                 await customElements.whenDefined('atomic-search-interface');
+                 const searchConfigNode = document.getElementById("searchConfigData");
+                 const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
+                 let token = await getRequest(tokenUrl);
+                 token = token['searchToken'];
+
+                 // TODO we may need to merge if value and lookup value is different.
+
+                 const selectedEventType = document.getElementById('selectedEventTypes').getAttribute('data-property');
+                 const sortCriteria = document.getElementById("sortCriteria").getAttribute("data-model-sort-criteria");
+                 const extraCriteria = document.getElementById("extraCriteria").getAttribute("data-model-extra-criteria");
+                 const eventCriteria = document.getElementById("eventCriteria").getAttribute("data-model-event-criteria");
+                 let facet = [];
+                 let currentValues;
+                 if (selectedEventType) {
+                     let parts = selectedEventType.split(",");
+                     currentValues = parts.map( part => ({ "value": part, "state": "selected"}));
+                 }
+
+                 facet = [
+                     {
+                         "facetId": "@commoneventtype",
+                         "field": "commoneventtype",
+                         "type": "specific",
+                         "injectionDepth": 5000,
+                         "currentValues": currentValues
+                     }
+                 ];
+
+                 const searchInterface = document.querySelector('atomic-search-interface');
+                 await searchInterface.initialize({
+                     accessToken: token,
+                     searchHub: search_config["searchHub"],
+                     analytics: search_config["analytics"],
+                     organizationId: search_config["orgId"],
+                     renewAccessToken: ()=>getRequest(tokenUrl),
+                     preprocessRequest: (request, clientOrigin) => {
+                         if (clientOrigin === 'searchApiFetch') {
+                             const body = JSON.parse(request.body);
+                             if (selectedEventType) {
+                                 body.facets = facet;
+                             }
+                             body.maximumAge=30000;
+                             body.numberOfResults = 3;
+                             body.sortCriteria = sortCriteria;
+                             body.cq = extraCriteria.concat(eventCriteria);
+                             request.body = JSON.stringify(body);
+                         }
+
+                         return request;
+                     },
+                 });
+
+                 registerFields(searchInterface.engine);
+                 searchInterface.executeFirstSearch();
+             }
+
+             main().then(() => {
+             });
+         })
+     </script>
+ </div>
+</sly>
+
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
+   data-sly-call="${template.placeholder  @ isEmpty =! properties.coveoevents , classAppend='cmp-eventsfeed'}"></sly> 

@@ -27,7 +27,10 @@
 			// function execute after request is successful 
 			xhr.onreadystatechange = function() {
                 const reportDiv = document.getElementById('migration-report');
-				if (this.readyState == 4 && this.status == 200) {
+                // 4   DONE    The operation is complete
+              if(this.readyState == 4 ){
+              loaderImage.style.display = 'none';
+				if (this.status == 200) {
 					console.log(this.responseText);
                     const response = JSON.parse(this.responseText);
                     const reportEntries = response.reportItemList;
@@ -95,12 +98,16 @@
                             statusDiv.innerHTML='';
                         reportDiv.innerHTML = '<h3><span>No report available. Check input files.</span></h3>';
                     }
-                    loaderImage.style.display = 'none';
-				} else if (this.readyState == 4 && this.status == 500) {
+				} else if (this.status == 503) {
+                    if (reportDiv !== null) {
+                        reportDiv.innerHTML = '<h3><span>503 Error occurred. But the migration might be processing as expected in the backend. Check latest folder under /content/dam/workday-community/migration/reports in Assets (DAM) after couple of minutes.</span></h3>';
+                    }
+                } else if (this.status == 500) {
                     if (reportDiv !== null) {
                         reportDiv.innerHTML = '<h3><span>Error occured during migration. Check error log.</span></h3>';
                     }
                 }
+            }
 			};
 			// Sending our request 
 			xhr.send();

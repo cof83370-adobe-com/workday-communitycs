@@ -5,6 +5,10 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.vault.util.JcrConstants;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -23,10 +27,13 @@ import com.workday.community.aem.core.utils.ResolverUtil;
 
 /**
  * The Class PageResourceListener.
+ *
+ * @see @PageResourceEvent
  */
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
         ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
         ResourceChangeListener.CHANGES + "=" + "REMOVED",
+        ResourceChangeListener.CHANGES + "=" + "ADDED",
 })
 
 @ServiceDescription("PageResourceListener")
@@ -37,17 +44,68 @@ public class PageResourceListener implements ResourceChangeListener {
     /** The resolver factory. */
     @Reference
     private ResourceResolverFactory resolverFactory;
-   
+
     /** The query service. */
     @Reference
     QueryService queryService;
 
+    /**
+     * On change.
+     *
+     * @param changes the changes
+     */
     @Override
     public void onChange(List<ResourceChange> changes) {
+        if (changes.size() == 1 && changes.get(0).getType().toString().equals("REMOVED")) {
+            removeBookNodes(changes.get(0).getPath());
+        }
 
-        changes.forEach(change -> {
-            removeBookNodes(change.getPath());
-        });
+        changes.stream()
+                .filter(item -> "ADDED".equals(item.getType().toString() )
+                        && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
+                .forEach(change -> addAuthorPropertyToContentNode(change.getPath()));
+    }
+
+    /**
+     * Adds the author property to content node.
+     *
+     * @param path the path
+     */
+    public void addAuthorPropertyToContentNode(String path) {
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resolverFactory,
+                "workday-community-administrative-service")) {
+            if (resourceResolver.getResource(path) != null) {
+                Node root = resourceResolver.getResource(path).adaptTo(Node.class);
+                String createdUserId = root.getProperty(JcrConstants.JCR_CREATED_BY).getString();
+
+                UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+
+                Authorizable authorizable = userManager.getAuthorizable(createdUserId);
+
+                if (authorizable == null) {
+                    logger.warn("No such user: ${userId}");
+                } else {
+                    if (null != authorizable && !authorizable.isGroup()) {
+                        String firstName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME) != null
+                                ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME)[0].getString()
+                                : null;
+                        String lastName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME) != null
+                                ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME)[0].getString()
+                                : null;
+                        if (null != firstName || null != lastName) {
+                            String fullName = String.format("%s %s", StringUtils.trimToEmpty(firstName),
+                                    StringUtils.trimToEmpty(lastName));
+                            root.setProperty("author", fullName);
+                        }
+                    }
+                }
+            }
+            if (resourceResolver.hasChanges()) {
+                resourceResolver.commit();
+            }
+        } catch (PersistenceException | RepositoryException | LoginException e) {
+            logger.error("Exception occurred when adding author property to page {} ", e.getMessage());
+        }
     }
 
     /**
@@ -57,7 +115,8 @@ public class PageResourceListener implements ResourceChangeListener {
      */
     public void removeBookNodes(String pagePath) {
 
-        try(ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory, "workday-community-administrative-service")) {
+        try (ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory,
+                "workday-community-administrative-service")) {
             if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
                 List<String> paths = queryService.getBookNodesByPath(pagePath, null);
                 for (String path : paths) {

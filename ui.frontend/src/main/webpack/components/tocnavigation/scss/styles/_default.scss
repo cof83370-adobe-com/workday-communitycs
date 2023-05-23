@@ -1,0 +1,31 @@
+#toc-navigation {
+    @media (max-width: $screen-small) {
+        display: none;
+    }
+
+    @media (min-width: $screen-small) {
+        #toc-previous {
+            float: left;
+        }
+
+        #toc-next {
+            float: right;
+        }
+
+        .cmp-button {
+            font-style: $font-style-normal;
+            font-weight: $font-weight-bold;
+            font-size: 15px;
+            line-height: 20px;
+            color: $wdc-color-black-pepper-400;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        .btn-disable {
+            color: $wdc-color-licorice-100;
+            cursor: default;
+        }
+    }
+}
