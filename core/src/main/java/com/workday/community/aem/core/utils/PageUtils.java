@@ -48,13 +48,13 @@ public class PageUtils {
     /**
      * Get specific tag property attached to the page.
      *
-     * @param pagePath         The Requested page path.
      * @param resourceResolver The Resource Resolver Object.
+     * @param pagePath         The Requested page path.
      * @param tagName          The tage name.
      * @param pagePropertyName The page roperty name.
      * @return tagTitlesList.
      */
-    public static List<String> getPageTagPropertyList(String pagePath, ResourceResolver resourceResolver, String tagName, String pagePropertyName) throws RepositoryException {
+    public static List<String> getPageTagPropertyList(ResourceResolver resourceResolver, String pagePath, String tagName, String pagePropertyName) throws RepositoryException {
         final List<String> accessControlList = new ArrayList<>();
         Session session = resourceResolver.adaptTo(Session.class);
         if (session.itemExists(pagePath)) {

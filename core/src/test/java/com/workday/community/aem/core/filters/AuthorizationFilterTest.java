@@ -124,8 +124,8 @@ public class AuthorizationFilterTest {
         String pagePath = "/content/workday-community/test";
         Tag[] tags = new Tag[2];
         tags[0] = context.create().tag("access-control:authenticated");
-        tags[1] = context.create().tag("access-control:customer-all");
-        String[] tagList = {"access-control:authenticated", "access-control:customer-all"};
+        tags[1] = context.create().tag("access-control:customer_all");
+        String[] tagList = {"access-control:authenticated", "access-control:customer_all"};
         ValueMap data = mock(ValueMap.class);
 
         when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
@@ -157,9 +157,9 @@ public class AuthorizationFilterTest {
 
         String pagePath = "/content/workday-community/test";
         Tag[] tags = new Tag[2];
-        tags[0] = context.create().tag("access-control:customer-all");
-        tags[1] = context.create().tag("access-control:customer-name-support-contact");
-        String[] tagList = {"access-control:customer-all", "access-control:customer-name-support-contact"};
+        tags[0] = context.create().tag("access-control:customer_all");
+        tags[1] = context.create().tag("access-control:customer_name_support_contact");
+        String[] tagList = {"access-control:customer_all", "access-control:customer_name_support_contact"};
         ValueMap data = mock(ValueMap.class);
 
         when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);

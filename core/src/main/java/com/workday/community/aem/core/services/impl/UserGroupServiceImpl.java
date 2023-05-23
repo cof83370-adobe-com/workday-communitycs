@@ -25,6 +25,7 @@ import java.util.*;
 import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
 import static com.workday.community.aem.core.constants.WccConstants.INTERNAL_WORKMATES;
 import static com.workday.community.aem.core.constants.WccConstants.ROLES;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_ROLE_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_TYPE_KEY;
@@ -107,7 +108,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                     groupIds = List.of(userRole.split(";"));
                 } else {
                     Map<String, Object> serviceParams = new HashMap<>();
-                    serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
+                    serviceParams.put(ResourceResolverFactory.SUBSERVICE, WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
                     jcrSessionResourceResolver = resourceResolverFactory.getServiceResourceResolver(serviceParams);
                     jcrSession = jcrSessionResourceResolver.adaptTo(Session.class);
                     groupIds = this.getUserGroupsFromSnap(sfId);

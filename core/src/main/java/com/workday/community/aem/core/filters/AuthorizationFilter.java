@@ -117,7 +117,7 @@ public class AuthorizationFilter implements Filter {
         logger.debug(" inside validateTheUser method. -->");
         boolean isInValid = true;
         try {
-            List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(pagePath, resourceResolver, ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
+            List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(resourceResolver, pagePath, ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
             if (!accessControlTagsList.isEmpty()) {
                 logger.debug("---> Access control tag List.. {}.", accessControlTagsList);
                 if (accessControlTagsList.contains(AUTHENTICATED)) {
