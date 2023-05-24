@@ -272,18 +272,21 @@ public class SnapServiceImpl implements SnapService {
     if (profileData != null) {
       try {
         JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
-        contactRole = profileObject.get(CONTACT_ROLE).getAsString();
-        contactNumber = profileObject.get(CONTACT_NUMBER).getAsString();
+        JsonElement contactRoleElement = profileObject.get(CONTACT_ROLE);
+        contactRole = contactRoleElement.isJsonNull() ? "" : contactRoleElement.getAsString();
+        JsonElement contactNumberElement = profileObject.get(CONTACT_NUMBER);
+        contactNumber = contactNumberElement.isJsonNull() ? "" : contactNumberElement.getAsString();
         isNSC = contactRole.contains(NSC);
-
         JsonElement wrcOrgId = profileObject.get("wrcOrgId");
         accountID = wrcOrgId.isJsonNull() ? "" : wrcOrgId.getAsString();
         JsonElement organizationName = profileObject.get("organizationName");
         accountName = organizationName.isJsonNull() ? "" : organizationName.getAsString();
         JsonElement isWorkmateElement = profileObject.get("isWorkmate");
         boolean isWorkdayMate = !isWorkmateElement.isJsonNull() && isWorkmateElement.getAsBoolean();
-        accountType = isWorkdayMate ? "workday" : profileObject.get("type").getAsString().toLowerCase();
-      } catch (NullPointerException e) {
+        JsonElement typeElement = profileObject.get("type");
+        accountType = isWorkdayMate ? "workday"
+            : (typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
+      } catch (JsonSyntaxException e) {
         logger.error("Error in generateAdobeDigitalData method :: {}",
             e.getMessage());
       }
