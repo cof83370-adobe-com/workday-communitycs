@@ -2,12 +2,12 @@
     <div class="multi-tab-container">
         <span id="titleId"  data-comp-props-data="${properties.title}"></span>
         <span id="widthId" data-comp-props-data="${properties.width}"></span>
-        <span id="listRowsId" data-comp-props-data="${properties.rows}"></span>
-        <span id="feedAllUrlBase" data-comp-props-data="${model.feedUrlBase}"></span>
-        <span id="searchConfigData" data-model-search-config="${model.getSearchConfig}"></span>
-        <span id="productCriteriaData" data-product-criteria="${model.getProductCriteria}"></span>
-        <span id="fieldsData" data-field-criteria="${model.getSelectedFields}"></span>
-        <span id="extraCriteriaData" data-extra-criteria="${model.getExtraCriteria}"></span>
+        <span id="rowsId" data-comp-props-data="${properties.rows}"></span>
+        <span id="feedUrlBaseId" data-comp-props-data="${model.feedUrlBase}"></span>
+        <span id="searchConfigId" data-model-search-config="${model.getSearchConfig}"></span>
+        <span id="productCriteriaId" data-product-criteria="${model.getProductCriteria}"></span>
+        <span id="selectedFieldsId" data-field-criteria="${model.getSelectedFields}"></span>
+        <span id="extraCriteriaDataId" data-extra-criteria="${model.getExtraCriteria}"></span>
         <div class="multi-tab-title">${model.compConfig.title}</div>
         <!-- start of the tab -->
         <nav class="multi-tab-navbar" id="multiTabListContainerId" aria-label="Multi-tab navigation">
@@ -135,18 +135,18 @@
 
             //1 This should come from component editor dialog.
             const compTitle = document.getElementById("titleId").getAttribute("data-comp-props-data");
-            let listRows = document.getElementById("listRowsId").getAttribute("data-comp-props-data");
+            let listRows = document.getElementById("rowsId").getAttribute("data-comp-props-data");
             let originWidth = document.getElementById("widthId").getAttribute("data-comp-props-data");
-            const productCriteria = document.getElementById("productCriteriaData").getAttribute("data-product-criteria");
-            const extraCriteria = document.getElementById("extraCriteriaData").getAttribute("data-extra-criteria");
+            const productCriteria = document.getElementById("productCriteriaId").getAttribute("data-product-criteria");
+            const extraCriteria = document.getElementById("extraCriteriaDataId").getAttribute("data-extra-criteria");
             const compWidth = originWidth ? originWidth + 'px' : '';
             listRows = listRows ? listRows : 5;
 
             // 2 Field definition is from Coveo, (predefined in model/service?)
-            const search_fields = JSON.parse("[".concat(document.getElementById("fieldsData").getAttribute("data-field-criteria")).concat("]"));
+            const search_fields = JSON.parse("[".concat(document.getElementById("selectedFieldsId").getAttribute("data-field-criteria")).concat("]"));
             search_fields.forEach( field => field['dataExpression'] = field['dataExpression'] + productCriteria + extraCriteria);
             // 3 From the service
-            const searchConfigNode = document.getElementById("searchConfigData");
+            const searchConfigNode = document.getElementById("searchConfigId");
             const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
 
             function setActive(currentTab) {
@@ -164,7 +164,7 @@
 
                 // set active update all event
                 const allEventContainer = document.getElementsByClassName('event-text')[0];
-                const urlBase = document.getElementById("feedAllUrlBase").getAttribute("data-comp-props-data");
+                const urlBase = document.getElementById("feedUrlBaseId").getAttribute("data-comp-props-data");
                 const innerHtml = "<a href=\"" + urlBase  + currentTab.textContent + "\">All " + currentTab.textContent + "</a>";
                 allEventContainer.innerHTML = innerHtml;
             }

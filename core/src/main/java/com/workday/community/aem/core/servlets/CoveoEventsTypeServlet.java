@@ -105,7 +105,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
                 DataSource dataSource = new SimpleDataSource(resourceList.iterator());
                 request.setAttribute(DataSource.class.getName(), dataSource);
             } catch (Exception exception) {
-                LOGGER.error("Error Occured in DoGet Method : {}", exception.getMessage());
+                LOGGER.error("Error Occurred in DoGet Method in CoveoEventsTypeServlet : {}", exception.getMessage());
             }
 
             return null;

@@ -1,12 +1,12 @@
 <sly data-sly-use.model="com.workday.community.aem.core.models.CoveoEventFeedModel">
     <div class="cmp-eventsfeed-container">
-        <span id="selectedEventTypes" data-property="${properties.eventTypes}"></span>
-        <span id="containerWidth" data-property="${properties.width}"></span>
-        <span id="eventRows" data-property="${properties.rows}"></span>
-        <span id="searchConfigData" data-model-search-config="${model.getSearchConfig}"></span>
-        <span id="sortCriteria" data-model-sort-criteria="${model.sortCriteria}"></span>
-        <span id="extraCriteria" data-model-extra-criteria="${model.extraCriteria}"></span>
-        <span id="eventCriteria" data-model-event-criteria="${model.eventCriteria}"></span>
+        <span id="eventTypesId" data-property="${properties.eventTypes}"></span>
+        <span id="widthId" data-property="${properties.width}"></span>
+        <span id="rowsId" data-property="${properties.rows}"></span>
+        <span id="searchConfigId" data-model-search-config="${model.getSearchConfig}"></span>
+        <span id="sortCriteriaId" data-model-sort-criteria="${model.sortCriteria}"></span>
+        <span id="extraCriteriaId" data-model-extra-criteria="${model.extraCriteria}"></span>
+        <span id="eventCriteriaId" data-model-event-criteria="${model.eventCriteria}"></span>
 
         <div class="feature-event">
             <image class="feature-image" alt="feature event" src="${model.featureEvent.image}"></image>
@@ -162,7 +162,6 @@
                     const response = await fetch(tokenUrl);
                     return await response.json();
                 } catch (err) {
-                    console.error('Error from getRequest -> ', err.message || err.responseText);
                 }
             };
             const registerFields = (engine) => {
@@ -196,17 +195,17 @@
                 const main = async () => {
                     const tokenUrl = '/bin/search/token';
                     await customElements.whenDefined('atomic-search-interface');
-                    const searchConfigNode = document.getElementById("searchConfigData");
+                    const searchConfigNode = document.getElementById("searchConfigId");
                     const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
                     let token = await getRequest(tokenUrl);
                     token = token['searchToken'];
 
-                    const selectedEventType = document.getElementById('selectedEventTypes').getAttribute('data-property');
-                    let eventRows = document.getElementById('eventRows').getAttribute('data-property');
+                    const selectedEventType = document.getElementById('eventTypesId').getAttribute('data-property');
+                    let eventRows = document.getElementById('rowsId').getAttribute('data-property');
                     eventRows = Number(eventRows) > 3 ? Number(eventRows) : 3 ;
-                    const sortCriteria = document.getElementById("sortCriteria").getAttribute("data-model-sort-criteria");
-                    const extraCriteria = document.getElementById("extraCriteria").getAttribute("data-model-extra-criteria");
-                    const eventCriteria = document.getElementById("eventCriteria").getAttribute("data-model-event-criteria");
+                    const sortCriteria = document.getElementById("sortCriteriaId").getAttribute("data-model-sort-criteria");
+                    const extraCriteria = document.getElementById("extraCriteriaId").getAttribute("data-model-extra-criteria");
+                    const eventCriteria = document.getElementById("eventCriteriaId").getAttribute("data-model-event-criteria");
                     let facet = [];
                     let currentValues;
                     if (selectedEventType) {
@@ -257,8 +256,8 @@
                 });
 
                 // set the UI properties
-                const containerWidth = Number(document.getElementById('containerWidth').getAttribute('data-property'));
-                let cardWidth = containerWidth <= 360 ? '360px' : containerWidth + 'px';
+                const widthId = Number(document.getElementById('widthId').getAttribute('data-property'));
+                let cardWidth = widthId <= 360 ? '360px' : widthId + 'px';
                 document.getElementsByClassName('eventsfeed')[0].style.width = cardWidth;
                 let noResult = document.getElementsByClassName('no-result-box');
                 if (noResult && noResult.length == 1) {
@@ -269,7 +268,7 @@
                     queryErr[0].style.width = cardWidth;
                 }
 
-                let imageWidth = containerWidth <= 360 ? '70px' : containerWidth - 290 + 'px';
+                let imageWidth = widthId <= 360 ? '70px' : widthId - 290 + 'px';
                 document.getElementsByClassName('feature-image')[0].style.width = imageWidth;
                 waitForElementToDisplay(
                     () => document.getElementsByTagName('atomic-result-list')[0].shadowRoot.childNodes[0],

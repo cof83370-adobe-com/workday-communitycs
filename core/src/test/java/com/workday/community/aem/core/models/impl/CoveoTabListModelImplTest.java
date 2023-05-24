@@ -52,7 +52,7 @@ public class CoveoTabListModelImplTest {
 
   @BeforeEach
   public void setup() {
-    context.load().json("/com/workday/community/aem/core/models/impl/event-feed-test.json", "/content");
+    context.load().json("/com/workday/community/aem/core/models/impl/CoveoTabListTestData.json", "/content");
     Resource res = context.request().getResourceResolver().getResource("/content/event-feed-page");
     Page currentPage = res.adaptTo(Page.class);
     context.registerService(Page.class, currentPage);

@@ -59,6 +59,8 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
           valueMap.put("text",  ((JsonObject)field).get("desc").getAsString());
           resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), "nt:unstructured", valueMap));
         });
+      } else {
+        LOGGER.debug("Feed fields are not fetched from CoveoTabListModel, please fix it.");
       }
 
       /*Create a DataSource that is used to populate the drop-down control*/
