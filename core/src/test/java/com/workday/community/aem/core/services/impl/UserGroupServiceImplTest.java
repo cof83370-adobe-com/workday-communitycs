@@ -29,6 +29,7 @@ import javax.jcr.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
@@ -168,11 +169,22 @@ class UserGroupServiceImplTest {
         String SF_ID = "test=123";
         JsonObject context = new JsonObject();
         JsonObject contextInfoObj = new JsonObject();
-        contextInfoObj.addProperty("contactRole", "group1;group2;group3");
-        List<String> groupsList = List.of("group1", "group2", "group3");
+        contextInfoObj.addProperty("contactRole", "Named Support Contact;Training Coordinator");
+        contextInfoObj.addProperty("type", "customer");
+        contextInfoObj.addProperty("isWorkmate", false);
+        JsonObject contactInformationObj = new JsonObject();
+        contactInformationObj.addProperty("propertyAccess", "Community");
+        contactInformationObj.addProperty("nscSupporting", "Adaptive Planning;VNDLY");
         context.add("contextInfo", contextInfoObj);
+        context.add("contactInformation", contactInformationObj);
         when(snapService.getUserContext(SF_ID)).thenReturn(context);
-        assertEquals(groupsList, userGroupService.getUserGroupsFromSnap(SF_ID));
+        List<String> groups = userGroupService.getUserGroupsFromSnap(SF_ID);
+        assertTrue(groups.contains("authenticated"));
+        assertTrue(groups.contains("customer_adaptive_only"));
+        assertTrue(groups.contains("customer_vndly_only"));
+        assertTrue(groups.contains("customer_name_support_contact"));
+        assertTrue(groups.contains("customer_training_coordinator"));
+        assertTrue(groups.contains("customer_all"));
     }
 
 
