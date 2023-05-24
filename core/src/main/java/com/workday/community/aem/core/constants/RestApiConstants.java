@@ -46,9 +46,4 @@ public interface RestApiConstants {
    * The constant TIMEOUT
    */
   int TIMEOUT = 10000;
-
-  /**
-   * The Request Success Code
-   */
-  int REQUEST_SUCCESS = 200;
 }
