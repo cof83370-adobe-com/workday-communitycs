@@ -6,7 +6,7 @@ import com.workday.community.aem.core.constants.lambda.BearerToken;
  * The Class RESTAPIConstants.
  */
 public interface RestApiConstants {
-  
+
   /**
    * The constant AUTHORIZATION
    */
@@ -46,4 +46,9 @@ public interface RestApiConstants {
    * The constant TIMEOUT
    */
   int TIMEOUT = 10000;
+
+  /**
+   * The Request Success Code
+   */
+  int REQUEST_SUCCESS = 200;
 }

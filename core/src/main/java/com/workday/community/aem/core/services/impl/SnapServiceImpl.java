@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
+import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
@@ -111,8 +112,9 @@ public class SnapServiceImpl implements SnapService {
       // Execute the request.
       APIResponse snapRes = RestApiUtil.doGetMenu(url, apiToken, apiKey, traceId);
       JsonObject defaultMenu = this.getDefaultHeaderMenu();
-      if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())) {
-        logger.debug("Sfdc menu fetch is empty, fallback to use local default");
+      if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())
+          || snapRes.getResponseCode() != RestApiConstants.REQUEST_SUCCESS) {
+        logger.info("Sfdc menu fetch is empty, fallback to use local default");
         return gson.toJson(defaultMenu);
       }
 
@@ -128,7 +130,7 @@ public class SnapServiceImpl implements SnapService {
       // Non-Beta will directly return the sf menu
       return gson.toJson(sfMenu);
 
-    } catch (SnapException e) {
+    } catch (SnapException | JsonSyntaxException e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
     }
 
@@ -282,7 +284,8 @@ public class SnapServiceImpl implements SnapService {
         boolean isWorkdayMate = !isWorkmateElement.isJsonNull() && isWorkmateElement.getAsBoolean();
         accountType = isWorkdayMate ? "workday" : profileObject.get("type").getAsString().toLowerCase();
       } catch (NullPointerException e) {
-        logger.error("Error in generateAdobeDigitalData method :: {}", e.getMessage());
+        logger.error("Error in generateAdobeDigitalData method :: {}",
+            e.getMessage());
       }
     }
     userProperties.addProperty(CONTACT_ROLE, contactRole);
