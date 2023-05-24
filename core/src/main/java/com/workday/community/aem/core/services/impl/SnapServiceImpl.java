@@ -9,7 +9,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
-import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
@@ -30,6 +29,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.http.HttpStatus;
 
 import java.util.Date;
 
@@ -113,8 +113,8 @@ public class SnapServiceImpl implements SnapService {
       APIResponse snapRes = RestApiUtil.doGetMenu(url, apiToken, apiKey, traceId);
       JsonObject defaultMenu = this.getDefaultHeaderMenu();
       if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())
-          || snapRes.getResponseCode() != RestApiConstants.REQUEST_SUCCESS) {
-        logger.info("Sfdc menu fetch is empty, fallback to use local default");
+          || snapRes.getResponseCode() != HttpStatus.SC_OK) {
+        logger.error("Sfdc menu fetch is empty, fallback to use local default");
         return gson.toJson(defaultMenu);
       }
 
