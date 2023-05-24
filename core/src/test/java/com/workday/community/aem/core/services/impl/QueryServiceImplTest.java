@@ -32,7 +32,12 @@ import javax.jcr.Session;
 import com.day.cq.search.Query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.workday.community.aem.core.constants.GlobalConstants.USER_ROOT_PATH;
+import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class QueryServiceImplTest {
@@ -135,6 +140,58 @@ class QueryServiceImplTest {
     assertEquals(hitResultPath, paths.get(0));
     verify(session).logout();
 
+  }
+
+  @Test
+  void testGetInactiveUsers() throws RepositoryException {
+    ResourceResolver resourceResolver = mock(ResourceResolver.class);
+    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenReturn(resourceResolver);
+
+    Session session = mock(Session.class);
+    when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+    // Get all users.
+    Query query = mock(Query.class);
+    Map<String, String> queryMap = new HashMap<>();
+    queryMap.put("path", USER_ROOT_PATH.concat(OKTA_USER_PATH));
+    queryMap.put("type", "rep:User");
+    queryMap.put("p.limit", "-1");
+    MockedStatic<PredicateGroup> mockPredicate = mockStatic(PredicateGroup.class);
+    PredicateGroup pg = mock(PredicateGroup.class);
+    mockPredicate.when(() -> PredicateGroup.create(queryMap)).thenReturn(pg);
+    when(queryBuilder.createQuery(pg, session)).thenReturn(query);
+    Hit hitOne = mock(Hit.class);
+    when(hitOne.getPath()).thenReturn(USER_ROOT_PATH.concat(OKTA_USER_PATH).concat("/A"));
+    Hit hitTwo = mock(Hit.class);
+    when(hitTwo.getPath()).thenReturn(USER_ROOT_PATH.concat(OKTA_USER_PATH).concat("/B"));
+    SearchResult result = mock(SearchResult.class);
+    List<Hit> hitList = new ArrayList<>();
+    hitList.add(hitOne);
+    hitList.add(hitTwo);
+    when(result.getHits()).thenReturn(hitList);
+    when(query.getResult()).thenReturn(result);
+    // Get active users.
+    Query queryActive = mock(Query.class);
+    Map<String, String> queryMapActive = new HashMap<>();
+    queryMapActive.put("path", USER_ROOT_PATH.concat(OKTA_USER_PATH));
+    queryMapActive.put("type", "rep:Token");
+    queryMapActive.put("relativedaterange.property", "rep:token.exp");
+    queryMapActive.put("relativedaterange.lowerBound", "-1s");
+    queryMapActive.put("p.limit", "-1");
+    PredicateGroup pgActive = mock(PredicateGroup.class);
+    mockPredicate.when(() -> PredicateGroup.create(queryMapActive)).thenReturn(pgActive);
+    when(queryBuilder.createQuery(pgActive, session)).thenReturn(queryActive);
+    SearchResult resultActive = mock(SearchResult.class);
+    List<Hit> hitListActive = new ArrayList<>();
+    Hit hit = mock(Hit.class);
+    when(hit.getPath()).thenReturn(USER_ROOT_PATH.concat(OKTA_USER_PATH).concat("/A/.tokens/123"));
+    hitListActive.add(hit);
+    when(resultActive.getHits()).thenReturn(hitListActive);
+    when(queryActive.getResult()).thenReturn(resultActive);
+    
+    // Verify result.
+    List<String> paths = queryService.getInactiveUsers();
+    assertEquals(USER_ROOT_PATH.concat(OKTA_USER_PATH).concat("/B"), paths.get(0));
+    verify(session).logout();
   }
 
   @AfterEach
