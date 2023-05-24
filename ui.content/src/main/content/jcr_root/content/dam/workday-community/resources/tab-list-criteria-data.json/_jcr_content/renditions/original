@@ -13,7 +13,7 @@
     { "name": "services_idea", "desc": "Services Idea", "selected": "false", "dataExpression": "(@commcontenttype==(Services_idea) OR @filetype==(services_idea))" },
     { "name": "rising_conference_session", "desc": "Rising Conference Session", "selected": "false", "dataExpression": "(@commcontenttype==(Rising_conference_session) OR @filetype==(rising_conference_session))" },
     { "name": "altitude_conference_session", "desc": "Altitude Conference Session", "selected": "false", "dataExpression": "(@commcontenttype==(Altitude_conference_session) OR @filetype==(altitude_conference_session))" },
-    { "name": "group_post", "desc": "Group Post", "selected": "false", "dataExpression": "(@commcontenttype==(Qroup_post) OR @filetype==(group_post))" },
+    { "name": "group_post", "desc": "Group Post", "selected": "false", "dataExpression": "(@commcontenttype==(Group_post) OR @filetype==(group_post))" },
     { "name": "calendar_event", "desc": "Calendar Event", "selected": "false", "dataExpression": "(@commcontenttype==(Calendar_event) OR @filetype==(calendar_event))" },
     { "name": "country_configuration", "desc": "Country Configuration", "selected": "false", "dataExpression": "(@commcontenttype==(Country_configuration) OR @filetype==(country_configuration))" }
   ],
