@@ -100,28 +100,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String userId) {
+    public void deleteUser(String userParam, boolean isPath) {
         Session session = null;
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+            logger.info("Start to delete user with param {}.", userParam);
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
             session = resourceResolver.adaptTo(Session.class);
-            User user = (User) userManager.getAuthorizable(userId);
+            User user;
+            if (isPath) {
+                user = (User) userManager.getAuthorizableByPath(userParam);
+            }
+            else {
+               user = (User) userManager.getAuthorizable(userParam);
+            }
             if (user != null) {
                 String path = user.getPath();
                 if (path.contains(OKTA_USER_PATH)) {
                     user.remove();
                 }
                 else {
-                    logger.error("User with id {} cannot be deleted.", userId);
+                    logger.error("User with param {} cannot be deleted.", userParam);
                 }
             }
             else {
-                logger.error("Cannot find user with id {}.", userId);
+                logger.error("Cannot find user with param {}.", userParam);
             }  
             session.save(); 
         } 
         catch (LoginException | RepositoryException e) {
-            logger.error("Exception occurred when delete user {}: {}.", userId, e.getMessage());
+            logger.error("Exception occurred when delete user with param {}: {}.", userParam, e.getMessage());
         }
         finally {
             if (session != null && session.isLive()) {

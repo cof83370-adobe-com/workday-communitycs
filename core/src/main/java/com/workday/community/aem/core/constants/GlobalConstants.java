@@ -54,6 +54,9 @@ public final class GlobalConstants {
   /** The Constant OKTA_USER_PATH. */
   public static final String OKTA_USER_PATH = "/workdaycommunity/okta";
 
+  /** The Constant USER_ROOT_PATH. */
+  public static final String USER_ROOT_PATH = "/home/users/";
+
   /** The Constant COMMUNITY_BOOK_ROOT_PATH. */
   public static final String COMMUNITY_CONTENT_BOOK_ROOT_PATH ="/content/workday-community/en-us/admin-tools/books";
 
