@@ -35,5 +35,13 @@ public @interface RunModeConfig {
         type = AttributeType.STRING
     )
     String adobeAnalyticsUri();
+
+
+    @AttributeDefinition (
+        name = "Publish instance domain",
+        description = "Publish instance domain.",
+        type = AttributeType.STRING
+    )
+    String publishInstanceDomain();
     
 }
