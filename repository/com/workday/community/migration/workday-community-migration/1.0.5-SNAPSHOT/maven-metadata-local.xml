@@ -3,22 +3,22 @@
   <groupId>com.workday.community.migration</groupId>
   <artifactId>workday-community-migration</artifactId>
   <versioning>
-    <lastUpdated>20230413144828</lastUpdated>
+    <lastUpdated>20230525151525</lastUpdated>
     <snapshot>
       <localCopy>true</localCopy>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
         <extension>jar</extension>
-        <value>0.0.21-SNAPSHOT</value>
-        <updated>20230413144828</updated>
+        <value>1.0.5-SNAPSHOT</value>
+        <updated>20230525151525</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>0.0.21-SNAPSHOT</value>
-        <updated>20230413144828</updated>
+        <value>1.0.5-SNAPSHOT</value>
+        <updated>20230525151525</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
-  <version>0.0.21-SNAPSHOT</version>
+  <version>1.0.5-SNAPSHOT</version>
 </metadata>
