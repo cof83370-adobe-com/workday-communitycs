@@ -28,11 +28,13 @@
                     <container
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="workday-community/components/core/container">
-                        <text_1801692435
+                        <button
+                            jcr:lastModified="{Date}2023-05-25T09:42:00.530-07:00"
+                            jcr:lastModifiedBy="admin"
                             jcr:primaryType="nt:unstructured"
-                            sling:resourceType="workday-community/components/core/text"
-                            text="&lt;p>Home&lt;/p>&#xd;&#xa;"
-                            textIsRich="true"/>
+                            jcr:title="Home"
+                            sling:resourceType="workday-community/components/core/button"
+                            linkTarget="_blank"/>
                         <title
                             jcr:primaryType="nt:unstructured"
                             jcr:title="Access Denied"
