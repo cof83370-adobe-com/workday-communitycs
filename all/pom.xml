@@ -97,6 +97,12 @@
                             <type>jar</type>
                             <target>/apps/workday-community-packages/application/install</target>
                        </embedded>
+                       <embedded>
+                            <groupId>com.brightcove</groupId>
+                            <artifactId>connector</artifactId>
+                            <type>zip</type>
+                            <target>/apps/workday-community-packages/application/install</target>
+                        </embedded>
                     </embeddeds>
                 </configuration>
             </plugin>
@@ -233,6 +239,12 @@
             <artifactId>jackson-dataformat-csv</artifactId>
             <version>2.10.5</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.brightcove</groupId>
+            <artifactId>connector</artifactId>
+            <version>6.0.1</version>
+            <type>zip</type>
         </dependency>
     </dependencies>
 </project>
