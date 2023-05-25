@@ -84,7 +84,7 @@
             }
 
             .cmp-toc__item.active > .cmp-toc__item-link > .cmp-toc__chevron::before {
-                content: url('../resources/images/wd-icon-chevron-right-blue.svg'); //need to change to blue right
+                content: url('../resources/images/wd-icon-chevron-right-blue.svg');
                 margin-right: 15px;
                 font-size:23px;
                 margin-left: 7px;
@@ -125,7 +125,7 @@
                 }
 
                 .cmp-toc__item.active > .cmp-toc__item-link.active > .cmp-toc__chevron::before {
-                    content: url('../resources/images/wd-icon-chevron-blue-small.svg');    //down blue
+                    content: url('../resources/images/wd-icon-chevron-blue-small.svg');
                 }
 
                 .cmp-toc__item > .cmp-toc__item-link > .cmp-toc__chevron::before {

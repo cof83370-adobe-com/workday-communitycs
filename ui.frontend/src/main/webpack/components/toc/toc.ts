@@ -23,20 +23,20 @@
     }
 
     function leftrailpanellevel1() {
-        var firstLevelItems = document.querySelectorAll('.cmp-toc__firstlevelitem-title');
-        var acc = [];
+        const firstLevelItems = document.querySelectorAll('.cmp-toc__firstlevelitem-title');
+        const acc = [];
 
         firstLevelItems.forEach(function(item) {
-          var parentElement = item.closest('.cmp-toc__item-link');
+          const parentElement = item.closest('.cmp-toc__item-link');
           if (parentElement) {
             acc.push(parentElement);
           }
         });
 
-        var panel = document.getElementsByClassName('cmp-toc__group cmp-toc__secondlevellist');
+        const panel = document.getElementsByClassName('cmp-toc__group cmp-toc__secondlevellist');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
-                var setClasses = !this.classList.contains('active');
+                const setClasses = !this.classList.contains('active');
                 setClass(acc, 'active', 'remove');
                 setClass(panel, 'show', 'remove');
                 if (setClasses) {
@@ -54,21 +54,21 @@
     }
 
     function leftrailpanellevel2() {
-        var firstLevelItems = document.querySelectorAll('.cmp-toc__secondlevelitem-title');
-        var acc = [];
+        const firstLevelItems = document.querySelectorAll('.cmp-toc__secondlevelitem-title');
+        const acc = [];
 
         firstLevelItems.forEach(function(item) {
-          var parentElement = item.closest('.cmp-toc__item-link');
+          const parentElement = item.closest('.cmp-toc__item-link');
           if (parentElement) {
             acc.push(parentElement);
           }
         });
 
 
-        var panel = document.getElementsByClassName('cmp-toc__group cmp-toc__thirdlevellist');
+        const panel = document.getElementsByClassName('cmp-toc__group cmp-toc__thirdlevellist');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
-                var setClasses = !this.classList.contains('active');
+                const setClasses = !this.classList.contains('active');
                 setClass(acc, 'active', 'remove');
                 setClass(panel, 'show', 'remove');
                 if (setClasses) {
@@ -110,22 +110,22 @@
     }
 
     function expandActiveBook() {
-        var activeItem = document.querySelector('.cmp-toc__item.active');
+        const activeItem = document.querySelector('.cmp-toc__item.active');
 
         if (activeItem) {
-            var parentElement = activeItem.parentElement;
+            const parentElement = activeItem.parentElement;
             parentElement.classList.add('show');
 
-            var previousSibling = parentElement.previousElementSibling as HTMLElement;
+            const previousSibling = parentElement.previousElementSibling as HTMLElement;
             if (previousSibling) {
                 previousSibling.classList.add('active');
             }
 
             if (parentElement.classList.contains('cmp-toc__thirdlevellist')) {
-                var grandparentElement = parentElement.parentElement.parentElement;
+                const grandparentElement = parentElement.parentElement.parentElement;
                 grandparentElement.classList.add('show');
 
-                var grandparentPreviousSibling = grandparentElement.previousElementSibling as HTMLElement;
+                const grandparentPreviousSibling = grandparentElement.previousElementSibling as HTMLElement;
                 if (grandparentPreviousSibling) {
                     grandparentPreviousSibling.classList.add('active');
                 }
