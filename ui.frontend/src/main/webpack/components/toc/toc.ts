@@ -23,8 +23,17 @@
     }
 
     function leftrailpanellevel1() {
-        var acc = document.getElementsByClassName('cmp-toc__item-link');
-        var panel = document.getElementsByClassName('cmp-toc__group-1');
+        var firstLevelItems = document.querySelectorAll('.cmp-toc__firstlevelitem-title');
+        var acc = [];
+
+        firstLevelItems.forEach(function(item) {
+          var parentElement = item.closest('.cmp-toc__item-link');
+          if (parentElement) {
+            acc.push(parentElement);
+          }
+        });
+
+        var panel = document.getElementsByClassName('cmp-toc__group cmp-toc__secondlevellist');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
                 var setClasses = !this.classList.contains('active');
@@ -45,8 +54,18 @@
     }
 
     function leftrailpanellevel2() {
-        var acc = document.getElementsByClassName('cmp-toc__item-link-1');
-        var panel = document.getElementsByClassName('cmp-toc__group-2');
+        var firstLevelItems = document.querySelectorAll('.cmp-toc__secondlevelitem-title');
+        var acc = [];
+
+        firstLevelItems.forEach(function(item) {
+          var parentElement = item.closest('.cmp-toc__item-link');
+          if (parentElement) {
+            acc.push(parentElement);
+          }
+        });
+
+
+        var panel = document.getElementsByClassName('cmp-toc__group cmp-toc__thirdlevellist');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
                 var setClasses = !this.classList.contains('active');
@@ -56,7 +75,7 @@
                     this.classList.toggle('active');
                     this.nextElementSibling.classList.toggle('show');
                 }
-            })
+            });
         }
         function setClass(els, className, fnName) {
             for (var i = 0; i < els.length; i++) {
@@ -90,6 +109,30 @@
 
     }
 
+    function expandActiveBook() {
+        var activeItem = document.querySelector('.cmp-toc__item.active');
+
+        if (activeItem) {
+            var parentElement = activeItem.parentElement;
+            parentElement.classList.add('show');
+
+            var previousSibling = parentElement.previousElementSibling as HTMLElement;
+            if (previousSibling) {
+                previousSibling.classList.add('active');
+            }
+
+            if (parentElement.classList.contains('cmp-toc__thirdlevellist')) {
+                var grandparentElement = parentElement.parentElement.parentElement;
+                grandparentElement.classList.add('show');
+
+                var grandparentPreviousSibling = grandparentElement.previousElementSibling as HTMLElement;
+                if (grandparentPreviousSibling) {
+                    grandparentPreviousSibling.classList.add('active');
+                }
+            }
+        }
+    }
+
     function onDocumentReady() {
         const tocClose = document.querySelector(tocSelectors.tocModalClose);
         let showModal = false;
@@ -121,5 +164,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', onDocumentReady);
+    window.onload = expandActiveBook;
 
 }());
