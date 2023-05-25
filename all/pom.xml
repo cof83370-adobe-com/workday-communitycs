@@ -103,26 +103,6 @@
                             <type>zip</type>
                             <target>/apps/workday-community-packages/application/install</target>
                         </embedded>
-                       <embedded>
-                            <groupId>com.adobe.acs</groupId>
-                            <artifactId>acs-aem-commons-ui.apps</artifactId>
-                            <type>zip</type>
-                            <target>/apps/workday-community-packages/application/install</target>
-                        </embedded>
-                        <embedded>
-                            <groupId>com.adobe.acs</groupId>
-                            <artifactId>acs-aem-commons-ui.content</artifactId>
-                            <type>zip</type>
-                            <target>/apps/workday-community-packages/content/install</target>
-                        </embedded>
-                        <embedded>    
-                                <groupId>com.adobe.acs</groupId>    
-                                <artifactId>acs-aem-commons-content</artifactId>    
-                                <type>zip</type>
-                                <target>/apps/workday-community-packages/container/install</target>
-                                <filter>true</filter>
-                                <isAllVersionsFilter>true</isAllVersionsFilter>
-                        </embedded>
                     </embeddeds>
                 </configuration>
             </plugin>
@@ -247,24 +227,6 @@
                 <artifactId>workday-community-migration</artifactId>
                 <version>1.0.4-SNAPSHOT</version>
                 <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.adobe.acs</groupId>
-            <artifactId>acs-aem-commons-ui.apps</artifactId>
-            <version>5.4.0</version>
-            <type>zip</type>
-        </dependency>
-        <dependency>
-            <groupId>com.adobe.acs</groupId>
-            <artifactId>acs-aem-commons-ui.content</artifactId>
-            <version>5.4.0</version>
-            <type>zip</type>
-        </dependency>
-        <dependency>    
-            <groupId>com.adobe.acs</groupId>    
-            <artifactId>acs-aem-commons-content</artifactId>    
-            <version>5.4.0</version>    
-            <type>zip</type>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>

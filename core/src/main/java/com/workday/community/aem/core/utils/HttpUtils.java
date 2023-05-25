@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.adobe.acs.commons.util.CookieUtil.addCookie;
+
 
 /**
  * Utility class for Http request/response related code.
@@ -60,6 +60,22 @@ public class HttpUtils {
     cookie.setPath((null == path) ? "/" : path);
     cookie.setSecure(secure);
     addCookie(cookie, response);
+  }
+
+    /**
+     * Add the provided HTTP Cookie to the Response
+     *
+     * @param cookie   Cookie to add
+     * @param response Response to add Cookie to
+     * @return true unless cookie or response is null
+     */
+    public static boolean addCookie(final Cookie cookie, final HttpServletResponse response) {
+      if (cookie == null || response == null) {
+          return false;
+      }
+
+      response.addCookie(cookie);
+      return true;
   }
 
   /**

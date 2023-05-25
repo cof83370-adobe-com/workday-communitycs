@@ -29,15 +29,11 @@ import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_T
 /**
  * The model implementation class for the common nav header menus.
  */
-@Model(
-  adaptables = {
+@Model(adaptables = {
     Resource.class,
     SlingHttpServletRequest.class
-  },
-  adapters = {HeaderModel.class},
-  resourceType = {HeaderModelImpl.RESOURCE_TYPE},
-  defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
-)
+}, adapters = { HeaderModel.class }, resourceType = {
+    HeaderModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class HeaderModelImpl implements HeaderModel {
 
   /**
@@ -119,7 +115,7 @@ public class HeaderModelImpl implements HeaderModel {
   @Override
   public String getDataLayerData() {
     String instance = runModeConfigService.getInstance();
-    if (instance.equals(PUBLISH)) {
+    if (instance != null && instance.equals(PUBLISH)) {
       Template template = currentPage.getTemplate();
       String pageTitle = currentPage.getTitle();
       String templatePath = template.getPath();
