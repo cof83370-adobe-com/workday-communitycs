@@ -1,0 +1,6 @@
+{
+    "accountId":"$[env:brightcoveAccountId]",
+    "clientId":"$[env:brightcoveClientId]",
+    "clientSecret": "$[secret:brightcoveClientSecret]",
+    "allowedGroups":["everyone","administrators","CMTY CC Admin"]
+}

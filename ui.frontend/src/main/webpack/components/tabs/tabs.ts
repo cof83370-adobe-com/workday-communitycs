@@ -28,7 +28,7 @@ if (container !== null) {
             el.classList.remove('cmp-tabs__tab--active');
         });
         document.querySelector('#' + elemID + 'panel').classList.add('cmp-tabs__tab--active');
-    }
+    };
 
     //Hide Secondary on click  on visible tabs
     visibleItems.forEach(el => el.addEventListener('click', event => {
@@ -42,8 +42,8 @@ if (container !== null) {
 
     const setActive = el => {
         [...el.parentElement.children].forEach(sib => sib.classList.remove('cmp-tabs__tab--active'));
-        el.classList.add('cmp-tabs__tab--active')
-    }
+        el.classList.add('cmp-tabs__tab--active');
+    };
 
     //Hide Secondary on click  on visible tabs
     secondaryItems.forEach(el => el.addEventListener('click', event => {
@@ -58,7 +58,7 @@ if (container !== null) {
         // reveal all items for the calculation
         allItems.forEach((item) => {
             item.classList.remove('--hidden');
-        })
+        });
 
         // hide items that won't fit in the Primary
         let stopWidth = moreBtn.offsetWidth;
@@ -89,9 +89,9 @@ if (container !== null) {
                 if (!hiddenItems.includes(i)) {
                     item.classList.add('--hidden');
                 }
-            })
+            });
         }
-    }
+    };
 
     doAdapt(); // adapt immediately on load
     window.addEventListener('resize', doAdapt); // adapt on window resize

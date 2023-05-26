@@ -155,7 +155,7 @@ public class UserServiceImplTest {
         lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
         lenient().when(user.getPath()).thenReturn("/workdaycommunity/okta");
         lenient().when(session.isLive()).thenReturn(true);
-        userService.deleteUser(userId);
+        userService.deleteUser(userId, false);
         verify(user).remove();
         verify(session).logout();
     }
@@ -168,10 +168,10 @@ public class UserServiceImplTest {
     @Test
     public void testDeleteUserFail() throws RepositoryException {
         String userId = "testTest";
-        lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+        lenient().when(userManager.getAuthorizableByPath(userId)).thenReturn(user);
         lenient().when(user.getPath()).thenReturn("/test");
         lenient().when(session.isLive()).thenReturn(true);
-        userService.deleteUser(userId);
+        userService.deleteUser(userId, true);
         verify(user, times(0)).remove();
         verify(session).logout();
     }

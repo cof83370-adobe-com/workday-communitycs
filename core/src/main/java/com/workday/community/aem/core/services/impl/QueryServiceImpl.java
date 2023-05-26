@@ -28,6 +28,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import static com.day.cq.wcm.api.constants.NameConstants.NT_PAGE;
+import static com.workday.community.aem.core.constants.GlobalConstants.USER_ROOT_PATH;
+import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 
 /**
  * The Class QueryServiceImpl.
@@ -52,7 +54,7 @@ public class QueryServiceImpl implements QueryService {
     @Override
     public long getNumOfTotalPublishedPages() {
         long totalResults = 0;
-        Session session;
+        Session session = null;
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
@@ -66,6 +68,10 @@ public class QueryServiceImpl implements QueryService {
             totalResults = result.getTotalMatches();
         } catch (LoginException e) {
             logger.error("Exception occurred when running query to get total number of pages {} ", e.getMessage());
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
         }
         return totalResults;
     }
@@ -101,6 +107,53 @@ public class QueryServiceImpl implements QueryService {
             }
         }
         return paths;
+    }
+
+    @Override
+    public List<String> getInactiveUsers() {
+        Session session = null;
+        List<String> users = new ArrayList<>();
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+            session = resourceResolver.adaptTo(Session.class);
+
+            // Get all users.
+            Map<String, String> queryMap = new HashMap<>();
+            queryMap.put("path", USER_ROOT_PATH.concat(OKTA_USER_PATH));
+            queryMap.put("type", "rep:User");
+            queryMap.put("p.limit", "-1");
+            Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
+            SearchResult searchResult = query.getResult();
+            for (Hit hit : searchResult.getHits()) {
+                String path = hit.getPath();
+                users.add(path);
+            }
+
+            // Get active users.
+            Map<String, String> queryMapActive = new HashMap<>();
+            queryMapActive.put("path", USER_ROOT_PATH.concat(OKTA_USER_PATH));
+            queryMapActive.put("type", "rep:Token");
+            queryMapActive.put("relativedaterange.property", "rep:token.exp");
+            queryMapActive.put("relativedaterange.lowerBound", "-1s");
+            queryMapActive.put("p.limit", "-1");
+            Query queryActive = queryBuilder.createQuery(PredicateGroup.create(queryMapActive), session);
+            SearchResult searchResultActive = queryActive.getResult();
+            for (Hit hit : searchResultActive.getHits()) {
+                String path = hit.getPath();
+                path = path.substring(0, path.indexOf("/.tokens"));
+                // Remove active users.
+                if (users.contains(path)) {
+                    users.remove(path);
+                }
+            }
+        } catch (LoginException | RepositoryException e) {
+            logger.error("Exception occurred when running query to get inactive users {} ", e.getMessage());
+        } finally {
+            if (session != null) {
+                session.logout();
+            }
+        }
+        return users;
+
     }
 
     /**

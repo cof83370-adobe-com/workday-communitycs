@@ -107,7 +107,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
         if (ins != null && ins.equals(GlobalConstants.PUBLISH)) {
           String userId = session.getUserID();
-          userService.deleteUser(userId);
+          userService.deleteUser(userId, false);
         }
         session.logout();
       }

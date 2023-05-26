@@ -1,6 +1,7 @@
 package com.workday.community.aem.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.utils.CommonUtils;
@@ -18,6 +19,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
@@ -31,9 +33,6 @@ public class CommonUtilsTest {
     
     /** The ResourceResolver. */
     ResourceResolver resourceResolver;
-    
-    /** The service UserManager. */
-    private UserManager userManager;
 
     /** The user. */
     private User user;
@@ -42,7 +41,8 @@ public class CommonUtilsTest {
     public void setup() throws RepositoryException {
         resourceResolver = mock(ResourceResolver.class);
         Session session = mock(Session.class);
-        userManager = mock(UserManager.class);
+        /** The service UserManager. */
+        UserManager userManager = mock(UserManager.class);
         user = mock(User.class);
         lenient().when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
         lenient().when(session.getUserID()).thenReturn("testUser");
@@ -64,6 +64,16 @@ public class CommonUtilsTest {
         assertEquals(expectedSfId, sfId);
     }
 
+    @Test
+    public void testGetLoggedInUserSourceIdWithException() throws RepositoryException {
+        Value value = mock(Value.class);
+        String expectedSfId = "test sfid";
+        lenient().when(value.getString()).thenReturn(expectedSfId);
+        lenient().when(user.getProperty(WccConstants.PROFILE_SOURCE_ID)).thenThrow(new RepositoryException());
+        String sfId = CommonUtils.getLoggedInUserSourceId(resourceResolver);
+        assertNull(sfId);
+    }
+
     /**
      * Test getLoggedInUserId.
      */
@@ -76,6 +86,19 @@ public class CommonUtilsTest {
         lenient().when(user.getProperty(WccConstants.PROFILE_OKTA_ID)).thenReturn(values);
         String userId = CommonUtils.getLoggedInUserId(resourceResolver);
         assertEquals(expectedUserId, userId);
+    }
+
+    /**
+     * Test getLoggedInUserId.
+     */
+    @Test
+    public void testGetLoggedInUserIdWithException() throws RepositoryException {
+        Value value = mock(Value.class);
+        String expectedUserId = "test user id";
+        lenient().when(value.getString()).thenReturn(expectedUserId);
+        lenient().when(user.getProperty(WccConstants.PROFILE_OKTA_ID)).thenThrow(new RepositoryException());
+        String userId = CommonUtils.getLoggedInUserId(resourceResolver);
+        assertNull(userId);
     }
 
     /**
@@ -93,6 +116,20 @@ public class CommonUtilsTest {
     }
 
     /**
+     * Test testGetLoggedInCustomerTypeWithException
+     * @throws RepositoryException RepositoryException object.
+     */
+    @Test
+    public void testGetLoggedInCustomerTypeWithException() throws RepositoryException {
+        Value value = mock(Value.class);
+        Value[] values = {value};
+        lenient().when(value.getString()).thenThrow(new RepositoryException());
+        lenient().when(user.getProperty(WccConstants.CC_TYPE)).thenReturn(values);
+        String customerType = CommonUtils.getLoggedInCustomerType(resourceResolver);
+        assertNull(customerType);
+    }
+
+    /**
      * Test getLoggedInUser.
      */
     @Test
@@ -100,6 +137,17 @@ public class CommonUtilsTest {
         User testUser = CommonUtils.getLoggedInUser(resourceResolver);
         assertEquals(testUser, user);
 
+    }
+
+    @Test
+    public void testGetLoggedInUserWithException() throws RepositoryException {
+        Session session = mock(Session.class);
+        UserManager userManager = mock(UserManager.class);
+        lenient().when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+        lenient().when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+        lenient().when(userManager.getAuthorizable(anyString())).thenThrow(new RepositoryException());
+        User testUser = CommonUtils.getLoggedInUser(resourceResolver);
+        assertNull(testUser);
     }
 
     /**
@@ -118,6 +166,17 @@ public class CommonUtilsTest {
         assertEquals(userNode, expectedUserNode);
     }
 
+    @Test
+    public void testGetLoggedInUserAsNodeWithException() throws RepositoryException {
+        Session session = mock(Session.class);
+        UserManager userManager = mock(UserManager.class);
+        lenient().when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+        lenient().when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+        lenient().when(userManager.getAuthorizable(anyString())).thenThrow(new RepositoryException());
+        Node userNode = CommonUtils.getLoggedInUserAsNode(resourceResolver);
+        assertNull(userNode);
+    }
+
     /**
      * Test testUpdateTargetToSource.
      */
@@ -132,6 +191,29 @@ public class CommonUtilsTest {
         assertEquals(-1, gson.toJson(source).indexOf("DesignPartnerOpportunitiesAEM"));
         CommonUtils.updateSourceFromTarget(source, target);
         assertEquals(9671, gson.toJson(source).indexOf("DesignPartnerOpportunitiesAEM"));
+
+        String src = "{\"fields\":[{\"name\":\"question\",\"desc\":\"ForumDiscussions\",\"selected\":\"false\",\"dataExpression\":\"(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"idea\",\"desc\":\"Brainstorms\",\"selected\":\"false\",\"dataExpression\":\"(@commcontenttype==(Brainstorm)OR@filetype==(idea))\"},{\"name\":\"contributed_solution\",\"desc\":\"ContributedSolutions\",\"selected\":\"false\",\"dataExpression\":\"(@commcontenttype==(ContributedSolution)OR@filetype==(contributed_solution))\"},{\"name\":\"group_post\",\"desc\":\"UserGroupDiscussions\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(GroupPost)OR@filetype==(group_post))\"},{\"name\":\"article\",\"desc\":\"Reference\",\"selected\":\"false\",\"dataExpression\":\"(@commcontenttype==(Article)OR@filetype==(article))\"},{\"name\":\"question\",\"desc\":\"FAQ\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"idea\",\"desc\":\"Troubleshooting\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"contributed_solution\",\"desc\":\"Kits&Tools\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"article\",\"desc\":\"TrainingCatalog\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"group_post\",\"desc\":\"ReleaseNotes\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"group_post\",\"desc\":\"Events\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(QuestionYY)OR@filetype==(question))\"}],\"extraCriteria\":{\"value\":\"(NOT@druwdcworkflowworkflowstate==retired)\"}}";
+        String tgt = "{\"fields\":[{\"name\":\"question\",\"desc\":\"ForumDiscussions\",\"selected\":\"false\",\"dataExpression\":\"(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"idea\",\"desc\":\"Brainstorms\",\"selected\":\"false\",\"dataExpression\":\"(@commcontenttype==(Brainstorm)OR@filetype==(idea))\"},{\"name\":\"contributed_solution\",\"desc\":\"ContributedSolutions\",\"selected\":\"false\",\"dataExpression\":\"(@commcontenttype==(ContributedSolution)OR@filetype==(contributed_solution))\"},{\"name\":\"group_post\",\"desc\":\"UserGroupDiscussions\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(GroupPost)OR@filetype==(group_post))\"},{\"name\":\"article\",\"desc\":\"Reference\",\"selected\":\"false\",\"dataExpression\":\"(@commcontenttype==(Article)OR@filetype==(article))\"},{\"name\":\"question\",\"desc\":\"FAQ\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"idea\",\"desc\":\"Troubleshooting\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"contributed_solution\",\"desc\":\"Kits&Tools\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"article\",\"desc\":\"TrainingCatalog\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"group_post\",\"desc\":\"ReleaseNotes\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(Question)OR@filetype==(question))\"},{\"name\":\"group_post\",\"desc\":\"Events\",\"selected\":\"false\",\"dataExpression\":\"(NOT@druwdcworkflowworkflowstate==retired)(@commcontenttype==(QuestionYY1)OR@filetype==(question))\"}],\"extraCriteria\":{\"value\":\"(NOT@druwdcworkflowworkflowstate==retired)\"}}";
+        JsonObject source1 = gson.fromJson(src, JsonObject.class);
+        JsonObject target1 = gson.fromJson(tgt, JsonObject.class);
+        assertEquals(-1, gson.toJson(source1).indexOf("QuestionYY1"));
+        CommonUtils.updateSourceFromTarget(source1, target1);
+        assertEquals(2075, gson.toJson(source1).indexOf("QuestionYY1"));
+
+        String src1 = "{\"fields\":[{\"name\":{value:\"testXX\"},\"desc\":{value:\"ForumDiscussions\"}},{\"name\":\"idea\",\"desc\":\"Brainstorms\"}],\"extraCriteria\":{\"value\":\"(NOT@druwdcworkflowworkflowstate==retired)\"}}";
+        String tgt1 = "{\"fields\":[{\"name\":{value:\"testXX1\"},\"desc\":{value:\"ForumDiscussions\"}},{\"name\":\"idea\",\"desc\":\"Brainstorms\"}],\"extraCriteria\":{\"value\":\"(NOT@druwdcworkflowworkflowstate==retired)\"}}";
+        JsonObject source2 = gson.fromJson(src1, JsonObject.class);
+        JsonObject target2 = gson.fromJson(tgt1, JsonObject.class);
+        assertEquals(-1, gson.toJson(source2).indexOf("testXX1"));
+        CommonUtils.updateSourceFromTarget(source2, target2);
+        assertEquals(29, gson.toJson(source2).indexOf("testXX1"));
+
+        src1 = "[[{\"browsers\":[{\"firefox\":\"Firefox\"},{\"IE\":\"IETEST\"}]},{\"agent\":[{\"firefoxAgent\":\"firefoxAgent\"},{\"IEAgent\":\"IEAgent\"}]}]]";
+        tgt1 = "[[{\"browsers\":[{\"firefox\":\"Firefox\"},{\"IE\":\"IETESTMM\"}]},{\"agent\":[{\"firefoxAgent\":\"firefoxAgent\"},{\"IEAgent\":\"IEAgent\"}]}]]";
+        JsonArray source3 = gson.fromJson(src1, JsonArray.class);
+        JsonArray target3 = gson.fromJson(tgt1, JsonArray.class);
+        assertEquals(-1, gson.toJson(source3).indexOf("IETESTMM"));
+        CommonUtils.updateSourceFromTarget(source3, target3);
+        assertEquals(44, gson.toJson(source3).indexOf("IETESTMM"));
     }
-    
 }
