@@ -37,10 +37,10 @@ public class RestApiUtil {
   /**
    * Request of Common nav menu.
    *
-   * @param url url of menu API
+   * @param url      url of menu API
    * @param apiToken api token
-   * @param apiKey apiKey
-   * @param traceId traceId
+   * @param apiKey   apiKey
+   * @param traceId  traceId
    *
    * @return the API repsonse from menu API call
    */
@@ -53,9 +53,9 @@ public class RestApiUtil {
 
   /**
    *
-   * @param url URL of the API endpoint.
+   * @param url       URL of the API endpoint.
    * @param authToken Photo API token.
-   * @param xapiKey API secret key.
+   * @param xapiKey   API secret key.
    * @return the Json response as String from snap logic API call.
    */
   public static String doSnapGet(String url, String authToken, String xapiKey) throws SnapException {
@@ -64,7 +64,7 @@ public class RestApiUtil {
 
     apiRequestInfo.setUrl(url);
     apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
-      .addHeader(RestApiConstants.X_API_KEY, xapiKey);
+        .addHeader(RestApiConstants.X_API_KEY, xapiKey);
     return executeGetRequest(apiRequestInfo).getResponseBody();
   }
 
@@ -92,10 +92,13 @@ public class RestApiUtil {
       CloseableHttpResponse response = httpclient.execute(request);
 
       logger.debug("HTTP response code : {}", response.getStatusLine().getStatusCode());
+      String responseStr = EntityUtils.toString(response.getEntity());
+      logger.debug("HTTP response : {}", responseStr);
       apiresponse.setResponseCode(response.getStatusLine().getStatusCode());
-      apiresponse.setResponseBody(EntityUtils.toString(response.getEntity()));
+      apiresponse.setResponseBody(responseStr);
     } catch (IOException | URISyntaxException e) {
-      throw new SnapException(String.format("Exception in executeGetRequest method while executing the request = %s", e.getMessage()));
+      throw new SnapException(
+          String.format("Exception in executeGetRequest method while executing the request = %s", e.getMessage()));
     }
     return apiresponse;
   }

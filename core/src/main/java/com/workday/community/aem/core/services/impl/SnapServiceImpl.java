@@ -273,19 +273,22 @@ public class SnapServiceImpl implements SnapService {
       try {
         JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
         JsonElement contactRoleElement = profileObject.get(CONTACT_ROLE);
-        contactRole = contactRoleElement.isJsonNull() ? "" : contactRoleElement.getAsString();
+        contactRole = (contactRoleElement == null || contactRoleElement.isJsonNull()) ? ""
+            : contactRoleElement.getAsString();
         JsonElement contactNumberElement = profileObject.get(CONTACT_NUMBER);
-        contactNumber = contactNumberElement.isJsonNull() ? "" : contactNumberElement.getAsString();
+        contactNumber = (contactRoleElement == null || contactNumberElement.isJsonNull()) ? ""
+            : contactNumberElement.getAsString();
         isNSC = contactRole.contains(NSC);
         JsonElement wrcOrgId = profileObject.get("wrcOrgId");
-        accountID = wrcOrgId.isJsonNull() ? "" : wrcOrgId.getAsString();
+        accountID = (wrcOrgId == null || wrcOrgId.isJsonNull()) ? "" : wrcOrgId.getAsString();
         JsonElement organizationName = profileObject.get("organizationName");
-        accountName = organizationName.isJsonNull() ? "" : organizationName.getAsString();
+        accountName = (organizationName == null || organizationName.isJsonNull()) ? "" : organizationName.getAsString();
         JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-        boolean isWorkdayMate = !isWorkmateElement.isJsonNull() && isWorkmateElement.getAsBoolean();
+        boolean isWorkdayMate = isWorkmateElement != null && !isWorkmateElement.isJsonNull()
+            && isWorkmateElement.getAsBoolean();
         JsonElement typeElement = profileObject.get("type");
         accountType = isWorkdayMate ? "workday"
-            : (typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
+            : (typeElement == null || typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
       } catch (JsonSyntaxException e) {
         logger.error("Error in generateAdobeDigitalData method :: {}",
             e.getMessage());
