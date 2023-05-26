@@ -3,11 +3,8 @@
     jcr:primaryType="cq:Page">
     <jcr:content
         cq:template="/conf/workday-community/settings/wcm/templates/page-content"
-        jcr:isCheckedOut="{Boolean}true"
-        jcr:mixinTypes="[mix:versionable]"
         jcr:primaryType="cq:PageContent"
         jcr:title="errors"
-        jcr:uuid="20d02a19-648b-4d16-a72f-022dc59c6caa"
         sling:resourceType="workday-community/components/structure/page"
         author=" Administrator">
         <root
