@@ -32,6 +32,15 @@
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
+                                    <drupalNodeId
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        disabled="{Boolean}true"
+                                        emptyText="Drupal Node ID"
+                                        fieldDescription="Drupal Node ID."
+                                        fieldLabel="Drupal Node ID"
+                                        name="./drupalNodeId"/>
                                     <author
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"

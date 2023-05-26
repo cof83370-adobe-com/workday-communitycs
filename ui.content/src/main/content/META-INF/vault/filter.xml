@@ -18,5 +18,7 @@
     <filter root="/content/cq:tags/release" mode="merge"/>
     <filter root="/content/cq:tags/training" mode="merge"/>
     <filter root="/content/cq:tags/asset-type" mode="merge"/>
+    <filter root="/content/cq:tags/access-control" mode="merge"/>
+    <filter root="/content/cq:tags/content-types" mode="merge"/>
     <filter root="/content/experience-fragments/workday-community" mode="merge"/>
 </workspaceFilter>

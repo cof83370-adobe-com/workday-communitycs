@@ -59,18 +59,9 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventsTypeServlet.class);
     private static final String EVENT_TYPE_CRITERIA = "?field=@commoneventtype";
 
-    /** The path resource. */
-    private transient Resource pathResource;
-
     private transient ObjectMapper objectMapper = new ObjectMapper();
 
     private final transient Gson gson = new Gson();
-
-    /** The value map. */
-    private transient ValueMap valueMap;
-    
-    /** The resource list. */
-    private transient List<Resource> resourceList;
 
     @Reference
     private transient SearchApiConfigService searchApiConfigService;
@@ -94,32 +85,27 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
         ServletCallback callback = (SlingHttpServletRequest req, SlingHttpServletResponse res, String body) -> {
             try {
                 ResourceResolver resourceResolver = request.getResourceResolver();
-                resourceList = new ArrayList<>();
+                List<Resource>  resourceList = new ArrayList<>();
 
-                CloseableHttpClient httpClient = HttpClients.createDefault();
-
-                String token = gson.fromJson(body, JsonObject.class).get("searchToken").getAsString();
-
-                try {
+                try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+                    String token = gson.fromJson(body, JsonObject.class).get("searchToken").getAsString();
                     EventTypes eventTypes = getEventTypes(httpClient, token);
 
                     if (eventTypes != null && eventTypes.getValues().size() > 0) {
-                        eventTypes.getValues().forEach( value -> {
-                            valueMap = new ValueMapDecorator(new HashMap<>());
+                        eventTypes.getValues().forEach(value -> {
+                            ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
                             valueMap.put("value", value.getLookupValue());
                             valueMap.put("text", value.getValue());
                             resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), "nt:unstructured", valueMap));
                         });
                     }
-                } finally {
-                    httpClient.close();
                 }
 
                 /*Create a DataSource that is used to populate the drop-down control*/
                 DataSource dataSource = new SimpleDataSource(resourceList.iterator());
                 request.setAttribute(DataSource.class.getName(), dataSource);
             } catch (Exception exception) {
-                LOGGER.error("Error Occured in DoGet Method : {}", exception.getMessage());
+                LOGGER.error("Error Occurred in DoGet Method in CoveoEventsTypeServlet : {}", exception.getMessage());
             }
 
             return null;

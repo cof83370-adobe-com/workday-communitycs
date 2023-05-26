@@ -23,6 +23,13 @@ public class APIResponse {
   }
 
   /**
+   * Getter for response code.
+   */
+  public int getResponseCode() {
+    return responseCode;
+  }
+
+  /**
    * Setter for response body.
    *
    * @param responseBody response body.
