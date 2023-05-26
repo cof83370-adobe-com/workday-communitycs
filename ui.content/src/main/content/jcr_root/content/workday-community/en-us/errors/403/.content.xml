@@ -29,12 +29,11 @@
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="workday-community/components/core/container">
                         <button
-                            jcr:lastModified="{Date}2023-05-25T09:42:00.530-07:00"
-                            jcr:lastModifiedBy="admin"
                             jcr:primaryType="nt:unstructured"
                             jcr:title="Home"
                             sling:resourceType="workday-community/components/core/button"
-                            linkTarget="_blank"/>
+                            linkTarget="_blank"
+                            linkURL="/content/workday-community/en-us"/>
                         <title
                             jcr:primaryType="nt:unstructured"
                             jcr:title="Access Denied"
