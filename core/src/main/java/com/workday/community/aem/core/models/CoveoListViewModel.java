@@ -8,4 +8,8 @@ public interface CoveoListViewModel {
     public boolean getDisplayMetadata();
 
     public List<CoveoFilterModel> getCategories();
+
+    public String getSearchHub();
+
+    public String getOrgId();
 }

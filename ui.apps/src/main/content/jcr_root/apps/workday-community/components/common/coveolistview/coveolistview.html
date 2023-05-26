@@ -1,9 +1,7 @@
 <sly data-sly-use.coveo="${'com.workday.community.aem.core.models.CoveoListViewModel'}"></sly>
-<div>
-  <ul data-sly-list="${coveo.categories}">
-    <li class="">${item.category @ context='html'}</li>
-  </ul>
-</div>
+<span style="display: none">
+  <span id="listViewData" data-orgid="${coveo.orgId}" data-searchhub="${coveo.searchHub}"></span>
+</span>
 <atomic-search-interface id="search" fields-to-include='["commonproducttags", "commonrecentactivitydate", "commcontenttype", "commonmodifieddate"]'>
   <atomic-search-layout>
     <atomic-layout-section section="facets" class="facet-section">
@@ -216,6 +214,8 @@
     buildTab,
     loadGenericAnalyticsActions,
   } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
+
+  const listViewData = document.getElementById("listViewData");
   const getToken = async () => {
     const tokenUrl = '/bin/search/token';
     try {
@@ -249,8 +249,8 @@
       const searchInterface = document.querySelector('atomic-search-interface');
       await searchInterface.initialize({
         accessToken: token,
-        searchHub: "communityv1",
-        organizationId: "workdayp3sqtwnv",
+        searchHub: listViewData.getAttribute("data-searchhub"),
+        organizationId: listViewData.getAttribute("data-orgid"),
         renewAccessToken: getToken,
         preprocessRequest: (request, clientOrigin) => {
           if (clientOrigin === 'searchApiFetch') {
