@@ -148,6 +148,12 @@
                     display: block;
                 }
             }
+
+            .cmp-toc__firstlevelitem-title, .cmp-toc__secondlevelitem-title, .cmp-toc__thirdlevelitem-title {
+                width: 80%;
+                display: inline-block;
+                overflow: hidden;
+            }
         }
     }
 
