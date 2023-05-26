@@ -627,6 +627,17 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:styleGroups jcr:primaryType="nt:unstructured">
                             <item0
+                                cq:styleGroupLabel="Container Background"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="bg-gray"
+                                        cq:styleId="1684977912448"
+                                        cq:styleLabel="Gray"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                            <item1
                                 cq:styleGroupLabel="Teaser Styles"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
@@ -636,8 +647,8 @@
                                         cq:styleLabel="Hero"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item0>
-                            <item1
+                            </item1>
+                            <item2
                                 cq:styleGroupLabel="Container Styles"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
@@ -667,8 +678,8 @@
                                         cq:styleLabel="66/33"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item1>
-                            <item2
+                            </item2>
+                            <item3
                                 cq:styleGroupLabel="Spacing"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
@@ -753,7 +764,7 @@
                                         cq:styleLabel="Add margin bottom 8px"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item2>
+                            </item3>
                         </cq:styleGroups>
                     </policy_1809301152227968>
                     <policy_1678388306174

@@ -33,7 +33,8 @@ import java.util.Map;
  * The CoveoEventFeedModel implementation Class.
  */
 @Model(
-    adaptables = {Resource.class,
+    adaptables = {
+        Resource.class,
         SlingHttpServletRequest.class
     },
     adapters = { CoveoEventFeedModel.class },

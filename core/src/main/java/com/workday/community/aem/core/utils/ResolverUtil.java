@@ -7,6 +7,9 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * ResolverUtil class.
+ */
 public class ResolverUtil {
 
     /**
@@ -18,7 +21,7 @@ public class ResolverUtil {
      */
     public static ResourceResolver newResolver(ResourceResolverFactory resourceResolverFactory, String serviceUser)
             throws LoginException {
-        final Map<String, Object> paramMap = new HashMap<String, Object>();
+        final Map<String, Object> paramMap = new HashMap<>();
         paramMap.put(ResourceResolverFactory.SUBSERVICE, serviceUser);
 
         // Fetches the service resolver using service user.

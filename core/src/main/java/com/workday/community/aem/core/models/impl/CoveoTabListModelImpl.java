@@ -7,126 +7,140 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.CoveoTabListModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.utils.DamUtils;
-import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import java.util.Iterator;
+import java.util.Arrays;
 
 @Model(
-    adaptables = SlingHttpServletRequest.class,
+    adaptables = {
+        Resource.class,
+        SlingHttpServletRequest.class
+    },
     adapters = { CoveoTabListModel.class },
     resourceType = { CoveoTabListModelImpl.RESOURCE_TYPE },
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoTabListModelImpl implements CoveoTabListModel {
   private static final Logger logger = LoggerFactory.getLogger(CoveoTabListModelImpl.class);
-
   protected static final String RESOURCE_TYPE = "workday-community/components/common/coveotablist";
   private static final String MODEL_CONFIG_FILE = "/content/dam/workday-community/resources/tab-list-criteria-data.json";
-  private static final String PROJECT_PATH  = "/content/cq:tags/product";
+
+  @ValueMapValue
+  String[] productTags;
+
+  @ValueMapValue
+  String[] feeds;
+
   @Self
   private SlingHttpServletRequest request;
 
   @OSGiService
   private SearchApiConfigService searchConfigService;
 
-  private final LRUCacheWithTimeout<String, String> cache = new LRUCacheWithTimeout(100, 60 * 1000);
-
   private JsonObject modelConfig;
 
-  // TODO: this should inject from component property
-  private final String product = "Financial Management";
-
-  @PostConstruct
-  private void init() {
-    this.modelConfig = DamUtils.readJsonFromDam(request.getResourceResolver(), MODEL_CONFIG_FILE);
+  public void init(SlingHttpServletRequest request) {
+    if (request != null) {
+      logger.debug("pass-in request object, mostly for test purpose");
+      this.request = request;
+    }
   }
 
   @Override
   public JsonObject getSearchConfig() {
     JsonObject config = new JsonObject();
-    config.addProperty("orgId", searchConfigService.getOrgId());
-    config.addProperty("searchHub", searchConfigService.getSearchHub());
+    config.addProperty("orgId", this.searchConfigService.getOrgId());
+    config.addProperty("searchHub", this.searchConfigService.getSearchHub());
     config.addProperty("analytics", true);
 
     return config;
   }
 
-  @Override
-  public JsonObject getCompConfig() {
-    JsonObject props = new JsonObject();
-    props.addProperty("title", "Financial Management Activity");
-    props.addProperty("containerWidth", "400px");
-    props.addProperty("rows", 5);
-    props.addProperty("product", this.product);
-    return props;
-  }
 
-  //TODO this is to be used by both component editor dialog and htl
   @Override
   public JsonArray getFields() {
-    return this.modelConfig.getAsJsonArray("fields");
+    return this.getModelConfig().getAsJsonArray("fields");
   }
+
+  @Override
+  public JsonArray getSelectedFields() {
+    JsonArray allFields = this.getModelConfig().getAsJsonArray("fields");
+    JsonArray selectedFields = new JsonArray();
+    if (feeds != null && feeds.length > 0 ) {
+       for (int i=0; i<allFields.size(); i++) {
+         for (String feed : feeds) {
+           JsonObject item = allFields.get(i).getAsJsonObject();
+           if (item.get("name").getAsString().equals(feed)) {
+             selectedFields.add(item);
+           }
+         }
+       }
+    }
+
+    return selectedFields.isEmpty()? allFields : selectedFields;
+  }
+
+
 
   @Override
   public String getProductCriteria() {
     ResourceResolver resourceResolver = this.request.getResourceResolver();
     TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
-    try {
-      Tag productTag = tagManager.resolve(PROJECT_PATH);
-      if (productTag != null) {
-        Iterator<Tag> products = productTag.listAllSubTags();
 
-        while (products != null && products.hasNext()) {
-          Tag pro = products.next();
-          if (pro.getTitle().equals(product)) {
-            return getProductCriteria(pro);
-          }
-        }
-      }
-    } catch (NullPointerException e) {
-      logger.error("ProductCriteria retrieve fails with exception: " + e.getMessage());
+    if (this.productTags == null || this.productTags.length == 0) {
       return "";
     }
 
-    return "";
+    StringBuilder sb = new StringBuilder();
+    sb.append("(@druproducthierarchy==(");
+
+    Arrays.stream(productTags).forEach(productTag -> {
+      Tag tag = tagManager.resolve(productTag);
+      sb.append("\"").append(this.getTitle(tag)).append("\",");
+    });
+
+    sb.deleteCharAt(sb.length()-1);
+    sb.append("))");
+    return sb.toString();
+  }
+
+  @Override
+  public String getFeedUrlBase() {
+    return this.getModelConfig().getAsJsonObject("feedUrlBase").get("value").getAsString();
   }
 
   @Override
   public String getExtraCriteria() {
-    return this.modelConfig.getAsJsonObject("extraCriteria").get("value").getAsString();
+    return this.getModelConfig().getAsJsonObject("extraCriteria").get("value").getAsString();
   }
 
-  private String getProductCriteria(Tag product) {
-    String productCriteria = cache.get(this.product);
-
-    if (StringUtils.isEmpty(productCriteria)) {
-      StringBuilder sb = new StringBuilder();
-      String prodTitle = product.getTitle();
-      sb.append("(@druproducthierarchy==(\"").append(prodTitle).append("\",");
-
-      Iterator<Tag> children = product.listAllSubTags();
-      while (children != null && children.hasNext()) {
-        Tag child = children.next();
-        String cp = prodTitle + "|" + child.getTitle();
-        sb.append("\"").append(cp).append("\",");
+  private String getTitle(Tag tag) {
+    StringBuilder result = new StringBuilder();
+    while (!tag.getTagID().equals("product:")) {
+      if (result.length() == 0) {
+        result = new StringBuilder(tag.getTitle());
+      } else {
+        result.insert(0, tag.getTitle() + "|");
       }
-
-      sb.deleteCharAt(sb.length()-1);
-      sb.append("))");
-      productCriteria = sb.toString();
-      cache.put(this.product, productCriteria);
+      tag = tag.getParent();
     }
 
-    return productCriteria;
+    return result.toString();
+  }
+
+  private JsonObject getModelConfig() {
+    if (this.modelConfig == null) {
+      this.modelConfig = DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
+    }
+    return this.modelConfig;
   }
 }
