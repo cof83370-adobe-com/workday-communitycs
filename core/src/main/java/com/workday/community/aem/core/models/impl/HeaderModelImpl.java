@@ -73,7 +73,6 @@ public class HeaderModelImpl implements HeaderModel {
     }
 
     sfId = OurmUtils.getSalesForceId(resourceResolver);
-    logger.debug("Salesforce Id : {}", sfId);
     if (StringUtils.isBlank(sfId)) {
       // Default fallback.
       logger.debug("Salesforce Id for current user is unavailable");
