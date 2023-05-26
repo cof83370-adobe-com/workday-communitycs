@@ -1,8 +1,13 @@
+.header-container {
 .cmp-header {
-	background-color: $wdc-color-cantaloupe-500;
-    height: auto;
-    margin-right: -11%;
-	padding: 1% 10px;
+background-color: $wdc-color-cantaloupe-500;
+padding: 10px;
+height: 40px;
+width: 100%;
+position: fixed;
 }
-
-
+.cmp-react__header {
+position: fixed;
+margin-top: 40px;
+}
+}
