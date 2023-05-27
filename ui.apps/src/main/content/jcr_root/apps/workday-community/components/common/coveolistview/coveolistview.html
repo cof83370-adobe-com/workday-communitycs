@@ -1,17 +1,13 @@
 <sly data-sly-use.coveo="${'com.workday.community.aem.core.models.CoveoListViewModel'}"></sly>
-<span style="display: none">
+<span>
   <span id="listViewData" data-orgid="${coveo.orgId}" data-searchhub="${coveo.searchHub}"></span>
 </span>
 <atomic-search-interface id="search" fields-to-include='["commonproducttags", "commonrecentactivitydate", "commcontenttype", "commonmodifieddate"]'>
   <atomic-search-layout>
     <atomic-layout-section section="facets" class="facet-section">
       <span class="facet-header">Refine By</span>
-      <atomic-facet-manager>
-        <atomic-facet field="commcontenttype" label="Content type" class="facet"></atomic-facet>
-        <atomic-category-facet field="using_workday" label="Using workday" with-search="true" class="facet" delimiting-character="|"></atomic-category-facet>
-        <atomic-category-facet field="druproducthierarchy" label="Product" with-search="true" class="facet" delimiting-character="|"></atomic-category-facet>
-        <atomic-facet field="drufieldrelease" label="Release" class="facet"></atomic-facet>
-        <atomic-facet field="com_industry" label="Industry" class="facet"></atomic-facet>
+      <atomic-facet-manager data-sly-list.facet="${coveo.categories}">
+        <atomic-category-facet field="${facet.field}" label="${facet.label}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|"></atomic-category-facet>
       </atomic-facet-manager>
     </atomic-layout-section>
     <atomic-layout-section section="main">

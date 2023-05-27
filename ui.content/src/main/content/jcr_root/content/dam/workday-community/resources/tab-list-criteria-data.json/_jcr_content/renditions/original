@@ -22,5 +22,15 @@
   },
   "feedUrlBase" : {
     "value" : "https://resourcecenter.workday.com/en-us/wrc/home/search.html#q=workday&tab=all-results&f[commoncontenttype]="
+  },
+  "tagIdToField" : {
+    "product": { "field": "commonproducthierarchy", "label": "Product" },
+    "using-workday": { "field": "using_workday" , "label": "Using Workday" },
+    "programs-and-tools": { "field": "programsToolsTags", "label": "Programs and Tools" },
+    "release": { "field": "releaseTags", "label": "Release" },
+    "industry": { "field": "industryTags", "label": "Industry" },
+    "user": { "field": "userTags", "label": "User" },
+    "region-and-country": { "field": "regionCountryTags", "label": "Region and Country" },
+    "training": { "field": "regionCountryTags", "label": "Training" }
   }
 }
