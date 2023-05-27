@@ -1,15 +1,41 @@
 package com.workday.community.aem.core.models;
 import java.util.List;
 
+/**
+ * Interface for coveo list view model.
+ */
 public interface CoveoListViewModel {
-    public boolean getDisplayTags();
+    /**
+     * Display tags flag.
+     *
+     * @return
+     */
+    boolean getDisplayTags();
 
+    /**
+     * Display metadata flag.
+     *
+     * @return
+     */
+    boolean getDisplayMetadata();
 
-    public boolean getDisplayMetadata();
+    /**
+     * Category facet.
+     * @return
+     */
+    List<CategoryFacetModel> getCategories();
 
-    public List<CoveoFilterModel> getCategories();
+    /**
+     * Returns search hub.
+     *
+     * @return
+     */
+    String getSearchHub();
 
-    public String getSearchHub();
-
-    public String getOrgId();
+    /**
+     * Returns coveo orgid
+     *
+     * @return
+     */
+    String getOrgId();
 }

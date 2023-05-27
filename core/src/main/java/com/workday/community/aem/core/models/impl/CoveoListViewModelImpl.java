@@ -1,8 +1,7 @@
 package com.workday.community.aem.core.models.impl;
 
-import com.workday.community.aem.core.models.CoveoFilterModel;
+import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
-import com.workday.community.aem.core.pojos.CategoryFacet;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import org.apache.sling.api.resource.Resource;
@@ -30,7 +29,7 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
 
   @Inject
   @Named("categories/.")
-  private List<CoveoFilterModel> categories;
+  private List<CategoryFacetModel> categories;
 
   @Reference
   private SnapService snapService;
@@ -49,7 +48,7 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
   }
 
   @Override
-  public List<CoveoFilterModel> getCategories() {
+  public List<CategoryFacetModel> getCategories() {
     return categories;
   }
 
@@ -61,12 +60,5 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
   @Override
   public String getOrgId() {
     return searchConfigService.getOrgId();
-  }
-
-  public List<CategoryFacet> getFacets() {
-    for (CoveoFilterModel category : categories) {
-      new CategoryFacet();
-    }
-    return List.of();
   }
 }
