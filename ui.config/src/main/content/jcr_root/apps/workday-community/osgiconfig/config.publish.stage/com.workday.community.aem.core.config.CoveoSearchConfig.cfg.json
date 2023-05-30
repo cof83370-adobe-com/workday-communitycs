@@ -1,15 +1,15 @@
 
 {
-    "tokenApi":"$[env:coveoSearchEndpoint]",
-    "searchFieldLookupApi": "$[env:coveoSearchFieldEndpoint]",
-    "tokenApiKey":"$[secret:coveoApiKey]",
-    "recommendationApiKey":"${secret:coveoRecommendationApiKey]",
-    "upcomingEventApiKey":"${secret:coveoUpcomingEventApiKey]",
-    "orgId":"$[secret:coveoOrgId]",
-    "searchHub": "$[secret:coveoSearchHub]",
-    "defaultEmail":"$[env:coveoDefaultEmail]",
-    "userIdProvider": "env:coveoUserIdProvider",
-    "userType": "$[env:coveoUserType]",
-    "tokenValidTime": "$[env:CoveoSearchTokenValidTime]",
-    "devMode": "$[env:devMode]"
+    "tokenApi":"$[env:coveoSearchEndpoint;default=\"https://platform.cloud.coveo.com/rest/search/v2/token\"]",
+    "searchFieldLookupApi": "$[env:coveoSearchFieldEndpoint;default=\"https://platform.cloud.coveo.com/rest/search/values\"]",
+    "tokenApiKey":"$[secret:coveoSearchApiKey]",
+    "recommendationApiKey":"${secret:coveoSearchRecommendationApiKey]",
+    "upcomingEventApiKey":"${secret:coveoSearchUpcomingEventApiKey]",
+    "orgId":"$[env:coveoSearchOrgId]",
+    "searchHub": "$[env:coveoSearchSearchHub]",
+    "defaultEmail":"$[env:coveoSearchDefaultEmail]",
+    "userIdProvider": "[env:coveoSearchUserIdProvider;default=\"Email Security Provider\"]",
+    "userType": "$[env:coveoSearchUserType]",
+    "tokenValidTime": "$[env:CoveoSearchTokenValidTime;default=60000]",
+    "devMode": "$[env:devMode;default=false]"
 }

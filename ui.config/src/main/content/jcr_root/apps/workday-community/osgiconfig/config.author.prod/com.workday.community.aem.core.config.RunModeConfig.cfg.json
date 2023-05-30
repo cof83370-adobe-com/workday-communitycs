@@ -1,6 +1,6 @@
 
 {
-    "instance":"$[env:runModeInstance;default=author]",
-    "schedulerName": "$[env:runModeEnv;default=dev",
+    "instance":"$[env:runModeInstance;default=\"author\"]",
+    "schedulerName": "$[env:runModeEnv;default=\"dev\"]",
     "cronExpression": "$[env:adobeAnalyticsUri]"
   }

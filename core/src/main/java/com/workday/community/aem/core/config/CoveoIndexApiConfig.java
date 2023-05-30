@@ -5,8 +5,8 @@ import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 @ObjectClassDefinition(
-    name = "Coveo api configuration",
-    description = "Parameters for coveo api"
+    name = "Coveo Indexing api configuration",
+    description = "Parameters for Coveo indexing api"
 )
 public @interface CoveoIndexApiConfig {
 

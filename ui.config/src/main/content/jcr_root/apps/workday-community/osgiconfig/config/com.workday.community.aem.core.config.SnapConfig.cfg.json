@@ -12,7 +12,7 @@
     "navApiKey":"$[secret:navApiKey]",
     "navApiToken":"$[secret:navApiToken]",
     "navFallbackMenuData": "/content/dam/workday-community/resources/local-header-data.json",
-    "navFallbackMenuServiceUser": "$[env:navFallbackMenuServiceUser;default=\"readserviceuser\"",
+    "navFallbackMenuServiceUser": "$[env:navFallbackMenuServiceUser;default=\"readserviceuser\"]",
     "menuCacheMax": "$[env:navMenuCacheMax;default=100]",
     "menuCacheTimeout": "$[env:navMenuCacheTimeout;default=86400000L]",
     "sfdcUserAvatarUrl": "$[env:sfdcUserAvatarUrl]",

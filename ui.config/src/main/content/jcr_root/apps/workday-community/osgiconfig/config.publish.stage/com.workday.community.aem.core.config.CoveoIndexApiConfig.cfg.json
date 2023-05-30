@@ -1,10 +1,10 @@
 
 {
     "isCoveoIndexingEnabled":"$[env:CoveoIndexingEnabled]",
+    "coveoApiKey":"$[secret:CoveoIndexingApiKey]",
     "pushApiUri":"$[env:CoveoIndexingPushApi;default=\"https://api.cloud.coveo.com/push/v1/organizations/\"]",
     "sourceApiUri":"$[env:CoveoIndexingSourceApi;default=\"https://platform.cloud.coveo.com/rest/organizations/\"]",
     "organizationId":"$[env:CoveoIndexingOrgId]",
     "sourceId":"$[env:CoveoIndexingSourceId]",
-    "coveoApiKey":"$[secret:CoveoIndexingApiKey]",
     "batchSize": "$[env:CoveoIndexingBatchSize;default=50]"
   }
