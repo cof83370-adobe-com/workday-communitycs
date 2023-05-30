@@ -7,7 +7,7 @@
     "snapProfilePath":"$[env:snapProfilePath]",
     "snapProfileApiToken":"$[secret:snapProfileApiToken]",
     "snapProfileApiKey":"$[secret:snapProfileApiKey]",
-    "navFallbackMenuData": "/content/dam/workday-community/resources/local-header-data.json",
+    "sfToAemUserGroupMap":"/content/dam/workday-community/resources/sf-to-aem-group-map.json",
     "navApi":"$[env:navApi]",
     "navApiKey":"$[secret:navApiKey]",
     "navApiToken":"$[secret:navApiToken]",
@@ -16,5 +16,5 @@
     "sfdcUserAvatarUrl": "$[env:sfdcUserAvatarUrl]",
     "sfdcUserAvatarToken": "$[secret:sfdcUserAvatarToken]",
     "sfdcUserAvatarApiKey": "$[secret:sfdcUserAvatarApiKey]",
-    "beta": true
+    "beta": "[env:isBeta]"
 }

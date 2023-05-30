@@ -1,6 +1,6 @@
 
 {
-    "instance":"publish",
-    "env":"stage",
-    "adobeAnalyticsUri":"$[env:adobeAnalyticsUri]"
-}
+    "instance":"$[env:runModeInstance;default=author]",
+    "schedulerName": "$[env:runModeEnv;default=dev",
+    "cronExpression": "$[env:adobeAnalyticsUri]"
+  }

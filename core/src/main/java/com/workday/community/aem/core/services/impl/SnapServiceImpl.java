@@ -205,7 +205,7 @@ public class SnapServiceImpl implements SnapService {
    */
   private String getMergedHeaderMenu(JsonObject sfNavObj, JsonObject defaultMenu) {
     if (sfNavObj != null && config.beta()) {
-      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu);
+      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu, "id");
       return gson.toJson(sfNavObj);
     }
 
@@ -273,22 +273,19 @@ public class SnapServiceImpl implements SnapService {
       try {
         JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
         JsonElement contactRoleElement = profileObject.get(CONTACT_ROLE);
-        contactRole = (contactRoleElement == null || contactRoleElement.isJsonNull()) ? ""
-            : contactRoleElement.getAsString();
+        contactRole = contactRoleElement.isJsonNull() ? "" : contactRoleElement.getAsString();
         JsonElement contactNumberElement = profileObject.get(CONTACT_NUMBER);
-        contactNumber = (contactRoleElement == null || contactNumberElement.isJsonNull()) ? ""
-            : contactNumberElement.getAsString();
+        contactNumber = contactNumberElement.isJsonNull() ? "" : contactNumberElement.getAsString();
         isNSC = contactRole.contains(NSC);
         JsonElement wrcOrgId = profileObject.get("wrcOrgId");
-        accountID = (wrcOrgId == null || wrcOrgId.isJsonNull()) ? "" : wrcOrgId.getAsString();
+        accountID = wrcOrgId.isJsonNull() ? "" : wrcOrgId.getAsString();
         JsonElement organizationName = profileObject.get("organizationName");
-        accountName = (organizationName == null || organizationName.isJsonNull()) ? "" : organizationName.getAsString();
+        accountName = organizationName.isJsonNull() ? "" : organizationName.getAsString();
         JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-        boolean isWorkdayMate = isWorkmateElement != null && !isWorkmateElement.isJsonNull()
-            && isWorkmateElement.getAsBoolean();
+        boolean isWorkdayMate = !isWorkmateElement.isJsonNull() && isWorkmateElement.getAsBoolean();
         JsonElement typeElement = profileObject.get("type");
         accountType = isWorkdayMate ? "workday"
-            : (typeElement == null || typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
+            : (typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
       } catch (JsonSyntaxException e) {
         logger.error("Error in generateAdobeDigitalData method :: {}",
             e.getMessage());

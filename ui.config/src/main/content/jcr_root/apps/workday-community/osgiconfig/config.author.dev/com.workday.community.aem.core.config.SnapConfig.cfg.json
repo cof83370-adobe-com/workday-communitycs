@@ -16,5 +16,5 @@
     "sfdcUserAvatarUrl": "$[env:sfdcUserAvatarUrl]",
     "sfdcUserAvatarToken": "$[secret:sfdcUserAvatarToken]",
     "sfdcUserAvatarApiKey": "$[secret:sfdcUserAvatarApiKey]",
-    "beta": true
+    "beta": "[env:isBeta]"
 }

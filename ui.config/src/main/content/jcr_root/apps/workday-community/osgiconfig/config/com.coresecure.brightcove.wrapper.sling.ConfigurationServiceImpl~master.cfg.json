@@ -1,6 +1,6 @@
 {
-    "accountId":"$[env:brightcoveAccountId]",
-    "clientId":"$[env:brightcoveClientId]",
-    "clientSecret": "$[secret:brightcoveClientSecret]",
+    "accountId":"6415684319001",
+    "clientId":"9e764ec8-7b40-46ec-98bb-e88331c7f8e1",
+    "clientSecret": "6Cv7YjG5EFp37UKhxB686LDbZQIXE6hqF1Y7h58VfxrU8V7DKb84biBtcWLcDaNA11Nn42zflupj8fp-MqG8zA",
     "allowedGroups":["everyone","administrators","CMTY CC Admin"]
 }

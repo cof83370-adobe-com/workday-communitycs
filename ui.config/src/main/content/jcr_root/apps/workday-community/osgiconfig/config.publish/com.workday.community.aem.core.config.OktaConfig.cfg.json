@@ -1,5 +1,5 @@
 {
-    "customDomain":"the Okta domain",
-    "redirectUri":"the-okta-logout-redirect-path",
-    "isOktaIntegrationEnabled": true
+    "customDomain":"$[env:oktaCustomDomain]",
+    "redirectUri":"$[env.oktaRedirectUri]",
+    "isOktaIntegrationEnabled": "$[env.oktaIsIntegrationEnabled]"
 }
