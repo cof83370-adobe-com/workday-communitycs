@@ -105,7 +105,7 @@ public class CategoryFacetModel {
         if (fieldMapConfig == null) {
             fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
         }
-        return fieldMapConfig.getAsJsonObject("tagIdToField");
+        return fieldMapConfig.getAsJsonObject("tagIdToCoveoField");
     }
 
     /**
