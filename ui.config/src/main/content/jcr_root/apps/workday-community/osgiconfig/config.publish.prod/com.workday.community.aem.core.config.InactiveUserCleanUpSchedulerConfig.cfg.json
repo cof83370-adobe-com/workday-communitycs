@@ -1,6 +1,0 @@
-
-{
-    "isSchedulerEnabled":"$[env:inactiveUserCleanSchedulerEnabled;default=false]",
-    "schedulerName": "$[env:inactiveUserCleanSchedulerName]",
-    "cronExpression": "$[env:inactiveUserCleanSchedulerCronExpression;default=\"0 0 0 * * ?\"]"
-  }
