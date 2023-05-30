@@ -116,9 +116,12 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             if (page == null) {
                 throw new ResourceNotFoundException("Page not found");
             }
+            ValueMap data = page.getProperties();
+            if (data == null) {
+                throw new ResourceNotFoundException("Page data not found");
+            }
             TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-            ValueMap data = page.getProperties();
             String documentId = runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
             properties.put("documentId", documentId);
             properties.put("isAem", true);
@@ -168,8 +171,6 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
     @Override
     public void processDateFields(ValueMap data, HashMap<String, Object> properties) {
-        if (data == null) return;
-
         for (String dateField: dateFields) {
             GregorianCalendar value = data.get(dateField, GregorianCalendar.class);
             if (value == null && dateField.equals("postedDate")) {
