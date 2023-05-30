@@ -6,8 +6,12 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.workday.community.aem.core.utils.DamUtils;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.*;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -52,29 +56,34 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     @Reference
     private Externalizer externalizer;
 
+    /**
+     * Search config file path.
+     */
+    private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";
+
+    /**
+     * Search config json object
+     */
+    private JsonObject fieldMapConfig;
+
     // @Todo Once Tek system unifies the tag format, we can remove duplicate tags here.
     /** The taxonomyFields. */
-    private final ArrayList<String> taxonomyFields = new ArrayList<>(
-        Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "eventAudience", "eventFormat")
-    );
+    private ArrayList<String> taxonomyFields = new ArrayList<>();
 
     /** The dateFields. */
-    private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("eventStartDate", "eventEndDate", "postedDate", "updatedDate"));
+    private ArrayList<String> dateFields = new ArrayList<>();
 
     /** The hierarchyFields. */
-    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "industryTags", "userTags", "programsToolsTags", "regionCountryTags", "trainingTags"));
+    private ArrayList<String> hierarchyFields = new ArrayList<>();
 
     /** The stringFields. */
-    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
+    private ArrayList<String> stringFields = new ArrayList<>();
 
     /** The page tags. */
-    private static final Map<String, String> pageTagMap = Map.of("product", "productTags",
-            "using-workday", "usingWorkdayTags", "programs-and-tools", "programsToolsTags",
-            "release", "releaseTags", "industry", "industryTags", "user", "userTags",
-            "region-and-country", "regionCountryTags", "training", "trainingTags");
+    private HashMap<String, String> pageTagMap = new HashMap<>();
 
     /** The custom components. */
-    private static final Map<String, String> customComponents =  Map.of("root/container/eventregistration/button", "registrationLink");
+    private HashMap<String, String> customComponents =  new HashMap<>();
 
     /** The TEXT_COMPONENT. */
     public static final String TEXT_COMPONENT = "workday-community/components/core/text";
@@ -87,6 +96,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
     /** The SECURITY_IDENTITY_PROVIDER. */
     private static final String SECURITY_IDENTITY_PROVIDER = "Community_Secured_Identity_Provider";
+
+    @Activate
+    public void init() {
+        this.setFieldMapConfig();
+    }
 
     @Override
     public HashMap<String, Object> extractPageProperties(String path) {
@@ -118,6 +132,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                     if (hierarchyFields.contains(taxonomyField)) {
                         value = processHierarchyTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
                         properties.put(taxonomyField + "Hierarchy", value);
+                    }
+                    if (taxonomyField.equals("eventAudience") || taxonomyField.equals("eventFormat")) {
+                        String fieldName = "eventTags";
+                        value = processHierarchyTaxonomyFields(tagManager, taxonomyIds, fieldName);
+                        properties.put(fieldName + "Hierarchy", value);
                     }
                 }
             }
@@ -341,6 +360,28 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
            }
         }
 
+    }
+
+    /**
+     * Field map json object.
+     */
+    private void setFieldMapConfig() {
+        if (fieldMapConfig == null) {
+            try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+                fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
+            } catch (LoginException e) {
+                logger.error("Error reading filed map: {}", e.getMessage());
+            }
+        }
+        if (fieldMapConfig != null) {
+            Gson g = new Gson();
+            pageTagMap = g.fromJson(fieldMapConfig.get("tagsToAemField").toString(), HashMap.class);
+            taxonomyFields = g.fromJson(fieldMapConfig.get("taxonomyFields").toString(), ArrayList.class);
+            dateFields = g.fromJson(fieldMapConfig.get("dateFields").toString(), ArrayList.class);
+            hierarchyFields = g.fromJson(fieldMapConfig.get("hierarchyFields").toString(), ArrayList.class);
+            stringFields = g.fromJson(fieldMapConfig.get("stringFields").toString(), ArrayList.class);
+            customComponents = g.fromJson(fieldMapConfig.get("customComponents").toString(), HashMap.class);
+        }
     }
 
 }

@@ -14,11 +14,8 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
+import java.lang.reflect.Field;
+import java.util.*;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -132,7 +129,13 @@ public class ExtractPagePropertiesServiceImplTest {
      * Test process string fields.
      */
     @Test
-    public void testPorcessStringFields() {
+    public void testPorcessStringFields() throws NoSuchFieldException, IllegalAccessException {
+        List<String> l = new ArrayList<>();
+        l.add("pageTitle");
+        l.add("cq:template");
+        Field f = extract.getClass().getDeclaredField("stringFields");
+        f.setAccessible(true);
+        f.set(extract, l);
         ValueMap data = mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<String, Object>();
         doReturn("/conf/workday-community/settings/wcm/templates/events").when(data).get("cq:template", String.class);
@@ -147,7 +150,12 @@ public class ExtractPagePropertiesServiceImplTest {
      * Test process date fields.
      */
     @Test
-    public void testPorcessDateFields() {
+    public void testPorcessDateFields() throws NoSuchFieldException, IllegalAccessException {
+        List<String> l = new ArrayList<>();
+        l.add("eventStartDate");
+        Field f = extract.getClass().getDeclaredField("dateFields");
+        f.setAccessible(true);
+        f.set(extract, l);
         ValueMap data = mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<>();
         GregorianCalendar value = new GregorianCalendar();

@@ -7,12 +7,12 @@
     <atomic-layout-section section="facets" class="facet-section">
       <span class="facet-header">Refine By</span>
       <atomic-facet-manager data-sly-list.facet="${coveo.categories}">
-        <atomic-category-facet field="${facet.field}" label="${facet.label}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|"></atomic-category-facet>
+        <atomic-category-facet field="${facet.field}" label="${facet.searchHelpText}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|"></atomic-category-facet>
       </atomic-facet-manager>
     </atomic-layout-section>
     <atomic-layout-section section="main">
       <atomic-layout-section section="search">
-        <atomic-search-box>
+        <atomic-search-box data-trigger-query-on-clear="true">
         </atomic-search-box>
         <atomic-sort-dropdown>
           <atomic-sort-expression
@@ -36,7 +36,7 @@
       <atomic-layout-section section="results">
         <atomic-result-list>
           <atomic-query-error></atomic-query-error>
-          <atomic-no-results></atomic-no-results>
+          <atomic-no-results>No result found.</atomic-no-results>
           <atomic-result-template>
             <template>
               <style>
@@ -177,7 +177,7 @@
                     <atomic-result-text field="drubrainstormstatus" data-atomic-rendered="true" data-atomic-loaded="true" should-highlight="" class="hydrated"></atomic-result-text>
                   </atomic-field-condition>
                   <atomic-field-condition class="field hydrated hide-divider" if-defined="commcontenttype"><!---->
-                    <atomic-text value="Content Type: " data-atomic-rendered="true" data-atomic-loaded="true" class="hydrated"></atomic-text>
+                    <atomic-text value="Content Type:&nbsp;" data-atomic-rendered="true" data-atomic-loaded="true" class="hydrated"></atomic-text>
                     <atomic-result-text class="field hydrated" field="commcontenttype" data-atomic-rendered="true" data-atomic-loaded="true" should-highlight="">
                     </atomic-result-text>
                   </atomic-field-condition>
@@ -272,7 +272,6 @@
         logCustomEvent,
         engine,
       };
-
       searchInterface.executeFirstSearch();
     };
     main().then(() => {});

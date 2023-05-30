@@ -49,6 +49,12 @@
                                                             multiple="{Boolean}false"
                                                             name="./category"
                                                             rootPath="/content/cq:tags"/>
+                                                        <searchhelptext
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                                emptyText="Search Help Text"
+                                                                fieldLabel="Search Help Text"
+                                                                name="./searchHelpText" />
                                                     </items>
                                                 </field>
                                             </categories>

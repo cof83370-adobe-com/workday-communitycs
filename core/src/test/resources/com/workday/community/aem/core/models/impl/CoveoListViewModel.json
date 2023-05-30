@@ -1,0 +1,19 @@
+{
+  "listView": {
+    "jcr:createdBy": "admin",
+    "displayMetadata": "true",
+    "jcr:lastModifiedBy": "admin",
+    "sling:resourceType": "workday-community/components/common/coveolistview",
+    "displayTags": "true",
+    "categories": {
+      "item0": {
+        "category": "product:",
+        "searchHelpText": "Product"
+      },
+      "item1": {
+        "category": "using-workday:",
+        "searchHelpText": "Using workday"
+      }
+    }
+  }
+}

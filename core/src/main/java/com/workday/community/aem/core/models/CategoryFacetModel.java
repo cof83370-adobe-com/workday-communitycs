@@ -2,6 +2,7 @@ package com.workday.community.aem.core.models;
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.utils.DamUtils;
 import org.apache.sling.api.resource.Resource;
@@ -27,11 +28,6 @@ public class CategoryFacetModel {
     String field = null;
 
     /**
-     * Facet label.
-     */
-    String label = null;
-
-    /**
      * Facet sub category.
      */
     String subCategory = "";
@@ -45,18 +41,21 @@ public class CategoryFacetModel {
     /**
      * Search config file path.
      */
-    private static final String MODEL_CONFIG_FILE = "/content/dam/workday-community/resources/tab-list-criteria-data.json";
+    private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";
 
     /**
      * Search config json object
      */
-    private static JsonObject modelConfig;
+    private JsonObject fieldMapConfig;
 
     /**
      * Category string value from jcr.
      */
     @Inject
     private String category;
+
+    @Inject
+    private String searchHelpText;
 
     /**
      * Post construct to build facet object.
@@ -72,12 +71,12 @@ public class CategoryFacetModel {
         if (nameSpace == null) {
             return;
         }
-        JsonObject facet = this.getModelConfig().getAsJsonObject(nameSpace);
-        if (facet != null) {
-            field = facet.get("field").getAsString();
-            label = facet.get("label").getAsString();
+
+        JsonElement facetField = this.getFieldMapConfig().get(nameSpace);
+        if (facetField != null) {
+            field = facetField.getAsString();
             List<String> tags = new ArrayList<>();
-            while( tag != null && !tag.isNamespace() ) {
+            while (tag != null && !tag.isNamespace()) {
                 tags.add(tag.getTitle());
                 tag = tag.getParent();
             }
@@ -100,40 +99,40 @@ public class CategoryFacetModel {
     /**
      * Json object from config.
      *
-     * @return
+     * @return object
      */
-    private JsonObject getModelConfig() {
-        if (true || modelConfig == null) {
-           modelConfig = DamUtils.readJsonFromDam(resourceResolver, MODEL_CONFIG_FILE);
+    private JsonObject getFieldMapConfig() {
+        if (fieldMapConfig == null) {
+            fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
         }
-        return modelConfig.getAsJsonObject("tagIdToField");
+        return fieldMapConfig.getAsJsonObject("tagIdToField");
     }
 
     /**
      * Returns coveo field name.
      *
-     * @return
+     * @return field name
      */
     public String getField() {
         return field;
     }
 
     /**
-     * Returns facet title.
-     *
-     * @return
-     */
-    public String getLabel() {
-        return label;
-    }
-
-    /**
      * Returns sub category.
      *
-     * @return
+     * @return Sub category
      */
     public String getSubCategory() {
         return subCategory;
+    }
+
+    /**
+     * Returns search help text.
+     *
+     * @return search help text
+     */
+    public String getSearchHelpText() {
+        return searchHelpText;
     }
 
 }

@@ -3,12 +3,10 @@ package com.workday.community.aem.core.models.impl;
 import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
-import org.osgi.service.component.annotations.Reference;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -30,9 +28,6 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
   @Inject
   @Named("categories/.")
   private List<CategoryFacetModel> categories;
-
-  @Reference
-  private SnapService snapService;
 
   @OSGiService
   private SearchApiConfigService searchConfigService;
