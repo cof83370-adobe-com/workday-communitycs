@@ -53,4 +53,13 @@ public class RunModeConfigService {
     public String getAdobeAnalyticsUri() {
         return config.adobeAnalyticsUri();
     }  
+
+    /**
+     * Get publish instance domain.
+     *
+     * @return The publish instance domain.
+     */
+    public String getPublishInstanceDomain() {
+        return config.publishInstanceDomain();
+    }  
 }

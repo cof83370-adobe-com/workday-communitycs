@@ -15,7 +15,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +28,8 @@ import javax.jcr.Value;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.common.collect.ImmutableMap;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.ResolverUtil;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
@@ -42,7 +41,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.day.cq.commons.Externalizer;
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 
@@ -60,7 +58,7 @@ public class ExtractPagePropertiesServiceImplTest {
     ResourceResolverFactory resourceResolverFactory;
 
     @Mock
-    Externalizer externalizer;
+    RunModeConfigService runModeConfigService;
 
     /** The service ExtractPagePropertiesServiceImpl. */
     @InjectMocks
@@ -123,9 +121,23 @@ public class ExtractPagePropertiesServiceImplTest {
     @Test
     public void testProcessPermission() {
         ValueMap data = mock(ValueMap.class);
+        String [] accessControlValues = {"access-control:customer_all", "access-control:customer_named_support_contact"};
+        doReturn(accessControlValues).when(data).get("accessControlTags", String[].class);
         HashMap<String, Object> properties = new HashMap<>();
         extract.processPermission(data, properties, "test@gmail.com");
-        assertTrue(properties.containsKey("permissions"));
+        String permissions = properties.toString();
+        assertTrue(permissions.contains("customer"));
+        assertTrue(permissions.contains("community_customer"));
+        assertTrue(permissions.contains("customer_touchpoint_pro"));
+        assertTrue(permissions.contains("customer_named_support_contact"));
+        assertTrue(permissions.contains("test@gmail.com"));
+
+        doReturn(new String[0]).when(data).get("accessControlTags", String[].class);
+        HashMap<String, Object> emptyAccessProperties = new HashMap<>();
+        extract.processPermission(data, emptyAccessProperties, "test@gmail.com");
+        String emptyAccessPermissions = emptyAccessProperties.toString();
+        assertTrue(emptyAccessPermissions.contains("exclude"));
+        assertTrue(emptyAccessPermissions.contains("test@gmail.com"));
     }
 
     /**
@@ -194,6 +206,7 @@ public class ExtractPagePropertiesServiceImplTest {
             lenient().when(resourceResolver.adaptTo(TagManager.class)).thenReturn(tagManager);
             lenient().when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
             lenient().when(pageManager.getPage(anyString())).thenReturn(page);
+            lenient().when(runModeConfigService.getPublishInstanceDomain()).thenReturn("http://test-link.com");
             ValueMap testData = new ValueMapDecorator(ImmutableMap.of(
                 "startDate", new GregorianCalendar(2023, JUNE,3),
                 "endDate", new GregorianCalendar(2023, OCTOBER,3),
