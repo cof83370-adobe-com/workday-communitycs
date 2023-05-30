@@ -117,7 +117,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 throw new ResourceNotFoundException("Page not found");
             }
             ValueMap data = page.getProperties();
-            if (data == null) {
+            if (data == null || data.size() < 1) {
                 throw new ResourceNotFoundException("Page data not found");
             }
             TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
