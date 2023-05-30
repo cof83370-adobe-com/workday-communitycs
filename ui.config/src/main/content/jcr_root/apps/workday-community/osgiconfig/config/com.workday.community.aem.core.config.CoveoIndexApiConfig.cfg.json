@@ -1,6 +1,6 @@
 
 {
-    "isCoveoIndexingEnabled":"$[env:CoveoIndexingEnabled]",
+    "isCoveoIndexingEnabled":"$[env:CoveoIndexingEnabled;default=true]",
     "coveoApiKey":"$[secret:CoveoIndexingApiKey]",
     "pushApiUri":"$[env:CoveoIndexingPushApi;default=\"https://api.cloud.coveo.com/push/v1/organizations/\"]",
     "sourceApiUri":"$[env:CoveoIndexingSourceApi;default=\"https://platform.cloud.coveo.com/rest/organizations/\"]",
