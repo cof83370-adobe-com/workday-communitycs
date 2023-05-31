@@ -79,7 +79,7 @@ public class CategoryFacetModel {
             return;
         }
 
-        JsonElement facetField = this.getFieldMapConfig().get(nameSpace);
+        JsonElement facetField = this.getFieldMapConfig(resolver).get(nameSpace);
         if (facetField != null) {
             field = facetField.getAsString();
             StringBuilder sb = new StringBuilder();
@@ -115,10 +115,9 @@ public class CategoryFacetModel {
      *
      * @return object
      */
-    private JsonObject getFieldMapConfig() {
+    private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) {
         if (fieldMapConfig == null) {
-            ResourceResolver resolver = getResourceResolver();
-            fieldMapConfig = resolver != null ? DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG) : null;
+            fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
             if (fieldMapConfig == null) {
                 return null;
             }
