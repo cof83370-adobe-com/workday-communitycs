@@ -9,7 +9,6 @@ import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.ChildResource;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
-import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 
 import javax.inject.Named;
 import java.util.List;
@@ -20,13 +19,6 @@ import java.util.List;
         defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoListViewModelImpl implements CoveoListViewModel {
-
-  @ValueMapValue
-  private boolean displayTags;
-
-  @ValueMapValue
-  private boolean displayMetadata;
-
   @ChildResource
   @Named("categories/.")
   private List<CategoryFacetModel> categories;
