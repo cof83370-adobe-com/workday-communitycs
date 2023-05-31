@@ -1,6 +1,0 @@
-{
-  "browser-title-prefix":"DEV",
-  "css-color":"orange",
-  "inner-html":"DEV",
-  "css-override":"#acs-commons-env-indicator { background-color :orange;  color: #FFF;   position:fixed;   left:100px;    bottom:0;    height:30px;    width:100px;    margin-left: -63px;    font: bold 18px/29px sans-serif;   text-align: center;   border: solid 1px black;  z-index: 100000000000000;}"
-}
