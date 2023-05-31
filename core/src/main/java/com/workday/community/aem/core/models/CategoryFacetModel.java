@@ -82,10 +82,17 @@ public class CategoryFacetModel {
         JsonElement facetField = this.getFieldMapConfig().get(nameSpace);
         if (facetField != null) {
             field = facetField.getAsString();
+            StringBuilder sb = new StringBuilder();
             List<String> tags = new ArrayList<>();
-            while (tag != null && !tag.isNamespace()) {
+            while (!tag.isNamespace()) {
+                if (sb.length() > 0) {
+                    sb.insert(0, ", ");
+                }
+                sb.insert(0, "\"" + tag.getTitle() + "\"");
+
                 tags.add(tag.getTitle());
                 tag = tag.getParent();
+
             }
             if (!tags.isEmpty()) {
                 Collections.reverse(tags);
