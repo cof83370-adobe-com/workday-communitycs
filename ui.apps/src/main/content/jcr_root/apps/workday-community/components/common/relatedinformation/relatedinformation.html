@@ -1,5 +1,5 @@
 	<!--/* Related Information Component */-->
-	<div class="cmp-related-info">
+	<div class="cmp-related-info" data-sly-use.relatedInfo="com.workday.community.aem.core.models.RelatedInfoModel">
 		<sly data-sly-test="${resource.getChildren || properties.type=='dynamic' }">
 			<div class="cmp-related-info__heading">
 				<h3 data-sly-test="${properties.title}" class="cmp-related-info__heading-title">${properties.title}</h3>
@@ -19,7 +19,7 @@
 						<div class="cmp-related-info__content" data-sly-list.urllinkMultifield="${resource.getChildren}">
 							<ul class="cmp-related-info__list" data-sly-list.urllink="${urllinkMultifield.getChildren}">
 								<li class="cmp-related-info__item"><a class="cmp-related-info__item-link" target="${urllink.newTab}"
-										href="${urllink.pagepath}${'/content/workday-community/' in  urllink.pagepath ? '.html' : ''}"><span
+										href="${urllink.pagepath}${relatedInfo.rootPath in  urllink.pagepath ? '.html' : ''}"><span
 											class="cmp-related-info__item-title">${urllink.linktitle @ context='html'}</span></a></li>
 							</ul>
 						</div>
@@ -28,7 +28,7 @@
 			</sly>
 			<sly data-sly-test="${properties.footerlinktext && properties.footerlinkurl}">
 				<div class="cmp-related-info-curated__footer"><a class="cmp-related-info-curated__footer-link"
-						target="${properties.footernewTab}" href="${properties.footerlinkurl}.html"><span
+						target="${properties.footernewTab}" href="${properties.footerlinkurl}${relatedInfo.rootPath in  urllink.pagepath ? '.html' : ''}"><span
 							class="cmp-related-info-curated__footer-title">${properties.footerlinktext}</span></a></div>
 			</sly>
 		</sly>

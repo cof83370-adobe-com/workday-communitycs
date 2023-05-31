@@ -21,7 +21,7 @@
                     data-sly-list.booklink="${booksMultifield.getChildren}">
                     <li class="cmp-toc__item" data-sly-test="${booklink.mainpagepath}"><a class="cmp-toc__item-link"
                             data-sly-use.bookPathMainTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=booklink.mainpagepath }"
-                            href="${booklink.mainpagepath}${'/content/workday-community/' in  booklink.mainpagepath ? '.html' : ''}"><span
+                            href="${booklink.mainpagepath}${bookPathMainTitle.rootPath in  booklink.mainpagepath ? '.html' : ''}"><span
                                 class="cmp-toc__firstlevelitem-title">${bookPathMainTitle.bookPage.title ||
                                 booklink.mainpagepath}</span></a>
                         <sly class="cmp-toc__secondlevelheading"
@@ -32,7 +32,7 @@
                                     <li class="cmp-toc__item" data-sly-test="${secondlink.secondpagepath}"><a
                                             class="cmp-toc__item-link"
                                             data-sly-use.bookPathSecondTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=secondlink.secondpagepath}"
-                                            href="${secondlink.secondpagepath}${'/content/workday-community/' in  secondlink.secondpagepath ? '.html' : ''}"><span
+                                            href="${secondlink.secondpagepath}${bookPathSecondTitle.rootPath in  secondlink.secondpagepath ? '.html' : ''}"><span
                                                 class="cmp-toc__secondlevelitem-title">${bookPathSecondTitle.bookPage.title
                                                 || secondlink.secondpagepath}</span></a>
                                         <sly class="cmp-toc__thirdlevelheading"
@@ -45,7 +45,7 @@
                                                         data-sly-test="${thirdlink.thirdpagepath}"><a
                                                             class="cmp-toc__item-link"
                                                             data-sly-use.bookPathThirdTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=thirdlink.thirdpagepath}"
-                                                            href="${thirdlink.thirdpagepath}${'/content/workday-community/' in  thirdlink.thirdpagepath ? '.html' : ''}"><span
+                                                            href="${thirdlink.thirdpagepath}${bookPathThirdTitle.rootPath in thirdlink.thirdpagepath ? '.html' : ''}"><span
                                                                 class="cmp-toc__thirdlevelitem-title">${bookPathThirdTitle.bookPage.title
                                                                 || thirdlink.thirdpagepath}</span></a>
                                                     </li>
