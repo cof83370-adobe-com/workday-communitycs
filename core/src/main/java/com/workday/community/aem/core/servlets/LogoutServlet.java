@@ -53,7 +53,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
   private transient OktaService oktaService;
 
   @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-  private volatile Authenticator authenticator;
+  private volatile transient Authenticator authenticator;
 
   /** The UserService. */
   @Reference

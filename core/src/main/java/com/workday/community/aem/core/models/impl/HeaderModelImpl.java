@@ -11,7 +11,6 @@ import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
@@ -66,12 +65,7 @@ public class HeaderModelImpl implements HeaderModel {
   @PostConstruct
   protected void init() {
     logger.debug("Initializing HeaderModel ....");
-    ResourceResolver resourceResolver = request.getResourceResolver();
-    if (resourceResolver == null) {
-      throw new RuntimeException("ResourceResolver is not injected (null) in HeaderModelImpl init method.");
-    }
-
-    sfId = OurmUtils.getSalesForceId(resourceResolver);
+    sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
   }
 
   /**
