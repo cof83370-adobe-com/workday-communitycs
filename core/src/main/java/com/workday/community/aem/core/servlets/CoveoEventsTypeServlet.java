@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
+import com.day.crx.JcrConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -96,7 +97,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
                             ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
                             valueMap.put("value", value.getLookupValue());
                             valueMap.put("text", value.getValue());
-                            resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), "nt:unstructured", valueMap));
+                            resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, valueMap));
                         });
                     }
                 }

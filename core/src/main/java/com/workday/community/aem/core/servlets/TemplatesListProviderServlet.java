@@ -7,7 +7,7 @@ import java.util.List;
 
 import javax.servlet.Servlet;
 
-import org.apache.commons.collections4.iterators.TransformIterator;
+import com.day.crx.JcrConstants;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.SimpleDataSource;
 import com.adobe.granite.ui.components.ds.ValueMapResource;
-import com.day.crx.JcrConstants;
 
 /**
  * The Class TemplatesListProviderServlet.
@@ -35,15 +34,14 @@ import com.day.crx.JcrConstants;
 @Component(immediate = true, service = Servlet.class, property = {
         "sling.servlet.resourceTypes=/bin/workday/templateslist/datasource", "sling.servlet.methods=GET" })
 public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
+    /** The log. */
+    private final static Logger LOGGER = LoggerFactory.getLogger(TemplatesListProviderServlet.class);
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
     /** The Constant TEMPLATES_PATH. */
     static final String TEMPLATES_PATH = "/conf/workday-community/settings/wcm/templates";
-
-    /** The log. */
-    private final transient Logger log = LoggerFactory.getLogger(this.getClass().getName());
 
     /**
      * Do get.
@@ -55,57 +53,30 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
         try {
             ResourceResolver resourceResolver = request.getResourceResolver();
-            List<KeyValue> dropDownList = new ArrayList<>();
             Resource resource = resourceResolver.getResource(TEMPLATES_PATH);
             Iterator<Resource> iterator;
+            List<Resource>  resourceList = new ArrayList<>();
+
             if (resource != null) {
                 iterator = resource.listChildren();
                 while (iterator.hasNext()) {
                     Resource res = iterator.next();
                     String title = res.getName();
+
                     if (StringUtils.isNotBlank(title) && !title.equalsIgnoreCase("rep:policy")) {
-                        dropDownList.add(new KeyValue(res.getPath(), title));
+                        ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
+
+                        valueMap.put("value", res.getPath());
+                        valueMap.put("text", title);
+                        resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, valueMap));
                     }
                 }
             }
 
-            log.debug("DropdownList:: {}", dropDownList);
-
-            DataSource ds = new SimpleDataSource(new TransformIterator<>(dropDownList.iterator(), input -> {
-                final ValueMap vm = new ValueMapDecorator(new HashMap<>());
-                vm.put("value", input.key);
-                vm.put("text", input.value);
-                return new ValueMapResource(resourceResolver, new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, vm);
-            }));
+            DataSource ds = new SimpleDataSource(resourceList.iterator());
             request.setAttribute(DataSource.class.getName(), ds);
         } catch (SlingException e) {
-            log.error("Error in Get Drop Down Values {}", e.getMessage());
-        }
-    }
-
-    /**
-     * The Class KeyValue.
-     */
-    private static class KeyValue {
-
-        /**
-         * key property.
-         */
-        private final String key;
-        /**
-         * value property.
-         */
-        private final String value;
-
-        /**
-         * constructor instance.
-         *
-         * @param newKey   -
-         * @param newValue -
-         */
-        private KeyValue(final String newKey, final String newValue) {
-            this.key = newKey;
-            this.value = newValue;
+            LOGGER.error("Error in Get Drop Down Values {}", e.getMessage());
         }
     }
 }
