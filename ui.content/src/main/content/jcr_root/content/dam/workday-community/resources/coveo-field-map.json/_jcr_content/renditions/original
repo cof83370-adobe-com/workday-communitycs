@@ -31,5 +31,17 @@
     "content-types": "commcontenttypehierarchy",
     "release": "comfieldreleasehierarchy"
   },
-  "customComponents": {"root/container/eventregistration/button": "registrationLink"}
+  "customComponents": {"root/container/eventregistration/button": "registrationLink"},
+  "drupalRoleMapping" : {
+      "access-control:authenticated": "authenticated",
+      "access-control:customer_all": "customer;community_customer;customer_touchpoint_pro",
+      "access-control:customer_named_support_contact": "customer_named_support_contact",
+      "access-control:customer_training_coordinator": "customer_training_coordinator",
+      "access-control:customer_adative_only": "customer_adaptive_only",
+      "access-control:customer_peakon_only": "customer_peakon_only",
+      "access-control:customer_scout_only": "customer_scout_only",
+      "access-control:customer_vndly_only": "customer_vndly_only",
+      "access-control:partner_all": "partner_channel_partner;community_partner_channel_partner;partner_implementation_partner;community_partner_implementation_partner;partner_integration_partner;community_partner_software_alliances;partner_read_only;community_partner_read_only;partner_main",
+      "access-control:internal_workmates": "workday"
+  }
 }

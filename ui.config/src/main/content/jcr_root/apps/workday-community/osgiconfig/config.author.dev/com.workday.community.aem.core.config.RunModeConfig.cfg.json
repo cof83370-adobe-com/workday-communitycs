@@ -2,5 +2,6 @@
 {
     "instance":"author",
     "env":"dev",
-    "adobeAnalyticsUri":"$[env:adobeAnalyticsUri]"
+    "adobeAnalyticsUri":"$[env:adobeAnalyticsUri]",
+    "publishInstanceDomain":"$[env:publishInstanceDomain]"
 }

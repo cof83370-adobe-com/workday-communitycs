@@ -23,11 +23,20 @@
     }
 
     function leftrailpanellevel1() {
-        var acc = document.getElementsByClassName('cmp-toc__item-link');
-        var panel = document.getElementsByClassName('cmp-toc__group-1');
+        const firstLevelItems = document.querySelectorAll('.cmp-toc__firstlevelitem-title');
+        const acc = [];
+
+        firstLevelItems.forEach(function(item) {
+          const parentElement = item.closest('.cmp-toc__item-link');
+          if (parentElement) {
+            acc.push(parentElement);
+          }
+        });
+
+        const panel = document.getElementsByClassName('cmp-toc__group cmp-toc__secondlevellist');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
-                var setClasses = !this.classList.contains('active');
+                const setClasses = !this.classList.contains('active');
                 setClass(acc, 'active', 'remove');
                 setClass(panel, 'show', 'remove');
                 if (setClasses) {
@@ -45,11 +54,21 @@
     }
 
     function leftrailpanellevel2() {
-        var acc = document.getElementsByClassName('cmp-toc__item-link-1');
-        var panel = document.getElementsByClassName('cmp-toc__group-2');
+        const firstLevelItems = document.querySelectorAll('.cmp-toc__secondlevelitem-title');
+        const acc = [];
+
+        firstLevelItems.forEach(function(item) {
+          const parentElement = item.closest('.cmp-toc__item-link');
+          if (parentElement) {
+            acc.push(parentElement);
+          }
+        });
+
+
+        const panel = document.getElementsByClassName('cmp-toc__group cmp-toc__thirdlevellist');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
-                var setClasses = !this.classList.contains('active');
+                const setClasses = !this.classList.contains('active');
                 setClass(acc, 'active', 'remove');
                 setClass(panel, 'show', 'remove');
                 if (setClasses) {
@@ -90,6 +109,30 @@
 
     }
 
+    function expandActiveBook() {
+        const activeItem = document.querySelector('.cmp-toc__item.active');
+
+        if (activeItem) {
+            const parentElement = activeItem.parentElement;
+            parentElement.classList.add('show');
+
+            const previousSibling = parentElement.previousElementSibling as HTMLElement;
+            if (previousSibling) {
+                previousSibling.classList.add('active');
+            }
+
+            if (parentElement.classList.contains('cmp-toc__thirdlevellist')) {
+                const grandparentElement = parentElement.parentElement.parentElement;
+                grandparentElement.classList.add('show');
+
+                const grandparentPreviousSibling = grandparentElement.previousElementSibling as HTMLElement;
+                if (grandparentPreviousSibling) {
+                    grandparentPreviousSibling.classList.add('active');
+                }
+            }
+        }
+    }
+
     function onDocumentReady() {
         const tocClose = document.querySelector(tocSelectors.tocModalClose);
         let showModal = false;
@@ -121,5 +164,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', onDocumentReady);
+    window.onload = expandActiveBook;
 
 }());
