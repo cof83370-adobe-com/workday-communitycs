@@ -111,18 +111,14 @@ public class CategoryFacetModel {
     }
 
     /**
-     * Json object from config.
+     * Returns filed mapping object
      *
-     * @param resourceResolver
-     *
-     * @return JsonObject
+     * @param resourceResolver Resource resolver object
+     * @return field map config.
      */
     private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) {
         if (fieldMapConfig == null) {
             fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
-            if (fieldMapConfig == null) {
-                return null;
-            }
         }
         return fieldMapConfig.getAsJsonObject("tagIdToCoveoField");
     }

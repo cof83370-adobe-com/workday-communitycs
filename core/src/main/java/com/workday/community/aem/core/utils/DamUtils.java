@@ -30,7 +30,7 @@ public class DamUtils {
 			InputStream content = original.adaptTo(InputStream.class);
 			if (content == null) {
 				LOGGER.error("Empty json file.");
-				return null;
+				return new JsonObject();
 			}
 
 			StringBuilder sb = new StringBuilder();
