@@ -15,7 +15,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
-import org.apache.sling.models.annotations.injectorspecific.SlingObject;
+import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +23,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
-import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
 
 /**
@@ -36,6 +35,9 @@ import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_T
     HeaderModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class HeaderModelImpl implements HeaderModel {
 
+  @Self
+  private SlingHttpServletRequest request;
+
   /**
    * The Constant RESOURCE_TYPE.
    */
@@ -45,10 +47,6 @@ public class HeaderModelImpl implements HeaderModel {
    * The logger.
    */
   private final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
-
-  @NotNull
-  @SlingObject
-  private ResourceResolver resourceResolver;
 
   /**
    * The navMenuApi service.
@@ -68,16 +66,12 @@ public class HeaderModelImpl implements HeaderModel {
   @PostConstruct
   protected void init() {
     logger.debug("Initializing HeaderModel ....");
+    ResourceResolver resourceResolver = request.getResourceResolver();
     if (resourceResolver == null) {
       throw new RuntimeException("ResourceResolver is not injected (null) in HeaderModelImpl init method.");
     }
 
     sfId = OurmUtils.getSalesForceId(resourceResolver);
-    if (StringUtils.isBlank(sfId)) {
-      // Default fallback.
-      logger.debug("Salesforce Id for current user is unavailable");
-      sfId = DEFAULT_SFID_MASTER;
-    }
   }
 
   /**
