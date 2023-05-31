@@ -1,4 +1,6 @@
 package com.workday.community.aem.core.models;
+import com.google.gson.JsonObject;
+
 import java.util.List;
 
 /**
@@ -6,36 +8,15 @@ import java.util.List;
  */
 public interface CoveoListViewModel {
     /**
-     * Display tags flag.
-     *
-     * @return
-     */
-    boolean getDisplayTags();
-
-    /**
-     * Display metadata flag.
-     *
-     * @return
-     */
-    boolean getDisplayMetadata();
-
-    /**
      * Category facet.
      * @return
      */
     List<CategoryFacetModel> getCategories();
 
     /**
-     * Returns search hub.
+     * Returns search config.
      *
      * @return
      */
-    String getSearchHub();
-
-    /**
-     * Returns coveo orgid
-     *
-     * @return
-     */
-    String getOrgId();
+    public JsonObject getSearchConfig();
 }

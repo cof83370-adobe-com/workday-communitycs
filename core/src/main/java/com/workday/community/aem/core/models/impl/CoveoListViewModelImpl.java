@@ -1,14 +1,16 @@
 package com.workday.community.aem.core.models.impl;
 
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.ChildResource;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
+import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 
@@ -19,13 +21,13 @@ import java.util.List;
 )
 public class CoveoListViewModelImpl implements CoveoListViewModel {
 
-  @Inject
+  @ValueMapValue
   private boolean displayTags;
 
-  @Inject
+  @ValueMapValue
   private boolean displayMetadata;
 
-  @Inject
+  @ChildResource
   @Named("categories/.")
   private List<CategoryFacetModel> categories;
 
@@ -33,27 +35,14 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
   private SearchApiConfigService searchConfigService;
 
   @Override
-  public boolean getDisplayTags() {
-    return displayTags;
-  }
-
-  @Override
-  public boolean getDisplayMetadata() {
-    return displayMetadata;
-  }
-
-  @Override
   public List<CategoryFacetModel> getCategories() {
     return categories;
   }
 
-  @Override
-  public String getSearchHub() {
-    return searchConfigService.getSearchHub();
-  }
-
-  @Override
-  public String getOrgId() {
-    return searchConfigService.getOrgId();
+  public JsonObject getSearchConfig() {
+    JsonObject config = new JsonObject();
+    config.addProperty("orgId", searchConfigService.getOrgId());
+    config.addProperty("searchHub", searchConfigService.getSearchHub());
+    return config;
   }
 }

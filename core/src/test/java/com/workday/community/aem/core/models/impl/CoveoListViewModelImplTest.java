@@ -8,6 +8,7 @@ import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.utils.DamUtils;
+import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -22,14 +23,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoListViewModelImplTest {
 
     /** The AemContext object. */
-    private final AemContext context = new AemContext();
+    private AemContext context = new AemContext();
 
     @Mock
     SearchApiConfigService searchApiConfigService;
@@ -42,6 +42,7 @@ public class CoveoListViewModelImplTest {
 
     MockedStatic<DamUtils> mockDamUtils;
 
+    MockedStatic<ResolverUtil> resolverUtil;
 
     @BeforeEach
     public void setUp() {
@@ -78,17 +79,17 @@ public class CoveoListViewModelImplTest {
         mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver), eq("/content/dam/workday-community/resources/coveo-field-map.json")))
                 .thenReturn(fieldMapConfigObj);
 
+        resolverUtil = mockStatic(ResolverUtil.class);
+        resolverUtil.when(() -> ResolverUtil.newResolver(any(), anyString())).thenReturn(resourceResolver);
 
     }
 
     @Test
     void testComponent() {
         CoveoListViewModel listViewModel = context.currentResource("/component/listView").adaptTo(CoveoListViewModel.class);
-
-        assertTrue(listViewModel.getDisplayMetadata());
-        assertTrue(listViewModel.getDisplayTags());
-        assertEquals("TestOrgId", listViewModel.getOrgId());
-        assertEquals("TestSearchHub", listViewModel.getSearchHub());
+        JsonObject config = listViewModel.getSearchConfig();
+        assertEquals("TestOrgId",config.get("orgId").getAsString());
+        assertEquals("TestSearchHub", config.get("searchHub").getAsString());
         List<CategoryFacetModel> categoryFacetModels = listViewModel.getCategories();
         assertEquals(2, categoryFacetModels.size());
         CategoryFacetModel prod = categoryFacetModels.get(0);
@@ -101,6 +102,7 @@ public class CoveoListViewModelImplTest {
     public void after() {
         resourceResolver.close();
         mockDamUtils.close();
+        resolverUtil.close();
     }
 
 }

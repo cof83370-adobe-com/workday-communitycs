@@ -5,10 +5,14 @@ import com.day.cq.tagging.TagManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.utils.DamUtils;
+import com.workday.community.aem.core.utils.ResolverUtil;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -33,15 +37,14 @@ public class CategoryFacetModel {
     String subCategory = "";
 
     /**
-     * Resource resolver.
-     */
-    @Inject
-    private ResourceResolver resourceResolver;
-
-    /**
      * Search config file path.
      */
     private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";
+
+    /**
+     * The user service user.
+     */
+    public static final String READ_SERVICE_USER = "readserviceuser";
 
     /**
      * Search config json object
@@ -51,19 +54,23 @@ public class CategoryFacetModel {
     /**
      * Category string value from jcr.
      */
-    @Inject
+    @ValueMapValue
     private String category;
 
-    @Inject
+    @ValueMapValue
     private String searchHelpText;
+
+    @Inject
+    ResourceResolverFactory resourceResolverFactory;
 
     /**
      * Post construct to build facet object.
      */
     @PostConstruct
     private void init() {
-        TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
-        Tag tag = tagManager.resolve(category);
+        ResourceResolver resolver = getResourceResolver();
+        TagManager tagManager = resolver != null ?  resolver.adaptTo(TagManager.class): null;
+        Tag tag = tagManager != null ? tagManager.resolve(category): null;
         if (tag == null) {
             return;
         }
@@ -103,7 +110,11 @@ public class CategoryFacetModel {
      */
     private JsonObject getFieldMapConfig() {
         if (fieldMapConfig == null) {
-            fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
+            ResourceResolver resolver = getResourceResolver();
+            fieldMapConfig = resolver != null ? DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG) : null;
+            if (fieldMapConfig == null) {
+                return null;
+            }
         }
         return fieldMapConfig.getAsJsonObject("tagIdToCoveoField");
     }
@@ -133,6 +144,14 @@ public class CategoryFacetModel {
      */
     public String getSearchHelpText() {
         return searchHelpText;
+    }
+
+    private ResourceResolver getResourceResolver() {
+        try {
+            return ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
+        } catch (LoginException e) {
+            return null;
+        }
     }
 
 }

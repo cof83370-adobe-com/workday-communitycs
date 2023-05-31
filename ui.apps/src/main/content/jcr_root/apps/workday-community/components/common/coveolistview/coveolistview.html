@@ -1,8 +1,8 @@
 <sly data-sly-use.coveo="${'com.workday.community.aem.core.models.CoveoListViewModel'}"></sly>
 <span>
-  <span id="listViewData" data-orgid="${coveo.orgId}" data-searchhub="${coveo.searchHub}"></span>
+  <span id="listViewConfig" data-search-config="${coveo.getSearchConfig}"></span>
 </span>
-<atomic-search-interface id="search" fields-to-include='["commonproducttags", "commonrecentactivitydate", "commcontenttype", "commonmodifieddate"]'>
+<atomic-search-interface id="search">
   <atomic-search-layout>
     <atomic-layout-section section="facets" class="facet-section">
       <span class="facet-header">Refine By</span>
@@ -161,7 +161,7 @@
               <atomic-result-section-excerpt>
                 <atomic-result-text field="excerpt"></atomic-result-text>
               </atomic-result-section-excerpt>
-              <atomic-result-section-bottom-metadata class="hydrated" data-sly-test="${coveo.displayMetadata}">
+              <atomic-result-section-bottom-metadata class="hydrated" data-sly-test="${properties.displayMetadata}">
                 <atomic-result-fields-list class="hydrated">
                   <atomic-field-condition class="field hydrated" if-defined="author" must-not-match-commoncontenttype="Group"><!---->
                     <atomic-result-link class="atomic-result-link-metadata hydrated" href-template="${raw.com_author_profile_path}" target="_blank" data-atomic-rendered="true" data-atomic-loaded="true"><!----><a href="https://resourcecenter.workday.com/en-us/wrc/public-profile.html?id=66778" target="_blank">
@@ -184,7 +184,7 @@
                 </atomic-result-fields-list>
                 </atomic-result-section-bottom-metadata>
                 <br/>
-                <atomic-result-section-bottom-metadata class="hydrated second-row" data-sly-test="${coveo.displayTags}">
+                <atomic-result-section-bottom-metadata class="hydrated second-row" data-sly-test="${properties.displayTags}">
                   <atomic-result-fields-list>
                     <atomic-field-condition class="field hydrated hide-divider" if-defined="commonproducttags"><!---->
                       <atomic-result-multi-value-text  class="field hydrated" field="commonproducttags" data-atomic-rendered="true" data-atomic-loaded="true" max-values-to-display="5" should-highlight="true" delimiter="&nbsp;">
@@ -211,7 +211,8 @@
     loadGenericAnalyticsActions,
   } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
 
-  const listViewData = document.getElementById("listViewData");
+  const searchConfigNode = document.getElementById("listViewConfig");
+  const listViewConfig = JSON.parse(searchConfigNode.getAttribute("data-search-config"));
   const getToken = async () => {
     const tokenUrl = '/bin/search/token';
     try {
@@ -245,8 +246,8 @@
       const searchInterface = document.querySelector('atomic-search-interface');
       await searchInterface.initialize({
         accessToken: token,
-        searchHub: listViewData.getAttribute("data-searchhub"),
-        organizationId: listViewData.getAttribute("data-orgid"),
+        searchHub: listViewConfig["searchHub"],
+        organizationId: listViewConfig["orgId"],
         renewAccessToken: getToken,
         preprocessRequest: (request, clientOrigin) => {
           if (clientOrigin === 'searchApiFetch') {
