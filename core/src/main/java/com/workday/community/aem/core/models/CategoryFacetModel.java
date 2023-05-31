@@ -113,7 +113,9 @@ public class CategoryFacetModel {
     /**
      * Json object from config.
      *
-     * @return object
+     * @param resourceResolver
+     *
+     * @return JsonObject
      */
     private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) {
         if (fieldMapConfig == null) {
