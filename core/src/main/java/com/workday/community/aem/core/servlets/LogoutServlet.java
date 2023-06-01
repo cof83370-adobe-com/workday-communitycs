@@ -115,11 +115,13 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
     if (this.authenticator != null) {
       if (isOktaEnabled) {
-        // Case 1: logout
+        // Case 1: logout aem with redirect to okta
         AuthUtil.setLoginResourceAttribute(request, logoutUrl);
       }
+      // case 2: logout aem only
       authenticator.logout(request, response);
     } else if (isOktaEnabled) {
+      // case 3: Redirect to okta logout directly in case session expired.
       response.sendRedirect(logoutUrl);
     }
   }
