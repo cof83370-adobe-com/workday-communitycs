@@ -4,6 +4,7 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.sling.api.resource.LoginException;
@@ -67,7 +68,7 @@ public class CategoryFacetModel {
      * Post construct to build facet object.
      */
     @PostConstruct
-    private void init() {
+    private void init() throws DamException {
         ResourceResolver resolver = getResourceResolver();
         TagManager tagManager = resolver != null ?  resolver.adaptTo(TagManager.class): null;
         Tag tag = tagManager != null ? tagManager.resolve(category): null;
@@ -116,7 +117,7 @@ public class CategoryFacetModel {
      * @param resourceResolver Resource resolver object
      * @return field map config.
      */
-    private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) {
+    private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) throws DamException {
         if (fieldMapConfig == null) {
             fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
         }
