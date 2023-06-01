@@ -81,8 +81,9 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
     String oktaDomain = oktaService.getCustomDomain();
     String redirectUri = oktaService.getRedirectUri();
+    boolean isOktaEnabled = oktaService.isOktaIntegrationEnabled();
 
-    if (StringUtils.isEmpty(oktaDomain) || StringUtils.isEmpty(redirectUri)) {
+    if (isOktaEnabled && (StringUtils.isEmpty(oktaDomain) || StringUtils.isEmpty(redirectUri))) {
       logger.error("Okta domain and logout redirect Url are not configured, please contact admin.");
       return;
     }
@@ -112,11 +113,15 @@ public class LogoutServlet extends SlingAllMethodsServlet {
       }
     }
 
-    // 3: Redirect to Okta logout to invalid Okta session.
     if (this.authenticator != null) {
-      AuthUtil.setLoginResourceAttribute(request, logoutUrl);
+      if (isOktaEnabled) {
+        // Case 1: logout aem with redirect to okta
+        AuthUtil.setLoginResourceAttribute(request, logoutUrl);
+      }
+      // case 2: logout aem only
       authenticator.logout(request, response);
-    } else {
+    } else if (isOktaEnabled) {
+      // case 3: Redirect to okta logout directly in case session expired.
       response.sendRedirect(logoutUrl);
     }
   }
