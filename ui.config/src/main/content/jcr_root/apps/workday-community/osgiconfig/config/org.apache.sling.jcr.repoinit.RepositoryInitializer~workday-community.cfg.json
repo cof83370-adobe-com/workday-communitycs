@@ -3,7 +3,7 @@
   "scripts":[
     "create path (cq:Page) /content/workday-community",
     "create path (cq:PageContent) /content/workday-community/jcr:content",
-    "set properties on /content/workday-community/jcr:content\r\n set cq:template{String} to /conf/workday-community/settings/wcm/templates/page-content\r\n set sling:resourceType{String} to workday-community/components/structure/page\r\n  set cq:conf{String} to /conf/workday-community\r\n  set jcr:title{String} to \"Workday Community Site\"\r\nend",
+    "set properties on /content/workday-community/jcr:content\r\n set cq:template{String} to /conf/workday-community/settings/wcm/templates/page-content\r\n set sling:resourceType{String} to workday-community/components/structure/page\r\n  set cq:conf{String} to /conf/workday-community\r\n  set jcr:title{String} to \"Workday Community\"\r\nend",
     "create service user workday-community-administrative-service-user\r\nset ACL on /etc,/libs,/apps, /, /content/workday-community,/home,/conf\r\n    allow jcr:all for workday-community-administrative-service-user\r\n    allow jcr:write for workday-community-administrative-service-user\r\nend",
     "create path (sling:OrderedFolder) /content/dam/workday-community",
     "create path (nt:unstructured) /content/dam/workday-community/jcr:content",
