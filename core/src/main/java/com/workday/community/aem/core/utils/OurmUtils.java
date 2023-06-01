@@ -31,25 +31,20 @@ public class OurmUtils {
   public static String getSalesForceId(ResourceResolver resourceResolver) {
     String sfId = "";
 
-    if (resourceResolver == null) {
-      logger.error("ResourceResolver is null in getSalesForceId method.");
-    }
-    else {
-      Session session = resourceResolver.adaptTo(Session.class);
-      UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+    Session session = resourceResolver.adaptTo(Session.class);
+    UserManager userManager = resourceResolver.adaptTo(UserManager.class);
 
-      if (userManager != null && session != null) {
-        try {
-          User user = (User) userManager.getAuthorizable(session.getUserID());
-          if (user == null) {
-            throw new OurmException("User is not in userManager.");
-          }
-
-          sfId = user.getProperty(SnapConstants.PROFILE_SOURCE_ID) != null ?
-            user.getProperty(SnapConstants.PROFILE_SOURCE_ID)[0].getString() : null;
-        } catch (RepositoryException | RuntimeException | OurmException e) {
-          logger.error(String.format("getSalesForceId fails with error: %s.", e.getMessage()));
+    if (userManager != null && session != null) {
+      try {
+        User user = (User) userManager.getAuthorizable(session.getUserID());
+        if (user == null) {
+          throw new OurmException("User is not in userManager.");
         }
+
+        sfId = user.getProperty(SnapConstants.PROFILE_SOURCE_ID) != null ?
+          user.getProperty(SnapConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+      } catch (RepositoryException | RuntimeException | OurmException e) {
+        logger.error(String.format("getSalesForceId fails with error: %s.", e.getMessage()));
       }
     }
 

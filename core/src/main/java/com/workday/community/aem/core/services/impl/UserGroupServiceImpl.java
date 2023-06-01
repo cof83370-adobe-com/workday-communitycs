@@ -72,11 +72,6 @@ public class UserGroupServiceImpl implements UserGroupService {
     public static final String READ_SERVICE_USER = "readserviceuser";
 
     /**
-     * The role map json file path.
-     */
-    public static final String SFDC_ROLE_MAP_JSON_FILE = "/content/dam/workday-community/resources/sf-to-aem-group-map.json";
-
-    /**
      * The customer_role_mapping.
      */
     private HashMap<String, String> customerRoleMapping = new HashMap<>();
@@ -87,7 +82,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     private HashMap<String, String> nscSupportingMapping = new HashMap<>();
 
     /**
-     * SFDC Role mapping json object
+     * SFDC Role mapping json object.
      */
     private JsonObject sfdcRoleMap;
 
@@ -208,7 +203,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     protected void setSfdcRoleMap() {
         if (sfdcRoleMap == null) {
             try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
-                sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, SFDC_ROLE_MAP_JSON_FILE);
+                sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
             }
             catch (LoginException | DamException e) {
                 logger.error("Error reading sfdc role map json file: {}.", e.getMessage());
