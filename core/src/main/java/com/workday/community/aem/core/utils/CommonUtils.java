@@ -27,7 +27,7 @@ public class CommonUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtils.class);
 
   /**
-   * Get the Salesforce id of logged in user.
+   * Get the Salesforce id of logged-in user.
    *
    * @param resourceResolver the Resource Resolver object.
    * @return The Salesforce id.
@@ -148,8 +148,8 @@ public class CommonUtils {
         } else if (valTarget != null && (valSource == null || !valSource.equals(valTarget))) {
           JsonElement sourceAttr = source.get(attr);
           JsonElement targetAttr = target.get(attr);
-          if (sourceAttr.isJsonNull() && targetAttr.isJsonNull() ||
-              !sourceAttr.equals(targetAttr)) {
+          if ((sourceAttr == null) || (targetAttr == null)
+              || sourceAttr.isJsonNull() || targetAttr.isJsonNull() || !sourceAttr.equals(targetAttr)) {
              return;
           } else {
             source.add(key, valTarget);

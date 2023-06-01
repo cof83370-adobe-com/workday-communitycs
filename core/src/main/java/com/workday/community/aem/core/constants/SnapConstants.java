@@ -1,7 +1,5 @@
 package com.workday.community.aem.core.constants;
 
-import java.util.Map;
-
 public interface SnapConstants {
   /**
    * The profile source id.

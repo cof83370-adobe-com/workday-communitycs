@@ -160,7 +160,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         
         JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
         JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
-        Boolean hasCommunityAccess = false;
+        boolean hasCommunityAccess = false;
         if (!propertyAccess.isJsonNull() && propertyAccess.getAsString().contains(PROPERTY_ACCESS_COMMUNITY)) {
             groups.add(AUTHENTICATED);
             hasCommunityAccess = true;

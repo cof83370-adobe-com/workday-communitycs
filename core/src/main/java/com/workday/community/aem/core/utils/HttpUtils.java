@@ -69,13 +69,12 @@ public class HttpUtils {
      * @param response Response to add Cookie to
      * @return true unless cookie or response is null
      */
-    public static boolean addCookie(final Cookie cookie, final HttpServletResponse response) {
+    public static void addCookie(final Cookie cookie, final HttpServletResponse response) {
       if (cookie == null || response == null) {
-          return false;
+          return;
       }
 
       response.addCookie(cookie);
-      return true;
   }
 
   /**
