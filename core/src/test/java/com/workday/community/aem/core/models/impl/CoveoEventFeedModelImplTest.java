@@ -5,6 +5,7 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -85,7 +86,7 @@ public class CoveoEventFeedModelImplTest {
   }
 
   @Test
-  void testGetEventCriteria() {
+  void testGetEventCriteria() throws DamException {
     try (MockedStatic<DamUtils> mocked = mockStatic(DamUtils.class)) {
       ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(this.request);
       JsonObject modelConfig = new JsonObject();
@@ -98,7 +99,7 @@ public class CoveoEventFeedModelImplTest {
   }
 
   @Test
-  void testOthers() {
+  void testOthers() throws DamException {
     try (MockedStatic<DamUtils> mocked = mockStatic(DamUtils.class)) {
       ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(this.request);
       JsonObject modelConfig = new JsonObject();

@@ -4,6 +4,7 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoTabListModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -67,12 +68,12 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
 
 
   @Override
-  public JsonArray getFields() {
+  public JsonArray getFields() throws DamException {
     return this.getModelConfig().getAsJsonArray("fields");
   }
 
   @Override
-  public JsonArray getSelectedFields() {
+  public JsonArray getSelectedFields() throws DamException {
     JsonArray allFields = this.getModelConfig().getAsJsonArray("fields");
     JsonArray selectedFields = new JsonArray();
     if (feeds != null && feeds.length > 0 ) {
@@ -114,12 +115,12 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   }
 
   @Override
-  public String getFeedUrlBase() {
+  public String getFeedUrlBase() throws DamException {
     return this.getModelConfig().getAsJsonObject("feedUrlBase").get("value").getAsString();
   }
 
   @Override
-  public String getExtraCriteria() {
+  public String getExtraCriteria() throws DamException {
     return this.getModelConfig().getAsJsonObject("extraCriteria").get("value").getAsString();
   }
 
@@ -137,7 +138,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     return result.toString();
   }
 
-  private JsonObject getModelConfig() {
+  private JsonObject getModelConfig() throws DamException {
     if (this.modelConfig == null) {
       this.modelConfig = DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
     }

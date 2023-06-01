@@ -1,9 +1,11 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
@@ -33,8 +35,6 @@ import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTAC
 import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.NSC_SUPPORTING_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.CUSTOMER_ROLES_MAPPING;
-import static com.workday.community.aem.core.constants.SnapConstants.NSC_SUPPORTING_MAPPING;
 import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
 
 /**
@@ -70,6 +70,26 @@ public class UserGroupServiceImpl implements UserGroupService {
      * The user service user.
      */
     public static final String READ_SERVICE_USER = "readserviceuser";
+
+    /**
+     * The role map json file path.
+     */
+    public static final String SFDC_ROLE_MAP_JSON_FILE = "/content/dam/workday-community/resources/sf-to-aem-group-map.json";
+
+    /**
+     * The customer_role_mapping.
+     */
+    private HashMap<String, String> customerRoleMapping = new HashMap<>();
+
+    /**
+     * The nsc_supporting_mapping.
+     */
+    private HashMap<String, String> nscSupportingMapping = new HashMap<>();
+
+    /**
+     * SFDC Role mapping json object
+     */
+    private JsonObject sfdcRoleMap;
 
     /**
      * The group map json
@@ -141,6 +161,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     protected List<String> getUserGroupsFromSnap(String sfId) {
         List<String> groups = new ArrayList<>();
         JsonObject context = snapService.getUserContext(sfId);
+        setSfdcRoleMap();
         
         JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
         JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
@@ -152,7 +173,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         JsonElement nscSupporting = contactInformation.get(NSC_SUPPORTING_KEY);
         if (!nscSupporting.isJsonNull()) {
             String nscSupportingString = nscSupporting.getAsString();
-            for (Map.Entry<String, String> entry : NSC_SUPPORTING_MAPPING.entrySet()) {
+            for (Map.Entry<String, String> entry : nscSupportingMapping.entrySet()) {
                 if (nscSupportingString.contains(entry.getKey())) {
                     groups.add(entry.getValue());
                 }
@@ -162,7 +183,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         JsonElement contactRolesObj = contextInfo.get(USER_CONTACT_ROLE_KEY);
         if (!contactRolesObj.isJsonNull()) {
             String contactRoles = contactRolesObj.getAsString();
-            for (Map.Entry<String, String> entry : CUSTOMER_ROLES_MAPPING.entrySet()) {
+            for (Map.Entry<String, String> entry : customerRoleMapping.entrySet()) {
                 if (contactRoles.contains(entry.getKey())) {
                     groups.add(entry.getValue());
                 }
@@ -179,6 +200,26 @@ public class UserGroupServiceImpl implements UserGroupService {
             }
         }
         return groups;
+    }
+
+    /**
+     * Set sfdc role map json object.
+     */
+    protected void setSfdcRoleMap() {
+        if (sfdcRoleMap == null) {
+            try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
+                sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, SFDC_ROLE_MAP_JSON_FILE);
+            }
+            catch (LoginException | DamException e) {
+                logger.error("Error reading sfdc role map json file: {}.", e.getMessage());
+            }
+        }
+        if (sfdcRoleMap != null) {
+            Gson g = new Gson();
+            customerRoleMapping = g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
+            nscSupportingMapping = g.fromJson(sfdcRoleMap.get("nscSupportingMapping").toString(), HashMap.class);
+        }
+
     }
 
     /**
@@ -212,7 +253,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                     }
                 }
             }
-        } catch (RuntimeException | LoginException e) {
+        } catch (RuntimeException | LoginException | DamException e) {
             logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
         }
         return groupIds;

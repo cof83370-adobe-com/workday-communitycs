@@ -3,6 +3,8 @@ package com.workday.community.aem.core.utils;
 import com.day.cq.dam.api.Asset;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
+
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -20,9 +22,18 @@ import java.nio.charset.StandardCharsets;
  */
 public class DamUtils {
 	
+	/** The logger. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(DamUtils.class);
 
-	public static JsonObject readJsonFromDam(ResourceResolver resourceResolver, String path) throws RuntimeException {
+	/**
+	 * Get file content as json object.
+	 * 
+	 * @param resourceResolver The Resource Resolver object.
+	 * @param path The file path.
+	 * @return Json object of file content.
+	 * @throws DamException
+	 */
+	public static JsonObject readJsonFromDam(ResourceResolver resourceResolver, String path) throws DamException {
 		try {
 			Resource resource = resourceResolver.getResource(path);
 			Asset asset = resource.adaptTo(Asset.class);
@@ -50,7 +61,7 @@ public class DamUtils {
 			Gson gson = new Gson();
 			return gson.fromJson(sb.toString(), JsonObject.class);
 		}  catch (IOException | SlingException e) {
-			throw new RuntimeException();
+			throw new DamException();
 		}
 	}
     

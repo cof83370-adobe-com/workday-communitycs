@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.models;
 
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
 
 public interface CoveoCommonModel {
   /**
@@ -14,5 +15,5 @@ public interface CoveoCommonModel {
    * Get extra custom criteria portion
    * @return Extra custom criteria as string.
    */
-  String getExtraCriteria();
+  String getExtraCriteria() throws DamException;
 }

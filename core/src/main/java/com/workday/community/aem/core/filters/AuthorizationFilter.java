@@ -2,6 +2,7 @@ package com.workday.community.aem.core.filters;
 
 import com.day.cq.wcm.api.constants.NameConstants;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
@@ -130,7 +131,7 @@ public class AuthorizationFilter implements Filter {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (RepositoryException | OurmException e) {
             logger.error("---> Exception in validateTheUser function: {}.", e.getMessage());
         }
 

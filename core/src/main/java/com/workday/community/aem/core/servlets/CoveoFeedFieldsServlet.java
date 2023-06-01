@@ -3,9 +3,9 @@ package com.workday.community.aem.core.servlets;
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.SimpleDataSource;
 import com.adobe.granite.ui.components.ds.ValueMapResource;
-import com.day.crx.JcrConstants;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoTabListModel;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -25,6 +25,8 @@ import javax.servlet.Servlet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import static com.day.cq.commons.jcr.JcrConstants.NT_UNSTRUCTURED;
 
 /**
  * The Class CoveoFeedFieldsServlet.
@@ -47,18 +49,23 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
      */
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
-      LOGGER.info("start to fetch feed fields");
+      LOGGER.debug("start to fetch feed fields");
       ResourceResolver resourceResolver = request.getResourceResolver();
       List<Resource> resourceList = new ArrayList<>();
       CoveoTabListModel model = request.adaptTo(CoveoTabListModel.class);
-      JsonArray fields = model.getFields();
+      JsonArray fields = null;
+      try {
+        fields = model.getFields();
+      } catch (DamException e) {
+        LOGGER.debug("Feed fields are not fetched from CoveoTabListModel, please fix it.");
+      }
 
       if (fields != null && fields.size() > 0) {
         fields.forEach( field -> {
           ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
           valueMap.put("value", ((JsonObject)field).get("name").getAsString());
           valueMap.put("text",  ((JsonObject)field).get("desc").getAsString());
-          resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, valueMap));
+          resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), NT_UNSTRUCTURED, valueMap));
         });
       } else {
         LOGGER.debug("Feed fields are not fetched from CoveoTabListModel, please fix it.");

@@ -26,6 +26,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.jcr.*;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -165,7 +168,23 @@ class UserGroupServiceImplTest {
 
 
     @Test
-    void testSnapService() {
+    void testSnapService() throws NoSuchFieldException, IllegalAccessException {
+        HashMap<String, String> customerRoleMap = new HashMap<>();
+        customerRoleMap.put("Named Support Contact", "customer_name_support_contact");
+        customerRoleMap.put("Training Coordinator", "customer_training_coordinator");
+        Field customerRoleField = userGroupService.getClass().getDeclaredField("customerRoleMapping");
+        customerRoleField.setAccessible(true);
+        customerRoleField.set(userGroupService, customerRoleMap);
+
+        HashMap<String, String> nscMap = new HashMap<>();
+        nscMap.put("Adaptive Planning", "customer_adaptive_only");
+        nscMap.put("Scout", "customer_scount_only");
+        nscMap.put("Peakon", "customer_peakon_only");
+        nscMap.put("VNDLY", "customer_vndly_only");
+        Field nscField = userGroupService.getClass().getDeclaredField("nscSupportingMapping");
+        nscField.setAccessible(true);
+        nscField.set(userGroupService, nscMap);
+        
         String SF_ID = "test=123";
         JsonObject context = new JsonObject();
         JsonObject contextInfoObj = new JsonObject();

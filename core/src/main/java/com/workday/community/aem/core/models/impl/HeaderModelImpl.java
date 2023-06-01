@@ -80,23 +80,19 @@ public class HeaderModelImpl implements HeaderModel {
   public String getUserAvatar() {
     String extension;
 
-    try {
-      ProfilePhoto photoAPIResponse = this.snapService.getProfilePhoto(sfId);
-      if (photoAPIResponse != null && StringUtils.isNotBlank(photoAPIResponse.getPhotoVersionId())) {
-        String content = photoAPIResponse.getBase64content();
-        if (content.contains("data:image/")) {
-          return content;
-        }
-
-        int lastIndex = photoAPIResponse.getFileNameWithExtension().lastIndexOf('.');
-        extension = photoAPIResponse.getFileNameWithExtension().substring(lastIndex + 1).toLowerCase();
-        return "data:image/" + extension + ";base64," + photoAPIResponse.getBase64content();
+    ProfilePhoto photoAPIResponse = this.snapService.getProfilePhoto(sfId);
+    if (photoAPIResponse != null && StringUtils.isNotBlank(photoAPIResponse.getPhotoVersionId())) {
+      String content = photoAPIResponse.getBase64content();
+      if (content.contains("data:image/")) {
+        return content;
       }
 
-    } catch (Exception e) {
-      logger.error("Exception in getUserAvatarUrl method = {}, {}", e.getClass().getName(), e.getMessage());
+      int lastIndex = photoAPIResponse.getFileNameWithExtension().lastIndexOf('.');
+      extension = photoAPIResponse.getFileNameWithExtension().substring(lastIndex + 1).toLowerCase();
+      return "data:image/" + extension + ";base64," + content;
     }
 
+    logger.error("getUserAvatarUrl method returns null.");
     return "";
   }
 

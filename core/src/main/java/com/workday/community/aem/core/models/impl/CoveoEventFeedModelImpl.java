@@ -4,6 +4,7 @@ import com.adobe.xfa.ut.StringUtils;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -29,6 +30,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
 /**
  * The CoveoEventFeedModel implementation Class.
  */
@@ -112,7 +114,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       String registerButtonPath = featuredEvent + EVENT_PATH_ROOT + "eventregistration/button";
       Resource registerButton = resourceResolver.getResource(registerButtonPath);
       if (registerButton != null) {
-        registerTitle = registerButton.adaptTo(Node.class).getProperty("jcr:title").getString();
+        registerTitle = registerButton.adaptTo(Node.class).getProperty(JCR_TITLE).getString();
         registerPath = registerButton.adaptTo(Node.class).getProperty("linkURL").getString();
       }
     }
@@ -141,12 +143,12 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   }
 
   @Override
-  public String getSortCriteria() {
+  public String getSortCriteria() throws DamException{
     return this.getModelConfig().get("sortCriteria").getAsString();
   }
 
   @Override
-  public String getEventCriteria() {
+  public String getEventCriteria() throws DamException{
     LocalDate localDate = LocalDate.now();
     ZonedDateTime startOfDay = localDate.atStartOfDay(ZoneId.of("Z"));
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy/MM/dd@HH:mm");
@@ -165,16 +167,16 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   }
 
   @Override
-  public String getAllEventsUrl() {
+  public String getAllEventsUrl() throws DamException {
     return this.getModelConfig().get("allEventsUrl").getAsString();
   }
 
   @Override
-  public String getExtraCriteria() {
+  public String getExtraCriteria() throws DamException {
     return this.getModelConfig().get("extraCriteria").getAsString();
   }
 
-  private JsonObject getModelConfig() {
+  private JsonObject getModelConfig() throws DamException {
     if (this.modelConfig == null) {
       this.modelConfig = DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
     }
