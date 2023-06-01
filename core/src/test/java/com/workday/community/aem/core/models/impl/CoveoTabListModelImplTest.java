@@ -6,6 +6,7 @@ import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoTabListModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -26,7 +27,6 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
-import static junit.framework.Assert.assertNull;
 import static junitx.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -76,7 +76,7 @@ public class CoveoTabListModelImplTest {
   }
 
   @Test
-  void TestGetFields() {
+  void TestGetFields() throws DamException {
     try (MockedStatic<DamUtils> mocked = mockStatic(DamUtils.class)) {
       ((CoveoTabListModelImpl) coveoTabListModel).init(this.slingHttpServletRequest);
       mocked.when(() -> DamUtils.readJsonFromDam(eq(this.slingHttpServletRequest.getResourceResolver()), anyString())).thenReturn(modelConfig);
@@ -86,7 +86,7 @@ public class CoveoTabListModelImplTest {
   }
 
   @Test
-  void TestGetSelectedFields() {
+  void TestGetSelectedFields() throws DamException {
     try (MockedStatic<DamUtils> mocked = mockStatic(DamUtils.class)) {
       ((CoveoTabListModelImpl) coveoTabListModel).init(this.slingHttpServletRequest);
       mocked.when(() -> DamUtils.readJsonFromDam(eq(this.slingHttpServletRequest.getResourceResolver()), anyString())).thenReturn(modelConfig);

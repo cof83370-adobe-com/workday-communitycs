@@ -65,7 +65,7 @@ public class AuthorshipRenderConditionModel {
                 }
             }
         } catch (RepositoryException e) {
-            logger.info("User not found");
+            logger.error("User not found");
         }
         if (allowed) {
             check = suffix.endsWith("ReadOnly/granite:rendercondition") ? false : true;

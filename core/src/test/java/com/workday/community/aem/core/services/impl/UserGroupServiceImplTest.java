@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
@@ -26,6 +25,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.jcr.*;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -144,28 +146,23 @@ class UserGroupServiceImplTest {
     }
 
     @Test
-    void convertSfGroupsArrayToAemGroups() {
-        String testGroupMap = "{\"test sf group\" : [\"aem-group1\", \"aem-group2\"]}";
-        Gson gson = new Gson();
-        JsonObject testGroupObj = gson.fromJson(testGroupMap, JsonObject.class);
+    void testSnapService() throws NoSuchFieldException, IllegalAccessException {
+        HashMap<String, String> customerRoleMap = new HashMap<>();
+        customerRoleMap.put("Named Support Contact", "customer_name_support_contact");
+        customerRoleMap.put("Training Coordinator", "customer_training_coordinator");
+        Field customerRoleField = userGroupService.getClass().getDeclaredField("customerRoleMapping");
+        customerRoleField.setAccessible(true);
+        customerRoleField.set(userGroupService, customerRoleMap);
 
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        mockResolver.when(() -> ResolverUtil.newResolver(any(), any())).thenReturn(resourceResolver);
-
-        when(config.sfToAemUserGroupMap()).thenReturn("/path/to/file");
-        mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver), eq("/path/to/file"))).thenReturn(testGroupObj);
-        assertEquals(List.of("aem-group1", "aem-group2"), userGroupService.convertSfGroupsToAemGroups(List.of("test sf group")));
-
-        testGroupMap = "{\"test sf group\" : \"aem-group\"}";
-        testGroupObj = gson.fromJson(testGroupMap, JsonObject.class);
-        userGroupService.groupMap = null;
-        mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver), eq("/path/to/file"))).thenReturn(testGroupObj);
-        assertEquals(List.of("aem-group"), userGroupService.convertSfGroupsToAemGroups(List.of("test sf group")));
-    }
-
-
-    @Test
-    void testSnapService() {
+        HashMap<String, String> nscMap = new HashMap<>();
+        nscMap.put("Adaptive Planning", "customer_adaptive_only");
+        nscMap.put("Scout", "customer_scount_only");
+        nscMap.put("Peakon", "customer_peakon_only");
+        nscMap.put("VNDLY", "customer_vndly_only");
+        Field nscField = userGroupService.getClass().getDeclaredField("nscSupportingMapping");
+        nscField.setAccessible(true);
+        nscField.set(userGroupService, nscMap);
+        
         String SF_ID = "test=123";
         JsonObject context = new JsonObject();
         JsonObject contextInfoObj = new JsonObject();

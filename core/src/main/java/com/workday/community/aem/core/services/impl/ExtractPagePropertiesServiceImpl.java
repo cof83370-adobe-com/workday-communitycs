@@ -17,7 +17,6 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
-import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.ResolverUtil;
@@ -32,7 +31,10 @@ import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
+import static com.workday.community.aem.core.constants.GlobalConstants.JCR_CONTENT_PATH;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
+import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED;
+import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;;
 
 /**
  * The Class ExtractPagePropertiesServiceImpl.
@@ -146,7 +148,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
             processPermission(data, properties, email);
 
-            Resource resource = resourceResolver.getResource( path + "/jcr:content");
+            Resource resource = resourceResolver.getResource(path.concat(JCR_CONTENT_PATH));
             Node node = null;
             if (resource != null) {
                 node = resource.adaptTo(Node.class);
@@ -175,7 +177,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         for (String dateField: dateFields) {
             GregorianCalendar value = data.get(dateField, GregorianCalendar.class);
             if (value == null && dateField.equals("postedDate")) {
-                value = data.get("jcr:created", GregorianCalendar.class);
+                value = data.get(JCR_CREATED, GregorianCalendar.class);
             }
             if (value != null) {
                 long time = value.getTimeInMillis() / 1000;
@@ -231,7 +233,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         for (String stringField: stringFields) {
             String value = data.get(stringField, String.class);
             if (stringField.equals("pageTitle") && value == null) {
-                value = data.get(GlobalConstants.JCR_TITLE, String.class);
+                value = data.get(JCR_TITLE, String.class);
             }
             if (value != null) {
                 if (stringField.equals(NN_TEMPLATE)) {

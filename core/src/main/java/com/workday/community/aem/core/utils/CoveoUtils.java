@@ -57,7 +57,7 @@ public class CoveoUtils {
 
     JsonObject userContext = snapService.getUserContext(sfId);
     String email = userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
-        : searchApiConfigService.isDevMode() ? searchApiConfigService.getDefaultEmail() : null;
+        : (searchApiConfigService.isDevMode() ? searchApiConfigService.getDefaultEmail() : null);
     if (email == null) {
       throw new ServletException("User email is not in session, please contact admin");
     }

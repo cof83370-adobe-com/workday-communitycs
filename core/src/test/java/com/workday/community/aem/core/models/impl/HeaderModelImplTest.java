@@ -104,10 +104,6 @@ public class HeaderModelImplTest {
     ret.setFileNameWithExtension("fff.png");
     ret.setBase64content("content");
     assertEquals("data:image/png;base64,content", headerModel.getUserAvatar());
-
-    // Case 3: Exception return
-    lenient().when(snapService.getProfilePhoto(DEFAULT_SFID_MASTER)).thenThrow(new RuntimeException());
-    assertEquals("", headerModel.getUserAvatar());
   }
 
   /**

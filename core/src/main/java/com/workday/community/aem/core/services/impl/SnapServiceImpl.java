@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.SnapService;
@@ -186,17 +187,15 @@ public class SnapServiceImpl implements SnapService {
       return defaultMenu;
     }
 
-    // Reading the JSON File from DAM
-    try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
-        config.navFallbackMenuServiceUser())) {
-      defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
-    } catch (RuntimeException | LoginException e) {
+    // Reading the JSON File from DAM.
+    try {
+      ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory, config.navFallbackMenuServiceUser());
+      return defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
+    } catch (RuntimeException | LoginException | DamException e) {
       logger
           .error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
       return new JsonObject();
     }
-
-    return defaultMenu;
   }
 
   /**

@@ -23,8 +23,15 @@ import java.lang.reflect.Type;
 
 public class CommonUtils {
 
+  /** The logger. */
   private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtils.class);
 
+  /**
+   * Get the Salesforce id of logged in user.
+   *
+   * @param resourceResolver the Resource Resolver object.
+   * @return The Salesforce id.
+   */
   public static String getLoggedInUserSourceId(ResourceResolver resourceResolver) {
     Session session = resourceResolver.adaptTo(Session.class);
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
@@ -38,6 +45,12 @@ public class CommonUtils {
     return sfId;
   }
 
+  /**
+   * Get the user id of logged in user.
+   *
+   * @param resourceResolver the Resource Resolver object.
+   * @return The user id.
+   */
   public static String getLoggedInUserId(ResourceResolver resourceResolver) {
     Session session = resourceResolver.adaptTo(Session.class);
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
@@ -52,6 +65,12 @@ public class CommonUtils {
 
   }
 
+  /**
+   * Get the customer type of logged in user.
+   *
+   * @param resourceResolver the Resource Resolver object.
+   * @return The customer type.
+   */
   public static String getLoggedInCustomerType(ResourceResolver resourceResolver) {
     Session session = resourceResolver.adaptTo(Session.class);
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
@@ -66,6 +85,12 @@ public class CommonUtils {
 
   }
 
+  /**
+   * Get the logged in user.
+   *
+   * @param resourceResolver the Resource Resolver object.
+   * @return The user.
+   */
   public static User getLoggedInUser(ResourceResolver resourceResolver) {
     Session session = resourceResolver.adaptTo(Session.class);
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
@@ -79,6 +104,12 @@ public class CommonUtils {
 
   }
 
+  /**
+   * Get the logged in user node.
+   *
+   * @param resourceResolver the Resource Resolver object.
+   * @return The user node.
+   */
   public static Node getLoggedInUserAsNode(ResourceResolver resourceResolver) {
 
     User user;
@@ -102,6 +133,7 @@ public class CommonUtils {
    *
    * @param source The source Json object.
    * @param target The target Json object.
+   * @param attr The attribute.
    */
   public static void updateSourceFromTarget(JsonObject source, JsonObject target, String attr) {
     for (String key : target.keySet()) {
@@ -127,6 +159,14 @@ public class CommonUtils {
     }
   }
 
+  /**
+   * Replace all values in the source Json array from the corresponding target Json array, given them
+   * have some json structure.
+   *
+   * @param source The source Json array.
+   * @param target The target Json array.
+   * @param attr The attribute.
+   */
   public static void updateSourceFromTarget(JsonArray source, JsonArray target, String attr) {
     for (int i = 0; i < source.size(); i++) {
       JsonElement valSource = source.get(i);

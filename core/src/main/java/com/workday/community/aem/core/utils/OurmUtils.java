@@ -1,6 +1,8 @@
 package com.workday.community.aem.core.utils;
 
 import com.workday.community.aem.core.constants.SnapConstants;
+import com.workday.community.aem.core.exceptions.OurmException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -24,6 +26,7 @@ public class OurmUtils {
    *
    * @param resourceResolver the Resource Resolver object
    * @return the Salesforce id from the session.
+   * @throws OurmException
    */
   public static String getSalesForceId(ResourceResolver resourceResolver) {
     String sfId = "";
@@ -35,13 +38,13 @@ public class OurmUtils {
       try {
         User user = (User) userManager.getAuthorizable(session.getUserID());
         if (user == null) {
-          throw new RuntimeException("User is not in userManager");
+          throw new OurmException("User is not in userManager.");
         }
 
         sfId = user.getProperty(SnapConstants.PROFILE_SOURCE_ID) != null ?
-            user.getProperty(SnapConstants.PROFILE_SOURCE_ID)[0].getString() : null;
-      } catch (RepositoryException | RuntimeException e) {
-        logger.error(String.format("getSalesForceId fails with error: %s", e.getMessage()));
+          user.getProperty(SnapConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+      } catch (RepositoryException | RuntimeException | OurmException e) {
+        logger.error(String.format("getSalesForceId fails with error: %s.", e.getMessage()));
       }
     }
 
