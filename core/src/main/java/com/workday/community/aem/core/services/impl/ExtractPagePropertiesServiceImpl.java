@@ -8,6 +8,7 @@ import javax.jcr.RepositoryException;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.utils.DamUtils;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.*;
@@ -106,7 +107,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private HashMap<String, String> drupalRoleMapping = new HashMap<>();
 
     @Activate
-    public void init() {
+    public void init() throws DamException {
         this.setFieldMapConfig();
     }
 
@@ -387,7 +388,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     /**
      * Field map json object.
      */
-    private void setFieldMapConfig() {
+    private void setFieldMapConfig() throws DamException {
         if (fieldMapConfig == null) {
             try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
                 fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
