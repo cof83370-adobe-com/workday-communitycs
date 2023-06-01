@@ -1,6 +1,8 @@
 package com.workday.community.aem.core.models;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -112,6 +114,7 @@ public class AuthorshipRenderConditionModelTest {
         List<String> groups = new ArrayList<>();
         groups.add(groupId);
         List<Group> userGroups = new ArrayList<>();
+        userGroups.add(group);
         Iterator<Group> it = userGroups.iterator();
         when(userManager.getAuthorizable(userId)).thenReturn(user);
         lenient().when(session.getUserID()).thenReturn(userId);
@@ -128,7 +131,7 @@ public class AuthorshipRenderConditionModelTest {
         assertNotNull(authorshipRenderConditionModelTest);
     }
 
-        /**
+    /**
      * Test AuthorTitleRenderConditionModel.
      *
      * @throws Exception the exception
@@ -150,6 +153,7 @@ public class AuthorshipRenderConditionModelTest {
         List<String> groups = new ArrayList<>();
         groups.add(groupId);
         List<Group> userGroups = new ArrayList<>();
+        userGroups.add(group);
         Iterator<Group> it = userGroups.iterator();
         when(userManager.getAuthorizable(userId)).thenReturn(user);
         lenient().when(session.getUserID()).thenReturn(userId);
