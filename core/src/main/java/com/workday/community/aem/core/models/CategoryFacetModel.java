@@ -151,14 +151,13 @@ public class CategoryFacetModel {
     }
 
     /**
-     * Return resource resolver.
-     *
+     * return resource resolver.
+     * 
      * @return
      */
     private ResourceResolver getResourceResolver() {
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory,
-                READ_SERVICE_USER)) {
-            return resourceResolver;
+        try {
+            return ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
         } catch (LoginException e) {
             return null;
         }
