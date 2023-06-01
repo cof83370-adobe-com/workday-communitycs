@@ -5,6 +5,7 @@
   "allow.hosts":[
     "signin.resourcecenter.workday.com",
     "publish-p85402-e730631.adobeaemcloud.com",
+    "ciam.workdayinternal.com",
     "beta-content.workday.com"
   ],
   "filter.methods":[

@@ -186,20 +186,13 @@ public class SnapServiceImpl implements SnapService {
       return defaultMenu;
     }
 
-    ResourceResolver  resourceResolver = null;
-    try {
-      resourceResolver = ResolverUtil.newResolver(resResolverFactory, config.navFallbackMenuServiceUser());
+    try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory, config.navFallbackMenuServiceUser())) {
       // Reading the JSON File from DAM.
       defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
       return defaultMenu;
     } catch (RuntimeException | LoginException | DamException e) {
       logger.error(String.format("Exception in SnaServiceImpl for getFailStateHeaderMenu, error: %s", e.getMessage()));
       return new JsonObject();
-    }
-    finally {
-      if (resourceResolver != null && resourceResolver.isLive()) {
-        resourceResolver.close();
-      }
     }
   }
 
