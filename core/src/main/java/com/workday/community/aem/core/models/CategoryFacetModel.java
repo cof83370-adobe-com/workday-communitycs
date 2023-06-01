@@ -150,9 +150,15 @@ public class CategoryFacetModel {
         return searchHelpText;
     }
 
+    /**
+     * Return resource resolver.
+     *
+     * @return
+     */
     private ResourceResolver getResourceResolver() {
-        try {
-            return ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory,
+                READ_SERVICE_USER)) {
+            return resourceResolver;
         } catch (LoginException e) {
             return null;
         }

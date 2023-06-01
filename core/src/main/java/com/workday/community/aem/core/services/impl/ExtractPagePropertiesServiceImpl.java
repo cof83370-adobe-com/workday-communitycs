@@ -67,7 +67,6 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
      */
     private JsonObject fieldMapConfig;
 
-    // @Todo Once Tek system unifies the tag format, we can remove duplicate tags here.
     /** The taxonomyFields. */
     private ArrayList<String> taxonomyFields = new ArrayList<>();
 
