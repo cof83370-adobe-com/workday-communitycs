@@ -173,7 +173,6 @@ public class SnapServiceImpl implements SnapService {
       }
     } catch (SnapException | JsonProcessingException e) {
       logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
-      return null;
     }
     return null;
   }

@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
@@ -145,27 +144,6 @@ class UserGroupServiceImplTest {
         assertEquals(testSfGroups, userGroupServiceMock.getLoggedInUsersGroups(resourceResolver));
 
     }
-
-    @Test
-    void convertSfGroupsArrayToAemGroups() {
-        String testGroupMap = "{\"test sf group\" : [\"aem-group1\", \"aem-group2\"]}";
-        Gson gson = new Gson();
-        JsonObject testGroupObj = gson.fromJson(testGroupMap, JsonObject.class);
-
-        ResourceResolver resourceResolver = mock(ResourceResolver.class);
-        mockResolver.when(() -> ResolverUtil.newResolver(any(), any())).thenReturn(resourceResolver);
-
-        when(config.sfToAemUserGroupMap()).thenReturn("/path/to/file");
-        mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver), eq("/path/to/file"))).thenReturn(testGroupObj);
-        assertEquals(List.of("aem-group1", "aem-group2"), userGroupService.convertSfGroupsToAemGroups(List.of("test sf group")));
-
-        testGroupMap = "{\"test sf group\" : \"aem-group\"}";
-        testGroupObj = gson.fromJson(testGroupMap, JsonObject.class);
-        userGroupService.groupMap = null;
-        mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver), eq("/path/to/file"))).thenReturn(testGroupObj);
-        assertEquals(List.of("aem-group"), userGroupService.convertSfGroupsToAemGroups(List.of("test sf group")));
-    }
-
 
     @Test
     void testSnapService() throws NoSuchFieldException, IllegalAccessException {

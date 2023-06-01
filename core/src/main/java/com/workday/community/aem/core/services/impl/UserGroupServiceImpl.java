@@ -221,42 +221,4 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
 
     }
-
-    /**
-     * Map the SF roles to aem roles.
-     *
-     * @param groups List user groups object
-     * @return AEM roles
-     */
-    protected List<String> convertSfGroupsToAemGroups(List<String> groups) {
-        List<String> groupIds = new ArrayList<>();
-        // Reading the JSON File from DAM
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
-            if (groupMap == null) {
-                groupMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
-            }
-            for (String sfGroup : groups) {
-                assert groupMap != null;
-                if (!groupMap.get(sfGroup).isJsonNull()) {
-                    if (groupMap.get(sfGroup).isJsonArray()) {
-                        for (JsonElement aemGroup : groupMap.getAsJsonArray(sfGroup)) {
-                            String aemGroupId = aemGroup.getAsString();
-                            if (aemGroupId.length() > 0) {
-                                groupIds.add(aemGroupId);
-                            }
-                        }
-                    } else {
-                        String aemGroupId = groupMap.get(sfGroup).getAsString();
-                        if (aemGroupId.length() > 0) {
-                            groupIds.add(aemGroupId);
-                        }
-                    }
-                }
-            }
-        } catch (RuntimeException | LoginException | DamException e) {
-            logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
-        }
-        return groupIds;
-    }
-
 }
