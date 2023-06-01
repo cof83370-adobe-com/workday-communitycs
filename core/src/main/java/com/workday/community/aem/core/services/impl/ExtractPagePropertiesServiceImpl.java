@@ -39,7 +39,7 @@ import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_T
 import static com.workday.community.aem.core.constants.GlobalConstants.JCR_CONTENT_PATH;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
 import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED;
-import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;;
+import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
 
 /**
  * The Class ExtractPagePropertiesServiceImpl.

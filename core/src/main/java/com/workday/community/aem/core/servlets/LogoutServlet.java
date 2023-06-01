@@ -90,7 +90,6 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     String logoutUrl = String.format("%s/login/signout?fromURI=%s", oktaDomain, redirectUri);
 
     // 1: Drop cookies
-    // TODO need check in the future in case needs add more inclusion here.
     String[] deleteList = new String[] { LOGIN_COOKIE_NAME, COVEO_COOKIE_NAME };
     int count = HttpUtils.dropCookies(request, response, "/", deleteList);
     if (count == 0) {

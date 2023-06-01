@@ -44,7 +44,6 @@ import static com.workday.community.aem.core.constants.RestApiConstants.APPLICAT
 import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
 import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
-import static com.day.cq.commons.jcr.JcrConstants.NT_UNSTRUCTURED;
 
 /**
  * The Class CoveoEventsTypeServlet.

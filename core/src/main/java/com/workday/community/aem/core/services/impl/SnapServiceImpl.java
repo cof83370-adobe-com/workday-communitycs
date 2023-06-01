@@ -1,7 +1,5 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.adobe.xfa.ut.StringUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -20,6 +18,7 @@ import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -187,14 +186,20 @@ public class SnapServiceImpl implements SnapService {
       return defaultMenu;
     }
 
-    // Reading the JSON File from DAM.
+    ResourceResolver  resourceResolver = null;
     try {
-      ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory, config.navFallbackMenuServiceUser());
-      return defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
+      resourceResolver = ResolverUtil.newResolver(resResolverFactory, config.navFallbackMenuServiceUser());
+      // Reading the JSON File from DAM.
+      defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
+      return defaultMenu;
     } catch (RuntimeException | LoginException | DamException e) {
-      logger
-          .error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
+      logger.error(String.format("Exception in SnaServiceImpl for getFailStateHeaderMenu, error: %s", e.getMessage()));
       return new JsonObject();
+    }
+    finally {
+      if (resourceResolver != null && resourceResolver.isLive()) {
+        resourceResolver.close();
+      }
     }
   }
 

@@ -23,7 +23,9 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
@@ -97,7 +99,7 @@ public class CoveoUtils {
                                Gson gson,
                                ObjectMapper objectMapper,
                                String email, String apiKey) throws IOException {
-    HashMap<String, String> result;
+    Map result;
 
     HttpPost request = new HttpPost(searchApiConfigService.getSearchTokenAPI());
     StringEntity entity = new StringEntity(CoveoUtils.getTokenPayload(searchApiConfigService, gson, email));
@@ -110,10 +112,10 @@ public class CoveoUtils {
     HttpResponse response = httpClient.execute(request);
     int status = response.getStatusLine().getStatusCode();
     if (status == HttpStatus.SC_OK) {
-      result = objectMapper.readValue(response.getEntity().getContent(),
-          HashMap.class);
+      result = Collections.unmodifiableMap(objectMapper.readValue(response.getEntity().getContent(),
+          HashMap.class));
 
-      return result.get("token");
+      return (String)result.get("token");
     }
 
     return "";

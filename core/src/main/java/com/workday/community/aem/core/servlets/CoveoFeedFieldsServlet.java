@@ -57,7 +57,7 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
       try {
         fields = model.getFields();
       } catch (DamException e) {
-        LOGGER.debug("Feed fields are not fetched from CoveoTabListModel, please fix it.");
+        LOGGER.error("Feed fields are not fetched from CoveoTabListModel, please fix it.");
       }
 
       if (fields != null && fields.size() > 0) {

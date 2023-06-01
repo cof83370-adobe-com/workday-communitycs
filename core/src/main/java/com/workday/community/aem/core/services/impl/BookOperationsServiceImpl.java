@@ -86,7 +86,7 @@ public class BookOperationsServiceImpl implements BookOperationsService {
                     if (resolver.hasChanges()) {
                         resolver.commit();
                     }
-                    logger.trace("processBook...completeBookData ", bookPathDataList);
+                    logger.trace("processBook...completeBookData %s", bookPathDataList);
                 }
             }
         } catch (RepositoryException | PersistenceException e) {

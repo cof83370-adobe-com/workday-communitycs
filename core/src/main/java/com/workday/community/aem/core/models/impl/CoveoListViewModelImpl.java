@@ -11,6 +11,7 @@ import org.apache.sling.models.annotations.injectorspecific.ChildResource;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 
 import javax.inject.Named;
+import java.util.ArrayList;
 import java.util.List;
 
 @Model(
@@ -28,7 +29,7 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
 
   @Override
   public List<CategoryFacetModel> getCategories() {
-    return categories;
+    return new ArrayList<>(categories);
   }
 
   public JsonObject getSearchConfig() {

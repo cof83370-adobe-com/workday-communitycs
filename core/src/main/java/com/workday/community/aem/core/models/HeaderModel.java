@@ -1,7 +1,5 @@
 package com.workday.community.aem.core.models;
 
-import java.io.IOException;
-
 /**
  * The HeaderModel interface.
  */

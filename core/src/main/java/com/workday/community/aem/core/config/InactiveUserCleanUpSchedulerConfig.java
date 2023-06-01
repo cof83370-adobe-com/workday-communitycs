@@ -29,6 +29,5 @@ public @interface InactiveUserCleanUpSchedulerConfig {
         name = "Cron Expression",
         description = "Cron expression used by the scheduler",
         type = AttributeType.STRING)
-    public String cronExpression() default "0 0 0 * * ?";
-    
+    String cronExpression() default "0 0 0 * * ?";
 }

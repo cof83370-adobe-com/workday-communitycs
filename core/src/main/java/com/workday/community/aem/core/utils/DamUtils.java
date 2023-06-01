@@ -48,10 +48,7 @@ public class DamUtils {
 			String line;
 			BufferedReader br = new BufferedReader(new InputStreamReader(content, StandardCharsets.UTF_8));
 
-			while (true) {
-				if ((line = br.readLine()) == null) {
-					break;
-				}
+			while ((line = br.readLine()) != null) {
 				sb.append(line);
 			}
 			content.close();

@@ -18,5 +18,5 @@ public interface CoveoListViewModel {
      *
      * @return
      */
-    public JsonObject getSearchConfig();
+    JsonObject getSearchConfig();
 }

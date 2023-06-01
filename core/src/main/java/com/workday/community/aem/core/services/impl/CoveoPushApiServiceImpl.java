@@ -2,7 +2,6 @@ package com.workday.community.aem.core.services.impl;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -108,8 +107,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         containerHeader.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
         containerHeader.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         containerHeader.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        HashMap<String, Object> createContainerResponse = callApi(generateContainerUri(), containerHeader, "POST", "");
-        return createContainerResponse;
+        return callApi(generateContainerUri(), containerHeader, "POST", "");
     }
 
     @Override
@@ -164,14 +162,13 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
             }
             else if ((Integer) uploadFileResponse.get("statusCode") == HttpStatus.SC_REQUEST_TOO_LONG) {
                 // Split payload.
-                Integer chunckStatusCode = -1;
+                int chunckStatusCode = -1;
                 List<List<Object>> chunks = ListUtils.partition(payload, payload.size() / 2 + 1);
-                Iterator<List<Object>> it = chunks.iterator();
-                while (it.hasNext()) {
-                    Integer code = this.indexItems(it.next());
+                for (List<Object> chunk : chunks) {
+                    Integer code = this.indexItems(chunk);
                     if (code != HttpStatus.SC_ACCEPTED || chunckStatusCode == -1) {
                         chunckStatusCode = code;
-                    }  
+                    }
                 }
                 return chunckStatusCode;
             }
