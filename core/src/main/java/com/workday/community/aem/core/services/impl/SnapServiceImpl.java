@@ -189,12 +189,14 @@ public class SnapServiceImpl implements SnapService {
     // Reading the JSON File from DAM
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
         config.navFallbackMenuServiceUser())) {
-      return defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
+      defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
     } catch (RuntimeException | LoginException e) {
       logger
           .error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
       return new JsonObject();
     }
+
+    return defaultMenu;
   }
 
   /**
@@ -205,7 +207,7 @@ public class SnapServiceImpl implements SnapService {
    */
   private String getMergedHeaderMenu(JsonObject sfNavObj, JsonObject defaultMenu) {
     if (sfNavObj != null && config.beta()) {
-      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu);
+      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu, "id");
       return gson.toJson(sfNavObj);
     }
 

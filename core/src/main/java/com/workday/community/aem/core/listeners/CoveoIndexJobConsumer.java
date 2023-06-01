@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.listeners;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpStatus;
 import org.apache.sling.event.jobs.Job;
@@ -47,18 +48,18 @@ public class CoveoIndexJobConsumer implements JobConsumer {
     public JobResult process(Job job) {
         ArrayList<String> paths = (ArrayList<String>) job.getProperty("paths");
         String op = (String) job.getProperty("op");
-        if (op != null && paths != null) {
+        if (paths != null) {
             if (op.equals("delete")) {
                 return startCoveoDelete(paths);
             }
-            else {
+
+            if(op.equals("index")) {
                 return startCoveoIndex(paths);
             }
         }
-        else {
-            logger.error("Error occured in coveo index job consumer, job does not have required properties: path and op.");
-            return JobResult.FAILED; 
-        }
+
+        logger.error("Error occur in Coveo index job consumer, job does not have required properties: path and op.");
+        return JobResult.FAILED;
     }
 
     /**
@@ -68,7 +69,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
 	 * @return Job result
 	 */
     public JobResult startCoveoDelete(ArrayList<String> paths) {  
-        Boolean hasError = false;
+        boolean hasError = false;
         for (String path : paths) {
             String documentId = runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
             Integer status = coveoPushApiService.callDeleteSingleItemUri(documentId); 
@@ -87,7 +88,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
 	 * @return Job result
 	 */
     public JobResult startCoveoIndex(ArrayList<String> paths) {  
-        ArrayList<Object> payload = new ArrayList<Object>();
+        List<Object> payload = new ArrayList<>();
         for (String path : paths) {
             payload.add(extractPagePropertiesService.extractPageProperties(path));
         }

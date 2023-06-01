@@ -3,6 +3,7 @@ package com.workday.community.aem.core.servlets;
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.SimpleDataSource;
 import com.adobe.granite.ui.components.ds.ValueMapResource;
+import com.day.crx.JcrConstants;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.CoveoTabListModel;
@@ -57,7 +58,7 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
           ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
           valueMap.put("value", ((JsonObject)field).get("name").getAsString());
           valueMap.put("text",  ((JsonObject)field).get("desc").getAsString());
-          resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), "nt:unstructured", valueMap));
+          resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, valueMap));
         });
       } else {
         LOGGER.debug("Feed fields are not fetched from CoveoTabListModel, please fix it.");

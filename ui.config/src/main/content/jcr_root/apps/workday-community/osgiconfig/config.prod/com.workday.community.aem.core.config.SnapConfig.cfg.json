@@ -4,17 +4,19 @@
     "snapContextPath":"$[env:snapContextPath]",
     "snapContextApiToken":"$[secret:snapContextApiToken]",
     "snapContextApiKey":"$[secret:snapContextApiKey]",
-    "snapProfilePath":"$[env:snapProfilePath]",
     "snapProfileApiToken":"$[secret:snapProfileApiToken]",
     "snapProfileApiKey":"$[secret:snapProfileApiKey]",
-    "navFallbackMenuData": "/content/dam/workday-community/resources/local-header-data.json",
+    "snapProfilePath":"$[env:snapProfilePath]",
+    "sfToAemUserGroupMap":"/content/dam/workday-community/resources/sf-to-aem-group-map.json",
     "navApi":"$[env:navApi]",
     "navApiKey":"$[secret:navApiKey]",
     "navApiToken":"$[secret:navApiToken]",
     "navFallbackMenuData": "/content/dam/workday-community/resources/local-header-data.json",
-    "navFallbackMenuServiceUser": "readserviceuser",
+    "navFallbackMenuServiceUser": "$[env:navFallbackMenuServiceUser;default=\"readserviceuser\"]",
+    "menuCacheMax": "$[env:navMenuCacheMax;default=100]",
+    "menuCacheTimeout": "$[env:navMenuCacheTimeout;default=86400000L]",
     "sfdcUserAvatarUrl": "$[env:sfdcUserAvatarUrl]",
     "sfdcUserAvatarToken": "$[secret:sfdcUserAvatarToken]",
     "sfdcUserAvatarApiKey": "$[secret:sfdcUserAvatarApiKey]",
-    "beta": true
+    "beta": "$[env:isBeta;default=true]"
 }
