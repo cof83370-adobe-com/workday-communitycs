@@ -13,10 +13,10 @@
     "navApiToken":"$[secret:navApiToken]",
     "navFallbackMenuData": "/content/dam/workday-community/resources/local-header-data.json",
     "navFallbackMenuServiceUser": "$[env:navFallbackMenuServiceUser;default=\"readserviceuser\"]",
-    "menuCacheMax": "$[env:navMenuCacheMax;default=100]",
-    "menuCacheTimeout": "$[env:navMenuCacheTimeout;default=86400000L]",
+    "menuCacheMax": "$[env:navMenuCacheMax]",
+    "menuCacheTimeout": "$[env:navMenuCacheTimeout]",
     "sfdcUserAvatarUrl": "$[env:sfdcUserAvatarUrl]",
     "sfdcUserAvatarToken": "$[secret:sfdcUserAvatarToken]",
     "sfdcUserAvatarApiKey": "$[secret:sfdcUserAvatarApiKey]",
-    "beta": "$[env:isBeta;default=true]"
+    "beta": "$[env:isBeta]"
 }
