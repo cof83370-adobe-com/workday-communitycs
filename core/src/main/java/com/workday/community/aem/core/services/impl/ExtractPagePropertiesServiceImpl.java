@@ -6,13 +6,9 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.exceptions.DamException;
-import com.workday.community.aem.core.utils.DamUtils;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.*;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
@@ -71,22 +67,33 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private JsonObject fieldMapConfig;
 
     /** The taxonomyFields. */
-    private ArrayList<String> taxonomyFields = new ArrayList<>();
+    private final ArrayList<String> taxonomyFields = new ArrayList<>(
+        Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "eventAudience", "eventFormat")
+    );
 
     /** The dateFields. */
-    private ArrayList<String> dateFields = new ArrayList<>();
-
+    private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("eventStartDate", "eventEndDate", "postedDate", "updatedDate"));
+    
     /** The hierarchyFields. */
-    private ArrayList<String> hierarchyFields = new ArrayList<>();
+    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "industryTags", "userTags", "programsToolsTags", "regionCountryTags", "trainingTags"));
 
     /** The stringFields. */
-    private ArrayList<String> stringFields = new ArrayList<>();
+    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
 
     /** The page tags. */
-    private HashMap<String, String> pageTagMap = new HashMap<>();
+    private static final Map<String, String> pageTagMap = Map.of(
+        "product", "productTags",
+        "using-workday", "usingWorkdayTags", 
+        "programs-and-tools", "programsToolsTags",
+        "release", "releaseTags", 
+        "industry", "industryTags", 
+        "user", "userTags",
+        "region-and-country", "regionCountryTags", 
+        "training", "trainingTags"
+    );
 
     /** The custom components. */
-    private HashMap<String, String> customComponents =  new HashMap<>();
+    private static final Map<String, String> customComponents =  Map.of("root/container/eventregistration/button", "registrationLink");
 
     /** The TEXT_COMPONENT. */
     public static final String TEXT_COMPONENT = "workday-community/components/core/text";
@@ -104,12 +111,17 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private static final String EXCLUDE = "exclude";
 
     /** The drupal role mapping. */
-    private HashMap<String, String> drupalRoleMapping = new HashMap<>();
-
-    @Activate
-    public void init() throws DamException {
-        this.setFieldMapConfig();
-    }
+    private static final Map<String, String> DRUPAL_ROLE_MAPPING = Map.of(
+        "access-control:authenticated", "authenticated",
+        "access-control:customer_all", "customer;community_customer;customer_touchpoint_pro",
+        "access-control:customer_named_support_contact", "customer_named_support_contact",
+        "access-control:customer_training_coordinator", "customer_training_coordinator",
+        "access-control:customer_adative_only", "customer_adaptive_only",
+        "access-control:customer_peakon_only", "customer_peakon_only",
+        "access-control:customer_scout_only", "customer_scout_only",
+        "access-control:customer_vndly_only", "customer_vndly_only",
+        "access-control:partner_all", "partner_channel_partner;community_partner_channel_partner;partner_implementation_partner;community_partner_implementation_partner;partner_integration_partner;community_partner_software_alliances;partner_read_only;community_partner_read_only;partner_main",
+        "access-control:internal_workmates", "workday");
 
     @Override
     public HashMap<String, Object> extractPageProperties(String path) {
@@ -202,7 +214,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         String[] accessControlValues = data.get(ACCESS_CONTROL_PROPERTY, String[].class);
         if (accessControlValues != null && accessControlValues.length > 0) {
             for (String accessControlValue: accessControlValues) {
-                String[] drupalRoles = drupalRoleMapping.get(accessControlValue).split(";");
+                String[] drupalRoles = DRUPAL_ROLE_MAPPING.get(accessControlValue).split(";");
                 for (String drupalRole: drupalRoles) {
                     HashMap<String, Object> permissionGroup = new HashMap<>();
                     permissionGroup.put("identity", drupalRole);
@@ -383,29 +395,6 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
            }
         }
 
-    }
-
-    /**
-     * Field map json object.
-     */
-    private void setFieldMapConfig() throws DamException {
-        if (fieldMapConfig == null) {
-            try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
-                fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
-            } catch (LoginException e) {
-                logger.error("Error reading filed map: {}", e.getMessage());
-            }
-        }
-        if (fieldMapConfig != null) {
-            Gson g = new Gson();
-            pageTagMap = g.fromJson(fieldMapConfig.get("tagsToAemField").toString(), HashMap.class);
-            taxonomyFields = g.fromJson(fieldMapConfig.get("taxonomyFields").toString(), ArrayList.class);
-            dateFields = g.fromJson(fieldMapConfig.get("dateFields").toString(), ArrayList.class);
-            hierarchyFields = g.fromJson(fieldMapConfig.get("hierarchyFields").toString(), ArrayList.class);
-            stringFields = g.fromJson(fieldMapConfig.get("stringFields").toString(), ArrayList.class);
-            customComponents = g.fromJson(fieldMapConfig.get("customComponents").toString(), HashMap.class);
-            drupalRoleMapping = g.fromJson(fieldMapConfig.get("drupalRoleMapping").toString(), HashMap.class);
-        }
     }
 
 }
