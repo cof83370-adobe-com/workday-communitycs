@@ -1,6 +1,5 @@
 {
   "alloworigin":["$[env:oktaAllowOrigin]"],
-  "alloworiginregexp":["*"],
   "allowedpaths":[".*"],
   "exposedheaders":[
     ""
