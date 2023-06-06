@@ -17,6 +17,7 @@ import org.osgi.service.metatype.annotations.Designate;
     property = {
         "service.pid=aem.core.services.search"
     },
+    configurationPid = "com.workday.community.aem.core.config.CoveoSearchConfig",
     configurationPolicy = ConfigurationPolicy.OPTIONAL,
     immediate = true
 )
