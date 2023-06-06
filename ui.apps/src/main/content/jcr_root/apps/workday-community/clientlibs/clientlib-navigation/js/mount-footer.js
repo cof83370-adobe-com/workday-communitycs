@@ -10,7 +10,7 @@ function renderNavFooter() {
                 cookiePrefUrl: adobeUri,
             }
         };
-        const footerElement = elementCreator(Cmty.GlobalFooter, {menus: footerData});
+        const footerElement = elementCreator(Cmty.GlobalFooter, { menus: footerData });
         ReactDOM.render(footerElement, footerDiv);
     }
 }

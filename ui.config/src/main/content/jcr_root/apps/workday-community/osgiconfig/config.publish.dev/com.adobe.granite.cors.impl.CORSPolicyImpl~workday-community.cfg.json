@@ -1,6 +1,7 @@
 {
   "alloworigin":["$[env:oktaAllowOrigin]"],
-  "allowedpaths":[".*"],
+  "alloworiginregexp":[".*","*.*","*"],
+  "allowedpaths":[ ".*/saml_login",".*","*.*","*"],
   "exposedheaders":[
     ""
   ],
