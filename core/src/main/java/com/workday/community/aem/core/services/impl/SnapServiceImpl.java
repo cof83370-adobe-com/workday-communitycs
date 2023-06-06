@@ -101,6 +101,11 @@ public class SnapServiceImpl implements SnapService {
     if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi) ||
         StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
       // No Snap configuration provided, just return the default one.
+      logger.debug(String.format("there is no value " +
+              "for one or multiple configuration parameter: " +
+              "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
+              snapUrl, navApi, apiToken, apiKey
+          ));
       return gson.toJson(this.getDefaultHeaderMenu());
     }
 
