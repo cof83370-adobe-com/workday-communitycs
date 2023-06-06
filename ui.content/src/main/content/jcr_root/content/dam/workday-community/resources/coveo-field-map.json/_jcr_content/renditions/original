@@ -14,8 +14,7 @@
     "training": "trainingTags",
     "release-notes": "releaseNotesTags",
     "event": "eventTags",
-    "content-types": "contentType",
-    "release": "releaseTags"
+    "content-types": "contentType"
   },
   "tagIdToCoveoField" : {
     "product": "druproducthierarchy",

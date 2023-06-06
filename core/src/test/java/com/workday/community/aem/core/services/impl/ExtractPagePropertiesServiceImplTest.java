@@ -14,8 +14,6 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -122,17 +120,10 @@ public class ExtractPagePropertiesServiceImplTest {
      * Test process page permission.
      */
     @Test
-    public void testProcessPermission() throws NoSuchFieldException, IllegalAccessException {
+    public void testProcessPermission() {
         ValueMap data = mock(ValueMap.class);
         String [] accessControlValues = {"access-control:customer_all", "access-control:customer_named_support_contact"};
         doReturn(accessControlValues).when(data).get("accessControlTags", String[].class);
-
-        HashMap<String, String> map = new HashMap<>();
-        map.put("access-control:customer_all", "customer;community_customer;customer_touchpoint_pro");
-        map.put("access-control:customer_named_support_contact", "customer_named_support_contact");
-        Field f = extract.getClass().getDeclaredField("drupalRoleMapping");
-        f.setAccessible(true);
-        f.set(extract, map);
 
         HashMap<String, Object> properties = new HashMap<>();
         extract.processPermission(data, properties, "test@gmail.com");
@@ -155,13 +146,7 @@ public class ExtractPagePropertiesServiceImplTest {
      * Test process string fields.
      */
     @Test
-    public void testPorcessStringFields() throws NoSuchFieldException, IllegalAccessException {
-        List<String> l = new ArrayList<>();
-        l.add("pageTitle");
-        l.add("cq:template");
-        Field f = extract.getClass().getDeclaredField("stringFields");
-        f.setAccessible(true);
-        f.set(extract, l);
+    public void testPorcessStringFields() {
         ValueMap data = mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<String, Object>();
         doReturn("/conf/workday-community/settings/wcm/templates/events").when(data).get("cq:template", String.class);
@@ -176,12 +161,7 @@ public class ExtractPagePropertiesServiceImplTest {
      * Test process date fields.
      */
     @Test
-    public void testPorcessDateFields() throws NoSuchFieldException, IllegalAccessException {
-        List<String> l = new ArrayList<>();
-        l.add("eventStartDate");
-        Field f = extract.getClass().getDeclaredField("dateFields");
-        f.setAccessible(true);
-        f.set(extract, l);
+    public void testPorcessDateFields() {
         ValueMap data = mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<>();
         GregorianCalendar value = new GregorianCalendar();
