@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 
@@ -26,7 +27,6 @@ public class OurmUtils {
    *
    * @param resourceResolver the Resource Resolver object
    * @return the Salesforce id from the session.
-   * @throws OurmException
    */
   public static String getSalesForceId(ResourceResolver resourceResolver) {
     String sfId = "";
@@ -41,14 +41,19 @@ public class OurmUtils {
           throw new OurmException("User is not in userManager.");
         }
 
-        sfId = user.getProperty(SnapConstants.PROFILE_SOURCE_ID) != null ?
-          user.getProperty(SnapConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+        Value[] sfIdObj = user.getProperty(SnapConstants.PROFILE_SOURCE_ID);
+        if (sfIdObj == null || sfIdObj.length == 0) {
+          logger.error("returned User object in JCR session doesn't have salesforceId");
+          return DEFAULT_SFID_MASTER;
+        }
+
+        sfId = sfIdObj[0].getString();
       } catch (RepositoryException | RuntimeException | OurmException e) {
         logger.error(String.format("getSalesForceId fails with error: %s.", e.getMessage()));
       }
     }
 
-    if (StringUtils.isBlank(sfId)) {
+    if (StringUtils.isEmpty(sfId)) {
       // Default fallback
       logger.debug("Salesforce Id for current user is unavailable, please check with admin.");
       sfId = DEFAULT_SFID_MASTER;

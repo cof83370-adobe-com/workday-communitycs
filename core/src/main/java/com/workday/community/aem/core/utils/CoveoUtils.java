@@ -15,6 +15,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -35,6 +37,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 
 public class CoveoUtils {
+  private static final Logger LOGGER = LoggerFactory.getLogger(CoveoUtils.class);
 
   public static void executeSearchForCallback(SlingHttpServletRequest request,
                                               SlingHttpServletResponse response,
@@ -64,9 +67,7 @@ public class CoveoUtils {
       throw new ServletException("User email is not in session, please contact admin");
     }
 
-    CloseableHttpClient httpClient = HttpClients.createDefault();
-
-    try {
+    try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
       String searchToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getSearchTokenAPIKey());
       if (StringUtils.isEmpty(searchToken)) {
@@ -89,8 +90,6 @@ public class CoveoUtils {
       Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", searchApiConfigService.isDevMode());
       servletCallback.execute(request, response, coveoInfo);
-    } finally {
-      httpClient.close();
     }
   }
 
@@ -127,6 +126,9 @@ public class CoveoUtils {
     HashMap<String, String> userMap = new HashMap<>();
     HashMap<String, Object> payloadMap = new HashMap<>();
 
+    String searchHub = searchApiConfigService.getSearchHub();
+    LOGGER.debug(String.format("The configured Search hub is: %s", searchHub));
+
     userMap.put("name", email);
     userMap.put("provider", searchApiConfigService.getUserIdProvider());
     String userIdType = searchApiConfigService.getUserIdType();
@@ -139,7 +141,7 @@ public class CoveoUtils {
     userArray.add(jsonString);
     payloadMap.put("validFor", searchApiConfigService.getTokenValidTime());
     payloadMap.put("userIds", userArray.toString());
-    payloadMap.put("searchHub", searchApiConfigService.getSearchHub());
+    payloadMap.put("searchHub", searchHub);
     JsonObject jsonObj = gson.fromJson(payloadMap.toString(), JsonObject.class);
 
     return jsonObj.toString();
