@@ -231,11 +231,11 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_641475696923109>
                     <policy_641528232375303
-                        jcr:description="Allows all sizes, but not H1 &amp; H2, which is reserved for the main page title."
+                        jcr:description="Allows all sizes, but not H1, which is reserved for the main page title."
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Content Title"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        allowedTypes="[h3,h4,h5,h6]"
+                        allowedTypes="[h2,h3,h4,h5,h6]"
                         linkDisabled="false"
                         type="h3">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
