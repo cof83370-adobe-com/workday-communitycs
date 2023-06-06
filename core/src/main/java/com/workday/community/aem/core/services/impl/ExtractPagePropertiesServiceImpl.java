@@ -56,42 +56,35 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     @Reference
     private RunModeConfigService runModeConfigService;
 
-    /**
-     * Search config file path.
-     */
-    private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";
-
-    /**
-     * Search config json object
-     */
-    private JsonObject fieldMapConfig;
-
     /** The taxonomyFields. */
     private final ArrayList<String> taxonomyFields = new ArrayList<>(
-        Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "eventAudience", "eventFormat")
+        Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType", "eventAudience", "eventFormat")
     );
 
     /** The dateFields. */
     private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("eventStartDate", "eventEndDate", "postedDate", "updatedDate"));
     
     /** The hierarchyFields. */
-    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "industryTags", "userTags", "programsToolsTags", "regionCountryTags", "trainingTags"));
+    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType"));
 
     /** The stringFields. */
     private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
 
     /** The page tags. */
-    private static final Map<String, String> pageTagMap = Map.of(
-        "product", "productTags",
-        "using-workday", "usingWorkdayTags", 
-        "programs-and-tools", "programsToolsTags",
-        "release", "releaseTags", 
-        "industry", "industryTags", 
-        "user", "userTags",
-        "region-and-country", "regionCountryTags", 
-        "training", "trainingTags"
-    );
-
+    private static final Map<String, String> pageTagMap = new HashMap<String, String>() {{
+        put("product", "productTags");
+        put("using-workday", "usingWorkdayTags");
+        put("programs-and-tools", "programsToolsTags");
+        put("release", "releaseTags");
+        put("industry", "industryTags");
+        put("user", "userTags");
+        put("region-and-country", "regionCountryTags");
+        put("training", "trainingTags");
+        put("release-notes", "releaseNotesTags");
+        put("event", "eventTags");
+        put("content-types", "contentType");
+    }};
+    
     /** The custom components. */
     private static final Map<String, String> customComponents =  Map.of("root/container/eventregistration/button", "registrationLink");
 
