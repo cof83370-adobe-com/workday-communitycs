@@ -251,24 +251,6 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678842595504>
                 </title>
-                <experiencefragment jcr:primaryType="nt:unstructured">
-                    <policy_header
-                        cq:styleDefaultElement="header"
-                        jcr:description="Sets a &lt;header> element on the page header experience fragment."
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Page Header"
-                        sling:resourceType="wcm/core/components/policy/policy">
-                        <jcr:content jcr:primaryType="nt:unstructured"/>
-                    </policy_header>
-                    <policy_footer
-                        cq:styleDefaultElement="footer"
-                        jcr:description="Sets a &lt;footer> element on the page footer experience fragment."
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Page Footer"
-                        sling:resourceType="wcm/core/components/policy/policy">
-                        <jcr:content jcr:primaryType="nt:unstructured"/>
-                    </policy_footer>
-                </experiencefragment>
                 <container jcr:primaryType="nt:unstructured">
                     <policy_16323801898166
                         jcr:description="This policy defines allowed components of the Content Main container of the Kits and Tools Page."
