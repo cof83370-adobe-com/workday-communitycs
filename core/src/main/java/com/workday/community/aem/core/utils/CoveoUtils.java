@@ -65,6 +65,7 @@ public class CoveoUtils {
     String email = userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
         : (searchApiConfigService.isDevMode() ? searchApiConfigService.getDefaultEmail() : null);
     if (email == null) {
+      LOGGER.error("User email is not in session, please contact admin");
       throw new ServletException("User email is not in session, please contact admin");
     }
 
@@ -72,7 +73,8 @@ public class CoveoUtils {
       String searchToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getSearchTokenAPIKey());
       if (StringUtils.isEmpty(searchToken)) {
-        throw new ServletException("there is no search token generated, please contact community admin.");
+        LOGGER.error("There is no search token generated, please contact community admin.");
+        throw new ServletException("There is no search token generated, please contact community admin.");
       }
       String recommendationToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getRecommendationAPIKey());
@@ -100,6 +102,7 @@ public class CoveoUtils {
                                ObjectMapper objectMapper,
                                String email, String apiKey) throws IOException {
     if (StringUtils.isEmpty(apiKey) || apiKey.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
+      LOGGER.debug("Pass-in API key is empty or null");
       return "";
     }
 
@@ -114,12 +117,14 @@ public class CoveoUtils {
     HttpResponse response = httpClient.execute(request);
     int status = response.getStatusLine().getStatusCode();
     if (status == HttpStatus.SC_OK) {
+      LOGGER.debug("Token API call is successful.");
       Map result = Collections.unmodifiableMap(objectMapper.readValue(response.getEntity().getContent(),
           HashMap.class));
 
       return (String)result.get("token");
     }
 
+    LOGGER.error("Token API call failed.");
     return "";
   }
 
@@ -136,6 +141,7 @@ public class CoveoUtils {
     userMap.put("provider", searchApiConfigService.getUserIdProvider());
     String userIdType = searchApiConfigService.getUserIdType();
     if (!StringUtils.isEmpty(userIdType) && !userIdType.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
+      LOGGER.debug(String.format("UserIdType is: %s", userIdType));
       userMap.put("type", userIdType);
     }
 

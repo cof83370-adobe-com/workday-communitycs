@@ -76,6 +76,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
       return body;
     };
 
+    logger.debug("Start doGet call for token");
     CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, gson, objectMapper, servletCallback);
   }
 }
