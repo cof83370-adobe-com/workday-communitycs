@@ -1,7 +1,7 @@
 {
     "coveoApiKey":"$[secret:coveoIndexApiKey]",
-    "organizationId":"$[env:coveoIndexOrgId]",
-    "sourceId":"$[env:coveoIndexSourceId]",
+    "organizationId":"$[secret:coveoIndexOrgId]",
+    "sourceId":"$[secret:coveoIndexSourceId]",
     "isCoveoIndexingEnabled":true,
     "pushApiUri":"https://api.cloud.coveo.com/push/v1/organizations/",
     "sourceApiUri":"https://platform.cloud.coveo.com/rest/organizations/",
