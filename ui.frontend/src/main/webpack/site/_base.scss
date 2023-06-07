@@ -23,6 +23,12 @@ main {
     min-height: calc(100vh - 120px);
 }
 
+@media (max-width: 767px) {
+    main {
+        padding: 10.5em 1em 0;
+    }
+}
+
 a {
     color: $color-link;
 

@@ -1,4 +1,6 @@
 .header-container {
+
+  /* phone breakpoint */
   .cmp-header {
     background-color: $wdc-color-cantaloupe-500;
     padding: 10px;
@@ -10,5 +12,25 @@
   .cmp-react__header {
     position: absolute;
     margin-top: 40px;
+  }
+
+  @media (max-width: 767px) {
+    .cmp-header {
+      height: 60px;
+    }
+
+    .cmp-react__header {
+      margin-top: 60px;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .cmp-header {
+      height: 80px;
+    }
+
+    .cmp-react__header {
+      margin-top: 80px;
+    }
   }
 }
