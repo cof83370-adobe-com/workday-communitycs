@@ -59,7 +59,7 @@ public final class GlobalConstants {
   /** The Constant COMMUNITY_BOOK_ROOT_PATH. */
   public static final String COMMUNITY_CONTENT_BOOK_ROOT_PATH ="/content/workday-community/en-us/admin-tools/books";
 
-  public static final String PARAMETER_NULL_VALUE = "null";
+  public static final String CLOUD_CONFIG_NULL_VALUE = "null";
 
   private GlobalConstants() {
     throw new IllegalStateException("Utility class");

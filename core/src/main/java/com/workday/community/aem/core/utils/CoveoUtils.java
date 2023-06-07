@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.PARAMETER_NULL_VALUE;
+import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
 import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
@@ -99,7 +99,7 @@ public class CoveoUtils {
                                Gson gson,
                                ObjectMapper objectMapper,
                                String email, String apiKey) throws IOException {
-    if (StringUtils.isEmpty(apiKey) || apiKey.equalsIgnoreCase(PARAMETER_NULL_VALUE)) {
+    if (StringUtils.isEmpty(apiKey) || apiKey.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
       return "";
     }
 
@@ -135,7 +135,7 @@ public class CoveoUtils {
     userMap.put("name", email);
     userMap.put("provider", searchApiConfigService.getUserIdProvider());
     String userIdType = searchApiConfigService.getUserIdType();
-    if (!StringUtils.isEmpty(userIdType) && !userIdType.equalsIgnoreCase(PARAMETER_NULL_VALUE)) {
+    if (!StringUtils.isEmpty(userIdType) && !userIdType.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
       userMap.put("type", userIdType);
     }
 

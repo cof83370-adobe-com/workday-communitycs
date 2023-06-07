@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.PARAMETER_NULL_VALUE;
+import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.mockito.ArgumentMatchers.any;
@@ -105,7 +105,7 @@ public class CoveoEventsTypeServletTest {
         // do nothing.
       }
 
-      lenient().when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn(PARAMETER_NULL_VALUE);
+      lenient().when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn(CLOUD_CONFIG_NULL_VALUE);
       try {
         coveoEventTypeServlet.doGet(request, response);
       } catch (ServletException | IOException exception){
