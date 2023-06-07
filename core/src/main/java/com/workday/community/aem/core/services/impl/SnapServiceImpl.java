@@ -196,7 +196,7 @@ public class SnapServiceImpl implements SnapService {
       defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
       return defaultMenu;
     } catch (RuntimeException | LoginException | DamException e) {
-      logger.error(String.format("Exception in SnaServiceImpl for getFailStateHeaderMenu, error: %s", e.getMessage()));
+      logger.error(String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s", e.getMessage()));
       return new JsonObject();
     }
   }
