@@ -1,4 +1,3 @@
-// Configuration created by Apache Sling JCR Installer
 {
   "scripts":[
     "create path (cq:Page) /content/workday-community",
@@ -13,8 +12,6 @@
    
     "create service user read-service-user\r\nset ACL on /content/workday-community,/content/cq:tags,/home,/content/dam/workday-community\r\n allow jcr:read for read-service-user\r\nend",
     "create service user admin-user-group\r\nset ACL on /home\r\n allow jcr:all for admin-user-group\r\nend",
-    
-    // Configuration created for the repoinit json for ACL group permissions.
 
     "create path (cq:Page) /content/workday-community/en-us",
     "create path (cq:PageContent) /content/workday-community/en-us/jcr:content",

@@ -1,4 +1,3 @@
-
 {
     "snapUrl":"$[env:snapUrl]",
     "snapContextPath":"$[env:snapContextPath]",
