@@ -20,6 +20,7 @@ main {
     margin: 0 auto;
     float: none !important;
     padding: 6.25em 1em 0;
+    min-height: calc(100vh - 120px);
 }
 
 a {
