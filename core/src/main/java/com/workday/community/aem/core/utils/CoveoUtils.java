@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
 import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
@@ -98,7 +99,9 @@ public class CoveoUtils {
                                Gson gson,
                                ObjectMapper objectMapper,
                                String email, String apiKey) throws IOException {
-    Map result;
+    if (StringUtils.isEmpty(apiKey) || apiKey.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
+      return "";
+    }
 
     HttpPost request = new HttpPost(searchApiConfigService.getSearchTokenAPI());
     StringEntity entity = new StringEntity(CoveoUtils.getTokenPayload(searchApiConfigService, gson, email));
@@ -111,7 +114,7 @@ public class CoveoUtils {
     HttpResponse response = httpClient.execute(request);
     int status = response.getStatusLine().getStatusCode();
     if (status == HttpStatus.SC_OK) {
-      result = Collections.unmodifiableMap(objectMapper.readValue(response.getEntity().getContent(),
+      Map result = Collections.unmodifiableMap(objectMapper.readValue(response.getEntity().getContent(),
           HashMap.class));
 
       return (String)result.get("token");
@@ -132,7 +135,7 @@ public class CoveoUtils {
     userMap.put("name", email);
     userMap.put("provider", searchApiConfigService.getUserIdProvider());
     String userIdType = searchApiConfigService.getUserIdType();
-    if (!StringUtils.isBlank(userIdType)) {
+    if (!StringUtils.isEmpty(userIdType) && !userIdType.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
       userMap.put("type", userIdType);
     }
 

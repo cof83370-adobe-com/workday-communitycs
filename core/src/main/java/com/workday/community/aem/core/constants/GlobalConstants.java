@@ -2,7 +2,6 @@ package com.workday.community.aem.core.constants;
 
 import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED_BY;
 
-import java.util.Collections;
 import java.util.Map;
 
 /**
@@ -43,13 +42,13 @@ public final class GlobalConstants {
   public static final String JCR_CONTENT_PATH = "/jcr:content";
 
   /** The Constant CONTENT_TYPE_MAPPING. */
-  public static final Map<String, String> CONTENT_TYPE_MAPPING = Collections.unmodifiableMap(Map.of(
+  public static final Map<String, String> CONTENT_TYPE_MAPPING = Map.of(
     "/conf/workday-community/settings/wcm/templates/events", "Calendar Event", 
     "/conf/workday-community/settings/wcm/templates/faq", "FAQ",
     "/conf/workday-community/settings/wcm/templates/kits-and-tools", "Kits and Tools", 
     "/conf/workday-community/settings/wcm/templates/reference", "Reference",
     "/conf/workday-community/settings/wcm/templates/troubleshooting", "Troubleshooting"
-  ));
+  );
 
   /** The Constant OKTA_USER_PATH. */
   public static final String OKTA_USER_PATH = "/workdaycommunity/okta";
@@ -59,6 +58,8 @@ public final class GlobalConstants {
 
   /** The Constant COMMUNITY_BOOK_ROOT_PATH. */
   public static final String COMMUNITY_CONTENT_BOOK_ROOT_PATH ="/content/workday-community/en-us/admin-tools/books";
+
+  public static final String CLOUD_CONFIG_NULL_VALUE = "null";
 
   private GlobalConstants() {
     throw new IllegalStateException("Utility class");
