@@ -60,12 +60,13 @@ public class CoveoUtils {
 
     String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
     int tokenExpiryTime = searchApiConfigService.getTokenValidTime() / 1000;
-
+    boolean isDevMode = searchApiConfigService.isDevMode();
     JsonObject userContext = snapService.getUserContext(sfId);
     String email = userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
-        : (searchApiConfigService.isDevMode() ? searchApiConfigService.getDefaultEmail() : null);
+        : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
     if (email == null) {
       LOGGER.error("User email is not in session, please contact admin");
+      LOGGER.info("devMode value: " + isDevMode);
       throw new ServletException("User email is not in session, please contact admin");
     }
 

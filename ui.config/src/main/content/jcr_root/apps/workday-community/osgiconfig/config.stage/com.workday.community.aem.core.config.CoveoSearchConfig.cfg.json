@@ -10,5 +10,5 @@
     "userIdProvider": "Email Security Provider",
     "userType": "$[env:coveoSearchUserType]",
     "tokenValidTime": 6000,
-    "devMode": false
+    "devMode": "$[env:devMode;default=false]"
 }
