@@ -4,7 +4,7 @@
         var validateHandler = function(e) {
             var $formFields = $(document).find(".foundation-form .coral-Form-field[required], .foundation-form .coral-Form-field[aria-required='true']");
 
-            $.each(formFields, function(index, element) {
+            $.each($formFields, function(index, element) {
                 const api = $(this).adaptTo("foundation-validation");
                  if (api && !api.checkValidity()){
                     $(this).adaptTo("foundation-field").setInvalid(true);
