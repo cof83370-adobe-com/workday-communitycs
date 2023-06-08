@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.workday.community.aem.core.constants.WccConstants;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -46,7 +47,7 @@ public class CommonUtils {
   }
 
   /**
-   * Get the user id of logged in user.
+   * Get the user id of logged-in user.
    *
    * @param resourceResolver the Resource Resolver object.
    * @return The user id.
@@ -66,7 +67,7 @@ public class CommonUtils {
   }
 
   /**
-   * Get the customer type of logged in user.
+   * Get the customer type of logged-in user.
    *
    * @param resourceResolver the Resource Resolver object.
    * @return The customer type.
@@ -86,7 +87,7 @@ public class CommonUtils {
   }
 
   /**
-   * Get the logged in user.
+   * Get the logged-in user.
    *
    * @param resourceResolver the Resource Resolver object.
    * @return The user.
@@ -134,17 +135,18 @@ public class CommonUtils {
    * @param source The source Json object.
    * @param target The target Json object.
    * @param attr The attribute.
+   * @param env The target environment.
    */
-  public static void updateSourceFromTarget(JsonObject source, JsonObject target, String attr) {
+  public static void updateSourceFromTarget(JsonObject source, JsonObject target, String attr, String env) {
     for (String key : target.keySet()) {
       if (source.has(key)) {
         JsonElement valSource = source.get(key);
         JsonElement valTarget = target.get(key);
 
         if (valSource instanceof JsonObject && valTarget instanceof JsonObject) {
-          updateSourceFromTarget((JsonObject) valSource, (JsonObject) valTarget, attr);
+          updateSourceFromTarget((JsonObject) valSource, (JsonObject) valTarget, attr, env);
         } else if (valSource instanceof JsonArray && valTarget instanceof JsonArray) {
-          updateSourceFromTarget((JsonArray) valSource, (JsonArray) valTarget, attr);
+          updateSourceFromTarget((JsonArray) valSource, (JsonArray) valTarget, attr, env);
         } else if (valTarget != null && (valSource == null || !valSource.equals(valTarget))) {
           JsonElement sourceAttr = source.get(attr);
           JsonElement targetAttr = target.get(attr);
@@ -152,6 +154,14 @@ public class CommonUtils {
               || sourceAttr.isJsonNull() || targetAttr.isJsonNull() || !sourceAttr.equals(targetAttr)) {
              return;
           } else {
+            if (key.equals("href")) {
+              String valString = valTarget.getAsString();
+              if (valString.indexOf("beta-content.workday.com") != -1) {
+                valString = valString.replace("beta-content.workday.com", env + "-content.workday.com");
+                valTarget = new JsonPrimitive(valString);
+              }
+            }
+
             source.add(key, valTarget);
           }
         }
@@ -167,7 +177,7 @@ public class CommonUtils {
    * @param target The target Json array.
    * @param attr The attribute.
    */
-  public static void updateSourceFromTarget(JsonArray source, JsonArray target, String attr) {
+  public static void updateSourceFromTarget(JsonArray source, JsonArray target, String attr, String env) {
     for (int i = 0; i < source.size(); i++) {
       JsonElement valSource = source.get(i);
 
@@ -179,7 +189,7 @@ public class CommonUtils {
             if (valTarget instanceof JsonObject) {
               String targetAttr = ((JsonObject) valTarget).get(attr).getAsString();
               if (srcAttr.getAsString().equals(targetAttr)) {
-                updateSourceFromTarget((JsonObject) valSource, (JsonObject) valTarget, attr);
+                updateSourceFromTarget((JsonObject) valSource, (JsonObject) valTarget, attr, env);
                 break;
               }
             }
@@ -188,7 +198,7 @@ public class CommonUtils {
       } else if (valSource instanceof JsonArray) {
         JsonElement valTarget = target.get(i);
         if (valTarget instanceof JsonArray) {
-          updateSourceFromTarget((JsonArray) valSource, (JsonArray) valTarget, attr);
+          updateSourceFromTarget((JsonArray) valSource, (JsonArray) valTarget, attr, env);
         }
       }
     }
