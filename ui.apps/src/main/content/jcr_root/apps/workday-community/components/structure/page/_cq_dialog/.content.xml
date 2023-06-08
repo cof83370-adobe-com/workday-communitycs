@@ -39,6 +39,7 @@
                                                         jcr:primaryType="nt:unstructured"
                                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
                                                         fieldLabel="Access Control"
+                                                        emptyText="Choose Access Control Tags"
                                                         name="./accessControlTags"
                                                         multiple="{Boolean}true"
                                                         required="{Boolean}true"
