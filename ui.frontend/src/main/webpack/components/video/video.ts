@@ -1,19 +1,19 @@
 (function() {
     const video = 'video';
     const videoSelectors = {
-        expandOption: '[class="expand-video"]'
+        playOption: '[class="play-video"]'
     };
     const videoPlayer = document.getElementsByClassName('brightcoveplayer');
 
-    function addExpandVideoOption(config: any) {
-        const expandLink = document.createElement('a');
-        expandLink.textContent = 'Expand Video';
-        expandLink.className = 'expand-video';
-        config.closest('.brightcoveplayer').append(expandLink);
+    function addPlayVideoOption(config: any) {
+        const playLink = document.createElement('a');
+        playLink.textContent = 'Play Video';
+        playLink.className = 'play-video';
+        config.closest('.brightcoveplayer').append(playLink);
     }
 
-    function expandVideo(option) {
-        const vid = option.expandElement.previousElementSibling.getElementsByTagName('video');
+    function playVideo(option) {
+        const vid = option.playElement.previousElementSibling.getElementsByTagName('video');
         addVideoModal(vid);
     }
 
@@ -35,14 +35,12 @@
         const modal = sourceElement.parentNode.getElementsByClassName(`${video}__modal`);
         const vidModal = modal.length == 1 ? modal[0] : null;
 
-        const vidModalContent = sourceElement.parentNode.getElementsByClassName(`${video}__modal-content`);
-        const vidModalContentItem = vidModalContent.length == 1 ? vidModalContent[0] : null;
         vidModal.style.display = 'block';
-        sourceElement.classList.add('modal-expand-video');
+        sourceElement.classList.add('modal-play-video');
 
         const spanClose = sourceElement.parentNode.getElementsByClassName(`${video}__close`)[0];
         spanClose.addEventListener('click', function(){
-            sourceElement.classList.remove('modal-expand-video');
+            sourceElement.classList.remove('modal-play-video');
             vidModal.style.display = 'none';
             sourceElement.parentNode.removeChild(modalDiv);
         });
@@ -51,10 +49,10 @@
     function onDocumentReady() {
         if(videoPlayer && videoPlayer.length > 0) {
             window.onclick = e => {
-                const expandElements = document.querySelectorAll(videoSelectors.expandOption);
-                for (var i = 0; i < expandElements.length && expandElements[i]; i++) {
-                    if(e.target == expandElements[i]) {
-                        expandVideo({ expandElement: expandElements[i] });
+                const playElements = document.querySelectorAll(videoSelectors.playOption);
+                for (var i = 0; i < playElements.length && playElements[i]; i++) {
+                    if(e.target == playElements[i]) {
+                        playVideo({ playElement: playElements[i] });
                     }
                 }
             };
@@ -71,7 +69,7 @@
           for (const node of mutation.addedNodes) {
             if (node.tagName === 'VIDEO' && !observedVideos.has(node)) {
               observedVideos.add(node);
-              addExpandVideoOption(node);
+              addPlayVideoOption(node);
             }
           }
         }

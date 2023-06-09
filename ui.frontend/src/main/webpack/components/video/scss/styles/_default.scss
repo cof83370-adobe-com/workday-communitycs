@@ -1,4 +1,4 @@
-.expand-video {
+.play-video {
     font-style: $font-style-normal;
     font-weight: $font-weight-bold;
     font-size: 12px;
@@ -9,7 +9,7 @@
     display: block;
 
     &:before {
-        content: url('../resources/images/expandMedia.svg');
+        content: url('../resources/images/play.svg');
         vertical-align: middle;
         margin-right: 8px;
     }
@@ -29,13 +29,6 @@
       background-color: rgba(0,0,0,0.6);
     }
 
-    &__modal-content {
-      margin: auto;
-      display: block;
-      width: 60%;
-      padding-top: 30px;
-    }
-
     &__close {
         position: absolute;
         top: 15px;
@@ -49,7 +42,7 @@
     }
 }
 
-.modal-expand-video {
+.modal-play-video {
     position: fixed !important;
     margin: auto;
     width: 70% !important;
