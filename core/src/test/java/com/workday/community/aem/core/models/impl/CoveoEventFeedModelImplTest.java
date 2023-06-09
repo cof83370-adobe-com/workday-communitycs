@@ -123,8 +123,8 @@ public class CoveoEventFeedModelImplTest {
     Page page = mock(Page.class);
 
     ValueMap testValues = new ValueMapDecorator(ImmutableMap.of(
-        "startDate", new GregorianCalendar(2023, JUNE,3),
-        "endDate", new GregorianCalendar(2023, OCTOBER,3),
+        "eventStartDate", new GregorianCalendar(2023, JUNE,3),
+        "eventEndDate", new GregorianCalendar(2023, OCTOBER,3),
         "eventLocation", "Bay area"
     ));
 
