@@ -60,10 +60,10 @@
     "jcr:created": "Mon May 15 2023 23:09:17 GMT-0700",
     "jcr:content": {
       "jcr:primaryType": "cq:PageContent",
-      "startDate": "Tue May 16 2023 23:07:00 GMT-0700",
+      "eventStartDate": "Tue May 16 2023 23:07:00 GMT-0700",
       "jcr:createdBy": "admin",
       "jcr:title": "Test event",
-      "endDate": "Thu May 18 2023 23:08:00 GMT-0700",
+      "eventEndDate": "Thu May 18 2023 23:08:00 GMT-0700",
       "pwaOrientation": "any",
       "author": " Administrator",
       "cq:template": "/conf/workday-community/settings/wcm/templates/event-page-template",
