@@ -157,10 +157,8 @@ public class CommonUtils {
             // Only update link in beta
             if (key.equals("href")) {
               String valString = valTarget.getAsString();
-              if (valString.indexOf("beta-content.workday.com") != -1) {
-                if (env.equalsIgnoreCase("prod")) {
-                  valString = valString.replace("beta-content.workday.com", "community-content.workday.com");
-                } else {
+              if (valString.contains("beta-content.workday.com")) {
+                if (!env.equalsIgnoreCase("prod")) {
                   valString = valString.replace("beta-content.workday.com", env + "-content.workday.com");
                 }
                 valTarget = new JsonPrimitive(valString);
