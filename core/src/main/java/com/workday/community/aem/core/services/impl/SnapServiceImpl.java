@@ -10,6 +10,7 @@ import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.CommunityUtils;
@@ -58,6 +59,12 @@ public class SnapServiceImpl implements SnapService {
   private JsonObject defaultMenu;
 
   private LRUCacheWithTimeout<String, String> snapCache;
+
+  /**
+   * The Runmode configuration service.
+   */
+  @Reference
+  RunModeConfigService runModeConfigService;
 
   /** The resource resolver factory. */
   @Reference
@@ -209,7 +216,8 @@ public class SnapServiceImpl implements SnapService {
    */
   private String getMergedHeaderMenu(JsonObject sfNavObj, JsonObject defaultMenu) {
     if (sfNavObj != null && config.beta()) {
-      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu, "id");
+      String env = this.runModeConfigService.getEnv();
+      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu, "id", env);
       return gson.toJson(sfNavObj);
     }
 

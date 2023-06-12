@@ -90,8 +90,8 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       return new HashMap<>();
     }
 
-    GregorianCalendar startTime = (GregorianCalendar)pageObject.getProperties().get("startDate");
-    GregorianCalendar endTime = (GregorianCalendar)pageObject.getProperties().get("endDate");
+    GregorianCalendar startTime = (GregorianCalendar)pageObject.getProperties().get("eventStartDate");
+    GregorianCalendar endTime = (GregorianCalendar)pageObject.getProperties().get("eventEndDate");
     SimpleDateFormat fmt = new SimpleDateFormat("MMM dd, yyyy");
     fmt.setCalendar(startTime);
     fmt.setCalendar(endTime);
@@ -104,7 +104,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
     if (!StringUtils.isEmpty(featuredEvent)) {
 
       // Feature image
-      String featureImage = featuredEvent + EVENT_PATH_ROOT + "toprightcontainer/image";
+      String featureImage = featuredEvent + EVENT_PATH_ROOT + "eventdetailscontainer/image";
       Resource image = resourceResolver.getResource(featureImage);
       if (image != null) {
         imagePath = image.adaptTo(javax.jcr.Node.class).getProperty("fileReference").getValue().getString();
