@@ -10,6 +10,9 @@
         playLink.textContent = 'Play Video';
         playLink.className = 'play-video';
         config.closest('.brightcoveplayer').append(playLink);
+        config.parentElement.player.controls_ = false;
+        config.parentElement.player.controlBar.el_.style.display = 'none';
+        config.parentElement.player.bigPlayButton.el_.style.display = 'none';
     }
 
     function playVideo(option) {
@@ -37,12 +40,20 @@
 
         vidModal.style.display = 'block';
         sourceElement.classList.add('modal-play-video');
+        sourceElement.player.controls_ = true;
+        sourceElement.player.controlBar.el_.style.display = 'flex';
+        sourceElement.player.bigPlayButton.el_.style.display = '';
+        vid[0].muted = false;
 
         const spanClose = sourceElement.parentNode.getElementsByClassName(`${video}__close`)[0];
         spanClose.addEventListener('click', function(){
             sourceElement.classList.remove('modal-play-video');
             vidModal.style.display = 'none';
             sourceElement.parentNode.removeChild(modalDiv);
+            sourceElement.player.controls_ = false;
+            sourceElement.player.controlBar.el_.style.display = 'none';
+            sourceElement.player.bigPlayButton.el_.style.display = 'none';
+            vid[0].muted = true;
         });
     }
 
