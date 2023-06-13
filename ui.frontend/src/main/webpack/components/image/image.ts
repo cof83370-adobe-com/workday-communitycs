@@ -69,14 +69,12 @@
             }
         }
 
-        window.onclick = e => {
-            const expandElements = document.querySelectorAll(imageSelectors.expandOption);
-            for (var i = 0; i < expandElements.length && expandElements[i]; i++) {
-                if(e.target == expandElements[i]) {
-                    expandImage({ expandElement: expandElements[i] });
-                }
-            }
-        };
+        const expandElements = document.querySelectorAll(imageSelectors.expandOption);
+        expandElements.forEach(function(expandElement) {
+            expandElement.addEventListener('click', function(e) {
+                expandImage({ expandElement });
+            });
+        });
     }
 
     document.addEventListener('DOMContentLoaded', onDocumentReady);
