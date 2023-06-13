@@ -17,6 +17,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+import static java.util.Objects.*;
+
 /**
  * Utility class for read files from DAM.
  */
@@ -31,13 +33,13 @@ public class DamUtils {
 	 * @param resourceResolver The Resource Resolver object.
 	 * @param path The file path.
 	 * @return Json object of file content.
-	 * @throws DamException
+	 * @throws DamException The DamException object.
 	 */
 	public static JsonObject readJsonFromDam(ResourceResolver resourceResolver, String path) throws DamException {
 		try {
 			Resource resource = resourceResolver.getResource(path);
-			Asset asset = resource.adaptTo(Asset.class);
-			Resource original = asset.getOriginal();
+			Asset asset = requireNonNull(resource).adaptTo(Asset.class);
+			Resource original = requireNonNull(asset).getOriginal();
 			InputStream content = original.adaptTo(InputStream.class);
 			if (content == null) {
 				LOGGER.error("Empty json file.");

@@ -29,6 +29,12 @@
                         .query-error-custom {
                             width: 600px;
                         }
+                        atomic-result-list::part(outline) {
+                            border: none;
+                        }
+                        atomic-result-list::part(outline)::before {
+                            background-color: transparent;
+                        }
                     </style>
                     <atomic-result-list display="list" image-size="icon" density="normal">
                         <atomic-result-template>
@@ -64,6 +70,7 @@
 
                                     atomic-result-link {
                                         display: block;
+                                        padding-bottom: 10px;
                                     }
 
                                     atomic-result-link a {

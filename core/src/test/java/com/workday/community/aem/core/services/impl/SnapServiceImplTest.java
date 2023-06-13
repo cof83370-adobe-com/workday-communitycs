@@ -235,7 +235,7 @@ public class SnapServiceImplTest {
 
       //Case 4: With mock content for Request call.
       APIResponse response = mock(APIResponse.class);
-      mocked.when(() -> RestApiUtil.doGetMenu(anyString(), anyString(), anyString(), anyString())).thenReturn(response);
+      mocked.when(() -> RestApiUtil.doMenuGet(anyString(), anyString(), anyString(), anyString())).thenReturn(response);
       when(response.getResponseBody()).thenReturn(menuData2);
       snapService.activate(snapConfig.get(2, 2));
       String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
@@ -272,7 +272,7 @@ public class SnapServiceImplTest {
 
       //Case 4: With mock content for Request call.
       APIResponse response = mock(APIResponse.class);
-      mocked.when(() -> RestApiUtil.doGetMenu(anyString(), anyString(), anyString(), anyString())).thenThrow(new SnapException());
+      mocked.when(() -> RestApiUtil.doMenuGet(anyString(), anyString(), anyString(), anyString())).thenThrow(new SnapException());
       lenient().when(response.getResponseBody()).thenReturn(menuData2);
       String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(menuData2, menuData3);

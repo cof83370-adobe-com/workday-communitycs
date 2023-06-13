@@ -17,7 +17,7 @@ import java.util.List;
  * Utility class for Http request/response related code.
  */
 public class HttpUtils {
-  private final static Logger logger = LoggerFactory.getLogger(HttpUtils.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
   /**
    * Get cookie from the http servlet request object given the cookie name.
@@ -39,7 +39,7 @@ public class HttpUtils {
       }
     }
 
-    logger.debug(String.format("There is no value for %s", cookieName));
+    LOGGER.debug(String.format("There is no value for %s", cookieName));
     return null;
   }
 
@@ -67,7 +67,6 @@ public class HttpUtils {
      *
      * @param cookie   Cookie to add
      * @param response Response to add Cookie to
-     * @return true unless cookie or response is null
      */
     public static void addCookie(final Cookie cookie, final HttpServletResponse response) {
       if (cookie == null || response == null) {

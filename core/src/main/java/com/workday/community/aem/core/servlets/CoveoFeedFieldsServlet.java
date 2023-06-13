@@ -25,6 +25,7 @@ import javax.servlet.Servlet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import static com.day.cq.commons.jcr.JcrConstants.NT_UNSTRUCTURED;
 
@@ -55,7 +56,7 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
       CoveoTabListModel model = request.adaptTo(CoveoTabListModel.class);
       JsonArray fields = null;
       try {
-        fields = model.getFields();
+        fields = Objects.requireNonNull(model).getFields();
       } catch (DamException e) {
         LOGGER.error("Feed fields are not fetched from CoveoTabListModel, please fix it.");
       }

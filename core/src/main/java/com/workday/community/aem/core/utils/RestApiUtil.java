@@ -32,7 +32,7 @@ public class RestApiUtil {
   /**
    * The Constant logger.
    */
-  private static final Logger logger = LoggerFactory.getLogger(RestApiUtil.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(RestApiUtil.class);
 
   /**
    * Request of Common nav menu.
@@ -42,36 +42,37 @@ public class RestApiUtil {
    * @param apiKey   apiKey
    * @param traceId  traceId
    *
-   * @return the API repsonse from menu API call
+   * @return the API response from menu API call
    */
-  public static APIResponse doGetMenu(String url, String apiToken, String apiKey, String traceId) throws SnapException {
+  public static APIResponse doMenuGet(String url, String apiToken, String apiKey, String traceId) throws SnapException {
     // Construct the request header.
+    LOGGER.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
     APIRequest req = getMenuApiRequest(url, apiToken, apiKey, traceId);
-
     return executeGetRequest(req);
   }
 
   /**
+   * A generic Request of snap api call.
    *
    * @param url       URL of the API endpoint.
    * @param authToken Photo API token.
-   * @param xapiKey   API secret key.
+   * @param xApiKey   API secret key.
    * @return the Json response as String from snap logic API call.
    */
-  public static String doSnapGet(String url, String authToken, String xapiKey) throws SnapException {
-    logger.debug("RestAPIUtil: Calling REST requestSnapJsonResponse()...= {}", url);
+  public static String doSnapGet(String url, String authToken, String xApiKey) throws SnapException {
+    LOGGER.debug("RestAPIUtil: Calling REST requestSnapJsonResponse()...= {}", url);
     APIRequest apiRequestInfo = new APIRequest();
 
     apiRequestInfo.setUrl(url);
     apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
-        .addHeader(RestApiConstants.X_API_KEY, xapiKey);
+        .addHeader(RestApiConstants.X_API_KEY, xApiKey);
     return executeGetRequest(apiRequestInfo).getResponseBody();
   }
 
   private static APIResponse executeGetRequest(APIRequest req) throws SnapException {
     APIResponse apiresponse = new APIResponse();
 
-    logger.debug("RESTAPIUtil: Calling REST executeGetRequest().");
+    LOGGER.debug("RESTAPIUtil: Calling REST executeGetRequest().");
     if (StringUtils.isBlank(req.getMethod())) {
       req.setMethod(RestApiConstants.GET_API);
     }
@@ -91,9 +92,9 @@ public class RestApiUtil {
       // Send the HttpGet request using the configured HttpClient
       CloseableHttpResponse response = httpclient.execute(request);
 
-      logger.debug("HTTP response code : {}", response.getStatusLine().getStatusCode());
+      LOGGER.debug("HTTP response code : {}", response.getStatusLine().getStatusCode());
       String responseStr = EntityUtils.toString(response.getEntity());
-      logger.debug("HTTP response : {}", responseStr);
+      LOGGER.debug("HTTP response : {}", responseStr);
       apiresponse.setResponseCode(response.getStatusLine().getStatusCode());
       apiresponse.setResponseBody(responseStr);
     } catch (IOException | URISyntaxException e) {
@@ -103,15 +104,14 @@ public class RestApiUtil {
     return apiresponse;
   }
 
-  private static APIRequest getMenuApiRequest(String url, String authToken, String xapiKey, String traceId) {
+  private static APIRequest getMenuApiRequest(String url, String authToken, String xApiKey, String traceId) {
     APIRequest apiRequestInfo = new APIRequest();
 
     apiRequestInfo.setUrl(url);
-
     apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
         .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
         .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON)
-        .addHeader(RestApiConstants.X_API_KEY, xapiKey)
+        .addHeader(RestApiConstants.X_API_KEY, xApiKey)
         .addHeader(RestApiConstants.TRACE_ID, traceId);
 
     return apiRequestInfo;
