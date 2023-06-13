@@ -22,6 +22,8 @@ import javax.jcr.Session;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 
+import static java.util.Objects.*;
+
 public class CommonUtils {
 
   /** The logger. */
@@ -38,8 +40,8 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     String sfId = null;
     try {
-      User user = (User) userManager.getAuthorizable(session.getUserID());
-      sfId = user.getProperty(WccConstants.PROFILE_SOURCE_ID) != null ? user.getProperty(WccConstants.PROFILE_SOURCE_ID)[0].getString() : null;
+      User user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      sfId = requireNonNull(user).getProperty(WccConstants.PROFILE_SOURCE_ID) != null ? requireNonNull(user.getProperty(WccConstants.PROFILE_SOURCE_ID))[0].getString() : null;
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUserSourceId method {}", e.getMessage());
     }
@@ -57,8 +59,8 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     String userId = null;
     try {
-      User user = (User) userManager.getAuthorizable(session.getUserID());
-      userId = user.getProperty(WccConstants.PROFILE_OKTA_ID) != null ? user.getProperty(WccConstants.PROFILE_OKTA_ID)[0].getString() : null;
+      User user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      userId = requireNonNull(user).getProperty(WccConstants.PROFILE_OKTA_ID) != null ? requireNonNull(user.getProperty(WccConstants.PROFILE_OKTA_ID))[0].getString() : null;
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
     }
@@ -77,8 +79,8 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     String ccType = null;
     try {
-      User user = (User) userManager.getAuthorizable(session.getUserID());
-      ccType = user.getProperty(WccConstants.CC_TYPE) != null ? user.getProperty(WccConstants.CC_TYPE)[0].getString() : null;
+      User user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      ccType = requireNonNull(user).getProperty(WccConstants.CC_TYPE) != null ? requireNonNull(user.getProperty(WccConstants.CC_TYPE))[0].getString() : null;
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
     }
@@ -97,7 +99,7 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     User user = null;
     try {
-      user = (User) userManager.getAuthorizable(session.getUserID());
+      user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());
     }
@@ -120,7 +122,7 @@ public class CommonUtils {
       if (user != null) {
         String userPath = user.getPath();
         LOGGER.debug("getLoggedInUserAsNode userPath--{}", userPath);
-        userNode = resourceResolver.getResource(userPath).adaptTo(Node.class);
+        userNode = requireNonNull(resourceResolver.getResource(userPath)).adaptTo(Node.class);
       }
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());

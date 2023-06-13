@@ -61,7 +61,7 @@ public class SnapServiceImpl implements SnapService {
   private LRUCacheWithTimeout<String, String> snapCache;
 
   /**
-   * The Runmode configuration service.
+   * The Run-mode configuration service.
    */
   @Reference
   RunModeConfigService runModeConfigService;
@@ -122,7 +122,7 @@ public class SnapServiceImpl implements SnapService {
 
       String traceId = "Community AEM-" + new Date().getTime();
       // Execute the request.
-      APIResponse snapRes = RestApiUtil.doGetMenu(url, apiToken, apiKey, traceId);
+      APIResponse snapRes = RestApiUtil.doMenuGet(url, apiToken, apiKey, traceId);
       JsonObject defaultMenu = this.getDefaultHeaderMenu();
       if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())
           || snapRes.getResponseCode() != HttpStatus.SC_OK) {

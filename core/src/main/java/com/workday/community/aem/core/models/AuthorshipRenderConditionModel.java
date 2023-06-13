@@ -22,6 +22,8 @@ import com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition;
 
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 
+import static java.util.Objects.*;
+
 /**
  * The Class AuthorshipRenderConditionModel.
  */
@@ -53,11 +55,11 @@ public class AuthorshipRenderConditionModel {
 
         UserManager userManager = request.getResourceResolver().adaptTo(UserManager.class);
         Session userSession = request.getResourceResolver().adaptTo(Session.class);
-        String userId = userSession.getUserID();
+        String userId = requireNonNull(userSession).getUserID();
         Authorizable auth;
         try {
-            auth = userManager.getAuthorizable(userId);
-            Iterator<Group> groups = auth.memberOf();
+            auth = requireNonNull(userManager).getAuthorizable(userId);
+            Iterator<Group> groups = requireNonNull(auth).memberOf();
             while (groups.hasNext()) {
                 Group g = groups.next();
                 if (editGroups.contains(g.getID())) {

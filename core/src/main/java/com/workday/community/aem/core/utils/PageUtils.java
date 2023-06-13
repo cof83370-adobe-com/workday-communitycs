@@ -13,12 +13,14 @@ import javax.jcr.Session;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * The Utility class for all Page related Utilities.
  */
 public class PageUtils {
 
-    private  static final Logger logger = LoggerFactory.getLogger(PageUtils.class);
+    private  static final Logger LOGGER = LoggerFactory.getLogger(PageUtils.class);
 
     /**
      * Get the Tags Title list attached to the page.
@@ -40,7 +42,7 @@ public class PageUtils {
             }
         }
         else {
-            logger.debug("Page doesn't exist under the path {}",pagePath);
+            LOGGER.debug("Page doesn't exist under the path {}",pagePath);
         }
         return pageTagsTitlesList;
     }
@@ -57,19 +59,19 @@ public class PageUtils {
     public static List<String> getPageTagPropertyList(ResourceResolver resourceResolver, String pagePath, String tagName, String pagePropertyName) throws RepositoryException {
         final List<String> accessControlList = new ArrayList<>();
         Session session = resourceResolver.adaptTo(Session.class);
-        if (session.itemExists(pagePath)) {
+        if (requireNonNull(session).itemExists(pagePath)) {
             PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-            Page pageObject = pageManager.getPage(pagePath);
+            Page pageObject = requireNonNull(pageManager).getPage(pagePath);
             if (null != pageObject) {
                 ValueMap data = pageObject.getProperties();
                 String[] accessControlTags = data.get(pagePropertyName, String[].class);
-                for (String tagIdString: accessControlTags) {
+                for (String tagIdString: requireNonNull(accessControlTags)) {
                     accessControlList.add(tagIdString.replace(tagName.concat(":"), ""));
                 }
             }
         }
         else {
-            logger.debug("Page doesn't exist under the path {}.",pagePath);
+            LOGGER.debug("Page doesn't exist under the path {}.",pagePath);
         }
         return accessControlList;
     }

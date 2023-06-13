@@ -6,7 +6,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
-import com.google.gson.JsonObject;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Component;
@@ -71,7 +70,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
 
     /** The page tags. */
-    private static final Map<String, String> pageTagMap = new HashMap<String, String>() {{
+    private static final Map<String, String> pageTagMap = new HashMap<>() {{
         put("product", "productTags");
         put("using-workday", "usingWorkdayTags");
         put("programs-and-tools", "programsToolsTags");

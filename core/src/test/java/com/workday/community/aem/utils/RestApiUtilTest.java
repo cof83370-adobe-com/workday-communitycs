@@ -60,7 +60,7 @@ public class RestApiUtilTest {
       HttpEntity entity = mock(HttpEntity.class);
       when(response.getEntity()).thenReturn(entity);
 
-      RestApiUtil.doGetMenu("url", "apiToken", "apiKey", "traceId");
+      RestApiUtil.doMenuGet("url", "apiToken", "apiKey", "traceId");
       RestApiUtil.doSnapGet("url", "authToken", "xapiKey");
     }
 
