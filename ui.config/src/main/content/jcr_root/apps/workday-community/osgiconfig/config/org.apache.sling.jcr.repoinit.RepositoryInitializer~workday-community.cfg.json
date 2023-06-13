@@ -33,6 +33,15 @@
     "create path (cq:PageContent) /content/workday-community/en-us/collections/jcr:content",
     "set properties on /content/workday-community/en-us/collections/jcr:content\r\n set cq:allowedTemplates{String} to /conf/workday-community/settings/wcm/templates/page-content\r\n set cq:template{String} to /conf/workday-community/settings/wcm/templates/page-content \r\n  set author{String} to Administrator\r\n  set sling:resourceType{String} to workday-community/components/structure/page\r\n set jcr:title{String} to Collections\r\nend",
 
+    "create path (cq:Page) /content/workday-community/en-us/emerging-products-and-features",
+    "create path (cq:PageContent) /content/workday-community/en-us/emerging-products-and-features/jcr:content",
+    "set properties on /content/workday-community/en-us/emerging-products-and-features/jcr:content\r\n set cq:allowedTemplates{String} to /conf/workday-community/settings/wcm/templates/page-content\r\n set cq:template{String} to /conf/workday-community/settings/wcm/templates/reference \r\n  set author{String} to Administrator\r\n  set sling:resourceType{String} to workday-community/components/structure/referencepage\r\n set jcr:title{String} to \"Emerging Products And Features\"\r\nend",
+
+    "create path (cq:Page) /content/workday-community/en-us/faq",
+    "create path (cq:PageContent) /content/workday-community/en-us/faq/jcr:content",
+    "set properties on /content/workday-community/en-us/faq/jcr:content\r\n set cq:allowedTemplates{String} to /conf/workday-community/settings/wcm/templates/faq\r\n set cq:template{String} to /conf/workday-community/settings/wcm/templates/reference \r\n  set author{String} to Administrator\r\n  set sling:resourceType{String} to workday-community/components/structure/referencepage\r\n set jcr:title{String} to Faq\r\nend",
+
+
     "create path (sling:Folder) /conf/workday-community",
     "set properties on /conf/workday-community\r\n  set jcr:title{String} to \"Workday Community Site\"\r\nend",
 
