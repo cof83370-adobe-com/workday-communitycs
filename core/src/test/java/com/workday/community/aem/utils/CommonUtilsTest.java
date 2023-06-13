@@ -194,5 +194,10 @@ public class CommonUtilsTest {
         JsonObject target1 = gson.fromJson(targetString, JsonObject.class);
         CommonUtils.updateSourceFromTarget(source1, target1, "id", "dev");
         assertEquals(353, gson.toJson(source1).indexOf("dev-content"));
+
+        JsonObject source2 = gson.fromJson(sourceString, JsonObject.class);
+        JsonObject target2 = gson.fromJson(targetString, JsonObject.class);
+        CommonUtils.updateSourceFromTarget(source2, target2, "id", "prod");
+        assertEquals(-1, gson.toJson(source2).indexOf("community-content"));
     }
 }
