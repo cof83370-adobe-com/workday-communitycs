@@ -128,19 +128,23 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:styleGroups jcr:primaryType="nt:unstructured">
                             <item0
-                                cq:styleGroupLabel="Image Expand"
+                                cq:styleGroupLabel="Image Interactions"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
                                     <item0
+                                        cq:styleClasses="enable-expand"
+                                        cq:styleId="1678916140198"
+                                        cq:styleLabel="Enable Expand"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
                                         cq:styleClasses="disable-expand"
                                         cq:styleId="1683050599"
                                         cq:styleLabel="Disable Expand"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item0>
+                            </item0> 
                             <item1
                                 cq:styleGroupLabel="Alignment"
-                                cq:styleGroupMultiple="true"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
                                     <item0
