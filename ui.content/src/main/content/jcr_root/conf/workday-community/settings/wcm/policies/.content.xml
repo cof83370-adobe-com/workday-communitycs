@@ -140,6 +140,7 @@
                             </item0>
                             <item1
                                 cq:styleGroupLabel="Alignment"
+                                cq:styleGroupMultiple="true"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
                                     <item0
