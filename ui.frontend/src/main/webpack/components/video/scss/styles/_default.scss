@@ -49,3 +49,15 @@
     height: 70% !important;
     z-index: 9999;
 }
+
+.center-alignment {
+    .brightcove-container {
+        margin-left: auto !important;
+        margin-right: auto !important;
+        float: none !important;
+    }
+
+    .play-video {
+        text-align: center;
+    }
+}
