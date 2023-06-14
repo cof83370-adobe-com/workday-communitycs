@@ -100,6 +100,17 @@
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
                             </item0>
+                            <item1
+                                cq:styleGroupLabel="Alignment"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="center-alignment"
+                                        cq:styleId="1686756983286"
+                                        cq:styleLabel="Center"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
                         </cq:styleGroups>
                     </policy_12512096045080>
                     <policy_1683056605181
@@ -127,6 +138,17 @@
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
                             </item0>
+                            <item1
+                                cq:styleGroupLabel="Alignment"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="center-alignment"
+                                        cq:styleId="1686756983286"
+                                        cq:styleLabel="Center"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
                         </cq:styleGroups>
                     </policy_1683056605181>
                 </image>
