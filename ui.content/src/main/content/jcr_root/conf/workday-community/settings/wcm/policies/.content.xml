@@ -479,7 +479,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/download]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_17323802898146>
@@ -614,7 +614,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/download]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678150259879>
