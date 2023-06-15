@@ -65,10 +65,5 @@ public final class GlobalConstants {
   private GlobalConstants() {
     throw new IllegalStateException("Utility class");
   }
-
-  /** Workflow Process Label */
-  String PROCESS_LABEL = "process.label";
-
-  /** Equals */
-  String EQUALS = "=";
+  
 }
