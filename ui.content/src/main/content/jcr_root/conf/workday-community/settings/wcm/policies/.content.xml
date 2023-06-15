@@ -100,6 +100,17 @@
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
                             </item0>
+                            <item1
+                                cq:styleGroupLabel="Alignment"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="center-alignment"
+                                        cq:styleId="1686756983286"
+                                        cq:styleLabel="Center"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
                         </cq:styleGroups>
                     </policy_12512096045080>
                     <policy_1683056605181
@@ -117,16 +128,32 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:styleGroups jcr:primaryType="nt:unstructured">
                             <item0
-                                cq:styleGroupLabel="Image Expand"
+                                cq:styleGroupLabel="Image Interactions"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
                                     <item0
+                                        cq:styleClasses="enable-expand"
+                                        cq:styleId="1678916140198"
+                                        cq:styleLabel="Enable Expand"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
                                         cq:styleClasses="disable-expand"
                                         cq:styleId="1683050599"
                                         cq:styleLabel="Disable Expand"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item0>
+                            </item0> 
+                            <item1
+                                cq:styleGroupLabel="Alignment"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="center-alignment"
+                                        cq:styleId="1686756983286"
+                                        cq:styleLabel="Center"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
                         </cq:styleGroups>
                     </policy_1683056605181>
                 </image>
