@@ -28,7 +28,7 @@ function integration-tests() {
 }
 
 function build-no-tests() {
- $MVN clean install -${PACKAGE_FLAG} -Dmaven.test.skip=true -Daem.port=${PORT}
+ $MVN clean install -${PACKAGE_FLAG} -Dmaven.test.skip -Daem.port=${PORT}
 }
 
 function pipeline-check() {

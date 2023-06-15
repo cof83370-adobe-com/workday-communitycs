@@ -1,0 +1,32 @@
+services:
+
+  dispatcher:
+    hostname: dispatcher
+    build:
+      context: .
+      dockerfile: docker/dispatcher/dispatcher
+    image: dispatcher
+    env_file:
+      - docker/dispatcher/dispatcher-env
+    ports:
+      - "127.0.0.1:80:8080"
+      - "127.0.0.1:443:8443"
+    volumes:
+      - ./docker/dispatcher/scripts:/scripts:rw
+      - ./dispatcher:/dispatcher/:rw
+      - ./docker/dispatcher/haproxy:/etc/haproxy:rw
+      - ./docker/dispatcher/httpd/conf:/etc/httpd/conf
+      - ./docker/dispatcher/httpd/conf.d:/etc/httpd/conf.d
+      - ./docker/dispatcher/httpd/conf.dispatcher.d:/etc/httpd/conf.dispatcher.d
+      - ./docker/dispatcher/httpd/conf.modules.d:/etc/httpd/conf.modules.d
+    networks:
+      - aem
+
+secrets:
+  aws:
+    file: $HOME/.aws/credentials
+
+networks:
+  network1:
+    name: aem
+    external: true

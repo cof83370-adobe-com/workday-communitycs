@@ -4,6 +4,7 @@
 * Ensure AWS CLI is setup and configured locally.
     * If you are a contractor, reach out for special AWS credentials otherwise proceed with the following step.
     * Run `okta2aws login` or use your provided AWS credentials in your AWS CLI config
+    * Enable privileged port mapping from Docker -> Settings... -> Advanced -> Enable privileged port mapping
 * Set the environmental variable for your AWS Profile. This must be set even if you use `[default]` in your aws credentials/config files for the container to build correctly. 
   ```bash
   export AWS_PROFILE=<Your role name>

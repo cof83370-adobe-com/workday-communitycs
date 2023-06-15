@@ -1,0 +1,49 @@
+FROM amazonlinux
+
+ARG HAPROXY_VERSION=2.0.7
+
+RUN yum -y update && \
+    yum -y install  \
+    httpd  \
+    mod_ssl  \
+    procps  \
+    wget  \
+    iputils  \
+    tree  \
+    telnet  \
+    less  \
+    make \
+    gcc \
+    tar &&  \
+    yum clean all
+
+RUN wget http://www.haproxy.org/download/2.0/src/haproxy-${HAPROXY_VERSION}.tar.gz -O haproxy.tar.gz &&  \
+    tar xzvf haproxy.tar.gz -C ~/ && \
+    rm -rf haproxy.tar.gz && \
+    cd /root/haproxy-${HAPROXY_VERSION} && \
+    make TARGET=linux-glibc && \
+    make install
+
+RUN rm -rf /etc/httpd/conf/* &&  \
+    rm -rf /etc/httpd/conf.d/* &&  \
+    rm -rf /etc/httpd/conf.modules.d/*
+
+RUN mkdir -p /mnt/var/www/html && \
+    chown apache:apache /mnt/var/www/html && \
+    mkdir -p /mnt/var/www/default &&  \
+    chown apache:apache /mnt/var/www/default &&  \
+    mkdir -p /mnt/var/www/author &&  \
+    chown apache:apache /mnt/var/www/author
+
+RUN mkdir -p /tmp/dispatcher && \
+    curl -o /tmp/dispatcher/dispatcher.tar.gz https://download.macromedia.com/dispatcher/download/dispatcher-apache2.4-linux-aarch64-4.3.5.tar.gz &&  \
+    cd /tmp/dispatcher &&  \
+    tar zxvf dispatcher.tar.gz && \
+    cp -v dispatcher-apache2.4-4.3.5.so /etc/httpd/modules/mod_dispatcher.so
+
+RUN useradd -ms /bin/bash haproxy && mkdir /var/lib/haproxy/
+
+EXPOSE  80 443
+
+# Start container
+ENTRYPOINT ["/bin/bash","/scripts/launch.sh"]
