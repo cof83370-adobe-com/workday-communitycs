@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
+import static java.util.Objects.*;
+
 /**
  * The CoveoEventFeedModel implementation Class.
  */
@@ -45,7 +47,7 @@ import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
-  private static final Logger logger = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
   protected static final String RESOURCE_TYPE = "/content/workday-community/components/common/coveoeventfeed";
   private static final String MODEL_CONFIG_FILE = "/content/dam/workday-community/resources/event-feed-criteria.json";
   private static final String EVENT_PATH_ROOT = "/jcr:content/root/container/";
@@ -85,9 +87,9 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
 
     ResourceResolver resourceResolver = this.request.getResourceResolver();
     PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-    Page pageObject = pageManager.getPage(this.featuredEvent);
+    Page pageObject = requireNonNull(pageManager).getPage(this.featuredEvent);
     if (pageObject == null) {
-      logger.error("Feature Event Page is not found");
+      LOGGER.error("Feature Event Page is not found");
       return new HashMap<>();
     }
 
@@ -108,16 +110,20 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       String featureImage = featuredEvent + EVENT_PATH_ROOT + "eventdetailscontainer/image";
       Resource image = resourceResolver.getResource(featureImage);
       if (image != null) {
-        imagePath = image.adaptTo(javax.jcr.Node.class).getProperty("fileReference").getValue().getString();
+        imagePath = requireNonNull(image.adaptTo(Node.class)).getProperty("fileReference").getValue().getString();
       }
 
       // Register button
       String registerButtonPath = featuredEvent + EVENT_PATH_ROOT + "eventregistration/button";
       Resource registerButton = resourceResolver.getResource(registerButtonPath);
       if (registerButton != null) {
-        registerTitle = registerButton.adaptTo(Node.class).getProperty(JCR_TITLE).getString();
-        Property link = registerButton.adaptTo(Node.class).getProperty("linkURL");
-        registerPath = link == null ? "" : link.getString();
+        try {
+          registerTitle = requireNonNull(registerButton.adaptTo(Node.class)).getProperty(JCR_TITLE).getString();
+          Property link = requireNonNull(registerButton.adaptTo(Node.class)).getProperty("linkURL");
+          registerPath = link == null ? "" : link.getString();
+        } catch (RepositoryException ex) {
+          LOGGER.error("Exception happens when try to access feature event information {}", ex.getMessage());
+        }
       }
     }
 
