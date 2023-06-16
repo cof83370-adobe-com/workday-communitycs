@@ -1,6 +1,6 @@
 {
 	"customerRoleMapping": {
-        "Named Support Contact": "customer_name_support_contact", 
+        "Named Support Contact": "customer_named_support_contact", 
         "Training Coordinator": "customer_training_coordinator"
     },
     "nscSupportingMapping": {
