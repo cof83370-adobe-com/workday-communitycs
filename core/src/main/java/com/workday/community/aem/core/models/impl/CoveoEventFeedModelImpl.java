@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -115,7 +116,8 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       Resource registerButton = resourceResolver.getResource(registerButtonPath);
       if (registerButton != null) {
         registerTitle = registerButton.adaptTo(Node.class).getProperty(JCR_TITLE).getString();
-        registerPath = registerButton.adaptTo(Node.class).getProperty("linkURL").getString();
+        Property link = registerButton.adaptTo(Node.class).getProperty("linkURL");
+        registerPath = link == null ? "" : link.getString();
       }
     }
 
