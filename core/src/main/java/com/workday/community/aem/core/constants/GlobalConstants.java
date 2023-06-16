@@ -65,5 +65,5 @@ public final class GlobalConstants {
   private GlobalConstants() {
     throw new IllegalStateException("Utility class");
   }
-
+  
 }

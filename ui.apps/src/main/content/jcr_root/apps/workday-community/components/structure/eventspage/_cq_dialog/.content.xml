@@ -65,7 +65,16 @@
                                             jcr:primaryType="nt:unstructured"
                                             editGroups="[CMTY CC Admin]"
                                             sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
-                                    </authorReadOnly>                                      
+                                    </authorReadOnly>
+                                    <overrideDate
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        fieldDescription="If checked, page modified date"
+                                        name="./overrideDate"
+                                        renderReadOnly="{Boolean}true"
+                                        text="Check Page Modified Date"
+                                        value="true">
+                                    </overrideDate>                                        
                                     <eventStartDate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
