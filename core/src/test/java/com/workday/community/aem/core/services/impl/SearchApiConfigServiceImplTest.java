@@ -12,7 +12,7 @@ import java.lang.annotation.Annotation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class SearchApiConfigServiceImplTest {
 
   private final SearchApiConfigService searchApiConfigService = new SearchApiConfigServiceImpl();
@@ -82,6 +82,11 @@ public class SearchApiConfigServiceImplTest {
     public boolean devMode() {
       return true;
     }
+
+    @Override
+    public String globalSearchURL() {
+      return "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
+    }
   };
 
   @BeforeEach
@@ -104,6 +109,7 @@ public class SearchApiConfigServiceImplTest {
     assertEquals(searchApiConfigService.getUserIdProvider(), testConfig.userIdProvider());
     assertEquals(searchApiConfigService.getUserIdType(), testConfig.userType());
     assertEquals(searchApiConfigService.getSearchFieldLookupAPI(), "foo");
+    assertEquals(searchApiConfigService.getGlobalSearchURL(), testConfig.globalSearchURL());
 
   }
 }

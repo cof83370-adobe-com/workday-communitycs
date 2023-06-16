@@ -9,10 +9,7 @@ import static com.workday.community.aem.core.constants.SearchConstants.SEARCH_EM
 /**
  * The Coveo search configuration class.
  */
-@ObjectClassDefinition(
-    name = "Coveo Search configuration",
-    description = "Parameters for Coveo search"
-)
+@ObjectClassDefinition(name = "Coveo Search configuration", description = "Parameters for Coveo search")
 public @interface CoveoSearchConfig {
 
   @AttributeDefinition(name = "Search token Api endpoint", description = "Search Token Api endpoint")
@@ -45,9 +42,12 @@ public @interface CoveoSearchConfig {
   @AttributeDefinition(name = "Token user type", description = "Token user type")
   String userType();
 
-  @AttributeDefinition(name = "Token Valid period", description = "Time token is valid for (ms)",  type = AttributeType.INTEGER)
+  @AttributeDefinition(name = "Token Valid period", description = "Time token is valid for (ms)", type = AttributeType.INTEGER)
   int tokenValidTime() default 60 * 1000;
 
-  @AttributeDefinition(name = "Dev Mode", description = "Dev Mode",  type = AttributeType.BOOLEAN)
+  @AttributeDefinition(name = "Dev Mode", description = "Dev Mode", type = AttributeType.BOOLEAN)
   boolean devMode();
+
+  @AttributeDefinition(name = "Search Redirection URL for global search", description = "Redirection URL for global search")
+  String globalSearchURL();
 }
