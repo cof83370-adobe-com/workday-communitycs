@@ -275,8 +275,6 @@
                     queryErr[0].style.width = cardWidth;
                 }
 
-                let imageWidth = widthId <= 360 ? '70px' : widthId - 290 + 'px';
-                document.getElementsByClassName('feature-image')[0].style.width = imageWidth;
                 waitForElementToDisplay(
                     () => document.getElementsByTagName('atomic-result-list')[0].shadowRoot.childNodes[0],
                     (elem) => {

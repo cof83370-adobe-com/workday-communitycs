@@ -149,7 +149,7 @@ public class CommonUtils {
           updateSourceFromTarget((JsonObject) valSource, (JsonObject) valTarget, attr, env);
         } else if (valSource instanceof JsonArray && valTarget instanceof JsonArray) {
           updateSourceFromTarget((JsonArray) valSource, (JsonArray) valTarget, attr, env);
-        } else if (valTarget != null && (valSource == null || !valSource.equals(valTarget))) {
+        } else if (valTarget != null && !valTarget.isJsonNull() && (valSource == null || !valSource.equals(valTarget))) {
           JsonElement sourceAttr = source.get(attr);
           JsonElement targetAttr = target.get(attr);
           if ((sourceAttr == null) || (targetAttr == null)
