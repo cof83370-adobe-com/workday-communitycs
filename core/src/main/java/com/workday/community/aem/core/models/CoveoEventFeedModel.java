@@ -1,6 +1,9 @@
 package com.workday.community.aem.core.models;
 
 import javax.jcr.RepositoryException;
+
+import com.workday.community.aem.core.exceptions.DamException;
+
 import java.util.Map;
 
 /**
@@ -13,17 +16,17 @@ public interface CoveoEventFeedModel extends CoveoCommonModel {
     */
    Map<String, String> getFeatureEvent() throws RepositoryException;
 
-   String getSortCriteria();
+   String getSortCriteria() throws DamException;
 
    /**
     * Get Event Criteria
     * @return the Event Criteria
     */
-   String getEventCriteria();
+   String getEventCriteria() throws DamException;
 
    /**
     * Get all events Url.
     * @return all events Url.
     */
-   String getAllEventsUrl();
+   String getAllEventsUrl() throws DamException;
 }

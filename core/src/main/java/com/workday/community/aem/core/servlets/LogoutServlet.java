@@ -53,7 +53,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
   private transient OktaService oktaService;
 
   @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
-  private volatile Authenticator authenticator;
+  private transient volatile Authenticator authenticator;
 
   /** The UserService. */
   @Reference
@@ -81,8 +81,9 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
     String oktaDomain = oktaService.getCustomDomain();
     String redirectUri = oktaService.getRedirectUri();
+    boolean isOktaEnabled = oktaService.isOktaIntegrationEnabled();
 
-    if (StringUtils.isEmpty(oktaDomain) || StringUtils.isEmpty(redirectUri)) {
+    if (isOktaEnabled && (StringUtils.isEmpty(oktaDomain) || StringUtils.isEmpty(redirectUri))) {
       logger.error("Okta domain and logout redirect Url are not configured, please contact admin.");
       return;
     }
@@ -90,7 +91,6 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     String logoutUrl = String.format("%s/login/signout?fromURI=%s", oktaDomain, redirectUri);
 
     // 1: Drop cookies
-    // TODO need check in the future in case needs add more inclusion here.
     String[] deleteList = new String[] { LOGIN_COOKIE_NAME, COVEO_COOKIE_NAME };
     int count = HttpUtils.dropCookies(request, response, "/", deleteList);
     if (count == 0) {
@@ -107,17 +107,21 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
         if (ins != null && ins.equals(GlobalConstants.PUBLISH)) {
           String userId = session.getUserID();
-          userService.deleteUser(userId);
+          userService.deleteUser(userId, false);
         }
         session.logout();
       }
     }
 
-    // 3: Redirect to Okta logout to invalid Okta session.
     if (this.authenticator != null) {
-      AuthUtil.setLoginResourceAttribute(request, logoutUrl);
+      if (isOktaEnabled) {
+        // Case 1: logout aem with redirect to okta
+        AuthUtil.setLoginResourceAttribute(request, logoutUrl);
+      }
+      // case 2: logout aem only
       authenticator.logout(request, response);
-    } else {
+    } else if (isOktaEnabled) {
+      // case 3: Redirect to okta logout directly in case session expired.
       response.sendRedirect(logoutUrl);
     }
   }

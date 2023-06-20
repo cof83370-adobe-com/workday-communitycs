@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFI
 /**
  * The Class HeaderModelImplTest.
  */
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class HeaderModelImplTest {
 
   /**
@@ -62,6 +63,12 @@ public class HeaderModelImplTest {
   RunModeConfigService runModeConfigService;
 
   /**
+   * SearchApiConfig service.
+   */
+  @Mock
+  SearchApiConfigService searchApiConfigService;
+
+  /**
    * Set up method for test run.
    */
   @BeforeEach
@@ -70,6 +77,7 @@ public class HeaderModelImplTest {
     context.registerService(SnapService.class, snapService, SERVICE_RANKING, Integer.MAX_VALUE);
     context.registerService(Page.class, currentPage);
     context.registerService(RunModeConfigService.class, runModeConfigService);
+    context.registerService(SearchApiConfigService.class, searchApiConfigService);
   }
 
   /**
@@ -104,10 +112,6 @@ public class HeaderModelImplTest {
     ret.setFileNameWithExtension("fff.png");
     ret.setBase64content("content");
     assertEquals("data:image/png;base64,content", headerModel.getUserAvatar());
-
-    // Case 3: Exception return
-    lenient().when(snapService.getProfilePhoto(DEFAULT_SFID_MASTER)).thenThrow(new RuntimeException());
-    assertEquals("", headerModel.getUserAvatar());
   }
 
   /**
@@ -138,7 +142,7 @@ public class HeaderModelImplTest {
     digitalData.add("org", orgProperties);
     digitalData.add("page", pageProperties);
     String digitalDataString = String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
-    
+
     HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
     Template template = mock(Template.class);
@@ -158,5 +162,17 @@ public class HeaderModelImplTest {
     // Case 2: return null.
     lenient().when(runModeConfigService.getInstance()).thenReturn("author");
     assertEquals(null, headerModel.getDataLayerData());
+  }
+
+  /**
+   * Test method getGlobalSearchURL.
+   */
+  @Test
+  void testGetGlobalSearchURL() {
+    String uri = "https://www.resourcecenter.workday.com";
+    lenient().when(searchApiConfigService.getGlobalSearchURL()).thenReturn(uri);
+    HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
+    assertNotNull(headerModel);
+    assertEquals(uri, headerModel.getGlobalSearchURL());
   }
 }

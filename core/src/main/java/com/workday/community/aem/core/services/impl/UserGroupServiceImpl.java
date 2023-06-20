@@ -1,9 +1,11 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
@@ -22,9 +24,18 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import java.util.*;
 
+import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
+import static com.workday.community.aem.core.constants.WccConstants.INTERNAL_WORKMATES;
+import static com.workday.community.aem.core.constants.WccConstants.ROLES;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_ROLE_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
-import static com.workday.community.aem.core.constants.WccConstants.ROLES;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_TYPE_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_INFORMATION_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.NSC_SUPPORTING_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
 
 /**
  * The Class UserGroupServiceImpl.
@@ -59,6 +70,21 @@ public class UserGroupServiceImpl implements UserGroupService {
      * The user service user.
      */
     public static final String READ_SERVICE_USER = "readserviceuser";
+
+    /**
+     * The customer_role_mapping.
+     */
+    private HashMap<String, String> customerRoleMapping = new HashMap<>();
+
+    /**
+     * The nsc_supporting_mapping.
+     */
+    private HashMap<String, String> nscSupportingMapping = new HashMap<>();
+
+    /**
+     * SFDC Role mapping json object.
+     */
+    private JsonObject sfdcRoleMap;
 
     /**
      * The group map json
@@ -97,7 +123,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                     groupIds = List.of(userRole.split(";"));
                 } else {
                     Map<String, Object> serviceParams = new HashMap<>();
-                    serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
+                    serviceParams.put(ResourceResolverFactory.SUBSERVICE, WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
                     jcrSessionResourceResolver = resourceResolverFactory.getServiceResourceResolver(serviceParams);
                     jcrSession = jcrSessionResourceResolver.adaptTo(Session.class);
                     groupIds = this.getUserGroupsFromSnap(sfId);
@@ -122,59 +148,72 @@ public class UserGroupServiceImpl implements UserGroupService {
 
 
     /**
-     * Get user groups groups from API.
+     * Get user groups from API.
      *
      * @param sfId User's Salesforce id.
      * @return List of user groups from snap.
      */
     protected List<String> getUserGroupsFromSnap(String sfId) {
+        List<String> groups = new ArrayList<>();
         JsonObject context = snapService.getUserContext(sfId);
-        JsonElement contextInfo = context.get(USER_CONTEXT_INFO_KEY);
-        JsonObject contextInfoObj = contextInfo.getAsJsonObject();
-        JsonElement groups = contextInfoObj.get(USER_CONTACT_ROLE_KEY);
-        Optional<String> groupsString = Optional.ofNullable(groups.getAsString());
-        return groupsString.map(value -> List.of(value.split(";")))
-                .orElseGet(() -> {
-                    logger.info("Value not found");
-                    return new ArrayList<>();
-                });
+        setSfdcRoleMap();
+        
+        JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
+        JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
+        boolean hasCommunityAccess = false;
+        if (!propertyAccess.isJsonNull() && propertyAccess.getAsString().contains(PROPERTY_ACCESS_COMMUNITY)) {
+            groups.add(AUTHENTICATED);
+            hasCommunityAccess = true;
+        }
+        JsonElement nscSupporting = contactInformation.get(NSC_SUPPORTING_KEY);
+        if (!nscSupporting.isJsonNull()) {
+            String nscSupportingString = nscSupporting.getAsString();
+            for (Map.Entry<String, String> entry : nscSupportingMapping.entrySet()) {
+                if (nscSupportingString.contains(entry.getKey())) {
+                    groups.add(entry.getValue());
+                }
+            }
+        }
+        JsonObject contextInfo = context.get(USER_CONTEXT_INFO_KEY).getAsJsonObject();
+        JsonElement contactRolesObj = contextInfo.get(USER_CONTACT_ROLE_KEY);
+        if (!contactRolesObj.isJsonNull()) {
+            String contactRoles = contactRolesObj.getAsString();
+            for (Map.Entry<String, String> entry : customerRoleMapping.entrySet()) {
+                if (contactRoles.contains(entry.getKey())) {
+                    groups.add(entry.getValue());
+                }
+            }
+        }
+        JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
+        if (!isWorkmate.isJsonNull() && isWorkmate.getAsBoolean()) {
+            groups.add(INTERNAL_WORKMATES);
+        }
+        else {
+            JsonElement type = contextInfo.get(USER_TYPE_KEY);
+            if (hasCommunityAccess && !type.isJsonNull()) {
+                groups.add(type.getAsString() + "_all");
+            }
+        }
+        return groups;
     }
 
     /**
-     * Map the SF roles to aem roles.
-     *
-     * @param groups List user groups object
-     * @return AEM roles
+     * Set sfdc role map json object.
      */
-    protected List<String> convertSfGroupsToAemGroups(List<String> groups) {
-        List<String> groupIds = new ArrayList<>();
-        // Reading the JSON File from DAM
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
-            if (groupMap == null) {
-                groupMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
+    protected void setSfdcRoleMap() {
+        if (sfdcRoleMap == null) {
+            try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
+                sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
             }
-            for (String sfGroup : groups) {
-                assert groupMap != null;
-                if (!groupMap.get(sfGroup).isJsonNull()) {
-                    if (groupMap.get(sfGroup).isJsonArray()) {
-                        for (JsonElement aemGroup : groupMap.getAsJsonArray(sfGroup)) {
-                            String aemGroupId = aemGroup.getAsString();
-                            if (aemGroupId.length() > 0) {
-                                groupIds.add(aemGroupId);
-                            }
-                        }
-                    } else {
-                        String aemGroupId = groupMap.get(sfGroup).getAsString();
-                        if (aemGroupId.length() > 0) {
-                            groupIds.add(aemGroupId);
-                        }
-                    }
-                }
+            catch (LoginException | DamException e) {
+                logger.error("Error reading sfdc role map json file: {}.", e.getMessage());
             }
-        } catch (RuntimeException | LoginException e) {
-            logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
         }
-        return groupIds;
-    }
+        if (sfdcRoleMap != null) {
+            Gson g = new Gson();
+            customerRoleMapping = g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
+            nscSupportingMapping = g.fromJson(sfdcRoleMap.get("nscSupportingMapping").toString(), HashMap.class);
+        }
 
+    }
 }

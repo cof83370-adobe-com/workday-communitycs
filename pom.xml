@@ -48,7 +48,7 @@
 		<bnd.version>5.1.2</bnd.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<aem.sdk.api>2023.1.10912.20230130T173736Z-230100</aem.sdk.api>
+		<aem.sdk.api>2023.4.12142.20230526T152858Z-230200</aem.sdk.api>
 		<aemanalyser.version>1.4.10</aemanalyser.version>
 		<componentGroupName>Workday Community Site</componentGroupName>
 	</properties>
@@ -659,7 +659,7 @@
 			<dependency>
 				<groupId>com.workday.community.migration</groupId>
 				<artifactId>workday-community-migration</artifactId>
-				<version>1.0.4-SNAPSHOT</version>
+				<version>1.0.12-SNAPSHOT</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -671,12 +671,12 @@
 			<dependency>
 				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-databind</artifactId>
-				<version>2.10.5</version>
+				<version>2.13.4.2</version>
 			</dependency>
 			<dependency>
 				<groupId>com.fasterxml.jackson.dataformat</groupId>
 				<artifactId>jackson-dataformat-csv</artifactId>
-				<version>2.10.5</version>
+				<version>2.13.4</version>
 				<type>jar</type>
 			</dependency>
 		</dependencies>

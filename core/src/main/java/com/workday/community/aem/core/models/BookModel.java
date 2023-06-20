@@ -2,6 +2,7 @@ package com.workday.community.aem.core.models;
 
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.constants.GlobalConstants;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -36,6 +37,9 @@ public class BookModel {
     /** The Page Object */
     private Page bookPage;
 
+    /** The rootPath. */
+    protected static final String rootPath = String.format("%s%s", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH, "/");
+
     /**
      * Inits the BookModel.
      */
@@ -52,5 +56,14 @@ public class BookModel {
     public Page getBookPage() {
         PageManager pm = resourceResolver.adaptTo(PageManager.class);
         return pm.getPage(pagePath);
+    }
+
+    /**
+     * Gets the root path
+     *
+     * @return the String
+     */
+    public String getRootPath() {
+        return rootPath;
     }
 }

@@ -1,7 +1,5 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.adobe.xfa.ut.StringUtils;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -9,8 +7,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.CommunityUtils;
@@ -19,6 +19,7 @@ import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -29,6 +30,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.apache.http.HttpStatus;
 
 import java.util.Date;
 
@@ -45,14 +47,9 @@ import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.A
 /**
  * The OSGi service implementation for snap logic.
  */
-@Component(
-  service = SnapService.class,
-  property = {
+@Component(service = SnapService.class, property = {
     "service.pid=aem.core.services.snap"
-  },
-  configurationPid = "com.workday.community.aem.core.config.SnapConfig",
-  immediate = true
-)
+}, configurationPid = "com.workday.community.aem.core.config.SnapConfig", immediate = true)
 @Designate(ocd = SnapConfig.class)
 public class SnapServiceImpl implements SnapService {
 
@@ -62,6 +59,12 @@ public class SnapServiceImpl implements SnapService {
   private JsonObject defaultMenu;
 
   private LRUCacheWithTimeout<String, String> snapCache;
+
+  /**
+   * The Run-mode configuration service.
+   */
+  @Reference
+  RunModeConfigService runModeConfigService;
 
   /** The resource resolver factory. */
   @Reference
@@ -95,16 +98,21 @@ public class SnapServiceImpl implements SnapService {
   public String getUserHeaderMenu(String sfId) {
     String cacheKey = String.format("menu_%s", sfId);
     String cachedResult = snapCache.get(cacheKey);
-    if ( cachedResult != null ) {
+    if (cachedResult != null) {
       return cachedResult;
     }
 
     String snapUrl = config.snapUrl(), navApi = config.navApi(),
-      apiToken = config.navApiToken(), apiKey = config.navApiKey();
+        apiToken = config.navApiToken(), apiKey = config.navApiKey();
 
     if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi) ||
-      StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
+        StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
       // No Snap configuration provided, just return the default one.
+      logger.debug(String.format("there is no value " +
+              "for one or multiple configuration parameter: " +
+              "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
+              snapUrl, navApi, apiToken, apiKey
+          ));
       return gson.toJson(this.getDefaultHeaderMenu());
     }
 
@@ -114,10 +122,11 @@ public class SnapServiceImpl implements SnapService {
 
       String traceId = "Community AEM-" + new Date().getTime();
       // Execute the request.
-      APIResponse snapRes = RestApiUtil.doGetMenu(url, apiToken, apiKey, traceId);
+      APIResponse snapRes = RestApiUtil.doMenuGet(url, apiToken, apiKey, traceId);
       JsonObject defaultMenu = this.getDefaultHeaderMenu();
-      if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())) {
-        logger.debug("Sfdc menu fetch is empty, fallback to use local default");
+      if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())
+          || snapRes.getResponseCode() != HttpStatus.SC_OK) {
+        logger.error("Sfdc menu fetch is empty, fallback to use local default");
         return gson.toJson(defaultMenu);
       }
 
@@ -133,7 +142,7 @@ public class SnapServiceImpl implements SnapService {
       // Non-Beta will directly return the sf menu
       return gson.toJson(sfMenu);
 
-    } catch (SnapException e) {
+    } catch (SnapException | JsonSyntaxException e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
     }
 
@@ -144,7 +153,7 @@ public class SnapServiceImpl implements SnapService {
   public JsonObject getUserContext(String sfId) {
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
-      String url = CommunityUtils.formUrl(config.snapUrl() , config.snapContextPath());
+      String url = CommunityUtils.formUrl(config.snapUrl(), config.snapContextPath());
       if (url == null) {
         return new JsonObject();
       }
@@ -189,11 +198,12 @@ public class SnapServiceImpl implements SnapService {
       return defaultMenu;
     }
 
-    // Reading the JSON File from DAM
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory, config.navFallbackMenuServiceUser())) {
-      return defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
-    } catch (RuntimeException | LoginException e) {
-      logger.error(String.format("Exception in SnaServiceImpl while getFailStateHeaderMenu, error: %s", e.getMessage()));
+      // Reading the JSON File from DAM.
+      defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
+      return defaultMenu;
+    } catch (RuntimeException | LoginException | DamException e) {
+      logger.error(String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s", e.getMessage()));
       return new JsonObject();
     }
   }
@@ -206,11 +216,12 @@ public class SnapServiceImpl implements SnapService {
    */
   private String getMergedHeaderMenu(JsonObject sfNavObj, JsonObject defaultMenu) {
     if (sfNavObj != null && config.beta()) {
-      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu);
+      String env = this.runModeConfigService.getEnv();
+      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu, "id", env);
       return gson.toJson(sfNavObj);
     }
 
-   return gson.toJson(sfNavObj);
+    return gson.toJson(sfNavObj);
   }
 
   @Override
@@ -221,7 +232,7 @@ public class SnapServiceImpl implements SnapService {
       return cachedResult;
     }
     try {
-      String url = CommunityUtils.formUrl(config.snapUrl() , config.snapProfilePath());
+      String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
       url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
       snapCache.put(cacheKey, jsonResponse);
@@ -230,7 +241,8 @@ public class SnapServiceImpl implements SnapService {
       logger.error("Error in getUserProfile method :: {}", e.getMessage());
     }
 
-    logger.error("User profile data is not fetched from the snap profile API call without error, please contact admin.");
+    logger
+        .error("User profile data is not fetched from the snap profile API call without error, please contact admin.");
     return null;
   }
 
@@ -241,8 +253,7 @@ public class SnapServiceImpl implements SnapService {
     JsonObject digitalData;
     if (cachedResult != null) {
       digitalData = gson.fromJson(cachedResult, JsonObject.class);
-    }
-    else {
+    } else {
       String profileData = getUserProfile(sfId);
       digitalData = generateAdobeDigitalData(profileData);
       snapCache.put(cacheKey, gson.toJson(digitalData));
@@ -271,18 +282,29 @@ public class SnapServiceImpl implements SnapService {
     String accountType = "";
     boolean isNSC = false;
     if (profileData != null) {
-      JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
-      contactRole = profileObject.get(CONTACT_ROLE).getAsString();
-      contactNumber = profileObject.get(CONTACT_NUMBER).getAsString();
-      isNSC = contactRole.contains(NSC);
-
-      JsonElement wrcOrgId = profileObject.get("wrcOrgId");
-      accountID = wrcOrgId.isJsonNull() ? "" : wrcOrgId.getAsString();
-      JsonElement organizationName = profileObject.get("organizationName");
-      accountName = organizationName.isJsonNull() ? "" : organizationName.getAsString();
-      JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-      boolean isWorkdayMate = !isWorkmateElement.isJsonNull() && isWorkmateElement.getAsBoolean();
-      accountType = isWorkdayMate ? "workday" : profileObject.get("type").getAsString().toLowerCase();
+      try {
+        JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
+        JsonElement contactRoleElement = profileObject.get(CONTACT_ROLE);
+        contactRole = (contactRoleElement == null || contactRoleElement.isJsonNull()) ? ""
+            : contactRoleElement.getAsString();
+        JsonElement contactNumberElement = profileObject.get(CONTACT_NUMBER);
+        contactNumber = (contactRoleElement == null || contactNumberElement.isJsonNull()) ? ""
+            : contactNumberElement.getAsString();
+        isNSC = contactRole.contains(NSC);
+        JsonElement wrcOrgId = profileObject.get("wrcOrgId");
+        accountID = (wrcOrgId == null || wrcOrgId.isJsonNull()) ? "" : wrcOrgId.getAsString();
+        JsonElement organizationName = profileObject.get("organizationName");
+        accountName = (organizationName == null || organizationName.isJsonNull()) ? "" : organizationName.getAsString();
+        JsonElement isWorkmateElement = profileObject.get("isWorkmate");
+        boolean isWorkdayMate = isWorkmateElement != null && !isWorkmateElement.isJsonNull()
+            && isWorkmateElement.getAsBoolean();
+        JsonElement typeElement = profileObject.get("type");
+        accountType = isWorkdayMate ? "workday"
+            : (typeElement == null || typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
+      } catch (JsonSyntaxException e) {
+        logger.error("Error in generateAdobeDigitalData method :: {}",
+            e.getMessage());
+      }
     }
     userProperties.addProperty(CONTACT_ROLE, contactRole);
     userProperties.addProperty(CONTACT_NUMBER, contactNumber);

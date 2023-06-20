@@ -1,7 +1,12 @@
 {
-	"Named Support Contact" : ["customer_named_support_contact"],
-    "Security Lead" : ["customer_security_lead"],
-    "Community Org Administrator" : ["organization_administrator"],
-    "Workmate" : ["workmate"],
-    "Workday - professional services" : ["workday-professional"]
+	"customerRoleMapping": {
+        "Named Support Contact": "customer_named_support_contact", 
+        "Training Coordinator": "customer_training_coordinator"
+    },
+    "nscSupportingMapping": {
+        "Adaptive Planning": "customer_adaptive_only", 
+        "Scout": "customer_scout_only", 
+        "Peakon": "customer_peakon_only", 
+        "VNDLY": "customer_vndly_only"
+    }
 }

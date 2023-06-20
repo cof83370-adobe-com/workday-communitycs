@@ -100,6 +100,17 @@
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
                             </item0>
+                            <item1
+                                cq:styleGroupLabel="Alignment"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="center-alignment"
+                                        cq:styleId="1686756983286"
+                                        cq:styleLabel="Center"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
                         </cq:styleGroups>
                     </policy_12512096045080>
                     <policy_1683056605181
@@ -117,16 +128,32 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:styleGroups jcr:primaryType="nt:unstructured">
                             <item0
-                                cq:styleGroupLabel="Image Expand"
+                                cq:styleGroupLabel="Image Interactions"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
                                     <item0
+                                        cq:styleClasses="enable-expand"
+                                        cq:styleId="1678916140198"
+                                        cq:styleLabel="Enable Expand"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
                                         cq:styleClasses="disable-expand"
                                         cq:styleId="1683050599"
                                         cq:styleLabel="Disable Expand"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item0>
+                            </item0> 
+                            <item1
+                                cq:styleGroupLabel="Alignment"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="center-alignment"
+                                        cq:styleId="1686756983286"
+                                        cq:styleLabel="Center"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
                         </cq:styleGroups>
                     </policy_1683056605181>
                 </image>
@@ -231,11 +258,11 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_641475696923109>
                     <policy_641528232375303
-                        jcr:description="Allows all sizes, but not H1 &amp; H2, which is reserved for the main page title."
+                        jcr:description="Allows all sizes, but not H1, which is reserved for the main page title."
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Content Title"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        allowedTypes="[h3,h4,h5,h6]"
+                        allowedTypes="[h2,h3,h4,h5,h6]"
                         linkDisabled="false"
                         type="h3">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
@@ -251,31 +278,13 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678842595504>
                 </title>
-                <experiencefragment jcr:primaryType="nt:unstructured">
-                    <policy_header
-                        cq:styleDefaultElement="header"
-                        jcr:description="Sets a &lt;header> element on the page header experience fragment."
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Page Header"
-                        sling:resourceType="wcm/core/components/policy/policy">
-                        <jcr:content jcr:primaryType="nt:unstructured"/>
-                    </policy_header>
-                    <policy_footer
-                        cq:styleDefaultElement="footer"
-                        jcr:description="Sets a &lt;footer> element on the page footer experience fragment."
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="Page Footer"
-                        sling:resourceType="wcm/core/components/policy/policy">
-                        <jcr:content jcr:primaryType="nt:unstructured"/>
-                    </policy_footer>
-                </experiencefragment>
                 <container jcr:primaryType="nt:unstructured">
                     <policy_16323801898166
                         jcr:description="This policy defines allowed components of the Content Main container of the Kits and Tools Page."
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/carousel,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/carousel,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_16323801898166>
@@ -327,7 +336,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Page Content"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[group:Workday Community Site - Content,/apps/workday-community/components/core/form/container,/apps/workday-community/components/common/importcontent]"
+                        components="[group:Workday Community Site - Content,/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/form/container,/apps/workday-community/components/common/importcontent]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:authoring jcr:primaryType="nt:unstructured">
@@ -407,7 +416,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Event Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_2067079264297100>
@@ -470,7 +479,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/download]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_17323802898146>
@@ -508,7 +517,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_30056181409111>
@@ -605,7 +614,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/download]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678150259879>
@@ -627,6 +636,17 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:styleGroups jcr:primaryType="nt:unstructured">
                             <item0
+                                cq:styleGroupLabel="Container Background"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="bg-gray"
+                                        cq:styleId="1684977912448"
+                                        cq:styleLabel="Gray"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                            <item1
                                 cq:styleGroupLabel="Teaser Styles"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
@@ -636,8 +656,8 @@
                                         cq:styleLabel="Hero"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item0>
-                            <item1
+                            </item1>
+                            <item2
                                 cq:styleGroupLabel="Container Styles"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
@@ -667,8 +687,8 @@
                                         cq:styleLabel="66/33"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item1>
-                            <item2
+                            </item2>
+                            <item3
                                 cq:styleGroupLabel="Spacing"
                                 jcr:primaryType="nt:unstructured">
                                 <cq:styles jcr:primaryType="nt:unstructured">
@@ -753,7 +773,7 @@
                                         cq:styleLabel="Add margin bottom 8px"
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
-                            </item2>
+                            </item3>
                         </cq:styleGroups>
                     </policy_1809301152227968>
                     <policy_1678388306174

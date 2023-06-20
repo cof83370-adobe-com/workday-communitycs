@@ -65,7 +65,16 @@
                                             jcr:primaryType="nt:unstructured"
                                             editGroups="[CMTY CC Admin]"
                                             sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
-                                    </authorReadOnly>                                    
+                                    </authorReadOnly>
+                                    <overrideDate
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        fieldDescription="If checked, page modified date"
+                                        name="./overrideDate"
+                                        renderReadOnly="{Boolean}true"
+                                        text="Check Page Modified Date"
+                                        value="true">
+                                    </overrideDate>                                     
                                     <posteddate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -155,8 +164,8 @@
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
-                                        emptyText="Choose User Tags"
-                                        fieldDescription="Choose user tags"
+                                        emptyText="Choose Users Tags"
+                                        fieldDescription="Choose users tags"
                                         fieldLabel="Users Tags"
                                         multiple="{Boolean}true"
                                         name="./userTags"
@@ -165,8 +174,8 @@
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
-                                        emptyText="Choose Region &amp; Country Tag"
-                                        fieldDescription="Choose region &amp; country tag"
+                                        emptyText="Choose Region &amp; Country Tags"
+                                        fieldDescription="Choose region &amp; country tags"
                                         fieldLabel="Region &amp; Country Tags"
                                         multiple="{Boolean}true"
                                         name="./regionCountryTags"

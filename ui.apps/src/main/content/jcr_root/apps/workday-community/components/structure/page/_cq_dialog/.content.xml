@@ -26,6 +26,33 @@
                             <column
                                 jcr:primaryType="nt:unstructured">
                                 <items jcr:primaryType="nt:unstructured">
+                                    <title jcr:primaryType="nt:unstructured" />
+                                    <cmtyFields
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
+                                        <items jcr:primaryType="nt:unstructured">
+                                            <column
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/container">
+                                                <items jcr:primaryType="nt:unstructured">
+                                                    <accessControlTags
+                                                        jcr:primaryType="nt:unstructured"
+                                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                                        fieldLabel="Access Control"
+                                                        emptyText="Choose Access Control Tags"
+                                                        name="./accessControlTags"
+                                                        multiple="{Boolean}true"
+                                                        required="{Boolean}true"
+                                                        rootPath="/content/cq:tags/access-control" />
+                                                </items>
+                                            </column>
+                                        </items>
+                                    </cmtyFields>
+                                    <branding jcr:primaryType="nt:unstructured" />
+                                    <htmlid jcr:primaryType="nt:unstructured" />
+                                    <moretitles jcr:primaryType="nt:unstructured" />
+                                    <onofftime jcr:primaryType="nt:unstructured" />
+                                    <vanityurl jcr:primaryType="nt:unstructured" />
                                     <contentType
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
@@ -71,7 +98,16 @@
                                             jcr:primaryType="nt:unstructured"
                                             editGroups="[CMTY CC Admin]"
                                             sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
-                                    </authorReadOnly>                                    
+                                    </authorReadOnly>
+                                    <overrideDate
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        fieldDescription="If checked, page modified date"
+                                        name="./overrideDate"
+                                        renderReadOnly="{Boolean}true"
+                                        text="Check Page Modified Date"
+                                        value="true">
+                                    </overrideDate>                                     
                                 </items>
                             </column>
                         </items>

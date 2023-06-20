@@ -4,7 +4,7 @@
   "service.ranking:Integer":5002,
   "idpHttpRedirect":false,
   "createUser":true,
-  "defaultRedirectUrl":"/content/workday-community/en-us.html",
+  "defaultRedirectUrl":"/content/workday-community/en-us/home.html",
   "userIDAttribute":"uid",
   "idpIdentifier":"$[env:idpIdentifier]",
   "assertionConsumerServiceURL":"",

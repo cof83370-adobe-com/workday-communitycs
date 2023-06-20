@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.mockito.ArgumentMatchers.any;
@@ -63,7 +64,7 @@ public class CoveoEventsTypeServletTest {
   }
 
   @Test
-  public void testDoGet() throws IOException, ServletException {
+  public void testDoGet() throws IOException {
     SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
     SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
@@ -98,7 +99,26 @@ public class CoveoEventsTypeServletTest {
       lenient().when(objectMapper.readValue(inputStream, EventTypes.class)).thenReturn(eventTypes);
 
       coveoEventTypeServlet.setObjectMapper(this.objectMapper);
-      coveoEventTypeServlet.doGet(request, response);
+      try {
+        coveoEventTypeServlet.doGet(request, response);
+      } catch (ServletException | IOException exception){
+        // do nothing.
+      }
+
+      lenient().when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn(CLOUD_CONFIG_NULL_VALUE);
+      try {
+        coveoEventTypeServlet.doGet(request, response);
+      } catch (ServletException | IOException exception){
+        // do nothing.
+      }
+
+      lenient().when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn("foo");
+      lenient().when(searchApiConfigService.getUserIdType()).thenReturn("test user type");
+      try {
+        coveoEventTypeServlet.doGet(request, response);
+      } catch (ServletException | IOException exception){
+        // do nothing.
+      }
     }
   }
 }

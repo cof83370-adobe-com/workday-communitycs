@@ -22,6 +22,13 @@ public interface QueryService {
 	List<String> getPagesByTemplates(String[] templates);
 
 	/**
+	 * Gets inactive users.
+	 *
+	 * @return List of inactive users.
+	 */
+	List<String> getInactiveUsers();
+
+	/**
 	 * Gets the book nodes by path.
 	 *
 	 * @param bookPath the book path

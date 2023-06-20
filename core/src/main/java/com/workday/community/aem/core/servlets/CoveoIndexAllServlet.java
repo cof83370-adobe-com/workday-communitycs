@@ -38,12 +38,11 @@ public class CoveoIndexAllServlet extends SlingAllMethodsServlet {
 
     /**
      * Servlet POST request handler.
-     *
      * For index all.
      *
      * @param request The HTTP request
      * @param response The HTTP response
-     * @throws IOException
+     * @throws IOException throws IOException.
      */
     @Override
     public void doPost(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {

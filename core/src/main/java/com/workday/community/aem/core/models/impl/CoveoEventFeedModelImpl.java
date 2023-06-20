@@ -4,6 +4,7 @@ import com.adobe.xfa.ut.StringUtils;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -29,11 +31,15 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
+import static java.util.Objects.*;
+
 /**
  * The CoveoEventFeedModel implementation Class.
  */
 @Model(
-    adaptables = {Resource.class,
+    adaptables = {
+        Resource.class,
         SlingHttpServletRequest.class
     },
     adapters = { CoveoEventFeedModel.class },
@@ -41,7 +47,7 @@ import java.util.Map;
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
-  private static final Logger logger = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
   protected static final String RESOURCE_TYPE = "/content/workday-community/components/common/coveoeventfeed";
   private static final String MODEL_CONFIG_FILE = "/content/dam/workday-community/resources/event-feed-criteria.json";
   private static final String EVENT_PATH_ROOT = "/jcr:content/root/container/";
@@ -81,14 +87,14 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
 
     ResourceResolver resourceResolver = this.request.getResourceResolver();
     PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-    Page pageObject = pageManager.getPage(this.featuredEvent);
+    Page pageObject = requireNonNull(pageManager).getPage(this.featuredEvent);
     if (pageObject == null) {
-      logger.error("Feature Event Page is not found");
+      LOGGER.error("Feature Event Page is not found");
       return new HashMap<>();
     }
 
-    GregorianCalendar startTime = (GregorianCalendar)pageObject.getProperties().get("startDate");
-    GregorianCalendar endTime = (GregorianCalendar)pageObject.getProperties().get("endDate");
+    GregorianCalendar startTime = (GregorianCalendar)pageObject.getProperties().get("eventStartDate");
+    GregorianCalendar endTime = (GregorianCalendar)pageObject.getProperties().get("eventEndDate");
     SimpleDateFormat fmt = new SimpleDateFormat("MMM dd, yyyy");
     fmt.setCalendar(startTime);
     fmt.setCalendar(endTime);
@@ -101,18 +107,23 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
     if (!StringUtils.isEmpty(featuredEvent)) {
 
       // Feature image
-      String featureImage = featuredEvent + EVENT_PATH_ROOT + "toprightcontainer/image";
+      String featureImage = featuredEvent + EVENT_PATH_ROOT + "eventdetailscontainer/image";
       Resource image = resourceResolver.getResource(featureImage);
       if (image != null) {
-        imagePath = image.adaptTo(javax.jcr.Node.class).getProperty("fileReference").getValue().getString();
+        imagePath = requireNonNull(image.adaptTo(Node.class)).getProperty("fileReference").getValue().getString();
       }
 
       // Register button
       String registerButtonPath = featuredEvent + EVENT_PATH_ROOT + "eventregistration/button";
       Resource registerButton = resourceResolver.getResource(registerButtonPath);
       if (registerButton != null) {
-        registerTitle = registerButton.adaptTo(Node.class).getProperty("jcr:title").getString();
-        registerPath = registerButton.adaptTo(Node.class).getProperty("linkURL").getString();
+        try {
+          registerTitle = requireNonNull(registerButton.adaptTo(Node.class)).getProperty(JCR_TITLE).getString();
+          Property link = requireNonNull(registerButton.adaptTo(Node.class)).getProperty("linkURL");
+          registerPath = link == null ? "" : link.getString();
+        } catch (RepositoryException ex) {
+          LOGGER.error("Exception happens when try to access feature event information {}", ex.getMessage());
+        }
       }
     }
 
@@ -140,12 +151,12 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   }
 
   @Override
-  public String getSortCriteria() {
+  public String getSortCriteria() throws DamException{
     return this.getModelConfig().get("sortCriteria").getAsString();
   }
 
   @Override
-  public String getEventCriteria() {
+  public String getEventCriteria() throws DamException{
     LocalDate localDate = LocalDate.now();
     ZonedDateTime startOfDay = localDate.atStartOfDay(ZoneId.of("Z"));
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy/MM/dd@HH:mm");
@@ -164,16 +175,16 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   }
 
   @Override
-  public String getAllEventsUrl() {
+  public String getAllEventsUrl() throws DamException {
     return this.getModelConfig().get("allEventsUrl").getAsString();
   }
 
   @Override
-  public String getExtraCriteria() {
+  public String getExtraCriteria() throws DamException {
     return this.getModelConfig().get("extraCriteria").getAsString();
   }
 
-  private JsonObject getModelConfig() {
+  private JsonObject getModelConfig() throws DamException {
     if (this.modelConfig == null) {
       this.modelConfig = DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
     }

@@ -1,10 +1,9 @@
 <div class="header-container">
+    <div class="cmp-header">WORKDAY COMMUNITY BETA: You are in a beta experience. Any work done here will not be saved.
+    </div>
     <sly data-sly-use.model="com.workday.community.aem.core.models.HeaderModel">
-        <div id="community-header-div"
-             class="cmp-react__header"
-             data-model-property="${model.userHeaderMenus}"
-             data-cmp-data-layer="${model.dataLayerData}"
-             data-model-avatar="${model.userAvatarUrl}"
-             data-prop-home="${properties.homepageUrl}" />
+        <div id="community-header-div" class="cmp-react__header" data-model-property="${model.userHeaderMenus}"
+            data-cmp-data-layer="${model.dataLayerData}" data-model-avatar="${model.userAvatarUrl}"
+            data-prop-home="${properties.homepageUrl}" data-search-url="${model.globalSearchURL}" />
     </sly>
 </div>

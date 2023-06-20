@@ -6,7 +6,6 @@ import com.workday.community.aem.core.constants.lambda.BearerToken;
  * The Class RESTAPIConstants.
  */
 public interface RestApiConstants {
-  
   /**
    * The constant AUTHORIZATION
    */

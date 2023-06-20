@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventTypes {
-  List<EventTypeValue> values = new ArrayList<>();
+  final List<EventTypeValue> values = new ArrayList<>();
 
   public List<EventTypeValue> getValues() {
     return values;

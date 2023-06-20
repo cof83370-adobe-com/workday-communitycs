@@ -13,15 +13,15 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.day.cq.commons.Externalizer;
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 
-import static com.adobe.acs.commons.mcp.form.ContainerComponent.JCR_TITLE;
+
 import static com.day.cq.wcm.api.constants.NameConstants.NN_TEMPLATE;
 import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
 import static com.workday.community.aem.core.services.impl.QueryServiceImpl.SERVICE_USER;
@@ -31,6 +31,10 @@ import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
+import static com.workday.community.aem.core.constants.GlobalConstants.JCR_CONTENT_PATH;
+import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
+import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED;
+import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
 
 /**
  * The Class ExtractPagePropertiesServiceImpl.
@@ -46,32 +50,40 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     /** The resource resolver factory. */
     @Reference
     ResourceResolverFactory resourceResolverFactory;
-
-    /** The externalizer service. */
+    
+    /** The run mode config service. */
     @Reference
-    private Externalizer externalizer;
+    private RunModeConfigService runModeConfigService;
 
-    // @Todo Once Tek system unifies the tag format, we can remove duplicate tags here.
     /** The taxonomyFields. */
     private final ArrayList<String> taxonomyFields = new ArrayList<>(
-        Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "eventAudience", "eventFormat")
+        Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType", "eventAudience", "eventFormat")
     );
 
     /** The dateFields. */
     private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("eventStartDate", "eventEndDate", "postedDate", "updatedDate"));
-
+    
     /** The hierarchyFields. */
-    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "industryTags", "userTags", "programsToolsTags", "regionCountryTags", "trainingTags"));
+    private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType"));
 
     /** The stringFields. */
     private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
 
     /** The page tags. */
-    private static final Map<String, String> pageTagMap = Map.of("product", "productTags",
-            "using-workday", "usingWorkdayTags", "programs-and-tools", "programsToolsTags",
-            "release", "releaseTags", "industry", "industryTags", "user", "userTags",
-            "region-and-country", "regionCountryTags", "training", "trainingTags");
-
+    private static final Map<String, String> pageTagMap = new HashMap<>() {{
+        put("product", "productTags");
+        put("using-workday", "usingWorkdayTags");
+        put("programs-and-tools", "programsToolsTags");
+        put("release", "releaseTags");
+        put("industry", "industryTags");
+        put("user", "userTags");
+        put("region-and-country", "regionCountryTags");
+        put("training", "trainingTags");
+        put("release-notes", "releaseNotesTags");
+        put("event", "eventTags");
+        put("content-types", "contentType");
+    }};
+    
     /** The custom components. */
     private static final Map<String, String> customComponents =  Map.of("root/container/eventregistration/button", "registrationLink");
 
@@ -87,6 +99,22 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     /** The SECURITY_IDENTITY_PROVIDER. */
     private static final String SECURITY_IDENTITY_PROVIDER = "Community_Secured_Identity_Provider";
 
+    /** The EXCLUDE. */
+    private static final String EXCLUDE = "exclude";
+
+    /** The drupal role mapping. */
+    private static final Map<String, String> DRUPAL_ROLE_MAPPING = Map.of(
+        "access-control:authenticated", "authenticated",
+        "access-control:customer_all", "customer;community_customer;customer_touchpoint_pro",
+        "access-control:customer_named_support_contact", "customer_named_support_contact",
+        "access-control:customer_training_coordinator", "customer_training_coordinator",
+        "access-control:customer_adaptive_only", "customer_adaptive_only",
+        "access-control:customer_peakon_only", "customer_peakon_only",
+        "access-control:customer_scout_only", "customer_scout_only",
+        "access-control:customer_vndly_only", "customer_vndly_only",
+        "access-control:partner_all", "partner_implementation_partner;community_partner_implementation_partner;partner_integration_partner;community_partner_software_alliances;partner_read_only;community_partner_read_only;partner_main",
+        "access-control:internal_workmates", "workday");
+
     @Override
     public HashMap<String, Object> extractPageProperties(String path) {
         HashMap<String, Object> properties = new HashMap<>();
@@ -99,10 +127,13 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             if (page == null) {
                 throw new ResourceNotFoundException("Page not found");
             }
+            ValueMap data = page.getProperties();
+            if (data == null || data.size() < 1) {
+                throw new ResourceNotFoundException("Page data not found");
+            }
             TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-            ValueMap data = page.getProperties();
-            String documentId = externalizer.publishLink(resourceResolverFactory.getThreadResourceResolver(), path) + ".html";
+            String documentId = runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
             properties.put("documentId", documentId);
             properties.put("isAem", true);
             processDateFields(data, properties);
@@ -118,6 +149,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                         value = processHierarchyTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
                         properties.put(taxonomyField + "Hierarchy", value);
                     }
+                    if (taxonomyField.equals("eventAudience") || taxonomyField.equals("eventFormat")) {
+                        String fieldName = "eventTags";
+                        value = processHierarchyTaxonomyFields(tagManager, taxonomyIds, fieldName);
+                        properties.put(fieldName + "Hierarchy", value);
+                    }
                 }
             }
 
@@ -125,7 +161,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
             processPermission(data, properties, email);
 
-            Resource resource = resourceResolver.getResource( path + "/jcr:content");
+            Resource resource = resourceResolver.getResource(path.concat(JCR_CONTENT_PATH));
             Node node = null;
             if (resource != null) {
                 node = resource.adaptTo(Node.class);
@@ -151,12 +187,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
     @Override
     public void processDateFields(ValueMap data, HashMap<String, Object> properties) {
-        if (data == null) return;
-
         for (String dateField: dateFields) {
             GregorianCalendar value = data.get(dateField, GregorianCalendar.class);
             if (value == null && dateField.equals("postedDate")) {
-                value = data.get("jcr:created", GregorianCalendar.class);
+                value = data.get(JCR_CREATED, GregorianCalendar.class);
             }
             if (value != null) {
                 long time = value.getTimeInMillis() / 1000;
@@ -168,27 +202,40 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     @Override
     public void processPermission(ValueMap data, HashMap<String, Object> properties, String email) {
         // Coveo permission example: https://docs.coveo.com/en/107/cloud-v2-developers/simple-permission-model-definition-examples.
-        // @Todo Once we set the page access(it will be the same as drupal, using access control tag
-        // map it to AME groups) rewrite this function, right now it is hard coded,
-        // allow authenticated user to view.
-        HashMap<String, Object> permissionGroup21 = new HashMap<>();
-        permissionGroup21.put("identity", "authenticated");
-        permissionGroup21.put("identityType", IDENTITY_TYPE_GROUP);
-        permissionGroup21.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
-
-        ArrayList<Object> permissionGroup2 = new ArrayList<>();
-        permissionGroup2.add(permissionGroup21);
+        ArrayList<Object> permissionGroupAllowedPermissions = new ArrayList<>();
+        String[] accessControlValues = data.get(ACCESS_CONTROL_PROPERTY, String[].class);
+        if (accessControlValues != null && accessControlValues.length > 0) {
+            for (String accessControlValue: accessControlValues) {
+                String[] drupalRoles = DRUPAL_ROLE_MAPPING.get(accessControlValue).split(";");
+                for (String drupalRole: drupalRoles) {
+                    HashMap<String, Object> permissionGroup = new HashMap<>();
+                    permissionGroup.put("identity", drupalRole);
+                    permissionGroup.put("identityType", IDENTITY_TYPE_GROUP);
+                    permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
+                    permissionGroupAllowedPermissions.add(permissionGroup);
+                }
+            }
+        }
+        else {
+            // If access control field is empty, we need to pass a value, or else it will
+            // get permission error during coveo indexing.
+            HashMap<String, Object> permissionGroup = new HashMap<>();
+            permissionGroup.put("identity", EXCLUDE);
+            permissionGroup.put("identityType", IDENTITY_TYPE_GROUP);
+            permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
+            permissionGroupAllowedPermissions.add(permissionGroup);
+        }
         if (email != null && email.trim().length() > 0) {
-            HashMap<String, Object> permissionGroup22 = new HashMap<>();
-            permissionGroup22.put("identity", email);
-            permissionGroup22.put("identityType", IDENTITY_TYPE_USER);
-            permissionGroup22.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
-            permissionGroup2.add(permissionGroup22);
+            HashMap<String, Object> permissionGroup = new HashMap<>();
+            permissionGroup.put("identity", email);
+            permissionGroup.put("identityType", IDENTITY_TYPE_USER);
+            permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
+            permissionGroupAllowedPermissions.add(permissionGroup);
         }
 
         HashMap<String, Object> permissionGroup = new HashMap<>();
         permissionGroup.put("allowAnonymous", false);
-        permissionGroup.put("allowedPermissions", permissionGroup2);
+        permissionGroup.put("allowedPermissions", permissionGroupAllowedPermissions);
         ArrayList<Object> permission = new ArrayList<>();
         permission.add(permissionGroup);
         properties.put("permissions", permission);

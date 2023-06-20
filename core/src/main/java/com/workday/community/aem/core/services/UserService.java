@@ -33,16 +33,17 @@ public interface UserService {
 	 * Update user.
 	 *
 	 * @param userId The user id
-     * @param fields The fields need update
-	 * @param fields The user groups
+	 * @param fields The fields need update
+	 * @param groups The user groups
 	 */
 	void updateUser(String userId, Map<String, String> fields, List<String> groups);
 
     /**
 	 * Delete user.
 	 *
-	 * @param userId The user id
+	 * @param userParam The user is or user path
+	 * @param isPath Is the user path
 	 */
-    void deleteUser(String userId);
+    void deleteUser(String userParam, boolean isPath);
     
 }

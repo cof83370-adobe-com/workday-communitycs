@@ -15,6 +15,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -23,8 +25,11 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
 import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
@@ -33,6 +38,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 
 public class CoveoUtils {
+  private static final Logger LOGGER = LoggerFactory.getLogger(CoveoUtils.class);
 
   public static void executeSearchForCallback(SlingHttpServletRequest request,
                                               SlingHttpServletResponse response,
@@ -54,21 +60,22 @@ public class CoveoUtils {
 
     String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
     int tokenExpiryTime = searchApiConfigService.getTokenValidTime() / 1000;
-
+    boolean isDevMode = searchApiConfigService.isDevMode();
     JsonObject userContext = snapService.getUserContext(sfId);
     String email = userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
-        : searchApiConfigService.isDevMode() ? searchApiConfigService.getDefaultEmail() : null;
+        : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
     if (email == null) {
+      LOGGER.error("User email is not in session, please contact admin");
+      LOGGER.info("devMode value: " + isDevMode);
       throw new ServletException("User email is not in session, please contact admin");
     }
 
-    CloseableHttpClient httpClient = HttpClients.createDefault();
-
-    try {
+    try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
       String searchToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getSearchTokenAPIKey());
       if (StringUtils.isEmpty(searchToken)) {
-        throw new ServletException("there is no search token generated, please contact community admin.");
+        LOGGER.error("There is no search token generated, please contact community admin.");
+        throw new ServletException("There is no search token generated, please contact community admin.");
       }
       String recommendationToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getRecommendationAPIKey());
@@ -87,8 +94,6 @@ public class CoveoUtils {
       Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", searchApiConfigService.isDevMode());
       servletCallback.execute(request, response, coveoInfo);
-    } finally {
-      httpClient.close();
     }
   }
 
@@ -97,7 +102,10 @@ public class CoveoUtils {
                                Gson gson,
                                ObjectMapper objectMapper,
                                String email, String apiKey) throws IOException {
-    HashMap<String, String> result;
+    if (StringUtils.isEmpty(apiKey) || apiKey.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
+      LOGGER.debug("Pass-in API key is empty or null");
+      return "";
+    }
 
     HttpPost request = new HttpPost(searchApiConfigService.getSearchTokenAPI());
     StringEntity entity = new StringEntity(CoveoUtils.getTokenPayload(searchApiConfigService, gson, email));
@@ -110,12 +118,14 @@ public class CoveoUtils {
     HttpResponse response = httpClient.execute(request);
     int status = response.getStatusLine().getStatusCode();
     if (status == HttpStatus.SC_OK) {
-      result = objectMapper.readValue(response.getEntity().getContent(),
-          HashMap.class);
+      LOGGER.debug("Token API call is successful.");
+      Map result = Collections.unmodifiableMap(objectMapper.readValue(response.getEntity().getContent(),
+          HashMap.class));
 
-      return result.get("token");
+      return (String)result.get("token");
     }
 
+    LOGGER.error("Token API call failed.");
     return "";
   }
 
@@ -125,10 +135,14 @@ public class CoveoUtils {
     HashMap<String, String> userMap = new HashMap<>();
     HashMap<String, Object> payloadMap = new HashMap<>();
 
+    String searchHub = searchApiConfigService.getSearchHub();
+    LOGGER.debug(String.format("The configured Search hub is: %s", searchHub));
+
     userMap.put("name", email);
     userMap.put("provider", searchApiConfigService.getUserIdProvider());
     String userIdType = searchApiConfigService.getUserIdType();
-    if (!StringUtils.isBlank(userIdType)) {
+    if (!StringUtils.isEmpty(userIdType) && !userIdType.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
+      LOGGER.debug(String.format("UserIdType is: %s", userIdType));
       userMap.put("type", userIdType);
     }
 
@@ -137,7 +151,7 @@ public class CoveoUtils {
     userArray.add(jsonString);
     payloadMap.put("validFor", searchApiConfigService.getTokenValidTime());
     payloadMap.put("userIds", userArray.toString());
-    payloadMap.put("searchHub", searchApiConfigService.getSearchHub());
+    payloadMap.put("searchHub", searchHub);
     JsonObject jsonObj = gson.fromJson(payloadMap.toString(), JsonObject.class);
 
     return jsonObj.toString();

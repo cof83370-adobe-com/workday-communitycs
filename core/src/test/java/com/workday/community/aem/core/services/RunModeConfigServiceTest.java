@@ -43,6 +43,11 @@ public class RunModeConfigServiceTest {
         public String adobeAnalyticsUri() {
             return "https://www.adobe.com";
         }
+
+        @Override
+        public String publishInstanceDomain() {
+            return "https://dev-content.workday.com ";
+        }
     };
 
     @BeforeEach
@@ -58,6 +63,7 @@ public class RunModeConfigServiceTest {
         assertEquals(runModeConfigService.getEnv(), testConfig.env());
         assertEquals(runModeConfigService.getInstance(), testConfig.instance());
         assertEquals(runModeConfigService.getAdobeAnalyticsUri(), testConfig.adobeAnalyticsUri());
+        assertEquals(runModeConfigService.getPublishInstanceDomain(), testConfig.publishInstanceDomain());
     }
 
 }

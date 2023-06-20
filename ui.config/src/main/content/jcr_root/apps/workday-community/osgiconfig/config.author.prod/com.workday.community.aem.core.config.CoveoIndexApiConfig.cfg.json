@@ -1,10 +1,9 @@
-
 {
+    "coveoApiKey":"$[secret:coveoIndexApiKey]",
+    "organizationId":"$[secret:coveoIndexOrgId]",
+    "sourceId":"$[secret:coveoIndexSourceId]",
     "isCoveoIndexingEnabled":true,
     "pushApiUri":"https://api.cloud.coveo.com/push/v1/organizations/",
     "sourceApiUri":"https://platform.cloud.coveo.com/rest/organizations/",
-    "organizationId":"$[secret:organizationId]",
-    "sourceId":"$[secret:sourceId]",
-    "coveoApiKey":"$[secret:coveoApiKey]",
     "batchSize": 50
-  }
+}

@@ -2,6 +2,7 @@ package com.workday.community.aem.core.filters;
 
 import com.day.cq.wcm.api.constants.NameConstants;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
@@ -62,7 +63,7 @@ public class AuthorizationFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        logger.debug("AuthorizationFilter is initialized");
+        logger.debug("AuthorizationFilter is initialized.");
     }
 
     @Override
@@ -70,11 +71,11 @@ public class AuthorizationFilter implements Filter {
                          final FilterChain filterChain) throws IOException, ServletException {
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
         String pagePath = slingRequest.getRequestPathInfo().getResourcePath();
-        logger.debug("request for {}, with selector {}", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
+        logger.debug("Request for {}, with selector {}.", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
         if (oktaService.isOktaIntegrationEnabled() && pagePath.contains(WORKDAY_ROOT_PAGE_PATH) &&
                 !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT)) {
             Map<String, Object> serviceParams = new HashMap<>();
-            serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
+            serviceParams.put(ResourceResolverFactory.SUBSERVICE, WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
             ResourceResolver requestResourceResolver = slingRequest.getResourceResolver();
             Session userSession = requestResourceResolver.adaptTo(Session.class);
             if (userSession == null) {
@@ -82,7 +83,7 @@ public class AuthorizationFilter implements Filter {
                 return;
             }
             String userId = userSession.getUserID();
-            logger.debug("current user  {}", userId);
+            logger.debug("Current user is {}.", userId);
             boolean isInValid = true;
             ResourceResolver resourceResolver = null;
             try {
@@ -95,7 +96,7 @@ public class AuthorizationFilter implements Filter {
                     ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
                 }
             } catch (LoginException | RepositoryException e) {
-                logger.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
+                logger.error("---> Exception occured in AuthorizationFilter: {}.", e.getMessage());
             } finally {
                 if (resourceResolver != null && resourceResolver.isLive()) {
                     resourceResolver.close();
@@ -114,24 +115,24 @@ public class AuthorizationFilter implements Filter {
     private boolean validateTheUser(ResourceResolver resourceResolver,
                                     ResourceResolver requestResourceResolver,
                                     String pagePath) {
-        logger.debug(" inside validateTheUser method-->");
+        logger.debug(" inside validateTheUser method. -->");
         boolean isInValid = true;
         try {
-            List<String> pageTagsTitlesList = PageUtils.getPageTagsTitleList(pagePath, resourceResolver);
-            if (!pageTagsTitlesList.isEmpty()) {
-                logger.debug("---> Tags List.. {}", pageTagsTitlesList);
-                if (pageTagsTitlesList.contains(EVERYONE)) {
+            List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(resourceResolver, pagePath, ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
+            if (!accessControlTagsList.isEmpty()) {
+                logger.debug("---> Access control tag List.. {}.", accessControlTagsList);
+                if (accessControlTagsList.contains(AUTHENTICATED)) {
                     isInValid = false;
                 } else {
                     List<String> groupsList = userGroupService.getLoggedInUsersGroups(requestResourceResolver);
-                    logger.debug("---> Groups List..{}", groupsList);
-                    if (!Collections.disjoint(pageTagsTitlesList, groupsList)) {
+                    logger.debug("---> Groups List..{}.", groupsList);
+                    if (!Collections.disjoint(accessControlTagsList, groupsList)) {
                         isInValid = false;
                     }
                 }
             }
-        } catch (Exception e) {
-            logger.error("---> Exception.. {}", e.getMessage());
+        } catch (RepositoryException | OurmException e) {
+            logger.error("---> Exception in validateTheUser function: {}.", e.getMessage());
         }
 
         return isInValid;
@@ -139,7 +140,7 @@ public class AuthorizationFilter implements Filter {
 
     @Override
     public void destroy() {
-        logger.debug("Destroy");
+        logger.debug("Destroy AuthorizationFilter.");
     }
 
 }

@@ -27,6 +27,20 @@
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/container">
                                         <items jcr:primaryType="nt:unstructured">
+                                            <containerWidth
+                                                    jcr:primaryType="nt:unstructured"
+                                                    sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                    fieldDescription="The width of the container."
+                                                    fieldLabel="Component container width (px)"
+                                                    name="./width">
+                                            </containerWidth>
+                                            <rows jcr:primaryType="nt:unstructured"
+                                                  sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                                  fieldDescription="How many events in the card."
+                                                  fieldLabel="How many non-feature events in the card"
+                                                  required="{Boolean}true"
+                                                  name="./rows">
+                                            </rows>
                                             <eventtype
                                                     jcr:primaryType="nt:unstructured"
                                                     sling:resourceType="granite/ui/components/coral/foundation/form/select"
