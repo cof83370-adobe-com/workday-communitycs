@@ -10,5 +10,6 @@
     "userIdProvider": "Email Security Provider",
     "userType": "$[env:coveoSearchUserType]",
     "tokenValidTime": 6000,
-    "devMode": "$[env:devMode;default=false]"
+    "devMode": "$[env:devMode;default=false]",
+    "globalSearchURL": "https://resourcecenter.workday.com/en-us/wrc/home/search.html"
 }

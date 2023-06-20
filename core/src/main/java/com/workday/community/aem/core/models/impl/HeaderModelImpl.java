@@ -6,6 +6,7 @@ import com.drew.lang.annotations.NotNull;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +44,11 @@ public class HeaderModelImpl implements HeaderModel {
   protected static final String RESOURCE_TYPE = "workday-community/components/react/header";
 
   /**
+   * Default search redirect URL.
+   */
+  protected static final String DEFAULT_SEARCH_REDIRECT = "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
+
+  /**
    * The logger.
    */
   private final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
@@ -54,13 +60,22 @@ public class HeaderModelImpl implements HeaderModel {
   @OSGiService
   SnapService snapService;
 
+  /** The run mode config service. */
   @OSGiService
   RunModeConfigService runModeConfigService;
+
+  /** The Search API config service. */
+  @OSGiService
+  SearchApiConfigService searchApiConfigService;
 
   @Inject
   private Page currentPage;
 
+  /** SFID */
   String sfId;
+
+  /** The global search url. */
+  String globalSearchURL;
 
   @PostConstruct
   protected void init() {
@@ -107,5 +122,12 @@ public class HeaderModelImpl implements HeaderModel {
       return this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
     }
     return null;
+  }
+
+  @Override
+  public String getGlobalSearchURL() {
+    String searchURLFromConfig = searchApiConfigService.getGlobalSearchURL();
+    globalSearchURL = StringUtils.isBlank(searchURLFromConfig) ? DEFAULT_SEARCH_REDIRECT : searchURLFromConfig;
+    return globalSearchURL;
   }
 }
