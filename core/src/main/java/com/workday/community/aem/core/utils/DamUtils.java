@@ -3,6 +3,8 @@ package com.workday.community.aem.core.utils;
 import com.day.cq.dam.api.Asset;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DamException;
+
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -15,32 +17,40 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
+import static java.util.Objects.*;
+
 /**
  * Utility class for read files from DAM.
  */
 public class DamUtils {
 	
+	/** The logger. */
 	private static final Logger LOGGER = LoggerFactory.getLogger(DamUtils.class);
 
-	public static JsonObject readJsonFromDam(ResourceResolver resourceResolver, String path) throws RuntimeException {
+	/**
+	 * Get file content as json object.
+	 * 
+	 * @param resourceResolver The Resource Resolver object.
+	 * @param path The file path.
+	 * @return Json object of file content.
+	 * @throws DamException The DamException object.
+	 */
+	public static JsonObject readJsonFromDam(ResourceResolver resourceResolver, String path) throws DamException {
 		try {
 			Resource resource = resourceResolver.getResource(path);
-			Asset asset = resource.adaptTo(Asset.class);
-			Resource original = asset.getOriginal();
+			Asset asset = requireNonNull(resource).adaptTo(Asset.class);
+			Resource original = requireNonNull(asset).getOriginal();
 			InputStream content = original.adaptTo(InputStream.class);
 			if (content == null) {
 				LOGGER.error("Empty json file.");
-				return null;
+				return new JsonObject();
 			}
 
 			StringBuilder sb = new StringBuilder();
 			String line;
 			BufferedReader br = new BufferedReader(new InputStreamReader(content, StandardCharsets.UTF_8));
 
-			while (true) {
-				if ((line = br.readLine()) == null) {
-					break;
-				}
+			while ((line = br.readLine()) != null) {
 				sb.append(line);
 			}
 			content.close();
@@ -50,7 +60,7 @@ public class DamUtils {
 			Gson gson = new Gson();
 			return gson.fromJson(sb.toString(), JsonObject.class);
 		}  catch (IOException | SlingException e) {
-			throw new RuntimeException();
+			throw new DamException();
 		}
 	}
     

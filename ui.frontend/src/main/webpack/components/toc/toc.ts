@@ -23,11 +23,20 @@
     }
 
     function leftrailpanellevel1() {
-        var acc = document.getElementsByClassName('cmp-toc__item-link');
-        var panel = document.getElementsByClassName('cmp-toc__group-1');
+        const firstLevelItems = document.querySelectorAll('.cmp-toc__firstlevelitem-title');
+        const acc = [];
+
+        firstLevelItems.forEach(function(item) {
+          const parentElement = item.closest('.cmp-toc__item-link');
+          if (parentElement) {
+            acc.push(parentElement);
+          }
+        });
+
+        const panel = document.getElementsByClassName('cmp-toc__group cmp-toc__secondlevellist');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
-                var setClasses = !this.classList.contains('active');
+                const setClasses = !this.classList.contains('active');
                 setClass(acc, 'active', 'remove');
                 setClass(panel, 'show', 'remove');
                 if (setClasses) {
@@ -45,22 +54,81 @@
     }
 
     function leftrailpanellevel2() {
-        var acc = document.getElementsByClassName('cmp-toc__item-link-1');
-        var panel = document.getElementsByClassName('cmp-toc__group-2');
+        const firstLevelItems = document.querySelectorAll('.cmp-toc__secondlevelitem-title');
+        const acc = [];
+
+        firstLevelItems.forEach(function(item) {
+          const parentElement = item.closest('.cmp-toc__item-link');
+          if (parentElement) {
+            acc.push(parentElement);
+          }
+        });
+
+
+        const panel = document.getElementsByClassName('cmp-toc__group cmp-toc__thirdlevellist');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
-                var setClasses = !this.classList.contains('active');
+                const setClasses = !this.classList.contains('active');
                 setClass(acc, 'active', 'remove');
                 setClass(panel, 'show', 'remove');
                 if (setClasses) {
                     this.classList.toggle('active');
                     this.nextElementSibling.classList.toggle('show');
                 }
-            })
+            });
         }
         function setClass(els, className, fnName) {
             for (var i = 0; i < els.length; i++) {
                 els[i].classList[fnName](className);
+            }
+        }
+    }
+
+    function addChevronImage() {
+        const tocListItems = document.querySelectorAll('.cmp-toc__group li a:has(+ ul)');
+
+        if(tocListItems && tocListItems.length != 0) {
+            tocListItems.forEach(function(item) {
+                const listChevron = document.createElement('span');
+                listChevron.classList.add('cmp-toc__chevron');
+                item.appendChild(listChevron);
+            });
+        }
+    }
+
+    function expandCollapseChevron() {
+        const tocChevronIcons = document.querySelectorAll('.cmp-toc__chevron');
+
+        if(tocChevronIcons  && tocChevronIcons.length != 0) {
+            tocChevronIcons.forEach(icon => {
+                icon.addEventListener('click', () => {
+                    event.preventDefault();
+                });
+            });
+        }
+
+    }
+
+    function expandActiveBook() {
+        const activeItem = document.querySelector('.cmp-toc__item.active');
+
+        if (activeItem) {
+            const parentElement = activeItem.parentElement;
+            parentElement.classList.add('show');
+
+            const previousSibling = parentElement.previousElementSibling as HTMLElement;
+            if (previousSibling) {
+                previousSibling.classList.add('active');
+            }
+
+            if (parentElement.classList.contains('cmp-toc__thirdlevellist')) {
+                const grandparentElement = parentElement.parentElement.parentElement;
+                grandparentElement.classList.add('show');
+
+                const grandparentPreviousSibling = grandparentElement.previousElementSibling as HTMLElement;
+                if (grandparentPreviousSibling) {
+                    grandparentPreviousSibling.classList.add('active');
+                }
             }
         }
     }
@@ -74,6 +142,11 @@
         } else {
             closeTocModal();
         }
+
+        addChevronImage();
+        expandCollapseChevron();
+        leftrailpanellevel1();
+        leftrailpanellevel2();
 
         if(tocButton) {
             tocButton.addEventListener('click', function(){
@@ -91,5 +164,6 @@
     }
 
     document.addEventListener('DOMContentLoaded', onDocumentReady);
+    window.onload = expandActiveBook;
 
 }());

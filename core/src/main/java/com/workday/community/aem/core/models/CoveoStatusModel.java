@@ -25,11 +25,6 @@ public interface CoveoStatusModel {
      */
     float getPercentage();
 
-    /**
-     * Gets the coveo server status.
-     *
-     * @return Cover server has error or not.
-     */
 
     /**
      * Gets the page templates.

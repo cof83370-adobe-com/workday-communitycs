@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -31,7 +32,7 @@ public class HttpsURLConnectionService {
     /**
 	 * Set up http url connection.
 	 *
-     * @param url The api url
+     * @param apiUrl The api url
 	 * @return The HttpsURLConnection
 	 */
     protected HttpsURLConnection getHttpsURLConnection(String apiUrl) throws IOException {
@@ -64,7 +65,7 @@ public class HttpsURLConnectionService {
             if (!payload.isEmpty()) {
                 request.setDoOutput(true);
                 OutputStream os = request.getOutputStream();
-                byte[] input = payload.getBytes("UTF-8");
+                byte[] input = payload.getBytes(StandardCharsets.UTF_8);
                 os.write(input, 0, input.length);	
                 os.flush();	
                 os.close();	
@@ -72,7 +73,7 @@ public class HttpsURLConnectionService {
             apiResponse.put("statusCode", request.getResponseCode());
             BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String inputLine;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {                  
                 response.append(inputLine);
             }

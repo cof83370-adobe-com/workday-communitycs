@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0"
+    jcr:primaryType="cq:Tag"
+    jcr:title="Access Control"
+    sling:resourceType="cq/tagging/components/tag">
+    <authenticated/>
+    <customer_all/>
+    <customer_named_support_contact/>
+    <customer_training_coordinator/>
+    <customer_adaptive_only/>
+    <customer_peakon_only/>
+    <customer_scout_only/>
+    <customer_vndly_only/>
+    <partner_all/>
+    <internal_workmates/>
+</jcr:root>

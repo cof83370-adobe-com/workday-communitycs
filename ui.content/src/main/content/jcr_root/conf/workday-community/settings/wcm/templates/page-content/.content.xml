@@ -5,7 +5,7 @@
         cq:lastModified="{Date}2022-10-29T00:49:16.806-05:00"
         cq:lastModifiedBy="admin"
         cq:templateType="/conf/workday-community/settings/wcm/template-types/page"
-        jcr:description="My Site Page Template"
+        jcr:description="Workday Community Site Content Page Template"
         jcr:primaryType="cq:PageContent"
         jcr:title="Content Page"
         status="enabled"/>

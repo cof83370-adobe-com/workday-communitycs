@@ -20,6 +20,13 @@ main {
     margin: 0 auto;
     float: none !important;
     padding: 6.25em 1em 0;
+    min-height: calc(100vh - 120px);
+}
+
+@media (max-width: 767px) {
+    main {
+        padding: 10.5em 1em 0;
+    }
 }
 
 a {

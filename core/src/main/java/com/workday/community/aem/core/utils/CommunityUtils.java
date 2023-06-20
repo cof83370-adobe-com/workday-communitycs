@@ -2,6 +2,7 @@ package com.workday.community.aem.core.utils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
@@ -17,13 +18,13 @@ import com.day.cq.tagging.TagManager;
 public class CommunityUtils {
 
     /** The Constant logger. */
-    private static final Logger logger = LoggerFactory.getLogger(CommunityUtils.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CommunityUtils.class);
 
     /**
      * Instantiates a new community utils.
      */
     private CommunityUtils() {
-		logger.info("Initialized");
+		LOGGER.info("Initialized");
 	}
 
     /**
@@ -40,13 +41,13 @@ public class CommunityUtils {
             if (null != givenTags && null != resolver && givenTags.length > 0) {
                 TagManager tagManager = resolver.adaptTo(TagManager.class);
                 for (String eachTag : givenTags) {
-                    Tag tag = tagManager.resolve(eachTag);
+                    Tag tag = Objects.requireNonNull(tagManager).resolve(eachTag);
                     if(null != tag) {
                         tagType.add(tag.getTitle());
                     }
                 }
             }
-        logger.debug("Tags for given input: {} is {}", propName,  tagType);
+        LOGGER.debug("Tags for given input: {} is {}", propName,  tagType);
         return Collections.unmodifiableList(tagType);
     }
 
@@ -58,6 +59,9 @@ public class CommunityUtils {
      * @return The combined url string
      */
     public static String formUrl(String baseUrl, String path) {
+        if (baseUrl == null) return null;
+        if (path == null) return baseUrl;
+
         baseUrl = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length()-1) : baseUrl;
         path = path.startsWith("/") ? path : ('/' + path);
         path = path.endsWith("/") ? path.substring(0, path.length()-1) : path;

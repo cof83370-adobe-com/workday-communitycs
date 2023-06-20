@@ -1,6 +1,8 @@
 package com.workday.community.aem.core.utils;
 
 import com.workday.community.aem.core.constants.SnapConstants;
+import com.workday.community.aem.core.exceptions.OurmException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -10,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.jcr.Value;
 
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 
@@ -17,7 +20,7 @@ import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFI
  * The Utility class for all OURM related Utility APIs
  */
 public class OurmUtils {
-  private final static Logger logger = LoggerFactory.getLogger(OurmUtils.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(OurmUtils.class);
 
   /**
    * Get the Salesforce id.
@@ -35,19 +38,25 @@ public class OurmUtils {
       try {
         User user = (User) userManager.getAuthorizable(session.getUserID());
         if (user == null) {
-          throw new RuntimeException("User is not in userManager");
+          LOGGER.error("User is not in userManager");
+          throw new OurmException("User is not in userManager.");
         }
 
-        sfId = user.getProperty(SnapConstants.PROFILE_SOURCE_ID) != null ?
-            user.getProperty(SnapConstants.PROFILE_SOURCE_ID)[0].getString() : null;
-      } catch (RepositoryException | RuntimeException e) {
-        logger.error(String.format("getSalesForceId fails with error: %s", e.getMessage()));
+        Value[] sfIdObj = user.getProperty(SnapConstants.PROFILE_SOURCE_ID);
+        if (sfIdObj == null || sfIdObj.length == 0) {
+          LOGGER.error("Returned User object in JCR session doesn't have salesforceId");
+          return DEFAULT_SFID_MASTER;
+        }
+
+        sfId = sfIdObj[0].getString();
+      } catch (RepositoryException | RuntimeException | OurmException e) {
+        LOGGER.error(String.format("getSalesForceId fails with error: %s.", e.getMessage()));
       }
     }
 
-    if (StringUtils.isBlank(sfId)) {
+    if (StringUtils.isEmpty(sfId)) {
       // Default fallback
-      logger.debug("Salesforce Id for current user is unavailable, please check with admin.");
+      LOGGER.debug("Salesforce Id for current user is unavailable, please check with admin.");
       sfId = DEFAULT_SFID_MASTER;
     }
 

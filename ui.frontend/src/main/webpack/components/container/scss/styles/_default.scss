@@ -60,124 +60,99 @@
                     width: 100%;
                     font-size: 18px;
                     border-left: 5px solid $wdc-color-french-vanilla-100;
+                }
 
-                    &.active {
-                        background: $wdc-color-blueberry-100;
-                        color: $wdc-color-blueberry-400;
-                        border-left: 5px solid $wdc-color-blueberry-400;
-                        padding: 0.5rem 0rem 0.5rem 1.5rem;
-                    }
+                .cmp-toc__chevron::before {
+                    content: url('../resources/images/wd-icon-chevron-right.svg');
+                    font-size: 23px;
+                    color: $wdc-color-black-pepper-600;
+                    margin-right: 15px;
+                    pointer-events: auto;
+                }
 
-                    &:has(+ ul)::before {
+                .cmp-toc__chevron {
+                    float: left;
+                }
+
+            }
+
+            .cmp-toc__item.active > .cmp-toc__item-link {
+                background: $wdc-color-blueberry-100;
+                color: $wdc-color-blueberry-400;
+                border-left: 5px solid $wdc-color-blueberry-400;
+                padding: 0.5rem 0rem 0.5rem 1.5rem;
+            }
+
+            .cmp-toc__item.active > .cmp-toc__item-link > .cmp-toc__chevron::before {
+                content: url('../resources/images/wd-icon-chevron-right-blue.svg');
+                margin-right: 15px;
+                font-size:23px;
+                margin-left: 7px;
+                pointer-events: auto;
+            }
+
+            .cmp-toc__item.active > .cmp-toc__item-link.active > .cmp-toc__chevron::before {
+                content: url('../resources/images/wd-icon-chevron-blue.svg');
+                margin-right: 15px;
+                font-size:23px;
+                margin-left: 7px;
+                pointer-events: auto;
+            }
+
+            &.cmp-toc__firstlevellist {
+                .cmp-toc__item-link {
+                    .cmp-toc__chevron::before {
                         content: url('../resources/images/wd-icon-chevron-right.svg');
-                        font-size: 23px;
-                        color: $wdc-color-black-pepper-600;
-                        margin-right: 15px;
-                    }
-
-                    &.active:has(+ ul)::before {
-                        content: url('../resources/images/wd-icon-chevron-blue.svg');
-                        margin-right: 15px;
-                        font-size:23px;
-                        margin-left: 7px;
                     }
                 }
 
-                .cmp-toc__group-1 {
-                    padding: 0;
-                    margin: 0;
-                    padding-top: 0.25rem;
-                    margin-left: 1.5rem;
-                    opacity:0;
-                    transition: 0.6s ease-in-out;
-
-                    &.show
-                    {
-                        opacity:1;
-                    }
-
-                    .cmp-toc__item-1 {
-                        list-style: none;
-                        text-decoration: none;
-                        padding: 0.25rem 0rem 0.25rem 0rem;
-
-                        .cmp-toc__item-link-1 {
-                            color: $wdc-color-black-pepper-400;
-                            font-weight: 400;
-                            text-decoration: none;
-                            display: block;
-                            width: 100%;
-                            font-size: 18px;
-
-                            &.active
-                            {
-                                padding: 0.25rem 0rem 0.25rem 0rem;
-                            }
-
-                            &:has(+ ul)::before {
-                                content: url('../resources/images/wd-icon-chevron-right-small.svg');
-                                font-size: 23px;
-                                color: $wdc-color-black-pepper-600;
-                                margin-right: 12px;
-                                vertical-align: middle;
-                            }
-
-                            &.active:has(+ ul)::before {
-                                content: url('../resources/images/wd-icon-chevron-down-small.svg');
-                                margin-right: 12px;
-                            }
-                        }
-
-                        .cmp-toc__group-2 {
-                            padding: 0;
-                            margin: 0;
-                            padding-top: 0.25rem;
-                            margin-left: 1.5rem;
-                            opacity:0;
-                            transition: 0.6s ease-in-out;
-
-                            &.show 
-                            {
-                                opacity:1;
-                            }
-
-                            .cmp-toc__item-2 {
-                                list-style: none;
-                                text-decoration: none;
-                                padding: 0.5rem 0rem 0.5rem 0rem;
-
-                                .cmp-toc__item-link-2 {
-                                    color: $wdc-color-black-pepper-400;
-                                    font-weight: 400;
-                                    text-decoration: none;
-                                    display: block;
-                                    width: 100%;
-                                    font-size: 18px;
-
-                                    &.active {
-                                        background: $wdc-color-blueberry-100;
-                                        color:$wdc-color-blueberry-400;
-                                        border-left:5px solid $wdc-color-blueberry-400;
-                                       padding:0.25rem 0rem 0.25rem 0rem;
-                                    }
-
-                                    &:has(+ ul)::before {
-                                        content: url('../resources/images/wd-icon-chevron-right-small.svg');
-                                        font-size: 23px;
-                                        color: $wdc-color-black-pepper-600;
-                                        margin-right: 12px;
-                                        vertical-align: middle;
-                                    }
-
-                                    &.active:has(+ ul)::before {
-                                        content: url('../resources/images/wd-icon-chevron-blue-small.svg');
-                                        margin-right: 12px;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                .cmp-toc__item-link.active {
+                     .cmp-toc__chevron::before {
+                         content: url('../resources/images/wd-icon-chevron-down.svg');
+                     }
                 }
+            }
+
+            &.cmp-toc__secondlevellist {
+                display: none;
+
+                .cmp-toc__secondlevelitem-title {
+                    vertical-align: middle;
+                }
+
+                .cmp-toc__item.active > .cmp-toc__item-link > .cmp-toc__chevron::before {
+                    content: url('../resources/images/wd-icon-chevron-right-blue-small.svg');
+                }
+
+                .cmp-toc__item.active > .cmp-toc__item-link.active > .cmp-toc__chevron::before {
+                    content: url('../resources/images/wd-icon-chevron-blue-small.svg');
+                }
+
+                .cmp-toc__item > .cmp-toc__item-link > .cmp-toc__chevron::before {
+                    content: url('../resources/images/wd-icon-chevron-right-small.svg');
+                }
+
+                .cmp-toc__item > .cmp-toc__item-link.active > .cmp-toc__chevron::before {
+                    content: url('../resources/images/wd-icon-chevron-down-small.svg');
+                }
+
+                &.show {
+                    display: block;
+                }
+            }
+
+            &.cmp-toc__thirdlevellist {
+                display: none;
+
+                &.show {
+                    display: block;
+                }
+            }
+
+            .cmp-toc__firstlevelitem-title, .cmp-toc__secondlevelitem-title, .cmp-toc__thirdlevelitem-title {
+                width: 80%;
+                display: inline-block;
+                overflow: hidden;
             }
         }
     }
@@ -185,6 +160,10 @@
     &__center {
         .cmp-title {
             margin: 0;
+        }
+
+        a {
+            overflow-wrap: break-word;
         }
     }
 

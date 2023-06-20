@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.ResolverUtil;
+import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 
 /**
  * The Class UserServiceImpl.
@@ -38,6 +39,23 @@ public class UserServiceImpl implements UserService {
 
     /** The service user. */
     public static final String SERVICE_USER = "adminusergroup";
+
+    @Override
+    public User getUser(String userId) {
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+            UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+            User user = (User) userManager.getAuthorizable(userId);
+            if (user != null) {
+                return user;
+            }
+            logger.error("Cannot find user with id {}.", userId);
+            return null;
+        }
+        catch (LoginException | RepositoryException e) {
+            logger.error("Exception occurred when fetch user {}: {}.", userId, e.getMessage());
+            return null;
+        }
+    }
 
     @Override
     public void updateUser(String userId, Map<String, String> fields, List<String> groups) {
@@ -68,11 +86,11 @@ public class UserServiceImpl implements UserService {
                 }
             }
             else {
-                logger.error("Cannot find user with id {} ", userId);
+                logger.error("Cannot find user with id {}.", userId);
             }
         } 
         catch (LoginException | RepositoryException e) {
-            logger.error("Exception occurred when update user {}: {} ", userId, e.getMessage());
+            logger.error("Exception occurred when update user {}: {}.", userId, e.getMessage());
         }
         finally {
             if (session != null && session.isLive()) {
@@ -82,33 +100,57 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(String userId) {
+    public void deleteUser(String userParam, boolean isPath) {
         Session session = null;
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+            logger.info("Start to delete user with param {}.", userParam);
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
             session = resourceResolver.adaptTo(Session.class);
-            User user = (User) userManager.getAuthorizable(userId);
+            User user;
+            if (isPath) {
+                user = (User) userManager.getAuthorizableByPath(userParam);
+            }
+            else {
+               user = (User) userManager.getAuthorizable(userParam);
+            }
             if (user != null) {
                 String path = user.getPath();
-                if (path.contains("/workday/okta")) {
+                if (path.contains(OKTA_USER_PATH)) {
                     user.remove();
                 }
                 else {
-                    logger.error("User with id {} cannot be deleted.", userId);
+                    logger.error("User with param {} cannot be deleted.", userParam);
                 }
             }
             else {
-                logger.error("Cannot find user with id {}.", userId);
+                logger.error("Cannot find user with param {}.", userParam);
             }  
             session.save(); 
         } 
         catch (LoginException | RepositoryException e) {
-            logger.error("Exception occurred when delete user {}: {} ", userId, e.getMessage());
+            logger.error("Exception occurred when delete user with param {}: {}.", userParam, e.getMessage());
         }
         finally {
             if (session != null && session.isLive()) {
 				session.logout();
 			}
+        }
+    }
+
+    @Override
+    public User getUser(ResourceResolver resourceResolver, String userId) {
+        try {
+            UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+            User user = (User) userManager.getAuthorizable(userId);
+            if (user != null) {
+                return user;
+            }
+            logger.error("Cannot find user with id {}.", userId);
+            return null;
+        }
+        catch (RepositoryException e) {
+            logger.error("Exception occurred when fetch user {}: {}.", userId, e.getMessage());
+            return null;
         }
     }
     

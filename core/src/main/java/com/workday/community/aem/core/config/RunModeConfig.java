@@ -22,11 +22,26 @@ public @interface RunModeConfig {
 
     @AttributeDefinition (
         name = "The Environment",
-        description = "The Environment values: dev, qa, stage, prod.",
+        description = "The Environment values: dev, stage, prod.",
         options = {
-			@Option(label = "Dev", value = "dev"), @Option(label = "QA", value = "qa"), @Option(label = "Stage", value = "stage"), @Option(label = "Production", value = "prod") 
+			@Option(label = "Dev", value = "dev"), @Option(label = "Stage", value = "stage"), @Option(label = "Production", value = "prod") 
         }
     )
     String env();
+
+    @AttributeDefinition (
+        name = "Adobe analytics script uri",
+        description = "Adobe script uri.",
+        type = AttributeType.STRING
+    )
+    String adobeAnalyticsUri();
+
+
+    @AttributeDefinition (
+        name = "Publish instance domain",
+        description = "Publish instance domain.",
+        type = AttributeType.STRING
+    )
+    String publishInstanceDomain();
     
 }

@@ -12,7 +12,7 @@ import java.lang.annotation.Annotation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class SearchApiConfigServiceImplTest {
 
   private final SearchApiConfigService searchApiConfigService = new SearchApiConfigServiceImpl();
@@ -20,7 +20,7 @@ public class SearchApiConfigServiceImplTest {
 
     @Override
     public Class<? extends Annotation> annotationType() {
-      return null;
+      return Annotation.class;
     }
 
     @Override
@@ -29,8 +29,18 @@ public class SearchApiConfigServiceImplTest {
     }
 
     @Override
+    public String searchFieldLookupApi() {
+      return "foo/";
+    }
+
+    @Override
     public String tokenApiKey() {
       return "tokenApiKey";
+    }
+
+    @Override
+    public String defaultEmail() {
+      return "foo@workday.com";
     }
 
     @Override
@@ -49,6 +59,21 @@ public class SearchApiConfigServiceImplTest {
     }
 
     @Override
+    public String userIdProvider() {
+      return "null";
+    }
+
+    @Override
+    public String userType() {
+      return "null";
+    }
+
+    @Override
+    public String searchHub() {
+      return "searchHub";
+    }
+
+    @Override
     public int tokenValidTime() {
       return 12000;
     }
@@ -56,6 +81,11 @@ public class SearchApiConfigServiceImplTest {
     @Override
     public boolean devMode() {
       return true;
+    }
+
+    @Override
+    public String globalSearchURL() {
+      return "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
     }
   };
 
@@ -73,5 +103,13 @@ public class SearchApiConfigServiceImplTest {
     assertEquals(searchApiConfigService.getUpcomingEventAPIKey(), testConfig.upcomingEventApiKey());
     assertEquals(searchApiConfigService.getOrgId(), testConfig.orgId());
     assertEquals(searchApiConfigService.isDevMode(), testConfig.devMode());
+
+    assertEquals(searchApiConfigService.getSearchHub(), testConfig.searchHub());
+    assertEquals(searchApiConfigService.getDefaultEmail(), testConfig.defaultEmail());
+    assertEquals(searchApiConfigService.getUserIdProvider(), testConfig.userIdProvider());
+    assertEquals(searchApiConfigService.getUserIdType(), testConfig.userType());
+    assertEquals(searchApiConfigService.getSearchFieldLookupAPI(), "foo");
+    assertEquals(searchApiConfigService.getGlobalSearchURL(), testConfig.globalSearchURL());
+
   }
 }

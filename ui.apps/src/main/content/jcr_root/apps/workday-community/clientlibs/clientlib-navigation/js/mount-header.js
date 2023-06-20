@@ -18,17 +18,23 @@ function renderNavHeader() {
         let headerStringData = headerDiv.getAttribute('data-model-property');
         let avatarUrl = headerDiv.getAttribute("data-model-avatar");
         let homePage = headerDiv.getAttribute("data-prop-home");
+        let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
+        let searchURL = headerDiv.getAttribute('data-search-url');
+        if (dataLayer) {
+            let dataLayerObj = JSON.parse(dataLayer);
+            window.digitalData = dataLayerObj.digitalData;
+        }
 
         let headerMenu;
         if (stringValid(headerStringData)) {
             headerMenu = JSON.parse(headerStringData);
 
             if (!headerMenu.profile) {
-              headerMenu.profile = [];
+                headerMenu.profile = [];
             }
 
             if (stringValid(avatarUrl)) {
-                headerMenu.profile.avatar = {...headerMenu.profile.avatar, data: avatarUrl};
+                headerMenu.profile.avatar = { ...headerMenu.profile.avatar, data: avatarUrl };
             }
 
             headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
@@ -38,7 +44,7 @@ function renderNavHeader() {
             menus: headerMenu,
             skipTo: 'mainDivId', //TODO: need to change to correct value once it is finalized.
             sticky: true,
-            searchProps: {redirectPath: '/global-search'}
+            searchProps: { redirectPath: searchURL }
         };
 
         if (stringValid(homePage)) {

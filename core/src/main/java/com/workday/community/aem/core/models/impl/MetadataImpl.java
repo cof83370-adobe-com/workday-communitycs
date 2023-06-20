@@ -35,7 +35,7 @@ public class MetadataImpl implements Metadata {
     protected static final String RESOURCE_TYPE = "workday-community/components/common/metadata";
 
     /** The author name. */
-    private String authorName = "Unknown";
+    private String authorName;
 
     /** The current page. */
     @Inject

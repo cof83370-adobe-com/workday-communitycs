@@ -1,0 +1,15 @@
+{
+    "tokenApi":"https://platform.cloud.coveo.com/rest/search/v2/token",
+    "searchFieldLookupApi": "https://platform.cloud.coveo.com/rest/search/values",
+    "tokenApiKey":"$[secret:coveoSearchApiKey]",
+    "recommendationApiKey":"${secret:coveoSearchRecommendationApiKey]",
+    "upcomingEventApiKey":"${secret:coveoSearchUpcomingEventApiKey]",
+    "orgId":"$[env:coveoSearchOrgId]",
+    "searchHub": "$[env:coveoSearchHub]",
+    "defaultEmail":"$[env:coveoSearchDefaultEmail]",
+    "userIdProvider": "Email Security Provider",
+    "userType": "$[env:coveoSearchUserType]",
+    "tokenValidTime": 6000,
+    "devMode": "$[env:devMode;default=false]",
+    "globalSearchURL": "https://stage-resourcecenter.workday.com/en-us/wrc/home/search.html"
+}

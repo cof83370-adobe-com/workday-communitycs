@@ -18,9 +18,14 @@
                 sling:resourceType="granite/ui/components/coral/foundation/tabs"
                 size="L">
                 <items jcr:primaryType="nt:unstructured">
+                    <general
+                        jcr:primaryType="nt:unstructured"
+                        sling:hideResource="{Boolean}true">
+                    </general>
                     <kitsandtoolsconfig
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools"
+                        sling:orderBefore="basic"
                         sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns">
                         <items jcr:primaryType="nt:unstructured">
                             <column
@@ -43,7 +48,33 @@
                                         emptyText="Enter Author Name"
                                         fieldDescription="Enter Author Name."
                                         fieldLabel="Author Name"
-                                        name="./author"/>
+                                        name="./author">
+                                           <granite:rendercondition
+                                            jcr:primaryType="nt:unstructured"
+                                            editGroups="[CMTY CC Admin]"
+                                            sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
+                                    </author>
+                                    <authorReadOnly
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        disabled="{Boolean}true"
+                                        fieldDescription="Enter Author Name."
+                                        fieldLabel="Author Name"
+                                        name="./author">
+                                        <granite:rendercondition
+                                            jcr:primaryType="nt:unstructured"
+                                            editGroups="[CMTY CC Admin]"
+                                            sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
+                                    </authorReadOnly>
+                                    <overrideDate
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        fieldDescription="If checked, page modified date"
+                                        name="./overrideDate"
+                                        renderReadOnly="{Boolean}true"
+                                        text="Check Page Modified Date"
+                                        value="true">
+                                    </overrideDate>                                     
                                     <posteddate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -129,6 +160,26 @@
                                         multiple="{Boolean}true"
                                         name="./programsToolsTags"
                                         rootPath="/content/cq:tags/programs-and-tools"/>
+                                    <usertags
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Users Tags"
+                                        fieldDescription="Choose users tags"
+                                        fieldLabel="Users Tags"
+                                        multiple="{Boolean}true"
+                                        name="./userTags"
+                                        rootPath="/content/cq:tags/user"/>
+                                    <regioncountry
+                                        cq:showOnCreate="{Boolean}true"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                        emptyText="Choose Region &amp; Country Tags"
+                                        fieldDescription="Choose region &amp; country tags"
+                                        fieldLabel="Region &amp; Country Tags"
+                                        multiple="{Boolean}true"
+                                        name="./regionCountryTags"
+                                        rootPath="/content/cq:tags/region-and-country"/>
                                     <industry
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"

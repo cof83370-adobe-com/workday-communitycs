@@ -5,10 +5,16 @@
   <versioning>
     <release>1.0.0</release>
     <versions>
-      <version>0.0.21-SNAPSHOT</version>
-      <version>0.0.22-SNAPSHOT</version>
-      <version>1.0.0</version>
+      <version>1.0.4-SNAPSHOT</version>
+      <version>1.0.5-SNAPSHOT</version>
+      <version>1.0.6-SNAPSHOT</version>
+      <version>1.0.7-SNAPSHOT</version>
+      <version>1.0.8-SNAPSHOT</version>
+      <version>1.0.9-SNAPSHOT</version>
+      <version>1.0.10-SNAPSHOT</version>
+      <version>1.0.11-SNAPSHOT</version>
+      <version>1.0.12-SNAPSHOT</version>
     </versions>
-    <lastUpdated>20230420165904</lastUpdated>
+    <lastUpdated>20230616190200</lastUpdated>
   </versioning>
 </metadata>
