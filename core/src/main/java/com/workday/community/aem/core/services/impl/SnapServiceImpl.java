@@ -109,10 +109,9 @@ public class SnapServiceImpl implements SnapService {
         StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
       // No Snap configuration provided, just return the default one.
       logger.debug(String.format("there is no value " +
-              "for one or multiple configuration parameter: " +
-              "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
-              snapUrl, navApi, apiToken, apiKey
-          ));
+          "for one or multiple configuration parameter: " +
+          "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
+          snapUrl, navApi, apiToken, apiKey));
       return gson.toJson(this.getDefaultHeaderMenu());
     }
 
@@ -132,6 +131,15 @@ public class SnapServiceImpl implements SnapService {
 
       // Gson object for json handling.
       JsonObject sfMenu = gson.fromJson(snapRes.getResponseBody(), JsonObject.class);
+
+      // If SFID returned from okta is not present in Salesforce, it returns response
+      // but with null values. Check for profile value, since that is always going to
+      // be present in case of correct salesforce response.
+      if (sfMenu.get("profile") == null || sfMenu.get("profile").isJsonNull()) {
+        logger.error("Nav profile is empty, fallback to use local default");
+        return gson.toJson(defaultMenu);
+      }
+
       // Need to make merge sfMenu with local cache with beta experience.
       if (config.beta()) {
         String finalMenu = this.getMergedHeaderMenu(sfMenu, defaultMenu);
@@ -198,7 +206,8 @@ public class SnapServiceImpl implements SnapService {
       return defaultMenu;
     }
 
-    try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory, config.navFallbackMenuServiceUser())) {
+    try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
+        config.navFallbackMenuServiceUser())) {
       // Reading the JSON File from DAM.
       defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
       return defaultMenu;
