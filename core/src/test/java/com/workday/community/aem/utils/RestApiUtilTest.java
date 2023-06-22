@@ -3,13 +3,11 @@ package com.workday.community.aem.utils;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.utils.RestApiUtil;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.ProtocolVersion;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.Builder;
+import java.net.http.HttpResponse;
+
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
@@ -26,43 +24,33 @@ import static org.mockito.Mockito.when;
  */
 public class RestApiUtilTest {
   @Test
-  public void testDoGetMenu() throws SnapException, IOException {
-    CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
-    HttpClientBuilder builder = mock(HttpClientBuilder.class);
-    HttpClientBuilder clientBuilder = mock(HttpClientBuilder.class);
+  public void testDoGetMenu()
+      throws SnapException, IOException, InterruptedException {
+    HttpClient httpClient = mock(HttpClient.class);
+    java.net.http.HttpClient.Builder clientBuilder = mock(java.net.http.HttpClient.Builder.class);
 
-    try (MockedStatic<HttpClients> MockedHttpClients = mockStatic(HttpClients.class)) {
-      MockedHttpClients.when(HttpClients::custom).thenReturn(builder);
-      lenient().when(builder.setDefaultRequestConfig(any())).thenReturn(clientBuilder);
+    Builder requestBuilder = mock(Builder.class);
+    HttpRequest request = mock(HttpRequest.class);
+
+    try (MockedStatic<HttpClient> mockedClient = mockStatic(HttpClient.class);
+        MockedStatic<HttpRequest> mockedrequest = mockStatic(HttpRequest.class)) {
+      mockedClient.when(HttpClient::newBuilder).thenReturn(clientBuilder);
+      mockedrequest.when(HttpRequest::newBuilder).thenReturn(requestBuilder);
+      lenient().when(clientBuilder.connectTimeout(any())).thenReturn(clientBuilder);
       lenient().when(clientBuilder.build()).thenReturn(httpClient);
 
-      CloseableHttpResponse response = mock(CloseableHttpResponse.class);
-      lenient().when(httpClient.execute(any())).thenReturn(response);
+      lenient().when(requestBuilder.uri(any())).thenReturn(requestBuilder);
+      lenient().when(requestBuilder.GET()).thenReturn(requestBuilder);
+      lenient().when(requestBuilder.build()).thenReturn(request);
 
-      StatusLine statusLine = new StatusLine() {
-        @Override
-        public ProtocolVersion getProtocolVersion() {
-          return null;
-        }
+      HttpResponse response = mock(HttpResponse.class);
+      lenient().when(httpClient.send(any(), any())).thenReturn(response);
 
-        @Override
-        public int getStatusCode() {
-          return 200;
-        }
-
-        @Override
-        public String getReasonPhrase() {
-          return null;
-        }
-      };
-
-      when(response.getStatusLine()).thenReturn(statusLine);
-      HttpEntity entity = mock(HttpEntity.class);
-      when(response.getEntity()).thenReturn(entity);
+      when(response.statusCode()).thenReturn(200);
+      when(response.body()).thenReturn("");
 
       RestApiUtil.doMenuGet("url", "apiToken", "apiKey", "traceId");
       RestApiUtil.doSnapGet("url", "authToken", "xapiKey");
     }
-
   }
 }
