@@ -5,7 +5,10 @@
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
     width: 100vw !important;
-    
+    margin-top: 0.25em;
+    @media (max-width: 767px) {
+        margin-top: -0.5em;
+    }
     .cmp-teaser {
         display: flex;
         flex-direction: row-reverse;
@@ -20,7 +23,6 @@
             font-weight: $font-weight-bold;
             font-size: 28px;
             line-height: 34px;
-            align-items: center;
             color: $wdc-color-french-vanilla-100;
             margin: 0;
         }
@@ -31,7 +33,6 @@
             font-size: 15px;
             line-height: 22px;
             letter-spacing: 0.2px;
-            align-items: center;
             color: $wdc-color-french-vanilla-100;
             margin-top: 12px;
 
