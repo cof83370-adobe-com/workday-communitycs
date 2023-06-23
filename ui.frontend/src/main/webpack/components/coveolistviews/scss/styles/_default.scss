@@ -617,12 +617,6 @@ atomic-sort-dropdown {
   }
 }
 
-atomic-no-results {
-  &::part(icon), &::part(no-results), &::part(search-tips), &::part(cancel-button) {
-    display: none;
-  }
-}
-
 .no-result-root {
   margin-top: -7px;
 }
@@ -970,4 +964,3 @@ atomic-search-box {
     border-radius: 40px;
   }
 }
-

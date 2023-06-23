@@ -35,7 +35,45 @@
       </atomic-layout-section>
       <atomic-layout-section section="results">
         <atomic-query-error></atomic-query-error>
-        <atomic-no-results>No results found.</atomic-no-results>
+        <atomic-no-results enable-cancel-last-action="true">
+          <style>
+            atomic-no-results::part(cancel-button) {
+              font-family: "Roboto","Helvetica Neue","Helvetica",Arial,sans-serif;
+              font-size: 0.875rem;
+              line-height: normal;
+              letter-spacing: 0.015rem;
+              font-weight: 700;
+              cursor: pointer;
+              display: -ms-inline-flexbox;
+              display: inline-flex;
+              -webkit-box-align: center;
+              -ms-flex-align: center;
+              align-items: center;
+              -webkit-box-pack: center;
+              -ms-flex-pack: center;
+              justify-content: center;
+              box-shadow: none;
+              outline: none;
+              white-space: nowrap;
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
+              border-radius: 999px;
+              position: relative;
+              vertical-align: middle;
+              overflow: hidden;
+              border: 1px solid transparent;
+              transition: box-shadow 120ms linear,border 120ms linear,background-color 120ms linear,color 120ms linear;
+              height: 40px;
+              background-color: #0875e1;
+              color: #ffffff;
+              box-sizing: border-box;
+              min-width: 96px;
+              padding: 0 24px;
+              -webkit-text-decoration: none;
+              text-decoration: none;
+            }
+          </style>
+        </atomic-no-results>
         <atomic-result-list>
           <atomic-result-template>
             <template>
