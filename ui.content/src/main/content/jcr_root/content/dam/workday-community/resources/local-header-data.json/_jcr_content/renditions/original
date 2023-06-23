@@ -176,7 +176,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OIzWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/learn/get-started.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/learn/get-started.html",
                         "description": "Organized getting started info for customers",
                         "children": []
                     },
@@ -189,7 +189,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OJ0WAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/learn/resources.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/learn/resources.html",
                         "description": "Organized links to official documentation pages",
                         "children": []
                     },
@@ -202,7 +202,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OJ1WAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/learn/training-information.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/learn/training-information.html",
                         "description": "Training offerings and quick links",
                         "children": []
                     },
@@ -215,7 +215,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OJ2WAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/learn/solutions.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/learn/solutions.html",
                         "description": "Solutions and toolkits for customers and partners for implementing in their Workday tenants",
                         "children": []
                     },
@@ -228,7 +228,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OJ3WAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/learn/strategy-roadmaps.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/learn/strategy-roadmaps.html",
                         "description": "Product specific roadmaps",
                         "children": []
                     },
@@ -241,7 +241,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OJ4WAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/learn/shared-demonstration-tenants.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/learn/shared-demonstration-tenants.html",
                         "description": "Overview and access to shared demonstration tenants",
                         "children": []
                     },
@@ -254,7 +254,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OJ5WAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/learn/services-basecamp.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/learn/services-basecamp.html",
                         "description": "Services and partner specific resources",
                         "children": []
                     }
@@ -281,7 +281,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OImWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/products/human-capital-management.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/all-products/human-capital-management.html",
                         "description": "Specific product hub navigation link",
                         "children": []
                     },
@@ -294,7 +294,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OInWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/products/financial-management.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/all-products/financial-management.html",
                         "description": "Specific product hub navigation link",
                         "children": []
                     },
@@ -307,7 +307,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OIoWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/products/payroll.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/all-products/payroll.html",
                         "description": "Specific product hub navigation link",
                         "children": []
                     },
@@ -320,7 +320,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OIpWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/products/platform-and-product-extensions.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/all-products/platform-and-product-extensions.html",
                         "description": "Specific product hub navigation link",
                         "children": []
                     },
@@ -346,7 +346,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OIrWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/products/workforce-management.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/all-products/workforce-management.html",
                         "description": "Specific product hub navigation link",
                         "children": []
                     },
@@ -359,7 +359,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OIsWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/products.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/all-products.html",
                         "description": "Links to all available product hubs",
                         "children": []
                     }
@@ -465,7 +465,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OIuWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/feature-release/feature-release-guidebook.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/feature-release/feature-release-guidebook.html",
                         "description": "Framework for customers to use for our release cycle",
                         "children": []
                     },
@@ -478,7 +478,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OIvWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/feature-release/scheduled-maintenance.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/feature-release/scheduled-maintenance.html",
                         "description": "Planned Maintenance windows",
                         "children": []
                     },
@@ -491,7 +491,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OIwWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/feature-release/release-center.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/feature-release/release-center.html",
                         "description": "The Release Center organizes release details for the most recent feature release. The Release Prep Center replaces it for the 6 weeks approaching a new release, and features the next release.",
                         "children": []
                     },
@@ -504,7 +504,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OIxWAM",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/feature-release/release-center/release-notes.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/feature-release/release-notes.html",
                         "description": "Comprehensive release notes",
                         "children": []
                     }
@@ -544,7 +544,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OJNWA2",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/get-help/troubleshooting.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/get-help/troubleshooting.html",
                         "description": "Organized list of resources and links to help troubleshooting",
                         "children": []
                     },
@@ -583,7 +583,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OJQWA2",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/get-help/training-coordinators.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/get-help/training-coordinator-hub.html",
                         "description": "Training and resources for users in the Training Coordinator Workday Support Role",
                         "children": []
                     },
@@ -596,7 +596,7 @@
                         "level": "2",
                         "id": "aTI4X0000008OJRWA2",
                         "icon": null,
-                        "href": "https://beta-content.workday.com/en-us/get-help/support/nscs.html",
+                        "href": "https://beta-content.workday.com/en-us/collections/get-help/support/nscs.html",
                         "description": "Training and resources for users in the Named Support Contact Workday Support role",
                         "children": []
                     }
