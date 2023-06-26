@@ -95,6 +95,11 @@ public class SnapServiceImpl implements SnapService {
   }
 
   @Override
+  public void setRunModeConfigService(RunModeConfigService runModeConfigService) {
+    this.runModeConfigService = runModeConfigService;
+  }
+
+  @Override
   public String getUserHeaderMenu(String sfId) {
     String cacheKey = String.format("menu_%s", sfId);
     String cachedResult = snapCache.get(cacheKey);
@@ -202,10 +207,6 @@ public class SnapServiceImpl implements SnapService {
    * @return The menu.
    */
   private JsonObject getDefaultHeaderMenu() {
-    if (defaultMenu != null) {
-      return defaultMenu;
-    }
-
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
         config.navFallbackMenuServiceUser())) {
       // Reading the JSON File from DAM.
