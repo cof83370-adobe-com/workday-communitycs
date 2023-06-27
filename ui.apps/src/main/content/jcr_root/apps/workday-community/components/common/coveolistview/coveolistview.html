@@ -7,7 +7,9 @@
     <atomic-layout-section section="facets" class="facet-section">
       <span class="facet-header">Refine By</span>
       <atomic-facet-manager data-sly-list.facet="${coveo.categories}">
-        <atomic-category-facet field="${facet.field}" label="${facet.searchHelpText}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric"></atomic-category-facet>
+        <span id="facet-${facetList.index}">
+          <atomic-category-facet field="${facet.field}" label="${facet.searchHelpText}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric"></atomic-category-facet>
+        </span>
       </atomic-facet-manager>
     </atomic-layout-section>
     <atomic-layout-section section="main">
