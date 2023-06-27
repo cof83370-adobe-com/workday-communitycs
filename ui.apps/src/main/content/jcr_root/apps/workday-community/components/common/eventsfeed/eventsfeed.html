@@ -280,7 +280,25 @@
 
                 const upcoming = document.getElementsByClassName('eventsfeed')[0];
                 const width = upcoming.getBoundingClientRect().width - 40;
-
+                waitForElementToDisplay(
+                    () => document.getElementsByTagName('atomic-result-list')[0].shadowRoot.childNodes[0],
+                    (elem) => {
+                        waitForElementToDisplay(
+                            () => {
+                                const results = elem.getElementsByTagName('atomic-result');
+                                return (results && results.length > 0) ? results : undefined;
+                            },
+                            (rightElms) => {
+                                if (rightElms && rightElms.length > 0) {
+                                    for (let i = 0; i < rightElms.length; i++) {
+                                        let dataRow = rightElms[i].shadowRoot.getElementById('dataRowId')
+                                        if (dataRow) {
+                                            dataRow.style.width = width + "px";
+                                        }
+                                    }
+                                }
+                            })
+                    })
             })
         </script>
     </div>

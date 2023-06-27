@@ -1,4 +1,6 @@
 .eventsfeed {
+  padding: 10px 0;
+
   .cmp-eventsfeed-container {
     width: 100% !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.2);
@@ -8,6 +10,10 @@
     background-color: #fff;
 
     .feature-event {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 auto;
       height: 260px;
       overflow: scroll;
       background-color: rgba(0, 0, 0, 0.2);
@@ -18,14 +24,13 @@
       .feature-image {
         height: 100%;
         border-top-left-radius: 8px;
-        max-width: 300px;
-        width: 50%;
       }
 
       .detail {
         float: right;
-        padding: 20px;
-        width: 50%;
+        margin: auto;
+        display: block;
+        padding: 5px;
 
         .title {
           font-size: 32px;
