@@ -1,6 +1,6 @@
 {
   "eventTypeField": "commoneventtype",
-  "eventCriteria" : "(@commcontenttype='Calendar Event' OR @drucontenttype=calendar_event)(@commoneventstartdate>=%s)",
+  "eventCriteria" : "(@commcontenttype=('Calendar Event','Event') OR @drucontenttype=calendar_event)(@commoneventstartdate>=%s)",
   "extraCriteria" : "(NOT @druwdcworkflowworkflowstate==retired)",
   "sortCriteria": "@com_content_event_start_date Ascending",
   "allEventsUrl": "https://community.workday.com/calendar/month-view"
