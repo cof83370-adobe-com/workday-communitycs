@@ -76,6 +76,9 @@ public class CategoryFacetModel {
             return;
         }
         String nameSpace = tag.getNamespace().getName();
+        if (searchHelpText == null) {
+            searchHelpText = tag.getNamespace().getTitle();
+        }
         if (nameSpace == null) {
             return;
         }
