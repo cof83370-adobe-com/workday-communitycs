@@ -274,13 +274,36 @@
                     queryErr[0].style.width = '100%';
                 }
 
+                // adjust the image width based on container width
+                const containerWidth = document.getElementsByClassName('eventsfeed')[0].clientWidth;
+                if (containerWidth < 360)  {
+                    document.getElementsByClassName('feature-image')[0].style.maxWidth = '160px';
+                } else if (containerWidth < 640) {
+                    document.getElementsByClassName('feature-image')[0].style.maxWidth = '280px';
+                }
+
                 // set the data row width
-                const searchInterface = document.getElementById('eventFeedSearchId');
-
-
                 const upcoming = document.getElementsByClassName('eventsfeed')[0];
                 const width = upcoming.getBoundingClientRect().width - 40;
-
+                waitForElementToDisplay(
+                    () => document.getElementsByTagName('atomic-result-list')[0].shadowRoot.childNodes[0],
+                    (elem) => {
+                        waitForElementToDisplay(
+                            () => {
+                                const results = elem.getElementsByTagName('atomic-result');
+                                return (results && results.length > 0) ? results : undefined;
+                            },
+                            (rightElms) => {
+                                if (rightElms && rightElms.length > 0) {
+                                    for (let i = 0; i < rightElms.length; i++) {
+                                        let dataRow = rightElms[i].shadowRoot.getElementById('dataRowId')
+                                        if (dataRow) {
+                                            dataRow.style.width = width + "px";
+                                        }
+                                    }
+                                }
+                            })
+                    })
             })
         </script>
     </div>

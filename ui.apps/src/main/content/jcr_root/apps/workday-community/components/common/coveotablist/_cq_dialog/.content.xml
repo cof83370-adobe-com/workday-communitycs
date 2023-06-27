@@ -62,6 +62,7 @@
                                                     fieldLabel="Selected feed fields (recommend at least 3)"
                                                     multiple="{Boolean}true"
                                                     required="{Boolean}true"
+                                                    validation="event-feeds"
                                                     name="./feeds">
                                                <datasource
                                                      jcr:primaryType="nt:unstructured"
