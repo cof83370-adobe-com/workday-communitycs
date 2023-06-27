@@ -47,12 +47,8 @@ atomic-category-facet {
     }
 
     padding-left: 0 !important;
-    width: 107% !important;
-    margin-left: -$wdc-spacing-s;
-  }
-
-  &::part(show-more) {
-    margin-left: 6px !important;
+    width: 100% !important;
+    margin-left: 0;
   }
 
   &::part(search-wrapper) {
