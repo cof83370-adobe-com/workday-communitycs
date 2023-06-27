@@ -1,32 +1,7 @@
 (function ($) {
     "use strict";
-
-    $(document).on('dialog-ready', function () {
-        function reset($event, elm) {
-            if (elm.validate()) {
-                $event.preventDefault();
-                $event.stopPropagation();
-                elm.parent().validate().reset();
-            }
-        }
-
-        const elm = $("coral-dialog coral-panel-content coral-select");
-        if (elm.data("vmin")) {
-            elm.addEventListener("change", function ($event) {
-                reset($event, elm);
-            });
-
-            const button = $("coral-dialog coral-panel-content coral-select button");
-            if (button) {
-                button.addEventListener("click", function($event) {
-                    reset($event, button.parent());
-                })
-            }
-        }
-    })
-
     $.validator.register("foundation.validation.validator", {
-        selector: "coral-select",
+        selector: "[data-validation=event-feeds]",
         validate: function (el) {
             if ($(el).data("vmin")) {
                 const min = $(el).data("vmin");
@@ -44,6 +19,4 @@
             }
         }
     });
-
-
 })($);

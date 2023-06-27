@@ -145,11 +145,13 @@
             listRows = listRows ? listRows : 5;
 
             // 2 Field definition is from Coveo, (predefined in model/service?)
-            const search_fields = JSON.parse("[".concat(document.getElementById("selectedFieldsId").getAttribute("data-field-criteria")).concat("]"));
+            let search_fields = JSON.parse("[".concat(document.getElementById("selectedFieldsId").getAttribute("data-field-criteria")).concat("]"));
+            if (search_fields.length === 1 && search_fields[0] === null) {
+                search_fields = [];
+            }
             search_fields.forEach( field => field['dataExpression'] = field['dataExpression'] + productCriteria + extraCriteria);
             // 3 From the service
-            const searchConfigNode = document.getElementById("searchConfigId");
-            const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
+            const search_config = JSON.parse(document.getElementById("searchConfigId").getAttribute("data-model-search-config"));
 
             function setActive(currentTab) {
                 if (!currentTab.className.includes("item-button-active")) {
@@ -225,9 +227,11 @@
 
                 let fields = [];
                 let accuWidth = 0;
+
+                const moreTabWidth = tab.childNodes[tab.childNodes.length - 1].getBoundingClientRect().width;
                 for (let index in tab.childNodes) {
                     const curElem = tab.childNodes[index];
-                    if (curElem.tagName === 'LI') {
+                    if (curElem.tagName === 'LI' && index < tab.childNodes.length - 1) {
                         const tabWidth = curElem.getBoundingClientRect().width;
                         let marginLeft = document.defaultView.getComputedStyle(curElem).getPropertyValue("margin-left");
                         marginLeft = marginLeft ? parseFloat(marginLeft) : 0;
@@ -243,7 +247,7 @@
 
                         accuWidth += tabWidth + marginRight + marginLeft + paddingLeft + paddingRight;
 
-                        if (accuWidth < totalWidth) {
+                        if (accuWidth + moreTabWidth < totalWidth) {
                             fields.push(tab.childNodes[index]);
                         } else {
                             break;
@@ -256,6 +260,17 @@
                 }
 
                 return fields;
+            }
+            function getMoreTab(hiddenElements) {
+                const moreTab = document.createElement("li");
+                moreTab.setAttribute("id", "navTabMoreId");
+                moreTab.setAttribute("class", "nav-tab-item");
+                const button = document.createElement("button");
+                button.setAttribute("name", "moreButton");
+                button.setAttribute("class", "item-button");
+                button.textContent = "More>>";
+                moreTab.append(button);
+                return moreTab;
             }
             // Render tab bar
             async function buildTabs(buildTab, engine) {
@@ -291,6 +306,11 @@
                     tab.append(li);
                 })
 
+                // append more tab at the end
+                const hiddenElements = [];
+                const moreTab = getMoreTab([]);
+                tab.append(moreTab);
+
                 const tabContainer = document.getElementsByClassName("coveotablist")[0];
                 waitForElementToDisplay('atomic-search-layout', (elem) => {
                      if (!elem.classList.contains('grid-30')) elem.classList.add('grid-30');
@@ -299,25 +319,9 @@
                 const title = tabContainer.getElementsByClassName("multi-tab-title")[0];
                 title.innerText = compTitle;
                 const visibleTabs = getVisibleTabs(tabContainer, tab);
-                if (visibleTabs.length === 1) {
-                    return;
-                }
-
-                const hiddenElements = [];
-                const moreTab = document.createElement("li");
-                moreTab.setAttribute("id", "navTabMoreId");
-                moreTab.setAttribute("class", "nav-tab-item");
-                const button = document.createElement("button");
-                button.setAttribute("name", "moreButton");
-                button.setAttribute("class", "item-button");
-                button.textContent = "More>>";
-                button.addEventListener("click", ()=> {
-                    toggleDropDown(moreTab, hiddenElements);
-                });
-                moreTab.append(button);
 
                 search_fields.forEach((field, index) => {
-                    if (index >= visibleTabs.length -1) {
+                    if (index > visibleTabs.length -1) {
                         hiddenElements.push(tab.childNodes[index])
                     }
                 })
@@ -326,7 +330,13 @@
                     tab.removeChild(hiddenElements[index]);
                 }
 
+                // remove the last tab which is moreTab added in line 312
+                tab.removeChild(moreTab);
+
                 if (hiddenElements.length > 0) {
+                    moreTab.firstChild.addEventListener("click", ()=> {
+                        toggleDropDown(moreTab, hiddenElements);
+                    });
                     tab.appendChild(moreTab);
                 }
             }
@@ -398,6 +408,10 @@
             }
 
             document.addEventListener('DOMContentLoaded', () => {
+                if (search_fields.length === 0) {
+                    return;
+                }
+
                 const main = async () => {
                     let token = await getToken();
                     await customElements.whenDefined('atomic-search-interface');
@@ -444,7 +458,9 @@
 
                     const tab = document.getElementById("multiTabsCompId");
                     // Click the first button
-                    tab.firstChild.firstChild.click();
+                    if (search_fields.length > 2) {
+                        tab.firstChild.firstChild.click();
+                    }
 
                     window.addEventListener('click', function(e){
                         const dropDown = document.getElementById('navMoreDropDownId');

@@ -73,7 +73,7 @@
             nextBtn.addEventListener('click', () => {
                 traverseLiItems(currentIndex, 'next');
             });
-        } else {
+        } else if (tocNav) {
             tocNav.style.display = 'none';
         }
     }
