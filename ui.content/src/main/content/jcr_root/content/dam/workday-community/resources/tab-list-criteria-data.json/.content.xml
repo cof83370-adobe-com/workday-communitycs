@@ -2,16 +2,16 @@
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:dam="http://www.day.com/dam/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:dc="http://purl.org/dc/elements/1.1/"
     jcr:mixinTypes="[mix:referenceable]"
     jcr:primaryType="dam:Asset"
-    jcr:uuid="a0d232d9-be4d-449d-b25e-ba78d122c6b2">
+    jcr:uuid="00099e79-46ba-4433-aad6-cbaaf57fccdb">
     <jcr:content
         dam:assetState="processed"
-        jcr:lastModified="{Date}2023-06-26T22:33:03.902-07:00"
+        jcr:lastModified="{Date}2023-06-27T11:53:32.672-07:00"
         jcr:lastModifiedBy="admin"
         jcr:primaryType="dam:AssetContent">
         <metadata
-            dam:extracted="{Date}2023-06-26T22:33:03.887-07:00"
-            dam:sha1="3cfeedb93c8fdfd1a160a66f08976581bd959295"
-            dam:size="{Long}3900"
+            dam:extracted="{Date}2023-06-27T11:53:32.650-07:00"
+            dam:sha1="a7a1c5bbf6682a33c9dd17a2ee1bc4352f745f8e"
+            dam:size="{Long}4892"
             dc:format="application/json"
             jcr:mixinTypes="[cq:Taggable]"
             jcr:primaryType="nt:unstructured"/>
