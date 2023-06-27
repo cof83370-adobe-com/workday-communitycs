@@ -1,13 +1,13 @@
 {
   "fields" : [
     { "name": "article", "desc": "Article", "selected": "false", "dataExpression": "(@commcontenttype==(Article) OR @filetype==(article))" },
-    { "name": "whats_new", "desc": "What's New Post", "selected": "false", "dataExpression": "(@commcontenttype==(Whats_new) OR @filetype==(whats_new))" },
+    { "name": "whats_new", "desc": "What's New Post", "selected": "false", "dataExpression": "(@commcontenttype==(What's New Post) OR @filetype==(whats_new))" },
     { "name": "patch_note", "desc": "Service Update Note", "selected": "false", "dataExpression": "(@commcontenttype==(Patch_note) OR @filetype==(patch_note))"},
     { "name": "alert_customer", "desc": "Customer Alert", "selected": "false", "dataExpression": "(@commcontenttype==(Alert_customer) OR @filetype==(alert_customer))"},
     { "name": "alert_services", "desc": "Services Alert", "selected": "false", "dataExpression": "(@commcontenttype==(Alert_services) OR @filetype==(alert_services))"},
     { "name": "question", "desc": "Question", "selected": "false", "dataExpression": "(@commcontenttype==(Question) OR @filetype==(question))" },
     { "name": "dpg_record", "desc": "DPG/EA Record", "selected": "false", "dataExpression": "(@commcontenttype==(Dpg_record) OR @filetype==(dpg_record))" },
-    { "name": "contributed_solution", "desc": "Contributed Solution", "selected": "false", "dataExpression": "(@commcontenttype==(Contributed_solution) OR @filetype==(contributed_solution))" },
+    { "name": "contributed_solution", "desc": "Contributed Solution", "selected": "false", "dataExpression": "(@commcontenttype==(Contributed Solution) OR @filetype==(contributed_solution))" },
     { "name": "idea", "desc": "Brainstorm", "selected": "false", "dataExpression": "(@commcontenttype==(Idea) OR @filetype==(idea))" },
     { "name": "training", "desc": "Training", "selected": "false", "dataExpression": "(@commcontenttype==(Training) OR @filetype==(training))" },
     { "name": "services_idea", "desc": "Services Idea", "selected": "false", "dataExpression": "(@commcontenttype==(Services_idea) OR @filetype==(services_idea))" },
