@@ -10,7 +10,7 @@
     { "name": "contributed_solution", "desc": "Contributed Solution", "selected": "false", "dataExpression": "(@commcontenttype==(\"Contributed Solution\") OR @filetype==(contributed_solution))" },
     { "name": "idea", "desc": "Brainstorm", "selected": "false", "dataExpression": "(@commcontenttype==(Brainstorm) OR @filetype==(idea))" },
     { "name": "training", "desc": "Training", "selected": "false", "dataExpression": "(@commcontenttype==(Training) OR @filetype==(training))" },
-    { "name": "services_idea", "desc": "Services Idea", "selected": "false", "dataExpression": "(@commcontenttype==(\"Services Idea"\) OR @filetype==(services_idea))" },
+    { "name": "services_idea", "desc": "Services Idea", "selected": "false", "dataExpression": "(@commcontenttype==(\"Services Idea\") OR @filetype==(services_idea))" },
     { "name": "rising_conference_session", "desc": "Rising Conference Session", "selected": "false", "dataExpression": "(@commcontenttype==(\"Rising Conference Session\") OR @filetype==(rising_conference_session))" },
     { "name": "altitude_conference_session", "desc": "Altitude Conference Session", "selected": "false", "dataExpression": "(@commcontenttype==(\"Altitude Conference Session\") OR @filetype==(altitude_conference_session))" },
     { "name": "group_post", "desc": "Group Post", "selected": "false", "dataExpression": "(@commcontenttype==(\"Group Post\") OR @filetype==(group_post))" },

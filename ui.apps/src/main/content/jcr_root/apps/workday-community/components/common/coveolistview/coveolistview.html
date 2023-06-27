@@ -129,8 +129,8 @@
                   max-height: 100% !important;
                 }
                 .result-root.with-sections.display-list.density-normal
-                atomic-result-section-bottom-metadata.second-row {
-                  padding-top: 30px;
+                atomic-result-section-bottom-metadata {
+                  padding-top: 16px;
                 }
                 .result-root.with-sections.display-list.density-normal
                 atomic-result-section-bottom-metadata.second-row li{
@@ -199,7 +199,7 @@
               <atomic-result-section-excerpt>
                 <atomic-result-text field="excerpt"></atomic-result-text>
               </atomic-result-section-excerpt>
-              <atomic-result-section-bottom-metadata class="hydrated" data-sly-test="${properties.displayMetadata}">
+              <atomic-result-section-bottom-metadata class="hydrated first-row" data-sly-test="${properties.displayMetadata}">
                 <atomic-result-fields-list class="hydrated">
                   <atomic-field-condition class="field hydrated" if-defined="author" must-not-match-commoncontenttype="Group"><!---->
                     <atomic-result-text field="author" data-atomic-rendered="true" data-atomic-loaded="true" should-highlight="" class="hydrated"></atomic-result-text>
