@@ -135,6 +135,8 @@ atomic-category-facet {
 
 .box-shadow atomic-facet::part(value-label), atomic-category-facet::part(value-label) {
   font-weight: 400 !important;
+  text-align: left;
+  margin-left: 16px;
 }
 
 @font-face {

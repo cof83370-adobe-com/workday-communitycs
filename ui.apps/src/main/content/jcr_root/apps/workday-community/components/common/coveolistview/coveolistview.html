@@ -275,6 +275,25 @@
       engine.dispatch(action);
     }
   };
+  function waitForElementToDisplay(elmCallback, callback, checkFrequencyInMs = 100, timeoutInMs = 50000) {
+    let startTimeInMs = Date.now();
+    let timeOutHandler;
+    (function loopSearch() {
+      let elem = elmCallback();
+      if (elem) {
+        clearTimeout(timeOutHandler);
+        callback(elem);
+      } else {
+        timeOutHandler = setTimeout(function () {
+          if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs) {
+            clearTimeout(timeOutHandler);
+            return;
+          }
+          loopSearch();
+        }, checkFrequencyInMs);
+      }
+    })();
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
     const main = async () => {
@@ -313,6 +332,27 @@
       };
       searchInterface.executeFirstSearch();
     };
-    main().then(() => {});
+    main().then(() => {
+      waitForElementToDisplay(
+        () => document.getElementsByTagName('atomic-category-facet'),
+        (elems) => {
+          waitForElementToDisplay(
+            () => {
+              for (let i = 0; i < elems.length; i++) {
+                const inputField = elems[i].shadowRoot.querySelector('input');
+                if (!inputField) return false;
+              }
+              return true;
+            },
+            (visible) => {
+              if (visible) {
+                for (let i = 0; i < elems.length; i++) {
+                  const inputField = elems[i].shadowRoot.querySelector('input');
+                  inputField.placeholder = `Find a ` +  elems[i].shadowRoot.querySelector('button div').innerText;
+                }
+              }
+            })
+        })
+    });
   });
 </script>
