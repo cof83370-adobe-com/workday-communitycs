@@ -41,7 +41,7 @@
                 activeIndex = Array.from(tocList).indexOf(liElement as HTMLLIElement);
                 localStorage.setItem('activeIndex', activeIndex);
                 break;
-            } else {
+            } else if (tocNav) {
                 tocNav.style.display = 'none';
             }
         }
@@ -84,7 +84,7 @@
             nextBtn.addEventListener('click', () => {
                 traverseLiItems(currentIndex, 'next');
             });
-        } else {
+        } else if (tocNav) {
             tocNav.style.display = 'none';
         }
     }

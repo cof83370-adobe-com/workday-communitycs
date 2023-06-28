@@ -31,3 +31,9 @@ $include "./default_filters.any"
 
 #Enable Settings Page MultiFactor Authentication Servlet
 /0126 { /type "allow" /method "POST" /path "/bin/multifactorauthentication" }
+
+# Enable logout
+/0128 { /type "allow" /method "GET" /url "/bin/user/logout" }  # allow bin path access
+
+# Enable token generation used by Coveo search
+/0130 { /type "allow" /method "GET" /url "/bin/search/token" }  # allow bin path access

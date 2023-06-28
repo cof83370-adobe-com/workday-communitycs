@@ -1,7 +1,6 @@
 <sly data-sly-use.model="com.workday.community.aem.core.models.CoveoEventFeedModel">
     <div class="cmp-eventsfeed-container">
         <span id="eventTypesId" data-property="${properties.eventTypes}"></span>
-        <span id="widthId" data-property="${properties.width}"></span>
         <span id="rowsId" data-property="${properties.rows}"></span>
         <span id="searchConfigId" data-model-search-config="${model.getSearchConfig}"></span>
         <span id="sortCriteriaId" data-model-sort-criteria="${model.sortCriteria}"></span>
@@ -9,7 +8,7 @@
         <span id="eventCriteriaId" data-model-event-criteria="${model.eventCriteria}"></span>
 
         <div class="feature-event">
-            <image class="feature-image" alt="feature event" src="${model.featureEvent.image}"></image>
+            <img class="feature-image" alt="feature event" src="${model.featureEvent.image}" />
             <div class="detail">
                 <h2 class="title">
                     <a href="${model.featureEvent.link}">${model.featureEvent.title}</a>
@@ -20,7 +19,7 @@
             </div>
         </div>
 
-        <p class="subject">Upcoming Events</p>
+        <h2 class="subject">Upcoming Events</h2>
 
         <atomic-search-interface id="eventFeedSearchId">
             <atomic-search-layout>
@@ -42,6 +41,7 @@
                                 <style>
                                     .data-row {
                                         display: block;
+                                        width: max-content;
                                         padding: 0 30px;
                                     }
 
@@ -52,7 +52,7 @@
                                     }
 
                                     .data-row-right {
-                                        display: initial;
+                                        display: block;
                                     }
 
                                     .field-left {
@@ -107,11 +107,13 @@
                                     }
 
                                     .bottom {
-                                        padding: 4px 4px 8px;
                                         width: 66px;
-                                        height: 30px;
+                                        height: 47px;
                                         text-align: center;
                                         font-size: 32px;
+                                        border: 2px solid #f0f1f2;
+                                        border-bottom-left-radius: 10px;
+                                        border-bottom-right-radius: 10px;
                                     }
 
                                     .list-root atomic-result[part="outline"] {
@@ -125,7 +127,7 @@
                                                 <atomic-result-date field="commoneventstartdate" format="MMM"/>
                                             </div>
                                             <div class="bottom">
-                                                <atomic-result-date field="commoneventstartdate" format="D"/>
+                                                <atomic-result-date field="commoneventstartdate" format="D" />
                                             </div>
                                         </atomic-field-condition>
                                     </div>
@@ -164,9 +166,8 @@
             } from 'https://static.cloud.coveo.com/atomic/v1.86.0/headless/headless.esm.js';
 
             const getRequest = async (url) => {
-                const tokenUrl = url;
                 try {
-                    const response = await fetch(tokenUrl);
+                    const response = await fetch(url);
                     return await response.json();
                 } catch (err) {
                 }
@@ -263,18 +264,27 @@
                 });
 
                 // set the UI properties
-                const widthId = Number(document.getElementById('widthId').getAttribute('data-property'));
-                let cardWidth = widthId <= 360 ? '360px' : widthId + 'px';
-                document.getElementsByClassName('eventsfeed')[0].style.width = cardWidth;
+                document.getElementsByClassName('eventsfeed')[0].style.width = '100%';
                 let noResult = document.getElementsByClassName('no-result-box');
-                if (noResult && noResult.length == 1) {
-                    noResult[0].style.width = cardWidth;
+                if (noResult && noResult.length === 1) {
+                    noResult[0].style.width = '100%';
                 }
                 let queryErr = document.getElementsByClassName('query-error-custom');
-                if (queryErr && queryErr.length == 1) {
-                    queryErr[0].style.width = cardWidth;
+                if (queryErr && queryErr.length === 1) {
+                    queryErr[0].style.width = '100%';
                 }
 
+                // adjust the image width based on container width
+                const containerWidth = document.getElementsByClassName('eventsfeed')[0].clientWidth;
+                if (containerWidth < 360)  {
+                    document.getElementsByClassName('feature-image')[0].style.maxWidth = '160px';
+                } else if (containerWidth < 640) {
+                    document.getElementsByClassName('feature-image')[0].style.maxWidth = '280px';
+                }
+
+                // set the data row width
+                const upcoming = document.getElementsByClassName('eventsfeed')[0];
+                const width = upcoming.getBoundingClientRect().width - 40;
                 waitForElementToDisplay(
                     () => document.getElementsByTagName('atomic-result-list')[0].shadowRoot.childNodes[0],
                     (elem) => {
@@ -286,9 +296,9 @@
                             (rightElms) => {
                                 if (rightElms && rightElms.length > 0) {
                                     for (let i = 0; i < rightElms.length; i++) {
-                                        let dataRow = rightElms[i].shadowRoot.getElementById('dataRowId');
+                                        let dataRow = rightElms[i].shadowRoot.getElementById('dataRowId')
                                         if (dataRow) {
-                                            dataRow.style.width = cardWidth;
+                                            dataRow.style.width = width + "px";
                                         }
                                     }
                                 }

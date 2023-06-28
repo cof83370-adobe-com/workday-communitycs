@@ -2,6 +2,7 @@ package com.workday.community.aem.core.servlets;
 
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.SimpleDataSource;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -10,6 +11,7 @@ import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -22,6 +24,9 @@ import static org.mockito.Mockito.*;
  */
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class TemplatesListProviderServletTest {
+
+    @Mock
+    private transient CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     @InjectMocks
     TemplatesListProviderServlet servlet;
@@ -40,6 +45,7 @@ class TemplatesListProviderServletTest {
         when(resourceMock2.getName()).thenReturn("Title2");
         when(resourceMock2.getPath()).thenReturn("/path/template2");
         List<Resource> mockList = List.of(resourceMock1, resourceMock2);
+        when(coveoIndexApiConfigService.isCoveoIndexEnabled()).thenReturn(true);
         when(resourceMock.listChildren()).thenReturn(mockList.listIterator());
         when(resourceResolverMock.getResource(TEMPLATES_PATH)).thenReturn(resourceMock);
         servlet.doGet(request, response);
