@@ -47,6 +47,8 @@ Include conf.d/variables/custom.vars
 	<IfModule mod_rewrite.c>
 		RewriteEngine	on
 		Include conf.d/rewrites/rewrite.rules
+		RewriteCondition %{REQUEST_METHOD} ^(TRACE|TRACE)
+        RewriteRule . * - [F]
 	</IfModule>
 	ErrorDocument 400 ${400_PAGE}
 	ErrorDocument 403 ${403_PAGE}

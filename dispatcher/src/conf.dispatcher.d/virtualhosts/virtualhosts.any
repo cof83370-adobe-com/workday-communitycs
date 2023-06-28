@@ -6,8 +6,3 @@
 #
 
 $include "./default_virtualhosts.any"
-$include "dev-content.workday.com"
-$include "qa-content.workday.com"
-$include "stage-content.workday.com"
-$include "beta-content.workday.com"
-$include "content-community.workday.com"
