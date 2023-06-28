@@ -160,6 +160,14 @@
                 display: inline-block;
                 overflow: hidden;
             }
+
+            .cmp-toc__secondlevelitem-title:not(:has(+ .cmp-toc__chevron)) {
+                padding-left: 39px;
+            }
+
+            .cmp-toc__thirdlevelitem-title:not(:has(+ .cmp-toc__chevron)) {
+                padding-left: 40px;
+            }
         }
     }
 
