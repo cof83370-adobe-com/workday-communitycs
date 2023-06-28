@@ -18,9 +18,17 @@
 					<sly data-sly-test="${properties.type=='static'}">
 						<div class="cmp-related-info__content" data-sly-list.urllinkMultifield="${resource.getChildren}">
 							<ul class="cmp-related-info__list" data-sly-list.urllink="${urllinkMultifield.getChildren}">
-								<li class="cmp-related-info__item"><a class="cmp-related-info__item-link" target="${urllink.newTab}"
+								<li class="cmp-related-info__item">
+									<sly data-sly-test="${urllink.pagepath}">
+										<a class="cmp-related-info__item-link" target="${urllink.newTab}"
 										href="${urllink.pagepath}${relatedInfo.rootPath in  urllink.pagepath ? '.html' : ''}"><span
-											class="cmp-related-info__item-title">${urllink.linktitle @ context='html'}</span></a></li>
+											class="cmp-related-info__item-title">${urllink.linktitle @ context='html'}</span></a>
+									</sly>
+									<sly data-sly-test="${!urllink.pagepath}">
+										<span
+											class="cmp-related-info__item-title">${urllink.linktitle @ context='html'}</span>
+									</sly>
+								</li>
 							</ul>
 						</div>
 					</sly>
