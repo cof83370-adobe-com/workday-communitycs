@@ -126,6 +126,7 @@
             }
         } else {
             const secondLevelItem = document.querySelector('.cmp-toc__group.cmp-toc__secondlevellist > .cmp-toc__item.active');
+            const thirdLevelItem = document.querySelector('.cmp-toc__group.cmp-toc__thirdlevellist > .cmp-toc__item.active');
 
             if (secondLevelItem) {
                 const secondLevelItemLink = secondLevelItem.querySelector('.cmp-toc__item-link');
@@ -140,6 +141,13 @@
                 const secondLevelUl = secondLevelItem.querySelector('ul');
                 if(secondLevelUl) {
                     secondLevelUl.classList.add('show');
+                }
+            } else if (thirdLevelItem) {
+                thirdLevelItem.parentElement.classList.add('show');
+                const previousSibling = thirdLevelItem.parentElement.previousElementSibling;
+                if (previousSibling) {
+                    previousSibling.classList.add('active');
+                    previousSibling.parentElement.parentElement.classList.add('show');
                 }
             }
         }
