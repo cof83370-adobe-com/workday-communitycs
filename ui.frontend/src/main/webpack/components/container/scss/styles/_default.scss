@@ -81,6 +81,12 @@
                 color: $wdc-color-blueberry-400;
                 border-left: 5px solid $wdc-color-blueberry-400;
                 padding: 0.5rem 0rem 0.5rem 1.5rem;
+                margin-left: -24px;
+            }
+
+            .cmp-toc__item.active > .cmp-toc__item-link:has(.cmp-toc__chevron) {
+                margin-left: -15px;
+                padding: 0.5rem 0rem 0.5rem 0.5rem;
             }
 
             .cmp-toc__item.active > .cmp-toc__item-link > .cmp-toc__chevron::before {
@@ -153,6 +159,14 @@
                 width: 80%;
                 display: inline-block;
                 overflow: hidden;
+            }
+
+            .cmp-toc__secondlevelitem-title:not(:has(+ .cmp-toc__chevron)) {
+                padding-left: 39px;
+            }
+
+            .cmp-toc__thirdlevelitem-title:not(:has(+ .cmp-toc__chevron)) {
+                padding-left: 40px;
             }
         }
     }
