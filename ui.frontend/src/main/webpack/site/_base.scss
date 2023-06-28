@@ -21,6 +21,10 @@ main {
     float: none !important;
     padding: 6.25em 1em 0;
     min-height: calc(100vh - 120px);
+
+    .aem-AuthorLayer-Edit & {
+        min-height: auto;
+    }
 }
 
 @media (max-width: 767px) {
