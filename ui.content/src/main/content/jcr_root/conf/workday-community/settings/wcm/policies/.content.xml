@@ -416,7 +416,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Event Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/image]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_2067079264297100>
