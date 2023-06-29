@@ -7,6 +7,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
+import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
@@ -101,7 +102,6 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getUserHeaderMenu(String sfId) {
-    sfId = "masterdata";
     String cacheKey = String.format("menu_%s", sfId);
     String cachedResult = snapCache.get(cacheKey);
     if (cachedResult != null) {
@@ -147,7 +147,7 @@ public class SnapServiceImpl implements SnapService {
       }
 
       // Update the user profile data from contactInformation field to userInfo field.
-      updateProfileUserInfo(sfMenu);
+      updateProfileInfoWithNameAndAvatar(sfMenu, sfId);
 
       // Need to make merge sfMenu with local cache with beta experience.
       if (config.beta()) {
@@ -337,29 +337,60 @@ public class SnapServiceImpl implements SnapService {
    * 
    * @param sfMenu The menu data.
    */
-  private void updateProfileUserInfo(JsonObject sfMenu) {
-    JsonElement profileElement = sfMenu.get("profile");
+  private void updateProfileInfoWithNameAndAvatar(JsonObject sfMenu, String sfId) {
+    JsonElement profileElement = sfMenu.get(SnapConstants.PROFILE_KEY);
     JsonObject profileObject = (profileElement != null && !profileElement.isJsonNull())
         ? profileElement.getAsJsonObject()
         : new JsonObject();
 
-    JsonElement contactObject = sfMenu.get("contactInformation");
+    // Populate user information.
+    JsonElement contactObject = sfMenu.get(SnapConstants.USER_CONTACT_INFORMATION_KEY);
     JsonObject contactRoleElement = (contactObject != null && !contactObject.isJsonNull())
         ? contactObject.getAsJsonObject()
         : null;
 
     if (contactRoleElement != null && !contactRoleElement.isJsonNull()) {
-      JsonElement lastName = contactRoleElement.get("lastName");
-      JsonElement firstName = contactRoleElement.get("firstName");
+      JsonElement lastName = contactRoleElement.get(SnapConstants.LAST_NAME_KEY);
+      JsonElement firstName = contactRoleElement.get(SnapConstants.FIRST_NAME_KEY);
 
       JsonObject userInfoObject = new JsonObject();
-      userInfoObject.addProperty("lastName",
-          (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() : "");
-      userInfoObject.addProperty("firstName",
-          (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() : "");
-      userInfoObject.addProperty("viewProfileLabel", "Profile");
-      userInfoObject.addProperty("href", config.userProfileUrl());
-      profileObject.add("userInfo", userInfoObject);
+      userInfoObject.addProperty(SnapConstants.LAST_NAME_KEY,
+          (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() : StringUtils.EMPTY);
+      userInfoObject.addProperty(SnapConstants.FIRST_NAME_KEY,
+          (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() : StringUtils.EMPTY);
+      userInfoObject.addProperty(SnapConstants.VIEW_PROFILE_LABEL_KEY, SnapConstants.PROFILE_BUTTON_VALUE);
+      userInfoObject.addProperty(SnapConstants.HREF_KEY, config.userProfileUrl());
+      profileObject.add(SnapConstants.USER_INFO_KEY, userInfoObject);
+
+      // Populate profile photo information.
+      JsonObject avatarObject = new JsonObject();
+      avatarObject.addProperty(SnapConstants.IMAGE_DATA_KEY, getUserAvatar(sfId));
+      profileObject.add(SnapConstants.AVATAR_KEY, avatarObject);
     }
+  }
+
+  /**
+   * Gets the user avatar data
+   * 
+   * @param sfId SFID
+   * @return image data as string
+   */
+  private String getUserAvatar(String sfId) {
+    String extension;
+
+    ProfilePhoto photoAPIResponse = getProfilePhoto(sfId);
+    if (photoAPIResponse != null && StringUtils.isNotBlank(photoAPIResponse.getPhotoVersionId())) {
+      String content = photoAPIResponse.getBase64content();
+      if (content.contains("data:image/")) {
+        return content;
+      }
+
+      int lastIndex = photoAPIResponse.getFileNameWithExtension().lastIndexOf('.');
+      extension = photoAPIResponse.getFileNameWithExtension().substring(lastIndex + 1).toLowerCase();
+      return "data:image/" + extension + ";base64," + content;
+    }
+
+    logger.error("getUserAvatar method returns null.");
+    return "";
   }
 }
