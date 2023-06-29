@@ -7,6 +7,7 @@ Include conf.d/variables/custom.vars
 	ServerAlias	 "*"
 	# Use a document root that matches the one in conf.dispatcher.d/default.farm
 	DocumentRoot "${DOCROOT}"
+
 	# Add header breadcrumbs for help in troubleshooting
 	<IfModule mod_headers.c>
 		Header add X-Vhost "publish"
@@ -46,6 +47,8 @@ Include conf.d/variables/custom.vars
 	<IfModule mod_rewrite.c>
 		RewriteEngine	on
 		Include conf.d/rewrites/rewrite.rules
+		RewriteCondition %{REQUEST_METHOD} ^(TRACE|TRACE)
+        RewriteRule . * - [F]
 	</IfModule>
 	ErrorDocument 400 ${400_PAGE}
 	ErrorDocument 403 ${403_PAGE}
@@ -101,7 +104,16 @@ Include conf.d/variables/custom.vars
 
     # Content Services/Sling Model Exporter: CDN cache for 10min with background refresh to avoid MISS on CDN
 
+    <LocationMatch "^/content/dam/workday-community/admin/robots.txt">
+      ForceType text/plain
+      Header unset Content-Disposition
+      Header set Content-Disposition inline
+    </LocationMatch>
 
+    <LocationMatch "^/content/dam/workday-community/en-us/images/favicon.ico">
+      Header unset Content-Disposition
+      Header set Content-Disposition inline
+    </LocationMatch>
 
 	#Test Header to identify dispatcher hit
 	<LocationMatch />
