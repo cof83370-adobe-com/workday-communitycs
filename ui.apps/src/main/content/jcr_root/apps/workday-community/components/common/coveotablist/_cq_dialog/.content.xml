@@ -38,13 +38,6 @@
                                                     fieldLabel="Component title"
                                                     name="./title">
                                             </title>
-                                            <containerWidth
-                                                jcr:primaryType="nt:unstructured"
-                                                sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                fieldDescription="The width of the container."
-                                                fieldLabel="Component container width (px)"
-                                                name="./width">
-                                            </containerWidth>
                                             <rows jcr:primaryType="nt:unstructured"
                                                   sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                                                   fieldDescription="How many rows in the list."
@@ -69,14 +62,17 @@
                                                     fieldLabel="Selected feed fields (recommend at least 3)"
                                                     multiple="{Boolean}true"
                                                     required="{Boolean}true"
+                                                    validation="event-feeds"
                                                     name="./feeds">
                                                <datasource
                                                      jcr:primaryType="nt:unstructured"
                                                      sling:resourceType="/bin/feedFields"/>
                                                 <granite:rendercondition
                                                         jcr:primaryType="nt:unstructured"
-                                                        text="Please provide at least 3."
-                                                        vmin="3" />
+                                                        text="Please provide at least 3."/>
+                                                <granite:data
+                                                        jcr:primaryType="nt:unstructured"
+                                                        vmin="3"/>
                                            </feeds>
                                         </items>
                                     </column>

@@ -21,8 +21,6 @@ import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 
-
-import static com.day.cq.wcm.api.constants.NameConstants.NN_TEMPLATE;
 import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
 import static com.workday.community.aem.core.services.impl.QueryServiceImpl.SERVICE_USER;
 import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
@@ -30,7 +28,6 @@ import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOU
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
 import static com.workday.community.aem.core.constants.GlobalConstants.JCR_CONTENT_PATH;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
 import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED;
@@ -67,7 +64,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType"));
 
     /** The stringFields. */
-    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", NN_TEMPLATE, "eventHost", "eventLocation"));
+    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation"));
 
     /** The page tags. */
     private static final Map<String, String> pageTagMap = new HashMap<>() {{
@@ -153,6 +150,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                         String fieldName = "eventTags";
                         value = processHierarchyTaxonomyFields(tagManager, taxonomyIds, fieldName);
                         properties.put(fieldName + "Hierarchy", value);
+                    }
+                    if (taxonomyField.equals("contentType")) {
+                        List<String> types = new ArrayList<>();
+                        value.stream().map(type -> type.replaceAll("\\W", "_").toLowerCase()).forEach(types::add);
+                        properties.put("com_content_type", types);
                     }
                 }
             }
@@ -249,12 +251,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                 value = data.get(JCR_TITLE, String.class);
             }
             if (value != null) {
-                if (stringField.equals(NN_TEMPLATE)) {
-                    properties.put("contentType", CONTENT_TYPE_MAPPING.get(value));
-                }
-                else {
-                    properties.put(stringField, value);
-                }
+                properties.put(stringField, value);
             }
         }
     }
