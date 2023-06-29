@@ -173,6 +173,11 @@ public class SnapServiceImplTest {
       public String snapProfileApiKey() {
         return "snapProfileApiKey";
       }
+
+      @Override
+      public String userProfileUrl() {
+        return "userProfileURL";
+      }
     };
   }
 

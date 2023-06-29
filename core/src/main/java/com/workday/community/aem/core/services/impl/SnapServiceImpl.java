@@ -101,6 +101,7 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getUserHeaderMenu(String sfId) {
+    sfId = "masterdata";
     String cacheKey = String.format("menu_%s", sfId);
     String cachedResult = snapCache.get(cacheKey);
     if (cachedResult != null) {
@@ -144,6 +145,9 @@ public class SnapServiceImpl implements SnapService {
         logger.error("Nav profile is empty, fallback to use local default");
         return gson.toJson(defaultMenu);
       }
+
+      // Update the user profile data from contactInformation field to userInfo field.
+      updateProfileUserInfo(sfMenu);
 
       // Need to make merge sfMenu with local cache with beta experience.
       if (config.beta()) {
@@ -326,5 +330,36 @@ public class SnapServiceImpl implements SnapService {
     digitalData.add("org", orgProperties);
 
     return digitalData;
+  }
+
+  /**
+   * Updates the user profile data from contact information.
+   * 
+   * @param sfMenu The menu data.
+   */
+  private void updateProfileUserInfo(JsonObject sfMenu) {
+    JsonElement profileElement = sfMenu.get("profile");
+    JsonObject profileObject = (profileElement != null && !profileElement.isJsonNull())
+        ? profileElement.getAsJsonObject()
+        : new JsonObject();
+
+    JsonElement contactObject = sfMenu.get("contactInformation");
+    JsonObject contactRoleElement = (contactObject != null && !contactObject.isJsonNull())
+        ? contactObject.getAsJsonObject()
+        : null;
+
+    if (contactRoleElement != null && !contactRoleElement.isJsonNull()) {
+      JsonElement lastName = contactRoleElement.get("lastName");
+      JsonElement firstName = contactRoleElement.get("firstName");
+
+      JsonObject userInfoObject = new JsonObject();
+      userInfoObject.addProperty("lastName",
+          (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() : "");
+      userInfoObject.addProperty("firstName",
+          (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() : "");
+      userInfoObject.addProperty("viewProfileLabel", "Profile");
+      userInfoObject.addProperty("href", config.userProfileUrl());
+      profileObject.add("userInfo", userInfoObject);
+    }
   }
 }
