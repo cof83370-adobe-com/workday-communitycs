@@ -92,25 +92,6 @@ public class HeaderModelImpl implements HeaderModel {
     return this.snapService.getUserHeaderMenu(sfId);
   }
 
-  public String getUserAvatar() {
-    String extension;
-
-    ProfilePhoto photoAPIResponse = this.snapService.getProfilePhoto(sfId);
-    if (photoAPIResponse != null && StringUtils.isNotBlank(photoAPIResponse.getPhotoVersionId())) {
-      String content = photoAPIResponse.getBase64content();
-      if (content.contains("data:image/")) {
-        return content;
-      }
-
-      int lastIndex = photoAPIResponse.getFileNameWithExtension().lastIndexOf('.');
-      extension = photoAPIResponse.getFileNameWithExtension().substring(lastIndex + 1).toLowerCase();
-      return "data:image/" + extension + ";base64," + content;
-    }
-
-    logger.error("getUserAvatarUrl method returns null.");
-    return "";
-  }
-
   @Override
   public String getDataLayerData() {
     String instance = runModeConfigService.getInstance();

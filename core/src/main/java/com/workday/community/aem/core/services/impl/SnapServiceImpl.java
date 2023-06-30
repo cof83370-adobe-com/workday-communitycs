@@ -1,7 +1,5 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -10,7 +8,6 @@ import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
-import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
@@ -74,9 +71,6 @@ public class SnapServiceImpl implements SnapService {
   /** The snap Config. */
   private SnapConfig config;
 
-  /** The ObjectMapper service. */
-  private ObjectMapper objectMapper;
-
   /** The gson service. */
   private final Gson gson = new Gson();
 
@@ -86,7 +80,6 @@ public class SnapServiceImpl implements SnapService {
   public void activate(SnapConfig config) {
     this.config = config;
     this.snapCache = new LRUCacheWithTimeout<>(config.menuCacheMax(), config.menuCacheTimeout());
-    this.objectMapper = new ObjectMapper();
     logger.info("SnapService is activated.");
   }
 
@@ -187,7 +180,7 @@ public class SnapServiceImpl implements SnapService {
   }
 
   @Override
-  public ProfilePhoto getProfilePhoto(String userId) {
+  public String getProfilePhoto(String userId) {
     String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
 
     String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
@@ -197,9 +190,9 @@ public class SnapServiceImpl implements SnapService {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto(), url is {}", url);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
       if (jsonResponse != null) {
-        return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
+        return jsonResponse;
       }
-    } catch (SnapException | JsonProcessingException e) {
+    } catch (SnapException e) {
       logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
     }
     return null;
@@ -376,18 +369,13 @@ public class SnapServiceImpl implements SnapService {
    * @return image data as string
    */
   private String getUserAvatar(String sfId) {
-    String extension;
+    String content = getProfilePhoto(sfId);
 
-    ProfilePhoto photoAPIResponse = getProfilePhoto(sfId);
-    if (photoAPIResponse != null && StringUtils.isNotBlank(photoAPIResponse.getPhotoVersionId())) {
-      String content = photoAPIResponse.getBase64content();
+    if (StringUtils.isNotBlank(content)) {
       if (content.contains("data:image/")) {
         return content;
       }
-
-      int lastIndex = photoAPIResponse.getFileNameWithExtension().lastIndexOf('.');
-      extension = photoAPIResponse.getFileNameWithExtension().substring(lastIndex + 1).toLowerCase();
-      return "data:image/" + extension + ";base64," + content;
+      return "data:image/base64," + content;
     }
 
     logger.error("getUserAvatar method returns null.");
