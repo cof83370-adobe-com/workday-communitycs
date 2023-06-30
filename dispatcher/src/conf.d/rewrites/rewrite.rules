@@ -7,9 +7,11 @@
 
 Include conf.d/rewrites/default_rewrite.rules
 
+# rewrite for favicon.ico and robots.txt
+RewriteRule ^/favicon.ico /content/dam/workday-community/en-us/images/favicon.ico [PT,L]
+RewriteRule ^/robots.txt /content/dam/workday-community/admin/robots.txt [PT,L]
+
 # rewrite for root redirect
-
-
 RewriteRule ^/?$ /content/${CONTENT_FOLDER_NAME}/en-us/home.html [PT,L]
 
 RewriteCond %{REQUEST_URI} !^/apps

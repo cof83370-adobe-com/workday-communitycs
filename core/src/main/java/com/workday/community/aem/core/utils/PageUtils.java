@@ -12,7 +12,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.apache.commons.lang.ArrayUtils;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -65,8 +65,10 @@ public class PageUtils {
             if (null != pageObject) {
                 ValueMap data = pageObject.getProperties();
                 String[] accessControlTags = data.get(pagePropertyName, String[].class);
-                for (String tagIdString: requireNonNull(accessControlTags)) {
-                    accessControlList.add(tagIdString.replace(tagName.concat(":"), ""));
+                if (!ArrayUtils.isEmpty(accessControlTags)) {
+                    for (String tagIdString: requireNonNull(accessControlTags)) {
+                        accessControlList.add(tagIdString.replace(tagName.concat(":"), ""));
+                    }
                 }
             }
         }

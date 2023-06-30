@@ -30,7 +30,7 @@ public @interface SnapConfig {
   @AttributeDefinition(name = "Snap logic Profile Api key", description = "Snap logic Profile API key.", type = AttributeType.STRING)
   String snapProfileApiKey();
 
-  @AttributeDefinition (name = "SF roles to AEM groups map", description = "SF roles to AEM groups map json file path.", type = AttributeType.STRING)
+  @AttributeDefinition(name = "SF roles to AEM groups map", description = "SF roles to AEM groups map json file path.", type = AttributeType.STRING)
   String sfToAemUserGroupMap() default "/content/dam/workday-community/resources/sf-to-aem-group-map.json";
 
   @AttributeDefinition(name = "Nav API", description = "Nav menu api endpoint.", type = AttributeType.STRING)
@@ -65,4 +65,7 @@ public @interface SnapConfig {
 
   @AttributeDefinition(name = "User menu cache timeout duration", description = "User Menu Cache Timeout Duration (mills)", type = AttributeType.LONG)
   long menuCacheTimeout() default 86400000L; // Default to one day.
+
+  @AttributeDefinition(name = "User profile URL", description = "User profile page URL", type = AttributeType.STRING)
+  String userProfileUrl();
 }

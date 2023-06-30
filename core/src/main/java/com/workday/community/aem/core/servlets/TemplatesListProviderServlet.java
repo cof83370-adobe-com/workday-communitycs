@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.Servlet;
 
 import com.day.crx.JcrConstants;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -19,6 +20,7 @@ import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,6 +45,10 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
     /** The Constant TEMPLATES_PATH. */
     static final String TEMPLATES_PATH = "/conf/workday-community/settings/wcm/templates";
 
+    /** The CoveoIndexApiConfigService service. */
+    @Reference
+    private transient CoveoIndexApiConfigService coveoIndexApiConfigService;
+
     /**
      * Do get.
      *
@@ -51,6 +57,10 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
      */
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
+        if (Boolean.FALSE.equals(coveoIndexApiConfigService.isCoveoIndexEnabled())) {
+            return;
+        }
+
         try {
             ResourceResolver resourceResolver = request.getResourceResolver();
             Resource resource = resourceResolver.getResource(TEMPLATES_PATH);

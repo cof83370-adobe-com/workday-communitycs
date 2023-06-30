@@ -7,6 +7,7 @@ Include conf.d/variables/custom.vars
 	ServerAlias	 "*"
 	# Use a document root that matches the one in conf.dispatcher.d/default.farm
 	DocumentRoot "${DOCROOT}"
+
 	# Add header breadcrumbs for help in troubleshooting
 	<IfModule mod_headers.c>
 		Header add X-Vhost "publish"
@@ -46,6 +47,8 @@ Include conf.d/variables/custom.vars
 	<IfModule mod_rewrite.c>
 		RewriteEngine	on
 		Include conf.d/rewrites/rewrite.rules
+		RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
+    RewriteRule .* - [F]
 	</IfModule>
 	ErrorDocument 400 ${400_PAGE}
 	ErrorDocument 403 ${403_PAGE}
@@ -54,6 +57,19 @@ Include conf.d/variables/custom.vars
 	ErrorDocument 502 ${502_PAGE}
 	ErrorDocument 503 ${503_PAGE}
 	ErrorDocument 504 ${504_PAGE}
+
+  <IfModule mod_proxy.c>
+    SSLProxyEngine On
+    ProxyRequests On
+    <LocationMatch "/coveo/static/(.+)">
+      ProxyPassMatch "https://static.cloud.coveo.com/$1"
+      ProxyPassReverse "https://static.cloud.coveo.com/$1"
+    </LocationMatch>
+    <LocationMatch "/coveo/platform/(.+)">
+      ProxyPassMatch "https://platform.cloud.coveo.com/$1"
+      ProxyPassReverse "https://platform.cloud.coveo.com/$1"
+    </LocationMatch>
+  </IfModule>
 
 	# Theme Sources via Clientlib: cache mutable resources for 24h on CDN and background refresh to avoid MISS
 	<LocationMatch "^/etc\.clientlibs/.*\.(?i:json|png|gif|jpe?g|svg)$">
@@ -74,7 +90,7 @@ Include conf.d/variables/custom.vars
     </LocationMatch>
 
     # Specific HTML pages: CDN cache for 10min with background refresh to avoid MISS, also incl. html requests with query parameter
-    
+
     <LocationMatch "^/content/workday-community/.*/errors/.*(\.html)$>"
       Header unset Cache-Control
       Header always set Cache-Control "max-age=120,s-maxage=600,stale-while-revalidate=43200,stale-if-error=43200"
@@ -87,8 +103,17 @@ Include conf.d/variables/custom.vars
     </LocationMatch>
 
     # Content Services/Sling Model Exporter: CDN cache for 10min with background refresh to avoid MISS on CDN
-    
- 
+
+    <LocationMatch "^/content/dam/workday-community/admin/robots.txt">
+      ForceType text/plain
+      Header unset Content-Disposition
+      Header set Content-Disposition inline
+    </LocationMatch>
+
+    <LocationMatch "^/content/dam/workday-community/en-us/images/favicon.ico">
+      Header unset Content-Disposition
+      Header set Content-Disposition inline
+    </LocationMatch>
 
 	#Test Header to identify dispatcher hit
 	<LocationMatch />

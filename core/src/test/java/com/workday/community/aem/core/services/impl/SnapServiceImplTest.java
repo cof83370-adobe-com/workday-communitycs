@@ -173,6 +173,11 @@ public class SnapServiceImplTest {
       public String snapProfileApiKey() {
         return "snapProfileApiKey";
       }
+
+      @Override
+      public String userProfileUrl() {
+        return "userProfileURL";
+      }
     };
   }
 
@@ -317,11 +322,11 @@ public class SnapServiceImplTest {
       retObj.setFileNameWithExtension("foo.png");
       retObj.setBase64content("test fdfdf");
 
-      String mockRet = objectMapper.writeValueAsString(retObj);
+      String mockRet = "test fdfdf";
 
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(mockRet);
-      ProfilePhoto photoObj = this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER);
-      assertEquals(retObj.getBase64content(), photoObj.getBase64content());
+      String photoObj = this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER);
+      assertEquals(retObj.getBase64content(), photoObj);
     }
   }
 

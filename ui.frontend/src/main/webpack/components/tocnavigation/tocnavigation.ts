@@ -41,7 +41,7 @@
                 activeIndex = Array.from(tocList).indexOf(liElement as HTMLLIElement);
                 localStorage.setItem('activeIndex', activeIndex);
                 break;
-            } else {
+            } else if (tocNav) {
                 tocNav.style.display = 'none';
             }
         }
@@ -66,6 +66,17 @@
             getActiveItem();
             const currentIndex = localStorage.getItem('activeIndex') || '0';
 
+            const tocItemLinks = document.getElementsByClassName('cmp-toc__item-link') as HTMLCollectionOf<HTMLElement>;
+
+            for (let i = 0; i < tocItemLinks.length; i++) {
+                tocItemLinks[i].addEventListener('click', function(event) {
+                    const parentElement = this.parentElement;
+                    if (parentElement.classList.contains('cmp-toc__item') && parentElement.classList.contains('active')) {
+                        event.preventDefault();
+                    }
+                });
+            }
+
             prevBtn.addEventListener('click', () => {
                 traverseLiItems(currentIndex, 'prev');
             });
@@ -73,7 +84,7 @@
             nextBtn.addEventListener('click', () => {
                 traverseLiItems(currentIndex, 'next');
             });
-        } else {
+        } else if (tocNav) {
             tocNav.style.display = 'none';
         }
     }

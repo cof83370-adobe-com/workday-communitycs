@@ -47,12 +47,8 @@ atomic-category-facet {
     }
 
     padding-left: 0 !important;
-    width: 107% !important;
-    margin-left: -$wdc-spacing-s;
-  }
-
-  &::part(show-more) {
-    margin-left: 6px !important;
+    width: 100% !important;
+    margin-left: 0;
   }
 
   &::part(search-wrapper) {
@@ -139,6 +135,8 @@ atomic-category-facet {
 
 .box-shadow atomic-facet::part(value-label), atomic-category-facet::part(value-label) {
   font-weight: 400 !important;
+  text-align: left;
+  margin-left: 16px;
 }
 
 @font-face {
@@ -617,12 +615,6 @@ atomic-sort-dropdown {
   }
 }
 
-atomic-no-results {
-  &::part(icon), &::part(no-results), &::part(search-tips), &::part(cancel-button) {
-    display: none;
-  }
-}
-
 .no-result-root {
   margin-top: -7px;
 }
@@ -970,4 +962,3 @@ atomic-search-box {
     border-radius: 40px;
   }
 }
-
