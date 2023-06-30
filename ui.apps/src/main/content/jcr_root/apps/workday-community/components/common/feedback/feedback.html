@@ -1,0 +1,40 @@
+<sly data-sly-use.clientlib="/libs/granite/sightly/templates/clientlib.html"
+   data-sly-call="${clientlib.all @categories='workday-community.feedback'}"></sly>
+<div class="feedbackComponent-container" id="container">
+<div class="button-container" id="buttonContainer">
+   <h1><span>Was this page helpful?</span></h1>
+   <span class="mybutton yes" onclick="showSuccessImage()" id="yes">Yes</span>
+   <span class="mybutton no" onclick="showFeedbackContainer()" id="no">No</span>
+</div>
+<div class="feedback-container" id="feedbackContainer" style="display: none;">
+   <div class="dropdown">
+      <span class="subText">What was the reason for your feedback?*</span>
+      <div class="dropdown-container" id="dropdowContainer">
+         <div class="dropdown-toggle" onclick="toggleDropdown()">
+            <span class="selected-option"></span>
+            <span class="toggle-arrow"></span>
+         </div>
+         <div class="dropdown-menu" id="dropdownMenu">
+            <div class="dropdown-option" onclick="selectOption('Missing Information/Additional Information Needed')">Missing Information/Additional Information Needed</div>
+            <div class="dropdown-option" onclick="selectOption('Broken Link')">Broken Link</div>
+            <div class="dropdown-option" onclick="selectOption('Clarity of Information')">Clarity of Information</div>
+            <div class="dropdown-option" onclick="selectOption('Broken or missing functionality on the page')">Broken or missing functionality on the page</div>
+            <div class="dropdown-option" onclick="selectOption('Outdated Information')">Outdated Information</div>
+            <div class="dropdown-option" onclick="selectOption('Other')">Other</div>
+         </div>
+      </div>
+   </div>
+   <div class="richtext-container">
+      <span class="subText">Tell us about why you chose the above option:</span>
+      <textarea class="richtext" id="feedbackInput" placeholder="  Please enter at least 5 characters"></textarea>
+   </div>
+   <div class="submit-button">
+      <button type="submit" onclick="submitFeedback()">Submit</button>
+      <a class="cancel-button" href="#">Cancel</a>
+   </div>
+</div>
+<div id="successContainer" style="display: none;">
+<img class="success-image" src="/content/dam/image.png" alt="Success">
+<span class="success-msg">Thank you for your feedback</span>
+<div>
+</div>
