@@ -332,33 +332,33 @@ public class SnapServiceImpl implements SnapService {
    */
   private void updateProfileInfoWithNameAndAvatar(JsonObject sfMenu, String sfId) {
     JsonElement profileElement = sfMenu.get(SnapConstants.PROFILE_KEY);
-    JsonObject profileObject = (profileElement != null && !profileElement.isJsonNull())
-        ? profileElement.getAsJsonObject()
-        : new JsonObject();
 
-    // Populate user information.
-    JsonElement contactObject = sfMenu.get(SnapConstants.USER_CONTACT_INFORMATION_KEY);
-    JsonObject contactRoleElement = (contactObject != null && !contactObject.isJsonNull())
-        ? contactObject.getAsJsonObject()
-        : null;
+    if (profileElement != null && !profileElement.isJsonNull()) {
+      JsonObject profileObject = profileElement.getAsJsonObject();
+      // Populate user information.
+      JsonElement contactObject = sfMenu.get(SnapConstants.USER_CONTACT_INFORMATION_KEY);
+      JsonObject contactRoleElement = (contactObject != null && !contactObject.isJsonNull())
+          ? contactObject.getAsJsonObject()
+          : null;
 
-    if (contactRoleElement != null && !contactRoleElement.isJsonNull()) {
-      JsonElement lastName = contactRoleElement.get(SnapConstants.LAST_NAME_KEY);
-      JsonElement firstName = contactRoleElement.get(SnapConstants.FIRST_NAME_KEY);
+      if (contactRoleElement != null && !contactRoleElement.isJsonNull()) {
+        JsonElement lastName = contactRoleElement.get(SnapConstants.LAST_NAME_KEY);
+        JsonElement firstName = contactRoleElement.get(SnapConstants.FIRST_NAME_KEY);
 
-      JsonObject userInfoObject = new JsonObject();
-      userInfoObject.addProperty(SnapConstants.LAST_NAME_KEY,
-          (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() : StringUtils.EMPTY);
-      userInfoObject.addProperty(SnapConstants.FIRST_NAME_KEY,
-          (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() : StringUtils.EMPTY);
-      userInfoObject.addProperty(SnapConstants.VIEW_PROFILE_LABEL_KEY, SnapConstants.PROFILE_BUTTON_VALUE);
-      userInfoObject.addProperty(SnapConstants.HREF_KEY, config.userProfileUrl());
-      profileObject.add(SnapConstants.USER_INFO_KEY, userInfoObject);
+        JsonObject userInfoObject = new JsonObject();
+        userInfoObject.addProperty(SnapConstants.LAST_NAME_KEY,
+            (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() : StringUtils.EMPTY);
+        userInfoObject.addProperty(SnapConstants.FIRST_NAME_KEY,
+            (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() : StringUtils.EMPTY);
+        userInfoObject.addProperty(SnapConstants.VIEW_PROFILE_LABEL_KEY, SnapConstants.PROFILE_BUTTON_VALUE);
+        userInfoObject.addProperty(SnapConstants.HREF_KEY, config.userProfileUrl());
+        profileObject.add(SnapConstants.USER_INFO_KEY, userInfoObject);
 
-      // Populate profile photo information.
-      JsonObject avatarObject = new JsonObject();
-      avatarObject.addProperty(SnapConstants.IMAGE_DATA_KEY, getUserAvatar(sfId));
-      profileObject.add(SnapConstants.AVATAR_KEY, avatarObject);
+        // Populate profile photo information.
+        JsonObject avatarObject = new JsonObject();
+        avatarObject.addProperty(SnapConstants.IMAGE_DATA_KEY, getUserAvatar(sfId));
+        profileObject.add(SnapConstants.AVATAR_KEY, avatarObject);
+      }
     }
   }
 
