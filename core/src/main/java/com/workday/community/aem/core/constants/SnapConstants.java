@@ -51,4 +51,49 @@ public interface SnapConstants {
    */
   String NSC_SUPPORTING_KEY = "nscSupporting";
 
+  /**
+   * Profile button value.
+   */
+  String PROFILE_BUTTON_VALUE = "Profile";
+
+  /**
+   * Last name key.
+   */
+  String LAST_NAME_KEY = "lastName";
+
+  /**
+   * First name key.
+   */
+  String FIRST_NAME_KEY = "firstName";
+
+  /**
+   * HREF key.
+   */
+  String HREF_KEY = "href";
+
+  /**
+   * Avatar key.
+   */
+  String AVATAR_KEY = "avatar";
+
+  /**
+   * Profile key.
+   */
+  String PROFILE_KEY = "profile";
+
+  /**
+   * Image data key.
+   */
+  String IMAGE_DATA_KEY = "data";
+
+  /**
+   * User info key.
+   */
+  String USER_INFO_KEY = "userInfo";
+
+  /**
+   * View profile label key.
+   */
+  String VIEW_PROFILE_LABEL_KEY = "viewProfileLabel";
+
 }

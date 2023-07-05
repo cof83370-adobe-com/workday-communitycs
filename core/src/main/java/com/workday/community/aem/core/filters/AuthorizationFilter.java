@@ -97,6 +97,8 @@ public class AuthorizationFilter implements Filter {
                 }
             } catch (LoginException | RepositoryException e) {
                 logger.error("---> Exception occured in AuthorizationFilter: {}.", e.getMessage());
+            } catch (Exception e) {
+                logger.error("---> General Exception in validateTheUser function: {}.", e.getMessage());
             } finally {
                 if (resourceResolver != null && resourceResolver.isLive()) {
                     resourceResolver.close();
@@ -133,6 +135,8 @@ public class AuthorizationFilter implements Filter {
             }
         } catch (RepositoryException | OurmException e) {
             logger.error("---> Exception in validateTheUser function: {}.", e.getMessage());
+        } catch (Exception e) {
+            logger.error("---> General Exception in validateTheUser function: {}.", e.getMessage());
         }
 
         return isInValid;

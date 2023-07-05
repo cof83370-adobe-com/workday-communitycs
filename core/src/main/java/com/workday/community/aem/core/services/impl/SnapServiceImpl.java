@@ -1,15 +1,13 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
+import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
-import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
@@ -73,9 +71,6 @@ public class SnapServiceImpl implements SnapService {
   /** The snap Config. */
   private SnapConfig config;
 
-  /** The ObjectMapper service. */
-  private ObjectMapper objectMapper;
-
   /** The gson service. */
   private final Gson gson = new Gson();
 
@@ -85,7 +80,6 @@ public class SnapServiceImpl implements SnapService {
   public void activate(SnapConfig config) {
     this.config = config;
     this.snapCache = new LRUCacheWithTimeout<>(config.menuCacheMax(), config.menuCacheTimeout());
-    this.objectMapper = new ObjectMapper();
     logger.info("SnapService is activated.");
   }
 
@@ -145,6 +139,9 @@ public class SnapServiceImpl implements SnapService {
         return gson.toJson(defaultMenu);
       }
 
+      // Update the user profile data from contactInformation field to userInfo field.
+      updateProfileInfoWithNameAndAvatar(sfMenu, sfId);
+
       // Need to make merge sfMenu with local cache with beta experience.
       if (config.beta()) {
         String finalMenu = this.getMergedHeaderMenu(sfMenu, defaultMenu);
@@ -183,7 +180,7 @@ public class SnapServiceImpl implements SnapService {
   }
 
   @Override
-  public ProfilePhoto getProfilePhoto(String userId) {
+  public String getProfilePhoto(String userId) {
     String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
 
     String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
@@ -193,9 +190,9 @@ public class SnapServiceImpl implements SnapService {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto(), url is {}", url);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
       if (jsonResponse != null) {
-        return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
+        return jsonResponse;
       }
-    } catch (SnapException | JsonProcessingException e) {
+    } catch (SnapException e) {
       logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
     }
     return null;
@@ -326,5 +323,62 @@ public class SnapServiceImpl implements SnapService {
     digitalData.add("org", orgProperties);
 
     return digitalData;
+  }
+
+  /**
+   * Updates the user profile data from contact information.
+   * 
+   * @param sfMenu The menu data.
+   */
+  private void updateProfileInfoWithNameAndAvatar(JsonObject sfMenu, String sfId) {
+    JsonElement profileElement = sfMenu.get(SnapConstants.PROFILE_KEY);
+
+    if (profileElement != null && !profileElement.isJsonNull()) {
+      JsonObject profileObject = profileElement.getAsJsonObject();
+      // Populate user information.
+      JsonElement contactObject = sfMenu.get(SnapConstants.USER_CONTACT_INFORMATION_KEY);
+      JsonObject contactRoleElement = (contactObject != null && !contactObject.isJsonNull())
+          ? contactObject.getAsJsonObject()
+          : null;
+
+      if (contactRoleElement != null && !contactRoleElement.isJsonNull()) {
+        JsonElement lastName = contactRoleElement.get(SnapConstants.LAST_NAME_KEY);
+        JsonElement firstName = contactRoleElement.get(SnapConstants.FIRST_NAME_KEY);
+
+        JsonObject userInfoObject = new JsonObject();
+        userInfoObject.addProperty(SnapConstants.LAST_NAME_KEY,
+            (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() : StringUtils.EMPTY);
+        userInfoObject.addProperty(SnapConstants.FIRST_NAME_KEY,
+            (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() : StringUtils.EMPTY);
+        userInfoObject.addProperty(SnapConstants.VIEW_PROFILE_LABEL_KEY, SnapConstants.PROFILE_BUTTON_VALUE);
+        userInfoObject.addProperty(SnapConstants.HREF_KEY, config.userProfileUrl());
+        profileObject.add(SnapConstants.USER_INFO_KEY, userInfoObject);
+
+        // Populate profile photo information.
+        JsonObject avatarObject = new JsonObject();
+        avatarObject.addProperty(SnapConstants.IMAGE_DATA_KEY, getUserAvatar(sfId));
+        profileObject.add(SnapConstants.AVATAR_KEY, avatarObject);
+      }
+    }
+  }
+
+  /**
+   * Gets the user avatar data
+   * 
+   * @param sfId SFID
+   * @return image data as string
+   */
+  private String getUserAvatar(String sfId) {
+    String content = getProfilePhoto(sfId);
+
+    if (StringUtils.isNotBlank(content)) {
+      if (content.contains("data:image/")) {
+        return content;
+      }
+      return "data:image/base64," + content;
+    }
+
+    logger.error("getUserAvatar method returns null.");
+    return "";
   }
 }
