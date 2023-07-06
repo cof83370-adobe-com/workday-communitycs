@@ -1,7 +1,7 @@
 (function() {
     function showFeedbackContainer() {
-        var no = document.getElementById('no');
-        var yes = document.getElementById('yes');
+        var no = document.getElementById('feedbackNoButtonId');
+        var yes = document.getElementById('feedbackYesButtonId');
         var feedbackContainer = document.getElementById('feedbackContainer');
         var container = document.getElementById('container');
         var buttonContainer = document.getElementById('buttonContainer');
@@ -29,8 +29,8 @@
     }
 
     function showSuccessImage() {
-        var yes = document.getElementById('yes');
-        var no = document.getElementById('no');
+        var yes = document.getElementById('feedbackYesButtonId');
+        var no = document.getElementById('feedbackNoButtonId');
         var feedbackContainer = document.getElementById('feedbackContainer');
         var container = document.getElementById('container');
         var buttonContainer = document.getElementById('buttonContainer');
@@ -72,9 +72,9 @@
     function toggleButtonColor(button) {
         button.classList.toggle('clicked');
     }
-    var yesButton = document.getElementById('yes');
-    var noButton = document.getElementById('no');
-    var submitButton = document.querySelector('.submit-button button');
+    var yesButton = document.getElementById('feedbackYesButtonId');
+    var noButton = document.getElementById('feedbackNoButtonId');
+    var submitButton = document.querySelector('.feedback-form-submit-button button');
     var dropdownToggle = document.querySelector('.dropdown-toggle');
     yesButton.addEventListener('click', showSuccessImage);
     noButton.addEventListener('click', showFeedbackContainer);
