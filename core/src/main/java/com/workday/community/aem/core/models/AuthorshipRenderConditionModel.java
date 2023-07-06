@@ -62,8 +62,10 @@ public class AuthorshipRenderConditionModel {
             Iterator<Group> groups = requireNonNull(auth).memberOf();
             while (groups.hasNext()) {
                 Group g = groups.next();
-                if (editGroups.contains(g.getID())) {
-                    allowed = true;
+                for (String groupStr : editGroups) {
+                    if (g.getID().startsWith(groupStr)) {
+                        allowed = true;
+                    }
                 }
             }
         } catch (RepositoryException e) {
