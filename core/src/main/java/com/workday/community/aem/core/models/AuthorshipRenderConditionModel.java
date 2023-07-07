@@ -60,10 +60,13 @@ public class AuthorshipRenderConditionModel {
         try {
             auth = requireNonNull(userManager).getAuthorizable(userId);
             Iterator<Group> groups = requireNonNull(auth).memberOf();
-            while (groups.hasNext()) {
+            while (groups.hasNext() && !allowed) {
                 Group g = groups.next();
-                if (editGroups.contains(g.getID())) {
-                    allowed = true;
+                for (String groupStr : editGroups) {
+                    if (g.getID().startsWith(groupStr)) {
+                        allowed = true;
+                        break;
+                    }
                 }
             }
         } catch (RepositoryException e) {
