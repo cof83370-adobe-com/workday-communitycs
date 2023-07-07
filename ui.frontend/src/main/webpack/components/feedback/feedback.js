@@ -2,11 +2,11 @@
     function showFeedbackContainer() {
         var no = document.getElementById('feedbackNoButtonId');
         var yes = document.getElementById('feedbackYesButtonId');
-        var feedbackContainer = document.getElementById('feedbackContainer');
-        var container = document.getElementById('container');
-        var buttonContainer = document.getElementById('buttonContainer');
-        var dropdowContainer = document.getElementById('dropdowContainer');
-        var successImage = document.getElementById('successContainer');
+        var feedbackContainer = document.getElementById('feedback-form-Container');
+        var container = document.getElementById('feedback-component-container');
+        var buttonContainer = document.getElementById('feedback-buttonContainer');
+        var dropdowContainer = document.getElementById('feedback-dropdownContainer');
+        var successImage = document.getElementById('feedback-successContainer');
         no.classList.toggle('clicked');
         if (yes.classList.contains('clicked')) {
             yes.classList.remove('clicked');
@@ -31,10 +31,10 @@
     function showSuccessImage() {
         var yes = document.getElementById('feedbackYesButtonId');
         var no = document.getElementById('feedbackNoButtonId');
-        var feedbackContainer = document.getElementById('feedbackContainer');
-        var container = document.getElementById('container');
-        var buttonContainer = document.getElementById('buttonContainer');
-        var successImage = document.getElementById('successContainer');
+        var feedbackContainer = document.getElementById('feedback-form-Container');
+        var container = document.getElementById('feedback-component-container');
+        var buttonContainer = document.getElementById('feedback-buttonContainer');
+        var successImage = document.getElementById('feedback-successContainer');
         yes.classList.toggle('clicked');
         if (no.classList.contains('clicked')) {
             no.classList.remove('clicked');
@@ -55,16 +55,16 @@
     }
 
     function toggleDropdown() {
-        var dropdownToggle = document.querySelector('.dropdown-toggle');
-        var dropdownMenu = document.getElementById('dropdownMenu');
-        var dropdowContainer = document.getElementById('dropdowContainer');
+        var dropdownToggle = document.querySelector('.feedback-option-dropdown-toggle');
+        var dropdownMenu = document.getElementById('feedback-component-dropdownMenu');
+        var dropdowContainer = document.getElementById('feedback-dropdownContainer');
         dropdownToggle.classList.toggle('clicked');
         dropdownMenu.classList.toggle('open');
         dropdowContainer.style.border = '2px solid #0875E1';
     }
 
     function selectOption(option) {
-        var selectedOption = document.querySelector('.selected-option');
+        var selectedOption = document.querySelector('.feedback-dropdown-selected-option');
         selectedOption.textContent = option;
         toggleDropdown();
     }
@@ -75,12 +75,12 @@
     var yesButton = document.getElementById('feedbackYesButtonId');
     var noButton = document.getElementById('feedbackNoButtonId');
     var submitButton = document.querySelector('.feedback-form-submit-button button');
-    var dropdownToggle = document.querySelector('.dropdown-toggle');
+    var dropdownToggle = document.querySelector('.feedback-option-dropdown-toggle');
     yesButton.addEventListener('click', showSuccessImage);
     noButton.addEventListener('click', showFeedbackContainer);
     dropdownToggle.addEventListener('click', toggleDropdown);
 
-    var dropdownOptions = document.querySelectorAll('.dropdown-option');
+    var dropdownOptions = document.querySelectorAll('.feedback-dropdown-option');
     dropdownOptions.forEach(function(option) {
         option.addEventListener('click', function() {
             var optionText = option.textContent;
