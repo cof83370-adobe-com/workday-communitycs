@@ -213,10 +213,10 @@
             color: $wdc-color-blueberry-400;
         }
     }
-}
 
-.curated_block.no-border {
-    border: none;
+    &.no-border {
+        border: none;
+    }
 }
 
 .cmp-link__screen-reader-only {
