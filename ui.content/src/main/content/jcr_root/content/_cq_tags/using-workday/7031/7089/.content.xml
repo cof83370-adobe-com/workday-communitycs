@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0"
     jcr:primaryType="cq:Tag"
-    jcr:title="Financials"
+    jcr:title="Settlement"
     sling:resourceType="cq/tagging/components/tag">
-    <_x0037_080/>
-    <_x0037_082/>
-    <_x0037_083/>
-    <_x0037_084/>
-    <_x0037_085/>
-    <_x0037_086/>
-    <_x0037_087/>
-    <_x0037_088/>
-    <_x0037_089/>
+    <_x0037_314/>
+    <_x0037_315/>
+    <_x0037_316/>
+    <_x0037_317/>
+    <_x0037_318/>
 </jcr:root>
