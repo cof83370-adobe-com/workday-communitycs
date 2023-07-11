@@ -15,7 +15,10 @@ $include "./default_filters.any"
 # Allow manifest.webmanifest files located in the content
 /0102 { /type "allow" /extension "webmanifest" /path "/content/*/manifest" }
 
-#Enable Registration Servlet
+#Witty Zebra fix - July 6th
+/0105 { /type "deny" /method "GET" /url "/content/[.]*.form" /extension "pdf" }
+/0106 { /type "deny" /suffix "*login*" }
+/0107 { /type "deny" /suffix "*truststore*" }
 
 
 #Enable DAM Access
@@ -31,3 +34,9 @@ $include "./default_filters.any"
 
 #Enable Settings Page MultiFactor Authentication Servlet
 /0126 { /type "allow" /method "POST" /path "/bin/multifactorauthentication" }
+
+# Enable logout
+/0128 { /type "allow" /method "GET" /url "/bin/user/logout" }  # allow bin path access
+
+# Enable token generation used by Coveo search
+/0130 { /type "allow" /method "GET" /url "/bin/search/token" }  # allow bin path access
