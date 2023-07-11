@@ -6,20 +6,18 @@
 								<li class="cmp-image-link__item">
 									<sly data-sly-test="${imagelink.fileReference}">
 										<div class="cmp-image-link-image-content">
-												<div class="cmp-image-link-image">
-													<img src="${imagelink.fileReference}" alt="${imagelink.alttext || true}"
+													<img src="${imagelink.fileReference}" alt="${imagelink.imgalttext || true}"
 														class="cmp-image-link-imagesrc" />
-												</div>
 										</div>	
 									</sly>	
 									<sly data-sly-test="${imagelink.pagepath}">
 										<a class="cmp-image-link__item-link" target="${imagelink.newTab}"
 										href="${imagelink.pagepath}${rootpathInfo.rootPath in  imagelink.pagepath ? '.html' : ''}"><span
-											class="cmp-image-link__item-title">${imagelink.linktitle @ context='html'}</span></a>
+											class="cmp-image-link__item-title">${imagelink.linktext @ context='html'}</span></a>
 									</sly>
 									<sly data-sly-test="${!imagelink.pagepath}">
 										<span
-											class="cmp-image-link__item-title">${imagelink.linktitle @ context='html'}</span>
+											class="cmp-image-link__item-title">${imagelink.linktext @ context='html'}</span>
 									</sly>
 								</li>
 							</ul>
