@@ -1,10 +1,9 @@
 (function() {
     function showFeedbackContainer() {
+
         var no = document.getElementById('feedbackNoButtonId');
         var yes = document.getElementById('feedbackYesButtonId');
         var feedbackContainer = document.getElementById('feedback-form-Container');
-        var container = document.getElementById('feedback-component-container');
-        var buttonContainer = document.getElementById('feedback-buttonContainer');
         var dropdowContainer = document.getElementById('feedback-dropdownContainer');
         var successImage = document.getElementById('feedback-successContainer');
         no.classList.toggle('clicked');
@@ -13,16 +12,9 @@
         }
         if (feedbackContainer.style.display === 'none') {
             feedbackContainer.style.display = 'block';
-            container.style.height = '337px';
-            buttonContainer.style.marginTop = '17px';
-            buttonContainer.style.marginLeft = '-8px';
-            buttonContainer.style.height = '40px';
             successImage.style.display = 'none';
         } else {
             feedbackContainer.style.display = 'none';
-            container.style.height = '80px';
-            buttonContainer.style.marginTop = '0px';
-            buttonContainer.style.height = '80px';
             dropdowContainer.style.border = '1px solid #78858F';
             successImage.style.display = 'none';
         }
@@ -32,8 +24,6 @@
         var yes = document.getElementById('feedbackYesButtonId');
         var no = document.getElementById('feedbackNoButtonId');
         var feedbackContainer = document.getElementById('feedback-form-Container');
-        var container = document.getElementById('feedback-component-container');
-        var buttonContainer = document.getElementById('feedback-buttonContainer');
         var successImage = document.getElementById('feedback-successContainer');
         yes.classList.toggle('clicked');
         if (no.classList.contains('clicked')) {
@@ -41,15 +31,9 @@
         }
         if (successImage.style.display === 'none') {
             successImage.style.display = 'grid';
-            container.style.height = '337px';
-            buttonContainer.style.marginTop = '17px';
-            buttonContainer.style.height = '40px';
             feedbackContainer.style.display = 'none';
         } else {
             feedbackContainer.style.display = 'none';
-            container.style.height = '80px';
-            buttonContainer.style.marginTop = '0px';
-            buttonContainer.style.height = '80px';
             successImage.style.display = 'none';
         }
     }
@@ -72,6 +56,16 @@
     function toggleButtonColor(button) {
         button.classList.toggle('clicked');
     }
+	
+
+  
+
+  
+
+
+
+	
+	
     var yesButton = document.getElementById('feedbackYesButtonId');
     var noButton = document.getElementById('feedbackNoButtonId');
     var submitButton = document.querySelector('.feedback-form-submit-button button');
