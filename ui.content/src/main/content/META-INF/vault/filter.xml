@@ -20,5 +20,7 @@
     <filter root="/content/cq:tags/asset-type" mode="merge"/>
     <filter root="/content/cq:tags/access-control" mode="merge"/>
     <filter root="/content/cq:tags/content-types" mode="merge"/>
+    <filter root="/content/cq:tags/customer-center" mode="merge"/>
+    <filter root="/content/cq:tags/khoros" mode="merge"/>
     <filter root="/content/experience-fragments/workday-community" mode="merge"/>
 </workspaceFilter>
