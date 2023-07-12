@@ -87,7 +87,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
        }
     }
 
-    return selectedFields.isEmpty()? allFields : selectedFields;
+    return selectedFields;
   }
 
 

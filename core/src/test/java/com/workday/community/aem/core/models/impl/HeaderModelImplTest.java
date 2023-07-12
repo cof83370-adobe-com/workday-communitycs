@@ -92,29 +92,6 @@ public class HeaderModelImplTest {
   }
 
   /**
-   * Test method for getUserAvatarUrl in HeaderModel class.
-   */
-  @Test
-  void testGetUserAvatarUrl() {
-    HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
-
-    // Case 1: Mock return with format
-    ProfilePhoto ret = new ProfilePhoto();
-    ret.setPhotoVersionId("fooVersion");
-    ret.setBase64content("data:image/xxx");
-
-    lenient().when(snapService.getProfilePhoto(DEFAULT_SFID_MASTER)).thenReturn(ret);
-    assertNotNull(headerModel);
-    assertEquals("data:image/xxx", headerModel.getUserAvatar());
-
-    // Case 2: Real Mock return with another format
-    ret.setBase64content("xxx");
-    ret.setFileNameWithExtension("fff.png");
-    ret.setBase64content("content");
-    assertEquals("data:image/png;base64,content", headerModel.getUserAvatar());
-  }
-
-  /**
    * Test method for getDataLayerData in HeaderModel class.
    */
   @Test

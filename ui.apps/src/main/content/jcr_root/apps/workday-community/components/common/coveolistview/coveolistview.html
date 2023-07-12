@@ -7,7 +7,9 @@
     <atomic-layout-section section="facets" class="facet-section">
       <span class="facet-header">Refine By</span>
       <atomic-facet-manager data-sly-list.facet="${coveo.categories}">
-        <atomic-category-facet field="${facet.field}" label="${facet.searchHelpText}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|"></atomic-category-facet>
+        <span id="facet-${facetList.index}">
+          <atomic-category-facet field="${facet.field}" label="${facet.searchHelpText}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric"></atomic-category-facet>
+        </span>
       </atomic-facet-manager>
     </atomic-layout-section>
     <atomic-layout-section section="main">
@@ -35,7 +37,45 @@
       </atomic-layout-section>
       <atomic-layout-section section="results">
         <atomic-query-error></atomic-query-error>
-        <atomic-no-results>No results found.</atomic-no-results>
+        <atomic-no-results enable-cancel-last-action="true">
+          <style>
+            atomic-no-results::part(cancel-button) {
+              font-family: "Roboto","Helvetica Neue","Helvetica",Arial,sans-serif;
+              font-size: 0.875rem;
+              line-height: normal;
+              letter-spacing: 0.015rem;
+              font-weight: 700;
+              cursor: pointer;
+              display: -ms-inline-flexbox;
+              display: inline-flex;
+              -webkit-box-align: center;
+              -ms-flex-align: center;
+              align-items: center;
+              -webkit-box-pack: center;
+              -ms-flex-pack: center;
+              justify-content: center;
+              box-shadow: none;
+              outline: none;
+              white-space: nowrap;
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
+              border-radius: 999px;
+              position: relative;
+              vertical-align: middle;
+              overflow: hidden;
+              border: 1px solid transparent;
+              transition: box-shadow 120ms linear,border 120ms linear,background-color 120ms linear,color 120ms linear;
+              height: 40px;
+              background-color: #0875e1;
+              color: #ffffff;
+              box-sizing: border-box;
+              min-width: 96px;
+              padding: 0 24px;
+              -webkit-text-decoration: none;
+              text-decoration: none;
+            }
+          </style>
+        </atomic-no-results>
         <atomic-result-list>
           <atomic-result-template>
             <template>
@@ -91,8 +131,12 @@
                   max-height: 100% !important;
                 }
                 .result-root.with-sections.display-list.density-normal
+                atomic-result-section-bottom-metadata {
+                  padding-top: 16px;
+                }
+                .result-root.with-sections.display-list.density-normal
                 atomic-result-section-bottom-metadata.second-row {
-                  padding-top: 30px;
+                  padding-top: 60px;
                 }
                 .result-root.with-sections.display-list.density-normal
                 atomic-result-section-bottom-metadata.second-row li{
@@ -161,12 +205,10 @@
               <atomic-result-section-excerpt>
                 <atomic-result-text field="excerpt"></atomic-result-text>
               </atomic-result-section-excerpt>
-              <atomic-result-section-bottom-metadata class="hydrated" data-sly-test="${properties.displayMetadata}">
+              <atomic-result-section-bottom-metadata class="hydrated first-row" data-sly-test="${properties.displayMetadata}">
                 <atomic-result-fields-list class="hydrated">
                   <atomic-field-condition class="field hydrated" if-defined="author" must-not-match-commoncontenttype="Group"><!---->
-                    <atomic-result-link class="atomic-result-link-metadata hydrated" href-template="${raw.com_author_profile_path}" target="_blank" data-atomic-rendered="true" data-atomic-loaded="true"><!----><a href="https://resourcecenter.workday.com/en-us/wrc/public-profile.html?id=66778" target="_blank">
-                      <atomic-result-text field="author" data-atomic-rendered="true" data-atomic-loaded="true" should-highlight="" class="hydrated"></atomic-result-text></a>
-                    </atomic-result-link>
+                    <atomic-result-text field="author" data-atomic-rendered="true" data-atomic-loaded="true" should-highlight="" class="hydrated"></atomic-result-text>
                   </atomic-field-condition>
                   <atomic-field-condition class="field hydrated" if-defined="commonmodifieddate" must-not-match-commoncontenttype="Group"><!---->
                     <span class="field"><atomic-text value="Updated" data-atomic-rendered="true" data-atomic-loaded="true" class="hydrated"></atomic-text>&nbsp;</span>
@@ -237,6 +279,25 @@
       engine.dispatch(action);
     }
   };
+  function waitForElementToDisplay(elmCallback, callback, checkFrequencyInMs = 100, timeoutInMs = 50000) {
+    let startTimeInMs = Date.now();
+    let timeOutHandler;
+    (function loopSearch() {
+      let elem = elmCallback();
+      if (elem) {
+        clearTimeout(timeOutHandler);
+        callback(elem);
+      } else {
+        timeOutHandler = setTimeout(function () {
+          if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs) {
+            clearTimeout(timeOutHandler);
+            return;
+          }
+          loopSearch();
+        }, checkFrequencyInMs);
+      }
+    })();
+  }
 
   document.addEventListener('DOMContentLoaded', () => {
     const main = async () => {
@@ -275,6 +336,27 @@
       };
       searchInterface.executeFirstSearch();
     };
-    main().then(() => {});
+    main().then(() => {
+      waitForElementToDisplay(
+        () => document.getElementsByTagName('atomic-category-facet'),
+        (elems) => {
+          waitForElementToDisplay(
+            () => {
+              for (let i = 0; i < elems.length; i++) {
+                const inputField = elems[i].shadowRoot.querySelector('input');
+                if (!inputField) return false;
+              }
+              return true;
+            },
+            (visible) => {
+              if (visible) {
+                for (let i = 0; i < elems.length; i++) {
+                  const inputField = elems[i].shadowRoot.querySelector('input');
+                  inputField.placeholder = `Find a ` +  elems[i].shadowRoot.querySelector('button div').innerText;
+                }
+              }
+            })
+        })
+    });
   });
 </script>
