@@ -2,5 +2,5 @@
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0"
     cq:isContainer="{Boolean}true"
     jcr:primaryType="cq:Component"
-    jcr:title="Feedback Component"
+    jcr:title="Feedback"
     componentGroup="Workday Community Site - Content"/>
