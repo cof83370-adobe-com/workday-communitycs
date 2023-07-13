@@ -8,14 +8,16 @@
   box-sizing: border-box;
   h1 {
     span {
-      width: 100%;
-      color: $wdc-color-black-pepper-400;
+	  color: $wdc-color-black-pepper-400;
       display: flex;
       margin-left: 32px;
       font-weight: 700;
       font-size: 20px;
       padding: 6px 0px 6px 0px;
     }
+  }
+  h1 {
+	  width: 100%;
   }
   .feedback-button-container {
     display: flex;
@@ -136,15 +138,16 @@
   .feedback-success-image {
     height: 76px;
     width: 76px;
-    margin-top: 66px;
   }
   .feedback-success-msg {
     height: 24px;
     font-weight: 700;
     font-size: 18px;
-    text-align: center;
   }
   .successContainer {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     height: 278px;
   }
   @media (max-width: 480px) {
@@ -154,16 +157,13 @@
   }
   .buttonStyle {
     gap: 24px;
-    margin: 0px 5% 0px 55%;
+    margin: 0px 5% 0px 20%;
     display: flex;
-  }
-  @media (max-width: 995px) {
-    .buttonStyle {
-      margin: 0px 5% 0px 45%;
-    }
   }
   .subText {
     display: flex;
     margin-bottom: 5px;
   }
 }
+
+

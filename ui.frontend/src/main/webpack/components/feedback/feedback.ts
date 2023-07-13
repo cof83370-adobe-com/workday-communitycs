@@ -29,7 +29,7 @@
             no.classList.remove('clicked');
         }
         if (successImage.style.display === 'none') {
-            successImage.style.display = 'grid';
+            successImage.style.display = 'flex';
             feedbackContainer.style.display = 'none';
         } else {
             feedbackContainer.style.display = 'none';
