@@ -8,26 +8,6 @@ $include "./default_rules.any"
 
 /0100 {
 	/glob "/content/workday-community[./]*"
-	/type "deny"
-}
-
-/0101 {
-	/glob "/content/workday-community/en-us/learn/*"
-	/type "allow"
-}
-
-/0102 {
-	/glob "/content/workday-community/en-us/products/*"
-	/type "allow"
-}
-
-/0103 {
-	/glob "/content/workday-community/en-us/get-help/*"
-	/type "allow"
-}
-
-/0104 {
-	/glob "/content/workday-community/en-us/errors/*"
 	/type "allow"
 }
 

@@ -11,6 +11,7 @@ import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
+import com.workday.community.aem.core.utils.PageUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
@@ -36,7 +37,8 @@ import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_AC
 import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.NSC_SUPPORTING_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
-
+import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
+import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_TAG;
 /**
  * The Class UserGroupServiceImpl.
  */
@@ -146,6 +148,39 @@ public class UserGroupServiceImpl implements UserGroupService {
         return groupIds;
     }
 
+    /**
+     * Validates the user based on Roles tagged to the page and User roles from Salesforce.
+     *
+     * @param resourceResolver: the Request resource Resolver
+     * @param requestResourceResolver: the Request resource Resolver
+     * @param pagePath : The Requested page path.
+     * @return boolean: True if user has permissions otherwise false.
+     * @throws LoginException
+     */
+    public  boolean validateTheUser(ResourceResolver resourceResolver, ResourceResolver requestResourceResolver,String pagePath) {
+        logger.debug(" inside validateTheUser method. -->");
+        boolean isInValid = true;
+        try{
+            logger.debug("---> UserGroupServiceImpl: Before Access control tag List");
+            List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(resourceResolver, pagePath, ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
+            logger.debug("---> UserGroupServiceImpl: After Access control tag List");
+            if (!accessControlTagsList.isEmpty()) {
+                logger.debug("---> UserGroupServiceImpl:Access control tag List.. {}.", accessControlTagsList);
+                if (accessControlTagsList.contains(AUTHENTICATED)) {
+                    isInValid = false;
+                } else {
+                    List<String> groupsList = getLoggedInUsersGroups(requestResourceResolver);
+                    logger.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
+                    if (!Collections.disjoint(accessControlTagsList, groupsList)) {
+                        isInValid = false;
+                    }
+                }
+            }
+        } catch (RepositoryException  | OurmException e) {
+            logger.error("---> Exception in validateTheUser function: {}.", e.getMessage());
+        }
+        return isInValid;
+    }
 
     /**
      * Get user groups from API.

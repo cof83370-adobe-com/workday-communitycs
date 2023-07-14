@@ -2,11 +2,9 @@ package com.workday.community.aem.core.filters;
 
 import com.day.cq.wcm.api.constants.NameConstants;
 import com.workday.community.aem.core.constants.WccConstants;
-import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
-import com.workday.community.aem.core.utils.PageUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -24,9 +22,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.servlet.*;
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static com.workday.community.aem.core.constants.WccConstants.*;
@@ -72,6 +69,7 @@ public class AuthorizationFilter implements Filter {
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
         String pagePath = slingRequest.getRequestPathInfo().getResourcePath();
         logger.debug("Request for {}, with selector {}.", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
+        logger.debug("AuthorizationFilter: Time before validating the user is {}.", new Date().getTime());
         if (oktaService.isOktaIntegrationEnabled() && pagePath.contains(WORKDAY_ROOT_PAGE_PATH) &&
                 !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT)) {
             Map<String, Object> serviceParams = new HashMap<>();
@@ -90,7 +88,7 @@ public class AuthorizationFilter implements Filter {
                 resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
                 User user = userService.getUser(resourceResolver, userId);
                 if (null != user && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
-                    isInValid = validateTheUser(resourceResolver, requestResourceResolver, pagePath);
+                    isInValid = userGroupService.validateTheUser(resourceResolver, requestResourceResolver, pagePath);
                 }
                 if (isInValid) {
                     ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
@@ -105,42 +103,10 @@ public class AuthorizationFilter implements Filter {
                 }
             }
         }
+        logger.debug("AuthorizationFilter:Time after validating the user  is {}.", new Date().getTime());
         filterChain.doFilter(request, response);
     }
 
-    /**
-     * Validates the user based on Roles tagged to the page and User roles from Salesforce.
-     *
-     * @param pagePath : The Requested page path.
-     * @return boolean: True if user has permissions otherwise false.
-     */
-    private boolean validateTheUser(ResourceResolver resourceResolver,
-                                    ResourceResolver requestResourceResolver,
-                                    String pagePath) {
-        logger.debug(" inside validateTheUser method. -->");
-        boolean isInValid = true;
-        try {
-            List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(resourceResolver, pagePath, ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
-            if (!accessControlTagsList.isEmpty()) {
-                logger.debug("---> Access control tag List.. {}.", accessControlTagsList);
-                if (accessControlTagsList.contains(AUTHENTICATED)) {
-                    isInValid = false;
-                } else {
-                    List<String> groupsList = userGroupService.getLoggedInUsersGroups(requestResourceResolver);
-                    logger.debug("---> Groups List..{}.", groupsList);
-                    if (!Collections.disjoint(accessControlTagsList, groupsList)) {
-                        isInValid = false;
-                    }
-                }
-            }
-        } catch (RepositoryException | OurmException e) {
-            logger.error("---> Exception in validateTheUser function: {}.", e.getMessage());
-        } catch (Exception e) {
-            logger.error("---> General Exception in validateTheUser function: {}.", e.getMessage());
-        }
-
-        return isInValid;
-    }
 
     @Override
     public void destroy() {
