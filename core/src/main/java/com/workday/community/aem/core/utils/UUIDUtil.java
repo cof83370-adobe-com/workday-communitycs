@@ -12,6 +12,11 @@ public class UUIDUtil {
 
   private static final UUID NAMESPACE_URL = UUID.fromString("6ba7b811-9dad-11d1-80b4-00c04fd430c8");
 
+  /**
+   * Generate user's client id in default namespace with given email address.
+   * @param email The pass-in user's email address as string
+   * @return the user's client id as UUID.
+   */
   public static UUID getUserClientId(String email) {
 
     byte[] name = Objects.requireNonNull(email, "name == null").getBytes(UTF8);

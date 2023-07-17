@@ -67,6 +67,13 @@ public class OurmUtils {
     return sfId;
   }
 
+  /**
+   * Return user's email given user's salesforceId.
+   * @param sfId User's Salesforce id.
+   * @param searchApiConfigService Pass-in SearchApiConfigService object.
+   * @param snapService  Pass-in snapService object
+   * @return the user's email address.
+   */
   public static String getUserEmail(
       String sfId, SearchApiConfigService searchApiConfigService, SnapService snapService
   ) {
