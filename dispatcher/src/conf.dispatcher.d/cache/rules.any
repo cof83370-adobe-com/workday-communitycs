@@ -6,8 +6,9 @@
 
 $include "./default_rules.any"
 
-/0100 {
-	/glob "/content/workday-community[./]*"
+
+/0101 {
+	/glob "/content/workday-community/en-us/*"
 	/type "allow"
 }
 

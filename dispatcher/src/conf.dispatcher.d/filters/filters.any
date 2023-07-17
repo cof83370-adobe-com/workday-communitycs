@@ -36,10 +36,12 @@ $include "./default_filters.any"
 /0126 { /type "allow" /method "POST" /path "/bin/multifactorauthentication" }
 
 #Enable Auth check Servlet
-/0127 { /type "allow" /method "HEAD" /path "/bin/workday/community/authcheck" }
+/0127 { /type "allow" /method "HEAD" /url "/bin/workday/community/authcheck" }
 
 # Enable logout
 /0128 { /type "allow" /method "GET" /url "/bin/user/logout" }  # allow bin path access
 
 # Enable token generation used by Coveo search
 /0130 { /type "allow" /method "GET" /url "/bin/search/token" }  # allow bin path access
+
+/0200 { /type "allow" /method '(GET|HEAD)' /url "/content/workday-community/*" }
