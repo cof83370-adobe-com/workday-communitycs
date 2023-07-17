@@ -1,8 +1,11 @@
 package com.workday.community.aem.core.utils;
 
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.OurmException;
 
+import com.workday.community.aem.core.services.SearchApiConfigService;
+import com.workday.community.aem.core.services.SnapService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -14,6 +17,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 
+import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 
 /**
@@ -23,7 +27,7 @@ public class OurmUtils {
   private final static Logger LOGGER = LoggerFactory.getLogger(OurmUtils.class);
 
   /**
-   * Get the Salesforce id.
+   * Get the user's Salesforce id.
    *
    * @param resourceResolver the Resource Resolver object
    * @return the Salesforce id from the session.
@@ -61,5 +65,14 @@ public class OurmUtils {
     }
 
     return sfId;
+  }
+
+  public static String getUserEmail(
+      String sfId, SearchApiConfigService searchApiConfigService, SnapService snapService
+  ) {
+    boolean isDevMode = searchApiConfigService.isDevMode();
+    JsonObject userContext = snapService.getUserContext(sfId);
+    return userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
+        : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
   }
 }

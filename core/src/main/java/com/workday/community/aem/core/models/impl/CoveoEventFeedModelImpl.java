@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
+import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.DamUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
+import static com.workday.community.aem.core.utils.CoveoUtils.getCurrentUserClientId;
 import static java.util.Objects.*;
 
 /**
@@ -60,8 +62,17 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   @ValueMapValue
   private String featuredEvent;
 
+  /**
+   * SearchConfig service object.
+   */
   @OSGiService
   private SearchApiConfigService searchConfigService;
+
+  /**
+   * The snap service object.
+   */
+  @OSGiService
+  private SnapService snapService;
 
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
@@ -75,6 +86,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
     config.addProperty("orgId", searchConfigService.getOrgId());
     config.addProperty("searchHub", searchConfigService.getSearchHub());
     config.addProperty("analytics", true);
+    config.addProperty("clientId", getCurrentUserClientId(this.request, this.searchConfigService, this.snapService));
 
     return config;
   }

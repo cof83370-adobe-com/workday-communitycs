@@ -93,6 +93,11 @@ public class CoveoUtils {
 
       Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", searchApiConfigService.isDevMode());
+
+      //Add coveo_visitorId cookie
+      Cookie visitIdCookie = new Cookie("coveo_visitorId",
+          CoveoUtils.getCurrentUserClientId(request, searchApiConfigService, snapService));
+      HttpUtils.addCookie(visitIdCookie, response);
       servletCallback.execute(request, response, coveoInfo);
     }
   }
@@ -156,4 +161,11 @@ public class CoveoUtils {
 
     return jsonObj.toString();
   }
+
+  public static String getCurrentUserClientId(SlingHttpServletRequest request, SearchApiConfigService searchConfigService, SnapService snapService) {
+    String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+    String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
+    return UUIDUtil.getUserClientId(email).toString();
+  }
+
 }
