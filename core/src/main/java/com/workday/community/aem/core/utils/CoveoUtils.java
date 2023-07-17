@@ -134,9 +134,8 @@ public class CoveoUtils {
     return "";
   }
 
-  private static String getTokenPayload(SearchApiConfigService searchApiConfigService,
-                                       Gson gson,
-                                       String email) {
+  private static String getTokenPayload(
+      SearchApiConfigService searchApiConfigService, Gson gson, String email) {
     HashMap<String, String> userMap = new HashMap<>();
     HashMap<String, Object> payloadMap = new HashMap<>();
 
@@ -162,7 +161,15 @@ public class CoveoUtils {
     return jsonObj.toString();
   }
 
-  public static String getCurrentUserClientId(SlingHttpServletRequest request, SearchApiConfigService searchConfigService, SnapService snapService) {
+  /**
+   * Return the current user's client id.
+   * @param request Pass-in request object.
+   * @param searchConfigService Pass-in searchConfigService object.
+   * @param snapService Pass-in snapService object.
+   * @return the current user's client id as string.
+   */
+  public static String getCurrentUserClientId(
+      SlingHttpServletRequest request, SearchApiConfigService searchConfigService, SnapService snapService) {
     String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
     String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
     return UUIDUtil.getUserClientId(email).toString();
