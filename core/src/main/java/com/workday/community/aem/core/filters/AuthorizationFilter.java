@@ -39,7 +39,7 @@ import static com.workday.community.aem.core.constants.WccConstants.*;
                 Constants.SERVICE_RANKING + ":Integer=1",
                 EngineConstants.SLING_FILTER_SCOPE + "=" + EngineConstants.FILTER_SCOPE_REQUEST,
                 EngineConstants.SLING_FILTER_RESOURCETYPES + "=" + NameConstants.NT_PAGE,
-                EngineConstants.SLING_FILTER_PATTERN + "=/content/workday-xxxxcommunity/(.*)",
+                EngineConstants.SLING_FILTER_PATTERN + "=/content/workday-community/(.*)",
                 EngineConstants.SLING_FILTER_EXTENSIONS + "=html"
         })
 public class AuthorizationFilter implements Filter {
