@@ -1,22 +1,14 @@
 package com.workday.community.aem.core.models;
-import com.google.gson.JsonObject;
 
 import java.util.List;
 
 /**
  * Interface for coveo list view model.
  */
-public interface CoveoListViewModel {
+public interface CoveoListViewModel extends CoveoCommonModel {
     /**
      * Category facet.
-     * @return
+     * @return The selected Categories.
      */
     List<CategoryFacetModel> getCategories();
-
-    /**
-     * Returns search config.
-     *
-     * @return
-     */
-    JsonObject getSearchConfig();
 }

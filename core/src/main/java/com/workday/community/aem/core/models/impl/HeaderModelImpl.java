@@ -4,7 +4,6 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
 import com.workday.community.aem.core.models.HeaderModel;
-import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;

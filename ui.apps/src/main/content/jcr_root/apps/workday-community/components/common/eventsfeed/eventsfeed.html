@@ -257,6 +257,10 @@
                     });
 
                     registerFields(searchInterface.engine);
+                    if (search_config['clientId']) {
+                        localStorage.setItem('visitorId', search_config['clientId']);
+                    }
+
                     searchInterface.executeFirstSearch();
                 }
 

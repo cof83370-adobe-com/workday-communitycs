@@ -441,6 +441,9 @@
                     });
 
                     const engine = searchInterface.engine;
+                    if (search_config['clientId']) {
+                      localStorage.setItem('visitorId', search_config['clientId']);
+                    }
 
                     setContext(engine);
                     registerFields(engine);
