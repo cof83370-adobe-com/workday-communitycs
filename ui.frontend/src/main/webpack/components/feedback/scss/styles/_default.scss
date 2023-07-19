@@ -1,11 +1,11 @@
 .feedbackComponent-container {
-  border-radius: 10px;
+  border-radius: 8px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: $wdc-color-french-vanilla-100;
   text-align: center;
-  border: 1px solid $wdc-color-licorice-200;
+  border: 1px solid #C4C4C4;
   box-sizing: border-box;
   h1 {
     span {
@@ -25,7 +25,14 @@
     align-items: center;
     gap: 24px;
   }
+  textarea::placeholder {
+    color: #494949; 
+    font-size: 14px; 
+    font-weight: 400; 
+    }
   .feedback-select-button {
+    font-weight: 700;
+    font-size: 14px;
     height: 40px;
     padding: 10px 24px;
     width: 100px;
@@ -57,7 +64,7 @@
     box-sizing: border-box;
   }
   .feedback-dropdown-container {
-    margin-top: 25px;
+    margin-top: 23px;
     width: 60%;
     position: absolute;
     border-radius: 4px;
@@ -78,6 +85,8 @@
     }
     .feedback-dropdown-selected-option {
       margin-left: 10px;
+	  font-weight: 400;
+	  font-size: 14px;
     }
     &::after {
 	  color: $wdc-color-licorice-200;
@@ -125,6 +134,8 @@
     justify-content: flex-start;
     padding: 20px 0;
     button {
+	  font-weight: 700;
+      font-size: 14px;
       height: 32px;
       width: 108px;
       background-color: $wdc-color-blueberry-400;
@@ -135,6 +146,8 @@
       cursor: pointer;
     }
     .feedback-form-cancel-button {
+	  font-weight: 700;
+      font-size: 14px;
       color: $wdc-color-blueberry-400;
     }
   }
@@ -148,9 +161,9 @@
     font-size: 18px;
   }
   .feeback-button-disable {
-	cursor: not-allowed;
-	opacity: 0.5;
-	pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
   }
   .successContainer {
     flex-direction: column;
@@ -169,6 +182,8 @@
     display: flex;
   }
   .subText {
+	font-weight: 500;
+    font-size: 14px;
 	color: $wdc-color-black-pepper-300;
     display: flex;
     margin-bottom: 5px;

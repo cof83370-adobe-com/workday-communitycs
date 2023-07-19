@@ -14,7 +14,7 @@
             successImage.style.display = 'none';
         } else {
             feedbackContainer.style.display = 'none';
-            dropdowContainer.style.border = '1px solid #7B858F';
+            dropdowContainer.style.border = '1px solid #78858F';
             successImage.style.display = 'none';
         }
     }
@@ -39,6 +39,13 @@
         dropdownMenu.classList.toggle('open');
         dropdowContainer.style.border = '2px solid #0875E1';
     }
+	
+	function cancelFeedback() {
+        const no = document.getElementById('feedbackNoButtonId');
+		const feedbackContainer = document.getElementById('feedback-form-Container');
+		feedbackContainer.style.display = 'none';
+		no.classList.remove('clicked');	
+	}
 
     function selectOption(option) {
         const selectedOption = document.querySelector('.feedback-dropdown-selected-option');
@@ -57,20 +64,25 @@
 			dropdownButton.classList.remove('open');
 	}
 	});
+	
+	const feedback = document.getElementById('feedback-component-container');
+	if(feedback) {
+        const yesButton = document.getElementById('feedbackYesButtonId');
+        const noButton = document.getElementById('feedbackNoButtonId');
+		const cancelButton = document.getElementById('feedback-form-cancel-button');
+        const submitButton = document.querySelector('.feedback-form-submit-button button');
+        const dropdownToggle = document.querySelector('.feedback-option-dropdown-toggle');
+        yesButton.addEventListener('click', showSuccessImage);
+        noButton.addEventListener('click', showFeedbackContainer);
+        dropdownToggle.addEventListener('click', toggleDropdown);
+		cancelButton.addEventListener('click', cancelFeedback);
 
-    const yesButton = document.getElementById('feedbackYesButtonId');
-    const noButton = document.getElementById('feedbackNoButtonId');
-    const submitButton = document.querySelector('.feedback-form-submit-button button');
-    const dropdownToggle = document.querySelector('.feedback-option-dropdown-toggle');
-    yesButton.addEventListener('click', showSuccessImage);
-    noButton.addEventListener('click', showFeedbackContainer);
-    dropdownToggle.addEventListener('click', toggleDropdown);
-
-    const dropdownOptions = document.querySelectorAll('.feedback-dropdown-option');
-    dropdownOptions.forEach(function(option) {
-        option.addEventListener('click', function() {
-            const optionText = option.textContent;
-            selectOption(optionText);
+        const dropdownOptions = document.querySelectorAll('.feedback-dropdown-option');
+        dropdownOptions.forEach(function(option) {
+            option.addEventListener('click', function() {
+                const optionText = option.textContent;
+                selectOption(optionText);
+             });
         });
-    });
+    }
 })();
