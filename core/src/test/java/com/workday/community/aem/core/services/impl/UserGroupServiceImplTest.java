@@ -162,6 +162,12 @@ class UserGroupServiceImplTest {
         Field nscField = userGroupService.getClass().getDeclaredField("nscSupportingMapping");
         nscField.setAccessible(true);
         nscField.set(userGroupService, nscMap);
+
+        HashMap<String, String> wspMap = new HashMap<>();
+        wspMap.put("Customer - WSP Enhanced", "customer_wsp_enhanced");
+        Field wspField = userGroupService.getClass().getDeclaredField("wspMapping");
+        wspField.setAccessible(true);
+        wspField.set(userGroupService, wspMap);
         
         String SF_ID = "test=123";
         JsonObject context = new JsonObject();
@@ -172,6 +178,7 @@ class UserGroupServiceImplTest {
         JsonObject contactInformationObj = new JsonObject();
         contactInformationObj.addProperty("propertyAccess", "Community");
         contactInformationObj.addProperty("nscSupporting", "Adaptive Planning;VNDLY");
+        contactInformationObj.addProperty("wsp", "Customer - WSP Enhanced");
         context.add("contextInfo", contextInfoObj);
         context.add("contactInformation", contactInformationObj);
         when(snapService.getUserContext(SF_ID)).thenReturn(context);
@@ -179,6 +186,7 @@ class UserGroupServiceImplTest {
         assertTrue(groups.contains("authenticated"));
         assertTrue(groups.contains("customer_adaptive_only"));
         assertTrue(groups.contains("customer_vndly_only"));
+        assertTrue(groups.contains("customer_wsp_enhanced"));
         assertTrue(groups.contains("customer_name_support_contact"));
         assertTrue(groups.contains("customer_training_coordinator"));
         assertTrue(groups.contains("customer_all"));

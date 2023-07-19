@@ -8,5 +8,11 @@
         "Scout": "customer_scout_only", 
         "Peakon": "customer_peakon_only", 
         "VNDLY": "customer_vndly_only"
+    },
+    "wspMapping": {
+        "WSP - Accelerate": "customer_wsp_accelerate",
+        "WSP - Accelerate Plus": "customer_wsp_accelerate_plus",
+        "WSP - Enhanced": "customer_wsp_enhanced",
+        "WSP - Guided": "customer_wsp_guided"
     }
 }

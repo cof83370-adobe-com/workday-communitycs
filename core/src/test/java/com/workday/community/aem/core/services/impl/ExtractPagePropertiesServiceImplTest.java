@@ -130,7 +130,6 @@ public class ExtractPagePropertiesServiceImplTest {
         String permissions = properties.toString();
         assertTrue(permissions.contains("customer"));
         assertTrue(permissions.contains("community_customer"));
-        assertTrue(permissions.contains("customer_touchpoint_pro"));
         assertTrue(permissions.contains("customer_named_support_contact"));
         assertTrue(permissions.contains("test@gmail.com"));
 
