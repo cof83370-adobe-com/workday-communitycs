@@ -36,6 +36,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZ
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
 import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
 
 public class CoveoUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoUtils.class);
@@ -175,4 +176,14 @@ public class CoveoUtils {
     return UUIDUtil.getUserClientId(email).toString();
   }
 
+  public static String getCurrentUserContext(SlingHttpServletRequest request, SnapService snapService) {
+    String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+    JsonObject contextString = snapService.getUserContext(sfId);
+
+    if (contextString.has(USER_CONTEXT_INFO_KEY)) {
+      return contextString.get(USER_CONTEXT_INFO_KEY).getAsJsonObject().toString();
+    }
+
+    return "";
+  }
 }

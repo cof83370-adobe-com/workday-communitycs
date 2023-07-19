@@ -407,6 +407,13 @@
                 })();
             }
 
+            const analyticsClientMiddleware = (eventName, payload) => {
+                if (search_config["userContext"]) {
+                    payload.customData = {...payload.customData, ...JSON.parse(search_config["userContext"])};
+                }
+                return payload;
+            };
+
             document.addEventListener('DOMContentLoaded', () => {
                 if (search_fields.length === 0) {
                     return;
@@ -419,7 +426,6 @@
                     await searchInterface.initialize({
                         accessToken: token,
                         searchHub: search_config["searchHub"],
-                        analytics: search_config["analytics"],
                         organizationId: search_config["orgId"],
                         renewAccessToken: getToken,
                         preprocessRequest: (request, clientOrigin) => {
@@ -432,6 +438,9 @@
 
                             return request;
                         },
+                        analytics: {
+                            analyticsClientMiddleware,
+                        }
                     });
 
                     searchInterface?.i18n.addResourceBundle('en', 'translation', {

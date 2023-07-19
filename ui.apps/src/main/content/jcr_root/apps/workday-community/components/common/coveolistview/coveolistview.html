@@ -298,6 +298,13 @@
     })();
   }
 
+  const analyticsClientMiddleware = (eventName, payload) => {
+    if (listViewConfig["userContext"]) {
+      payload.customData = {...payload.customData, ...JSON.parse(listViewConfig["userContext"])};
+    }
+    return payload;
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     const main = async () => {
       let token = await getToken();
@@ -318,6 +325,9 @@
 
           return request;
         },
+        analytics: {
+          analyticsClientMiddleware,
+        }
       });
 
       const engine = searchInterface.engine;
