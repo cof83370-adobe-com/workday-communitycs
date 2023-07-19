@@ -5,6 +5,7 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
@@ -138,12 +139,16 @@ public class CoveoEventFeedModelImplTest {
     lenient().when(mockResourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
     lenient().when(userManager.getAuthorizable(eq("userId"))).thenReturn(user);
     lenient().when(user.getProperty(eq(SnapConstants.PROFILE_SOURCE_ID))).thenReturn(profileSId);
-    JsonObject userContext = new JsonObject();
+
+    JsonParser gsonParser = new JsonParser();
+    String testData = "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
+    JsonObject userContext = gsonParser.parse(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");
+
     lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
 
     JsonObject searchConfig = coveoEventFeedModel.getSearchConfig();
-    assertEquals(4, searchConfig.size());
+    assertEquals(5, searchConfig.size());
     assertEquals(searchConfig.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");
   }
 
