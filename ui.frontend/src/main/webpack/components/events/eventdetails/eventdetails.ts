@@ -1,40 +1,50 @@
 (function() {
 
     function convertUTCToLocal(utcTimeString, targetTimezone) {
-        const utcDatetime = new Date(utcTimeString);
-        const targetOffsetMinutes = utcDatetime.getTimezoneOffset();
-        const targetDatetime = new Date(utcDatetime.getTime() + targetOffsetMinutes * 60000);
-        const isNextDay = utcDatetime.getDate() !== targetDatetime.getDate();
+
+        const originalDateObj = new Date(utcTimeString);
 
         const options: Intl.DateTimeFormatOptions = {
-                            timeZone: targetTimezone,
-                            hour12: true,
-                            hour: 'numeric',
-                            minute: 'numeric',
-                            timeZoneName: 'short'
-                        };
+          timeZone: targetTimezone,
+          hour12: true,
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZoneName: 'short'
+        };
 
-        let localTimeString = targetDatetime.toLocaleString('en-US', options);
+        const convertedDateObj = new Date(originalDateObj.toLocaleString('en-US'));
 
-        if (isNextDay) {
-            localTimeString += ' +1';
+        let localDateTimeString = originalDateObj.toLocaleString('en-US', options);
+
+        if (originalDateObj.getDate() > convertedDateObj.getDate()) {
+            convertedDateObj.setDate(convertedDateObj.getDate() + 1);
+            localDateTimeString = convertedDateObj.toLocaleString('en-US', options) + ' - 1';
+        } else if (originalDateObj.getDate() < convertedDateObj.getDate()) {
+            convertedDateObj.setDate(convertedDateObj.getDate() - 1);
+            localDateTimeString = convertedDateObj.toLocaleString('en-US', options) + ' + 1';
         }
 
-        return localTimeString;
+        return localDateTimeString;
     }
 
     function onDocumentReady() {
-        const hiddenElement = document.getElementById('hiddenElement');
-        const utcTimeString = hiddenElement.getAttribute('data-value');
 
-        if(window.digitalData) {
-            var targetTimezone = window.digitalData.user.timeZone;
-        }
+        const isEventsPage = document.getElementsByClassName('eventspage');
+        if(isEventsPage) {
+            const hiddenElement = document.getElementById('hiddenElement');
+            const utcTimeString = hiddenElement.getAttribute('data-value');
 
-        if(utcTimeString && targetTimezone) {
-            var localTime = convertUTCToLocal(utcTimeString, targetTimezone);
-            const eventDateElement = document.querySelector('.cmp-eventdetails__item-output') as HTMLElement;
-            eventDateElement.innerText = `${eventDateElement.innerText} (${localTime})`;
+            if(utcTimeString) {
+                if(window.digitalData) {
+                    var targetTimezone = window.digitalData.user.timeZone;
+                }
+
+                if(utcTimeString && targetTimezone) {
+                    var localTime = convertUTCToLocal(utcTimeString, targetTimezone);
+                    const eventDateElement = document.querySelector('.cmp-eventdetails__item-output') as HTMLElement;
+                    eventDateElement.innerText = `${eventDateElement.innerText} (${localTime})`;
+                }
+            }
         }
     }
 
