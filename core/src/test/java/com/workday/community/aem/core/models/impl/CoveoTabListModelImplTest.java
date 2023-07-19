@@ -6,12 +6,16 @@ import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoTabListModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
+import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.DamUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -23,6 +27,14 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.jcr.Binary;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
@@ -43,10 +55,14 @@ public class CoveoTabListModelImplTest {
   JsonObject modelConfig = new JsonObject();
 
   @Mock
+  SlingHttpServletRequest request;
+  @Mock
   SlingHttpServletRequest slingHttpServletRequest;
 
   @Mock
   SearchApiConfigService searchApiConfigService;
+  @Mock
+  SnapService snapService;
 
   private CoveoTabListModel coveoTabListModel;
 
@@ -59,6 +75,7 @@ public class CoveoTabListModelImplTest {
     context.registerService(JsonObject.class, modelConfig);
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
     context.registerService(SlingHttpServletRequest.class, slingHttpServletRequest);
+    context.registerService(SnapService.class, snapService);
     context.addModelsForClasses(CoveoTabListModelImpl.class);
     coveoTabListModel = context.getService(ModelFactory.class).createModel(res, CoveoTabListModel.class);
 
@@ -70,9 +87,72 @@ public class CoveoTabListModelImplTest {
   }
 
   @Test
-  void testGetSearchConfig() {
+  void testGetSearchConfig() throws RepositoryException {
+    ((CoveoTabListModelImpl)coveoTabListModel).init(request);
+    ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
+    Session session = mock(Session.class);
+    UserManager userManager = mock(UserManager.class);
+    User user = mock(User.class);
+
+    Value[] profileSId = new Value[] {new Value() {
+      @Override
+      public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
+        return "testSFId";
+      }
+
+      @Override
+      public InputStream getStream() throws RepositoryException {
+        return null;
+      }
+
+      @Override
+      public Binary getBinary() throws RepositoryException {
+        return null;
+      }
+
+      @Override
+      public long getLong() throws ValueFormatException, RepositoryException {
+        return 0;
+      }
+
+      @Override
+      public double getDouble() throws ValueFormatException, RepositoryException {
+        return 0;
+      }
+
+      @Override
+      public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+        return null;
+      }
+
+      @Override
+      public Calendar getDate() throws ValueFormatException, RepositoryException {
+        return null;
+      }
+
+      @Override
+      public boolean getBoolean() throws ValueFormatException, RepositoryException {
+        return false;
+      }
+
+      @Override
+      public int getType() {
+        return 0;
+      }
+    }};
+    lenient().when(request.getResourceResolver()).thenReturn(mockResourceResolver);
+    lenient().when(mockResourceResolver.adaptTo(Session.class)).thenReturn(session);
+    lenient().when(session.getUserID()).thenReturn("userId");
+    lenient().when(mockResourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    lenient().when(userManager.getAuthorizable(eq("userId"))).thenReturn(user);
+    lenient().when(user.getProperty(eq(SnapConstants.PROFILE_SOURCE_ID))).thenReturn(profileSId);
+    JsonObject userContext = new JsonObject();
+    userContext.addProperty("email", "testEmailFoo@workday.com");
+    lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
+
     JsonObject searchConfig = coveoTabListModel.getSearchConfig();
-    assertEquals(3, searchConfig.size());
+    assertEquals(4, searchConfig.size());
+    assertEquals(searchConfig.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");
   }
 
   @Test

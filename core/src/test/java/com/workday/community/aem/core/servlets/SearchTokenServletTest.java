@@ -138,6 +138,8 @@ public class SearchTokenServletTest {
          MockedStatic<HttpClients> mockHttpClients = mockStatic(HttpClients.class)) {
       mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME)).thenReturn(null);
       mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any())).thenReturn(DEFAULT_SFID_MASTER);
+      mockOurmUtils.when(() -> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("foo@workday.com");
+
       mockHttpClients.when(() ->HttpClients.createDefault()).thenReturn(httpClient);
       when(httpClient.execute(any())).thenReturn(httpResponse);
       try {
