@@ -176,6 +176,12 @@ public class CoveoUtils {
     return UUIDUtil.getUserClientId(email).toString();
   }
 
+  /**
+   * Return the current user context from salesforce if it is set
+   * @param request the Request object.
+   * @param snapService The Snap service object.
+   * @return The current user context as string.
+   */
   public static String getCurrentUserContext(SlingHttpServletRequest request, SnapService snapService) {
     String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
     JsonObject contextString = snapService.getUserContext(sfId);
