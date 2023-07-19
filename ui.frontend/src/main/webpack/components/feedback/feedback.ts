@@ -14,7 +14,7 @@
             successImage.style.display = 'none';
         } else {
             feedbackContainer.style.display = 'none';
-            dropdowContainer.style.border = '1px solid #78858F';
+            dropdowContainer.style.border = '1px solid #7B858F';
             successImage.style.display = 'none';
         }
     }
@@ -24,17 +24,11 @@
         const no = document.getElementById('feedbackNoButtonId');
         const feedbackContainer = document.getElementById('feedback-form-Container');
         const successImage = document.getElementById('feedback-successContainer');
-        yes.classList.toggle('clicked');
-        if (no.classList.contains('clicked')) {
-            no.classList.remove('clicked');
-        }
-        if (successImage.style.display === 'none') {
-            successImage.style.display = 'flex';
-            feedbackContainer.style.display = 'none';
-        } else {
-            feedbackContainer.style.display = 'none';
-            successImage.style.display = 'none';
-        }
+        successImage.style.display = 'flex';
+        feedbackContainer.style.display = 'none';
+        yes.classList.add('feeback-button-disable');
+        no.classList.add('feeback-button-disable');
+        no.classList.remove('clicked');
     }
 
     function toggleDropdown() {
@@ -55,6 +49,14 @@
     function toggleButtonColor(button) {
         button.classList.toggle('clicked');
     }
+	
+	document.addEventListener('click', (event: MouseEvent) => {
+		const dropdown = document.querySelector('.feedback-option-dropdown-toggle') as HTMLElement;
+		const dropdownButton = document.getElementById('feedback-component-dropdownMenu') as HTMLElement;
+		if (!dropdown.contains(event.target as Node) && event.target !== dropdownButton) {
+			dropdownButton.classList.remove('open');
+	}
+	});
 
     const yesButton = document.getElementById('feedbackYesButtonId');
     const noButton = document.getElementById('feedbackNoButtonId');

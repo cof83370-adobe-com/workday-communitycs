@@ -1,16 +1,17 @@
 .feedbackComponent-container {
+  border-radius: 10px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: $wdc-color-french-vanilla-100;
   text-align: center;
-  border: 1px solid #78858f;
+  border: 1px solid $wdc-color-licorice-200;
   box-sizing: border-box;
   h1 {
     span {
       color: $wdc-color-black-pepper-400;
       display: flex;
-      margin-left: 32px;
+      margin-left: 24px;
       font-weight: 700;
       font-size: 20px;
       padding: 6px 0;
@@ -70,7 +71,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #78858f;
+    border: 1px solid $wdc-color-licorice-200;
     &.clicked {
       .selected-option {
       }
@@ -79,13 +80,14 @@
       margin-left: 10px;
     }
     &::after {
+	  color: $wdc-color-licorice-200;
       content: "\25BE";
       display: inline-block;
       margin-right: 10px;
     }
   }
   .feedback-dropdown-menu {
-    border: 1px solid #78858f;
+    border: 1px solid $wdc-color-licorice-200;
     z-index: 1;
     display: none;
     background-color: $wdc-color-french-vanilla-100;
@@ -96,6 +98,7 @@
     }
   }
   .feedback-dropdown-option {
+    color: $wdc-color-black-pepper-300;
     line-height: 32px;
     padding: 4px 8px;
     cursor: pointer;
@@ -112,7 +115,7 @@
     border-radius: 4px;
     width: 65%;
     height: 80px;
-    border: 1px solid #78858f;
+    border: 1px solid $wdc-color-licorice-200;
     box-sizing: border-box;
   }
   .feedback-form-submit-button {
@@ -144,6 +147,11 @@
     font-weight: 700;
     font-size: 18px;
   }
+  .feeback-button-disable {
+	cursor: not-allowed;
+	opacity: 0.5;
+	pointer-events: none;
+  }
   .successContainer {
     flex-direction: column;
     justify-content: center;
@@ -161,7 +169,11 @@
     display: flex;
   }
   .subText {
+	color: $wdc-color-black-pepper-300;
     display: flex;
     margin-bottom: 5px;
+  }
+  .subText-color {
+	color: $wdc-color-cinnamon-500;
   }
 }
