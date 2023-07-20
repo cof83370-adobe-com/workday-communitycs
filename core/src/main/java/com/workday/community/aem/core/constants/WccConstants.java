@@ -11,6 +11,8 @@ public class WccConstants {
     /** The Constant FORBIDDEN PAGE PATH . */
     public static final String FORBIDDEN_PAGE_PATH = "/content/workday-community/en-us/errors/403.html";
 
+    public static final String ERROR_PAGE_PATH = "/content/workday-community/en-us/errors/500.html";
+
     /** The Constant ROLES. */
     public static final String ROLES = "roles";
 
@@ -18,7 +20,7 @@ public class WccConstants {
     public static final String WORKDAY_ROOT_PAGE_PATH = "/content/workday-community";
 
     /** The Constant for public page. Public page is required for Adobe Release Orchestration. */
-    public static final String WORKDAY_PUBLIC_PAGE_PATH = "/content/workday-community/en-us/live-check";
+    public static final String WORKDAY_PUBLIC_PAGE_PATH = "/content/workday-community/en-us/public";
 
     /** The Constant ROLES. */
     public static final String WORKDAY_ERROR_PAGES_FORMAT = "/errors/";

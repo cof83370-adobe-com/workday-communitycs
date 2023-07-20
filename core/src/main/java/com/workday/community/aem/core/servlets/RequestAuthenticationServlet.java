@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.workday.community.aem.core.constants.WccConstants.*;
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 import static org.apache.sling.api.SlingHttpServletResponse.SC_FORBIDDEN;
 import static org.apache.sling.api.SlingHttpServletResponse.SC_OK;
 
@@ -75,9 +76,9 @@ public class RequestAuthenticationServlet extends SlingSafeMethodsServlet {
                     response.setStatus(SC_OK);
                 }
             } catch (Exception e) {
-                logger.error("auth checker says READ access DENIED!");
-                response.setStatus(SC_FORBIDDEN);
-                response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+                logger.error("---> Exception occurred in RequestAuthenticationServlet: {}", e.getMessage());
+                response.setStatus(SC_INTERNAL_SERVER_ERROR);
+                response.sendRedirect(WccConstants.ERROR_PAGE_PATH);
             } finally {
                 if (resourceResolver != null && resourceResolver.isLive()) {
                     resourceResolver.close();
@@ -93,6 +94,7 @@ public class RequestAuthenticationServlet extends SlingSafeMethodsServlet {
         else {
             logger.debug("Requested page is not in correct format: {}", uri);
             response.setStatus(SC_FORBIDDEN);
+            response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
         }
     }
 }

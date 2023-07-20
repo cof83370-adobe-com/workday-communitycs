@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.workday.community.aem.core.constants.WccConstants.*;
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 
 
 /**
@@ -93,12 +95,17 @@ public class AuthorizationFilter implements Filter {
                     isInValid = userGroupService.validateTheUser(resourceResolver, requestResourceResolver, pagePath);
                 }
                 if (isInValid) {
+                    ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
                     ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
                 }
             } catch (LoginException | RepositoryException e) {
-                logger.error("---> Exception occured in AuthorizationFilter: {}.", e.getMessage());
+                logger.error("---> Exception occurred in AuthorizationFilter: {}.", e.getMessage());
+                ((SlingHttpServletResponse) response).setStatus(SC_INTERNAL_SERVER_ERROR);
+                ((SlingHttpServletResponse) response).sendRedirect(WccConstants.ERROR_PAGE_PATH);
             } catch (Exception e) {
                 logger.error("---> General Exception in validateTheUser function: {}.", e.getMessage());
+                ((SlingHttpServletResponse) response).setStatus(SC_INTERNAL_SERVER_ERROR);
+                ((SlingHttpServletResponse) response).sendRedirect(WccConstants.ERROR_PAGE_PATH);
             } finally {
                 if (resourceResolver != null && resourceResolver.isLive()) {
                     resourceResolver.close();
