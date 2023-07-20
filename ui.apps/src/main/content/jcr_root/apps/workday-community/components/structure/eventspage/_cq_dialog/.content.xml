@@ -294,7 +294,69 @@
                                         sling:resourceType="granite/ui/components/foundation/form/hidden"
                                         ignoreData="{Boolean}true"
                                         name="./readCount@TypeHint"
-                                        value="Long"/>                                      
+                                        value="Long"/>
+                                    <productType
+                                        cq:showOnCreate="{Boolean}true"
+                                        granite:class="cq-dialog-dropdown-showhide"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/select"
+                                        fieldLabel="Select, if recurring events required"
+                                        name="./recurringEvents">
+                                        <items jcr:primaryType="nt:unstructured">
+                                            <no
+                                                jcr:primaryType="nt:unstructured"
+                                                text="No"
+                                                value="no"/>
+                                            <yes
+                                                jcr:primaryType="nt:unstructured"
+                                                text="Yes"
+                                                value="yes"/>
+                                        </items>
+                                        <granite:data
+                                            jcr:primaryType="nt:unstructured"
+                                            cq-dialog-dropdown-showhide-target=".productType-showhide-target"/>
+                                    </productType>
+                                    <yes
+                                        granite:class="productType-showhide-target"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/container">
+                                        <items jcr:primaryType="nt:unstructured">
+                                            <eventFrequency
+                                                cq:showOnCreate="{Boolean}true"
+                                                jcr:primaryType="nt:unstructured"
+                                                sling:resourceType="granite/ui/components/coral/foundation/form/radiogroup"
+                                                defaultValue="monthly"
+                                                fieldLabel="Choose Event Frequency"
+                                                name="./eventFrequency">
+                                                <items jcr:primaryType="nt:unstructured">
+                                                    <monthly
+                                                        jcr:primaryType="nt:unstructured"
+                                                        checked="{Boolean}true"
+                                                        text="Monthly"
+                                                        value="monthly">
+                                                        <cq:listeners
+                                                            jcr:primaryType="nt:unstructured"
+                                                            loadcontent="function(field, record, path) {                                                                 field.setValue('monthly');                                                             }"/>
+                                                    </monthly>
+                                                    <biweekly
+                                                        jcr:primaryType="nt:unstructured"
+                                                        text="Bi Weekly"
+                                                        value="bi-weekly"/>
+                                                </items>
+                                            </eventFrequency>
+                                        </items>
+                                        <granite:data
+                                            jcr:primaryType="nt:unstructured"
+                                            showhidetargetvalue="yes"/>
+                                    </yes>
+                                    <no
+                                        granite:class="productType-showhide-target"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/container">
+                                        <granite:data
+                                            jcr:primaryType="nt:unstructured"
+                                            showhidetargetvalue="no"/>
+                                    </no>
                                 </items>
                             </column>
                         </items>
