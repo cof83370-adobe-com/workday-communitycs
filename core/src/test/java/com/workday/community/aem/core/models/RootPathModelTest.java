@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *  @author uttej.vardineni
  */
 @ExtendWith(AemContextExtension.class)
-public class RelatedInfoModelTest {
+public class RootPathModelTest {
 
     /** The context. */
     private final AemContext context = new AemContext();
@@ -27,14 +27,14 @@ public class RelatedInfoModelTest {
     /** The request. */
     private MockSlingHttpServletRequest request;
 
-    /** The relatedinfo path model test. */
-    private RelatedInfoModel relatedInfoModelTest;
+    /** The rootpathinfo path model test. */
+    private RootPathModel rootPathModelTest;
 
         /** The current page. */
         private Page currentPage;
 
     /**
-     * Sets the RelatedInfoModelTest.
+     * Sets the RootPathModelTest.
      *
      * @throws Exception the exception
      */
@@ -54,8 +54,8 @@ public class RelatedInfoModelTest {
      */
     @Test
     public void testRootPath() {
-        relatedInfoModelTest = request.adaptTo(RelatedInfoModel.class);
-        String actualRootPath = relatedInfoModelTest.getRootPath();
+        rootPathModelTest = request.adaptTo(RootPathModel.class);
+        String actualRootPath = rootPathModelTest.getRootPath();
         String expectedRootPath = "/content/workday-community/";
         assertEquals(expectedRootPath, actualRootPath);
     }

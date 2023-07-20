@@ -11,12 +11,12 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 
 /**
- * The Class RelatedInfoModel.
+ * The Class RootPathModel.
  * 
  * @author uttej.vardineni
  */
 @Model(adaptables = { SlingHttpServletRequest.class }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
-public class RelatedInfoModel {
+public class RootPathModel {
 
     /** The logger. */
     private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
@@ -25,11 +25,11 @@ public class RelatedInfoModel {
     protected static final String rootPath = String.format("%s%s", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH, "/");
 
     /**
-     * Inits the RelatedInfoModel.
+     * Inits the RootPathModel.
      */
     @PostConstruct
     protected void init() {
-        logger.debug("Initializing RelatedInfoModel ....");
+        logger.debug("Initializing RootPathModel ....");
     }
 
     /**

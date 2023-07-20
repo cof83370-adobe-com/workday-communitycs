@@ -100,17 +100,24 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private static final String EXCLUDE = "exclude";
 
     /** The drupal role mapping. */
-    private static final Map<String, String> DRUPAL_ROLE_MAPPING = Map.of(
-        "access-control:authenticated", "authenticated",
-        "access-control:customer_all", "customer;community_customer;customer_touchpoint_pro",
-        "access-control:customer_named_support_contact", "customer_named_support_contact",
-        "access-control:customer_training_coordinator", "customer_training_coordinator",
-        "access-control:customer_adaptive_only", "customer_adaptive_only",
-        "access-control:customer_peakon_only", "customer_peakon_only",
-        "access-control:customer_scout_only", "customer_scout_only",
-        "access-control:customer_vndly_only", "customer_vndly_only",
-        "access-control:partner_all", "partner_implementation_partner;community_partner_implementation_partner;partner_integration_partner;community_partner_software_alliances;partner_read_only;community_partner_read_only;partner_main",
-        "access-control:internal_workmates", "workday");
+    // AEM and drupal role mapping doc:
+    // https://docs.google.com/spreadsheets/d/1h0aPEBm-513U1p8taSSJD4MgaxAdZ5j7MtMGIA4IoV8/edit#gid=625583643.
+    private static final Map<String, String> DRUPAL_ROLE_MAPPING = new HashMap<>() {{
+        put("access-control:authenticated", "authenticated");
+        put("access-control:customer_all", "customer;community_customer");
+        put("access-control:customer_named_support_contact", "customer_named_support_contact");
+        put("access-control:customer_training_coordinator", "customer_training_coordinator");
+        put("access-control:customer_adaptive_only", "customer_adaptive_only");
+        put("access-control:customer_peakon_only", "customer_peakon_only");
+        put("access-control:customer_scout_only", "customer_scout_only");
+        put("access-control:customer_vndly_only", "customer_vndly_only");
+        put("access-control:customer_wsp_accelerate", "customer_wsp_accelerate");
+        put("access-control:customer_wsp_accelerate_plus", "customer_wsp_accelerate_plus");
+        put("access-control:customer_wsp_enhanced", "customer_wsp_enhanced");
+        put("access-control:customer_wsp_guided", "customer_wsp_guided");
+        put("access-control:partner_all", "partner_main");
+        put("access-control:internal_workmates", "workday");
+    }};
 
     @Override
     public HashMap<String, Object> extractPageProperties(String path) {

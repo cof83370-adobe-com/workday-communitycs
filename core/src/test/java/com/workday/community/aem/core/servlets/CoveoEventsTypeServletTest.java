@@ -76,6 +76,7 @@ public class CoveoEventsTypeServletTest {
     try (MockedStatic<OurmUtils> ourmUtilsMock = mockStatic(OurmUtils.class);
     MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class)){
       ourmUtilsMock.when(()-> OurmUtils.getSalesForceId(any())).thenReturn(DEFAULT_SFID_MASTER);
+      ourmUtilsMock.when(()-> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("test@workday.com");
 
       CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
       httpClientsMockedStatic.when(HttpClients::createDefault).thenReturn(httpClient);

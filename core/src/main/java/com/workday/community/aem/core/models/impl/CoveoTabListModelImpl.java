@@ -7,6 +7,8 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoTabListModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
+import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -44,8 +46,17 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   @Self
   private SlingHttpServletRequest request;
 
+  /**
+   * SearchConfig service object.
+   */
   @OSGiService
   private SearchApiConfigService searchConfigService;
+
+  /**
+   * The snap service object.
+   */
+  @OSGiService
+  private SnapService snapService;
 
   private JsonObject modelConfig;
 
@@ -62,6 +73,8 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     config.addProperty("orgId", this.searchConfigService.getOrgId());
     config.addProperty("searchHub", this.searchConfigService.getSearchHub());
     config.addProperty("analytics", true);
+    config.addProperty("clientId", CoveoUtils.getCurrentUserClientId(request, searchConfigService, snapService));
+    config.addProperty("userContext", CoveoUtils.getCurrentUserContext(request, snapService));
 
     return config;
   }

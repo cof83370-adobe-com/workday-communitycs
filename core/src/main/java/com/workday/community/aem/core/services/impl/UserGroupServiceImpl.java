@@ -35,6 +35,7 @@ import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTAC
 import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.NSC_SUPPORTING_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.WSP_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
 
 /**
@@ -80,6 +81,11 @@ public class UserGroupServiceImpl implements UserGroupService {
      * The nsc_supporting_mapping.
      */
     private HashMap<String, String> nscSupportingMapping = new HashMap<>();
+
+    /**
+     * The wsp_mapping.
+     */
+    private HashMap<String, String> wspMapping = new HashMap<>();
 
     /**
      * SFDC Role mapping json object.
@@ -174,6 +180,15 @@ public class UserGroupServiceImpl implements UserGroupService {
                 }
             }
         }
+        JsonElement wsp = contactInformation.get(WSP_KEY);
+        if (!wsp.isJsonNull()) {
+            String wspString = wsp.getAsString();
+            for(Map.Entry<String, String> entry: wspMapping.entrySet()) {
+                if (wspString.contains(entry.getKey())) {
+                    groups.add(entry.getValue());
+                }
+            }
+        }
         JsonObject contextInfo = context.get(USER_CONTEXT_INFO_KEY).getAsJsonObject();
         JsonElement contactRolesObj = contextInfo.get(USER_CONTACT_ROLE_KEY);
         if (!contactRolesObj.isJsonNull()) {
@@ -213,6 +228,7 @@ public class UserGroupServiceImpl implements UserGroupService {
             Gson g = new Gson();
             customerRoleMapping = g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
             nscSupportingMapping = g.fromJson(sfdcRoleMap.get("nscSupportingMapping").toString(), HashMap.class);
+            wspMapping = g.fromJson(sfdcRoleMap.get("wspMapping").toString(), HashMap.class);
         }
 
     }

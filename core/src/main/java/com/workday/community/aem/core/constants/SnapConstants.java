@@ -52,6 +52,11 @@ public interface SnapConstants {
   String NSC_SUPPORTING_KEY = "nscSupporting";
 
   /**
+   * The wsp key.
+   */
+  String WSP_KEY = "wsp";
+
+  /**
    * Profile button value.
    */
   String PROFILE_BUTTON_VALUE = "Profile";

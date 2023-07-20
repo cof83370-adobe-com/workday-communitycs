@@ -686,6 +686,11 @@
                                         cq:styleId="1680281906479"
                                         cq:styleLabel="66/33"
                                         jcr:primaryType="nt:unstructured"/>
+                                    <item5
+                                        cq:styleClasses="card"
+                                        cq:styleId="1689100545825"
+                                        cq:styleLabel="Card"
+                                        jcr:primaryType="nt:unstructured"/>    
                                 </cq:styles>
                             </item2>
                             <item3
@@ -898,7 +903,7 @@
                         jcr:title="Troubleshooting - Accordion (Main)"
                         sling:resourceType="wcm/core/components/policy/policy"
                         allowedHeadingElements="[h3]"
-                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
                         headingElement="h3">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678380800744>
@@ -1007,6 +1012,17 @@
                                         jcr:primaryType="nt:unstructured"/>
                                 </cq:styles>
                             </item0>
+                            <item1
+                                cq:styleGroupLabel="Options"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="no-border"
+                                        cq:styleId="1689108221730"
+                                        cq:styleLabel="No Border"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
                         </cq:styleGroups>
                     </policy_1681242291110>
                 </relatedinformation>

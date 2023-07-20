@@ -1,0 +1,42 @@
+<div class="feedbackComponent-container" id="feedback-component-container">
+    <div class="feedback-button-container" id="feedback-buttonContainer">
+        <h1><span>Was this page helpful?</span></h1>
+		<div class="buttonStyle">
+        <span class="feedback-select-button yes" id="feedbackYesButtonId">Yes</span>
+        <span class="feedback-select-button no" id="feedbackNoButtonId">No</span>
+		</div>
+    </div>
+    <div class="feedback-container" id="feedback-form-Container" style="display: none;">
+        <div class="feedback-dropdown">
+            <span class="subText">What was the reason for your feedback?&nbsp;<span class="subText-color">*</span></span>
+            <div class="feedback-dropdown-container" id="feedback-dropdownContainer">
+                <div class="feedback-option-dropdown-toggle">
+                    <span class="feedback-dropdown-selected-option"></span>
+                    <span class="toggle-arrow"></span>
+                </div>
+                <div class="feedback-dropdown-menu" id="feedback-component-dropdownMenu">
+                    <div class="feedback-dropdown-option">Missing Information/ Additional Information Needed</div>
+                    <div class="feedback-dropdown-option">Broken Link</div>
+                    <div class="feedback-dropdown-option">Clarity of Information</div>
+                    <div class="feedback-dropdown-option">Broken or missing functionality on the page</div>
+                    <div class="feedback-dropdown-option">Outdated Information</div>
+                    <div class="feedback-dropdown-option">Other</div>
+                </div>
+            </div>
+        </div>
+        <div class="feedback-richtext-container">
+            <span class="subText">Tell us about why you chose the above options:</span>
+            <textarea class="feedback-richtext" id="feedbackInput" placeholder="Please enter at least 5 characters."></textarea>
+        </div>
+        <div class="feedback-form-submit-button">
+            <button type="submit">Submit</button>
+            <a class="feedback-form-cancel-button" id="feedback-form-cancel-button" href="#">Cancel</a>
+        </div>
+    </div>
+    <div class="successContainer" id="feedback-successContainer" style="display: none;">
+        <img class="feedback-success-image" src="/etc.clientlibs/workday-community/clientlibs/clientlib-site/resources/images/success-image.png" alt="Success" />
+        <span class="feedback-success-msg">Thank you for your feedback</span>
+        <div></div>
+    </div>
+</div>
+

@@ -13,7 +13,6 @@
 
                     >.container {
                         width: 33%;
-                        max-width: 100%;
                     }
                 }
             }
@@ -32,12 +31,10 @@
 
                     >.container:first-of-type {
                         width: 33%;
-                        max-width: 100%;
                     }
 
                     >.container:nth-of-type(2) {
                         width: 66%;
-                        max-width: 100%;
                     }
                 }
             }
@@ -56,12 +53,24 @@
 
                     >.container:first-of-type {
                         width: 66%;
-                        max-width: 100%;
                     }
 
                     >.container:nth-of-type(2) {
                         width: 33%;
-                        max-width: 100%;
+                    }
+                }
+            }
+        }
+
+        &.col-equal-33-33-33.cq-Editable-dom,
+        &.col-left-66-right-33.cq-Editable-dom,
+        &.col-left-33-right-66.cq-Editable-dom {
+            >.cmp-container {
+                >.aem-Grid {
+                    flex-wrap: wrap;
+
+                    &>.cq-Editable-dom.newpar {
+                        width: 100%;
                     }
                 }
             }
