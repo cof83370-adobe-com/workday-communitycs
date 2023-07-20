@@ -70,8 +70,10 @@ public class AuthorizationFilter implements Filter {
         String pagePath = slingRequest.getRequestPathInfo().getResourcePath();
         logger.debug("Request for {}, with selector {}.", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
         logger.debug("AuthorizationFilter: Time before validating the user is {}.", new Date().getTime());
-        if (oktaService.isOktaIntegrationEnabled() && pagePath.contains(WORKDAY_ROOT_PAGE_PATH) &&
-                !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT)) {
+        if (oktaService.isOktaIntegrationEnabled() &&
+            pagePath.contains(WORKDAY_ROOT_PAGE_PATH) &&
+            !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT) &&
+            !pagePath.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
             Map<String, Object> serviceParams = new HashMap<>();
             serviceParams.put(ResourceResolverFactory.SUBSERVICE, WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
             ResourceResolver requestResourceResolver = slingRequest.getResourceResolver();
