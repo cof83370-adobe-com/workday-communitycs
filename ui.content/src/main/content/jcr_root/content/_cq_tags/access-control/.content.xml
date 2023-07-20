@@ -10,15 +10,16 @@
     <customer_adaptive_only/>
     <customer_peakon_only/>
     <customer_scout_only/>
+    <customer_touchpoint_pro/>
     <customer_vndly_only/>
     <customer_wsp_accelerate/>
     <customer_wsp_accelerate_plus/>
     <customer_wsp_enhanced/>
     <customer_wsp_guided/>
-    <partner_all/>
     <internal_workmates/>
-    <partner-innovation/>
-    <partner-sales/>
-    <partner-services/>
-    <customer-touchpoint-pro/>
+    <partner_all/>
+    <partner_innovation_track/>
+    <partner_sales_track/>
+    <partner_services_track/>
+
 </jcr:root>
