@@ -87,6 +87,7 @@ public class RequestAuthenticationServlet extends SlingSafeMethodsServlet {
         }
         else if(uri.contains(WORKDAY_PUBLIC_PAGE_PATH))
         {
+            logger.debug("Requested page is public page: {}", uri);
             response.setStatus(SC_OK);
         }
         else {
