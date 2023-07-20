@@ -295,7 +295,7 @@
                                         ignoreData="{Boolean}true"
                                         name="./readCount@TypeHint"
                                         value="Long"/>
-                                    <productType
+                                    <recurringevents
                                         cq:showOnCreate="{Boolean}true"
                                         granite:class="cq-dialog-dropdown-showhide"
                                         jcr:primaryType="nt:unstructured"
@@ -315,7 +315,7 @@
                                         <granite:data
                                             jcr:primaryType="nt:unstructured"
                                             cq-dialog-dropdown-showhide-target=".productType-showhide-target"/>
-                                    </productType>
+                                    </recurringevents>
                                     <yes
                                         granite:class="productType-showhide-target"
                                         jcr:primaryType="nt:unstructured"
