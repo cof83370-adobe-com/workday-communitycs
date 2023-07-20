@@ -903,7 +903,7 @@
                         jcr:title="Troubleshooting - Accordion (Main)"
                         sling:resourceType="wcm/core/components/policy/policy"
                         allowedHeadingElements="[h3]"
-                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
                         headingElement="h3">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678380800744>
