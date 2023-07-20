@@ -36,7 +36,7 @@
 
             if(utcTimeString) {
                 if(window.digitalData) {
-                    var targetTimezone = window.digitalData.user.timeZone;
+    const targetTimezone = window.digitalData.user.timeZone | Intl.DateTimeFormat().resolvedOptions().timeZone;
                 }
 
                 if(utcTimeString && targetTimezone) {
