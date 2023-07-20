@@ -333,11 +333,7 @@
                                                         jcr:primaryType="nt:unstructured"
                                                         checked="{Boolean}true"
                                                         text="Monthly"
-                                                        value="monthly">
-                                                        <cq:listeners
-                                                            jcr:primaryType="nt:unstructured"
-                                                            loadcontent="function(field, record, path) {                                                                 field.setValue('monthly');                                                             }"/>
-                                                    </monthly>
+                                                        value="monthly"/>
                                                     <biweekly
                                                         jcr:primaryType="nt:unstructured"
                                                         text="Bi Weekly"
