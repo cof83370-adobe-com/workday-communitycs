@@ -35,7 +35,7 @@ RUN curl -s -O https://downloads.apache.org/maven/maven-3/${MAVEN}/binaries/apac
 
 COPY pom.xml /
 
-# Install AEM SDK from S#
+# Install AEM SDK from S3
 RUN --mount=type=secret,id=aws,required,target=/root/.aws/credentials aws s3 cp s3://community-aem/container/images/wc_aem_sdk/aem-sdk-$(cat pom.xml | awk -F"[<>]" '/aem.sdk.api/{print $3;exit}').zip aem-sdk.zip
 
 RUN unzip aem-sdk.zip \

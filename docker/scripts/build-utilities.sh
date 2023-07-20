@@ -1,22 +1,7 @@
 #!/bin/bash
 
 PROJECT_DIR=/opt/aem
-cd $PROJECT_DIR
-
-# Set the package & Port based on type
-PACKAGE_FLAG=""
 PORT=0
-
-if [[ $HOSTNAME = "publish" ]]
-then
-  PACKAGE_FLAG="PautoInstallSinglePackagePublish"
-  PORT=4503
-elif [[ $HOSTNAME = "author" ]]
-then
-  PACKAGE_FLAG="PautoInstallSinglePackage"
-  PORT=4502
-fi
-
 MVN="mvn -s .cloudmanager/maven/settings.xml"
 
 function unit-tests() {
@@ -28,7 +13,7 @@ function integration-tests() {
 }
 
 function build-no-tests() {
- $MVN clean install -${PACKAGE_FLAG} -Dmaven.test.skip -Daem.port=${PORT}
+   mvn clean install -PautoInstallPackage -PautoInstallPackagePublish -Dmaven.test.skip -Daem.host=community-aem-author-1 -Daem.port=4502  -Daem.publish.host=community-aem-publish-1 -Daem.publish.port=4503
 }
 
 function pipeline-check() {
@@ -37,19 +22,35 @@ function pipeline-check() {
     $MVN --batch-mode org.jacoco:jacoco-maven-plugin:prepare-agent package
 }
 
-function start-aem() {
-  cd /
-  # Start server
+function start-aem-server() {
   nohup java -jar /aem.jar -r "${HOSTNAME}" -quickstart.server.port ${PORT} &
-
-  # Build and deploy
-  cd ${PROJECT_DIR}
-  build-no-tests
 }
 
-function dispatch-setup() {
-  # TODO: https://jira2.workday.com/browse/WCDEVOPS-5714
-    chmod a+x aem-sdk-dispatcher-tools-unix.sh
+function setup-replication-agent() {
+     curl -u admin:admin \
+     -F enabled="true"  \
+     -F transportPassword="admin" \
+     -F transportUri="http://community-aem-publish-1:4503/bin/receive?sling:authRequestLogin=1" \
+     -F transportUser="admin" \
+     -F userId="" \
+    'http://localhost:4502/etc/replication/agents.author/publish/jcr:content'
+}
+
+function start-aem() {
+  if [[ $HOSTNAME = "publish" ]]
+  then
+    PORT=4503
+    start-aem-server
+  elif [[ $HOSTNAME = "author" ]]
+  then
+    PORT=4502
+    start-aem-server
+    # Build and deploy to author
+    cd ${PROJECT_DIR}
+    build-no-tests
+    sleep 30s
+    setup-replication-agent
+  fi
 }
 
 if declare -f "$1" > /dev/null

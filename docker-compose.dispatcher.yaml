@@ -19,14 +19,18 @@ services:
       - ./docker/dispatcher/httpd/conf.d:/etc/httpd/conf.d
       - ./docker/dispatcher/httpd/conf.dispatcher.d:/etc/httpd/conf.dispatcher.d
       - ./docker/dispatcher/httpd/conf.modules.d:/etc/httpd/conf.modules.d
+      - cache_dir:/var/www/localhost/htdocs
+
     networks:
       - aem
+volumes:
+  cache_dir:
 
 secrets:
   aws:
     file: $HOME/.aws/credentials
 
 networks:
-  network1:
-    name: aem
+  aem:
+    name: community-aem_aem
     external: true

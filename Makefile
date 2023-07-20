@@ -6,17 +6,8 @@ author=community-aem-author-1
 scripts_path=/opt/aem/docker/scripts
 
 # AEM build & test commands
-publish-build:
+aem-build:
 	${exec} ${publish} ${scripts_path}/build-utilities.sh build-no-tests
-
-publish-restore:
-	${exec} ${publish} ${scripts_path}/config-utilities.sh setup-quickstart && ${dc} restart publish
-
-author-build:
-	${exec} ${author} ${scripts_path}/build-utilities.sh build-no-tests
-
-author-restore:
-	${exec} ${author} ${scripts_path}/config-utilities.sh setup-quickstart && ${dc} restart author
 
 unit-tests:
 	${exec} ${author} ${scripts_path}/build-utilities.sh unit-tests
@@ -54,3 +45,16 @@ publish-log:
 
 author-log:
 	${logs} -f community-aem-publish-1
+
+dispatcher-start:
+	${dc} -f docker-compose.dispatcher.yaml -f docker-compose.yaml up -d
+
+dispatcher-stop:
+	${dc} -f docker-compose.dispatcher.yaml -f docker-compose.yaml stop
+
+dispatcher-down:
+	${dc} -f docker-compose.dispatcher.yaml -f docker-compose.yaml down
+
+restart-apache:
+	${exec} community-aem-dispatcher-1 sh -c "kill -HUP `cat /var/run/httpd/httpd.pid`"
+

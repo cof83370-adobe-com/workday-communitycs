@@ -26,7 +26,14 @@
 ## Getting Started
 1. AWS CLI must be authenticated and CodeArtifact token must be less than 12 hours old 
 2. Run the standard `docker compose` commands or use the [Makefile](../Makefile) in the root directory for simplified commands. 
+3. For running with the dispatcher use the -f flag with the file names
+```bash
+# Start AEM stack with dispatcher
+docker compose -f docker-compose.dispatcher.yaml -f docker-compose.yaml up -d
+# Shutdown stack
+docker compose -f docker-compose.dispatcher.yaml -f docker-compose.yaml up -d
 
+```
 ***If the docker image is not already on your local machine, or during the first `docker compose up/docker compose build` command you may get the error` ✘ publisher Error`. 
 This error can be ignored, it will still eventually create and start the container once the image build is completed.***
 

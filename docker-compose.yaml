@@ -30,11 +30,12 @@ services:
       <<: *common-env
     ports:
       - "127.0.0.1:4503:4503"
-    volumes_from:
-      - author
+    volumes:
+      - $HOME/.aws/credentials:/root/.aws/credentials:ro
+      - $HOME/.aws/config:/root/.aws/config:ro
+      - .:/opt/aem
     networks:
       - aem
-
 secrets:
   aws:
     file: $HOME/.aws/credentials
