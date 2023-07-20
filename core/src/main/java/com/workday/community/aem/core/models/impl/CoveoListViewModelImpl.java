@@ -6,6 +6,7 @@ import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.utils.CoveoUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
@@ -19,10 +20,11 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.workday.community.aem.core.utils.CoveoUtils.getCurrentUserClientId;
-
 @Model(
-        adaptables = Resource.class,
+        adaptables = {
+            Resource.class,
+            SlingHttpServletRequest.class
+        },
         adapters = { CoveoListViewModel.class },
         defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
@@ -61,7 +63,8 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
     JsonObject config = new JsonObject();
     config.addProperty("orgId", searchConfigService.getOrgId());
     config.addProperty("searchHub", searchConfigService.getSearchHub());
-    config.addProperty("clientId", getCurrentUserClientId(request, searchConfigService, snapService));
+    config.addProperty("clientId", CoveoUtils.getCurrentUserClientId(request, searchConfigService, snapService));
+    config.addProperty("userContext", CoveoUtils.getCurrentUserContext(request, snapService));
     return config;
   }
 

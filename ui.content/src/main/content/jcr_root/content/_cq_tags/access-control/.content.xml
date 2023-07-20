@@ -11,6 +11,10 @@
     <customer_peakon_only/>
     <customer_scout_only/>
     <customer_vndly_only/>
+    <customer_wsp_accelerate/>
+    <customer_wsp_accelerate_plus/>
+    <customer_wsp_enhanced/>
+    <customer_wsp_guided/>
     <partner_all/>
     <internal_workmates/>
 </jcr:root>
