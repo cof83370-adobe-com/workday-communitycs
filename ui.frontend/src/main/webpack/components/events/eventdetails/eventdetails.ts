@@ -39,7 +39,7 @@
     const targetTimezone = window.digitalData.user.timeZone | Intl.DateTimeFormat().resolvedOptions().timeZone;
                 }
 
-                if(utcTimeString && targetTimezone) {
+                if(utcTimeString) {
                     var localTime = convertUTCToLocal(utcTimeString, targetTimezone);
                     const eventDateElement = document.querySelector('.cmp-eventdetails__item-output') as HTMLElement;
                     eventDateElement.innerText = `${eventDateElement.innerText} (${localTime})`;
