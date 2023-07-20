@@ -85,6 +85,10 @@ public class RequestAuthenticationServlet extends SlingSafeMethodsServlet {
             }
             logger.debug("RequestAuthenticationServlet:Time after validating the user  is {}.", new Date().getTime());
         }
+        else if(uri.contains(WORKDAY_PUBLIC_PAGE_PATH))
+        {
+            response.setStatus(SC_OK);
+        }
         else {
             logger.debug("Requested page is not in correct format: {}", uri);
             response.setStatus(SC_FORBIDDEN);
