@@ -48,7 +48,8 @@ public class RequestAuthenticationServlet extends SlingSafeMethodsServlet {
         String uri = request.getParameter("uri").replace(".html", "");
         logger.debug("Request URL {}", uri);
         if (StringUtils.isNotBlank(uri) && uri.contains(WORKDAY_ROOT_PAGE_PATH) &&
-                !uri.contains(WORKDAY_ERROR_PAGES_FORMAT)) {
+                !uri.contains(WORKDAY_ERROR_PAGES_FORMAT) &&
+                !uri.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
             logger.debug("RequestAuthenticationServlet:Time before validating the user  is {}.", new Date().getTime());
             ResourceResolver requestResourceResolver = request.getResourceResolver();
             Session userSession = requestResourceResolver.adaptTo(Session.class);
