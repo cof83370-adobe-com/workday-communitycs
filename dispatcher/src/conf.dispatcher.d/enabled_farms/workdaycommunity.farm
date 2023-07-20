@@ -136,6 +136,16 @@
 				/glob "/content/workday-community/en-us/*"
 				/type "allow"
 			}
+			/0002
+            {
+            	/glob "/content/workday-community/en-us/live-check/*"
+            	/type "deny"
+            }
+			/0003
+            {
+            	/glob "/content/workday-community/en-us/public/*"
+            	/type "deny"
+            }
 
 		}
 		# any header line returned from the auth_checker's HEAD request matching
