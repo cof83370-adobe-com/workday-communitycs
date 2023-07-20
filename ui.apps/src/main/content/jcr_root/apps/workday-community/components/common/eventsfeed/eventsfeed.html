@@ -199,6 +199,7 @@
                 })();
             }
 
+
             document.addEventListener('DOMContentLoaded', () => {
                 const main = async () => {
                     const tokenUrl = '/bin/search/token';
@@ -207,6 +208,13 @@
                     const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
                     let token = await getRequest(tokenUrl);
                     token = token['searchToken'];
+
+                    const analyticsClientMiddleware = (eventName, payload) => {
+                        if (search_config["userContext"]) {
+                            payload.customData = {...payload.customData, ...JSON.parse(search_config["userContext"])};
+                        }
+                        return payload;
+                    };
 
                     const selectedEventType = document.getElementById('eventTypesId').getAttribute('data-property');
                     let eventRows = document.getElementById('rowsId').getAttribute('data-property');
@@ -236,7 +244,6 @@
                     await searchInterface.initialize({
                         accessToken: token,
                         searchHub: search_config["searchHub"],
-                        analytics: search_config["analytics"],
                         organizationId: search_config["orgId"],
                         renewAccessToken: () => getRequest(tokenUrl),
                         preprocessRequest: (request, clientOrigin) => {
@@ -254,9 +261,16 @@
 
                             return request;
                         },
+                        analytics: {
+                            analyticsClientMiddleware,
+                        }
                     });
 
                     registerFields(searchInterface.engine);
+                    if (search_config['clientId']) {
+                        localStorage.setItem('visitorId', search_config['clientId']);
+                    }
+
                     searchInterface.executeFirstSearch();
                 }
 

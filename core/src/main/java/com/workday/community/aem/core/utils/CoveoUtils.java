@@ -36,6 +36,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZ
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
 import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
 
 public class CoveoUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoUtils.class);
@@ -93,6 +94,11 @@ public class CoveoUtils {
 
       Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", searchApiConfigService.isDevMode());
+
+      //Add coveo_visitorId cookie
+      Cookie visitIdCookie = new Cookie("coveo_visitorId",
+          CoveoUtils.getCurrentUserClientId(request, searchApiConfigService, snapService));
+      HttpUtils.addCookie(visitIdCookie, response);
       servletCallback.execute(request, response, coveoInfo);
     }
   }
@@ -129,9 +135,8 @@ public class CoveoUtils {
     return "";
   }
 
-  private static String getTokenPayload(SearchApiConfigService searchApiConfigService,
-                                       Gson gson,
-                                       String email) {
+  private static String getTokenPayload(
+      SearchApiConfigService searchApiConfigService, Gson gson, String email) {
     HashMap<String, String> userMap = new HashMap<>();
     HashMap<String, Object> payloadMap = new HashMap<>();
 
@@ -155,5 +160,36 @@ public class CoveoUtils {
     JsonObject jsonObj = gson.fromJson(payloadMap.toString(), JsonObject.class);
 
     return jsonObj.toString();
+  }
+
+  /**
+   * Return the current user's client id.
+   * @param request Pass-in request object.
+   * @param searchConfigService Pass-in searchConfigService object.
+   * @param snapService Pass-in snapService object.
+   * @return the current user's client id as string.
+   */
+  public static String getCurrentUserClientId(
+      SlingHttpServletRequest request, SearchApiConfigService searchConfigService, SnapService snapService) {
+    String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+    String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
+    return UUIDUtil.getUserClientId(email).toString();
+  }
+
+  /**
+   * Return the current user context from salesforce if it is set
+   * @param request the Request object.
+   * @param snapService The Snap service object.
+   * @return The current user context as string.
+   */
+  public static String getCurrentUserContext(SlingHttpServletRequest request, SnapService snapService) {
+    String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+    JsonObject contextString = snapService.getUserContext(sfId);
+
+    if (contextString.has(USER_CONTEXT_INFO_KEY)) {
+      return contextString.get(USER_CONTEXT_INFO_KEY).getAsJsonObject().toString();
+    }
+
+    return "";
   }
 }

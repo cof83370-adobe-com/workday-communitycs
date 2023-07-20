@@ -249,7 +249,6 @@
   import {
     loadContextActions,
     loadFieldActions,
-    buildTab,
     loadGenericAnalyticsActions,
   } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
 
@@ -299,6 +298,13 @@
     })();
   }
 
+  const analyticsClientMiddleware = (eventName, payload) => {
+    if (listViewConfig["userContext"]) {
+      payload.customData = {...payload.customData, ...JSON.parse(listViewConfig["userContext"])};
+    }
+    return payload;
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     const main = async () => {
       let token = await getToken();
@@ -319,9 +325,15 @@
 
           return request;
         },
+        analytics: {
+          analyticsClientMiddleware,
+        }
       });
 
       const engine = searchInterface.engine;
+      if (listViewConfig['clientId']) {
+        localStorage.setItem('visitorId', listViewConfig['clientId']);
+      }
 
       setContext(engine);
       registerFields(engine);

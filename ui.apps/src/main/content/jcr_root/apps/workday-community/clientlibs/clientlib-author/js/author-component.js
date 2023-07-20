@@ -12,14 +12,4 @@ function hideElements() {
     });
 }
 
-function containerFlexToBlock() {
-    const doc = iframe.contentDocument;
-    const elements = doc.body.querySelectorAll('.container.col-equal-33-33-33 > .cmp-container > .aem-Grid, .container.col-left-66-right-33 > .cmp-container > .aem-Grid, .container.col-left-33-right-66 > .cmp-container > .aem-Grid');
-
-    elements.forEach(function (element, index) {
-        element.style.display = 'block';
-    });
-}
-
 iframe.addEventListener('load', hideElements);
-iframe.addEventListener('load', containerFlexToBlock);
