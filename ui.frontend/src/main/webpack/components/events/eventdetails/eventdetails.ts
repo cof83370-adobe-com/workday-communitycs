@@ -36,11 +36,8 @@
             const utcTimeString = hiddenElement.getAttribute('data-value');
 
             if(utcTimeString) {
-                if(window.digitalData) {
+                if(window && (window as any).digitalData) {
                     const targetTimezone = window.digitalData.user.timeZone | Intl.DateTimeFormat().resolvedOptions().timeZone;
-                }
-
-                if(utcTimeString) {
                     var localTime = convertUTCToLocal(utcTimeString, targetTimezone);
                     const eventDateElement = document.querySelector('.cmp-eventdetails__item-output') as HTMLElement;
                     eventDateElement.innerText = `${eventDateElement.innerText} (${localTime})`;
