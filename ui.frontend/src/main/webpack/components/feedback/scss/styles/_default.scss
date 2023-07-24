@@ -1,16 +1,17 @@
 .feedbackComponent-container {
+  border-radius: 8px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background-color: $wdc-color-french-vanilla-100;
   text-align: center;
-  border: 1px solid #78858f;
+  border: 1px solid #C4C4C4;
   box-sizing: border-box;
   h1 {
     span {
       color: $wdc-color-black-pepper-400;
       display: flex;
-      margin-left: 32px;
+      margin-left: 24px;
       font-weight: 700;
       font-size: 20px;
       padding: 6px 0;
@@ -24,7 +25,14 @@
     align-items: center;
     gap: 24px;
   }
+  textarea::placeholder {
+    color: #494949; 
+    font-size: 14px; 
+    font-weight: 400; 
+    }
   .feedback-select-button {
+    font-weight: 700;
+    font-size: 14px;
     height: 40px;
     padding: 10px 24px;
     width: 100px;
@@ -56,7 +64,7 @@
     box-sizing: border-box;
   }
   .feedback-dropdown-container {
-    margin-top: 25px;
+    margin-top: 23px;
     width: 60%;
     position: absolute;
     border-radius: 4px;
@@ -70,22 +78,25 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #78858f;
+    border: 1px solid $wdc-color-licorice-200;
     &.clicked {
       .selected-option {
       }
     }
     .feedback-dropdown-selected-option {
       margin-left: 10px;
+	  font-weight: 400;
+	  font-size: 14px;
     }
     &::after {
+	  color: $wdc-color-licorice-200;
       content: "\25BE";
       display: inline-block;
       margin-right: 10px;
     }
   }
   .feedback-dropdown-menu {
-    border: 1px solid #78858f;
+    border: 1px solid $wdc-color-licorice-200;
     z-index: 1;
     display: none;
     background-color: $wdc-color-french-vanilla-100;
@@ -96,6 +107,7 @@
     }
   }
   .feedback-dropdown-option {
+    color: $wdc-color-black-pepper-300;
     line-height: 32px;
     padding: 4px 8px;
     cursor: pointer;
@@ -112,7 +124,7 @@
     border-radius: 4px;
     width: 65%;
     height: 80px;
-    border: 1px solid #78858f;
+    border: 1px solid $wdc-color-licorice-200;
     box-sizing: border-box;
   }
   .feedback-form-submit-button {
@@ -122,6 +134,8 @@
     justify-content: flex-start;
     padding: 20px 0;
     button {
+	  font-weight: 700;
+      font-size: 14px;
       height: 32px;
       width: 108px;
       background-color: $wdc-color-blueberry-400;
@@ -132,6 +146,8 @@
       cursor: pointer;
     }
     .feedback-form-cancel-button {
+	  font-weight: 700;
+      font-size: 14px;
       color: $wdc-color-blueberry-400;
     }
   }
@@ -143,6 +159,11 @@
     height: 24px;
     font-weight: 700;
     font-size: 18px;
+  }
+  .feeback-button-disable {
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
   }
   .successContainer {
     flex-direction: column;
@@ -161,7 +182,13 @@
     display: flex;
   }
   .subText {
+	font-weight: 500;
+    font-size: 14px;
+	color: $wdc-color-black-pepper-300;
     display: flex;
     margin-bottom: 5px;
+  }
+  .subText-color {
+	color: $wdc-color-cinnamon-500;
   }
 }

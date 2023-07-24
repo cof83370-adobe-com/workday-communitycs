@@ -62,6 +62,8 @@ public final class GlobalConstants {
 
   public static final String CLOUD_CONFIG_NULL_VALUE = "null";
 
+  public static final String TAG_PROPERTY_ACCESS_CONTROL = "accessControlTags";
+
   private GlobalConstants() {
     throw new IllegalStateException("Utility class");
   }

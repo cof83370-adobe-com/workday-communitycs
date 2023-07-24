@@ -3,9 +3,12 @@ package com.workday.community.aem.core.listerners;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -16,6 +19,7 @@ import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,9 +29,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.listeners.PageResourceListener;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.utils.ResolverUtil;
+
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
@@ -65,6 +72,24 @@ public class PageResourceListenerTest {
 
     /** The service UserManager. */
     private UserManager userManager;
+
+    /** The service PageManager. */
+    @Mock
+    private PageManager pageManager;
+    /** The ValueMap */
+    @Mock
+    private ValueMap valueMap;
+
+    /** The Page */
+    @Mock
+    private Page page;
+
+    /** The Node */
+    @Mock Node node;
+
+    /** The Resource */
+    @Mock
+    private Resource resource;
 
     /**
      * The context.
@@ -108,7 +133,6 @@ public class PageResourceListenerTest {
 
     @Test
     void tesAddAuthorPropertyToContentNode() throws Exception {
-        when(ResolverUtil.newResolver(resolverFactory, "workday-community-administrative-service")).thenReturn(resolver);
         Resource resource = mock(Resource.class);
         Node expectedUserNode = mock(Node.class);
         userManager = mock(UserManager.class);
@@ -121,6 +145,25 @@ public class PageResourceListenerTest {
         lenient().when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
         lenient().when(userManager.getAuthorizable(anyString())).thenReturn(user);
 
-        pageResourceListener.addAuthorPropertyToContentNode(context.currentPage().getContentResource().getPath());
+        pageResourceListener.addAuthorPropertyToContentNode(context.currentPage().getContentResource().getPath(), resolver);
+    }
+
+    /**
+     *  Test Add Internal Workmates Tag.
+     * 
+     * @throws Exception
+     */
+    @Test
+    void testAddInternalWorkmatesTag() throws Exception {
+        List<String> updatedACLTags = new ArrayList<>(Arrays.asList("product:hcm", "access-control:internal_workmates"));
+        String [] aclTags = {"product:hcm"};
+        when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+        when(pageManager.getContainingPage(context.currentPage().getContentResource().getPath())).thenReturn(page);
+        when(page.getProperties()).thenReturn(valueMap);
+        when(page.getContentResource()).thenReturn(resource);
+        when(resource.adaptTo(Node.class)).thenReturn(node);
+        when(valueMap.get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class)).thenReturn(aclTags);
+        pageResourceListener.addInternalWorkmatesTag(context.currentPage().getContentResource().getPath(), resolver);
+        verify(node, times(1)).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, updatedACLTags.stream().toArray(String[]::new));
     }
 }

@@ -1,0 +1,35 @@
+.imagelink {
+
+    .cmp-image-link {
+        &__list {
+            list-style: none;
+        }
+
+        &__item {
+            display: block;
+            margin-bottom: 14px;
+        }
+
+        &-image-content {
+            display: inline;
+        }
+
+        &-imagesrc {
+            width: 32px;
+            height: auto;
+            vertical-align: middle;
+        }
+
+        &__item-link {
+            display: inline;
+            vertical-align: middle;
+            color: $wdc-color-blueberry-500;
+            text-decoration: none;
+            letter-spacing: 0.5px;
+            font-size: $font-size-small;
+            font-weight: $font-weight-normal;
+            line-height: 1.5;
+            margin-left: 5px;
+        }
+    }
+}
