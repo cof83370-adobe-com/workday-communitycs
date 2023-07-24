@@ -3,3 +3,4 @@ multifield-min-max.js
 selectfield-min-max.js
 book-page-operations.js
 author-component.js
+author-browse-disable.js
