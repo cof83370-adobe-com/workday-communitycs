@@ -1,0 +1,2 @@
+#base=js
+search-based-pathbrowser.js
