@@ -30,12 +30,12 @@ import static org.apache.sling.api.SlingHttpServletResponse.SC_OK;
         Constants.SERVICE_DESCRIPTION + "= Authenticate the page based on tags added on the page.",
         "sling.servlet.paths=" + "/bin/workday/community/authcheck"
 })
-public class RequestAuthenticationServlet extends SlingSafeMethodsServlet {
+public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
 
     /**
      * The Constant logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(RequestAuthenticationServlet.class);
+    private static final Logger logger = LoggerFactory.getLogger(RequestAuthorizationServlet.class);
 
     @Reference
     private transient UserGroupService userGroupService;

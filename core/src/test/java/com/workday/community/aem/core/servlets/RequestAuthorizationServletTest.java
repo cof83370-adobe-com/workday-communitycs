@@ -24,10 +24,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
-public class RequestAuthenticationServletTest {
+public class RequestAuthorizationServletTest {
 
     @InjectMocks
-    private RequestAuthenticationServlet servlet;
+    private RequestAuthorizationServlet servlet;
 
     @Mock
     private SlingHttpServletRequest request;
