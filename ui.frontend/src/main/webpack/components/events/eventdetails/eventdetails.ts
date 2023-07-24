@@ -12,14 +12,15 @@
           timeZoneName: 'short'
         };
 
+        const initialDate = utcTimeString.substring(8, 10);
         const convertedDateObj = new Date(originalDateObj.toLocaleString('en-US'));
 
         let localDateTimeString = originalDateObj.toLocaleString('en-US', options);
 
-        if (originalDateObj.getDate() > convertedDateObj.getDate()) {
+        if (initialDate > convertedDateObj.getDate()) {
             convertedDateObj.setDate(convertedDateObj.getDate() + 1);
             localDateTimeString = convertedDateObj.toLocaleString('en-US', options) + ' - 1';
-        } else if (originalDateObj.getDate() < convertedDateObj.getDate()) {
+        } else if (initialDate < convertedDateObj.getDate()) {
             convertedDateObj.setDate(convertedDateObj.getDate() - 1);
             localDateTimeString = convertedDateObj.toLocaleString('en-US', options) + ' + 1';
         }
@@ -36,7 +37,7 @@
 
             if(utcTimeString) {
                 if(window.digitalData) {
-    const targetTimezone = window.digitalData.user.timeZone | Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    const targetTimezone = window.digitalData.user.timeZone | Intl.DateTimeFormat().resolvedOptions().timeZone;
                 }
 
                 if(utcTimeString) {
