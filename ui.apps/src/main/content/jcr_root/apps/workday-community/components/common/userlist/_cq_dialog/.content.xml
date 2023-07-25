@@ -4,7 +4,8 @@
     xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:primaryType="nt:unstructured"
     jcr:title="Properties Config"
-    sling:resourceType="cq/gui/components/authoring/dialog">
+    sling:resourceType="cq/gui/components/authoring/dialog"
+    extraClientlibs="[workday-community.userlist]">
     <content
         jcr:primaryType="nt:unstructured"
         sling:resourceType="granite/ui/components/coral/foundation/container">
@@ -49,7 +50,8 @@
                                         sling:resourceType="granite/ui/components/foundation/form/pathbrowser"
                                         fieldLabel="Select Profile Image"
                                         name="./profileImageData"
-                                        required="{Boolean}true"
+                                        value="/content/dam/workday-community/default-profile-image.svg"
+                                        required="{Boolean}false"
                                         rootPath="/content/dam/workday-community" />
                             </items>
                         </field>

@@ -3,5 +3,3 @@ multifield-min-max.js
 selectfield-min-max.js
 book-page-operations.js
 author-component.js
-search-based-pathbrowser.js
-author-required-validation.js

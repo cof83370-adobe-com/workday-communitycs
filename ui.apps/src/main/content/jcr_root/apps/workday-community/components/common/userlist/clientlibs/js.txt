@@ -1,0 +1,3 @@
+#base=js
+search-based-pathbrowser.js
+author-required-validation.js
