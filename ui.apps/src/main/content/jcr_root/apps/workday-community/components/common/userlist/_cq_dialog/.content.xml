@@ -3,7 +3,7 @@
     xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0"
     xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:primaryType="nt:unstructured"
-    jcr:title="Properties Config"
+    jcr:title="User List Component"
     sling:resourceType="cq/gui/components/authoring/dialog"
     extraClientlibs="[workday-community.userlist]">
     <content
@@ -19,7 +19,7 @@
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                         composite="{Boolean}true"
-                        granite:class="ourmSpeaker"
+                        granite:class="ourmSpeakers"
                         fieldLabel="Speakers">
                         <granite:data
                             jcr:primaryType="nt:unstructured"
@@ -29,12 +29,12 @@
                             sling:resourceType="granite/ui/components/coral/foundation/container"
                             name="./items">
                             <items jcr:primaryType="nt:unstructured">
-                                <manualCheck
+                                <manualOverride
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                        text="Manual Author Entry"
-                                        granite:class="manualCheck"
-                                        name="./manualCheck"
+                                        text="Check to Author Speaker Manual"
+                                        granite:class="manualOverride"
+                                        name="./manualOverride"
                                         uncheckedValue="false"
                                         value="true"
                                         checked="false" />
@@ -50,6 +50,7 @@
                                         sling:resourceType="granite/ui/components/foundation/form/pathbrowser"
                                         fieldLabel="Select Profile Image"
                                         name="./profileImageData"
+                                        defaultValue="/content/dam/workday-community/default-profile-image.svg"
                                         value="/content/dam/workday-community/default-profile-image.svg"
                                         required="{Boolean}false"
                                         rootPath="/content/dam/workday-community" />

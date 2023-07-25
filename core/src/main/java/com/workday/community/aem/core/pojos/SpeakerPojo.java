@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.pojos;
 
-
 /**
  * The Class SpeakerPojo.
  */
@@ -8,21 +7,30 @@ public class SpeakerPojo {
 
     /** The profile image data. */
     String profileImageData;
-    
+
     /** The username. */
     String username;
-    
+
     /** The first name. */
     String firstName;
-    
+
     /** The last name. */
     String lastName;
-    
+
     /** The email. */
     String email;
-    
+
     /** The sf id. */
     String sfId;
+
+    public SpeakerPojo(String profileImageData, String username, String firstName, String lastName, String email, String sfId) {
+        this.profileImageData = profileImageData;
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email= email;
+        this.sfId = sfId;
+      }
 
     /**
      * Gets the profile image data.
