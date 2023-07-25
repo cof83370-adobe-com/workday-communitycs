@@ -100,7 +100,7 @@ public class AuthorizationFilterTest {
         when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
         when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
         when(request.getRequestPathInfo()).thenReturn(requestPathInfo);
-        when(request.getRequestPathInfo().getResourcePath()).thenReturn("/content/workday-community/test");
+        when(request.getRequestPathInfo().getResourcePath()).thenReturn("/content/workday-community/en-us/test");
         when(request.getResourceResolver()).thenReturn(resolver);
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(jcrSession.getUserID()).thenReturn("test-user1");
@@ -121,7 +121,7 @@ public class AuthorizationFilterTest {
         when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
         authorizationFilter.init(filterConfig);
 
-        String pagePath = "/content/workday-community/test";
+        String pagePath = "/content/workday-community/en-us/test";
         Tag[] tags = new Tag[2];
         tags[0] = context.create().tag("access-control:authenticated");
         tags[1] = context.create().tag("access-control:customer_all");
@@ -136,15 +136,10 @@ public class AuthorizationFilterTest {
         when(jcrSession.getUserID()).thenReturn("workday-user1");
         when(userService.getUser(any(), anyString())).thenReturn(user);
         when(user.getPath()).thenReturn("home/users/workdaycommunity/okta/workday-user1");
-        when(jcrSession.itemExists(anyString())).thenReturn(true);
-        when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
-        when(pageManager.getPage(anyString())).thenReturn(pageObj);
-        when(pageObj.getProperties()).thenReturn(data);
-        when(data.get("accessControlTags", String[].class)).thenReturn(tagList);
 
         authorizationFilter.doFilter(request, response, filterChain);
 
-        verify(userGroupService, times(0)).getLoggedInUsersGroups(any());
+        verify(userGroupService, times(1)).validateTheUser(any(),any(), anyString());
     }
 
     @Test
@@ -155,7 +150,7 @@ public class AuthorizationFilterTest {
         when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
         authorizationFilter.init(filterConfig);
 
-        String pagePath = "/content/workday-community/test";
+        String pagePath = "/content/workday-community/en-us/test";
         Tag[] tags = new Tag[2];
         tags[0] = context.create().tag("access-control:customer_all");
         tags[1] = context.create().tag("access-control:customer_name_support_contact");
@@ -170,15 +165,10 @@ public class AuthorizationFilterTest {
         when(jcrSession.getUserID()).thenReturn("workday-user1");
         when(userService.getUser(any(), anyString())).thenReturn(user);
         when(user.getPath()).thenReturn("home/users/workdaycommunity/okta/workday-user1");
-        when(jcrSession.itemExists(anyString())).thenReturn(true);
-        when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
-        when(pageManager.getPage(anyString())).thenReturn(pageObj);
-        when(pageObj.getProperties()).thenReturn(data);
-        when(data.get("accessControlTags", String[].class)).thenReturn(tagList);
 
         authorizationFilter.doFilter(request, response, filterChain);
 
-        verify(userGroupService, times(1)).getLoggedInUsersGroups(any());
+        verify(userGroupService, times(1)).validateTheUser(any(),any(), anyString());
     }
 
 }

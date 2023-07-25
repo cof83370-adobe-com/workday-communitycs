@@ -6,7 +6,8 @@
     "+/libs/granite/oauth/content/authorization",
     "+/content/workday-community",
     "+/content/experience-fragments",
-    "+/bin"
+    "+/bin",
+    "-/content/workday-community/en-us/public"
   ],
   "sling.auth.anonymous.user":"",
   "auth.uri.suffix":[
