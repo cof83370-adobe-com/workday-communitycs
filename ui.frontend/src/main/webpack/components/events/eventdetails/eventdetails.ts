@@ -2,7 +2,7 @@
 
     function convertUTCToLocal(utcTimeString, targetTimezone) {
 
-        const originalDateObj = new Date(utcTimeString);
+        const newDateObj = new Date(utcTimeString);
 
         const options: Intl.DateTimeFormatOptions = {
           timeZone: targetTimezone,
@@ -12,17 +12,14 @@
           timeZoneName: 'short'
         };
 
-        const initialDate = utcTimeString.substring(8, 10);
-        const convertedDateObj = new Date(originalDateObj.toLocaleString('en-US'));
+        const initialDate = newDateObj.getUTCDate();
 
-        let localDateTimeString = originalDateObj.toLocaleString('en-US', options);
+        let localDateTimeString = newDateObj.toLocaleString('en-US', options);
 
-        if (initialDate > convertedDateObj.getDate()) {
-            convertedDateObj.setDate(convertedDateObj.getDate() + 1);
-            localDateTimeString = convertedDateObj.toLocaleString('en-US', options) + ' - 1';
-        } else if (initialDate < convertedDateObj.getDate()) {
-            convertedDateObj.setDate(convertedDateObj.getDate() - 1);
-            localDateTimeString = convertedDateObj.toLocaleString('en-US', options) + ' + 1';
+        if (initialDate > newDateObj.getDate()) {
+            localDateTimeString = newDateObj.toLocaleString('en-US', options) + ' - 1';
+        } else if (initialDate < newDateObj.getDate()) {
+            localDateTimeString = newDateObj.toLocaleString('en-US', options) + ' + 1';
         }
 
         return localDateTimeString;
@@ -36,8 +33,8 @@
             const utcTimeString = hiddenElement.getAttribute('data-value');
 
             if(utcTimeString) {
-                if(window && (window as any).digitalData) {
-                    const targetTimezone = window.digitalData.user.timeZone | Intl.DateTimeFormat().resolvedOptions().timeZone;
+                if ('digitalData' in window) {
+                    const targetTimezone = (window as CustomWindow).digitalData.user?.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
                     var localTime = convertUTCToLocal(utcTimeString, targetTimezone);
                     const eventDateElement = document.querySelector('.cmp-eventdetails__item-output') as HTMLElement;
                     eventDateElement.innerText = `${eventDateElement.innerText} (${localTime})`;
