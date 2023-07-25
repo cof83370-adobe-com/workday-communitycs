@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.pojos.Speakers;
 import com.workday.community.aem.core.services.SpeakersApiConfigService;
@@ -46,13 +45,18 @@ public class SpeakersServlet extends SlingSafeMethodsServlet {
     /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(SpeakersServlet.class);
 
+    /** The object mapper. */
     private transient ObjectMapper objectMapper = new ObjectMapper();
 
-    private final transient Gson gson = new Gson();
-
+    /** The speakers api config service. */
     @Reference
     private transient SpeakersApiConfigService speakersApiConfigService;
 
+    /**
+     * Sets the object mapper.
+     *
+     * @param objectMapper the new object mapper
+     */
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
@@ -62,22 +66,26 @@ public class SpeakersServlet extends SlingSafeMethodsServlet {
      *
      * @param request  the request
      * @param response the response
+     * @throws ServletException the servlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
             throws ServletException, IOException {
-        String json=null;
+
+        JsonObject jsonResponse = new JsonObject();
+
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             String searchText = request.getParameter("searchText");
             Speakers speakers = getSpeakers(httpClient, searchText);
 
             if (speakers != null && speakers.getUsers().size() > 0) {
                 ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                 json = ow.writeValueAsString(speakers);
+                String json = ow.writeValueAsString(speakers);
+                jsonResponse.addProperty("hits", json);
             }
-            JsonObject jsonResponse = new JsonObject();
+
             response.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
-            jsonResponse.addProperty("hits", json);
             response.getWriter().write(jsonResponse.toString());
         } catch (IOException e) {
             LOGGER.error("Error Occurred in DoGet Method in SpeakersServlet : {}", e.getMessage());
@@ -85,6 +93,14 @@ public class SpeakersServlet extends SlingSafeMethodsServlet {
 
     }
 
+    /**
+     * Gets the speakers.
+     *
+     * @param httpClient the http client
+     * @param searchText the search text
+     * @return the speakers
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     private Speakers getSpeakers(CloseableHttpClient httpClient, String searchText) throws IOException {
         String endpoint = this.speakersApiConfigService.getSearchFieldLookupAPI();
         String consumerKey = this.speakersApiConfigService.getSearchFieldConsumerKey();
@@ -92,9 +108,9 @@ public class SpeakersServlet extends SlingSafeMethodsServlet {
         OAuth10AHeaderGenerator header = new OAuth10AHeaderGenerator(consumerKey, consumerSecret);
 
         try {
-            HttpGet request = new HttpGet(endpoint+searchText);
+            HttpGet request = new HttpGet(endpoint + searchText);
 
-            String headerString = header.generateHeader("GET", endpoint+searchText, new HashMap<>());
+            String headerString = header.generateHeader("GET", endpoint + searchText, new HashMap<>());
             request.addHeader(AUTHORIZATION, headerString);
 
             HttpResponse response = httpClient.execute(request);
