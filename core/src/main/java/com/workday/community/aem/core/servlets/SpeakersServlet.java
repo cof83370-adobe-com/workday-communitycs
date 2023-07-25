@@ -1,12 +1,9 @@
 package com.workday.community.aem.core.servlets;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
-
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
@@ -14,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.pojos.SpeakerPojo;
 import com.workday.community.aem.core.pojos.Speakers;
 import com.workday.community.aem.core.services.SpeakersApiConfigService;
 import com.workday.community.aem.core.utils.OAuth10AHeaderGenerator;

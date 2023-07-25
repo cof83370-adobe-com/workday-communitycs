@@ -28,6 +28,15 @@
                             sling:resourceType="granite/ui/components/coral/foundation/container"
                             name="./items">
                             <items jcr:primaryType="nt:unstructured">
+                                <manualCheck
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        text="Manual Author Entry"
+                                        granite:class="manualCheck"
+                                        name="./manualCheck"
+                                        uncheckedValue="false"
+                                        value="true"
+                                        checked="false" />
                                 <speaker
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="/apps/workday-community/components/search-pathbrowser"
@@ -35,6 +44,13 @@
                                     name="./speaker"
                                     required="{Boolean}true"
                                     rootPath="/content/workday-community" />
+                                <profileImageData
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/form/pathbrowser"
+                                        fieldLabel="Select Profile Image"
+                                        name="./profileImageData"
+                                        required="{Boolean}true"
+                                        rootPath="/content/dam/workday-community" />
                             </items>
                         </field>
                     </speakers>
