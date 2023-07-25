@@ -10,11 +10,8 @@
          }
        } else if(elements && elements.length == 2) {
          // Handling 66-33 and 33-66 column styles
-          if (x < y) {
              elements[0].classList.add(`col${x}`);
-          } else if (x > y) {
              elements[1].classList.add(`col${y}`);
-          }
        }
     };
 
