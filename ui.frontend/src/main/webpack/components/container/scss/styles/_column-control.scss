@@ -77,12 +77,14 @@
                 }
             }
         }
+
         &.col-left-66-right-33.cq-Editable-dom {
             >.cmp-container {
                 >.aem-Grid {
                     >.container:first-type {
                         width: calc(66% - 32px);
                     }
+
                     >.container:nth-of-type(2) {
                         width: calc(33% - 32px);
                     }
@@ -96,6 +98,7 @@
                     >.container:first-type {
                         width: calc(33% - 32px);
                     }
+
                     >.container:nth-of-type(2) {
                         width: calc(66% - 32px);
                     }
