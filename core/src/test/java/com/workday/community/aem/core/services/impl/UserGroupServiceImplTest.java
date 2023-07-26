@@ -159,7 +159,7 @@ class UserGroupServiceImplTest {
         nscMap.put("Scout", "customer_scount_only");
         nscMap.put("Peakon", "customer_peakon_only");
         nscMap.put("VNDLY", "customer_vndly_only");
-        Field nscField = userGroupService.getClass().getDeclaredField("nscSupportingMapping");
+        Field nscField = userGroupService.getClass().getDeclaredField("customerOfMapping");
         nscField.setAccessible(true);
         nscField.set(userGroupService, nscMap);
 
@@ -177,7 +177,7 @@ class UserGroupServiceImplTest {
         contextInfoObj.addProperty("isWorkmate", false);
         JsonObject contactInformationObj = new JsonObject();
         contactInformationObj.addProperty("propertyAccess", "Community");
-        contactInformationObj.addProperty("nscSupporting", "Adaptive Planning;VNDLY");
+        contactInformationObj.addProperty("customerOf", "Adaptive Planning;VNDLY");
         contactInformationObj.addProperty("wsp", "Customer - WSP Enhanced");
         context.add("contextInfo", contextInfoObj);
         context.add("contactInformation", contactInformationObj);
