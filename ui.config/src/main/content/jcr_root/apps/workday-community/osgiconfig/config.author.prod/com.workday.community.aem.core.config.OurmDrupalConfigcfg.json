@@ -1,5 +1,0 @@
-{
-    "ourmUserLookupApiEndpoint":"$[secret:ourmDrupalLookupApiEndpoint]",
-    "ourmDrupalConsumerKey":"$[secret:ourmDrupalConsumerKey]",
-    "ourmDrupalConsumerSecret":"$[secret:ourmDrupalConsumerSecret]"
-}

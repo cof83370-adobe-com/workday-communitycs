@@ -33,7 +33,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZ
  */
 @Component(service = OurmUserService.class, property = {
         "service.pid=aem.core.services.ourmUsers"
-}, configurationPid = "com.workday.community.aem.core.config.OurmUsersSearchConfig", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
+}, configurationPid = "com.workday.community.aem.core.config.OurmDrupalConfig", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 @Designate(ocd = OurmDrupalConfig.class)
 public class OurmUserServiceImpl implements OurmUserService {
     
