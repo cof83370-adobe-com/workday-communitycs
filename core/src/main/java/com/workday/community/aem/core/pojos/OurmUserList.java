@@ -4,19 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The Class OurmUsers.
+ * The Class OurmUserList.
  */
-public class OurmUsers {
+public class OurmUserList {
   
+
   /** The users. */
-  final List<OurmUserPojo> users = new ArrayList<>();
+  final List<OurmUser> users = new ArrayList<>();
+
 
   /**
    * Gets the users.
    *
    * @return the users
    */
-  public List<OurmUserPojo> getUsers() {
+  public List<OurmUser> getUsers() {
     return users;
   }
 }

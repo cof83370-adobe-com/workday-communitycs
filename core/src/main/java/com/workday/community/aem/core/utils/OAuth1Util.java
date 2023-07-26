@@ -21,7 +21,7 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author Gourab Sarkar
  */
-public class OAuth10AHeaderGenerator {
+public class OAuth1Util {
 
     private final String consumerKey;
 
@@ -54,7 +54,7 @@ public class OAuth10AHeaderGenerator {
     private static final String PERCENT7E_LITERAL = "%7E";
     private static final String PERCENT7E_PE_REPLACEMENT = "~";
 
-    public OAuth10AHeaderGenerator(String consumerKey, String consumerSecret) {
+    public OAuth1Util(String consumerKey, String consumerSecret) {
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
         this.signatureMethod = OAUTH_SIGNATURE_ALG_HEADER;
@@ -72,7 +72,7 @@ public class OAuth10AHeaderGenerator {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      */
-    public String generateHeader(String httpMethod, String url, Map<String, String> requestParams)
+    public String getHeader(String httpMethod, String url, Map<String, String> requestParams)
             throws NoSuchAlgorithmException, InvalidKeyException {
         StringBuilder base = new StringBuilder();
 

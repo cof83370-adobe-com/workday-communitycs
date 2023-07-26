@@ -71,8 +71,6 @@
 
             query = query.substring(0, query.length - 1);
 
-            console.log("WORKDAY - Search query - " + query);
-
             $.get(query).done(handler);
 
             function handler(data) {

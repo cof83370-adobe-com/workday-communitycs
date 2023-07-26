@@ -1,9 +1,9 @@
 package com.workday.community.aem.core.pojos;
 
 /**
- * The Class OurmUserPojo.
+ * The Class OurmUser.
  */
-public class OurmUserPojo {
+public class OurmUser {
 
     /** The profile image data. */
     String profileImageData;
@@ -23,9 +23,22 @@ public class OurmUserPojo {
     /** The sf id. */
     String sfId;
 
-    public OurmUserPojo() {};
+    /**
+     * Instantiates a new ourm user.
+     */
+    public OurmUser() {};
 
-    public OurmUserPojo(String profileImageData, String username, String firstName, String lastName, String email, String sfId) {
+    /**
+     * Instantiates a new ourm user.
+     *
+     * @param profileImageData the profile image data
+     * @param username the username
+     * @param firstName the first name
+     * @param lastName the last name
+     * @param email the email
+     * @param sfId the sf id
+     */
+    public OurmUser(String profileImageData, String username, String firstName, String lastName, String email, String sfId) {
         this.profileImageData = profileImageData;
         this.username = username;
         this.firstName = firstName;

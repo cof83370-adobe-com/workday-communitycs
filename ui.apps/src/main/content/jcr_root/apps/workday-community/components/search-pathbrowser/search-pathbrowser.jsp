@@ -19,7 +19,6 @@
             pathBrowser = wrapper.find("[data-init='pathbrowser']");
 
         if(_.isEmpty(pathBrowser)){
-            console.log("WORKDAY - search path browser wrapper not found");
             return;
         }
 

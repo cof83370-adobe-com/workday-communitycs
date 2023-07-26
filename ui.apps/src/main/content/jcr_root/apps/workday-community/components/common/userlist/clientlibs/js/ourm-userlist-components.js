@@ -12,7 +12,6 @@
         wrapper.siblings(FORM_FIELD_WRAPPER).hide();
         wrapper.find("button[title='Browse']").hide();
         if (_.isEmpty(pathBrowser)) {
-            console.log("WORKDAY - search path browser wrapper not found");
             return;
         }
 
