@@ -29,16 +29,15 @@
 
         const isEventsPage = document.getElementsByClassName('eventspage');
         if(isEventsPage) {
-            const hiddenElement = document.getElementById('hiddenElement');
-            const utcTimeString = hiddenElement.getAttribute('data-value');
+            const hiddenEventStartDate = document.getElementById('hiddenEventStartDate');
+            const utcTimeString = hiddenEventStartDate.getAttribute('data-value');
+            const hiddenUserTimeZone = document.getElementById('hiddenUserTimeZone');
+            const timeZoneString = hiddenUserTimeZone.getAttribute('data-value') || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-            if(utcTimeString) {
-                if ('digitalData' in window) {
-                    const targetTimezone = (window as CustomWindow).digitalData.user?.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    var localTime = convertUTCToLocal(utcTimeString, targetTimezone);
-                    const eventDateElement = document.querySelector('.cmp-eventdetails__item-output') as HTMLElement;
-                    eventDateElement.innerText = `${eventDateElement.innerText} (${localTime})`;
-                }
+            if (utcTimeString) {
+                const localTime = convertUTCToLocal(utcTimeString, timeZoneString);
+                const eventDateElement = document.querySelector('.cmp-eventdetails__item-output') as HTMLElement;
+                eventDateElement.innerText = `${eventDateElement.innerText} (${localTime})`;
             }
         }
     }
