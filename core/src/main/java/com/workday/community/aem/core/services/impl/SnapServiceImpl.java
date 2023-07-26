@@ -240,10 +240,12 @@ public class SnapServiceImpl implements SnapService {
     }
     try {
       String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
-      url = String.format(url, sfId);
-      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
-      snapCache.put(cacheKey, jsonResponse);
-      return jsonResponse;
+      if(StringUtils.isNotBlank(url)) {
+        url = String.format(url, sfId);
+        String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
+        snapCache.put(cacheKey, jsonResponse);
+        return jsonResponse;
+      }
     } catch (SnapException | JsonSyntaxException e) {
       logger.error("Error in getUserProfile method :: {}", e.getMessage());
     }

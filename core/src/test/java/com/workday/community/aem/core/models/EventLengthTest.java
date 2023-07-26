@@ -2,6 +2,8 @@ package com.workday.community.aem.core.models;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,8 +12,11 @@ import org.apache.sling.api.resource.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.day.cq.wcm.api.Page;
+import com.workday.community.aem.core.services.SnapService;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -19,7 +24,7 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 /**
  * The Class EventLengthTest.
  */
-@ExtendWith(AemContextExtension.class)
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class EventLengthTest {
 
     /** The context. */
@@ -34,6 +39,10 @@ public class EventLengthTest {
     /** The resource. */
     private Resource resource;
 
+    /** The Snap Service */
+    @Mock
+    private SnapService snapService;
+
     /**
      * Setup.
      *
@@ -42,7 +51,9 @@ public class EventLengthTest {
     @BeforeEach
     public void setup() throws Exception {
         context.addModelsForClasses(EventDetailsModel.class);
-       
+        context.registerService(SnapService.class, snapService);   
+        String profileResponse = "{\"timeZone\":\"America/New_York\"}";
+        lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse); 
     }
 
     /**
@@ -61,7 +72,7 @@ public class EventLengthTest {
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         assertEquals(0, eventDetailsModel.getEventLengthDays());
         assertEquals(5, eventDetailsModel.getEventLengthHours());
@@ -86,7 +97,7 @@ public class EventLengthTest {
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         assertEquals(0, eventDetailsModel.getEventLengthDays());
         assertEquals(0, eventDetailsModel.getEventLengthHours());
@@ -111,7 +122,7 @@ public class EventLengthTest {
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         assertEquals(1, eventDetailsModel.getEventLengthDays());
         assertEquals(0, eventDetailsModel.getEventLengthHours());
@@ -134,7 +145,7 @@ public class EventLengthTest {
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         assertEquals(3, eventDetailsModel.getEventLengthDays());
         assertEquals("Days", eventDetailsModel.getDaysLabel());
@@ -156,7 +167,7 @@ public class EventLengthTest {
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
     }
 }
