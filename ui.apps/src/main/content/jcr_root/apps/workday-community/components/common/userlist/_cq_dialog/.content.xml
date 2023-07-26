@@ -21,9 +21,6 @@
                         composite="{Boolean}true"
                         granite:class="ourmUsers"
                         fieldLabel="Ourm Users">
-                        <granite:data
-                            jcr:primaryType="nt:unstructured"
-                            max-item="3" />
                         <field
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="granite/ui/components/coral/foundation/container"
@@ -43,7 +40,6 @@
                                     sling:resourceType="/apps/workday-community/components/search-pathbrowser"
                                     fieldLabel="Ourm User"
                                     name="./ourmUser"
-                                    width="{Long}500"
                                     required="{Boolean}true"
                                     rootPath="/content/workday-community" />
                                 <profileImageData
