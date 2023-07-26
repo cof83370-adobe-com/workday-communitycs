@@ -22,4 +22,13 @@ public interface UserGroupService {
      * @return User groups
      */
     List<String> getLoggedInUsersGroups(ResourceResolver resourceResolve) throws OurmException;
+
+    /**
+     *
+     * @param resourceResolver the admin user resource resolver
+     * @param requestResourceResolver the request resource resolver
+     * @param pagePath the requested page path
+     * @return boolean to indicate whether the user is valid user or invalid user.
+     */
+    boolean validateTheUser(ResourceResolver resourceResolver, ResourceResolver requestResourceResolver, String pagePath);
 }

@@ -47,9 +47,9 @@ public interface SnapConstants {
   String PROPERTY_ACCESS_COMMUNITY = "Community";
 
   /**
-   * The nsc supporting key.
+   * The customer of key.
    */
-  String NSC_SUPPORTING_KEY = "nscSupporting";
+  String CUSTOMER_OF_KEY = "customerOf";
 
   /**
    * The wsp key.

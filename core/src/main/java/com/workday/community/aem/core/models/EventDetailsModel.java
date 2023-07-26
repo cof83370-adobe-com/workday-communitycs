@@ -16,6 +16,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.workday.community.aem.core.constants.EventDetailsConstants;
+import com.workday.community.aem.core.services.SnapService;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -23,11 +25,16 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.day.cq.wcm.api.Page;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.utils.CommunityUtils;
+import com.workday.community.aem.core.utils.OurmUtils;
 
 /**
  * The Class EventDetailsModel.
@@ -73,6 +80,10 @@ public class EventDetailsModel {
 
 	/** The time format. */
 	private String timeFormat;
+
+	/** The User TimeZone */
+	private String userTimeZone;
+
 	/** The current page. */
 	@Inject
 	private Page currentPage;
@@ -80,6 +91,14 @@ public class EventDetailsModel {
 	/** The resolver. */
 	@Inject
 	private ResourceResolver resolver;
+
+	/** The Snap Service */
+	@Inject
+	private SnapService snapService;
+
+	/** The Sling Http Servlet Request */
+	@Self
+  	private SlingHttpServletRequest request;
 
 	/**
 	 * Inits the model.
@@ -97,10 +116,30 @@ public class EventDetailsModel {
 				eventLocation = map.get("eventLocation", String.class);
 				eventHost = map.get("eventHost", String.class);
 				eventFormat = CommunityUtils.getPageTagsList(map, "eventFormat", resolver);
+				userTimeZone = populateUserTimeZone();
 			} catch (ParseException exec) {
 				logger.error("Exception occurred at init method of EventDetailsModel:{} ", exec.getMessage());
 			}
 		}
+	}
+
+	/**
+	 * Populates User TimeZone
+	 * @return user time zone string
+	 */
+	private String populateUserTimeZone() {
+		String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+		String timeZoneStr = "";
+		Gson gson = new Gson();
+		if(StringUtils.isNotBlank(sfId) && null != snapService) {
+			String profileData = snapService.getUserProfile(sfId);
+			if(StringUtils.isNotBlank(profileData)){
+				JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
+        		JsonElement timeZoneElement = profileObject.get("timeZone");
+        		timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" : timeZoneElement.getAsString();
+			}
+		}
+		return timeZoneStr;
 	}
 
 	/**
@@ -247,5 +286,12 @@ public class EventDetailsModel {
 	 */
 	public String getEventHost() {
 		return eventHost;
+	}
+
+	/**
+	 * @return the userTimeZone
+	 */
+	public String getUserTimeZone() {
+		return userTimeZone;
 	}
 }

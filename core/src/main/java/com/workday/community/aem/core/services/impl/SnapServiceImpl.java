@@ -240,10 +240,12 @@ public class SnapServiceImpl implements SnapService {
     }
     try {
       String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
-      url = String.format(url, sfId);
-      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
-      snapCache.put(cacheKey, jsonResponse);
-      return jsonResponse;
+      if(StringUtils.isNotBlank(url)) {
+        url = String.format(url, sfId);
+        String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
+        snapCache.put(cacheKey, jsonResponse);
+        return jsonResponse;
+      }
     } catch (SnapException | JsonSyntaxException e) {
       logger.error("Error in getUserProfile method :: {}", e.getMessage());
     }
@@ -288,6 +290,7 @@ public class SnapServiceImpl implements SnapService {
     String accountName = "";
     String accountType = "";
     boolean isNSC = false;
+    String timeZoneStr = "";
     if (profileData != null) {
       try {
         JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
@@ -308,6 +311,8 @@ public class SnapServiceImpl implements SnapService {
         JsonElement typeElement = profileObject.get("type");
         accountType = isWorkdayMate ? "workday"
             : (typeElement == null || typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
+        JsonElement timeZoneElement = profileObject.get("timeZone");
+        timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" : timeZoneElement.getAsString();
       } catch (JsonSyntaxException e) {
         logger.error("Error in generateAdobeDigitalData method :: {}",
             e.getMessage());
@@ -316,6 +321,7 @@ public class SnapServiceImpl implements SnapService {
     userProperties.addProperty(CONTACT_ROLE, contactRole);
     userProperties.addProperty(CONTACT_NUMBER, contactNumber);
     userProperties.addProperty(IS_NSC, isNSC);
+    userProperties.addProperty("timeZone", timeZoneStr);
     orgProperties.addProperty(ACCOUNT_ID, accountID);
     orgProperties.addProperty(ACCOUNT_NAME, accountName);
     orgProperties.addProperty(ACCOUNT_TYPE, accountType);

@@ -3,7 +3,7 @@
         "Named Support Contact": "customer_named_support_contact", 
         "Training Coordinator": "customer_training_coordinator"
     },
-    "nscSupportingMapping": {
+    "customerOfMapping": {
         "Adaptive Planning": "customer_adaptive_only", 
         "Scout": "customer_scout_only", 
         "Peakon": "customer_peakon_only", 

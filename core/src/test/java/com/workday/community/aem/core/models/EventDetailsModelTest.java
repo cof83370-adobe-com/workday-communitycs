@@ -3,6 +3,9 @@ package com.workday.community.aem.core.models;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.text.DateFormat;
@@ -15,24 +18,28 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
+import com.workday.community.aem.core.services.SnapService;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * The Class EventDetailsModelTest.
  */
-@ExtendWith(AemContextExtension.class)
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class EventDetailsModelTest {
 
     /** The context. */
@@ -56,6 +63,10 @@ public class EventDetailsModelTest {
     /** The resolver. */
     private ResourceResolver resolver;
 
+    /** The Snap Service */
+    @Mock
+    private SnapService snapService;
+
     /**
      * Setup.
      *
@@ -76,6 +87,9 @@ public class EventDetailsModelTest {
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
+        context.registerService(SnapService.class, snapService);   
+        String profileResponse = "{\"timeZone\":\"America/New_York\"}";
+        lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse); 
     }
 
     /**
@@ -101,7 +115,7 @@ public class EventDetailsModelTest {
      */
     @Test
     void testGetLength() throws Exception {
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         assertEquals(3, eventDetailsModel.getEventLengthDays());
     }
@@ -113,7 +127,7 @@ public class EventDetailsModelTest {
      */
     @Test
     void testGetDateFormat() throws Exception {
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         DateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy");
         Date formattedStartDate = formatter.parse(eventDetailsModel.getDateFormat());
@@ -131,7 +145,7 @@ public class EventDetailsModelTest {
      */
     @Test
     void testGetEventLocation() throws Exception {
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         assertEquals("California", eventDetailsModel.getEventLocation());
     }
@@ -143,7 +157,7 @@ public class EventDetailsModelTest {
      */
     @Test
     void testGetEventHost() throws Exception {
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         assertEquals("workday", eventDetailsModel.getEventHost());
     }
@@ -155,7 +169,7 @@ public class EventDetailsModelTest {
      */
     @Test
     void testIsConfigured() throws Exception {
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         assertTrue(eventDetailsModel.isConfigured());
     }
@@ -167,7 +181,7 @@ public class EventDetailsModelTest {
      */
     @Test
     void testGetDaysLabel() throws Exception {
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         assertEquals("Days", eventDetailsModel.getDaysLabel());
     }
@@ -179,7 +193,7 @@ public class EventDetailsModelTest {
      */
     @Test
     void testGetEventFormatWithoutTags() throws Exception {
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         assertEquals(new ArrayList<String>(), eventDetailsModel.getEventFormat());
     }
@@ -193,12 +207,9 @@ public class EventDetailsModelTest {
     void testGetEventFormatWithTags() throws Exception {
         resolver = Mockito.mock(ResourceResolver.class);
         tm = Mockito.mock(TagManager.class);
-        when(resolver.adaptTo(TagManager.class)).thenReturn(tm);
         tag = Mockito.mock(Tag.class);
-        when(tm.resolve("event:event-format/webinar")).thenReturn(tag);
-        when(tag.getTitle()).thenReturn("Webinar");
 
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         eventDetailsModel.getEventFormat();
     }

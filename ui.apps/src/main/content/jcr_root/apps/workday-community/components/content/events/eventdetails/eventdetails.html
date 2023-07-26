@@ -6,6 +6,8 @@
       <div class="cmp-eventdetails__item" data-cmp-hook-eventdetails="eventDate">
         <span class="cmp-eventdetails__item-icon-calendar"></span>
         <div class="cmp-eventdetails__item-label">${'Event Date' @ i18n, context='text'} </div>
+        <span id="hiddenEventStartDate" data-value="${'yyyy-MM-dd HH:mm:ss.SSSXXX' @ format=pageProperties['eventStartDate']}"></span>
+        <span id="hiddenUserTimeZone" data-value="${eventDetails.userTimeZone}"></span>
         <div class="cmp-eventdetails__item-output">${eventDetails.dateFormat @ i18n, context='text'} ${'at' @ i18n, context='text'} ${eventDetails.timeFormat @ i18n, context='text'} UTC
           <sly data-sly-test="${pageProperties.alternateTimezone}">(${pageProperties.alternateTimezone})</sly>
         </div>
