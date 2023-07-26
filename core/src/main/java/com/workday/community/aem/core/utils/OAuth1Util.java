@@ -23,14 +23,6 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class OAuth1Util {
 
-    private final String consumerKey;
-
-    private final String consumerSecret;
-
-    private final String signatureMethod;
-
-    private final String oauthVersion;
-
     private static final Random RANDOM = new Random();
 
     private static final String OAUTH_SIGNATURE_ALG_HEADER = "HMAC-SHA1";
@@ -54,40 +46,34 @@ public class OAuth1Util {
     private static final String PERCENT7E_LITERAL = "%7E";
     private static final String PERCENT7E_PE_REPLACEMENT = "~";
 
-    public OAuth1Util(String consumerKey, String consumerSecret) {
-        this.consumerKey = consumerKey;
-        this.consumerSecret = consumerSecret;
-        this.signatureMethod = OAUTH_SIGNATURE_ALG_HEADER;
-        this.oauthVersion = OAUTH_VER_HEADER;
-    }
-
     /**
      * Generates OAuth 1.0A header which can be passed as Authorization header.
      *
-     * @param httpMethod Method.
-     * @param url Url of the API.
+     * @param httpMethod    Method.
+     * @param url           Url of the API.
      * @param requestParams request.
      * @return String
      *
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      */
-    public String getHeader(String httpMethod, String url, Map<String, String> requestParams)
+    public static String getHeader(String httpMethod, String url, String consumerKey, String consumerSecret,
+            Map<String, String> requestParams)
             throws NoSuchAlgorithmException, InvalidKeyException {
         StringBuilder base = new StringBuilder();
 
         final String nonce = getNonce();
         final String timestamp = getTimestamp();
-        final String baseSignatureString = generateSignatureBaseString(httpMethod, url, requestParams, nonce,
+        final String baseSignatureString = generateSignatureBaseString(httpMethod, url, consumerKey, requestParams, nonce,
                 timestamp);
-        final String signature = generateSignature(baseSignatureString);
+        final String signature = generateSignature(baseSignatureString, consumerSecret);
 
         base.append(OAUTH_AUTH_PREAMBLE);
         append(base, OAUTH_CONSUMER_KEY_HEADER, consumerKey);
-        append(base, OAUTH_SIGNATURE_METHOD_HEADER, signatureMethod);
+        append(base, OAUTH_SIGNATURE_METHOD_HEADER, OAUTH_SIGNATURE_ALG_HEADER);
         append(base, OAUTH_TIMESTAMP_HEADER, timestamp);
         append(base, OAUTH_NONCE_HEADER, nonce);
-        append(base, OAUTH_VERSION_HEADER, oauthVersion);
+        append(base, OAUTH_VERSION_HEADER, OAUTH_VER_HEADER);
         append(base, OAUTH_SIGNATURE_HEADER, signature);
         base.deleteCharAt(base.length() - 1);
         return base.toString();
@@ -96,20 +82,20 @@ public class OAuth1Util {
     /**
      * Generate base signature string to generate the oauth_signature.
      *
-     * @param httpMethod method.
-     * @param url url of the api.
+     * @param httpMethod    method.
+     * @param url           url of the api.
      * @param requestParams request.
      * @return String
      */
-    private String generateSignatureBaseString(final String httpMethod, final String url,
-                                               final Map<String, String> requestParams, final String nonce, final String timestamp) {
+    private static String generateSignatureBaseString(final String httpMethod, final String url, String consumerKey,
+            final Map<String, String> requestParams, final String nonce, final String timestamp) {
         Map<String, String> params = new HashMap<>();
         requestParams.forEach((key1, value1) -> putEncoded(params, key1, value1));
         putEncoded(params, OAUTH_CONSUMER_KEY_HEADER, consumerKey);
         putEncoded(params, OAUTH_NONCE_HEADER, nonce);
-        putEncoded(params, OAUTH_SIGNATURE_METHOD_HEADER, signatureMethod);
+        putEncoded(params, OAUTH_SIGNATURE_METHOD_HEADER, OAUTH_SIGNATURE_ALG_HEADER);
         putEncoded(params, OAUTH_TIMESTAMP_HEADER, timestamp);
-        putEncoded(params, OAUTH_VERSION_HEADER, oauthVersion);
+        putEncoded(params, OAUTH_VERSION_HEADER, OAUTH_VER_HEADER);
 
         Map<String, String> sortedParams = params.entrySet().stream().sorted(Map.Entry.comparingByKey())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (oldValue, newValue) -> oldValue,
@@ -132,7 +118,7 @@ public class OAuth1Util {
      * @throws NoSuchAlgorithmException
      * @throws InvalidKeyException
      */
-    private String generateSignature(final String signatureBaseString)
+    private static String generateSignature(final String signatureBaseString, String consumerSecret)
             throws NoSuchAlgorithmException, InvalidKeyException {
         final String secret = percentEncode(consumerSecret) +
                 AMPERSAND_LITERAL;
@@ -151,7 +137,7 @@ public class OAuth1Util {
      * @param value String to encode
      * @return String
      */
-    private String percentEncode(String value) {
+    private static String percentEncode(String value) {
         String encoded = "";
         encoded = URLEncoder.encode(value, StandardCharsets.UTF_8);
 
@@ -180,11 +166,11 @@ public class OAuth1Util {
     /**
      * Encodes and puts entries inside the specified {@link Map}.
      *
-     * @param map map.
-     * @param key key.
+     * @param map   map.
+     * @param key   key.
      * @param value value.
      */
-    private void putEncoded(Map<String, String> map, String key, String value) {
+    private static void putEncoded(Map<String, String> map, String key, String value) {
         map.put(percentEncode(key), percentEncode(value));
     }
 
@@ -192,10 +178,10 @@ public class OAuth1Util {
      * Encodes and appends the specified key-value pair to a {@link StringBuilder}.
      *
      * @param builder String builder.
-     * @param key key.
-     * @param value value.
+     * @param key     key.
+     * @param value   value.
      */
-    private void append(StringBuilder builder, String key, String value) {
+    private static void append(StringBuilder builder, String key, String value) {
         builder.append(percentEncode(key)).append("=\"").append(percentEncode(value)).append("\",");
     }
 
@@ -204,7 +190,7 @@ public class OAuth1Util {
      *
      * @return String
      */
-    private String getNonce() {
+    private static String getNonce() {
         // Returns an alphanumeric pseudorandom string.
         return RANDOM.ints(48, 123).filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97)).limit(10)
                 .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append).toString();
@@ -215,7 +201,7 @@ public class OAuth1Util {
      *
      * @return String
      */
-    private String getTimestamp() {
+    private static String getTimestamp() {
         return String.valueOf(System.currentTimeMillis() / 1000);
     }
 

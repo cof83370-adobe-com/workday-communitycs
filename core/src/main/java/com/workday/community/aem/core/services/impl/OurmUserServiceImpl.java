@@ -79,14 +79,13 @@ public class OurmUserServiceImpl implements OurmUserService {
         String endpoint = this.ourmDrupalConfig.ourmDrupalLookupApiEndpoint();
         String consumerKey = this.ourmDrupalConfig.ourmDrupalConsumerKey();
         String consumerSecret = this.ourmDrupalConfig.ourmDrupalConsumerSecret();
-        OAuth1Util header = new OAuth1Util(consumerKey, consumerSecret);
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
             String apiUrl = String.format("%s%s%s", endpoint, "/user/search/", searchText);
             HttpGet request = new HttpGet(apiUrl);
 
-            String headerString = header.getHeader("GET", apiUrl, new HashMap<>());
+            String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());
             request.addHeader(AUTHORIZATION, headerString);
 
             HttpResponse response = httpClient.execute(request);
