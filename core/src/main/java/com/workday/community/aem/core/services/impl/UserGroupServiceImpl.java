@@ -35,7 +35,7 @@ import static com.workday.community.aem.core.constants.SnapConstants.USER_TYPE_K
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_INFORMATION_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.NSC_SUPPORTING_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.CUSTOMER_OF_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.WSP_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
@@ -80,9 +80,9 @@ public class UserGroupServiceImpl implements UserGroupService {
     private HashMap<String, String> customerRoleMapping = new HashMap<>();
 
     /**
-     * The nsc_supporting_mapping.
+     * The customer_of_mapping.
      */
-    private HashMap<String, String> nscSupportingMapping = new HashMap<>();
+    private HashMap<String, String> customerOfMapping = new HashMap<>();
 
     /**
      * The wsp_mapping.
@@ -206,11 +206,11 @@ public class UserGroupServiceImpl implements UserGroupService {
             groups.add(AUTHENTICATED);
             hasCommunityAccess = true;
         }
-        JsonElement nscSupporting = contactInformation.get(NSC_SUPPORTING_KEY);
-        if (!nscSupporting.isJsonNull()) {
-            String nscSupportingString = nscSupporting.getAsString();
-            for (Map.Entry<String, String> entry : nscSupportingMapping.entrySet()) {
-                if (nscSupportingString.contains(entry.getKey())) {
+        JsonElement customerOf = contactInformation.get(CUSTOMER_OF_KEY);
+        if (!customerOf.isJsonNull()) {
+            String customerOfString = customerOf.getAsString();
+            for (Map.Entry<String, String> entry : customerOfMapping.entrySet()) {
+                if (customerOfString.contains(entry.getKey())) {
                     groups.add(entry.getValue());
                 }
             }
@@ -262,7 +262,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         if (sfdcRoleMap != null) {
             Gson g = new Gson();
             customerRoleMapping = g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
-            nscSupportingMapping = g.fromJson(sfdcRoleMap.get("nscSupportingMapping").toString(), HashMap.class);
+            customerOfMapping = g.fromJson(sfdcRoleMap.get("customerOfMapping").toString(), HashMap.class);
             wspMapping = g.fromJson(sfdcRoleMap.get("wspMapping").toString(), HashMap.class);
         }
 

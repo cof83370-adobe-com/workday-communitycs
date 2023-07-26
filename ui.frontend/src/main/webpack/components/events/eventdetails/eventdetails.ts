@@ -17,9 +17,9 @@
         let localDateTimeString = newDateObj.toLocaleString('en-US', options);
 
         if (initialDate > newDateObj.getDate()) {
-            localDateTimeString = newDateObj.toLocaleString('en-US', options) + ' - 1';
+            localDateTimeString += '-1';
         } else if (initialDate < newDateObj.getDate()) {
-            localDateTimeString = newDateObj.toLocaleString('en-US', options) + ' + 1';
+            localDateTimeString += '+1';
         }
 
         return localDateTimeString;
