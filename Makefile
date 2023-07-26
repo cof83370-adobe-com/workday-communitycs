@@ -1,13 +1,13 @@
 dc=docker compose
 logs=docker logs
-exec=docker exec -it
+exec=docker exec --workdir /opt/aem -it
 publish=community-aem-publish-1
 author=community-aem-author-1
-scripts_path=/opt/aem/docker/scripts
+scripts_path=docker/scripts
 
 # AEM build & test commands
 aem-build:
-	${exec} ${publish} ${scripts_path}/build-utilities.sh build-no-tests
+	${exec} ${author} ${scripts_path}/build-utilities.sh build-no-tests
 
 unit-tests:
 	${exec} ${author} ${scripts_path}/build-utilities.sh unit-tests
@@ -56,5 +56,5 @@ dispatcher-down:
 	${dc} -f docker-compose.dispatcher.yaml -f docker-compose.yaml down
 
 restart-apache:
-	${exec} community-aem-dispatcher-1 sh -c "kill -HUP `cat /var/run/httpd/httpd.pid`"
+	docker exec -it community-aem-dispatcher-1 sh -c "kill -HUP `cat /var/run/httpd/httpd.pid`"
 

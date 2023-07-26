@@ -48,7 +48,7 @@
 		<bnd.version>5.1.2</bnd.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-<!--		When updating the version, remember to download and put the new sdk in s3://community-aem/container/images/wc_aem_sdk/-->
+<!-- IMPORTANT!! When updating the version, remember to download and put the new sdk in s3://community-aem/container/images/wc_aem_sdk/-->
 		<aem.sdk.api>2023.2.11289.20230224T170559Z-230100</aem.sdk.api>
 		<aemanalyser.version>1.4.10</aemanalyser.version>
 		<componentGroupName>Workday Community Site</componentGroupName>

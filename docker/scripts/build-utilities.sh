@@ -13,11 +13,12 @@ function integration-tests() {
 }
 
 function build-no-tests() {
-   mvn clean install -PautoInstallPackage -PautoInstallPackagePublish -Dmaven.test.skip -Daem.host=community-aem-author-1 -Daem.port=4502  -Daem.publish.host=community-aem-publish-1 -Daem.publish.port=4503
+   $MVN clean install -PautoInstallPackage -PautoInstallPackagePublish -Dmaven.test.skip -Daem.host=community-aem-author-1 -Daem.port=4502  -Daem.publish.host=community-aem-publish-1 -Daem.publish.port=4503
 }
 
 function pipeline-check() {
     $MVN --batch-mode org.apache.maven.plugins:maven-dependency-plugin:3.1.2:resolve-plugins
+    $MVN --batch-mode de.qaware.maven:go-offline-maven-plugin:1.2.8:resolve-dependencies
     $MVN --batch-mode org.apache.maven.plugins:maven-clean-plugin:3.1.0:clean -Dmaven.clean.failOnError=false
     $MVN --batch-mode org.jacoco:jacoco-maven-plugin:prepare-agent package
 }
