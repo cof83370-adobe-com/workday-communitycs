@@ -36,6 +36,7 @@
     const populateInputsFromCheckbox = function (ele) {
         if ($(ele).prop('checked')) {
             $(ele).parents(MANUAL_OVERRIDE_CHECKBOX).siblings(FORM_FIELD_WRAPPER).show();
+            $(ele).parents(MANUAL_OVERRIDE_CHECKBOX).siblings(FORM_FIELD_WRAPPER).find('input').val('');
         } else {
             $(ele).parents(MANUAL_OVERRIDE_CHECKBOX).siblings(FORM_FIELD_WRAPPER).hide();
         }
