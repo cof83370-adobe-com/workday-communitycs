@@ -133,9 +133,11 @@ public class EventDetailsModel {
 		Gson gson = new Gson();
 		if(StringUtils.isNotBlank(sfId) && null != snapService) {
 			String profileData = snapService.getUserProfile(sfId);
-			JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
-        	JsonElement timeZoneElement = profileObject.get("timeZone");
-        	timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" : timeZoneElement.getAsString();
+			if(StringUtils.isNotBlank(profileData)){
+				JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
+        		JsonElement timeZoneElement = profileObject.get("timeZone");
+        		timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" : timeZoneElement.getAsString();
+			}
 		}
 		return timeZoneStr;
 	}
