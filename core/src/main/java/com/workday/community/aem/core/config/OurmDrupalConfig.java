@@ -6,7 +6,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 /**
  * The Interface OurmDrupalConfig.
  */
-@ObjectClassDefinition(name = "Ourm Users Search Config", description = "Ourm Users Search OSGi Config Vaues")
+@ObjectClassDefinition(name = "Ourm Drupal Search Config", description = "Ourm Drupal Search OSGi Config Vaues")
 public @interface OurmDrupalConfig {
 
   /**
@@ -14,7 +14,7 @@ public @interface OurmDrupalConfig {
    *
    * @return the string
    */
-  @AttributeDefinition(name = "Ourm Users Search field look up Api endpoint", description = "Ourm Users Search field lookup Api endpoint")
+  @AttributeDefinition(name = "Ourm Drupal look up Api endpoint", description = "Ourm Drupal lookup Api endpoint")
   String ourmDrupalLookupApiEndpoint();
 
 
@@ -23,7 +23,7 @@ public @interface OurmDrupalConfig {
    *
    * @return the string
    */
-  @AttributeDefinition(name = "Ourm Users Search field look up Api Consumer Key", description = "Ourm Users Search field look up Api Consumer Key")
+  @AttributeDefinition(name = "Ourm Drupal look up Api Consumer Key", description = "Ourm Drupal look up Api Consumer Key")
   String ourmDrupalConsumerKey();
 
   /**
@@ -31,7 +31,7 @@ public @interface OurmDrupalConfig {
    *
    * @return the string
    */
-  @AttributeDefinition(name = "Ourm Users Search field look up Api Consumer Secret", description = "Ourm Users Search field look up Api Consumer Secret")
+  @AttributeDefinition(name = "Ourm Drupal look up Api Consumer Secret", description = "Ourm Drupal look up Api Consumer Secret")
   String ourmDrupalConsumerSecret();
 
 }

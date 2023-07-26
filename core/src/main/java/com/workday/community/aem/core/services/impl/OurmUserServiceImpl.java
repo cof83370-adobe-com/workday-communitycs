@@ -27,7 +27,6 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
 
-
 /**
  * The Class OurmUserServiceImpl.
  */
@@ -36,13 +35,13 @@ import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZ
 }, configurationPid = "com.workday.community.aem.core.config.OurmDrupalConfig", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 @Designate(ocd = OurmDrupalConfig.class)
 public class OurmUserServiceImpl implements OurmUserService {
-    
+
     /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(OurmUserServiceImpl.class);
 
     /** The ourm drupal config. */
     private OurmDrupalConfig ourmDrupalConfig;
-    
+
     /** The object mapper. */
     public transient ObjectMapper objectMapper = new ObjectMapper();
 
@@ -73,10 +72,9 @@ public class OurmUserServiceImpl implements OurmUserService {
      * @param searchText the search text
      * @return the ourm user list
      * @throws OurmException the ourm exception
-     * @throws IOException Signals that an I/O exception has occurred.
      */
     @Override
-    public OurmUserList searchOurmUserList(String searchText) throws OurmException, IOException {
+    public OurmUserList searchOurmUserList(String searchText) throws OurmException {
 
         String endpoint = this.ourmDrupalConfig.ourmDrupalLookupApiEndpoint();
         String consumerKey = this.ourmDrupalConfig.ourmDrupalConsumerKey();
@@ -94,14 +92,14 @@ public class OurmUserServiceImpl implements OurmUserService {
             HttpResponse response = httpClient.execute(request);
             int status = response.getStatusLine().getStatusCode();
             if (status == HttpStatus.SC_OK) {
-                OurmUserList userList =  objectMapper.readValue(response.getEntity().getContent(),
+                OurmUserList userList = objectMapper.readValue(response.getEntity().getContent(),
                         OurmUserList.class);
-                 return userList;       
+                return userList;
             }
-        } catch (InvalidKeyException | NoSuchAlgorithmException e) {
-            LOGGER.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
+        } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {
+            throw new OurmException(
+                    String.format("Error Occurred in DoGet Method in OurmUserServiceImpl : {}", e.getMessage()));
         }
-        LOGGER.error("Retrieve event type returns empty");
         return new OurmUserList();
     }
 }

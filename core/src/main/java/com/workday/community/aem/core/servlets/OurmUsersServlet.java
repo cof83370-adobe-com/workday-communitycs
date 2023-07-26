@@ -45,11 +45,10 @@ public class OurmUsersServlet extends SlingSafeMethodsServlet {
      * @param request  the request
      * @param response the response
      * @throws ServletException the servlet exception
-     * @throws IOException      Signals that an I/O exception has occurred.
      */
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException {
 
         JsonObject jsonResponse = new JsonObject();
 
@@ -66,7 +65,7 @@ public class OurmUsersServlet extends SlingSafeMethodsServlet {
             response.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
             response.getWriter().write(jsonResponse.toString());
         } catch (IOException | OurmException e) {
-            LOGGER.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
+          String.format("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
         }
     }
 }
