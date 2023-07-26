@@ -9,7 +9,7 @@
 
     .cmp-image__image {
         width: 85px;
-        height: 85px;
+        height: auto;
         display: block;
         margin-left: auto;
         margin-right: auto;
@@ -28,6 +28,18 @@
             line-height: 32px;
             letter-spacing: 0.2px;
             color: $wdc-color-blueberry-400;
+        }
+    }
+
+    .cmp-text {
+        a {
+            color: $wdc-color-blueberry-400;
+            text-decoration: none;
+            font-size: $font-size-small;
+            font-style: $font-weight-bold;
+            font-weight: $font-weight-normal;
+            letter-spacing: 0.5px;
+            line-height: 1.5;
         }
     }
 }
