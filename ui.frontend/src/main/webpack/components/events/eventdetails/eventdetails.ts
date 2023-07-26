@@ -17,9 +17,9 @@
         let localDateTimeString = newDateObj.toLocaleString('en-US', options);
 
         if (initialDate > newDateObj.getDate()) {
-            localDateTimeString = newDateObj.toLocaleString('en-US', options) + ' - 1';
+            localDateTimeString += '-1';
         } else if (initialDate < newDateObj.getDate()) {
-            localDateTimeString = newDateObj.toLocaleString('en-US', options) + ' + 1';
+            localDateTimeString += '+1';
         }
 
         return localDateTimeString;
@@ -35,7 +35,7 @@
             if(utcTimeString) {
                 if ('digitalData' in window) {
                     const targetTimezone = (window as CustomWindow).digitalData.user?.timeZone || Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    var localTime = convertUTCToLocal(utcTimeString, targetTimezone);
+                    const localTime = convertUTCToLocal(utcTimeString, targetTimezone);
                     const eventDateElement = document.querySelector('.cmp-eventdetails__item-output') as HTMLElement;
                     eventDateElement.innerText = `${eventDateElement.innerText} (${localTime})`;
                 }
