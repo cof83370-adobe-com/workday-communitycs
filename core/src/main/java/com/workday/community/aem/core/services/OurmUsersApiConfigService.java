@@ -1,9 +1,9 @@
 package com.workday.community.aem.core.services;
 
 /**
- * The Interface SpeakersApiConfigService.
+ * The Interface OurmUsersApiConfigService.
  */
-public interface SpeakersApiConfigService {
+public interface OurmUsersApiConfigService {
     
     /**
      * Gets the search field lookup API.

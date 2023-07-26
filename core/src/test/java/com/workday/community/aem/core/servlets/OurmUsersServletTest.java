@@ -30,33 +30,33 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workday.community.aem.core.pojos.SpeakerPojo;
-import com.workday.community.aem.core.pojos.Speakers;
-import com.workday.community.aem.core.services.SpeakersApiConfigService;
+import com.workday.community.aem.core.pojos.OurmUserPojo;
+import com.workday.community.aem.core.pojos.OurmUsers;
+import com.workday.community.aem.core.services.OurmUsersApiConfigService;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
- * The Class SpeakersServletTest.
+ * The Class OurmUsersServletTest.
  */
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-public class SpeakersServletTest {
+public class OurmUsersServletTest {
   
   /** The context. */
   private final AemContext context = new AemContext();
 
-  /** The speakers api config service. */
+  /** The ourmUsers api config service. */
   @Mock
-  SpeakersApiConfigService speakersApiConfigService;
+  OurmUsersApiConfigService ourmUsersApiConfigService;
 
   /** The object mapper. */
   @Mock
   private transient ObjectMapper objectMapper;
 
-  /** The speakers servlet. */
+  /** The ourmUsers servlet. */
   @InjectMocks
-  SpeakersServlet speakersServlet;
+  OurmUsersServlet ourmUsersServlet;
 
   /**
    * Setup.
@@ -80,11 +80,11 @@ public class SpeakersServletTest {
 
       CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
       httpClientsMockedStatic.when(HttpClients::createDefault).thenReturn(httpClient);
-      lenient().when(speakersApiConfigService.getSearchFieldLookupAPI())
+      lenient().when(ourmUsersApiConfigService.getSearchFieldLookupAPI())
           .thenReturn("https://den.community-workday.com/user/search/");
-      lenient().when(speakersApiConfigService.getSearchFieldConsumerKey())
+      lenient().when(ourmUsersApiConfigService.getSearchFieldConsumerKey())
           .thenReturn("r4hd9dxB9ToJWYBQpJAhUauGXoh4r35r");
-      lenient().when(speakersApiConfigService.getSearchFieldConsumerSecret())
+      lenient().when(ourmUsersApiConfigService.getSearchFieldConsumerSecret())
           .thenReturn("Gx9qk47hwzubLymkfyv4xCS42oTJiDMv");
       when(request.getParameter("searchText")).thenReturn("dav");
 
@@ -100,17 +100,17 @@ public class SpeakersServletTest {
       lenient().when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
       HashMap<String, String> result = new HashMap<>();
       result.put("token", "testToken");
-      Speakers speakers = new Speakers();
+      OurmUsers ourmUsers = new OurmUsers();
       String profileImageData = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE2IDMyQzI0LjgzNjYgMzIgMzIgMjQuODM2NiAzMiAxNkMzMiA3LjE2MzQ0IDI0LjgzNjYgMCAxNiAwQzcuMTYzNDQgMCAwIDcuMTYzNDQgMCAxNkMwIDI0LjgzNjYgNy4xNjM0NCAzMiAxNiAzMloiIGZpbGw9IiMwMDVDQjkiLz4KICA8bWFzayBpZD0ibWFzazAiIG1hc2stdHlwZT0iYWxwaGEiIG1hc2tVbml0cz0idXNlclNwYWNlT25Vc2UiIHg9IjAiIHk9IjAiIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+CiAgICA8cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTE2IDMyQzI0LjgzNjYgMzIgMzIgMjQuODM2NiAzMiAxNkMzMiA3LjE2MzQ0IDI0LjgzNjYgMCAxNiAwQzcuMTYzNDQgMCAwIDcuMTYzNDQgMCAxNkMwIDI0LjgzNjYgNy4xNjM0NCAzMiAxNiAzMloiIGZpbGw9IndoaXRlIi8+CiAgPC9tYXNrPgogIDxnIG1hc2s9InVybCgjbWFzazApIj4KICAgIDxyZWN0IHg9IjIiIHk9IjIiIHdpZHRoPSIyOCIgaGVpZ2h0PSIyOCIgZmlsbD0iIzAwNUNCOSIvPgogICAgPHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0yMy41IDIyLjkzMzhDMjMuNSAyMy4xNzU0IDIzLjMwNDEgMjMuMzcxMyAyMy4wNjI1IDIzLjM3MTNIOS45Mzc1QzkuNjk1ODggMjMuMzcxMyA5LjUgMjMuMTc1NCA5LjUgMjIuOTMzOFYyMS42MjE3QzkuNSAxOSAxMS40NjQ5IDE3LjA3NDEgMTMuNjYxOSAxNi4wOTgxQzEyLjcyMTMgMTUuMjE1NiAxMi4xMjUgMTMuOTAyNiAxMi4xMjUgMTIuNDM2NEMxMi4xMjUgOS43NzkxMiAxNC4wODM4IDcuNjI1IDE2LjUgNy42MjVDMTguOTE2MiA3LjYyNSAyMC44NzUgOS43NzkxMiAyMC44NzUgMTIuNDM2NEMyMC44NzUgMTMuOTAxOSAyMC4yNzkyIDE1LjIxNDQgMTkuMzM5NCAxNi4wOTY5QzIxLjUzODQgMTcuMDcyMiAyMy41IDE4Ljk5NTYgMjMuNSAyMS42MjE3VjIyLjkzMzhaTTExLjMyMjggMjEuNjIxN0gyMS43NUMyMS43NSAxOSAxOS41NjI1IDE3LjI0NzcgMTYuNSAxNy4yNDc3QzEzLjQzNzUgMTcuMjQ3NyAxMS4yNSAxOSAxMS4zMjI4IDIxLjYyMTdaTTE2LjUgMTUuNDk4MUMxNy45NDk3IDE1LjQ5ODEgMTkuMTI1IDE0LjEyNzMgMTkuMTI1IDEyLjQzNjRDMTkuMTI1IDEwLjc0NTQgMTcuOTQ5NyA5LjM3NDU5IDE2LjUgOS4zNzQ1OUMxNS4wNTAzIDkuMzc0NTkgMTMuODc1IDEwLjc0NTQgMTMuODc1IDEyLjQzNjRDMTMuODc1IDE0LjEyNzMgMTUuMDUwMyAxNS40OTgxIDE2LjUgMTUuNDk4MVoiIGZpbGw9IndoaXRlIi8+CiAgPC9nPgo8L3N2Zz4K";
-      speakers.getUsers().add(new SpeakerPojo(profileImageData, "adavis36", "fake_first_name", "fake_last_name",
+      ourmUsers.getUsers().add(new OurmUserPojo(profileImageData, "adavis36", "fake_first_name", "fake_last_name",
           "aaron.davis@workday.com.uat", "0031B00002kka6hQAA"));
       lenient().when(objectMapper.readValue(inputStream, HashMap.class)).thenReturn(result);
-      lenient().when(objectMapper.readValue(inputStream, Speakers.class)).thenReturn(speakers);
+      lenient().when(objectMapper.readValue(inputStream, OurmUsers.class)).thenReturn(ourmUsers);
       PrintWriter pr = mock(PrintWriter.class);
       lenient().when(response.getWriter()).thenReturn(pr);
-      speakersServlet.setObjectMapper(this.objectMapper);
+      ourmUsersServlet.setObjectMapper(this.objectMapper);
       try {
-        speakersServlet.doGet(request, response);
+        ourmUsersServlet.doGet(request, response);
       } catch (ServletException | IOException exception) {
         // do nothing.
       }

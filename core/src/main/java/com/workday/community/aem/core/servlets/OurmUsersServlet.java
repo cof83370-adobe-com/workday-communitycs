@@ -10,8 +10,8 @@ import javax.servlet.ServletException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.pojos.Speakers;
-import com.workday.community.aem.core.services.SpeakersApiConfigService;
+import com.workday.community.aem.core.pojos.OurmUsers;
+import com.workday.community.aem.core.services.OurmUsersApiConfigService;
 import com.workday.community.aem.core.utils.OAuth10AHeaderGenerator;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -32,25 +32,25 @@ import org.slf4j.LoggerFactory;
 import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
 
 /**
- * The Class SpeakersServlet.
+ * The Class OurmUsersServlet.
  *
  * @author Uttej
  */
 @Component(service = Servlet.class, property = {
-        Constants.SERVICE_DESCRIPTION + "= Speakers Autocomplete Dropdown Service",
-        "sling.servlet.paths=" + "/bin/speakers", "sling.servlet.methods=" + HttpConstants.METHOD_GET
+        Constants.SERVICE_DESCRIPTION + "= OurmUsers Autocomplete Dropdown Service",
+        "sling.servlet.paths=" + "/bin/ourmUsers", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
-public class SpeakersServlet extends SlingSafeMethodsServlet {
+public class OurmUsersServlet extends SlingSafeMethodsServlet {
 
     /** The Constant LOGGER. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(SpeakersServlet.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(OurmUsersServlet.class);
 
     /** The object mapper. */
     private transient ObjectMapper objectMapper = new ObjectMapper();
 
-    /** The speakers api config service. */
+    /** The OurmUsers api config service. */
     @Reference
-    private transient SpeakersApiConfigService speakersApiConfigService;
+    private transient OurmUsersApiConfigService ourmUsersApiConfigService;
 
     /**
      * Sets the object mapper.
@@ -77,34 +77,34 @@ public class SpeakersServlet extends SlingSafeMethodsServlet {
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             String searchText = request.getParameter("searchText");
-            Speakers speakers = getSpeakers(httpClient, searchText);
+            OurmUsers ourmUsers = getOurmUsers(httpClient, searchText);
 
-            if (speakers != null && speakers.getUsers().size() > 0) {
+            if (ourmUsers != null && ourmUsers.getUsers().size() > 0) {
                 ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-                String json = ow.writeValueAsString(speakers);
+                String json = ow.writeValueAsString(ourmUsers);
                 jsonResponse.addProperty("hits", json);
             }
 
             response.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
             response.getWriter().write(jsonResponse.toString());
         } catch (IOException e) {
-            LOGGER.error("Error Occurred in DoGet Method in SpeakersServlet : {}", e.getMessage());
+            LOGGER.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
         }
 
     }
 
     /**
-     * Gets the speakers.
+     * Gets the ourmUsers.
      *
      * @param httpClient the http client
      * @param searchText the search text
-     * @return the speakers
+     * @return the ourmUsers
      * @throws IOException Signals that an I/O exception has occurred.
      */
-    private Speakers getSpeakers(CloseableHttpClient httpClient, String searchText) throws IOException {
-        String endpoint = this.speakersApiConfigService.getSearchFieldLookupAPI();
-        String consumerKey = this.speakersApiConfigService.getSearchFieldConsumerKey();
-        String consumerSecret = this.speakersApiConfigService.getSearchFieldConsumerSecret();
+    private OurmUsers getOurmUsers(CloseableHttpClient httpClient, String searchText) throws IOException {
+        String endpoint = this.ourmUsersApiConfigService.getSearchFieldLookupAPI();
+        String consumerKey = this.ourmUsersApiConfigService.getSearchFieldConsumerKey();
+        String consumerSecret = this.ourmUsersApiConfigService.getSearchFieldConsumerSecret();
         OAuth10AHeaderGenerator header = new OAuth10AHeaderGenerator(consumerKey, consumerSecret);
 
         try {
@@ -117,12 +117,12 @@ public class SpeakersServlet extends SlingSafeMethodsServlet {
             int status = response.getStatusLine().getStatusCode();
             if (status == HttpStatus.SC_OK) {
                 return objectMapper.readValue(response.getEntity().getContent(),
-                        Speakers.class);
+                        OurmUsers.class);
             }
         } catch (InvalidKeyException | NoSuchAlgorithmException e) {
-            LOGGER.error("Error Occurred in DoGet Method in SpeakersServlet : {}", e.getMessage());
+            LOGGER.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
         }
         LOGGER.error("Retrieve event type returns empty");
-        return new Speakers();
+        return new OurmUsers();
     }
 }

@@ -5,22 +5,22 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.metatype.annotations.Designate;
 
-import com.workday.community.aem.core.config.SpeakersSearchConfig;
-import com.workday.community.aem.core.services.SpeakersApiConfigService;
+import com.workday.community.aem.core.config.OurmUserSearchConfig;
+import com.workday.community.aem.core.services.OurmUsersApiConfigService;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 
 /**
- * The Class SpeakersApiConfigServiceImpl.
+ * The Class OurmUsersApiConfigServiceImpl.
  */
-@Component(service = SpeakersApiConfigService.class, property = {
-        "service.pid=aem.core.services.speakers"
-}, configurationPid = "com.workday.community.aem.core.config.SpeakersSearchConfig", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
-@Designate(ocd = SpeakersSearchConfig.class)
-public class SpeakersApiConfigServiceImpl implements SpeakersApiConfigService {
+@Component(service = OurmUsersApiConfigService.class, property = {
+        "service.pid=aem.core.services.ourmUsers"
+}, configurationPid = "com.workday.community.aem.core.config.OurmUsersSearchConfig", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
+@Designate(ocd = OurmUserSearchConfig.class)
+public class OurmUsersApiConfigServiceImpl implements OurmUsersApiConfigService {
     
     /** The config. */
-    private SpeakersSearchConfig config;
+    private OurmUserSearchConfig config;
 
     /**
      * Activate.
@@ -29,7 +29,7 @@ public class SpeakersApiConfigServiceImpl implements SpeakersApiConfigService {
      */
     @Activate
     @Modified
-    public void activate(SpeakersSearchConfig config) {
+    public void activate(OurmUserSearchConfig config) {
         this.config = config;
     }
 

@@ -15,12 +15,12 @@
                 sling:resourceType="granite/ui/components/coral/foundation/tabs"
                 maximized="{Boolean}true">
                 <items jcr:primaryType="nt:unstructured">
-                    <speakers
+                    <ourmUsers
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                         composite="{Boolean}true"
-                        granite:class="ourmSpeakers"
-                        fieldLabel="Speakers">
+                        granite:class="ourmUsers"
+                        fieldLabel="Ourm Users">
                         <granite:data
                             jcr:primaryType="nt:unstructured"
                             max-item="3" />
@@ -32,17 +32,18 @@
                                 <manualOverride
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                        text="Check to Author Speaker Manual"
+                                        text="Check to Author Ourm User Manual"
                                         granite:class="manualOverride"
                                         name="./manualOverride"
                                         uncheckedValue="false"
                                         value="true"
                                         checked="false" />
-                                <speaker
+                                <ourmUser
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="/apps/workday-community/components/search-pathbrowser"
-                                    fieldLabel="Speaker"
-                                    name="./speaker"
+                                    fieldLabel="Ourm User"
+                                    name="./ourmUser"
+                                    width="{Long}500"
                                     required="{Boolean}true"
                                     rootPath="/content/workday-community" />
                                 <profileImageData
@@ -50,13 +51,11 @@
                                         sling:resourceType="granite/ui/components/foundation/form/pathbrowser"
                                         fieldLabel="Select Profile Image"
                                         name="./profileImageData"
-                                        defaultValue="/content/dam/workday-community/default-profile-image.svg"
-                                        value="/content/dam/workday-community/default-profile-image.svg"
                                         required="{Boolean}false"
                                         rootPath="/content/dam/workday-community" />
                             </items>
                         </field>
-                    </speakers>
+                    </ourmUsers>
                 </items>
             </tabs>
         </items>

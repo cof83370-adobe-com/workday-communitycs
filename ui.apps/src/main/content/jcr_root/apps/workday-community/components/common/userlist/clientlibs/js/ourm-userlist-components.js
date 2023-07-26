@@ -1,11 +1,11 @@
 (function ($, $document) {
     const WORKDAY_PREFIX = "workday.granite.ui.search.pathBrowser",
-        WRAPPER_CLASS = ".workday-search-pathbrowser-wrapper-speaker",
+        WRAPPER_CLASS = ".workday-search-pathbrowser-wrapper-ourmUser",
         MANUAL_OVERRIDE_CHECKBOX = ".manualOverride",
         FORM_FIELD_WRAPPER = ".coral-Form-fieldwrapper";
 
     "use strict";
-    function ourmSpeakers() {
+    function ourmUsers() {
         const wrapper = $(WRAPPER_CLASS),
             pathBrowser = wrapper.find("[data-init='pathbrowser']");
 
@@ -26,7 +26,7 @@
         });
     };
 
-    function populateSpeakersInputs() {
+    function populateOurmUserInputs() {
         const wrapper = $(this).parents(WRAPPER_CLASS);
         wrapper.find("input").first().val($(this).data('value'));
         wrapper.siblings(FORM_FIELD_WRAPPER).find("input").first().val($(this).data('profile-image-data'));
@@ -41,10 +41,10 @@
         }
     };
 
-    $(document).on("foundation-contentloaded", ourmSpeakers);
-    $(document).on('click', '.ourmSpeakers button', ourmSpeakers);
+    $(document).on("foundation-contentloaded", ourmUsers);
+    $(document).on('click', '.ourmUsers button', ourmUsers);
 
-    $(document).on('click', '.speakerLi', populateSpeakersInputs);
+    $(document).on('click', '.ourmUserLi', populateOurmUserInputs);
     $(document).on('click', '.manualOverride input', function (e) {
         populateInputsFromCheckbox(this);
     });

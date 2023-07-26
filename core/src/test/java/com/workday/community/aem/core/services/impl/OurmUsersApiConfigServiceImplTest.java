@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.workday.community.aem.core.config.SpeakersSearchConfig;
-import com.workday.community.aem.core.services.SpeakersApiConfigService;
+import com.workday.community.aem.core.config.OurmUserSearchConfig;
+import com.workday.community.aem.core.services.OurmUsersApiConfigService;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,16 +14,16 @@ import java.lang.annotation.Annotation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * The Class SpeakersApiConfigServiceImplTest.
+ * The Class OurmUsersApiConfigServiceImplTest.
  */
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-public class SpeakersApiConfigServiceImplTest {
+public class OurmUsersApiConfigServiceImplTest {
 
-    /** The speakers api config service. */
-    private final SpeakersApiConfigService speakersApiConfigService = new SpeakersApiConfigServiceImpl();
+    /** The ourmUsers api config service. */
+    private final OurmUsersApiConfigService ourmUsersApiConfigService = new OurmUsersApiConfigServiceImpl();
    
-   /** The speakers config. */
-   private final SpeakersSearchConfig speakersConfig = new SpeakersSearchConfig() {
+   /** The ourmUsers config. */
+   private final OurmUserSearchConfig ourmUsersConfig = new OurmUserSearchConfig() {
 
     @Override
     public Class<? extends Annotation> annotationType() {
@@ -51,7 +51,7 @@ public class SpeakersApiConfigServiceImplTest {
      */
     @BeforeEach
     public void setup() {
-        ((SpeakersApiConfigServiceImpl) speakersApiConfigService).activate(speakersConfig);
+        ((OurmUsersApiConfigServiceImpl) ourmUsersApiConfigService).activate(ourmUsersConfig);
     }
 
     /**
@@ -59,8 +59,8 @@ public class SpeakersApiConfigServiceImplTest {
      */
     @Test
     public void testAllApis() {
-        assertEquals(speakersApiConfigService.getSearchFieldLookupAPI(), speakersConfig.searchFieldLookupApi());
-        assertEquals(speakersApiConfigService.getSearchFieldConsumerKey(), speakersConfig.searchFieldConsumerKey());
-        assertEquals(speakersApiConfigService.getSearchFieldConsumerSecret(), speakersConfig.searchFieldConsumerSecret());
+        assertEquals(ourmUsersApiConfigService.getSearchFieldLookupAPI(), ourmUsersConfig.searchFieldLookupApi());
+        assertEquals(ourmUsersApiConfigService.getSearchFieldConsumerKey(), ourmUsersConfig.searchFieldConsumerKey());
+        assertEquals(ourmUsersApiConfigService.getSearchFieldConsumerSecret(), ourmUsersConfig.searchFieldConsumerSecret());
     }
 }

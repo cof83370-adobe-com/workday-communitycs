@@ -1,8 +1,8 @@
 (function () {
     const WORKDAY_PREFIX = "workday.granite.ui.search.pathBrowser",
         ROOT_PATH = "rootPath",
-        WRAPPER_CLASS = ".workday-search-pathbrowser-wrapper-speaker",
-        QUERY = "/bin/speakers?";
+        WRAPPER_CLASS = ".workday-search-pathbrowser-wrapper-ourmUser",
+        QUERY = "/bin/ourmUsers?";
 
     //executed when user initiates search in pathbrowser by typing in a keyword
     function searchBasedAutocompleteCallback() {
@@ -107,7 +107,7 @@
             let fullName = `${value.firstName} ${value.lastName}`;
             let profileImageData = value.profileImageData;
 
-            return $(`<li class="coral-SelectList-item speakerLi coral-SelectList-item--option" data-profile-image-data="${profileImageData}" data-value="${username}--${fullName}">${email}</li>`);
+            return $(`<li class="coral-SelectList-item ourmUserLi coral-SelectList-item--option" data-profile-image-data="${profileImageData}" data-value="${fullName}">${email}</li>`);
         }
     }
 
