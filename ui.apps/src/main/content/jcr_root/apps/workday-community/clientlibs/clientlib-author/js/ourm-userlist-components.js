@@ -9,7 +9,7 @@
         const wrapper = $(WRAPPER_CLASS),
             pathBrowser = wrapper.find("[data-init='pathbrowser']");
 
-        wrapper.siblings(FORM_FIELD_WRAPPER).hide();
+        wrapper.nextAll(FORM_FIELD_WRAPPER).hide();
         wrapper.find("button[title='Browse']").hide();
         if (_.isEmpty(pathBrowser)) {
             return;
@@ -29,15 +29,15 @@
         const wrapper = $(this).parents(WRAPPER_CLASS);
         wrapper.find("input").first().val($(this).data('value'));
         wrapper.siblings(FORM_FIELD_WRAPPER).find("input").first().val($(this).data('profile-image-data'));
-        wrapper.siblings(FORM_FIELD_WRAPPER).hide();
+        wrapper.nextAll(FORM_FIELD_WRAPPER).hide();
     };
 
     const populateInputsFromCheckbox = function (ele) {
         if ($(ele).prop('checked')) {
-            $(ele).parents(MANUAL_OVERRIDE_CHECKBOX).siblings(FORM_FIELD_WRAPPER).show();
-            $(ele).parents(MANUAL_OVERRIDE_CHECKBOX).siblings(FORM_FIELD_WRAPPER).find('input').val('');
+            $(ele).parents(FORM_FIELD_WRAPPER).siblings(FORM_FIELD_WRAPPER).show();
+            $(ele).parents(FORM_FIELD_WRAPPER).siblings(FORM_FIELD_WRAPPER).find('input').val('');
         } else {
-            $(ele).parents(MANUAL_OVERRIDE_CHECKBOX).siblings(FORM_FIELD_WRAPPER).hide();
+            $(ele).parents(FORM_FIELD_WRAPPER).siblings(FORM_FIELD_WRAPPER).hide();
         }
     };
 

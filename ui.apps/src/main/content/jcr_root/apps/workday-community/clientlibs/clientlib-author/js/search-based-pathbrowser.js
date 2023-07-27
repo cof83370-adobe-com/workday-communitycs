@@ -2,6 +2,7 @@
     const WORKDAY_PREFIX = "workday.granite.ui.search.pathBrowser",
         ROOT_PATH = "rootPath",
         WRAPPER_CLASS = ".workday-search-pathbrowser-wrapper-ourmUser",
+        FORM_FIELD_WRAPPER = ".coral-Form-fieldwrapper",
         QUERY = "/bin/ourmUsers?";
 
     //executed when user initiates search in pathbrowser by typing in a keyword
@@ -13,7 +14,7 @@
 
         function autoCompleteHandler(searchTerm) {
             const self = this, deferred = $.Deferred();
-            let $inputEle = self.$element.parents(WRAPPER_CLASS).siblings(".manualOverride").find('input[type="checkbox"]');
+            let $inputEle = self.$element.parents(WRAPPER_CLASS).siblings(FORM_FIELD_WRAPPER).find('input[type="checkbox"]');
 
             if (_.isEmpty(searchTerm)) {
                 return;

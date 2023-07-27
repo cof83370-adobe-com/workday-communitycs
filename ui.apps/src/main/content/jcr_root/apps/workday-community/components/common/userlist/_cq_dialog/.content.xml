@@ -19,7 +19,7 @@
                         sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                         composite="{Boolean}true"
                         granite:class="ourmUsers"
-                        fieldLabel="Ourm Users">
+                        fieldLabel="OURM User List">
                         <field
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="granite/ui/components/coral/foundation/container"
@@ -28,7 +28,8 @@
                                 <manualOverride
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                        text="Check to Author Ourm User Manual"
+                                        text="Author this user manually"
+                                        fieldDescription="Select this option to author this user and their image (optional) manually"
                                         granite:class="manualOverride"
                                         name="./manualOverride"
                                         uncheckedValue="false"
@@ -37,14 +38,14 @@
                                 <ourmUser
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="/apps/workday-community/components/search-pathbrowser"
-                                    fieldLabel="Ourm User"
+                                    fieldLabel="User"
                                     name="./ourmUser"
                                     required="{Boolean}true"
                                     rootPath="/content/workday-community" />
                                 <profileImageData
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/foundation/form/pathbrowser"
-                                        fieldLabel="Select Profile Image"
+                                        fieldLabel="User Image"
                                         name="./profileImageData"
                                         required="{Boolean}false"
                                         rootPath="/content/dam/workday-community" />
