@@ -1,6 +1,6 @@
 {
     "ourmDrupalRestRoot":"$[env:ourmDrupalRestRoot]",
-    "ourmDrupalUserSearchPath":"/user/search/",
+    "ourmDrupalUserSearchPath":"$[env:ourmDrupalUserSearchPath]",
     "ourmDrupalConsumerKey":"$[secret:ourmDrupalConsumerKey]",
     "ourmDrupalConsumerSecret":"$[secret:ourmDrupalConsumerSecret]"
 }
