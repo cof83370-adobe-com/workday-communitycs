@@ -1,5 +1,5 @@
 {
     "ourmDrupalLookupApiEndpoint":"$[env:ourmDrupalLookupApiEndpoint]",
-    "ourmDrupalConsumerKey":"$[env:ourmDrupalConsumerKey]",
+    "ourmDrupalConsumerKey":"$[secret:ourmDrupalConsumerKey]",
     "ourmDrupalConsumerSecret":"$[secret:ourmDrupalConsumerSecret]"
 }

@@ -1,3 +1,0 @@
-#base=js
-search-based-pathbrowser.js
-ourm-userlist-components.js
