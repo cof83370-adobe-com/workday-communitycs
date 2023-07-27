@@ -5,6 +5,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -81,26 +82,29 @@ public class OurmUserServiceImpl implements OurmUserService {
         String consumerKey = this.ourmDrupalConfig.ourmDrupalConsumerKey();
         String consumerSecret = this.ourmDrupalConfig.ourmDrupalConsumerSecret();
         String searchPath = this.ourmDrupalConfig.ourmDrupalUserSearchPath();
+        if (StringUtils.isNotBlank(endpoint) && StringUtils.isNotBlank(consumerKey)
+                && StringUtils.isNotBlank(consumerSecret) && StringUtils.isNotBlank(searchPath)) {
+            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+                String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath), searchText);
+                HttpGet request = new HttpGet(apiUrl);
 
-            String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath), searchText);
-            HttpGet request = new HttpGet(apiUrl);
+                String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());
+                request.addHeader(AUTHORIZATION, headerString);
 
-            String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());
-            request.addHeader(AUTHORIZATION, headerString);
-
-            HttpResponse response = httpClient.execute(request);
-            int status = response.getStatusLine().getStatusCode();
-            if (status == HttpStatus.SC_OK) {
-                OurmUserList userList = objectMapper.readValue(response.getEntity().getContent(),
-                        OurmUserList.class);
-                return userList;
+                HttpResponse response = httpClient.execute(request);
+                int status = response.getStatusLine().getStatusCode();
+                if (status == HttpStatus.SC_OK) {
+                    return objectMapper.readValue(response.getEntity().getContent(),
+                            OurmUserList.class);
+                }
+            } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {
+                throw new OurmException(
+                        String.format("Error Occurred in DoGet Method in OurmUserServiceImpl : {}", e.getMessage()));
             }
-        } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {
-            throw new OurmException(
-                    String.format("Error Occurred in DoGet Method in OurmUserServiceImpl : {}", e.getMessage()));
+            return new OurmUserList();
+        } else {
+            return new OurmUserList();
         }
-        return new OurmUserList();
     }
 }
