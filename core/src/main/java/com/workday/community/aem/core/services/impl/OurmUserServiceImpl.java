@@ -45,7 +45,7 @@ public class OurmUserServiceImpl implements OurmUserService {
     private OurmDrupalConfig ourmDrupalConfig;
 
     /** The object mapper. */
-    public transient ObjectMapper objectMapper = new ObjectMapper();
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Sets the object mapper.
@@ -88,7 +88,7 @@ public class OurmUserServiceImpl implements OurmUserService {
 
                 String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath), searchText);
                 HttpGet request = new HttpGet(apiUrl);
-
+                LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
                 String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());
                 request.addHeader(AUTHORIZATION, headerString);
 
@@ -100,7 +100,7 @@ public class OurmUserServiceImpl implements OurmUserService {
                 }
             } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {
                 throw new OurmException(
-                        String.format("Error Occurred in DoGet Method in OurmUserServiceImpl : {}", e.getMessage()));
+                        String.format("Error Occurred in DoGet Method in OurmUserServiceImpl : %s", e.getMessage()));
             }
             return new OurmUserList();
         } else {
