@@ -6,13 +6,13 @@
 
     function hide() {
         $($RECURRING_EVENT_RADIO_GROUP_SELECTOR).children().each(function() {
-            var element = $(this).prop("disabled", true);
+            $(this).prop("disabled", true);
         });
     }
 
     function show() {
         $($RECURRING_EVENT_RADIO_GROUP_SELECTOR).children().each(function() {
-            var element = $(this).prop("disabled", false);
+            $(this).prop("disabled", false);
         });
     }
 

@@ -9,6 +9,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -23,7 +24,9 @@ import org.slf4j.LoggerFactory;
 
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.day.cq.wcm.api.WCMException;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.constants.enums.EventPeriodEnum;
 import com.workday.community.aem.core.utils.ResolverUtil;
 
 /**
@@ -197,7 +200,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
                 Page newPage = pm.create(eventsRootPath, fullPageName, EVENT_TEMPLATE_PATH, title, true);
                 addRequiredPageProps(resourceResolver, newPage, map);
             }
-        } catch (Exception exec) {
+        } catch (WCMException exec) {
             logger.error("Exception occurred when createEventPage method {} ", exec.getMessage());
         }
     }
@@ -237,61 +240,15 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
      */
     private void addRequiredPageProps(ResourceResolver resourceResolver, Page newPage, ValueMap valueMap) {
         try {
-
             Node node = resourceResolver.resolve(newPage.getPath() + GlobalConstants.JCR_CONTENT_PATH)
                     .adaptTo(Node.class);
-            addAllTagsData(node, valueMap);
-            addAllMetaData(node, valueMap);
+            addAllTagsAndMetaData(node, valueMap);
             node.getSession().save();
-        } catch (Exception exec) {
+        } catch (RepositoryException exec) {
             logger.error("Exception occurred in addRequiredPageProps method {} ", exec.getMessage());
         }
     }
 
-    /**
-     * Adds the all meta data.
-     *
-     * @param node     the node
-     * @param valueMap the value map
-     * @throws RepositoryException the repository exception
-     */
-    private void addAllMetaData(Node node, ValueMap valueMap) throws RepositoryException {
-        String author = valueMap.get(PROP_AUTHOR, String.class);
-        if (StringUtils.isNotBlank(author))
-            node.setProperty(PROP_AUTHOR, author);
-
-        String[] contentType = valueMap.get(PROP_CONTENT_TYPE, String[].class);
-        if (doNullCheckForStringArray(contentType))
-            node.setProperty(PROP_CONTENT_TYPE, contentType);
-
-        Calendar eventEndDate = valueMap.get(PROP_EVENT_END_DATE, Calendar.class);
-        if (null != eventEndDate)
-            node.setProperty(PROP_EVENT_END_DATE, eventEndDate);
-
-        Calendar eventStartDate = valueMap.get(PROP_EVENT_START_DATE, Calendar.class);
-        if (null != eventStartDate)
-            node.setProperty(PROP_EVENT_START_DATE, eventStartDate);
-
-        Calendar retirementDate = valueMap.get(PROP_RETIREMENT_DATE, Calendar.class);
-        if (null != retirementDate)
-            node.setProperty(PROP_RETIREMENT_DATE, retirementDate);
-
-        Calendar updatedDate = valueMap.get(PROP_UPDATED_DATE, Calendar.class);
-        if (null != updatedDate)
-            node.setProperty(PROP_UPDATED_DATE, updatedDate);
-
-        String alternateTimezone = valueMap.get(PROP_ALTERNATE_TIMEZONE, String.class);
-        if (StringUtils.isNotBlank(alternateTimezone))
-            node.setProperty(PROP_ALTERNATE_TIMEZONE, alternateTimezone);
-
-        String eventHost = valueMap.get(PROP_EVENT_HOST, String.class);
-        if (StringUtils.isNotBlank(eventHost))
-            node.setProperty(PROP_EVENT_HOST, eventHost);
-
-        String eventLocation = valueMap.get(PROP_EVENT_LOCATION, String.class);
-        if (StringUtils.isNotBlank(eventLocation))
-            node.setProperty(PROP_EVENT_LOCATION, eventLocation);
-    }
 
     /**
      * Adds the all tags data.
@@ -300,46 +257,31 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
      * @param valueMap the value map
      * @throws RepositoryException the repository exception
      */
-    private void addAllTagsData(Node node, ValueMap valueMap) throws RepositoryException {
-        String[] aclTags = valueMap.get(ACCESS_CONTROL_TAGS, String[].class);
-        if (doNullCheckForStringArray(aclTags))
-            node.setProperty(ACCESS_CONTROL_TAGS, aclTags);
+    private void addAllTagsAndMetaData(Node node, ValueMap valueMap) throws RepositoryException {
+        // All Tag type Props
+        String[] tags = new String[] { ACCESS_CONTROL_TAGS, EVENT_FORMAT, EVENT_AUDIENCE, RELEASE_TAGS, PRODUCT_TAGS,
+                USING_WORKDAY_TAGS, INDUSTRY_TAGS, PROGRAMS_TOOLS_TAGS, USER_TAGS, REGION_COUNTRY_TAGS, PROP_CONTENT_TYPE };
+        for (int i = 0; i < tags.length; i++) {
+            String[] tagValue = valueMap.get(tags[i], String[].class);
+            if (doNullCheckForStringArray(tagValue))
+                node.setProperty(tags[i], tagValue);
+        }
 
-        String[] eventFormat = valueMap.get(EVENT_FORMAT, String[].class);
-        if (doNullCheckForStringArray(eventFormat))
-            node.setProperty(EVENT_FORMAT, eventFormat);
+        // All String type Props
+        String[] props = new String[] { PROP_AUTHOR,  PROP_ALTERNATE_TIMEZONE, PROP_EVENT_HOST, PROP_EVENT_LOCATION };
+         for (int i = 0; i < props.length; i++) {
+            String propVal = valueMap.get(props[i], String.class);
+             if (StringUtils.isNotBlank(propVal))
+                node.setProperty(props[i], propVal);
+         }
 
-        String[] eventAudience = valueMap.get(EVENT_AUDIENCE, String[].class);
-        if (doNullCheckForStringArray(eventAudience))
-            node.setProperty(EVENT_AUDIENCE, eventAudience);
-
-        String[] releaseTags = valueMap.get(RELEASE_TAGS, String[].class);
-        if (doNullCheckForStringArray(releaseTags))
-            node.setProperty(RELEASE_TAGS, releaseTags);
-
-        String[] productTags = valueMap.get(PRODUCT_TAGS, String[].class);
-        if (doNullCheckForStringArray(productTags))
-            node.setProperty(PRODUCT_TAGS, productTags);
-
-        String[] usingWorkdayTags = valueMap.get(USING_WORKDAY_TAGS, String[].class);
-        if (doNullCheckForStringArray(usingWorkdayTags))
-            node.setProperty(USING_WORKDAY_TAGS, usingWorkdayTags);
-
-        String[] industryTags = valueMap.get(INDUSTRY_TAGS, String[].class);
-        if (doNullCheckForStringArray(industryTags))
-            node.setProperty(INDUSTRY_TAGS, industryTags);
-
-        String[] programsToolsTags = valueMap.get(PROGRAMS_TOOLS_TAGS, String[].class);
-        if (doNullCheckForStringArray(programsToolsTags))
-            node.setProperty(PROGRAMS_TOOLS_TAGS, programsToolsTags);
-
-        String[] userTags = valueMap.get(USER_TAGS, String[].class);
-        if (doNullCheckForStringArray(userTags))
-            node.setProperty(USER_TAGS, userTags);
-
-        String[] regionCountryTags = valueMap.get(REGION_COUNTRY_TAGS, String[].class);
-        if (doNullCheckForStringArray(regionCountryTags))
-            node.setProperty(REGION_COUNTRY_TAGS, regionCountryTags);
+         // All Date type Props
+         String[] dateTypeProps = new String[] { PROP_EVENT_END_DATE,  PROP_EVENT_START_DATE, PROP_RETIREMENT_DATE, PROP_UPDATED_DATE };
+         for (int i = 0; i < dateTypeProps.length; i++) {
+            Calendar calendarPropVal = valueMap.get(dateTypeProps[i], Calendar.class);
+            if (null != calendarPropVal)
+                 node.setProperty(dateTypeProps[i], calendarPropVal);
+         }
     }
 
     /**
@@ -349,21 +291,6 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
      * @return true, if successful
      */
     private boolean doNullCheckForStringArray(String[] inputArray) {
-        if (null != inputArray && inputArray.length > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * The Enum EventPeriodEnum.
-     */
-    public enum EventPeriodEnum {
-
-        /** The monthly. */
-        MONTHLY,
-
-        /** The bi weekly. */
-        BI_WEEKLY
+        return (ArrayUtils.isNotEmpty(inputArray) && inputArray.length > 0);
     }
 }
