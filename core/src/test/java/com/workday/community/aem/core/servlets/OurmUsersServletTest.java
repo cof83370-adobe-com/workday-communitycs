@@ -73,7 +73,7 @@ public class OurmUsersServletTest {
     OurmUserList ourmUsers = new OurmUserList();
     String profileImageData = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMi";
     ourmUsers.getUsers().add(new OurmUser(profileImageData, "adavis36", "fake_first_name", "fake_last_name",
-        "aaron.davis@workday.com", "0031B00002kka6hQAA"));
+        "aaron.davis@workday.com", "mockSfId"));
     lenient().when(ourmUserService.searchOurmUserList(searchtext)).thenReturn(ourmUsers);
 
     PrintWriter pr = mock(PrintWriter.class);

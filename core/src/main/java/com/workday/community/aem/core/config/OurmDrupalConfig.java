@@ -14,9 +14,11 @@ public @interface OurmDrupalConfig {
    *
    * @return the string
    */
-  @AttributeDefinition(name = "Ourm Drupal look up Api endpoint", description = "Ourm Drupal lookup Api endpoint")
-  String ourmDrupalLookupApiEndpoint();
+  @AttributeDefinition(name = "Ourm Drupal Rest Root End", description = "Ourm Drupal Rest Root endpoint")
+  String ourmDrupalRestRoot();
 
+  @AttributeDefinition(name = "Ourm Drupal User Search Path", description = "Ourm Drupal User Search Path")
+  String ourmDrupalUserSearchPath();
 
   /**
    * Ourm drupal consumer key.

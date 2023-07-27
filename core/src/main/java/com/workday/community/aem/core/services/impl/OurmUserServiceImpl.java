@@ -21,6 +21,7 @@ import com.workday.community.aem.core.config.OurmDrupalConfig;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.pojos.OurmUserList;
 import com.workday.community.aem.core.services.OurmUserService;
+import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.OAuth1Util;
 
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -76,13 +77,14 @@ public class OurmUserServiceImpl implements OurmUserService {
     @Override
     public OurmUserList searchOurmUserList(String searchText) throws OurmException {
 
-        String endpoint = this.ourmDrupalConfig.ourmDrupalLookupApiEndpoint();
+        String endpoint = this.ourmDrupalConfig.ourmDrupalRestRoot();
         String consumerKey = this.ourmDrupalConfig.ourmDrupalConsumerKey();
         String consumerSecret = this.ourmDrupalConfig.ourmDrupalConsumerSecret();
+        String searchPath = this.ourmDrupalConfig.ourmDrupalUserSearchPath();
 
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
-            String apiUrl = String.format("%s%s%s", endpoint, "/user/search/", searchText);
+            String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath), searchText);
             HttpGet request = new HttpGet(apiUrl);
 
             String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());

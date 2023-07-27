@@ -47,7 +47,7 @@ public class OurmUserServiceImplTest {
   private transient ObjectMapper objectMapper;
 
   /** The ourmUsers config. */
-  private final OurmDrupalConfig ourmUsersConfig = new OurmDrupalConfig() {
+  private final OurmDrupalConfig ourmDrupalConfig = new OurmDrupalConfig() {
 
     @Override
     public Class<? extends Annotation> annotationType() {
@@ -55,7 +55,7 @@ public class OurmUserServiceImplTest {
     }
 
     @Override
-    public String ourmDrupalLookupApiEndpoint() {
+    public String ourmDrupalRestRoot() {
       return "https://den.community-workday.com";
     }
 
@@ -68,6 +68,11 @@ public class OurmUserServiceImplTest {
     public String ourmDrupalConsumerSecret() {
       return "mockConsumerSecret";
     }
+
+    @Override
+    public String ourmDrupalUserSearchPath() {
+      return "/user/search";
+    }
   };
 
   /**
@@ -76,7 +81,7 @@ public class OurmUserServiceImplTest {
   @BeforeEach
   public void setup() {
     context.registerService(objectMapper);
-    ((OurmUserServiceImpl) ourmUserService).activate(ourmUsersConfig);
+    ((OurmUserServiceImpl) ourmUserService).activate(ourmDrupalConfig);
     ((OurmUserServiceImpl) ourmUserService).setObjectMapper(objectMapper);
   }
 
@@ -103,7 +108,7 @@ public class OurmUserServiceImplTest {
       OurmUserList ourmUserList = new OurmUserList();
       String profileImageData = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMi";
       ourmUserList.getUsers().add(new OurmUser(profileImageData, "adavis36", "fake_first_name", "fake_last_name",
-          "aaron.davis@workday.com", "0031B00002kka6hQAA"));
+          "aaron.davis@workday.com", "mockSfId"));
 
       lenient().when(statusLine.getStatusCode()).thenReturn(HttpStatus.SC_OK);
       

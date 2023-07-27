@@ -1,5 +1,6 @@
 {
-    "ourmDrupalLookupApiEndpoint":"$[env:ourmDrupalLookupApiEndpoint]",
+    "ourmDrupalRestRoot":"$[env:ourmDrupalRestRoot]",
+    "ourmDrupalUserSearchPath":"/user/search/",
     "ourmDrupalConsumerKey":"$[secret:ourmDrupalConsumerKey]",
     "ourmDrupalConsumerSecret":"$[secret:ourmDrupalConsumerSecret]"
 }
