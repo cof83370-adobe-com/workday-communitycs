@@ -224,9 +224,9 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
 
         List<LocalDate> datesList = new ArrayList<>();
         while (startDate.isBefore(endDate)) {
-            datesList.add(startDate);
             startDate = period.equals(EventPeriodEnum.MONTHLY) ? startDate.plusMonths(1)
                     : startDate.plus(2, ChronoUnit.WEEKS);
+            datesList.add(startDate);
         }
         return datesList;
     }
