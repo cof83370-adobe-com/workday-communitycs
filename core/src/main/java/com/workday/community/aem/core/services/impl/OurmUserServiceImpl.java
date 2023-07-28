@@ -1,33 +1,28 @@
 package com.workday.community.aem.core.services.impl;
 
-import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.OurmDrupalConfig;
 import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.pojos.OurmUserList;
+import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.services.OurmUserService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.OAuth1Util;
+import com.workday.community.aem.core.utils.RestApiUtil;
 
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
-import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
 
 /**
  * The Class OurmUserServiceImpl.
@@ -44,17 +39,8 @@ public class OurmUserServiceImpl implements OurmUserService {
     /** The ourm drupal config. */
     private OurmDrupalConfig ourmDrupalConfig;
 
-    /** The object mapper. */
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    /**
-     * Sets the object mapper.
-     *
-     * @param objectMapper the new object mapper
-     */
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+    /** The gson service. */
+    private final Gson gson = new Gson();
 
     /**
      * Activate.
@@ -68,15 +54,16 @@ public class OurmUserServiceImpl implements OurmUserService {
         this.ourmDrupalConfig = config;
     }
 
+
     /**
      * Search ourm user list.
      *
      * @param searchText the search text
-     * @return the ourm user list
+     * @return the json object
      * @throws OurmException the ourm exception
      */
     @Override
-    public OurmUserList searchOurmUserList(String searchText) throws OurmException {
+    public JsonObject searchOurmUserList(String searchText) throws OurmException {
 
         String endpoint = this.ourmDrupalConfig.ourmDrupalRestRoot();
         String consumerKey = this.ourmDrupalConfig.ourmDrupalConsumerKey();
@@ -84,27 +71,23 @@ public class OurmUserServiceImpl implements OurmUserService {
         String searchPath = this.ourmDrupalConfig.ourmDrupalUserSearchPath();
         if (StringUtils.isNotBlank(endpoint) && StringUtils.isNotBlank(consumerKey)
                 && StringUtils.isNotBlank(consumerSecret) && StringUtils.isNotBlank(searchPath)) {
-            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            try {
 
                 String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath), searchText);
-                HttpGet request = new HttpGet(apiUrl);
-                LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
                 String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());
-                request.addHeader(AUTHORIZATION, headerString);
+                LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
 
-                HttpResponse response = httpClient.execute(request);
-                int status = response.getStatusLine().getStatusCode();
-                if (status == HttpStatus.SC_OK) {
-                    return objectMapper.readValue(response.getEntity().getContent(),
-                            OurmUserList.class);
-                }
-            } catch (IOException | InvalidKeyException | NoSuchAlgorithmException e) {
+                // Execute the request.
+                String jsonResponse = RestApiUtil.doOURMGet(apiUrl, headerString);
+                return gson.fromJson(jsonResponse, JsonObject.class);
+
+            } catch (SnapException | InvalidKeyException | NoSuchAlgorithmException e) {
+                String errorMessage = e.getMessage();
+                LOGGER.error("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl %s", errorMessage);
                 throw new OurmException(
-                        String.format("Error Occurred in DoGet Method in OurmUserServiceImpl : %s", e.getMessage()));
+                        String.format("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl : %s", errorMessage));
             }
-            return new OurmUserList();
-        } else {
-            return new OurmUserList();
         }
+        return new JsonObject();
     }
 }

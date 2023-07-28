@@ -77,8 +77,8 @@
             function handler(data) {
                 let results = [];
 
-                if (!_.isEmpty(JSON.parse(data.hits))) {
-                    results = JSON.parse(data.hits)['users'];
+                if (!_.isEmpty(data.users)) {
+                    results = data.users;
                 }
 
                 if (callback) {
