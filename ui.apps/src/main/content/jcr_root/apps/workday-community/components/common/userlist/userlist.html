@@ -1,12 +1,13 @@
-<div class="cmp-userlist">
-  <div class="cmp-userlist__heading">
-    <h3 class="cmp-userlist__heading__title">Speakers</h3>
+  <div class="cmp-userlist">
+    <div class="cmp-userlist__heading">
+      <h3 class="cmp-userlist__heading__title">Speakers</h3>
+    </div>
+
+    <div class="cmp-userlist__content" data-sly-list.userListMultifield="${resource.getChildren}">
+      <ul class="cmp-userlist__list" data-sly-list.ourmUsers="${userListMultifield.getChildren}">
+        <li class="cmp-userlist__list__item"><span><img class="cmp-userlist__list__image"
+              src="${ourmUsers.profileImageData ? ourmUsers.profileImageData :'/etc.clientlibs/workday-community/clientlibs/clientlib-site/resources/images/profile.svg'}"><a
+              class="cmp-userlist__list__name" href="#">${ourmUsers.ourmUser}</a></span></li>
+      </ul>
+    </div>
   </div>
-  <div class="cmp-userlist__content">
-    <ul class="cmp-userlist__list">
-      <li class="cmp-userlist__list__item"><span><img class="cmp-userlist__list__image" src="/content/dam/workday-community/profile.svg"></span><a class="cmp-userlist__list__name" href="#">Timothy Andrews</a></li>
-      <li class="cmp-userlist__list__item"><span><img class="cmp-userlist__list__image" src="/content/dam/workday-community/profile.svg"></span><a  class="cmp-userlist__list__name" href="#">Jacqueline Stein</a></li>
-      <li class="cmp-userlist__list__item"><span><img class="cmp-userlist__list__image" src="/content/dam/workday-community/profile.svg"></span><a class="cmp-userlist__list__name" href="#">Timothy Andrews</a></li>
-    </ul>
-  </div>
-</div>

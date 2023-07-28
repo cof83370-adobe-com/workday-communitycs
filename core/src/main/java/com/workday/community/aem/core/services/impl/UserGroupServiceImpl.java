@@ -206,15 +206,6 @@ public class UserGroupServiceImpl implements UserGroupService {
             groups.add(AUTHENTICATED);
             hasCommunityAccess = true;
         }
-        JsonElement customerOf = contactInformation.get(CUSTOMER_OF_KEY);
-        if (!customerOf.isJsonNull()) {
-            String customerOfString = customerOf.getAsString();
-            for (Map.Entry<String, String> entry : customerOfMapping.entrySet()) {
-                if (customerOfString.contains(entry.getKey())) {
-                    groups.add(entry.getValue());
-                }
-            }
-        }
         JsonElement wsp = contactInformation.get(WSP_KEY);
         if (!wsp.isJsonNull()) {
             String wspString = wsp.getAsString();
@@ -234,12 +225,24 @@ public class UserGroupServiceImpl implements UserGroupService {
                 }
             }
         }
+        JsonElement type = contextInfo.get(USER_TYPE_KEY);
+        JsonElement customerOf = contactInformation.get(CUSTOMER_OF_KEY);
+        if (!type.isJsonNull() && !customerOf.isJsonNull()) {
+            String typeString = type.getAsString();
+            String customerOfString = customerOf.getAsString();
+            if (typeString.equals("customer")) {
+                for (Map.Entry<String, String> entry : customerOfMapping.entrySet()) {
+                    if (customerOfString.contains(entry.getKey())) {
+                        groups.add(entry.getValue());
+                    }
+                }
+            }
+        }
         JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
         if (!isWorkmate.isJsonNull() && isWorkmate.getAsBoolean()) {
             groups.add(INTERNAL_WORKMATES);
         }
         else {
-            JsonElement type = contextInfo.get(USER_TYPE_KEY);
             if (hasCommunityAccess && !type.isJsonNull()) {
                 groups.add(type.getAsString() + "_all");
             }

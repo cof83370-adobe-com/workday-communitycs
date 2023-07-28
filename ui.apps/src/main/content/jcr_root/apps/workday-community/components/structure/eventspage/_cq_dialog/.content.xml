@@ -294,7 +294,36 @@
                                         sling:resourceType="granite/ui/components/foundation/form/hidden"
                                         ignoreData="{Boolean}true"
                                         name="./readCount@TypeHint"
-                                        value="Long"/>                                      
+                                        value="Long"/>
+                                    <recurringevents
+                                        cq:showOnCreate="{Boolean}true"
+                                        granite:class="recurring-events-checkbox"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        name="./recurringEvents"
+                                        text="Choose Event Frequency"
+                                        uncheckedValue="false"
+                                        value="true"/>
+                                    <eventFrequency
+                                        cq:showOnCreate="{Boolean}true"
+                                        granite:class="recurring-events-radio-group"
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/radiogroup"
+                                        defaultValue="monthly"
+                                        fieldLabel="Choose Event Frequency"
+                                        name="./eventFrequency">
+                                        <items jcr:primaryType="nt:unstructured">
+                                            <monthly
+                                                jcr:primaryType="nt:unstructured"
+                                                checked="{Boolean}true"
+                                                text="Monthly"
+                                                value="monthly"/>
+                                            <biweekly
+                                                jcr:primaryType="nt:unstructured"
+                                                text="Bi Weekly"
+                                                value="bi-weekly"/>
+                                        </items>
+                                    </eventFrequency>
                                 </items>
                             </column>
                         </items>
