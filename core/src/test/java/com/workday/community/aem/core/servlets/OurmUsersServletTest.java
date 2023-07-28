@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.servlets;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -18,13 +19,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.pojos.OurmUser;
-import com.workday.community.aem.core.pojos.OurmUserList;
 import com.workday.community.aem.core.services.OurmUserService;
 
-import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
@@ -33,28 +32,20 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class OurmUsersServletTest {
 
-  /** The context. */
-  private final AemContext context = new AemContext();
-
-  /** The ourmUsers api config service. */
+  /** The ourmUsers api service. */
   @Mock
   OurmUserService ourmUserService;
-
-  /** The object mapper. */
-  @Mock
-  private transient ObjectMapper objectMapper;
 
   /** The ourmUsers servlet. */
   @InjectMocks
   OurmUsersServlet ourmUsersServlet;
 
+  private final Gson gson = new Gson();
   /**
    * Setup.
    */
   @BeforeEach
-  public void setup() {
-    context.registerService(objectMapper);
-  }
+  public void setup() { }
 
   /**
    * Test do get.
@@ -68,14 +59,11 @@ public class OurmUsersServletTest {
     SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
     SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
 
-    when(request.getParameter("searchText")).thenReturn("dav");
-    String searchtext = "dav";
-    OurmUserList ourmUsers = new OurmUserList();
-    String profileImageData = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMi";
-    ourmUsers.getUsers().add(new OurmUser(profileImageData, "adavis36", "fake_first_name", "fake_last_name",
-        "aaron.davis@workday.com", "mockSfId"));
-    lenient().when(ourmUserService.searchOurmUserList(searchtext)).thenReturn(ourmUsers);
+    when(request.getParameter("searchText")).thenReturn("fakeText");
 
+    String testUserContext = "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
+    JsonObject userContext = gson.fromJson(testUserContext, JsonObject.class);
+    when(ourmUserService.searchOurmUserList(anyString())).thenReturn(userContext);
     PrintWriter pr = mock(PrintWriter.class);
     lenient().when(response.getWriter()).thenReturn(pr);
     ourmUsersServlet.doGet(request, response);
