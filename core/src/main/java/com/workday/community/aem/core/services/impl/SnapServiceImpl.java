@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,6 +10,7 @@ import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
+import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
@@ -21,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.json.JSONException;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -154,6 +158,8 @@ public class SnapServiceImpl implements SnapService {
 
     } catch (SnapException | JsonSyntaxException e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
+    } catch (JSONException | JsonProcessingException e) {
+      throw new RuntimeException(e);
     }
 
     return gson.toJson(this.getDefaultHeaderMenu());
@@ -180,7 +186,7 @@ public class SnapServiceImpl implements SnapService {
   }
 
   @Override
-  public String getProfilePhoto(String userId) {
+  public ProfilePhoto getProfilePhoto(String userId) {
     String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
 
     String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
@@ -190,9 +196,10 @@ public class SnapServiceImpl implements SnapService {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto(), url is {}", url);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
       if (jsonResponse != null) {
-        return jsonResponse;
+        ObjectMapper  objectMapper = new ObjectMapper();
+        return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
       }
-    } catch (SnapException e) {
+    } catch (SnapException | JsonProcessingException e) {
       logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
     }
     return null;
@@ -290,7 +297,7 @@ public class SnapServiceImpl implements SnapService {
     String accountName = "";
     String accountType = "";
     boolean isNSC = false;
-    String timeZoneStr = "";
+	String timeZoneStr = "";
     if (profileData != null) {
       try {
         JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
@@ -311,7 +318,7 @@ public class SnapServiceImpl implements SnapService {
         JsonElement typeElement = profileObject.get("type");
         accountType = isWorkdayMate ? "workday"
             : (typeElement == null || typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
-        JsonElement timeZoneElement = profileObject.get("timeZone");
+      JsonElement timeZoneElement = profileObject.get("timeZone");
         timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" : timeZoneElement.getAsString();
       } catch (JsonSyntaxException e) {
         logger.error("Error in generateAdobeDigitalData method :: {}",
@@ -321,7 +328,7 @@ public class SnapServiceImpl implements SnapService {
     userProperties.addProperty(CONTACT_ROLE, contactRole);
     userProperties.addProperty(CONTACT_NUMBER, contactNumber);
     userProperties.addProperty(IS_NSC, isNSC);
-    userProperties.addProperty("timeZone", timeZoneStr);
+	userProperties.addProperty("timeZone", timeZoneStr);
     orgProperties.addProperty(ACCOUNT_ID, accountID);
     orgProperties.addProperty(ACCOUNT_NAME, accountName);
     orgProperties.addProperty(ACCOUNT_TYPE, accountType);
@@ -336,7 +343,7 @@ public class SnapServiceImpl implements SnapService {
    * 
    * @param sfMenu The menu data.
    */
-  private void updateProfileInfoWithNameAndAvatar(JsonObject sfMenu, String sfId) {
+  private void updateProfileInfoWithNameAndAvatar(JsonObject sfMenu, String sfId) throws JSONException, JsonProcessingException {
     JsonElement profileElement = sfMenu.get(SnapConstants.PROFILE_KEY);
 
     if (profileElement != null && !profileElement.isJsonNull()) {
@@ -375,16 +382,21 @@ public class SnapServiceImpl implements SnapService {
    * @return image data as string
    */
   private String getUserAvatar(String sfId) {
-    String content = getProfilePhoto(sfId);
-
-    if (StringUtils.isNotBlank(content)) {
-      if (content.contains("data:image/")) {
-        return content;
-      }
-      return "data:image/base64," + content;
+    ProfilePhoto content = getProfilePhoto(sfId);
+    String encodedPhoto = "";
+    String extention = "";
+    if (content != null) {
+      encodedPhoto = content.getBase64content();
+      extention = content.getFileNameWithExtension();
     }
-
-    logger.error("getUserAvatar method returns null.");
-    return "";
+    String[] extenitonSplit = extention.split("\\.");
+    String fileExtention = extenitonSplit[extenitonSplit.length-1];
+    if (StringUtils.isNotBlank(extention) && StringUtils.isNotBlank(encodedPhoto)) {
+      return "data:image/" + fileExtention + ";base64," + encodedPhoto;
+    }
+    else {
+      logger.error("getUserAvatar method returns null.");
+      return "";
+    }
   }
 }

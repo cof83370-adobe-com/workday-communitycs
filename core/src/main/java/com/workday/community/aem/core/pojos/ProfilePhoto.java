@@ -5,14 +5,12 @@ public final class ProfilePhoto {
      * The file name with extension.
      */
     String fileNameWithExtension;
+
     /**
-     * The Profile photo description.
+     * The success.
      */
-    String description;
-    /**
-     * The Profile user id.
-     */
-    String contactId;
+    String success;
+
     /**
      * The photo content.
      */
@@ -43,42 +41,6 @@ public final class ProfilePhoto {
     /**
      * Getter method.
      *
-     * @return The Profile photo description.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Accessor method.
-     *
-     * @param description The Profile photo description.
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Getter method.
-     *
-     * @return The Profile user id.
-     */
-    public String getContactId() {
-        return contactId;
-    }
-
-    /**
-     * Accessor method.
-     *
-     * @param contactId The Profile user id.
-     */
-    public void setContactId(String contactId) {
-        this.contactId = contactId;
-    }
-
-    /**
-     * Getter method.
-     *
      * @return The photo content.
      */
     public String getBase64content() {
@@ -92,6 +54,14 @@ public final class ProfilePhoto {
      */
     public void setBase64content(String base64content) {
         this.base64content = base64content;
+    }
+
+    public String getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(String success) {
+        this.success = success;
     }
 
     /**
