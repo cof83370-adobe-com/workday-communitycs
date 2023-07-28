@@ -155,10 +155,10 @@ class UserGroupServiceImplTest {
         customerRoleField.set(userGroupService, customerRoleMap);
 
         HashMap<String, String> nscMap = new HashMap<>();
-        nscMap.put("Adaptive Planning", "customer_adaptive_only");
-        nscMap.put("Scout", "customer_scount_only");
-        nscMap.put("Peakon", "customer_peakon_only");
-        nscMap.put("VNDLY", "customer_vndly_only");
+        nscMap.put("Adaptive Planning", "customer_adaptive");
+        nscMap.put("Scout", "customer_scount");
+        nscMap.put("Peakon", "customer_peakon");
+        nscMap.put("VNDLY", "customer_vndly");
         Field nscField = userGroupService.getClass().getDeclaredField("customerOfMapping");
         nscField.setAccessible(true);
         nscField.set(userGroupService, nscMap);
@@ -184,8 +184,8 @@ class UserGroupServiceImplTest {
         when(snapService.getUserContext(SF_ID)).thenReturn(context);
         List<String> groups = userGroupService.getUserGroupsFromSnap(SF_ID);
         assertTrue(groups.contains("authenticated"));
-        assertTrue(groups.contains("customer_adaptive_only"));
-        assertTrue(groups.contains("customer_vndly_only"));
+        assertTrue(groups.contains("customer_adaptive"));
+        assertTrue(groups.contains("customer_vndly"));
         assertTrue(groups.contains("customer_wsp_enhanced"));
         assertTrue(groups.contains("customer_name_support_contact"));
         assertTrue(groups.contains("customer_training_coordinator"));
