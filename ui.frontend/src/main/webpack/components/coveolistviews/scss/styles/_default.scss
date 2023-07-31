@@ -493,12 +493,10 @@ atomic-breadbox {
   }
 
   &::part(clear) {
-    font-size: 15px;
     color: $wdc-color-primary-main !important;
     background: transparent !important;
     border: 0;
     padding: 0;
-    font-family: 'WorkdayAdelleSans-Regular';
     margin-left: 5px;
     font-size: 14px;
     font-family: "WorkdayAdelleSans-Bold";
