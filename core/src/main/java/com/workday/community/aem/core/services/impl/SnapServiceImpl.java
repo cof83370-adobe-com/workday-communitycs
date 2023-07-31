@@ -50,7 +50,7 @@ import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.A
  * The OSGi service implementation for snap logic.
  */
 @Component(service = SnapService.class, property = {
-    "service.pid=aem.core.services.snap"
+  "service.pid=aem.core.services.snap"
 }, configurationPid = "com.workday.community.aem.core.config.SnapConfig", immediate = true)
 @Designate(ocd = SnapConfig.class)
 public class SnapServiceImpl implements SnapService {
@@ -60,7 +60,7 @@ public class SnapServiceImpl implements SnapService {
 
   private JsonObject defaultMenu;
 
-  private LRUCacheWithTimeout<String, String> snapCache;
+  private LRUCacheWithTimeout < String, String > snapCache;
 
   /**
    * The Run-mode configuration service.
@@ -83,7 +83,7 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public void activate(SnapConfig config) {
     this.config = config;
-    this.snapCache = new LRUCacheWithTimeout<>(config.menuCacheMax(), config.menuCacheTimeout());
+    this.snapCache = new LRUCacheWithTimeout < > (config.menuCacheMax(), config.menuCacheTimeout());
     logger.info("SnapService is activated.");
   }
 
@@ -106,15 +106,15 @@ public class SnapServiceImpl implements SnapService {
     }
 
     String snapUrl = config.snapUrl(), navApi = config.navApi(),
-        apiToken = config.navApiToken(), apiKey = config.navApiKey();
+      apiToken = config.navApiToken(), apiKey = config.navApiKey();
 
     if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi) ||
-        StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
+      StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
       // No Snap configuration provided, just return the default one.
       logger.debug(String.format("there is no value " +
-          "for one or multiple configuration parameter: " +
-          "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
-          snapUrl, navApi, apiToken, apiKey));
+        "for one or multiple configuration parameter: " +
+        "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
+        snapUrl, navApi, apiToken, apiKey));
       return gson.toJson(this.getDefaultHeaderMenu());
     }
 
@@ -126,8 +126,8 @@ public class SnapServiceImpl implements SnapService {
       // Execute the request.
       APIResponse snapRes = RestApiUtil.doMenuGet(url, apiToken, apiKey, traceId);
       JsonObject defaultMenu = this.getDefaultHeaderMenu();
-      if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())
-          || snapRes.getResponseCode() != HttpStatus.SC_OK) {
+      if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody()) ||
+        snapRes.getResponseCode() != HttpStatus.SC_OK) {
         logger.error("Sfdc menu fetch is empty, fallback to use local default");
         return gson.toJson(defaultMenu);
       }
@@ -196,7 +196,7 @@ public class SnapServiceImpl implements SnapService {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto(), url is {}", url);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
       if (jsonResponse != null) {
-        ObjectMapper  objectMapper = new ObjectMapper();
+        ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
       }
     } catch (SnapException | JsonProcessingException e) {
@@ -212,7 +212,7 @@ public class SnapServiceImpl implements SnapService {
    */
   private JsonObject getDefaultHeaderMenu() {
     try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
-        config.navFallbackMenuServiceUser())) {
+      config.navFallbackMenuServiceUser())) {
       // Reading the JSON File from DAM.
       defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
       return defaultMenu;
@@ -247,7 +247,7 @@ public class SnapServiceImpl implements SnapService {
     }
     try {
       String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
-      if(StringUtils.isNotBlank(url)) {
+      if (StringUtils.isNotBlank(url)) {
         url = String.format(url, sfId);
         String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
         snapCache.put(cacheKey, jsonResponse);
@@ -258,7 +258,7 @@ public class SnapServiceImpl implements SnapService {
     }
 
     logger
-        .error("User profile data is not fetched from the snap profile API call without error, please contact admin.");
+      .error("User profile data is not fetched from the snap profile API call without error, please contact admin.");
     return null;
   }
 
@@ -297,38 +297,38 @@ public class SnapServiceImpl implements SnapService {
     String accountName = "";
     String accountType = "";
     boolean isNSC = false;
-	String timeZoneStr = "";
+    String timeZoneStr = "";
     if (profileData != null) {
       try {
         JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
         JsonElement contactRoleElement = profileObject.get(CONTACT_ROLE);
-        contactRole = (contactRoleElement == null || contactRoleElement.isJsonNull()) ? ""
-            : contactRoleElement.getAsString();
+        contactRole = (contactRoleElement == null || contactRoleElement.isJsonNull()) ? "" :
+          contactRoleElement.getAsString();
         JsonElement contactNumberElement = profileObject.get(CONTACT_NUMBER);
-        contactNumber = (contactRoleElement == null || contactNumberElement.isJsonNull()) ? ""
-            : contactNumberElement.getAsString();
+        contactNumber = (contactRoleElement == null || contactNumberElement.isJsonNull()) ? "" :
+          contactNumberElement.getAsString();
         isNSC = contactRole.contains(NSC);
         JsonElement wrcOrgId = profileObject.get("wrcOrgId");
         accountID = (wrcOrgId == null || wrcOrgId.isJsonNull()) ? "" : wrcOrgId.getAsString();
         JsonElement organizationName = profileObject.get("organizationName");
         accountName = (organizationName == null || organizationName.isJsonNull()) ? "" : organizationName.getAsString();
         JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-        boolean isWorkdayMate = isWorkmateElement != null && !isWorkmateElement.isJsonNull()
-            && isWorkmateElement.getAsBoolean();
+        boolean isWorkdayMate = isWorkmateElement != null && !isWorkmateElement.isJsonNull() &&
+          isWorkmateElement.getAsBoolean();
         JsonElement typeElement = profileObject.get("type");
-        accountType = isWorkdayMate ? "workday"
-            : (typeElement == null || typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
-      JsonElement timeZoneElement = profileObject.get("timeZone");
+        accountType = isWorkdayMate ? "workday" :
+          (typeElement == null || typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
+        JsonElement timeZoneElement = profileObject.get("timeZone");
         timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" : timeZoneElement.getAsString();
       } catch (JsonSyntaxException e) {
         logger.error("Error in generateAdobeDigitalData method :: {}",
-            e.getMessage());
+          e.getMessage());
       }
     }
     userProperties.addProperty(CONTACT_ROLE, contactRole);
     userProperties.addProperty(CONTACT_NUMBER, contactNumber);
     userProperties.addProperty(IS_NSC, isNSC);
-	userProperties.addProperty("timeZone", timeZoneStr);
+    userProperties.addProperty("timeZone", timeZoneStr);
     orgProperties.addProperty(ACCOUNT_ID, accountID);
     orgProperties.addProperty(ACCOUNT_NAME, accountName);
     orgProperties.addProperty(ACCOUNT_TYPE, accountType);
@@ -350,9 +350,9 @@ public class SnapServiceImpl implements SnapService {
       JsonObject profileObject = profileElement.getAsJsonObject();
       // Populate user information.
       JsonElement contactObject = sfMenu.get(SnapConstants.USER_CONTACT_INFORMATION_KEY);
-      JsonObject contactRoleElement = (contactObject != null && !contactObject.isJsonNull())
-          ? contactObject.getAsJsonObject()
-          : null;
+      JsonObject contactRoleElement = (contactObject != null && !contactObject.isJsonNull()) ?
+        contactObject.getAsJsonObject() :
+        null;
 
       if (contactRoleElement != null && !contactRoleElement.isJsonNull()) {
         JsonElement lastName = contactRoleElement.get(SnapConstants.LAST_NAME_KEY);
@@ -360,9 +360,9 @@ public class SnapServiceImpl implements SnapService {
 
         JsonObject userInfoObject = new JsonObject();
         userInfoObject.addProperty(SnapConstants.LAST_NAME_KEY,
-            (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() : StringUtils.EMPTY);
+          (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() : StringUtils.EMPTY);
         userInfoObject.addProperty(SnapConstants.FIRST_NAME_KEY,
-            (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() : StringUtils.EMPTY);
+          (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() : StringUtils.EMPTY);
         userInfoObject.addProperty(SnapConstants.VIEW_PROFILE_LABEL_KEY, SnapConstants.PROFILE_BUTTON_VALUE);
         userInfoObject.addProperty(SnapConstants.HREF_KEY, config.userProfileUrl());
         profileObject.add(SnapConstants.USER_INFO_KEY, userInfoObject);
@@ -384,17 +384,24 @@ public class SnapServiceImpl implements SnapService {
   private String getUserAvatar(String sfId) {
     ProfilePhoto content = getProfilePhoto(sfId);
     String encodedPhoto = "";
-    String extention = "";
+    String extension = "";
     if (content != null) {
       encodedPhoto = content.getBase64content();
-      extention = content.getFileNameWithExtension();
+      extension = content.getFileNameWithExtension();
     }
-    String[] extenitonSplit = extention.split("\\.");
-    String fileExtention = extenitonSplit[extenitonSplit.length-1];
-    if (StringUtils.isNotBlank(extention) && StringUtils.isNotBlank(encodedPhoto)) {
-      return "data:image/" + fileExtention + ";base64," + encodedPhoto;
+    try {
+      String[] extensionSplit = extension.split("\\.");
+      if (extensionSplit.length > 0) {
+        extension = extensionSplit[extensionSplit.length - 1];
+      } else {
+        logger.error("No extension found in the data");
+      }
+    } catch (Exception e) {
+      logger.error("An exception occurred" + e.getMessage());
     }
-    else {
+    if (StringUtils.isNotBlank(extension) && StringUtils.isNotBlank(encodedPhoto)) {
+      return "data:image/" + extension + ";base64," + encodedPhoto;
+    } else {
       logger.error("getUserAvatar method returns null.");
       return "";
     }

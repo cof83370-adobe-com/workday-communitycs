@@ -56,10 +56,22 @@ public final class ProfilePhoto {
         this.base64content = base64content;
     }
 
+	
+    /**
+     * Getter method.
+     *
+     * @return The success Confirmation.
+     */
     public String getSuccess() {
         return success;
     }
 
+	
+    /**
+     * Accessor method.
+     *
+     * @param success The success Confirmation.
+     */
     public void setSuccess(String success) {
         this.success = success;
     }
