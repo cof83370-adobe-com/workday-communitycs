@@ -125,9 +125,9 @@
                     "cq:styleIds": [
                       "1672945911947"
                     ],
-                    "userlist": {
+                    "speakers": {
                       "jcr:primaryType": "nt:unstructured",
-                      "sling:resourceType": "workday-community/components/common/userlist"
+                      "sling:resourceType": "workday-community/components/common/speakers"
                     }
                   },
                   "sponsors": {
