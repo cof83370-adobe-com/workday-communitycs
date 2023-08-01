@@ -121,7 +121,7 @@
         }
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: $screen-small) {
 
         &.col-equal-33-33-33,
         &.col-left-66-right-33,

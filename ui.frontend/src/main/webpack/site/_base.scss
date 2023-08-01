@@ -69,3 +69,27 @@ h3 {
     font-size: 16px;
     line-height: 22px;
 }
+
+/* 
+Generic Styling, for Desktops/Laptops 
+*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+
+    td,
+    th {
+        padding: 10px;
+        border: 1px solid #A1C2F1;
+        text-align: left;
+        border-collapse: collapse;
+    }
+
+    th {
+        font-weight: bold;
+        text-align: center;
+        background-color: #f0f1f2;
+        vertical-align: top;
+        border-bottom: none;
+    }
+}
