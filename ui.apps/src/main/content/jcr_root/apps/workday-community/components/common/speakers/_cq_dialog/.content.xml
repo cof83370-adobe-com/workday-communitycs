@@ -38,7 +38,7 @@
                                 <ourmUser
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="/apps/workday-community/components/search-pathbrowser"
-                                    fieldLabel="User"
+                                    fieldLabel="Speaker"
                                     name="./ourmUser"
                                     required="{Boolean}true"
                                     rootPath="/content/workday-community" />
