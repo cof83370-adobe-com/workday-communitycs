@@ -3,7 +3,7 @@
     xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0"
     xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:primaryType="nt:unstructured"
-    jcr:title="User List Component"
+    jcr:title="Speakers Component"
     sling:resourceType="cq/gui/components/authoring/dialog">
     <content
         jcr:primaryType="nt:unstructured"
@@ -19,7 +19,7 @@
                         sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                         composite="{Boolean}true"
                         granite:class="ourmUsers"
-                        fieldLabel="OURM Speakers List">
+                        fieldLabel="Event Speakers">
                         <field
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="granite/ui/components/coral/foundation/container"
@@ -28,8 +28,8 @@
                                 <manualOverride
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                        text="Author this user manually"
-                                        fieldDescription="Select this option to author this user and their image (optional) manually"
+                                        text="Manually author this Speaker?"
+                                        fieldDescription="Select this option to author this speaker and their image (optional) manually"
                                         granite:class="manualOverride"
                                         name="./manualOverride"
                                         uncheckedValue="false"
@@ -38,14 +38,14 @@
                                 <ourmUser
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="/apps/workday-community/components/search-pathbrowser"
-                                    fieldLabel="Speaker"
+                                    fieldLabel="Speaker Name"
                                     name="./ourmUser"
                                     required="{Boolean}true"
                                     rootPath="/content/workday-community" />
                                 <profileImageData
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/foundation/form/pathbrowser"
-                                        fieldLabel="User Image"
+                                        fieldLabel="Speaker Image"
                                         name="./profileImageData"
                                         required="{Boolean}false"
                                         rootPath="/content/dam/workday-community" />
