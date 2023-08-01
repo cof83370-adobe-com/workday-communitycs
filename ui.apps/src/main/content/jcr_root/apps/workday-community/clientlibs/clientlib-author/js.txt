@@ -4,4 +4,4 @@ selectfield-min-max.js
 book-page-operations.js
 author-component.js
 search-based-pathbrowser.js
-ourm-speakers-components.js
+ourm-speakers-component.js
