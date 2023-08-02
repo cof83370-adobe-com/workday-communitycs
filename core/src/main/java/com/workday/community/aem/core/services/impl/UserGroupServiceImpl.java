@@ -234,9 +234,14 @@ public class UserGroupServiceImpl implements UserGroupService {
         JsonElement type = contextInfo.get(USER_TYPE_KEY);
         JsonElement customerOf = contactInformation.get(CUSTOMER_OF_KEY);
         JsonElement partnerTrack = contactInformation.get(PARTNER_TRACK_KEY);
+        JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
+        boolean isWorkmateUser = false;
+        if (!isWorkmate.isJsonNull()) {
+            isWorkmateUser = isWorkmate.getAsBoolean();
+        }
         if (!type.isJsonNull()) {
             String typeString = type.getAsString();
-           if (typeString.equals("customer") && !customerOf.isJsonNull()) {
+            if (typeString.equals("customer") && !isWorkmateUser && !customerOf.isJsonNull()) {
                 String customerOfString = customerOf.getAsString();
                 for (Map.Entry<String, String> entry : customerOfMapping.entrySet()) {
                     if (customerOfString.contains(entry.getKey())) {
@@ -253,8 +258,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 }
             }
         }
-        JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
-        if (!isWorkmate.isJsonNull() && isWorkmate.getAsBoolean()) {
+        if (isWorkmateUser) {
             groups.add(INTERNAL_WORKMATES);
         }
         else {
