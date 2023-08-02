@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
-import com.workday.community.aem.core.exceptions.SnapException;
+import com.workday.community.aem.core.exceptions.RestAPIException;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
@@ -152,7 +152,7 @@ public class SnapServiceImpl implements SnapService {
       // Non-Beta will directly return the sf menu
       return gson.toJson(sfMenu);
 
-    } catch (SnapException | JsonSyntaxException e) {
+    } catch (RestAPIException | JsonSyntaxException e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
     }
 
@@ -171,7 +171,7 @@ public class SnapServiceImpl implements SnapService {
       url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);
-    } catch (SnapException | JsonSyntaxException e) {
+    } catch (RestAPIException | JsonSyntaxException e) {
       logger.error("Error in getUserContext method :: {}", e.getMessage());
     }
 
@@ -192,7 +192,7 @@ public class SnapServiceImpl implements SnapService {
       if (jsonResponse != null) {
         return jsonResponse;
       }
-    } catch (SnapException e) {
+    } catch (RestAPIException e) {
       logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
     }
     return null;
@@ -240,13 +240,11 @@ public class SnapServiceImpl implements SnapService {
     }
     try {
       String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
-      if(StringUtils.isNotBlank(url)) {
-        url = String.format(url, sfId);
-        String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
-        snapCache.put(cacheKey, jsonResponse);
-        return jsonResponse;
-      }
-    } catch (SnapException | JsonSyntaxException e) {
+      url = String.format(url, sfId);
+      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
+      snapCache.put(cacheKey, jsonResponse);
+      return jsonResponse;
+    } catch (RestAPIException | JsonSyntaxException e) {
       logger.error("Error in getUserProfile method :: {}", e.getMessage());
     }
 

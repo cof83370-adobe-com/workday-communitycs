@@ -5,7 +5,7 @@ import com.day.cq.dam.api.Rendition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
-import com.workday.community.aem.core.exceptions.SnapException;
+import com.workday.community.aem.core.exceptions.RestAPIException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.RunModeConfigService;
@@ -295,7 +295,7 @@ public class SnapServiceImplTest {
       snapService.activate(snapConfig.get(1, 1));
       mocked.when(() -> RestApiUtil.doMenuGet(anyString(), anyString(),
           anyString(), anyString()))
-          .thenThrow(new SnapException());
+          .thenThrow(new RestAPIException());
 
       String menuData2 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(menuData, menuData2);
@@ -334,7 +334,7 @@ public class SnapServiceImplTest {
   public void testGetProfilePhotoWithException() {
     snapService.activate(snapConfig.get(1, 2));
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new RestAPIException());
       assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
     }
   }
@@ -356,7 +356,7 @@ public class SnapServiceImplTest {
   public void testGetUserContextWithException() {
     snapService.activate(snapConfig.get(1, 1));
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new RestAPIException());
       JsonObject ret = this.snapService.getUserContext(DEFAULT_SFID_MASTER);
       assertEquals(ret, new JsonObject());
     }
@@ -392,7 +392,7 @@ public class SnapServiceImplTest {
   public void testGetAdobeDigitalDataWithException() {
     snapService.activate(snapConfig.get(1, 1));
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
+      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new RestAPIException());
       String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
       assertNull(ret);
       String pageTitle = "FAQ page";

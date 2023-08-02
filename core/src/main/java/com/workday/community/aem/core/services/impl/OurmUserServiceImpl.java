@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.OurmDrupalConfig;
 import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.exceptions.SnapException;
+import com.workday.community.aem.core.exceptions.RestAPIException;
 import com.workday.community.aem.core.services.OurmUserService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.OAuth1Util;
@@ -54,7 +54,6 @@ public class OurmUserServiceImpl implements OurmUserService {
         this.ourmDrupalConfig = config;
     }
 
-
     /**
      * Search ourm user list.
      *
@@ -81,11 +80,12 @@ public class OurmUserServiceImpl implements OurmUserService {
                 String jsonResponse = RestApiUtil.doOURMGet(apiUrl, headerString);
                 return gson.fromJson(jsonResponse, JsonObject.class);
 
-            } catch (SnapException | InvalidKeyException | NoSuchAlgorithmException e) {
+            } catch (RestAPIException | InvalidKeyException | NoSuchAlgorithmException e) {
                 String errorMessage = e.getMessage();
                 LOGGER.error("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl %s", errorMessage);
                 throw new OurmException(
-                        String.format("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl : %s", errorMessage));
+                        String.format("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl : %s",
+                                errorMessage));
             }
         }
         return new JsonObject();

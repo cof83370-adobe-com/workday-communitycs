@@ -45,4 +45,24 @@ public interface RestApiConstants {
    * The constant TIMEOUT
    */
   int TIMEOUT = 10000;
+
+  /**
+   * The constant POST_API
+   */
+  String POST_API = "POST";
+
+  /**
+   * The constant Basic
+   */
+  String BASIC = "Basic";
+
+  /**
+   * The constant GRANT_TYPE
+   */
+  String GRANT_TYPE = "grant_type";
+
+  /**
+   * The constant REFRESH_TOKEN
+   */
+  String REFRESH_TOKEN = "refresh_token";
 }

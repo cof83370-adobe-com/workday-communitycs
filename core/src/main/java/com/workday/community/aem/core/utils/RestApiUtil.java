@@ -1,16 +1,19 @@
 package com.workday.community.aem.core.utils;
 
 import com.workday.community.aem.core.constants.RestApiConstants;
-import com.workday.community.aem.core.exceptions.SnapException;
+import com.workday.community.aem.core.exceptions.RestAPIException;
 
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -44,7 +47,8 @@ public class RestApiUtil {
    *
    * @return the API response from menu API call
    */
-  public static APIResponse doMenuGet(String url, String apiToken, String apiKey, String traceId) throws SnapException {
+  public static APIResponse doMenuGet(String url, String apiToken, String apiKey, String traceId)
+      throws RestAPIException {
     // Construct the request header.
     LOGGER.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
     APIRequest req = getMenuApiRequest(url, apiToken, apiKey, traceId);
@@ -59,7 +63,7 @@ public class RestApiUtil {
    * @param xApiKey   API secret key.
    * @return the Json response as String from snap logic API call.
    */
-  public static String doSnapGet(String url, String authToken, String xApiKey) throws SnapException {
+  public static String doSnapGet(String url, String authToken, String xApiKey) throws RestAPIException {
     LOGGER.debug("RestAPIUtil: Calling REST requestSnapJsonResponse()...= {}", url);
     APIRequest apiRequestInfo = new APIRequest();
 
@@ -69,7 +73,7 @@ public class RestApiUtil {
     return executeGetRequest(apiRequestInfo).getResponseBody();
   }
 
-  public static String doOURMGet(String url, String header) throws SnapException {
+  public static String doOURMGet(String url, String header) throws RestAPIException {
     LOGGER.debug("RestAPIUtil: Calling REST requestOurmJsonResponse()...= {}", url);
     APIRequest apiRequestInfo = new APIRequest();
 
@@ -83,9 +87,9 @@ public class RestApiUtil {
    * 
    * @param req API request.
    * @return Response from API.
-   * @throws SnapException
+   * @throws RestAPIException
    */
-  private static APIResponse executeGetRequest(APIRequest req) throws SnapException {
+  private static APIResponse executeGetRequest(APIRequest req) throws RestAPIException {
     APIResponse apiresponse = new APIResponse();
 
     LOGGER.debug("RESTAPIUtil executeGetRequest: Calling REST executeGetRequest().");
@@ -115,7 +119,7 @@ public class RestApiUtil {
       LOGGER.debug("HTTP response : {}", response.body());
       apiresponse.setResponseBody(response.body());
     } catch (IOException | InterruptedException e) {
-      throw new SnapException(
+      throw new RestAPIException(
           String.format("Exception in executeGetRequest method while executing the request = %s", e.getMessage()));
     }
     return apiresponse;
@@ -141,5 +145,137 @@ public class RestApiUtil {
         .addHeader(RestApiConstants.TRACE_ID, traceId);
 
     return apiRequestInfo;
+  }
+
+  /**
+   * Executes the post request using the java net Httpclient.
+   * 
+   * @param request API Request object
+   * @return API Response object
+   * @throws RestAPIException
+   */
+  private static APIResponse executePostRequest(APIRequest request) throws RestAPIException {
+    APIResponse apiresponse = new APIResponse();
+
+    LOGGER.debug("RESTAPIUtil executePostRequest: Calling REST executePostRequest().");
+    if (StringUtils.isBlank(request.getMethod())) {
+      request.setMethod(RestApiConstants.POST_API);
+    }
+
+    HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofMillis(HTTP_TIMEMOUT)).build();
+
+    Builder builder = HttpRequest.newBuilder().uri(request.getUri());
+
+    // Add the headers.
+    for (Map.Entry<String, String> entry : request.getHeaders().entrySet()) {
+      builder.header(entry.getKey(), entry.getValue());
+    }
+
+    // Build the request.
+    HttpRequest httpRequest = builder.POST(buildFormDataFromMap(request.getFormData())).build();
+
+    try {
+      HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+      LOGGER.debug("HTTP response code : {}", response.statusCode());
+      apiresponse.setResponseCode(response.statusCode());
+      LOGGER.debug("HTTP response : {}", response.body());
+      apiresponse.setResponseBody(response.body());
+    } catch (IOException | InterruptedException e) {
+      throw new RestAPIException(
+          String.format("Exception in executePostRequest method while executing the request = %s", e.getMessage()));
+    }
+
+    return apiresponse;
+  }
+
+  /**
+   * Retruns the basic authentication header.
+   * 
+   * @param username Username
+   * @param password Password
+   * @return Header string
+   */
+  private static final String getBasicAuthenticationHeader(String username, String password) {
+    String valueToEncode = username + ":" + password;
+    return RestApiConstants.BASIC + " " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
+  }
+
+  /**
+   * Builds the form data for post call.
+   * 
+   * @param data Map with input data
+   * @return Body publisher
+   */
+  private static HttpRequest.BodyPublisher buildFormDataFromMap(Map<String, String> data) {
+    var builder = new StringBuilder();
+    for (Map.Entry<String, String> entry : data.entrySet()) {
+      if (builder.length() > 0) {
+        builder.append("&");
+      }
+      builder.append(URLEncoder.encode(entry.getKey().toString(), StandardCharsets.UTF_8));
+      builder.append("=");
+      builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
+    }
+    System.out.println(builder.toString());
+    return HttpRequest.BodyPublishers.ofString(builder.toString());
+  }
+
+  /**
+   * Frames the LMS Token call request.
+   * 
+   * @param url          Url
+   * @param username     Client Id
+   * @param password     Client Secret
+   * @param refreshToken Refresh Token
+   * @return API Request
+   */
+  private static APIRequest getLMSTokenRequest(String url, String username, String password, String refreshToken) {
+    APIRequest apiRequestInfo = new APIRequest();
+
+    apiRequestInfo.setUrl(url);
+    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, getBasicAuthenticationHeader(username, password))
+        .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
+        .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON)
+        .addFormData(RestApiConstants.GRANT_TYPE, RestApiConstants.REFRESH_TOKEN)
+        .addFormData(RestApiConstants.REFRESH_TOKEN, refreshToken);
+
+    return apiRequestInfo;
+  }
+
+  /**
+   * Frames the request and gets the response.
+   * 
+   * @param url          Url
+   * @param clientId     Client Id
+   * @param clientSecret Client Secret
+   * @param refreshToken Refresh Token
+   * @return API Response
+   * @throws RestAPIException
+   */
+  public static APIResponse doLMSTokenPost(String url, String clientId, String clientSecret, String refreshToken)
+      throws RestAPIException {
+    // Construct the request header.
+    LOGGER.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
+    APIRequest req = getLMSTokenRequest(url, clientId, clientSecret, refreshToken);
+    return executePostRequest(req);
+  }
+
+  /**
+   * Frames the LMS Course Detail API request.
+   * 
+   * @param url         Url
+   * @param bearerToken Bearer Token
+   * @return API Response
+   * @throws RestAPIException
+   */
+  public static APIResponse doLMSCourseDetailGet(String url, String bearerToken) throws RestAPIException {
+    APIRequest apiRequestInfo = new APIRequest();
+
+    apiRequestInfo.setUrl(url);
+    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
+        .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
+        .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+
+    return executeGetRequest(apiRequestInfo);
   }
 }
