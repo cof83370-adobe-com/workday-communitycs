@@ -74,6 +74,15 @@
             expandElement.addEventListener('click', function(e) {
                 expandImage({ expandElement });
             });
+
+            expandElement.setAttribute('tabindex', '0');
+
+            expandElement.addEventListener('keyup', function (event) {
+                const keyboardEvent = event as KeyboardEvent;
+                if (keyboardEvent.key === 'Enter') {
+                    expandImage({ expandElement });
+                }
+            });
         });
     }
 
