@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.listeners;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.jcr.Node;
@@ -21,6 +23,8 @@ import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.utils.ResolverUtil;
@@ -40,6 +44,8 @@ import com.workday.community.aem.core.utils.ResolverUtil;
 public class PageResourceListener implements ResourceChangeListener {
     /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(PageResourceListener.class);
+
+    private static final String TAG_INTERNAL_WORKMATE = "access-control:internal_workmates";
 
     /** The resolver factory. */
     @Reference
@@ -63,7 +69,52 @@ public class PageResourceListener implements ResourceChangeListener {
         changes.stream()
                 .filter(item -> "ADDED".equals(item.getType().toString() )
                         && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
-                .forEach(change -> addAuthorPropertyToContentNode(change.getPath()));
+                .forEach(change -> handleNewPage(change.getPath()));
+    }
+
+    /**
+     * Handles New Page.
+     * 
+     * @param pagePath the page path.
+     */
+    public void handleNewPage(String pagePath) {
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resolverFactory,
+                "workday-community-administrative-service")) {
+            if (resourceResolver.getResource(pagePath) != null) {
+                addInternalWorkmatesTag(pagePath, resourceResolver);
+                addAuthorPropertyToContentNode(pagePath, resourceResolver);
+            }
+            if (resourceResolver.hasChanges()) {
+                resourceResolver.commit();
+            }
+        } catch (PersistenceException | LoginException e) {
+            logger.error("Exception occurred when adding author property to page {} ", e.getMessage());
+        }
+    }
+
+    /**
+     * Adds the Internal Workmates tags to page.
+     * 
+     * @param pagePath the newly created page
+     * @param resourceResolver the resource resolver
+     */
+    public void addInternalWorkmatesTag(String pagePath, ResourceResolver resourceResolver) {
+        try {
+            PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
+            Page page = pageManager.getContainingPage(pagePath);
+            if (null != page) {
+                String[] aclTags = page.getProperties().get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class);
+                List<String> aclTagList = new ArrayList<>(Arrays.asList(aclTags));
+                if(!aclTagList.contains(TAG_INTERNAL_WORKMATE)){
+                    aclTagList.add(TAG_INTERNAL_WORKMATE);
+                    Node pageNode = page.getContentResource().adaptTo(Node.class);
+                    pageNode.setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, aclTagList.stream().toArray(String[]::new));
+                }
+            }
+        }
+         catch (RepositoryException exception) {
+            logger.error("Exception occurred when adding Internal Workmates Tag property to page {} ", exception.getMessage());
+        }
     }
 
     /**
@@ -71,9 +122,8 @@ public class PageResourceListener implements ResourceChangeListener {
      *
      * @param path the path
      */
-    public void addAuthorPropertyToContentNode(String path) {
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resolverFactory,
-                "workday-community-administrative-service")) {
+    public void addAuthorPropertyToContentNode(String path, ResourceResolver resourceResolver) {
+        try {
             if (resourceResolver.getResource(path) != null) {
                 Node root = resourceResolver.getResource(path).adaptTo(Node.class);
                 String createdUserId = root.getProperty(JcrConstants.JCR_CREATED_BY).getString();
@@ -100,11 +150,8 @@ public class PageResourceListener implements ResourceChangeListener {
                     }
                 }
             }
-            if (resourceResolver.hasChanges()) {
-                resourceResolver.commit();
-            }
-        } catch (PersistenceException | RepositoryException | LoginException e) {
-            logger.error("Exception occurred when adding author property to page {} ", e.getMessage());
+        } catch (RepositoryException ex) {
+            logger.error("Exception occurred when adding author property to page {} ", ex.getMessage());
         }
     }
 

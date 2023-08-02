@@ -69,6 +69,15 @@ public class RestApiUtil {
     return executeGetRequest(apiRequestInfo).getResponseBody();
   }
 
+  public static String doOURMGet(String url, String header) throws SnapException {
+    LOGGER.debug("RestAPIUtil: Calling REST requestOurmJsonResponse()...= {}", url);
+    APIRequest apiRequestInfo = new APIRequest();
+
+    apiRequestInfo.setUrl(url);
+    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, header);
+    return executeGetRequest(apiRequestInfo).getResponseBody();
+  }
+
   /**
    * Executes the get request call.
    * 

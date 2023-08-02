@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:sling="http://sling.apache.org/jcr/sling/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+    xmlns:granite="http://www.adobe.com/jcr/granite/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0"
+    xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:primaryType="nt:unstructured"
-    jcr:title="Properties Config"
+    jcr:title="User List Component"
     sling:resourceType="cq/gui/components/authoring/dialog">
     <content
         jcr:primaryType="nt:unstructured"
@@ -11,7 +13,46 @@
                 jcr:primaryType="nt:unstructured"
                 sling:resourceType="granite/ui/components/coral/foundation/tabs"
                 maximized="{Boolean}true">
-                <items jcr:primaryType="nt:unstructured"/>
+                <items jcr:primaryType="nt:unstructured">
+                    <ourmUsers
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
+                        composite="{Boolean}true"
+                        granite:class="ourmUsers"
+                        fieldLabel="OURM User List">
+                        <field
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="granite/ui/components/coral/foundation/container"
+                            name="./items">
+                            <items jcr:primaryType="nt:unstructured">
+                                <manualOverride
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        text="Author this user manually"
+                                        fieldDescription="Select this option to author this user and their image (optional) manually"
+                                        granite:class="manualOverride"
+                                        name="./manualOverride"
+                                        uncheckedValue="false"
+                                        value="true"
+                                        checked="false" />
+                                <ourmUser
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="/apps/workday-community/components/search-pathbrowser"
+                                    fieldLabel="User"
+                                    name="./ourmUser"
+                                    required="{Boolean}true"
+                                    rootPath="/content/workday-community" />
+                                <profileImageData
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/foundation/form/pathbrowser"
+                                        fieldLabel="User Image"
+                                        name="./profileImageData"
+                                        required="{Boolean}false"
+                                        rootPath="/content/dam/workday-community" />
+                            </items>
+                        </field>
+                    </ourmUsers>
+                </items>
             </tabs>
         </items>
     </content>

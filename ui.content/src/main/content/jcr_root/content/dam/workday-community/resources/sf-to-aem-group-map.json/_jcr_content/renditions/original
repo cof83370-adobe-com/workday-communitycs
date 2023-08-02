@@ -3,11 +3,11 @@
         "Named Support Contact": "customer_named_support_contact", 
         "Training Coordinator": "customer_training_coordinator"
     },
-    "nscSupportingMapping": {
-        "Adaptive Planning": "customer_adaptive_only", 
-        "Scout": "customer_scout_only", 
-        "Peakon": "customer_peakon_only", 
-        "VNDLY": "customer_vndly_only"
+    "customerOfMapping": {
+        "Adaptive Planning": "customer_adaptive", 
+        "Scout": "customer_scout", 
+        "Peakon": "customer_peakon", 
+        "VNDLY": "customer_vndly"
     },
     "wspMapping": {
         "WSP - Accelerate": "customer_wsp_accelerate",
