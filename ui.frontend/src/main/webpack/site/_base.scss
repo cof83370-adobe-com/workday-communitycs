@@ -71,7 +71,7 @@ h3 {
 }
 
 /* 
-Generic Styling, for Desktops/Laptops 
+Generic Styling, for table
 */
 table {
     width: 100%;
@@ -80,7 +80,7 @@ table {
     td,
     th {
         padding: 10px;
-        border: 1px solid #A1C2F1;
+        border: 1px solid $tbl-border-color;
         text-align: left;
         border-collapse: collapse;
     }
@@ -88,7 +88,7 @@ table {
     th {
         font-weight: bold;
         text-align: center;
-        background-color: #f0f1f2;
+        background-color: $tbl-header-background-color;
         vertical-align: top;
         border-bottom: none;
     }
