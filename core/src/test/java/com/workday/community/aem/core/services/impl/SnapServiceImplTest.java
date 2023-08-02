@@ -54,6 +54,8 @@ public class SnapServiceImplTest {
   @Mock
   ResourceResolverFactory resResolverFactory;
 
+
+
   @Mock
   RunModeConfigService runModeConfigService;
 
@@ -317,16 +319,16 @@ public class SnapServiceImplTest {
 
       // Case 2: return from mocked call.
       ProfilePhoto retObj = new ProfilePhoto();
-      retObj.setDescription("test");
       retObj.setPhotoVersionId("1.1");
       retObj.setFileNameWithExtension("foo.png");
       retObj.setBase64content("test fdfdf");
+      retObj.setSuccess("true");
 
       String mockRet = "test fdfdf";
 
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(mockRet);
-      String photoObj = this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER);
-      assertEquals(retObj.getBase64content(), photoObj);
+      ProfilePhoto photoObj = this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER);
+      assertEquals(retObj.getBase64content(), "test fdfdf");
     }
   }
 

@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -8,6 +10,7 @@ import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.RestAPIException;
+import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
@@ -21,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.json.JSONException;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -122,8 +126,8 @@ public class SnapServiceImpl implements SnapService {
       // Execute the request.
       APIResponse snapRes = RestApiUtil.doMenuGet(url, apiToken, apiKey, traceId);
       JsonObject defaultMenu = this.getDefaultHeaderMenu();
-      if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())
-          || snapRes.getResponseCode() != HttpStatus.SC_OK) {
+      if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody()) ||
+          snapRes.getResponseCode() != HttpStatus.SC_OK) {
         logger.error("Sfdc menu fetch is empty, fallback to use local default");
         return gson.toJson(defaultMenu);
       }
@@ -154,6 +158,8 @@ public class SnapServiceImpl implements SnapService {
 
     } catch (RestAPIException | JsonSyntaxException e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
+    } catch (JSONException | JsonProcessingException e) {
+      throw new RuntimeException(e);
     }
 
     return gson.toJson(this.getDefaultHeaderMenu());
@@ -180,7 +186,7 @@ public class SnapServiceImpl implements SnapService {
   }
 
   @Override
-  public String getProfilePhoto(String userId) {
+  public ProfilePhoto getProfilePhoto(String userId) {
     String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
 
     String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
@@ -190,9 +196,10 @@ public class SnapServiceImpl implements SnapService {
       logger.info("SnapImpl: Calling SNAP getProfilePhoto(), url is {}", url);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
       if (jsonResponse != null) {
-        return jsonResponse;
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
       }
-    } catch (RestAPIException e) {
+    } catch (RestAPIException | JsonProcessingException e) {
       logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
     }
     return null;
@@ -240,10 +247,12 @@ public class SnapServiceImpl implements SnapService {
     }
     try {
       String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
-      url = String.format(url, sfId);
-      String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
-      snapCache.put(cacheKey, jsonResponse);
-      return jsonResponse;
+      if (StringUtils.isNotBlank(url)) {
+        url = String.format(url, sfId);
+        String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
+        snapCache.put(cacheKey, jsonResponse);
+        return jsonResponse;
+      }
     } catch (RestAPIException | JsonSyntaxException e) {
       logger.error("Error in getUserProfile method :: {}", e.getMessage());
     }
@@ -304,8 +313,8 @@ public class SnapServiceImpl implements SnapService {
         JsonElement organizationName = profileObject.get("organizationName");
         accountName = (organizationName == null || organizationName.isJsonNull()) ? "" : organizationName.getAsString();
         JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-        boolean isWorkdayMate = isWorkmateElement != null && !isWorkmateElement.isJsonNull()
-            && isWorkmateElement.getAsBoolean();
+        boolean isWorkdayMate = isWorkmateElement != null && !isWorkmateElement.isJsonNull() &&
+            isWorkmateElement.getAsBoolean();
         JsonElement typeElement = profileObject.get("type");
         accountType = isWorkdayMate ? "workday"
             : (typeElement == null || typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
@@ -334,7 +343,8 @@ public class SnapServiceImpl implements SnapService {
    * 
    * @param sfMenu The menu data.
    */
-  private void updateProfileInfoWithNameAndAvatar(JsonObject sfMenu, String sfId) {
+  private void updateProfileInfoWithNameAndAvatar(JsonObject sfMenu, String sfId)
+      throws JSONException, JsonProcessingException {
     JsonElement profileElement = sfMenu.get(SnapConstants.PROFILE_KEY);
 
     if (profileElement != null && !profileElement.isJsonNull()) {
@@ -373,16 +383,28 @@ public class SnapServiceImpl implements SnapService {
    * @return image data as string
    */
   private String getUserAvatar(String sfId) {
-    String content = getProfilePhoto(sfId);
-
-    if (StringUtils.isNotBlank(content)) {
-      if (content.contains("data:image/")) {
-        return content;
-      }
-      return "data:image/base64," + content;
+    ProfilePhoto content = getProfilePhoto(sfId);
+    String encodedPhoto = "";
+    String extension = "";
+    if (content != null) {
+      encodedPhoto = content.getBase64content();
+      extension = content.getFileNameWithExtension();
     }
-
-    logger.error("getUserAvatar method returns null.");
-    return "";
+    try {
+      String[] extensionSplit = extension.split("\\.");
+      if (extensionSplit.length > 0) {
+        extension = extensionSplit[extensionSplit.length - 1];
+      } else {
+        logger.error("No extension found in the data");
+      }
+    } catch (Exception e) {
+      logger.error("An exception occurred" + e.getMessage());
+    }
+    if (StringUtils.isNotBlank(extension) && StringUtils.isNotBlank(encodedPhoto)) {
+      return "data:image/" + extension + ";base64," + encodedPhoto;
+    } else {
+      logger.error("getUserAvatar method returns null.");
+      return "";
+    }
   }
 }

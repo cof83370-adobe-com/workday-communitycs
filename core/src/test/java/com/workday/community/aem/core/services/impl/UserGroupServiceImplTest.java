@@ -146,7 +146,7 @@ class UserGroupServiceImplTest {
     }
 
     @Test
-    void testSnapService() throws NoSuchFieldException, IllegalAccessException {
+    void testCustomerRoles() throws NoSuchFieldException, IllegalAccessException {
         HashMap<String, String> customerRoleMap = new HashMap<>();
         customerRoleMap.put("Named Support Contact", "customer_name_support_contact");
         customerRoleMap.put("Training Coordinator", "customer_training_coordinator");
@@ -190,6 +190,35 @@ class UserGroupServiceImplTest {
         assertTrue(groups.contains("customer_name_support_contact"));
         assertTrue(groups.contains("customer_training_coordinator"));
         assertTrue(groups.contains("customer_all"));
+    }
+
+    @Test
+    void testPartnerRoles() throws NoSuchFieldException, IllegalAccessException {
+        HashMap<String, String> partnerRoleMap = new HashMap<>();
+        partnerRoleMap.put("Innovation", "partner_innovation_track");
+        partnerRoleMap.put("Sales", "partner_sales_track");
+        partnerRoleMap.put("Services", "partner_services_track");
+        Field partnerTrackMappingField = userGroupService.getClass().getDeclaredField("partnerTrackMapping");
+        partnerTrackMappingField.setAccessible(true);
+        partnerTrackMappingField.set(userGroupService, partnerRoleMap);
+        
+        String SF_ID = "test=123";
+        JsonObject context = new JsonObject();
+        JsonObject contextInfoObj = new JsonObject();
+        contextInfoObj.addProperty("type", "partner");
+        contextInfoObj.addProperty("isWorkmate", false);
+        contextInfoObj.addProperty("contactRole", "");
+        JsonObject contactInformationObj = new JsonObject();
+        contactInformationObj.addProperty("propertyAccess", "Community");
+        contactInformationObj.addProperty("partnerTrack", "Innovation;Sales");
+        contactInformationObj.addProperty("wsp", "");
+        context.add("contextInfo", contextInfoObj);
+        context.add("contactInformation", contactInformationObj);
+        when(snapService.getUserContext(SF_ID)).thenReturn(context);
+        List<String> groups = userGroupService.getUserGroupsFromSnap(SF_ID);
+        assertTrue(groups.contains("partner_all"));
+        assertTrue(groups.contains("partner_innovation_track"));
+        assertTrue(groups.contains("partner_sales_track"));
     }
 
 
