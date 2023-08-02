@@ -75,7 +75,7 @@ public class OurmUserServiceImpl implements OurmUserService {
                 && StringUtils.isNotBlank(consumerSecret) && StringUtils.isNotBlank(searchPath)) {
             try {
 
-                String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, URLEncoder.encode(searchText, StandardCharsets.UTF_8)), searchText);
+                String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, URLEncoder.encode(searchText, StandardCharsets.UTF_8)));
                 String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());
                 LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
 
