@@ -13,4 +13,12 @@ public interface TaxonomyBadge {
      * @return the badge list
      */
     List<String> getBadgeList();
+
+    /**
+     * Gets the retired.
+     *
+     * @return the retired
+     */
+    boolean getRetired();
+    
 }

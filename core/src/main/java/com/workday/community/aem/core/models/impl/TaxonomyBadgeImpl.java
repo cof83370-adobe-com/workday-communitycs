@@ -8,6 +8,8 @@ import javax.inject.Inject;
 
 import com.workday.community.aem.core.constants.PageResourceType;
 import com.workday.community.aem.core.constants.TagPropertyName;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -31,6 +33,9 @@ public class TaxonomyBadgeImpl implements TaxonomyBadge {
 
     /** The Constant RESOURCE_TYPE. */
     protected static final String RESOURCE_TYPE = "workday-community/components/common/taxonomybadge";
+
+    /** The Constant RETIRED_PROP. */
+    protected static final String RETIRED_PROP = "sling:alias";
 
     /** The badge list. */
     private List<String> badgeList = new ArrayList<>();
@@ -93,5 +98,15 @@ public class TaxonomyBadgeImpl implements TaxonomyBadge {
             }
         }
         return Collections.unmodifiableList(badgeList);
+    }
+
+    /**
+     * Gets the retired.
+     *
+     * @return the retired
+     */
+    @Override
+    public boolean getRetired() {
+     return  StringUtils.isNotBlank(currentPage.getProperties().get(RETIRED_PROP, StringUtils.EMPTY));
     }
 }

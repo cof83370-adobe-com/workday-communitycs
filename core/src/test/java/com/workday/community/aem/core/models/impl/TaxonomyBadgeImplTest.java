@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.models.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.security.AccessControlException;
@@ -56,6 +57,16 @@ public class TaxonomyBadgeImplTest {
         List<String> actualBadges = taxonomyBadge.getBadgeList();
         assertEquals(expectedBadges, actualBadges);
     }
+
+    @Test
+    public void testGetRetired() {
+        Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
+        context.registerService(Page.class, currentPage);
+        TaxonomyBadge taxonomyBadge = context.request().adaptTo(TaxonomyBadge.class);
+        boolean retiredTagExist = taxonomyBadge.getRetired();
+        assertFalse(retiredTagExist);
+    }
+
 
     /**
      * Test release notes taxonomy badges.
