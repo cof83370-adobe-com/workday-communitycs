@@ -284,7 +284,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/carousel,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/dynamic/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/carousel,/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/download,/apps/workday-community/components/dynamic/download,/apps/workday-community/components/core/image,/apps/workday-community/components/dynamic/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_16323801898166>
@@ -294,7 +294,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools - Right Rail"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/core/separator,/apps/workday-community/components/common/taxonomy]"
+                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/dynamic/relatedinformation,/apps/workday-community/components/core/separator,/apps/workday-community/components/common/taxonomy]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_16822860900458>
@@ -336,7 +336,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Page Content"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[group:Workday Community Site - Content,/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/form/container,/apps/workday-community/components/common/importcontent]"
+                        components="[group:Workday Community Site - Content,/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/dynamic/brightcoveplayer,/apps/workday-community/components/core/form/container,/apps/workday-community/components/common/importcontent]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:authoring jcr:primaryType="nt:unstructured">
@@ -407,7 +407,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Event Details Container"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/content/events/eventdetails,/apps/workday-community/components/core/image]"
+                        components="[/apps/workday-community/components/content/events/eventdetails,/apps/workday-community/components/core/image,/apps/workday-community/components/dynamic/image]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_2067079253960600>
@@ -416,7 +416,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Event Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/image]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/dynamic/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/download,/apps/workday-community/components/dynamic/download,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/image,/apps/workday-community/components/dynamic/image]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_2067079264297100>
@@ -479,7 +479,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/download]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/dynamic/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/image,/apps/workday-community/components/dynamic/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/download,/apps/workday-community/components/dynamic/download]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_17323802898146>
@@ -489,7 +489,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Right Rail"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/core/separator,/apps/workday-community/components/common/taxonomy]"
+                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/dynamic/relatedinformation,/apps/workday-community/components/core/separator,/apps/workday-community/components/common/taxonomy]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_16322860230451>
@@ -517,7 +517,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/core/download,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/dynamic/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/download,/apps/workday-community/components/dynamic/download,/apps/workday-community/components/core/image,/apps/workday-community/components/dynamic/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text,/apps/workday-community/components/core/title]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_30056181409111>
@@ -537,7 +537,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ - Right Rail"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/core/separator,/apps/workday-community/components/common/taxonomy]"
+                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/dynamic/relatedinformation,/apps/workday-community/components/core/separator,/apps/workday-community/components/common/taxonomy]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676931065193>
@@ -556,7 +556,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="FAQ - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676937205547>
@@ -566,7 +566,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Kits and Tools - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676938889768>
@@ -576,7 +576,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Reference - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1676940689642>
@@ -596,7 +596,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Center"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/core/text]"
+                        components="[/apps/workday-community/components/core/button,/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678149939855>
@@ -614,7 +614,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Content Main"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/download]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/dynamic/brightcoveplayer,/apps/workday-community/components/core/accordion,/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/image,/apps/workday-community/components/dynamic/image,/apps/workday-community/components/core/separator,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text,/apps/workday-community/components/core/title,/apps/workday-community/components/core/download,/apps/workday-community/components/dynamic/download]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678150259879>
@@ -624,7 +624,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Troubleshooting - Right Rail"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/common/taxonomy]"
+                        components="[/apps/workday-community/components/common/relatedinformation,/apps/workday-community/components/dynamic/relatedinformation,/apps/workday-community/components/common/taxonomy]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678150305206>
@@ -894,7 +894,7 @@
                         jcr:title="Kits and Tools - Accordion (Main)"
                         sling:resourceType="wcm/core/components/policy/policy"
                         allowedHeadingElements="[h2,h3,h4,h5,h6]"
-                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
+                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/image,/apps/workday-community/components/dynamic/image,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text]"
                         headingElement="h2">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1674773938710>
@@ -903,7 +903,7 @@
                         jcr:title="Troubleshooting - Accordion (Main)"
                         sling:resourceType="wcm/core/components/policy/policy"
                         allowedHeadingElements="[h3]"
-                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/dynamic/brightcoveplayer,/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/image,/apps/workday-community/components/dynamic/image,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text]"
                         headingElement="h3">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678380800744>
@@ -913,7 +913,7 @@
                         jcr:title="FAQ - Accordion (Main)"
                         sling:resourceType="wcm/core/components/policy/policy"
                         allowedHeadingElements="h4"
-                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/core/image,/apps/workday-community/components/core/text]"
+                        components="[/apps/workday-community/components/core/container,/apps/workday-community/components/dynamic/container,/apps/workday-community/components/core/image,/apps/workday-community/components/dynamic/image,/apps/workday-community/components/core/text,/apps/workday-community/components/dynamic/text]"
                         headingElement="h4">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1678841713604>
