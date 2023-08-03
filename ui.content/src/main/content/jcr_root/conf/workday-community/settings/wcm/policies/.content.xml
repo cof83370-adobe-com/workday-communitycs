@@ -336,7 +336,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Page Content"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[group:Workday Community Site - Content,/apps/brightcove/components/content/brightcoveplayer,/apps/workday-community/components/dynamic/brightcoveplayer,/apps/workday-community/components/core/form/container,/apps/workday-community/components/common/importcontent]"
+                        components="[/apps/brightcove/components/content/brightcoveplayer,group:Workday Community Site - Content,group:Workday Community Site - Dynamic,/apps/workday-community/components/core/form/container,/apps/workday-community/components/common/importcontent]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:authoring jcr:primaryType="nt:unstructured">
@@ -425,7 +425,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Event Bottom Left Container"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="group:Workday Community Site - Content"
+                        components="[group:Workday Community Site - Content,group:Workday Community Site - Dynamic]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_2067608127785500>
@@ -1027,6 +1027,99 @@
                     </policy_1681242291110>
                 </relatedinformation>
             </common>
+            <dynamic jcr:primaryType="nt:unstructured">
+                <text jcr:primaryType="nt:unstructured">
+                    <policy_1691082270353
+                        jcr:lastModified="{Date}2023-08-03T22:41:52.943+05:30"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Dynamic Text Editor Policy"
+                        sling:resourceType="wcm/core/components/policy/policy">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <rtePlugins jcr:primaryType="nt:unstructured">
+                            <paraformat
+                                jcr:primaryType="nt:unstructured"
+                                features="*">
+                                <formats
+                                    jcr:primaryType="nt:unstructured"
+                                    override="true">
+                                    <item0
+                                        jcr:primaryType="nt:unstructured"
+                                        description="Paragraph"
+                                        tag="p"/>
+                                    <item1
+                                        jcr:primaryType="nt:unstructured"
+                                        description="Quote"
+                                        tag="blockquote"/>
+                                    <item2
+                                        jcr:primaryType="nt:unstructured"
+                                        description="Preformatted"
+                                        tag="pre"/>
+                                </formats>
+                            </paraformat>
+                            <misctools
+                                jcr:primaryType="nt:unstructured"
+                                features="specialchars">
+                                <specialCharsConfig jcr:primaryType="nt:unstructured">
+                                    <chars
+                                        jcr:primaryType="nt:unstructured"
+                                        override="true">
+                                        <item0
+                                            jcr:primaryType="nt:unstructured"
+                                            entity="&amp;copy;"
+                                            name="copyright"/>
+                                        <item1
+                                            jcr:primaryType="nt:unstructured"
+                                            entity="&amp;euro;"
+                                            name="euro"/>
+                                        <item2
+                                            jcr:primaryType="nt:unstructured"
+                                            entity="&amp;reg;"
+                                            name="registered"/>
+                                        <item3
+                                            jcr:primaryType="nt:unstructured"
+                                            entity="&amp;trade;"
+                                            name="trademark"/>
+                                    </chars>
+                                </specialCharsConfig>
+                            </misctools>
+                            <edit
+                                jcr:primaryType="nt:unstructured"
+                                features="paste-plaintext"/>
+                            <findreplace
+                                jcr:primaryType="nt:unstructured"
+                                features="*"/>
+                            <undo
+                                jcr:primaryType="nt:unstructured"
+                                features="*"/>
+                            <spellcheck
+                                jcr:primaryType="nt:unstructured"
+                                features="*"/>
+                            <image
+                                jcr:primaryType="nt:unstructured"
+                                features="*"/>
+                            <table
+                                jcr:primaryType="nt:unstructured"
+                                features="-"/>
+                            <lists
+                                jcr:primaryType="nt:unstructured"
+                                features="*"/>
+                            <justify
+                                jcr:primaryType="nt:unstructured"
+                                features="-"/>
+                            <format
+                                jcr:primaryType="nt:unstructured"
+                                features="bold"/>
+                            <links
+                                jcr:primaryType="nt:unstructured"
+                                features="modifylink,unlink,anchor"/>
+                            <subsuperscript
+                                jcr:primaryType="nt:unstructured"
+                                features="-"/>
+                        </rtePlugins>
+                    </policy_1691082270353>
+                </text>
+            </dynamic>
         </components>
     </workday-community>
 </jcr:root>
