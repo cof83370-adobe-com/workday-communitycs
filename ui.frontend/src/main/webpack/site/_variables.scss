@@ -1,12 +1,12 @@
 // Normal mode
-$color-foreground:      #202020;
-$color-background:      #FFFFFF;
-$color-link:            #2020E0;
+$color-foreground: #202020;
+$color-background: #FFFFFF;
+$color-link: #2020E0;
 
 // Dark mode
 $color-foreground-dark: invert($color-foreground);
 $color-background-dark: invert($color-background);
-$color-link-dark:       invert($color-link);
+$color-link-dark: invert($color-link);
 
 // Layout
 $gutter-padding: 16px;
@@ -17,45 +17,49 @@ $screen-medium: 992px;
 $screen-large: 1200px;
 
 // Alignment
-$align-left:                left;
-$align-right:               right;
-$align-center:              center;
+$align-left: left;
+$align-right: right;
+$align-center: center;
 
 // Font
-$font-family:               "Workday Adelle Sans", "Roboto", sans-serif;
-$font-family-roboto:        "Roboto";
-$font-family-serif-default: "Asar",Georgia, "Times New Roman", Times, serif;
-$font-family-serif:         var(--fontFamilySerif, $font-family-serif-default);
+$font-family: "Workday Adelle Sans", "Roboto", sans-serif;
+$font-family-roboto: "Roboto";
+$font-family-serif-default: "Asar", Georgia, "Times New Roman", Times, serif;
+$font-family-serif: var(--fontFamilySerif, $font-family-serif-default);
 
-$font-style-normal:         normal;
-$font-style-medium:         medium;
+$font-style-normal: normal;
+$font-style-medium: medium;
 
-$font-weight-normal:        400;
-$font-weight-bold:          700;
+$font-weight-normal: 400;
+$font-weight-bold: 700;
 
-$font-size-xsmall:          12px;
-$font-size-small:           14px;
-$font-size:                 16px;
-$font-size-base:            18px;
+$font-size-xsmall: 12px;
+$font-size-small: 14px;
+$font-size: 16px;
+$font-size-base: 18px;
 
 //Padding defaults
-$pg-top-32:                 32px;
-$pg-top-24:                 24px;
-$pg-top-16:                 16px;
-$pg-top-8:                  8px;
-$pg-bottom-32:              32px;
-$pg-bottom-24:              24px;
-$pg-bottom-16:              16px;
-$pg-bottom-8:               8px;
-$pg-left-32:                32px;
-$pg-left-24:                24px;
-$pg-left-16:                16px;
-$pg-left-8:                 8px;
-$margin-top-32:             32px;
-$margin-top-24:             24px;
-$margin-top-16:             16px;
-$margin-top-8:              8px;
-$margin-bottom-32:          32px;
-$margin-bottom-24:          24px;
-$margin-bottom-16:          16px;
-$margin-bottom-8:           8px;
+$pg-top-32: 32px;
+$pg-top-24: 24px;
+$pg-top-16: 16px;
+$pg-top-8: 8px;
+$pg-bottom-32: 32px;
+$pg-bottom-24: 24px;
+$pg-bottom-16: 16px;
+$pg-bottom-8: 8px;
+$pg-left-32: 32px;
+$pg-left-24: 24px;
+$pg-left-16: 16px;
+$pg-left-8: 8px;
+$margin-top-32: 32px;
+$margin-top-24: 24px;
+$margin-top-16: 16px;
+$margin-top-8: 8px;
+$margin-bottom-32: 32px;
+$margin-bottom-24: 24px;
+$margin-bottom-16: 16px;
+$margin-bottom-8: 8px;
+
+//table styles
+$tbl-border-color : #dfe2e6;
+$tbl-header-background-color : #f0f1f2;
