@@ -1153,6 +1153,90 @@
                         </cq:styleGroups>
                     </policy_1691122483940>
                 </relatedinformation>
+                <image jcr:primaryType="nt:unstructured">
+                    <policy_1691126470473
+                        cq:styleDefaultClasses="enable-expand"
+                        jcr:description="This policy defines default expand image configurations of Dynamic Image components in the Community site. This also have option to disable the Expand Image style for the Community site, where authors can select them."
+                        jcr:lastModified="{Date}2023-08-04T10:59:50.769+05:30"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Community Dynamic Image - Expand"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        altValueFromDAM="true"
+                        disableLazyLoading="false"
+                        displayPopupTitle="true"
+                        isDecorative="false"
+                        titleValueFromDAM="true">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Image Interactions"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="enable-expand"
+                                        cq:styleId="1691126592806"
+                                        cq:styleLabel="Enable Expand"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="disable-expand"
+                                        cq:styleId="1691126609663"
+                                        cq:styleLabel="Disable Expand"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                            <item1
+                                cq:styleGroupLabel="Alignment"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="center-alignment"
+                                        cq:styleId="1691126632854"
+                                        cq:styleLabel="Center"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
+                        </cq:styleGroups>
+                    </policy_1691126470473>
+                    <policy_105637351236166
+                        jcr:description="This policy defines generic styles and configurations of Image components in the Community site. This also enables the Expand Image style dropdown for authors."
+                        jcr:lastModified="{Date}2023-08-04T11:05:27.605+05:30"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Community Dynamic Image - Generic"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        altValueFromDAM="true"
+                        disableLazyLoading="false"
+                        displayPopupTitle="true"
+                        isDecorative="false"
+                        titleValueFromDAM="true">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Image Interactions"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="enable-expand"
+                                        cq:styleId="1691127237500"
+                                        cq:styleLabel="Enable Expand"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                            <item1
+                                cq:styleGroupLabel="Alignment"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="center-alignment"
+                                        cq:styleId="1691127279603"
+                                        cq:styleLabel="Center"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
+                        </cq:styleGroups>
+                    </policy_105637351236166>
+                </image>
             </dynamic>
         </components>
     </workday-community>

@@ -62,6 +62,10 @@
                                     cq:policy="workday-community/components/dynamic/relatedinformation/policy_1691122483940"
                                     jcr:primaryType="nt:unstructured"
                                     sling:resourceType="wcm/core/components/policies/mapping"/>
+                                <image
+                                    cq:policy="workday-community/components/dynamic/image/policy_105637351236166"
+                                    jcr:primaryType="nt:unstructured"
+                                    sling:resourceType="wcm/core/components/policies/mapping"/>
                             </dynamic>
                         </components>
                     </workday-community>
