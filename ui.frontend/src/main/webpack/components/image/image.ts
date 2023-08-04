@@ -76,13 +76,6 @@
             });
 
             expandElement.setAttribute('href', '#');
-
-            expandElement.addEventListener('keyup', function (event) {
-                const keyboardEvent = event as KeyboardEvent;
-                if (keyboardEvent.key === 'Enter') {
-                    expandImage({ expandElement });
-                }
-            });
         });
     }
 
