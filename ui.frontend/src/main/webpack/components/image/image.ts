@@ -75,7 +75,7 @@
                 expandImage({ expandElement });
             });
 
-            expandElement.setAttribute('href', '#');
+            expandElement.setAttribute('tabindex', '0');
 
             expandElement.addEventListener('keyup', function (event) {
                 const keyboardEvent = event as KeyboardEvent;
