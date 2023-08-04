@@ -69,3 +69,27 @@ h3 {
     font-size: 16px;
     line-height: 22px;
 }
+
+/* 
+Generic Styling, for table
+*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+
+    td,
+    th {
+        padding: 10px;
+        border: 1px solid $tbl-border-color;
+        text-align: left;
+        border-collapse: collapse;
+    }
+
+    th {
+        font-weight: bold;
+        text-align: center;
+        background-color: $tbl-header-background-color;
+        vertical-align: top;
+        border-bottom: none;
+    }
+}
