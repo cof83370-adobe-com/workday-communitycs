@@ -1119,6 +1119,40 @@
                         </rtePlugins>
                     </policy_1691082270353>
                 </text>
+                <relatedinformation jcr:primaryType="nt:unstructured">
+                    <policy_1691122483940
+                        jcr:lastModified="{Date}2023-08-04T09:46:50.538+05:30"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Content Page - Dynamic Related Information"
+                        sling:resourceType="wcm/core/components/policy/policy">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Variation"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="curated_block"
+                                        cq:styleId="1691122533624"
+                                        cq:styleLabel="Curated Block"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                            <item1
+                                cq:styleGroupLabel="Options"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="no-border"
+                                        cq:styleId="1691122582559"
+                                        cq:styleLabel="No Border"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
+                        </cq:styleGroups>
+                    </policy_1691122483940>
+                </relatedinformation>
             </dynamic>
         </components>
     </workday-community>
