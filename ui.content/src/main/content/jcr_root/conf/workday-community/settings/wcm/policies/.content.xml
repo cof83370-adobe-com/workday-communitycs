@@ -1030,8 +1030,6 @@
             <dynamic jcr:primaryType="nt:unstructured">
                 <text jcr:primaryType="nt:unstructured">
                     <policy_1691082270353
-                        jcr:lastModified="{Date}2023-08-03T22:41:52.943+05:30"
-                        jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Dynamic Text Editor Policy"
                         sling:resourceType="wcm/core/components/policy/policy">
@@ -1121,8 +1119,6 @@
                 </text>
                 <relatedinformation jcr:primaryType="nt:unstructured">
                     <policy_1691122483940
-                        jcr:lastModified="{Date}2023-08-04T09:46:50.538+05:30"
-                        jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Content Page - Dynamic Related Information"
                         sling:resourceType="wcm/core/components/policy/policy">
@@ -1157,8 +1153,6 @@
                     <policy_1691126470473
                         cq:styleDefaultClasses="enable-expand"
                         jcr:description="This policy defines default expand image configurations of Dynamic Image components in the Community site. This also have option to disable the Expand Image style for the Community site, where authors can select them."
-                        jcr:lastModified="{Date}2023-08-04T10:59:50.769+05:30"
-                        jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Community Dynamic Image - Expand"
                         sling:resourceType="wcm/core/components/policy/policy"
@@ -1200,8 +1194,6 @@
                     </policy_1691126470473>
                     <policy_105637351236166
                         jcr:description="This policy defines generic styles and configurations of Image components in the Community site. This also enables the Expand Image style dropdown for authors."
-                        jcr:lastModified="{Date}2023-08-04T11:05:27.605+05:30"
-                        jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Community Dynamic Image - Generic"
                         sling:resourceType="wcm/core/components/policy/policy"
@@ -1240,8 +1232,6 @@
                 <download jcr:primaryType="nt:unstructured">
                     <policy_1691131237930
                         jcr:description="Sets the title size to H3."
-                        jcr:lastModified="{Date}2023-08-04T12:12:19.338+05:30"
-                        jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Content Dynamic Download"
                         sling:resourceType="wcm/core/components/policy/policy"
