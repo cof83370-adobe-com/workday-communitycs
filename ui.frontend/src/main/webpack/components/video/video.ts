@@ -63,7 +63,6 @@
             window.onclick = e => {
                 const playElements = document.querySelectorAll(videoSelectors.playOption);
                 for (var i = 0; i < playElements.length && playElements[i]; i++) {
-                    playElements[i].setAttribute('href', '#');
                     if(e.target == playElements[i]) {
                         playVideo({ playElement: playElements[i] });
                     }
