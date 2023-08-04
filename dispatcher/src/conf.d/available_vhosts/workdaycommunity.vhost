@@ -25,7 +25,7 @@ Include conf.d/variables/custom.vars
 			# Enable the dispatcher file handler for apache to fetch files from AEM
 			SetHandler dispatcher-handler
 		</IfModule>
-		Options FollowSymLinks
+		Options FollowSymLinks 
 		AllowOverride None
 		# Insert filter
 		SetOutputFilter DEFLATE
@@ -35,6 +35,12 @@ Include conf.d/variables/custom.vars
 		Header always append X-Frame-Options SAMEORIGIN
 	</Directory>
 	<Directory "${DOCROOT}">
+	# Add Includes to enable SSI Includes used by Sling Dynamic Include
+		Options FollowSymLinks Includes
+		# Required to have dispatcher-handler process includes
+		ModMimeUsePathInfo On
+		# Set includes to process .html files
+		AddOutputFilter INCLUDES .html
 		AllowOverride None
 		Require all granted
 	</Directory>
