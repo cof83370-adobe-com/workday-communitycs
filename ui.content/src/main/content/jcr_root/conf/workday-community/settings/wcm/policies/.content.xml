@@ -303,7 +303,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Page Root"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[group:Workday Community Site - Content,/apps/workday-community/components/core/form/container,group:Workday Community Site - Structure]">
+                        components="[group:Workday Community Site - Content,group:Workday Community Site - Dynamic,/apps/workday-community/components/core/form/container,group:Workday Community Site - Structure]">
                         <jcr:content
                             jcr:mixinTypes="[cq:ReplicationStatus]"
                             jcr:primaryType="nt:unstructured"/>
@@ -1253,6 +1253,161 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1691131237930>
                 </download>
+                <container jcr:primaryType="nt:unstructured">
+                    <policy_1691139111117
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Generic - Dynamic Container"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Container Background"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="bg-gray"
+                                        cq:styleId="1684977912448"
+                                        cq:styleLabel="Gray"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                            <item1
+                                cq:styleGroupLabel="Teaser Styles"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="hero"
+                                        cq:styleId="1680289048710"
+                                        cq:styleLabel="Hero"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item1>
+                            <item2
+                                cq:styleGroupLabel="Container Styles"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="news-promo"
+                                        cq:styleId="1683220026903"
+                                        cq:styleLabel="News &amp; Promo"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="icon-card "
+                                        cq:styleId="1680282107912"
+                                        cq:styleLabel="Icon Card"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="col-equal-33-33-33"
+                                        cq:styleId="1680281702241"
+                                        cq:styleLabel="33/33/33"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item3
+                                        cq:styleClasses="col-left-33-right-66"
+                                        cq:styleId="1680281868041"
+                                        cq:styleLabel="33/66"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item4
+                                        cq:styleClasses="col-left-66-right-33"
+                                        cq:styleId="1680281906479"
+                                        cq:styleLabel="66/33"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item5
+                                        cq:styleClasses="card"
+                                        cq:styleId="1689100545825"
+                                        cq:styleLabel="Card"
+                                        jcr:primaryType="nt:unstructured"/>    
+                                </cq:styles>
+                            </item2>
+                            <item3
+                                cq:styleGroupLabel="Spacing"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="pg-top-32"
+                                        cq:styleId="1678325088093"
+                                        cq:styleLabel="Add top padding 32px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="pg-top-24"
+                                        cq:styleId="1678325127281"
+                                        cq:styleLabel="Add top padding 24px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="pg-top-16"
+                                        cq:styleId="1678325141276"
+                                        cq:styleLabel="Add top padding 16px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item3
+                                        cq:styleClasses="pg-top-8"
+                                        cq:styleId="1678325163385"
+                                        cq:styleLabel="Add top padding 8px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item4
+                                        cq:styleClasses="pg-bottom-32"
+                                        cq:styleId="1678325197257"
+                                        cq:styleLabel="Add bottom padding 32px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item5
+                                        cq:styleClasses="pg-bottom-24"
+                                        cq:styleId="1678325217633"
+                                        cq:styleLabel="Add bottom padding 24px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item6
+                                        cq:styleClasses="pg-bottom-16"
+                                        cq:styleId="1678325243891"
+                                        cq:styleLabel="Add bottom padding 16px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item7
+                                        cq:styleClasses="pg-bottom-8"
+                                        cq:styleId="1678325261607"
+                                        cq:styleLabel="Add bottom padding 8px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item8
+                                        cq:styleClasses="margin-top-32"
+                                        cq:styleId="1678325291785"
+                                        cq:styleLabel="Add margin top 32px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item9
+                                        cq:styleClasses="margin-top-24"
+                                        cq:styleId="1678325323505"
+                                        cq:styleLabel="Add margin top 24px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item10
+                                        cq:styleClasses="margin-top-16"
+                                        cq:styleId="1678325339650"
+                                        cq:styleLabel="Add margin top 16px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item11
+                                        cq:styleClasses="margin-top-8"
+                                        cq:styleId="1678325399058"
+                                        cq:styleLabel="Add margin top 8px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item12
+                                        cq:styleClasses="margin-bottom-32"
+                                        cq:styleId="1678325417040"
+                                        cq:styleLabel="Add margin bottom 32px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item13
+                                        cq:styleClasses="margin-bottom-24"
+                                        cq:styleId="1678325451503"
+                                        cq:styleLabel="Add margin bottom 24px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item14
+                                        cq:styleClasses="margin-bottom-16"
+                                        cq:styleId="1678325467860"
+                                        cq:styleLabel="Add margin bottom 16px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item15
+                                        cq:styleClasses="margin-bottom-8"
+                                        cq:styleId="1678325483556"
+                                        cq:styleLabel="Add margin bottom 8px"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item3>
+                        </cq:styleGroups>
+                    </policy_1691139111117>
+                </container>
             </dynamic>
         </components>
     </workday-community>
