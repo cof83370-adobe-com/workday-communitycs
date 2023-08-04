@@ -1237,6 +1237,22 @@
                         </cq:styleGroups>
                     </policy_105637351236166>
                 </image>
+                <download jcr:primaryType="nt:unstructured">
+                    <policy_1691131237930
+                        jcr:description="Sets the title size to H3."
+                        jcr:lastModified="{Date}2023-08-04T12:12:19.338+05:30"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Content Dynamic Download"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        allowUpload="false"
+                        displayFilename="true"
+                        displayFormat="true"
+                        displaySize="true"
+                        titleType="h3">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1691131237930>
+                </download>
             </dynamic>
         </components>
     </workday-community>
