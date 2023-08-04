@@ -9,6 +9,7 @@
         const playLink = document.createElement('a');
         playLink.textContent = 'Play Video';
         playLink.className = 'play-video';
+        playLink.setAttribute('href', '#');
         config.closest('.brightcoveplayer').append(playLink);
         config.parentElement.player.controls_ = false;
         config.parentElement.player.controlBar.el_.style.display = 'none';
@@ -62,6 +63,7 @@
             window.onclick = e => {
                 const playElements = document.querySelectorAll(videoSelectors.playOption);
                 for (var i = 0; i < playElements.length && playElements[i]; i++) {
+                    playElements[i].setAttribute('href', '#');
                     if(e.target == playElements[i]) {
                         playVideo({ playElement: playElements[i] });
                     }
