@@ -1,13 +1,13 @@
 <sly data-sly-use.taxonomybadge="${'com.workday.community.aem.core.models.TaxonomyBadge'}"></sly>
   <div data-sly-test.badges="${taxonomybadge.badgeList}" data-sly-test="${badges.size > 0}" class="taxonomy-badge" data-cmp-is="taxonomy-badge">
+    <sly data-sly-test="${taxonomybadge.retired}">
+      <span class="cmp-taxonomy-badge-retired">${'RETIRED' @ i18n, context='text'}</span>
+    </sly>
     <ul class="cmp-taxonomy-badge" data-sly-list.badge="${badges}">
       <li class="cmp-taxonomy-badge__item">
         <span class="cmp-taxonomy-badge__item-title">${badge @ i18n, context='text'}</span>
       </li>
     </ul>
-    <sly data-sly-test="${taxonomybadge.retired}">
-      <span class="cmp-taxonomy-retirement__item-retired">${'RETIRED' @ i18n, context='text'}</span>
-    </sly>
   </div>
 <sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
     data-sly-call="${template.placeholder @ isEmpty = badges.size == 0 , classAppend='cmp-taxonomy-badge'}"></sly>
