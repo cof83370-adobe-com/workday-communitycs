@@ -44,7 +44,6 @@ import com.workday.community.aem.core.utils.ResolverUtil;
         ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
         ResourceChangeListener.CHANGES + "=" + "ADDED",
 })
-
 @ServiceDescription("RecurringEventsCreatorListener")
 public class RecurringEventsCreatorListener implements ResourceChangeListener {
 
@@ -194,15 +193,37 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
                 logger.debug("Pages to be created under:{}", eventsRootPath);
             }
             String fullPageName = "";
+            int eventLength = getEventLength(map);
             for (LocalDate date : eventDatesList) {
                 fullPageName = String.format("%s-%s", pageName, date.toString());
                 logger.debug("Page to be created in this iteration:{}", fullPageName);
                 Page newPage = pm.create(eventsRootPath, fullPageName, EVENT_TEMPLATE_PATH, title, true);
-                addRequiredPageProps(resourceResolver, newPage, map, date);
+                addRequiredPageProps(resourceResolver, newPage, map, date, eventLength);
             }
         } catch (WCMException exec) {
             logger.error("Exception occurred when createEventPage method {} ", exec.getMessage());
         }
+    }
+
+    /**
+     * Gets the event length.
+     *
+     * @param valueMap the value map
+     * @return the event length
+     */
+    private int getEventLength(ValueMap valueMap) {
+        Calendar eventStartDateCalInstance = valueMap.get(PROP_EVENT_START_DATE, Calendar.class);
+        Calendar eventEndDateCalInstance = valueMap.get(PROP_EVENT_END_DATE, Calendar.class);
+        if (null != eventStartDateCalInstance && null != eventEndDateCalInstance) {
+            int result = eventEndDateCalInstance.compareTo(eventStartDateCalInstance);
+            if (result > 0) {
+                long differenceInMilliseconds = Math
+                        .abs(eventEndDateCalInstance.getTimeInMillis() - eventStartDateCalInstance.getTimeInMillis());
+                long differenceInDays = differenceInMilliseconds / (24 * 60 * 60 * 1000);
+                return (int) differenceInDays;
+            }
+        }
+        return 0;
     }
 
     /**
@@ -226,7 +247,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
         while (startDate.isBefore(endDate)) {
             startDate = period.equals(EventPeriodEnum.MONTHLY) ? startDate.plusMonths(1)
                     : startDate.plus(2, ChronoUnit.WEEKS);
-                datesList.add(startDate);
+            datesList.add(startDate);
         }
         return datesList;
     }
@@ -237,13 +258,15 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
      * @param resourceResolver the resource resolver
      * @param newPage          the new page
      * @param valueMap         the value map
+     * @param date the date
+     * @param eventLength the event length
      */
     private void addRequiredPageProps(ResourceResolver resourceResolver, Page newPage, ValueMap valueMap,
-            LocalDate date) {
+            LocalDate date, int eventLength) {
         try {
             Node node = resourceResolver.resolve(newPage.getPath() + GlobalConstants.JCR_CONTENT_PATH)
                     .adaptTo(Node.class);
-            addAllTagsAndMetaData(node, valueMap, date);
+            addAllTagsAndMetaData(node, valueMap, date, eventLength);
             node.getSession().save();
         } catch (RepositoryException exec) {
             logger.error("Exception occurred in addRequiredPageProps method {} ", exec.getMessage());
@@ -255,9 +278,12 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
      *
      * @param node     the node
      * @param valueMap the value map
+     * @param localDate the local date
+     * @param eventLength the event length
      * @throws RepositoryException the repository exception
      */
-    private void addAllTagsAndMetaData(Node node, ValueMap valueMap, LocalDate localDate) throws RepositoryException {
+    private void addAllTagsAndMetaData(Node node, ValueMap valueMap, LocalDate localDate, int eventLength)
+            throws RepositoryException {
         // All Tag type Props
         String[] tags = new String[] { ACCESS_CONTROL_TAGS, EVENT_FORMAT, EVENT_AUDIENCE, RELEASE_TAGS, PRODUCT_TAGS,
                 USING_WORKDAY_TAGS, INDUSTRY_TAGS, PROGRAMS_TOOLS_TAGS, USER_TAGS, REGION_COUNTRY_TAGS,
@@ -282,19 +308,22 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
          * maintain event time from base page of recurring events.
          */
         Calendar eventStartDateCalInstance = valueMap.get(PROP_EVENT_START_DATE, Calendar.class);
-        if (null != eventStartDateCalInstance) {
-            eventStartDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,
-                    localDate.getDayOfMonth());
-            node.setProperty(PROP_EVENT_START_DATE, eventStartDateCalInstance);
-        }
+        eventStartDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,
+                localDate.getDayOfMonth());
+        node.setProperty(PROP_EVENT_START_DATE, eventStartDateCalInstance);
 
-        // All Date type Props
-        String[] dateTypeProps = new String[] { PROP_EVENT_END_DATE, PROP_RETIREMENT_DATE, PROP_UPDATED_DATE };
-        for (int i = 0; i < dateTypeProps.length; i++) {
-            Calendar calendarPropVal = valueMap.get(dateTypeProps[i], Calendar.class);
-            if (null != calendarPropVal)
-                node.setProperty(dateTypeProps[i], calendarPropVal);
-        }
+        /**
+         * Event End Date was calculated based on source page event gap(End date - Start
+         * Date)
+         * 
+         * Same gap will be maintained across all auto created pages.
+         */
+        Calendar eventEndDateCalInstance = valueMap.get(PROP_EVENT_END_DATE, Calendar.class);
+        eventEndDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,
+                localDate.getDayOfMonth());
+        eventEndDateCalInstance.add(Calendar.DAY_OF_MONTH, eventLength);
+        node.setProperty(PROP_EVENT_END_DATE, eventEndDateCalInstance);
+
     }
 
     /**
