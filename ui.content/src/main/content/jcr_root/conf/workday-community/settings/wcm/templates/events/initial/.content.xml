@@ -87,9 +87,9 @@
                             cq:styleIds="[1672945911947]"
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="workday-community/components/core/container">
-                            <speakers
+                            <userlist
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="workday-community/components/common/speakers"/>
+                                sling:resourceType="workday-community/components/common/userlist" />
                         </speakers>
                         <sponsors
                             cq:styleIds="[1672942053585]"
