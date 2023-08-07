@@ -434,7 +434,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Event Bottom Right Container"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="group:Workday Community Site - Content"
+                        components="[group:Workday Community Site - Content,group:Workday Community Site - Dynamic]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_2067608134729200>
@@ -785,7 +785,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Event - Speakers Sponsors Related Info"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="group:Workday Community Site - Content"
+                        components="[group:Workday Community Site - Content,group:Workday Community Site - Dynamic]"
                         layoutDisabled="false">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                         <cq:styleGroups jcr:primaryType="nt:unstructured">
@@ -1397,6 +1397,67 @@
                             </item3>
                         </cq:styleGroups>
                     </policy_1691139111117>
+                    <policy_149626588003708
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event - Speakers Sponsors Related Info Dynamic"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[group:Workday Community Site - Content,group:Workday Community Site - Dynamic]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Container Styles"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="speakers"
+                                        cq:styleId="1691386708852"
+                                        cq:styleLabel="Speakers"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="sponsors"
+                                        cq:styleId="1691386731994"
+                                        cq:styleLabel="Sponsors"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="related-information"
+                                        cq:styleId="1691386748379"
+                                        cq:styleLabel="Related Information"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_149626588003708>
+                    <policy_150368524798750
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Event Content Sections Dynamic"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                        <cq:styleGroups jcr:primaryType="nt:unstructured">
+                            <item0
+                                cq:styleGroupLabel="Container Type"
+                                jcr:primaryType="nt:unstructured">
+                                <cq:styles jcr:primaryType="nt:unstructured">
+                                    <item0
+                                        cq:styleClasses="event-description"
+                                        cq:styleId="1691387576444"
+                                        cq:styleLabel="Event Description"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item1
+                                        cq:styleClasses="preparation"
+                                        cq:styleId="1691387591791"
+                                        cq:styleLabel="Preparation"
+                                        jcr:primaryType="nt:unstructured"/>
+                                    <item2
+                                        cq:styleClasses="agenda"
+                                        cq:styleId="1691387607420"
+                                        cq:styleLabel="Agenda"
+                                        jcr:primaryType="nt:unstructured"/>
+                                </cq:styles>
+                            </item0>
+                        </cq:styleGroups>
+                    </policy_150368524798750>
                 </container>
             </dynamic>
         </components>
