@@ -74,6 +74,8 @@
             expandElement.addEventListener('click', function(e) {
                 expandImage({ expandElement });
             });
+
+            expandElement.setAttribute('href', '#');
         });
     }
 

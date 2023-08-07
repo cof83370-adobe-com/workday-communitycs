@@ -9,6 +9,7 @@
         const playLink = document.createElement('a');
         playLink.textContent = 'Play Video';
         playLink.className = 'play-video';
+        playLink.setAttribute('href', '#');
         config.closest('.brightcoveplayer').append(playLink);
         config.parentElement.player.controls_ = false;
         config.parentElement.player.controlBar.el_.style.display = 'none';
