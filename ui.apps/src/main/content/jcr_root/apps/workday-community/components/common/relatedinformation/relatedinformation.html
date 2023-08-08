@@ -156,7 +156,7 @@
                     let parts = facetFields.split(",");
                     currentValues = parts.map(part => ({"value": part, "state": "selected"}));
                 }
-                let facet = [
+                let facet = currentValues ? [
                     {
                         "facetId": "@commoneventtype",
                         "numberOfValues": currentValues.length + 1,
@@ -165,7 +165,7 @@
                         "injectionDepth": 5000,
                         "currentValues": currentValues
                     }
-                ];
+                ] : [];
 
                 const searchInterface = document.querySelector('atomic-search-interface');
                 await searchInterface.initialize({

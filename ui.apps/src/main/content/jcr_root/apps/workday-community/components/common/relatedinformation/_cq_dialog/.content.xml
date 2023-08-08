@@ -116,9 +116,9 @@
                                                         cq:showOnCreate="{Boolean}true"
                                                         jcr:primaryType="nt:unstructured"
                                                         sling:resourceType="cq/gui/components/coral/common/form/tagfield"
-                                                        emptyText="Choose Categories(s)"
-                                                        fieldDescription="Choose Categories(s)"
-                                                        fieldLabel="Categories(s)"
+                                                        emptyText="Choose Category(s)"
+                                                        fieldDescription="Choose Category(s)"
+                                                        fieldLabel="Category(s)"
                                                         multiple="{Boolean}true"
                                                         name="./categories"
                                                         rootPath="/content/cq:tags"/>
@@ -126,7 +126,7 @@
                                                         jcr:primaryType="nt:unstructured"
                                                         sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                                                         fieldDescription="How many rows in the list."
-                                                        fieldLabel="How many rows in each tab (default 4)"
+                                                        fieldLabel="How many rows (recommend 4)"
                                                         name="./rows"
                                                         required="{Boolean}true"/>
                                                 </items>
