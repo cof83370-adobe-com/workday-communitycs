@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.LMSConfig;
@@ -107,28 +108,39 @@ public class LMSServiceImpl implements LMSService {
      */
     @Override
     public String getCourseDetail(String courseTitle) {
-        String lmsUrl = config.lmsUrl(), courseDetailPath = config.lmsCourseDetailPath();
+        if (StringUtils.isNotBlank(courseTitle)) {
+            String lmsUrl = config.lmsUrl(), courseDetailPath = config.lmsCourseDetailPath();
 
-        try {
-            // Get the bearer token needed for course detail API call.
-            String bearerToken = getLMSAPIToken();
+            try {
+                // Get the bearer token needed for course detail API call.
+                String bearerToken = getLMSAPIToken();
 
-            // Frame the request URL.
-            String url = CommunityUtils.formUrl(lmsUrl, courseDetailPath);
-            url = String.format(url, courseTitle);
+                // Frame the request URL.
+                String url = CommunityUtils.formUrl(lmsUrl, courseDetailPath);
+                url = String.format(url, courseTitle);
 
-            // Execute the request.
-            APIResponse lmsResponse = RestApiUtil.doLMSCourseDetailGet(url, bearerToken);
-            if (lmsResponse == null || StringUtils.isEmpty(lmsResponse.getResponseBody())
-                    || lmsResponse.getResponseCode() != HttpStatus.SC_OK) {
-                logger.error("LMS API course detail response is empty.");
+                // Execute the request.
+                APIResponse lmsResponse = RestApiUtil.doLMSCourseDetailGet(url, bearerToken);
+                if (lmsResponse == null || StringUtils.isEmpty(lmsResponse.getResponseBody())
+                        || lmsResponse.getResponseCode() != HttpStatus.SC_OK) {
+                    logger.error("LMS API course detail response is empty.");
+                    return StringUtils.EMPTY;
+                }
+
+                // Gson object for json handling.
+                JsonObject response = gson.fromJson(lmsResponse.getResponseBody(), JsonObject.class);
+                if (response.get("Report_Entry") != null && !response.get("Report_Entry").isJsonNull()) {
+                    JsonArray detailArray = response.get("Report_Entry").getAsJsonArray();
+                    if (detailArray.size() > 0) {
+                        return gson.toJson(detailArray.get(0));
+                    }
+                }
+
                 return StringUtils.EMPTY;
+
+            } catch (RestAPIException | JsonSyntaxException e) {
+                logger.error("Error in getCourseDetail method call :: {}", e.getMessage());
             }
-
-            return lmsResponse.getResponseBody();
-
-        } catch (RestAPIException | JsonSyntaxException e) {
-            logger.error("Error in getCourseDetail method call :: {}", e.getMessage());
         }
         return StringUtils.EMPTY;
     }

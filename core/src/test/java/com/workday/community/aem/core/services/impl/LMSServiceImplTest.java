@@ -121,14 +121,20 @@ public class LMSServiceImplTest {
             // Case 1: with valid response
             APIResponse response = mock(APIResponse.class);
             mocked.when(() -> RestApiUtil.doLMSCourseDetailGet(anyString(), anyString())).thenReturn(response);
-            String responseBody = "{\"library\": \"library\",\"groupedTitle\": \"groupedTitle\",\"languages\": \"languages\",\"roles\": \"roles\",\"productLines\": \"productLines\",\"description\": \"description\",\"durationRange\": \"durationRange\",\"deliveryOptions\": \"deliveryOptions\",\"creditsRange\": \"creditsRange\"}";
+            String responseBody = "{\"Report_Entry\":[{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}]}";
+            String detailResponse = "{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}";
             when(response.getResponseBody()).thenReturn(responseBody);
             when(response.getResponseCode()).thenReturn(200);
 
             String courseDetail = this.service.getCourseDetail("groupedTitle");
-            assertEquals(responseBody, courseDetail);
+            assertEquals(detailResponse, courseDetail);
 
-            // Case 2: with response as null
+            // Case 2: with response without Report Entry element
+            when(response.getResponseBody()).thenReturn(detailResponse);
+            courseDetail = this.service.getCourseDetail("groupedTitle");
+            assertEquals("", courseDetail);
+
+            // Case 3: with response as null
             mocked.when(() -> RestApiUtil.doLMSCourseDetailGet(anyString(), anyString())).thenReturn(null);
             courseDetail = this.service.getCourseDetail("groupedTitle");
             assertEquals("", courseDetail);

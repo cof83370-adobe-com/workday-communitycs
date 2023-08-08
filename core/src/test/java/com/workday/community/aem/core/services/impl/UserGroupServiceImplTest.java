@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class UserGroupServiceImplTest {
 
     @Mock
@@ -47,20 +47,19 @@ class UserGroupServiceImplTest {
     SnapService snapService;
 
     /**
-     * The CoveoIndexApiConfigService service.
+     * The SnapConfig.
      */
     @Mock
     SnapConfig config;
 
     /**
-     * The IndexServicesImpl service.
+     * The UserGroupServiceImpl service.
      */
     @InjectMocks
     UserGroupServiceImpl userGroupService;
 
     @Mock
     ResourceResolver jcrSessionResourceResolver;
-
 
     @Mock
     Session jcrSession;
@@ -88,7 +87,7 @@ class UserGroupServiceImplTest {
         mockCommonUtils.when(() -> CommonUtils.getLoggedInUser(resourceResolver)).thenReturn(mockUser);
 
         Value value = mock(Value.class);
-        Value[] values = {value};
+        Value[] values = { value };
         String expectedSfId = "testsfid";
         lenient().when(value.getString()).thenReturn(expectedSfId);
         lenient().when(mockUser.getProperty(WccConstants.PROFILE_SOURCE_ID)).thenReturn(values);
@@ -103,7 +102,6 @@ class UserGroupServiceImplTest {
         when(mockNode.getProperty("roles")).thenReturn(mockProperty);
         when(mockProperty.getString()).thenReturn(mockUserRole);
 
-
         assertEquals(testAemGroups, userGroupService.getLoggedInUsersGroups(resourceResolver));
     }
 
@@ -114,15 +112,13 @@ class UserGroupServiceImplTest {
         String userId = "test-user";
         Value mockValue = mock(Value.class);
         when(mockValue.getString()).thenReturn(userId);
-        Value[] values = {mockValue};
-
+        Value[] values = { mockValue };
 
         User mockUser = mock(User.class);
         when(mockUser.getProperty(eq(WccConstants.PROFILE_SOURCE_ID))).thenReturn(values);
 
         mockCommonUtils.when(() -> CommonUtils.getLoggedInUser(resourceResolver)).thenReturn(mockUser);
         List<String> testSfGroups = List.of("sf-group1", "sf-group2");
-
 
         Node mockNode = mock(Node.class);
         Resource mockResource = mock(Resource.class);
@@ -168,7 +164,7 @@ class UserGroupServiceImplTest {
         Field wspField = userGroupService.getClass().getDeclaredField("wspMapping");
         wspField.setAccessible(true);
         wspField.set(userGroupService, wspMap);
-        
+
         String SF_ID = "test=123";
         JsonObject context = new JsonObject();
         JsonObject contextInfoObj = new JsonObject();
@@ -201,7 +197,7 @@ class UserGroupServiceImplTest {
         Field partnerTrackMappingField = userGroupService.getClass().getDeclaredField("partnerTrackMapping");
         partnerTrackMappingField.setAccessible(true);
         partnerTrackMappingField.set(userGroupService, partnerRoleMap);
-        
+
         String SF_ID = "test=123";
         JsonObject context = new JsonObject();
         JsonObject contextInfoObj = new JsonObject();
@@ -221,6 +217,40 @@ class UserGroupServiceImplTest {
         assertTrue(groups.contains("partner_sales_track"));
     }
 
+    @Test
+    void testCheckLoggedInUserHasAccessControlTags()
+            throws OurmException, ValueFormatException, IllegalStateException, RepositoryException {
+        List<String> accessControlTags = List.of("authenticated");
+        assertTrue(
+                userGroupService.checkLoggedInUserHasAccessControlTags(jcrSessionResourceResolver,
+                        accessControlTags));
+
+        ResourceResolver resourceResolver = mock(ResourceResolver.class);
+        mockResolver.when(() -> ResolverUtil.newResolver(any(), any())).thenReturn(resourceResolver);
+
+        List<String> testAemGroups = List.of("role1");
+        User mockUser = mock(User.class);
+        mockCommonUtils.when(() -> CommonUtils.getLoggedInUser(resourceResolver)).thenReturn(mockUser);
+
+        Value value = mock(Value.class);
+        Value[] values = { value };
+        String expectedSfId = "testsfid";
+        lenient().when(value.getString()).thenReturn(expectedSfId);
+        lenient().when(mockUser.getProperty(WccConstants.PROFILE_SOURCE_ID)).thenReturn(values);
+        Node mockNode = mock(Node.class);
+        Resource mockResource = mock(Resource.class);
+
+        when(resourceResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
+        when(mockResource.adaptTo(Node.class)).thenReturn(mockNode);
+        when(mockNode.hasProperty("roles")).thenReturn(true);
+        String mockUserRole = "role1;role2";
+        Property mockProperty = mock(Property.class);
+        when(mockNode.getProperty("roles")).thenReturn(mockProperty);
+        when(mockProperty.getString()).thenReturn(mockUserRole);
+        assertTrue(
+                userGroupService.checkLoggedInUserHasAccessControlTags(resourceResolver,
+                        testAemGroups));
+    }
 
     @AfterEach
     public void after() {

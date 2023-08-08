@@ -41,14 +41,11 @@ import static com.workday.community.aem.core.constants.SnapConstants.WSP_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_TAG;
+
 /**
  * The Class UserGroupServiceImpl.
  */
-@Component(
-        service = UserGroupService.class,
-        immediate = true,
-        configurationPolicy = ConfigurationPolicy.OPTIONAL
-)
+@Component(service = UserGroupService.class, immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class UserGroupServiceImpl implements UserGroupService {
 
     /**
@@ -114,8 +111,10 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     /**
      * Returns current logged-in users groups.
-     * Check whether user node has property roles. If it is there then return from node property. If not, call API for roles.
-     * @param resourceResolver:  User's request resourceResolver.
+     * Check whether user node has property roles. If it is there then return from
+     * node property. If not, call API for roles.
+     * 
+     * @param resourceResolver: User's request resourceResolver.
      * @return User group list.
      */
     public List<String> getLoggedInUsersGroups(ResourceResolver resourceResolver) throws OurmException {
@@ -161,20 +160,23 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
 
     /**
-     * Validates the user based on Roles tagged to the page and User roles from Salesforce.
+     * Validates the user based on Roles tagged to the page and User roles from
+     * Salesforce.
      *
-     * @param resourceResolver: the Request resource Resolver
+     * @param resourceResolver:        the Request resource Resolver
      * @param requestResourceResolver: the Request resource Resolver
-     * @param pagePath : The Requested page path.
+     * @param pagePath                 : The Requested page path.
      * @return boolean: True if user has permissions otherwise false.
      * @throws LoginException
      */
-    public  boolean validateTheUser(ResourceResolver resourceResolver, ResourceResolver requestResourceResolver,String pagePath) {
+    public boolean validateTheUser(ResourceResolver resourceResolver, ResourceResolver requestResourceResolver,
+            String pagePath) {
         logger.debug(" inside validateTheUser method. -->");
         boolean isInValid = true;
-        try{
+        try {
             logger.debug("---> UserGroupServiceImpl: Before Access control tag List");
-            List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(resourceResolver, pagePath, ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
+            List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(resourceResolver, pagePath,
+                    ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
             logger.debug("---> UserGroupServiceImpl: After Access control tag List");
             if (!accessControlTagsList.isEmpty()) {
                 logger.debug("---> UserGroupServiceImpl:Access control tag List.. {}.", accessControlTagsList);
@@ -188,7 +190,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                     }
                 }
             }
-        } catch (RepositoryException  | OurmException e) {
+        } catch (RepositoryException | OurmException e) {
             logger.error("---> Exception in validateTheUser function: {}.", e.getMessage());
         }
         return isInValid;
@@ -204,7 +206,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         List<String> groups = new ArrayList<>();
         JsonObject context = snapService.getUserContext(sfId);
         setSfdcRoleMap();
-        
+
         JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
         JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
         boolean hasCommunityAccess = false;
@@ -215,7 +217,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         JsonElement wsp = contactInformation.get(WSP_KEY);
         if (!wsp.isJsonNull()) {
             String wspString = wsp.getAsString();
-            for(Map.Entry<String, String> entry: wspMapping.entrySet()) {
+            for (Map.Entry<String, String> entry : wspMapping.entrySet()) {
                 if (wspString.contains(entry.getKey())) {
                     groups.add(entry.getValue());
                 }
@@ -260,8 +262,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
         if (isWorkmateUser) {
             groups.add(INTERNAL_WORKMATES);
-        }
-        else {
+        } else {
             if (hasCommunityAccess && !type.isJsonNull()) {
                 groups.add(type.getAsString() + "_all");
             }
@@ -274,10 +275,10 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     protected void setSfdcRoleMap() {
         if (sfdcRoleMap == null) {
-            try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
+            try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory,
+                    READ_SERVICE_USER)) {
                 sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
-            }
-            catch (LoginException | DamException e) {
+            } catch (LoginException | DamException e) {
                 logger.error("Error reading sfdc role map json file: {}.", e.getMessage());
             }
         }
@@ -290,4 +291,37 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
 
     }
+
+    /**
+     * Validates if logged in user has the passed in access control tags.
+     * 
+     * @param requestResourceResolver Request resource resolver.
+     * @param accessControlTags       List of access control tags to be checked
+     *                                against.
+     * @return True if logged in user has given access control tags, else false.
+     */
+    public boolean checkLoggedInUserHasAccessControlTags(ResourceResolver requestResourceResolver,
+            List<String> accessControlTags) {
+        logger.debug("Inside checkLoggedInUserHasAccessControlValues method. -->");
+        boolean isValid = false;
+        try {
+            if (!accessControlTags.isEmpty()) {
+                if (accessControlTags.contains(AUTHENTICATED)) {
+                    isValid = true;
+                } else {
+                    List<String> groupsList = getLoggedInUsersGroups(requestResourceResolver);
+                    logger.debug(
+                            "---> UserGroupServiceImpl: checkLoggedInUserHasAccessControlValues - Groups List..{}.",
+                            groupsList);
+                    if (!Collections.disjoint(accessControlTags, groupsList)) {
+                        isValid = true;
+                    }
+                }
+            }
+        } catch (OurmException e) {
+            logger.error("---> Exception in checkLoggedInUserHasAccessControlTags method: {}.", e.getMessage());
+        }
+        return isValid;
+    }
+
 }
