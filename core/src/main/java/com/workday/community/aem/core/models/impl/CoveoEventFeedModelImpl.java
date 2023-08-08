@@ -55,6 +55,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   private static final String EVENT_PATH_ROOT = "/jcr:content/root/container/";
 
   private JsonObject modelConfig;
+  private JsonObject searchConfig;
 
   @Self
   private SlingHttpServletRequest request;
@@ -82,14 +83,10 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
 
   @Override
   public JsonObject getSearchConfig() {
-    JsonObject config = new JsonObject();
-    config.addProperty("orgId", searchConfigService.getOrgId());
-    config.addProperty("searchHub", searchConfigService.getSearchHub());
-    config.addProperty("analytics", true);
-    config.addProperty("clientId", CoveoUtils.getCurrentUserClientId(this.request, this.searchConfigService, this.snapService));
-    config.addProperty("userContext", CoveoUtils.getCurrentUserContext(request, snapService));
-
-    return config;
+    if (searchConfig == null) {
+      searchConfig = CoveoUtils.getSearchConfig(searchConfigService, this.request, this.snapService);
+    }
+    return searchConfig;
   }
 
   @Override

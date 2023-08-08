@@ -24,6 +24,7 @@
       .feature-image {
         height: 100%;
         border-top-left-radius: 8px;
+        width: 50%;
       }
 
       .detail {
@@ -34,6 +35,10 @@
 
         .title {
           font-size: 32px;
+
+          a {
+            text-decoration: none;
+          }
         }
         .location {
           font-size: 20px;
@@ -78,7 +83,7 @@
 
       .event-text {
         color: #0875e1!important;
-        font-family: Workday Adelle Sans;
+        font-family: "Workday Adelle Sans", sans-serif;
         font-size: 15px!important;
         letter-spacing: .5px!important;
         line-height: 22px!important;
