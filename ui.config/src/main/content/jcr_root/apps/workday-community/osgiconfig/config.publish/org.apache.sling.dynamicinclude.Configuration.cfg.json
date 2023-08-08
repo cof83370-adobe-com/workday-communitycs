@@ -2,7 +2,10 @@
     
     "include-filter.config.enabled":true,
     "include-filter.config.path":"/content/workday-community/en-us",
-    "include-filter.config.resource-types":["workday-community/components/common/relatedinformation"],
+    "include-filter.config.resource-types":["workday-community/components/dynamic/relatedinformation", "workday-community/components/dynamic/brightcoveplayer"
+    , "workday-community/components/dynamic/container", "workday-community/components/dynamic/download"
+    , "workday-community/components/dynamic/image", "workday-community/components/dynamic/text", "workday-community/components/common/time"],
+    "include-filter.config.extension":"html",
     "include-filter.config.include-type":"SSI",
     "include-filter.config.add_comment":true,
     "include-filter.config.selector":"nocache",

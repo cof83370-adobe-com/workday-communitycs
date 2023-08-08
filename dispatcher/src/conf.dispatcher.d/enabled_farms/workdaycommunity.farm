@@ -48,7 +48,7 @@
 		# by the invalidation.
 		/statfileslevel "2"
 		# caches also authorized data
-		/allowAuthorized "0"
+		/allowAuthorized "1"
 		# Flag indicating whether the dispatcher should serve stale content if
 		# no remote server is available.
 		/serveStaleOnError "1"

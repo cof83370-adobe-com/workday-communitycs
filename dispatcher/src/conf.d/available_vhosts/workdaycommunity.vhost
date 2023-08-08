@@ -37,8 +37,6 @@ Include conf.d/variables/custom.vars
 	<Directory "${DOCROOT}">
 	# Add Includes to enable SSI Includes used by Sling Dynamic Include
 		Options FollowSymLinks Includes
-		# Required to have dispatcher-handler process includes
-		ModMimeUsePathInfo On
 		# Set includes to process .html files
 		AddOutputFilter INCLUDES .html
 		AllowOverride None
@@ -100,7 +98,7 @@ Include conf.d/variables/custom.vars
     <LocationMatch "^/content/workday-community/en-us/.*(\.html)$>"
          Header unset Cache-Control
 	     Header unset Expires
-	     Header always set Cache-Control "private"
+	     Header always set Cache-Control "max-age=120,s-maxage=600,stale-while-revalidate=43200,stale-if-error=43200"
     </LocationMatch>
 
     # Images/Video from DAM: cache mutable resources for 24h on CDN and background refresh to avoid MISS
