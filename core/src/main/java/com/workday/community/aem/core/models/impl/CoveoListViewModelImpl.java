@@ -48,6 +48,8 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
   @OSGiService
   private SnapService snapService;
 
+  private JsonObject searchConfig;
+
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
       this.request = request;
@@ -60,12 +62,15 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
   }
 
   public JsonObject getSearchConfig() {
+    if (this.searchConfig != null) {
+      return this.searchConfig;
+    }
     JsonObject config = new JsonObject();
     config.addProperty("orgId", searchConfigService.getOrgId());
     config.addProperty("searchHub", searchConfigService.getSearchHub());
     config.addProperty("clientId", CoveoUtils.getCurrentUserClientId(request, searchConfigService, snapService));
     config.addProperty("userContext", CoveoUtils.getCurrentUserContext(request, snapService));
-    return config;
+    return this.searchConfig = config;
   }
 
   @Override
