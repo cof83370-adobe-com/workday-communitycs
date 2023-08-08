@@ -6,10 +6,6 @@
 
 $include "./default_rules.any"
 
-/0013 {
-	/glob "*.nocache.html*"
-	/type "deny"
-}
 
 /0101 {
 	/glob "/content/workday-community/en-us/*"
@@ -22,3 +18,8 @@ $include "./default_rules.any"
 }
 
 /0999 { /glob "/libs/granite/csrf/token.json" /type "deny" }
+
+/0100 {
+      /glob "*.nocache.html*"
+      /type "deny"
+}

@@ -5,12 +5,10 @@
     "include-filter.config.resource-types":["workday-community/components/dynamic/relatedinformation", "workday-community/components/dynamic/brightcoveplayer"
     , "workday-community/components/dynamic/container", "workday-community/components/dynamic/download"
     , "workday-community/components/dynamic/image", "workday-community/components/dynamic/text", "workday-community/components/common/time"],
-    "include-filter.config.extension":"html",
     "include-filter.config.include-type":"SSI",
     "include-filter.config.add_comment":true,
     "include-filter.config.selector":"nocache",
     "include-filter.config.ttl":"",
     "include-filter.config.required_header":"Server-Agent=Communique-Dispatcher",
-    "include-filter.config.ignoreUrlParams":[],
-    "include-filter.config.rewrite":true
+    "include-filter.config.ignoreUrlParams":[]
 }
