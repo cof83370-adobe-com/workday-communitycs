@@ -14,7 +14,7 @@
         @media (min-width: $screen-small) {
             font-size: $font-size-small;
         }
-        
+
     }
 
     &__item {
@@ -39,27 +39,13 @@
                 margin-right: -4px;
                 margin-left: -4px;
             }
-        }        
-      
-        &:first-child {
-            padding-left: 0;
-      
-            &:before {
-              content: none;
-            }
         }
 
-        &--active {
-            @extend .cmp-breadcrumb__item;
-            &:hover {
-                color: $wdc-color-blueberry-400;
-                text-decoration: underline;
-            }
-    
-            &:focus {
-                color: $wdc-color-blueberry-400;
-                box-sizing: border-box;
-                border: 2px solid $wdc-color-blueberry-400;
+        &:first-child {
+            padding-left: 0;
+
+            &:before {
+                content: none;
             }
         }
 

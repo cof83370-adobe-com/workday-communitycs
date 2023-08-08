@@ -107,10 +107,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         put("access-control:customer_all", "customer;community_customer");
         put("access-control:customer_named_support_contact", "customer_named_support_contact");
         put("access-control:customer_training_coordinator", "customer_training_coordinator");
-        put("access-control:customer_adaptive_only", "customer_adaptive_only");
-        put("access-control:customer_peakon_only", "customer_peakon_only");
-        put("access-control:customer_scout_only", "customer_scout_only");
-        put("access-control:customer_vndly_only", "customer_vndly_only");
+        put("access-control:customer_adaptive", "customer_adaptive");
+        put("access-control:customer_peakon", "customer_peakon");
+        put("access-control:customer_scout", "customer_scout");
+        put("access-control:customer_vndly", "customer_vndly");
         put("access-control:customer_wsp_accelerate", "customer_wsp_accelerate");
         put("access-control:customer_wsp_accelerate_plus", "customer_wsp_accelerate_plus");
         put("access-control:customer_wsp_enhanced", "customer_wsp_enhanced");

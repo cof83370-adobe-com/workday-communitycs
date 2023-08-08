@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -72,7 +74,7 @@ public class OurmUserServiceImpl implements OurmUserService {
                 && StringUtils.isNotBlank(consumerSecret) && StringUtils.isNotBlank(searchPath)) {
             try {
 
-                String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath), searchText);
+                String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath), URLEncoder.encode(searchText, StandardCharsets.UTF_8));
                 String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());
                 LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
 
