@@ -126,7 +126,7 @@
                                                         jcr:primaryType="nt:unstructured"
                                                         sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
                                                         fieldDescription="How many rows in the list."
-                                                        fieldLabel="How many rows (recommend 4)"
+                                                        fieldLabel="How many rows (recommended 4)"
                                                         name="./rows"
                                                         required="{Boolean}true"/>
                                                 </items>
