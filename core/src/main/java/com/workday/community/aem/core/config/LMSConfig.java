@@ -15,9 +15,6 @@ public @interface LMSConfig {
     @AttributeDefinition(name = "LMS Token API Path", description = "LMS Token API Path.", type = AttributeType.STRING)
     String lmsTokenPath();
 
-    @AttributeDefinition(name = "LMS Course List API Path", description = "LMS Course List API Path.", type = AttributeType.STRING)
-    String lmsCourseListPath();
-
     @AttributeDefinition(name = "LMS Course Detail API Path", description = "LMS Course Detail API Path.", type = AttributeType.STRING)
     String lmsCourseDetailPath();
 

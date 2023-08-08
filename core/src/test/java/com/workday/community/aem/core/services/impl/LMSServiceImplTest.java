@@ -48,11 +48,6 @@ public class LMSServiceImplTest {
         }
 
         @Override
-        public String lmsCourseListPath() {
-            return "lmsCourseListPath";
-        }
-
-        @Override
         public String lmsCourseDetailPath() {
             return "lmsCourseDetailPath";
         }

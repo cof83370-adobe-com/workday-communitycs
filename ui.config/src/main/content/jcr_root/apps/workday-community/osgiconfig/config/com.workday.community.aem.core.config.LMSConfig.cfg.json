@@ -1,7 +1,6 @@
 {
     "lmsUrl":"$[env:lmsUrl]",
     "lmsTokenPath":"$[env:lmsTokenPath]",
-    "lmsCourseListPath":"$[env:lmsCourseListPath]",
     "lmsCourseDetailPath":"$[env:lmsCourseDetailPath]",
     "lmsAPIClientId":"$[secret:lmsAPIClientId]",
     "lmsAPIClientSecret":"$[secret:lmsAPIClientSecret]",

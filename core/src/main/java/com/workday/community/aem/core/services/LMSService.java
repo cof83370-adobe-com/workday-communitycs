@@ -12,11 +12,6 @@ public interface LMSService {
     void activate(LMSConfig config);
 
     /**
-     * @return The list of grouped courses.
-     */
-    String getTrainingCatalogData();
-
-    /**
      * Gets the LMS API Bearer token
      * 
      * @return Bearer token.

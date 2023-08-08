@@ -50,15 +50,6 @@ public class LMSServiceImpl implements LMSService {
     }
 
     /**
-     * Fetches the training catalog data.
-     */
-    @Override
-    public String getTrainingCatalogData() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getTrainingCatalogData'");
-    }
-
-    /**
      * Gets the LMS API Bearer Token required for course list and course detail
      * APIs.
      */
