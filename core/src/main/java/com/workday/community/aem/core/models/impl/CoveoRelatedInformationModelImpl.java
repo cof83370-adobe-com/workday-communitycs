@@ -113,6 +113,6 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
 
   @Override
   public String getExtraCriteria() throws DamException {
-    throw new DamException("ExtraCriteria is not available for list view");
+    throw new DamException("ExtraCriteria is not available for related information currently");
   }
 }
