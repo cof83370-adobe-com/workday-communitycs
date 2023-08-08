@@ -43,8 +43,8 @@ import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERV
 )
 public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformationModel {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
-  protected static final String RESOURCE_TYPE = "/content/workday-community/components/common/relatedinformation";
   private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";
+  protected static final String RESOURCE_TYPE = "/content/workday-community/components/common/relatedinformation";
 
   @ValueMapValue
   String[] categories;
@@ -82,7 +82,6 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     }
 
     facetFields = new ArrayList<>();
-
     try {
       ResourceResolver resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
       JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG).getAsJsonObject("tagIdToCoveoField");
@@ -102,7 +101,6 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       LOGGER.error("exception in getFacetFields call in CoveoRelatedInformationModelImpl.");
       throw new DamException(e.getMessage());
     }
-
     return facetFields;
   }
 
@@ -118,7 +116,6 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     config.addProperty("analytics", true);
     config.addProperty("clientId", CoveoUtils.getCurrentUserClientId(this.request, this.searchConfigService, this.snapService));
     config.addProperty("userContext", CoveoUtils.getCurrentUserContext(request, snapService));
-
     return searchConfig = config;
   }
 

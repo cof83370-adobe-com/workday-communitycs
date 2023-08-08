@@ -1,0 +1,198 @@
+package com.workday.community.aem.core.models.impl;
+
+import com.day.cq.tagging.Tag;
+import com.day.cq.tagging.TagManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.workday.community.aem.core.constants.SnapConstants;
+import com.workday.community.aem.core.exceptions.DamException;
+import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
+import com.workday.community.aem.core.services.SearchApiConfigService;
+import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.utils.DamUtils;
+import com.workday.community.aem.core.utils.ResolverUtil;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import junitx.framework.Assert;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.testing.mock.sling.ResourceResolverType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import javax.jcr.Binary;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+public class CoveoRelatedInformationModelTest {
+  /**
+   * AemContext
+   */
+  private final AemContext context = new AemContext(ResourceResolverType.RESOURCERESOLVER_MOCK);
+
+  @Mock
+  SlingHttpServletRequest request;
+  @Mock
+  SearchApiConfigService searchApiConfigService;
+  @Mock
+  SnapService snapService;
+
+  @Mock
+  ResourceResolver resourceResolver;
+
+  @Mock
+  TagManager tagManager;
+
+  MockedStatic<DamUtils> mockDamUtils;
+  MockedStatic<ResolverUtil> resolverUtil;
+
+  @BeforeEach
+  public void setUp() {
+    context.addModelsForClasses(CoveoRelatedInformationModel.class);
+    context.load().json("/com/workday/community/aem/core/models/impl/CoveoRelatedInformationModel.json", "/component");
+    context.registerService(SearchApiConfigService.class, searchApiConfigService);
+    context.registerService(SnapService.class, snapService);
+    context.registerService(SlingHttpServletRequest.class, request);
+    context.registerService(ResourceResolver.class, resourceResolver);
+
+    lenient().when(resourceResolver.adaptTo(TagManager.class)).thenReturn(tagManager);
+
+    Tag tag1Namespace = mock(Tag.class);
+    lenient().when(tag1Namespace.getName()).thenReturn("product");
+
+    Tag tag2Namespace = mock(Tag.class);
+    lenient().when(tag2Namespace.getName()).thenReturn("using-workday");
+    Tag tag1 = mock(Tag.class);
+    Tag tag2 = mock(Tag.class);
+
+    lenient().when(tag1.getNamespace()).thenReturn(tag1Namespace);
+    lenient().when(tag2.getNamespace()).thenReturn(tag2Namespace);
+    lenient().when(tagManager.resolve("product:")).thenReturn(tag1);
+    lenient().when(tagManager.resolve("using-workday:")).thenReturn(tag2);
+
+    String fieldMapConfig = "{\"tagIdToCoveoField\": {\"product\" : \"coveo_product\", \"using-workday\": \"coveo_using-workday\"}}";
+    Gson gson = new Gson();
+    JsonObject fieldMapConfigObj = gson.fromJson(fieldMapConfig, JsonObject.class);
+
+    mockDamUtils = mockStatic(DamUtils.class);
+
+    mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver), eq("/content/dam/workday-community/resources/coveo-field-map.json")))
+        .thenReturn(fieldMapConfigObj);
+
+    resolverUtil = mockStatic(ResolverUtil.class);
+    resolverUtil.when(() -> ResolverUtil.newResolver(any(), anyString())).thenReturn(resourceResolver);
+  }
+
+  @Test
+  public void testGetFacetFields() throws DamException {
+    CoveoRelatedInformationModel relInfoModel = context.currentResource("/component/relatedinformation").adaptTo(CoveoRelatedInformationModel.class);
+    ((CoveoRelatedInformationModelImpl)relInfoModel).init(request);
+    List<String> facetFields = relInfoModel.getFacetFields();
+    assertEquals(2, facetFields.size());
+    assertEquals("coveo_using-workday", facetFields.get(0));
+    assertEquals("coveo_product", facetFields.get(1));
+  }
+
+  @Test
+  void testGetSearchConfig() throws RepositoryException {
+    CoveoRelatedInformationModel relInfoModel = context.currentResource("/component/relatedinformation").adaptTo(CoveoRelatedInformationModel.class);
+    ((CoveoRelatedInformationModelImpl)relInfoModel).init(request);
+    ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
+    Session session = mock(Session.class);
+    UserManager userManager = mock(UserManager.class);
+    User user = mock(User.class);
+
+    Value[] profileSId = new Value[] {new Value() {
+      @Override
+      public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
+        return "testSFId";
+      }
+
+      @Override
+      public InputStream getStream() throws RepositoryException {
+        return null;
+      }
+
+      @Override
+      public Binary getBinary() throws RepositoryException {
+        return null;
+      }
+
+      @Override
+      public long getLong() throws ValueFormatException, RepositoryException {
+        return 0;
+      }
+
+      @Override
+      public double getDouble() throws ValueFormatException, RepositoryException {
+        return 0;
+      }
+
+      @Override
+      public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+        return null;
+      }
+
+      @Override
+      public Calendar getDate() throws ValueFormatException, RepositoryException {
+        return null;
+      }
+
+      @Override
+      public boolean getBoolean() throws ValueFormatException, RepositoryException {
+        return false;
+      }
+
+      @Override
+      public int getType() {
+        return 0;
+      }
+    }};
+    lenient().when(request.getResourceResolver()).thenReturn(mockResourceResolver);
+    lenient().when(mockResourceResolver.adaptTo(Session.class)).thenReturn(session);
+    lenient().when(session.getUserID()).thenReturn("userId");
+    lenient().when(mockResourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    lenient().when(userManager.getAuthorizable(eq("userId"))).thenReturn(user);
+    lenient().when(user.getProperty(eq(SnapConstants.PROFILE_SOURCE_ID))).thenReturn(profileSId);
+    JsonParser gsonParser = new JsonParser();
+    String testData = "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
+    JsonObject userContext = gsonParser.parse(testData).getAsJsonObject();
+    userContext.addProperty("email", "testEmailFoo@workday.com");
+    lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
+
+    JsonObject searchConfig = relInfoModel.getSearchConfig();
+    assertEquals(5, searchConfig.size());
+    Assert.assertEquals(searchConfig.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");
+  }
+
+  @AfterEach
+  public void after() {
+    resourceResolver.close();
+    mockDamUtils.close();
+    resolverUtil.close();
+  }
+}

@@ -108,7 +108,7 @@
 
     const searchConfigNode = document.getElementById("searchConfigId");
     if (searchConfigNode) {
-        const listViewConfig = JSON.parse(searchConfigNode.getAttribute("data-search-config"));
+        const searchConfig = JSON.parse(searchConfigNode.getAttribute("data-search-config"));
 
         const getToken = async () => {
             const tokenUrl = '/bin/search/token';
@@ -137,8 +137,8 @@
         };
 
         const analyticsClientMiddleware = (eventName, payload) => {
-            if (listViewConfig["userContext"]) {
-                payload.customData = {...payload.customData, ...JSON.parse(listViewConfig["userContext"])};
+            if (searchConfig["userContext"]) {
+                payload.customData = {...payload.customData, ...JSON.parse(searchConfig["userContext"])};
             }
             return payload;
         };
@@ -170,8 +170,8 @@
                 const searchInterface = document.querySelector('atomic-search-interface');
                 await searchInterface.initialize({
                     accessToken: token,
-                    searchHub: listViewConfig["searchHub"],
-                    organizationId: listViewConfig["orgId"],
+                    searchHub: searchConfig["searchHub"],
+                    organizationId: searchConfig["orgId"],
                     renewAccessToken: getToken,
                     preprocessRequest: (request, clientOrigin) => {
                         if (clientOrigin === 'searchApiFetch') {
@@ -192,8 +192,8 @@
                 });
 
                 const engine = searchInterface.engine;
-                if (listViewConfig['clientId']) {
-                    localStorage.setItem('visitorId', listViewConfig['clientId']);
+                if (searchConfig['clientId']) {
+                    localStorage.setItem('visitorId', searchConfig['clientId']);
                 }
 
                 setContext(engine);
