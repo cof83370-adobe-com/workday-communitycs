@@ -14,7 +14,6 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.ChildResource;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
-import org.w3c.dom.DOMException;
 
 import javax.inject.Named;
 import java.util.ArrayList;
@@ -61,20 +60,16 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
     return new ArrayList<>(categories);
   }
 
+  @Override
   public JsonObject getSearchConfig() {
-    if (this.searchConfig != null) {
-      return this.searchConfig;
+    if (this.searchConfig == null) {
+      this.searchConfig = CoveoUtils.getSearchConfig(searchConfigService, request, snapService);
     }
-    JsonObject config = new JsonObject();
-    config.addProperty("orgId", searchConfigService.getOrgId());
-    config.addProperty("searchHub", searchConfigService.getSearchHub());
-    config.addProperty("clientId", CoveoUtils.getCurrentUserClientId(request, searchConfigService, snapService));
-    config.addProperty("userContext", CoveoUtils.getCurrentUserContext(request, snapService));
-    return this.searchConfig = config;
+    return this.searchConfig;
   }
 
   @Override
   public String getExtraCriteria() throws DamException {
-    throw new DOMException((short)500, "ExtraCriteria is not available for list view");
+    throw new DamException("ExtraCriteria is not available for list view");
   }
 }

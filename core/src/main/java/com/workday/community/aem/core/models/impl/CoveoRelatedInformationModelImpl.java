@@ -23,7 +23,6 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.DOMException;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -106,21 +105,14 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
 
   @Override
   public JsonObject getSearchConfig() {
-    if (searchConfig != null) {
-      return searchConfig;
+    if (this.searchConfig == null) {
+      this.searchConfig = CoveoUtils.getSearchConfig(searchConfigService, request, snapService);
     }
-
-    JsonObject config = new JsonObject();
-    config.addProperty("orgId", searchConfigService.getOrgId());
-    config.addProperty("searchHub", searchConfigService.getSearchHub());
-    config.addProperty("analytics", true);
-    config.addProperty("clientId", CoveoUtils.getCurrentUserClientId(this.request, this.searchConfigService, this.snapService));
-    config.addProperty("userContext", CoveoUtils.getCurrentUserContext(request, snapService));
-    return searchConfig = config;
+    return this.searchConfig;
   }
 
   @Override
   public String getExtraCriteria() throws DamException {
-    throw new DOMException((short)500, "ExtraCriteria is not available for list view");
+    throw new DamException("ExtraCriteria is not available for list view");
   }
 }
