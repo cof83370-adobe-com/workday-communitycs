@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -80,7 +81,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       return facetFields;
     }
 
-    facetFields = new ArrayList<>();
+    List<String> retList = new ArrayList<>();
     try {
       ResourceResolver resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
       JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG).getAsJsonObject("tagIdToCoveoField");
@@ -92,7 +93,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
           String nameSpace = tag.getNamespace().getName();
           JsonElement facetFieldObj = fieldMapConfig.get(nameSpace);
           if (facetFieldObj != null) {
-            facetFields.add(facetFieldObj.getAsString());
+            retList.add(facetFieldObj.getAsString());
           }
         }
       }
@@ -100,7 +101,8 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       LOGGER.error("exception in getFacetFields call in CoveoRelatedInformationModelImpl.");
       throw new DamException(e.getMessage());
     }
-    return facetFields;
+    this.facetFields = Collections.unmodifiableList(retList);
+    return this.facetFields;
   }
 
   @Override
