@@ -1,6 +1,7 @@
 package com.workday.community.aem.utils;
 
-import com.workday.community.aem.core.exceptions.RestAPIException;
+import com.workday.community.aem.core.exceptions.LmsException;
+import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.utils.RestApiUtil;
 
 import java.net.http.HttpClient;
@@ -25,7 +26,7 @@ import static org.mockito.Mockito.when;
 public class RestApiUtilTest {
   @Test
   public void testDoGetMenu()
-      throws RestAPIException, IOException, InterruptedException {
+      throws SnapException, IOException, InterruptedException {
     HttpClient httpClient = mock(HttpClient.class);
     java.net.http.HttpClient.Builder clientBuilder = mock(java.net.http.HttpClient.Builder.class);
 
@@ -63,7 +64,7 @@ public class RestApiUtilTest {
    */
   @Test
   public void testDoLmsTokenPost()
-      throws RestAPIException, IOException, InterruptedException {
+      throws LmsException, IOException, InterruptedException {
     HttpClient httpClient = mock(HttpClient.class);
     java.net.http.HttpClient.Builder clientBuilder = mock(java.net.http.HttpClient.Builder.class);
 
@@ -100,7 +101,7 @@ public class RestApiUtilTest {
    */
   @Test
   public void testDoLmsCourseDetailGet()
-      throws RestAPIException, IOException, InterruptedException {
+      throws LmsException, IOException, InterruptedException {
     HttpClient httpClient = mock(HttpClient.class);
     java.net.http.HttpClient.Builder clientBuilder = mock(java.net.http.HttpClient.Builder.class);
 

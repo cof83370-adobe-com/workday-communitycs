@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.OurmDrupalConfig;
 import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.exceptions.RestAPIException;
 import com.workday.community.aem.core.services.OurmUserService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.OAuth1Util;
@@ -74,7 +73,8 @@ public class OurmUserServiceImpl implements OurmUserService {
                 && StringUtils.isNotBlank(consumerSecret) && StringUtils.isNotBlank(searchPath)) {
             try {
 
-                String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath), URLEncoder.encode(searchText, StandardCharsets.UTF_8));
+                String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath),
+                        URLEncoder.encode(searchText, StandardCharsets.UTF_8));
                 String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());
                 LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
 
@@ -82,7 +82,7 @@ public class OurmUserServiceImpl implements OurmUserService {
                 String jsonResponse = RestApiUtil.doOURMGet(apiUrl, headerString);
                 return gson.fromJson(jsonResponse, JsonObject.class);
 
-            } catch (RestAPIException | InvalidKeyException | NoSuchAlgorithmException e) {
+            } catch (OurmException | InvalidKeyException | NoSuchAlgorithmException e) {
                 String errorMessage = e.getMessage();
                 LOGGER.error("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl %s", errorMessage);
                 throw new OurmException(

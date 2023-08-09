@@ -14,7 +14,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.LmsConfig;
-import com.workday.community.aem.core.exceptions.RestAPIException;
+import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.CommunityUtils;
@@ -88,7 +88,7 @@ public class LmsServiceImpl implements LmsService {
                 return StringUtils.EMPTY;
             }
             return tokenResponse.get("access_token").getAsString();
-        } catch (RestAPIException | JsonSyntaxException e) {
+        } catch (LmsException | JsonSyntaxException e) {
             LOGGER.error("Error in getAPIToken method call :: {}", e.getMessage());
         }
         return StringUtils.EMPTY;
@@ -129,7 +129,7 @@ public class LmsServiceImpl implements LmsService {
 
                 return StringUtils.EMPTY;
 
-            } catch (RestAPIException | JsonSyntaxException e) {
+            } catch (LmsException | JsonSyntaxException e) {
                 LOGGER.error("Error in getCourseDetail method call :: {}", e.getMessage());
             }
         }

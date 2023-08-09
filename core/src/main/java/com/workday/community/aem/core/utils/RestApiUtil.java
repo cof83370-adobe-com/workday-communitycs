@@ -1,7 +1,10 @@
 package com.workday.community.aem.core.utils;
 
 import com.workday.community.aem.core.constants.RestApiConstants;
-import com.workday.community.aem.core.exceptions.RestAPIException;
+import com.workday.community.aem.core.exceptions.APIException;
+import com.workday.community.aem.core.exceptions.LmsException;
+import com.workday.community.aem.core.exceptions.OurmException;
+import com.workday.community.aem.core.exceptions.SnapException;
 
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -44,15 +47,20 @@ public class RestApiUtil {
    * @param apiToken api token
    * @param apiKey   apiKey
    * @param traceId  traceId
-   *
    * @return the API response from menu API call
+   * @throws SnapException
    */
   public static APIResponse doMenuGet(String url, String apiToken, String apiKey, String traceId)
-      throws RestAPIException {
-    // Construct the request header.
-    LOGGER.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
-    APIRequest req = getMenuApiRequest(url, apiToken, apiKey, traceId);
-    return executeGetRequest(req);
+      throws SnapException {
+    try {
+      // Construct the request header.
+      LOGGER.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
+      APIRequest req = getMenuApiRequest(url, apiToken, apiKey, traceId);
+      return executeGetRequest(req);
+    } catch (APIException e) {
+      throw new SnapException(
+          String.format("Exception in doMenuGet method while executing the request = %s", e.getMessage()));
+    }
   }
 
   /**
@@ -62,24 +70,35 @@ public class RestApiUtil {
    * @param authToken Photo API token.
    * @param xApiKey   API secret key.
    * @return the Json response as String from snap logic API call.
+   * @throws SnapException
    */
-  public static String doSnapGet(String url, String authToken, String xApiKey) throws RestAPIException {
-    LOGGER.debug("RestAPIUtil: Calling REST requestSnapJsonResponse()...= {}", url);
-    APIRequest apiRequestInfo = new APIRequest();
+  public static String doSnapGet(String url, String authToken, String xApiKey) throws SnapException {
+    try {
+      LOGGER.debug("RestAPIUtil: Calling REST requestSnapJsonResponse()...= {}", url);
+      APIRequest apiRequestInfo = new APIRequest();
 
-    apiRequestInfo.setUrl(url);
-    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
-        .addHeader(RestApiConstants.X_API_KEY, xApiKey);
-    return executeGetRequest(apiRequestInfo).getResponseBody();
+      apiRequestInfo.setUrl(url);
+      apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
+          .addHeader(RestApiConstants.X_API_KEY, xApiKey);
+      return executeGetRequest(apiRequestInfo).getResponseBody();
+    } catch (APIException e) {
+      throw new SnapException(
+          String.format("Exception in doSnapGet method while executing the request = %s", e.getMessage()));
+    }
   }
 
-  public static String doOURMGet(String url, String header) throws RestAPIException {
-    LOGGER.debug("RestAPIUtil: Calling REST requestOurmJsonResponse()...= {}", url);
-    APIRequest apiRequestInfo = new APIRequest();
+  public static String doOURMGet(String url, String header) throws OurmException {
+    try {
+      LOGGER.debug("RestAPIUtil: Calling REST requestOurmJsonResponse()...= {}", url);
+      APIRequest apiRequestInfo = new APIRequest();
 
-    apiRequestInfo.setUrl(url);
-    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, header);
-    return executeGetRequest(apiRequestInfo).getResponseBody();
+      apiRequestInfo.setUrl(url);
+      apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, header);
+      return executeGetRequest(apiRequestInfo).getResponseBody();
+    } catch (APIException e) {
+      throw new OurmException(
+          String.format("Exception in doOURMGet method while executing the request = %s", e.getMessage()));
+    }
   }
 
   /**
@@ -87,9 +106,9 @@ public class RestApiUtil {
    * 
    * @param req API request.
    * @return Response from API.
-   * @throws RestAPIException
+   * @throws APIException
    */
-  private static APIResponse executeGetRequest(APIRequest req) throws RestAPIException {
+  private static APIResponse executeGetRequest(APIRequest req) throws APIException {
     APIResponse apiresponse = new APIResponse();
 
     LOGGER.debug("RESTAPIUtil executeGetRequest: Calling REST executeGetRequest().");
@@ -119,7 +138,7 @@ public class RestApiUtil {
       LOGGER.debug("HTTP response : {}", response.body());
       apiresponse.setResponseBody(response.body());
     } catch (IOException | InterruptedException e) {
-      throw new RestAPIException(
+      throw new APIException(
           String.format("Exception in executeGetRequest method while executing the request = %s", e.getMessage()));
     }
     return apiresponse;
@@ -152,9 +171,9 @@ public class RestApiUtil {
    * 
    * @param request API Request object
    * @return API Response object
-   * @throws RestAPIException
+   * @throws APIException
    */
-  private static APIResponse executePostRequest(APIRequest request) throws RestAPIException {
+  private static APIResponse executePostRequest(APIRequest request) throws APIException {
     APIResponse apiresponse = new APIResponse();
 
     LOGGER.debug("RESTAPIUtil executePostRequest: Calling REST executePostRequest().");
@@ -181,7 +200,7 @@ public class RestApiUtil {
       LOGGER.debug("HTTP response : {}", response.body());
       apiresponse.setResponseBody(response.body());
     } catch (IOException | InterruptedException e) {
-      throw new RestAPIException(
+      throw new APIException(
           String.format("Exception in executePostRequest method while executing the request = %s", e.getMessage()));
     }
 
@@ -249,14 +268,19 @@ public class RestApiUtil {
    * @param clientSecret Client Secret
    * @param refreshToken Refresh Token
    * @return API Response
-   * @throws RestAPIException
+   * @throws LmsException
    */
   public static APIResponse doLmsTokenGet(String url, String clientId, String clientSecret, String refreshToken)
-      throws RestAPIException {
-    // Construct the request header.
-    LOGGER.debug("RestAPIUtil: Calling REST doLmsTokenGet()...= {}", url);
-    APIRequest req = getLmsTokenRequest(url, clientId, clientSecret, refreshToken);
-    return executePostRequest(req);
+      throws LmsException {
+    try {
+      // Construct the request header.
+      LOGGER.debug("RestAPIUtil: Calling REST doLmsTokenGet()...= {}", url);
+      APIRequest req = getLmsTokenRequest(url, clientId, clientSecret, refreshToken);
+      return executePostRequest(req);
+    } catch (APIException e) {
+      throw new LmsException(
+          String.format("Exception in doLmsTokenGet method while executing the request = %s", e.getMessage()));
+    }
   }
 
   /**
@@ -265,16 +289,21 @@ public class RestApiUtil {
    * @param url         Url
    * @param bearerToken Bearer Token
    * @return API Response
-   * @throws RestAPIException
+   * @throws LmsException
    */
-  public static APIResponse doLmsCourseDetailGet(String url, String bearerToken) throws RestAPIException {
-    APIRequest apiRequestInfo = new APIRequest();
+  public static APIResponse doLmsCourseDetailGet(String url, String bearerToken) throws LmsException {
+    try {
+      APIRequest apiRequestInfo = new APIRequest();
 
-    apiRequestInfo.setUrl(url);
-    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
-        .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
-        .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+      apiRequestInfo.setUrl(url);
+      apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
+          .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
+          .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
 
-    return executeGetRequest(apiRequestInfo);
+      return executeGetRequest(apiRequestInfo);
+    } catch (APIException e) {
+      throw new LmsException(
+          String.format("Exception in doLmsCourseDetailGet method while executing the request = %s", e.getMessage()));
+    }
   }
 }

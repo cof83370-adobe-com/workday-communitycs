@@ -9,7 +9,7 @@ import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
-import com.workday.community.aem.core.exceptions.RestAPIException;
+import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
@@ -24,7 +24,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.json.JSONException;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -35,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.apache.http.HttpStatus;
 
 import java.util.Date;
+import java.util.regex.PatternSyntaxException;
 
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
@@ -156,12 +156,9 @@ public class SnapServiceImpl implements SnapService {
       // Non-Beta will directly return the sf menu
       return gson.toJson(sfMenu);
 
-    } catch (RestAPIException | JsonSyntaxException e) {
+    } catch (SnapException | JsonSyntaxException | JsonProcessingException e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
-    } catch (JSONException | JsonProcessingException e) {
-      throw new RuntimeException(e);
     }
-
     return gson.toJson(this.getDefaultHeaderMenu());
   }
 
@@ -177,7 +174,7 @@ public class SnapServiceImpl implements SnapService {
       url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       return gson.fromJson(jsonResponse, JsonObject.class);
-    } catch (RestAPIException | JsonSyntaxException e) {
+    } catch (SnapException | JsonSyntaxException e) {
       logger.error("Error in getUserContext method :: {}", e.getMessage());
     }
 
@@ -199,7 +196,7 @@ public class SnapServiceImpl implements SnapService {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
       }
-    } catch (RestAPIException | JsonProcessingException e) {
+    } catch (SnapException | JsonProcessingException e) {
       logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
     }
     return null;
@@ -253,7 +250,7 @@ public class SnapServiceImpl implements SnapService {
         snapCache.put(cacheKey, jsonResponse);
         return jsonResponse;
       }
-    } catch (RestAPIException | JsonSyntaxException e) {
+    } catch (SnapException | JsonSyntaxException e) {
       logger.error("Error in getUserProfile method :: {}", e.getMessage());
     }
 
@@ -344,7 +341,7 @@ public class SnapServiceImpl implements SnapService {
    * @param sfMenu The menu data.
    */
   private void updateProfileInfoWithNameAndAvatar(JsonObject sfMenu, String sfId)
-      throws JSONException, JsonProcessingException {
+      throws JsonProcessingException {
     JsonElement profileElement = sfMenu.get(SnapConstants.PROFILE_KEY);
 
     if (profileElement != null && !profileElement.isJsonNull()) {
@@ -397,7 +394,7 @@ public class SnapServiceImpl implements SnapService {
       } else {
         logger.error("No extension found in the data");
       }
-    } catch (Exception e) {
+    } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
       logger.error("An exception occurred" + e.getMessage());
     }
     if (StringUtils.isNotBlank(extension) && StringUtils.isNotBlank(encodedPhoto)) {
