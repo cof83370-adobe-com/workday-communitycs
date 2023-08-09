@@ -192,4 +192,21 @@ public class CoveoUtils {
 
     return "";
   }
+
+  /**
+   * Return the search Configuration object.
+   * @param searchConfigService the search configuration service object.
+   * @param request the incoming sling request
+   * @param snapService  the snap logic service object
+   * @return the search configuration object used by component.
+   */
+  public static JsonObject getSearchConfig(SearchApiConfigService searchConfigService, SlingHttpServletRequest request, SnapService snapService) {
+    JsonObject config = new JsonObject();
+    config.addProperty("orgId", searchConfigService.getOrgId());
+    config.addProperty("searchHub", searchConfigService.getSearchHub());
+    config.addProperty("analytics", true);
+    config.addProperty("clientId", getCurrentUserClientId(request, searchConfigService, snapService));
+    config.addProperty("userContext", getCurrentUserContext(request, snapService));
+    return config;
+  }
 }

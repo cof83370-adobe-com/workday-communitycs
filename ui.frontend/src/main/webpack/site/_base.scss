@@ -22,12 +22,7 @@ main {
     padding: 6.25em 1em 0;
     min-height: calc(100vh - 120px);
 
-    .aem-AuthorLayer-Edit &,
-    .aem-AuthorLayer-Developer &,
-    .aem-AuthorLayer-Layouting &,
-    .aem-AuthorLayer-Timewarp &,
-    .aem-AuthorLayer-Targeting &,
-    .aem-AuthorLayer-Preview & {
+    html[class*="aem-AuthorLayer-"] & {
         min-height: 900px;
     }
 }
