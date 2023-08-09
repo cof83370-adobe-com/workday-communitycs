@@ -851,6 +851,24 @@
                             </item0>
                         </cq:styleGroups>
                     </policy_602018341163504>
+                    <policy_274322512773567
+                        cq:styleDefaultClasses="event-image-details"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Training Catalog - Training Details"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_274322512773567>
+                    <policy_1691462756183
+                        cq:styleDefaultClasses="container__right-rail"
+                        jcr:lastModifiedBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Training Catalog - Right Rail"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        components="[/apps/workday-community/components/content/training-catalog/handlebar-content]"
+                        layoutDisabled="false">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy_1691462756183>
                 </container>
                 <teaser jcr:primaryType="nt:unstructured">
                     <policy_1575031387650
@@ -858,6 +876,8 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Content Teaser"
                         sling:resourceType="wcm/core/components/policy/policy"
+                        allowedHeadingElements="[h1,h2,h3,h4,h5,h6]"
+                        showTitleType="true"
                         titleType="h3">
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy_1575031387650>
@@ -992,6 +1012,17 @@
                         <jcr:content jcr:primaryType="nt:unstructured"/>
                     </policy>
                 </troubleshooting>
+                <trainingcatalogpage jcr:primaryType="nt:unstructured">
+                    <policy
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Training Catalog Page"
+                        sling:resourceType="wcm/core/components/policy/policy"
+                        clientlibs="[workday-community.dependencies,workday-community.site,workday-community.training-catalog]"
+                        clientlibsAsync="false"
+                        clientlibsJsHead="workday-community.dependencies">
+                        <jcr:content jcr:primaryType="nt:unstructured"/>
+                    </policy>
+                </trainingcatalogpage>
             </structure>
             <common jcr:primaryType="nt:unstructured">
                 <relatedinformation jcr:primaryType="nt:unstructured">

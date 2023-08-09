@@ -9,7 +9,7 @@ const course = {
             "deliveryOptionsTitle3": "Recruiting Transactions - Learn Virtual",
             "deliveryOptionsTitle4": "NA",
             "deliveryOptionsUrl1": "https://wd5-impl.workday.com/workday1/d/inst/1$17815/17815$1702.htmld",
-            "deliveryOptionsUrl2": " ",
+            "deliveryOptionsUrl2": "NULL",
             "deliveryOptionsUrl3": "https://wd5-impl.workday.com/workday1/d/inst/1$17815/17815$2015.htmld",
             "deliveryOptionsUrl4": " ",
             "description": "This course is designed for recruiters and Workday Recruiting users who will perform day-to-day recruiting transactions.Through hands-on activities and demonstrations, you will learn how to execute transactions spanning from creating job requisitions to applying to jobs and managing lists of applicants. In this course, you will experience Workday Recruiting from the perspective of both recruiters and candidates.Individuals who are responsible for managing the configuration of the Workday Recruiting application should attend the Recruiting Fundamentals course instead of Recruiting Transactions. See the course info sheet for a more detailed course description.",
@@ -67,8 +67,9 @@ Handlebars.registerHelper("button", function(text, url) {
   return new Handlebars.SafeString("<a class=\"cmp-button\" href='"+ url +"'><span class=\"cmp-button__text\">Enroll" + text + "</span></a>");
 });
 
-Handlebars.registerHelper('isNotEmpty', function (value, options) {
-	if (!value) { return options.inverse(this); }
+Handlebars.registerHelper('isNotEmptyOrNull', function (value, options) {
+  if (!value) { return options.inverse(this); }
+  if (value.toUpperCase() == 'NULL') { return options.inverse(this); }
   return value.replace(/\s*/g, '').length === 0
   	? options.inverse(this) : options.fn(this);
 });
