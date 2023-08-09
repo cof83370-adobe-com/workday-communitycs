@@ -78,7 +78,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   @Override
   public List<String> getFacetFields() throws DamException {
     if (facetFields != null) {
-      return facetFields;
+      return Collections.unmodifiableList(facetFields);
     }
 
     List<String> retList = new ArrayList<>();
