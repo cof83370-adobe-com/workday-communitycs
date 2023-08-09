@@ -55,14 +55,14 @@ public class RestApiUtilTest {
   }
 
   /**
-   * Test method for doLMSTokenPost.
+   * Test method for doLmsTokenPost.
    * 
    * @throws RestAPIException
    * @throws IOException
    * @throws InterruptedException
    */
   @Test
-  public void testDoLMSTokenPost()
+  public void testDoLmsTokenPost()
       throws RestAPIException, IOException, InterruptedException {
     HttpClient httpClient = mock(HttpClient.class);
     java.net.http.HttpClient.Builder clientBuilder = mock(java.net.http.HttpClient.Builder.class);
@@ -87,19 +87,19 @@ public class RestApiUtilTest {
       when(response.statusCode()).thenReturn(200);
       when(response.body()).thenReturn("");
 
-      RestApiUtil.doLMSTokenPost("url", "clientId", "clientSecret", "refreshToken");
+      RestApiUtil.doLmsTokenGet("url", "clientId", "clientSecret", "refreshToken");
     }
   }
 
   /**
-   * Test method for doLMSCourseDetailGet.
+   * Test method for doLmsCourseDetailGet.
    * 
    * @throws RestAPIException
    * @throws IOException
    * @throws InterruptedException
    */
   @Test
-  public void testDoLMSCourseDetailGet()
+  public void testDoLmsCourseDetailGet()
       throws RestAPIException, IOException, InterruptedException {
     HttpClient httpClient = mock(HttpClient.class);
     java.net.http.HttpClient.Builder clientBuilder = mock(java.net.http.HttpClient.Builder.class);
@@ -124,7 +124,7 @@ public class RestApiUtilTest {
       when(response.statusCode()).thenReturn(200);
       when(response.body()).thenReturn("");
 
-      RestApiUtil.doLMSCourseDetailGet("url", "bearerToken");
+      RestApiUtil.doLmsCourseDetailGet("url", "bearerToken");
     }
   }
 }

@@ -18,7 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.models.CourseDetailModel;
-import com.workday.community.aem.core.services.LMSService;
+import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.services.UserGroupService;
 
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
@@ -35,7 +35,7 @@ import java.util.List;
         Resource.class,
         SlingHttpServletRequest.class
 }, adapters = { CourseDetailModel.class }, resourceType = {
-        HeaderModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+        CourseDetailModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class CourseDetailModelImpl implements CourseDetailModel {
     @Self
     private SlingHttpServletRequest request;
@@ -46,19 +46,19 @@ public class CourseDetailModelImpl implements CourseDetailModel {
     /**
      * The Constant RESOURCE_TYPE.
      */
-    protected static final String RESOURCE_TYPE = "workday-community/components/react/header";
+    protected static final String RESOURCE_TYPE = "workday-community/components/content/training-catalog/handlebar-content";
 
     /**
      * The logger.
      */
-    private final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(CourseDetailModelImpl.class);
 
     /**
-     * The LMS service.
+     * The Lms service.
      */
     @NotNull
     @OSGiService
-    LMSService lmsService;
+    LmsService lmsService;
 
     /**
      * The UserGroup service.
@@ -75,7 +75,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
 
     @PostConstruct
     protected void init() {
-        logger.debug("Initializing CourseDetailModel.");
+        LOGGER.debug("Initializing CourseDetailModel.");
         courseTitle = getQueryParamValueFromUrl("title");
     }
 
@@ -107,27 +107,38 @@ public class CourseDetailModelImpl implements CourseDetailModel {
             if (StringUtils.isNotBlank(courseDetailJson)) {
                 // Gson object for json handling.
                 JsonObject courseDetail = gson.fromJson(courseDetailJson, JsonObject.class);
-
-                if (courseDetail.get("accessControl") != null && !courseDetail.get("accessControl").isJsonNull()) {
-                    String accessControl = courseDetail.get("accessControl").getAsString();
-                    List<String> accessControlTags = new ArrayList<String>(Arrays.asList(accessControl.split(",")));
-                    isValid = userGroupService.checkLoggedInUserHasAccessControlTags(
-                            request.getResourceResolver(),
-                            accessControlTags);
-                } else {
-                    logger.error("Access control is empty. So, user doesn't have correct permissions.");
-                }
+                isValid = checkAccessControlTags(courseDetail);
             }
             if (!isValid) {
                 ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
                 ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
             }
         } catch (IOException ex) {
-            logger.error("Exception occurred in getCourseDetailData: {}.", ex.getMessage());
+            LOGGER.error("Exception occurred in getCourseDetailData: {}.", ex.getMessage());
             courseDetailJson = StringUtils.EMPTY;
         }
 
         return courseDetailJson;
     }
 
+    /**
+     * Checks the access control tags in the course detail response against the
+     * logged in user's access control.
+     * 
+     * @param courseDetail Course detail object.
+     * @return True if user has access to view course, else false.
+     */
+    private boolean checkAccessControlTags(JsonObject courseDetail) {
+        boolean isValid = false;
+        if (courseDetail.get("accessControl") != null && !courseDetail.get("accessControl").isJsonNull()) {
+            String accessControl = courseDetail.get("accessControl").getAsString();
+            List<String> accessControlTags = new ArrayList<String>(Arrays.asList(accessControl.split(",")));
+            isValid = userGroupService.checkLoggedInUserHasAccessControlTags(
+                    request.getResourceResolver(),
+                    accessControlTags);
+        } else {
+            LOGGER.error("Access control is empty. So, user doesn't have correct permissions.");
+        }
+        return isValid;
+    }
 }

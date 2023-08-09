@@ -14,23 +14,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.workday.community.aem.core.config.LMSConfig;
+import com.workday.community.aem.core.config.LmsConfig;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
-import com.workday.community.aem.core.services.LMSService;
+import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
- * LMSServiceImplTest class.
+ * LmsServiceImplTest class.
  */
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-public class LMSServiceImplTest {
-    private final LMSService service = new LMSServiceImpl();
+public class LmsServiceImplTest {
+    private final LmsService service = new LmsServiceImpl();
 
     /**
      * Test config.
      */
-    private final LMSConfig testConfig = new LMSConfig() {
+    private final LmsConfig testConfig = new LmsConfig() {
 
         @Override
         public Class<? extends Annotation> annotationType() {
@@ -74,35 +74,35 @@ public class LMSServiceImplTest {
      */
     @BeforeEach
     public void setup() {
-        ((LMSServiceImpl) service).activate(testConfig);
+        ((LmsServiceImpl) service).activate(testConfig);
     }
 
     /**
-     * Test method for getLMSAPIToken method.
+     * Test method for getAPIToken method.
      */
     @Test
-    public void testGetLMSAPIToken() {
+    public void testGetAPIToken() {
         try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
             // Case 1: with valid response
             APIResponse response = mock(APIResponse.class);
-            mocked.when(() -> RestApiUtil.doLMSTokenPost(anyString(), anyString(),
+            mocked.when(() -> RestApiUtil.doLmsTokenGet(anyString(), anyString(),
                     anyString(), anyString())).thenReturn(response);
             String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"refresh_token\": \"refreshToken\"}";
             when(response.getResponseBody()).thenReturn(responseBody);
             when(response.getResponseCode()).thenReturn(200);
 
-            String token = this.service.getLMSAPIToken();
+            String token = this.service.getApiToken();
             assertEquals("bearerToken", token);
 
             // Case 2: with response as null
-            mocked.when(() -> RestApiUtil.doLMSTokenPost(anyString(), anyString(),
+            mocked.when(() -> RestApiUtil.doLmsTokenGet(anyString(), anyString(),
                     anyString(), anyString())).thenReturn(null);
-            token = this.service.getLMSAPIToken();
+            token = this.service.getApiToken();
             assertEquals("", token);
 
             // Case 3: response doesn't contain access token
             responseBody = "{\"token_type\": \"Bearer\",\"refresh_token\": \"refreshToken\"}";
-            token = this.service.getLMSAPIToken();
+            token = this.service.getApiToken();
             assertEquals("", token);
         }
     }
@@ -115,7 +115,7 @@ public class LMSServiceImplTest {
         try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
             // Case 1: with valid response
             APIResponse response = mock(APIResponse.class);
-            mocked.when(() -> RestApiUtil.doLMSCourseDetailGet(anyString(), anyString())).thenReturn(response);
+            mocked.when(() -> RestApiUtil.doLmsCourseDetailGet(anyString(), anyString())).thenReturn(response);
             String responseBody = "{\"Report_Entry\":[{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}]}";
             String detailResponse = "{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}";
             when(response.getResponseBody()).thenReturn(responseBody);
@@ -130,7 +130,7 @@ public class LMSServiceImplTest {
             assertEquals("", courseDetail);
 
             // Case 3: with response as null
-            mocked.when(() -> RestApiUtil.doLMSCourseDetailGet(anyString(), anyString())).thenReturn(null);
+            mocked.when(() -> RestApiUtil.doLmsCourseDetailGet(anyString(), anyString())).thenReturn(null);
             courseDetail = this.service.getCourseDetail("groupedTitle");
             assertEquals("", courseDetail);
         }

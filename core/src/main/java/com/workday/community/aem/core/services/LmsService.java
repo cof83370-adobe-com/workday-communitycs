@@ -1,22 +1,22 @@
 package com.workday.community.aem.core.services;
 
-import com.workday.community.aem.core.config.LMSConfig;
+import com.workday.community.aem.core.config.LmsConfig;
 
-public interface LMSService {
+public interface LmsService {
     /**
-     * @param config Service configuration object for LMS API service. This
+     * @param config Service configuration object for Lms API service. This
      *               method is used for programmatically pass
      *               a configuration to the service object during service activate
      *               stage.
      */
-    void activate(LMSConfig config);
+    void activate(LmsConfig config);
 
     /**
-     * Gets the LMS API Bearer token
+     * Gets the Lms API Bearer token
      * 
      * @return Bearer token.
      */
-    String getLMSAPIToken();
+    String getApiToken();
 
     /**
      * Gets the course detail data of the given course.

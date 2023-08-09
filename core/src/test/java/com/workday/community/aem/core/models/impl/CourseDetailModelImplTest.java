@@ -11,14 +11,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.models.factory.ModelFactory;
-
 import com.workday.community.aem.core.models.CourseDetailModel;
-import com.workday.community.aem.core.services.LMSService;
+import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.services.UserGroupService;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -35,10 +31,10 @@ public class CourseDetailModelImplTest {
     private final AemContext context = new AemContext();
 
     /**
-     * LMSService object.
+     * LmsService object.
      */
     @Mock
-    LMSService lmsService;
+    LmsService lmsService;
 
     /**
      * UserGroupService object.
@@ -52,7 +48,7 @@ public class CourseDetailModelImplTest {
     @BeforeEach
     public void setup() {
         context.addModelsForClasses(CourseDetailModelImpl.class);
-        context.registerService(LMSService.class, lmsService, SERVICE_RANKING, Integer.MAX_VALUE);
+        context.registerService(LmsService.class, lmsService, SERVICE_RANKING, Integer.MAX_VALUE);
         context.registerService(UserGroupService.class, userGroupService, SERVICE_RANKING, Integer.MAX_VALUE);
     }
 

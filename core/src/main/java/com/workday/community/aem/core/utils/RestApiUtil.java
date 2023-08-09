@@ -216,12 +216,11 @@ public class RestApiUtil {
       builder.append("=");
       builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
     }
-    System.out.println(builder.toString());
     return HttpRequest.BodyPublishers.ofString(builder.toString());
   }
 
   /**
-   * Frames the LMS Token call request.
+   * Frames the Lms Token call request.
    * 
    * @param url          Url
    * @param username     Client Id
@@ -229,7 +228,7 @@ public class RestApiUtil {
    * @param refreshToken Refresh Token
    * @return API Request
    */
-  private static APIRequest getLMSTokenRequest(String url, String username, String password, String refreshToken) {
+  private static APIRequest getLmsTokenRequest(String url, String username, String password, String refreshToken) {
     APIRequest apiRequestInfo = new APIRequest();
 
     apiRequestInfo.setUrl(url);
@@ -252,23 +251,23 @@ public class RestApiUtil {
    * @return API Response
    * @throws RestAPIException
    */
-  public static APIResponse doLMSTokenPost(String url, String clientId, String clientSecret, String refreshToken)
+  public static APIResponse doLmsTokenGet(String url, String clientId, String clientSecret, String refreshToken)
       throws RestAPIException {
     // Construct the request header.
-    LOGGER.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
-    APIRequest req = getLMSTokenRequest(url, clientId, clientSecret, refreshToken);
+    LOGGER.debug("RestAPIUtil: Calling REST doLmsTokenGet()...= {}", url);
+    APIRequest req = getLmsTokenRequest(url, clientId, clientSecret, refreshToken);
     return executePostRequest(req);
   }
 
   /**
-   * Frames the LMS Course Detail API request.
+   * Frames the Lms Course Detail API request.
    * 
    * @param url         Url
    * @param bearerToken Bearer Token
    * @return API Response
    * @throws RestAPIException
    */
-  public static APIResponse doLMSCourseDetailGet(String url, String bearerToken) throws RestAPIException {
+  public static APIResponse doLmsCourseDetailGet(String url, String bearerToken) throws RestAPIException {
     APIRequest apiRequestInfo = new APIRequest();
 
     apiRequestInfo.setUrl(url);
