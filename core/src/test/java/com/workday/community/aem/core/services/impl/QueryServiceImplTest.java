@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
-import static com.workday.community.aem.core.services.impl.QueryServiceImpl.SERVICE_USER;
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -61,7 +61,7 @@ class QueryServiceImplTest {
   @Test
   void testGetNumOfTotalPages() throws Exception {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenReturn(resourceResolver);
+    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
 
     Session session = mock(Session.class);
     lenient().when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
@@ -80,7 +80,7 @@ class QueryServiceImplTest {
       assertEquals(10, queryService.getNumOfTotalPublishedPages());
 
       // case 1
-      mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenThrow(new LoginException());
+      mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenThrow(new LoginException());
       assertEquals(0, queryService.getNumOfTotalPublishedPages());
     }
   }
@@ -88,7 +88,7 @@ class QueryServiceImplTest {
   @Test
   void testPagesByTemplates() throws RepositoryException {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenReturn(resourceResolver);
+    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
 
     Session session = mock(Session.class);
     when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
@@ -117,7 +117,7 @@ class QueryServiceImplTest {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
     String hitResultPath = "/content/workday-community/en-us/thomas-sandbox/test-download-component/jcr:content/root/container/container/book/firstlevel/item1";
 
-    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenReturn(resourceResolver);
+    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
 
     Session session = mock(Session.class);
     when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
@@ -145,7 +145,7 @@ class QueryServiceImplTest {
   @Test
   void testGetInactiveUsers() throws RepositoryException {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenReturn(resourceResolver);
+    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
 
     Session session = mock(Session.class);
     when(resourceResolver.adaptTo(Session.class)).thenReturn(session);

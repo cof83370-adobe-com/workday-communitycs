@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import java.util.*;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
 import static com.workday.community.aem.core.constants.WccConstants.INTERNAL_WORKMATES;
 import static com.workday.community.aem.core.constants.WccConstants.ROLES;
@@ -66,11 +67,6 @@ public class UserGroupServiceImpl implements UserGroupService {
      * The snap Config.
      */
     private SnapConfig config;
-
-    /**
-     * The user service user.
-     */
-    public static final String READ_SERVICE_USER = "readserviceuser";
 
     /**
      * The customer_role_mapping.
