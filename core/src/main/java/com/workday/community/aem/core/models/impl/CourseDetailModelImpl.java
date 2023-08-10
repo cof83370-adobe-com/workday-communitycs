@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.exceptions.LmsException;
@@ -125,15 +126,15 @@ public class CourseDetailModelImpl implements CourseDetailModel {
      * @return True if user has access to view course, else false.
      */
     private boolean checkAccessControlTags(JsonObject courseDetail) {
-        if (courseDetail.get("accessControl") != null && !courseDetail.get("accessControl").isJsonNull()) {
-            String accessControl = courseDetail.get("accessControl").getAsString();
-            List<String> accessControlTags = new ArrayList<String>(Arrays.asList(accessControl.split(",")));
+        JsonElement accessControl = courseDetail.get("accessControl");
+        if (accessControl != null && !accessControl.isJsonNull()) {
+            List<String> accessControlTags = new ArrayList<String>(
+                    Arrays.asList(accessControl.getAsString().split(",")));
             return userGroupService.checkLoggedInUserHasAccessControlTags(
                     request.getResourceResolver(),
                     accessControlTags);
-        } else {
-            LOGGER.error("Access control is empty. So, user doesn't have correct permissions.");
         }
+        LOGGER.error("User can't access because access control is not set in the returned course detail object.");
         return false;
     }
 }

@@ -299,25 +299,19 @@ public class UserGroupServiceImpl implements UserGroupService {
     public boolean checkLoggedInUserHasAccessControlTags(ResourceResolver requestResourceResolver,
             List<String> accessControlTags) {
         logger.debug("Inside checkLoggedInUserHasAccessControlValues method. -->");
-        boolean isValid = false;
         try {
-            if (!accessControlTags.isEmpty()) {
-                if (accessControlTags.contains(AUTHENTICATED)) {
-                    isValid = true;
-                } else {
-                    List<String> groupsList = getLoggedInUsersGroups(requestResourceResolver);
-                    logger.debug(
-                            "---> UserGroupServiceImpl: checkLoggedInUserHasAccessControlValues - Groups List..{}.",
-                            groupsList);
-                    if (!Collections.disjoint(accessControlTags, groupsList)) {
-                        isValid = true;
-                    }
-                }
-            }
+            if (accessControlTags == null || accessControlTags.isEmpty())
+                return false;
+            if (accessControlTags.contains(AUTHENTICATED))
+                return true;
+            List<String> groupsList = getLoggedInUsersGroups(requestResourceResolver);
+            logger.debug(
+                    "---> UserGroupServiceImpl: checkLoggedInUserHasAccessControlValues - Groups List..{}.",
+                    groupsList);
+            return !Collections.disjoint(accessControlTags, groupsList);
         } catch (OurmException e) {
             logger.error("---> Exception in checkLoggedInUserHasAccessControlTags method: {}.", e.getMessage());
         }
-        return isValid;
+        return false;
     }
-
 }
