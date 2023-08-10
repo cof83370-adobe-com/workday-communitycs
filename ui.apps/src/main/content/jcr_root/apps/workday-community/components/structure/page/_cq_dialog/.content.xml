@@ -107,7 +107,14 @@
                                         renderReadOnly="{Boolean}true"
                                         text="Check Page Modified Date"
                                         value="true">
-                                    </overrideDate>                                     
+                                    </overrideDate>
+                                    <retirePageImmediately
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        name="./retirePageImmediately"
+                                        text="Retire Page Immediately"
+                                        uncheckedValue="false"
+                                        value="true"/>                                  
                                 </items>
                             </column>
                         </items>

@@ -22,7 +22,7 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 
 import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
-import static com.workday.community.aem.core.services.impl.QueryServiceImpl.SERVICE_USER;
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
 import org.apache.jackrabbit.api.security.user.User;
@@ -107,10 +107,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         put("access-control:customer_all", "customer;community_customer");
         put("access-control:customer_named_support_contact", "customer_named_support_contact");
         put("access-control:customer_training_coordinator", "customer_training_coordinator");
-        put("access-control:customer_adaptive_only", "customer_adaptive_only");
-        put("access-control:customer_peakon_only", "customer_peakon_only");
-        put("access-control:customer_scout_only", "customer_scout_only");
-        put("access-control:customer_vndly_only", "customer_vndly_only");
+        put("access-control:customer_adaptive", "customer_adaptive");
+        put("access-control:customer_peakon", "customer_peakon");
+        put("access-control:customer_scout", "customer_scout");
+        put("access-control:customer_vndly", "customer_vndly");
         put("access-control:customer_wsp_accelerate", "customer_wsp_accelerate");
         put("access-control:customer_wsp_accelerate_plus", "customer_wsp_accelerate_plus");
         put("access-control:customer_wsp_enhanced", "customer_wsp_enhanced");
@@ -122,7 +122,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     @Override
     public HashMap<String, Object> extractPageProperties(String path) {
         HashMap<String, Object> properties = new HashMap<>();
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
             PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
             Page page = null;
             if (pageManager != null) {

@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import java.util.*;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
 import static com.workday.community.aem.core.constants.WccConstants.INTERNAL_WORKMATES;
 import static com.workday.community.aem.core.constants.WccConstants.ROLES;
@@ -36,6 +37,7 @@ import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTAC
 import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.CUSTOMER_OF_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.PARTNER_TRACK_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.WSP_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
@@ -70,11 +72,6 @@ public class UserGroupServiceImpl implements UserGroupService {
     private SnapConfig config;
 
     /**
-     * The user service user.
-     */
-    public static final String READ_SERVICE_USER = "readserviceuser";
-
-    /**
      * The customer_role_mapping.
      */
     private HashMap<String, String> customerRoleMapping = new HashMap<>();
@@ -88,6 +85,11 @@ public class UserGroupServiceImpl implements UserGroupService {
      * The wsp_mapping.
      */
     private HashMap<String, String> wspMapping = new HashMap<>();
+
+    /**
+     * The partner_track_mapping.
+     */
+    private HashMap<String, String> partnerTrackMapping = new HashMap<>();
 
     /**
      * SFDC Role mapping json object.
@@ -227,19 +229,32 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
         JsonElement type = contextInfo.get(USER_TYPE_KEY);
         JsonElement customerOf = contactInformation.get(CUSTOMER_OF_KEY);
-        if (!type.isJsonNull() && !customerOf.isJsonNull()) {
+        JsonElement partnerTrack = contactInformation.get(PARTNER_TRACK_KEY);
+        JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
+        boolean isWorkmateUser = false;
+        if (!isWorkmate.isJsonNull()) {
+            isWorkmateUser = isWorkmate.getAsBoolean();
+        }
+        if (!type.isJsonNull()) {
             String typeString = type.getAsString();
-            String customerOfString = customerOf.getAsString();
-            if (typeString.equals("customer")) {
+            if (typeString.equals("customer") && !isWorkmateUser && !customerOf.isJsonNull()) {
+                String customerOfString = customerOf.getAsString();
                 for (Map.Entry<String, String> entry : customerOfMapping.entrySet()) {
                     if (customerOfString.contains(entry.getKey())) {
                         groups.add(entry.getValue());
                     }
                 }
             }
+            if (typeString.equals("partner") && !partnerTrack.isJsonNull()) {
+                String partnerTrackString = partnerTrack.getAsString();
+                for (Map.Entry<String, String> entry : partnerTrackMapping.entrySet()) {
+                    if (partnerTrackString.contains(entry.getKey())) {
+                        groups.add(entry.getValue());
+                    }
+                }
+            }
         }
-        JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
-        if (!isWorkmate.isJsonNull() && isWorkmate.getAsBoolean()) {
+        if (isWorkmateUser) {
             groups.add(INTERNAL_WORKMATES);
         }
         else {
@@ -267,6 +282,7 @@ public class UserGroupServiceImpl implements UserGroupService {
             customerRoleMapping = g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
             customerOfMapping = g.fromJson(sfdcRoleMap.get("customerOfMapping").toString(), HashMap.class);
             wspMapping = g.fromJson(sfdcRoleMap.get("wspMapping").toString(), HashMap.class);
+            partnerTrackMapping = g.fromJson(sfdcRoleMap.get("partnerTrackMapping").toString(), HashMap.class);
         }
 
     }

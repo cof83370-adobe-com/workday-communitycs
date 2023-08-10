@@ -50,9 +50,9 @@ public interface SnapService {
   /**
    * @param sfId Salesforce Id.
    * @return The profile avatar icon data used for the profile in the global
-   *         header of the page.
+   * header of the page.
    */
-  String getProfilePhoto(String sfId);
+  ProfilePhoto getProfilePhoto(String sfId);
 
   /**
    * @param sfId Salesforce Id.

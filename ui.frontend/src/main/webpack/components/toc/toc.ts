@@ -43,7 +43,10 @@
                     this.classList.toggle('active');
                     if(this.nextElementSibling) {
                         this.nextElementSibling.classList.toggle('show');
+                        this.setAttribute('aria-expanded', true);
                     }
+                } else {
+                    this.setAttribute('aria-expanded', false);
                 }
             });
         }
@@ -77,7 +80,10 @@
                     this.classList.toggle('active');
                     if(this.nextElementSibling) {
                         this.nextElementSibling.classList.toggle('show');
+                        this.setAttribute('aria-expanded', true);
                     }
+                } else {
+                    this.setAttribute('aria-expanded', false);
                 }
             });
         }
@@ -151,6 +157,22 @@
                 }
             }
         }
+
+        const activeItemLinks = document.querySelectorAll('.cmp-toc__item-link.active');
+        activeItemLinks.forEach(itemLink => {
+            const siblingUl = itemLink.nextElementSibling;
+            if (siblingUl && siblingUl.tagName === 'UL') {
+                itemLink.setAttribute('aria-expanded', true.toString());
+            }
+        });
+
+        const itemLinksWithoutActiveClass = document.querySelectorAll('.cmp-toc__item-link:not(.active)');
+        itemLinksWithoutActiveClass.forEach(itemLink => {
+            const siblingUl = itemLink.nextElementSibling;
+            if (siblingUl && siblingUl.tagName === 'UL') {
+                itemLink.setAttribute('aria-expanded', false.toString());
+            }
+        });
     }
 
     function onDocumentReady() {

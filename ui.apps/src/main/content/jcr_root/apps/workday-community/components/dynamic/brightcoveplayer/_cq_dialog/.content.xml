@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="nt:unstructured"
+    jcr:title="Dynamic Brightcove Video Player"
+    sling:resourceType="cq/gui/components/authoring/dialog"
+    extraClientlibs="[brightcove.player.dialogs]">
+    <content
+        jcr:primaryType="nt:unstructured"
+        sling:resourceType="granite/ui/components/coral/foundation/tabs">
+        <items jcr:primaryType="nt:unstructured">
+            <tab-accesscontrol
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Access Control Tags"
+                sling:resourceType="granite/ui/components/coral/foundation/fixedcolumns"
+                maximized="{Boolean}true">
+                <items jcr:primaryType="nt:unstructured">
+                    <column
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="granite/ui/components/foundation/container">
+                        <items jcr:primaryType="nt:unstructured">
+                            <accessControl
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="granite/ui/components/coral/foundation/include"
+                                path="/apps/workday-community/components/common/tabs/accesscontrol"/>
+                        </items>
+                    </column>
+                </items>
+            </tab-accesscontrol>
+        </items>
+    </content>
+</jcr:root>

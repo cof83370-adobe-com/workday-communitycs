@@ -41,6 +41,12 @@
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="wcm/core/components/policies/mapping" />    
                                     </core>
+                                    <dynamic jcr:primaryType="nt:unstructured">
+                                        <image
+                                            cq:policy="workday-community/components/dynamic/image/policy_1691126470473"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="wcm/core/components/policies/mapping"/>
+                                    </dynamic>
                                 </components>
                             </workday-community>
                         </container_main>
