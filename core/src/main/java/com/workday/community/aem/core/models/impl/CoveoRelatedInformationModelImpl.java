@@ -81,6 +81,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       return Collections.unmodifiableList(facetFields);
     }
 
+    facetFields = new ArrayList<>();
     try {
       ResourceResolver resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
       JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG).getAsJsonObject("tagIdToCoveoField");
@@ -100,6 +101,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       LOGGER.error("exception in getFacetFields call in CoveoRelatedInformationModelImpl.");
       throw new DamException(e.getMessage());
     }
+
     return Collections.unmodifiableList(facetFields);
   }
 
