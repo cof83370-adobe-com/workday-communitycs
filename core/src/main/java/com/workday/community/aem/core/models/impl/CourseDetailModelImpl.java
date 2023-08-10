@@ -125,16 +125,15 @@ public class CourseDetailModelImpl implements CourseDetailModel {
      * @return True if user has access to view course, else false.
      */
     private boolean checkAccessControlTags(JsonObject courseDetail) {
-        boolean isValid = false;
         if (courseDetail.get("accessControl") != null && !courseDetail.get("accessControl").isJsonNull()) {
             String accessControl = courseDetail.get("accessControl").getAsString();
             List<String> accessControlTags = new ArrayList<String>(Arrays.asList(accessControl.split(",")));
-            isValid = userGroupService.checkLoggedInUserHasAccessControlTags(
+            return userGroupService.checkLoggedInUserHasAccessControlTags(
                     request.getResourceResolver(),
                     accessControlTags);
         } else {
             LOGGER.error("Access control is empty. So, user doesn't have correct permissions.");
         }
-        return isValid;
+        return false;
     }
 }
