@@ -25,10 +25,22 @@ public interface UserGroupService {
 
     /**
      *
-     * @param resourceResolver the admin user resource resolver
+     * @param resourceResolver        the admin user resource resolver
      * @param requestResourceResolver the request resource resolver
-     * @param pagePath the requested page path
+     * @param pagePath                the requested page path
      * @return boolean to indicate whether the user is valid user or invalid user.
      */
-    boolean validateTheUser(ResourceResolver resourceResolver, ResourceResolver requestResourceResolver, String pagePath);
+    boolean validateTheUser(ResourceResolver resourceResolver, ResourceResolver requestResourceResolver,
+            String pagePath);
+
+    /**
+     * Validates if logged in user has the passed in access control tags.
+     * 
+     * @param requestResourceResolver Request resource resolver.
+     * @param accessControlTags       List of access control tags to be checked
+     *                                against.
+     * @return True if logged in user has given access control tags, else false.
+     */
+    boolean checkLoggedInUserHasAccessControlTags(ResourceResolver requestResourceResolver,
+            List<String> accessControlTags);
 }
