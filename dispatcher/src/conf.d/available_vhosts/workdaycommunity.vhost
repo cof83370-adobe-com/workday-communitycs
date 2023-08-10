@@ -37,6 +37,10 @@ Include conf.d/variables/custom.vars
 	<Directory "${DOCROOT}">
 	# Add Includes to enable SSI Includes used by Sling Dynamic Include
 		Options FollowSymLinks Includes
+
+		# Required to have dispatcher-handler process includes
+      	ModMimeUsePathInfo On
+
 		# Set includes to process .html files
 		AddOutputFilter INCLUDES .html
 		AllowOverride None
