@@ -14,6 +14,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.LmsConfig;
+import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
@@ -54,7 +55,7 @@ public class LmsServiceImpl implements LmsService {
      * APIs.
      */
     @Override
-    public String getApiToken() {
+    public String getApiToken() throws LmsException {
         String lmsUrl = config.lmsUrl(), tokenPath = config.lmsTokenPath(),
                 clientId = config.lmsAPIClientId(), clientSecret = config.lmsAPIClientSecret(),
                 refreshToken = config.lmsAPIRefreshToken();
@@ -90,19 +91,19 @@ public class LmsServiceImpl implements LmsService {
             return tokenResponse.get("access_token").getAsString();
         } catch (LmsException | JsonSyntaxException e) {
             LOGGER.error("Error in getAPIToken method call :: {}", e.getMessage());
+            throw new LmsException(
+                    String.format("LmsServiceImpl: Exception in getApiToken method = %s", e.getMessage()));
         }
-        return StringUtils.EMPTY;
     }
 
     /**
      * Makes Lms API call and fetches the course detail data of the given course.
      */
     @Override
-    public String getCourseDetail(String courseTitle) {
-        if (StringUtils.isNotBlank(courseTitle)) {
-            String lmsUrl = config.lmsUrl(), courseDetailPath = config.lmsCourseDetailPath();
-
-            try {
+    public String getCourseDetail(String courseTitle) throws LmsException {
+        try {
+            if (StringUtils.isNotBlank(courseTitle)) {
+                String lmsUrl = config.lmsUrl(), courseDetailPath = config.lmsCourseDetailPath();
                 // Get the bearer token needed for course detail API call.
                 String bearerToken = getApiToken();
 
@@ -120,20 +121,17 @@ public class LmsServiceImpl implements LmsService {
 
                 // Gson object for json handling.
                 JsonObject response = gson.fromJson(lmsResponse.getResponseBody(), JsonObject.class);
-                if (response.get("Report_Entry") != null && !response.get("Report_Entry").isJsonNull()) {
-                    JsonArray detailArray = response.get("Report_Entry").getAsJsonArray();
-                    if (detailArray.size() > 0) {
-                        return gson.toJson(detailArray.get(0));
-                    }
+                if (response.get(SnapConstants.REPORT_ENTRY_KEY) != null
+                        && !response.get(SnapConstants.REPORT_ENTRY_KEY).isJsonNull()) {
+                    return gson.toJson(response);
                 }
-
-                return StringUtils.EMPTY;
-
-            } catch (LmsException | JsonSyntaxException e) {
-                LOGGER.error("Error in getCourseDetail method call :: {}", e.getMessage());
             }
+            return StringUtils.EMPTY;
+        } catch (LmsException | JsonSyntaxException e) {
+            LOGGER.error("Error in getCourseDetail method call :: {}", e.getMessage());
+            throw new LmsException(
+                    String.format("LmsServiceImpl: Exception in getCourseDetail method = %s", e.getMessage()));
         }
-        return StringUtils.EMPTY;
     }
 
 }

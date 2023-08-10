@@ -13,6 +13,9 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.lenient;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.models.CourseDetailModel;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.services.UserGroupService;
@@ -54,15 +57,19 @@ public class CourseDetailModelImplTest {
 
     /**
      * Test method for getCourseDetailData in CourseDetailModel class.
+     * 
+     * @throws LmsException
      */
     @Test
-    public void testGetCourseDetailData() {
-        String detailResponse = "{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}";
+    public void testGetCourseDetailData() throws LmsException {
+        String detailResponse = "{\"Report_Entry\":[{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}]}";
+        Gson gson = new Gson();
+        JsonObject detailJson = gson.fromJson(detailResponse, JsonObject.class);
         lenient().when(lmsService.getCourseDetail("")).thenReturn(detailResponse);
         lenient().when(userGroupService.checkLoggedInUserHasAccessControlTags(any(), anyList())).thenReturn(true);
         CourseDetailModel courseDetailModel = context.request().adaptTo(CourseDetailModel.class);
         assertNotNull(courseDetailModel);
-        assertEquals(detailResponse, courseDetailModel.getCourseDetailData());
+        assertEquals(detailJson, courseDetailModel.getCourseDetailData());
     }
 
 }

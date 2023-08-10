@@ -15,6 +15,7 @@ import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.workday.community.aem.core.config.LmsConfig;
+import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.RestApiUtil;
@@ -79,9 +80,11 @@ public class LmsServiceImplTest {
 
     /**
      * Test method for getAPIToken method.
+     * 
+     * @throws LmsException
      */
     @Test
-    public void testGetAPIToken() {
+    public void testGetAPIToken() throws LmsException {
         try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
             // Case 1: with valid response
             APIResponse response = mock(APIResponse.class);
@@ -108,10 +111,13 @@ public class LmsServiceImplTest {
     }
 
     /**
+     * 
      * Test method for getCourseDetail method.
+     * 
+     * @throws LmsException
      */
     @Test
-    public void testGetCourseDetail() {
+    public void testGetCourseDetail() throws LmsException {
         try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
             // Case 1: with valid response
             APIResponse response = mock(APIResponse.class);
@@ -122,7 +128,7 @@ public class LmsServiceImplTest {
             when(response.getResponseCode()).thenReturn(200);
 
             String courseDetail = this.service.getCourseDetail("groupedTitle");
-            assertEquals(detailResponse, courseDetail);
+            assertEquals(responseBody, courseDetail);
 
             // Case 2: with response without Report Entry element
             when(response.getResponseBody()).thenReturn(detailResponse);

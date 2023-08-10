@@ -106,4 +106,9 @@ public interface SnapConstants {
    */
   String VIEW_PROFILE_LABEL_KEY = "viewProfileLabel";
 
+  /**
+   * Report entry
+   */
+  String REPORT_ENTRY_KEY = "Report_Entry";
+
 }

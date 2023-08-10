@@ -17,6 +17,7 @@ import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.models.CourseDetailModel;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.services.UserGroupService;
@@ -93,32 +94,27 @@ public class CourseDetailModelImpl implements CourseDetailModel {
     }
 
     /**
-     * Gets the course detail data as json string.
+     * Gets the course detail data.
      * 
-     * @return Course detail json string.
+     * @return Course detail json.
      */
     @Override
-    public String getCourseDetailData() {
-        boolean isValid = false;
-        String courseDetailJson = StringUtils.EMPTY;
-
+    public JsonObject getCourseDetailData() {
         try {
-            courseDetailJson = lmsService.getCourseDetail(courseTitle);
+            String courseDetailJson = lmsService.getCourseDetail(courseTitle);
             if (StringUtils.isNotBlank(courseDetailJson)) {
                 // Gson object for json handling.
                 JsonObject courseDetail = gson.fromJson(courseDetailJson, JsonObject.class);
-                isValid = checkAccessControlTags(courseDetail);
+                if (checkAccessControlTags(courseDetail)) {
+                    ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
+                    ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+                }
+                return courseDetail;
             }
-            if (!isValid) {
-                ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
-                ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
-            }
-        } catch (IOException ex) {
+        } catch (LmsException | IOException ex) {
             LOGGER.error("Exception occurred in getCourseDetailData: {}.", ex.getMessage());
-            courseDetailJson = StringUtils.EMPTY;
         }
-
-        return courseDetailJson;
+        return null;
     }
 
     /**

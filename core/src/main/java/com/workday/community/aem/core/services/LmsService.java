@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.services;
 
 import com.workday.community.aem.core.config.LmsConfig;
+import com.workday.community.aem.core.exceptions.LmsException;
 
 public interface LmsService {
     /**
@@ -15,15 +16,17 @@ public interface LmsService {
      * Gets the Lms API Bearer token
      * 
      * @return Bearer token.
+     * @throws LmsException
      */
-    String getApiToken();
+    String getApiToken() throws LmsException;;
 
     /**
      * Gets the course detail data of the given course.
      * 
      * @param courseTitle Course title.
      * @return Course detail json as string.
+     * @throws LmsException
      */
-    String getCourseDetail(String courseTitle);
+    String getCourseDetail(String courseTitle) throws LmsException;
 
 }

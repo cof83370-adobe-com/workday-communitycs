@@ -1,10 +1,12 @@
 package com.workday.community.aem.core.models;
 
+import com.google.gson.JsonObject;
+
 public interface CourseDetailModel {
     /**
      * Gets the course detail json.
      *
-     * @return The course detail json as a string for UI.
+     * @return The course detail json for UI.
      */
-    String getCourseDetailData();
+    JsonObject getCourseDetailData();
 }

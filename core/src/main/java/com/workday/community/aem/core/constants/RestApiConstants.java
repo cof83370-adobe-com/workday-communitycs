@@ -47,11 +47,6 @@ public interface RestApiConstants {
   int TIMEOUT = 10000;
 
   /**
-   * The constant POST_API
-   */
-  String POST_API = "POST";
-
-  /**
    * The constant Basic
    */
   String BASIC = "Basic";

@@ -177,9 +177,6 @@ public class RestApiUtil {
     APIResponse apiresponse = new APIResponse();
 
     LOGGER.debug("RESTAPIUtil executePostRequest: Calling REST executePostRequest().");
-    if (StringUtils.isBlank(request.getMethod())) {
-      request.setMethod(RestApiConstants.POST_API);
-    }
 
     HttpClient httpClient = HttpClient.newBuilder().connectTimeout(Duration.ofMillis(HTTP_TIMEMOUT)).build();
 
