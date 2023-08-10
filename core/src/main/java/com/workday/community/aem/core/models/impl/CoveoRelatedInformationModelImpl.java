@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -77,7 +78,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   @Override
   public List<String> getFacetFields() throws DamException {
     if (facetFields != null) {
-      return facetFields;
+      return Collections.unmodifiableList(facetFields);
     }
 
     facetFields = new ArrayList<>();
@@ -100,7 +101,8 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       LOGGER.error("exception in getFacetFields call in CoveoRelatedInformationModelImpl.");
       throw new DamException(e.getMessage());
     }
-    return facetFields;
+
+    return Collections.unmodifiableList(facetFields);
   }
 
   @Override
