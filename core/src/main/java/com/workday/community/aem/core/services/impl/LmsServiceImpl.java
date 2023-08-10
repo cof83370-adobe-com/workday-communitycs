@@ -10,11 +10,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.LmsConfig;
-import com.workday.community.aem.core.constants.SnapConstants;
+import com.workday.community.aem.core.constants.LmsConstants;
 import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
@@ -92,7 +91,7 @@ public class LmsServiceImpl implements LmsService {
         } catch (LmsException | JsonSyntaxException e) {
             LOGGER.error("Error in getAPIToken method call :: {}", e.getMessage());
             throw new LmsException(
-                    String.format("LmsServiceImpl: Exception in getApiToken method = %s", e.getMessage()));
+                    "There is an error while fetching the course detail token. Please contact Community Admin.");
         }
     }
 
@@ -121,8 +120,8 @@ public class LmsServiceImpl implements LmsService {
 
                 // Gson object for json handling.
                 JsonObject response = gson.fromJson(lmsResponse.getResponseBody(), JsonObject.class);
-                if (response.get(SnapConstants.REPORT_ENTRY_KEY) != null
-                        && !response.get(SnapConstants.REPORT_ENTRY_KEY).isJsonNull()) {
+                if (response.get(LmsConstants.REPORT_ENTRY_KEY) != null
+                        && !response.get(LmsConstants.REPORT_ENTRY_KEY).isJsonNull()) {
                     return gson.toJson(response);
                 }
             }
@@ -130,7 +129,7 @@ public class LmsServiceImpl implements LmsService {
         } catch (LmsException | JsonSyntaxException e) {
             LOGGER.error("Error in getCourseDetail method call :: {}", e.getMessage());
             throw new LmsException(
-                    String.format("LmsServiceImpl: Exception in getCourseDetail method = %s", e.getMessage()));
+                    "There is an error while fetching the course detail. Please contact Community Admin.");
         }
     }
 
