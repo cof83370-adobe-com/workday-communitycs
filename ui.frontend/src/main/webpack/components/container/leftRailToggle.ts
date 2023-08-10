@@ -63,6 +63,14 @@
                 showPanel = !showPanel;
                 toggleTocPanel(showPanel);
             });
+
+            toggleIcon.addEventListener('keydown', (event) => {
+                if((event as KeyboardEvent).key === 'Enter') {
+                    event.preventDefault();
+                    showPanel = !showPanel;
+                    toggleTocPanel(showPanel);
+                }
+            });
         }
     }
 

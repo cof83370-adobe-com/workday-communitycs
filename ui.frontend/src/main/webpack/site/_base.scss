@@ -22,12 +22,7 @@ main {
     padding: 6.25em 1em 0;
     min-height: calc(100vh - 120px);
 
-    .aem-AuthorLayer-Edit &,
-    .aem-AuthorLayer-Developer &,
-    .aem-AuthorLayer-Layouting &,
-    .aem-AuthorLayer-Timewarp &,
-    .aem-AuthorLayer-Targeting &,
-    .aem-AuthorLayer-Preview & {
+    html[class*="aem-AuthorLayer-"] & {
         min-height: 900px;
     }
 }
@@ -68,4 +63,28 @@ h2 {
 h3 {
     font-size: 16px;
     line-height: 22px;
+}
+
+/* 
+Generic Styling, for table
+*/
+table {
+    width: 100%;
+    border-collapse: collapse;
+
+    td,
+    th {
+        padding: 10px;
+        border: 1px solid $tbl-border-color;
+        text-align: left;
+        border-collapse: collapse;
+    }
+
+    th {
+        font-weight: bold;
+        text-align: center;
+        background-color: $tbl-header-background-color;
+        vertical-align: top;
+        border-bottom: none;
+    }
 }

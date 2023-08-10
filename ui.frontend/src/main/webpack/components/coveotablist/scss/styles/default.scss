@@ -147,3 +147,9 @@
     }
   }
 }
+
+.font-weight-bold, strong, b {
+  font-family: 'WorkdayAdelleSans-Bold', serif !important;
+  -webkit-font-smoothing: antialiased;
+  font-weight: 400;
+}

@@ -28,6 +28,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import static com.day.cq.wcm.api.constants.NameConstants.NT_PAGE;
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.constants.GlobalConstants.USER_ROOT_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 
@@ -48,14 +49,11 @@ public class QueryServiceImpl implements QueryService {
     @Reference
     ResourceResolverFactory resourceResolverFactory;
 
-    /** The service user. */
-    public static final String SERVICE_USER = "readserviceuser";
-
     @Override
     public long getNumOfTotalPublishedPages() {
         long totalResults = 0;
         Session session = null;
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
             queryMap.put("type", NT_PAGE);
@@ -80,7 +78,7 @@ public class QueryServiceImpl implements QueryService {
     public List<String> getPagesByTemplates(String[] templates) {
         Session session = null;
         List<String> paths = new ArrayList<>();
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
             session = resourceResolver.adaptTo(Session.class);
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
@@ -113,7 +111,7 @@ public class QueryServiceImpl implements QueryService {
     public List<String> getInactiveUsers() {
         Session session = null;
         List<String> users = new ArrayList<>();
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
             session = resourceResolver.adaptTo(Session.class);
 
             // Get all users.
@@ -167,7 +165,7 @@ public class QueryServiceImpl implements QueryService {
     public List<String> getBookNodesByPath(String bookPagePath, String currentPath) {
         Session session = null;
         List<String> paths = new ArrayList<>();
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
             session = resourceResolver.adaptTo(Session.class);
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_BOOK_ROOT_PATH);

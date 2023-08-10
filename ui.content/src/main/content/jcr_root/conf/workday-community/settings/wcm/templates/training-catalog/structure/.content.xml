@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:deviceGroups="[mobile/groups/responsive]"
+        cq:template="/conf/workday-community/settings/wcm/templates/training-catalog"
+        jcr:primaryType="cq:PageContent"
+        sling:resourceType="workday-community/components/structure/trainingcatalogpage">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="workday-community/components/core/container"
+            layout="responsiveGrid">
+            <header
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="workday-community/components/react/header"/>
+            <container
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="workday-community/components/core/container"
+                layout="responsiveGrid">
+                <breadcrumb
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="workday-community/components/core/breadcrumb"
+                    disableShadowing="false"
+                    hideCurrent="false"
+                    showHidden="false"/>
+                <container
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="workday-community/components/core/container"
+                    id="training-catalog-main"
+                    layout="responsiveGrid">
+                    <container_center
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/core/container"
+                        id="training-catalog-center-container"
+                        layout="responsiveGrid">
+                        <container_metadata
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/container">
+                            <handlebar_content
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/content/training-catalog/handlebar-content"
+                                htmlContent="&lt;div class=&quot;title&quot;>&#xd;&#xa;    &lt;div class=&quot;cmp-title&quot;>&#xd;&#xa;        &lt;h1 class=&quot;cmp-title__text&quot;>{{groupedTitle}}&lt;/h1>&#xd;&#xa;    &lt;/div>&#xd;&#xa;&lt;/div>"/>
+                            <metadata
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/common/metadata"/>
+                        </container_metadata>
+                        <container_coursedetails
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/container">
+                            <handlebar_content
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/content/training-catalog/handlebar-content"
+                                htmlContent="&lt;div class=&quot;eventdetails&quot;>&#xd;&#xa;  &lt;div class=&quot;cmp-eventdetails&quot; data-cmp-is=&quot;cmp-eventdetails&quot;>&#xd;&#xa;    &lt;div>&#xd;&#xa;      &lt;div class=&quot;cmp-eventdetails__itemList&quot;>&#xd;&#xa;        &lt;div class=&quot;cmp-eventdetails__item&quot;>&#xd;&#xa;          &lt;div class=&quot;cmp-eventdetails__item-label&quot;>Duration &lt;/div>&#xd;&#xa;          &lt;div class=&quot;cmp-eventdetails__item-output&quot;>{{durationRange}}&lt;/div>&#xd;&#xa;        &lt;/div>&#xd;&#xa;        &lt;div class=&quot;cmp-eventdetails__item&quot;>&#xd;&#xa;          &lt;div class=&quot;cmp-eventdetails__item-label&quot;>Training Credits &lt;/div>&#xd;&#xa;          &lt;div class=&quot;cmp-eventdetails__item-output&quot;>&#xd;&#xa;            {{creditsRange}}&#xd;&#xa;          &lt;/div>&#xd;&#xa;        &lt;/div>&#xd;&#xa;        &lt;div class=&quot;cmp-eventdetails__item&quot;>&#xd;&#xa;          &lt;div class=&quot;cmp-eventdetails__item-label&quot;>Subscription Library &lt;/div>&#xd;&#xa;          &lt;div class=&quot;cmp-eventdetails__item-output&quot;>{{library}}&lt;/div>&#xd;&#xa;        &lt;/div>&#xd;&#xa;        &lt;div class=&quot;cmp-eventdetails__item&quot;>&#xd;&#xa;          &lt;div class=&quot;cmp-eventdetails__item-label&quot;>Role &lt;/div>&#xd;&#xa;          &lt;div class=&quot;cmp-eventdetails__item-output&quot;>{{roles}}&lt;/div>&#xd;&#xa;        &lt;/div>&#xd;&#xa;      &lt;/div>&#xd;&#xa;    &lt;/div>&#xd;&#xa;  &lt;/div>&#xd;&#xa;&lt;/div>"/>
+                        </container_coursedetails>
+                        <container_coursedescription
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/container">
+                            <handlebar_content
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/content/training-catalog/handlebar-content"
+                                htmlContent="&lt;div class=&quot;title&quot;>&#xd;&#xa;    &lt;div class=&quot;cmp-title&quot;>&#xd;&#xa;        &lt;h2 class=&quot;cmp-title__text&quot;>Course Description&lt;/h2>&#xd;&#xa;    &lt;/div>&#xd;&#xa;&lt;/div>&#xd;&#xa;&lt;div class=&quot;text&quot;>&#xd;&#xa;    &lt;div id=&quot;course-description&quot; class=&quot;cmp-text&quot;>&lt;p>{{description}}&lt;/p>&lt;/div>&#xd;&#xa;&lt;/div>"/>
+                        </container_coursedescription>
+                        <container_courseprerequisites
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/container">
+                            <handlebar_content
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/content/training-catalog/handlebar-content"
+                                htmlContent="&lt;div class=&quot;image&quot;>&#xd;&#xa;        &lt;div data-cmp-is=&quot;image&quot; class=&quot;cmp-image&quot;>&#xd;&#xa;                &lt;img src=&quot;{{graphicUrl}}&quot; loading=&quot;lazy&quot; class=&quot;cmp-image__image&quot; alt=&quot;Course detail image&quot;>&#xd;&#xa;        &lt;/div>&#xd;&#xa;&lt;/div>&#xd;&#xa;&lt;div class=&quot;text&quot;>&#xd;&#xa;        &lt;div id=&quot;course-prerequisites&quot; class=&quot;cmp-text&quot;>&#xd;&#xa;                &lt;p>&lt;b>Required Prerequisites&lt;/b>&lt;/p>&#xd;&#xa;                &lt;p>{{reqPrereq}}&lt;/p>&#xd;&#xa;                &lt;p>&lt;b>Suggested Prerequisites&lt;/b>&lt;/p>&#xd;&#xa;                &lt;p>{{sugPrereq}}&lt;/p>&#xd;&#xa;        &lt;/div>&#xd;&#xa;&lt;/div>"/>
+                        </container_courseprerequisites>
+                        <container_coursevideo
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/container">
+                            <handlebar_content
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/content/training-catalog/handlebar-content"
+                                htmlContent="\{{#isNotEmptyOrNull videoUrl}}&#xd;&#xa;    &lt;div class=&quot;title&quot;>&#xd;&#xa;        &lt;div class=&quot;cmp-title&quot;>&#xd;&#xa;            &lt;h2 class=&quot;cmp-title__text&quot;>Video&lt;/h2>&#xd;&#xa;        &lt;/div>&#xd;&#xa;    &lt;/div>&#xd;&#xa;    &lt;!--/* Coming soon brightcove video integration */-->&#xd;&#xa;{{/isNotEmptyOrNull}}"/>
+                        </container_coursevideo>
+                        <container_download
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/container">
+                            <handlebar_content
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/content/training-catalog/handlebar-content"
+                                htmlContent="&lt;div class=&quot;download&quot;>&#xd;&#xa;    &lt;div class=&quot;cmp-download&quot;>&#xd;&#xa;        &lt;h3 class=&quot;cmp-download__title&quot;>&#xd;&#xa;            {{download &quot;Info Sheet&quot; infosheetUrl}}&#xd;&#xa;        &lt;/h3>&#xd;&#xa;    &lt;/div>&#xd;&#xa;&lt;/div>"/>
+                        </container_download>
+                        <container_deliveryoptions
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/core/container">
+                            <handlebar_content
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/content/training-catalog/handlebar-content"
+                                htmlContent="&lt;div class=&quot;title&quot;>&#xd;&#xa;    &lt;div class=&quot;cmp-title&quot;>&#xd;&#xa;        &lt;h2 class=&quot;cmp-title__text&quot;>Delivery Options&lt;/h2>&#xd;&#xa;    &lt;/div>&#xd;&#xa;&lt;/div>&#xd;&#xa;&lt;div class=&quot;text&quot;>&#xd;&#xa;    &lt;div id=&quot;course-description&quot; class=&quot;cmp-text&quot;>&lt;p>Select a Delivery Option to enroll in the course within the Workday Learning Center (account required).To have a Workday Learning Center account created, work with your organization's Training Coordinator.&lt;/p>&lt;/div>&#xd;&#xa;&lt;/div>&#xd;&#xa;{{#isNotEmptyOrNull deliveryOptionsUrl1}}&#xd;&#xa;    {{button deliveryOptionsTitle1 deliveryOptionsUrl1}}&#xd;&#xa;{{/isNotEmptyOrNull}}&#xd;&#xa;{{#isNotEmptyOrNull deliveryOptionsUrl2}}&#xd;&#xa;    {{button deliveryOptionsTitle2 deliveryOptionsUrl2}}&#xd;&#xa;{{/isNotEmptyOrNull}}&#xd;&#xa;{{#isNotEmptyOrNull deliveryOptionsUrl3}}&#xd;&#xa;    {{button deliveryOptionsTitle3 deliveryOptionsUrl3}}&#xd;&#xa;{{/isNotEmptyOrNull}}&#xd;&#xa;{{#isNotEmptyOrNull deliveryOptionsUrl4}}&#xd;&#xa;    {{button deliveryOptionsTitle4 deliveryOptionsUrl4}}&#xd;&#xa;{{/isNotEmptyOrNull}}"/>
+                        </container_deliveryoptions>
+                        <cq:responsive jcr:primaryType="nt:unstructured">
+                            <default
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="9"/>
+                            <phone
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="12"/>
+                        </cq:responsive>
+                    </container_center>
+                    <container_rightrail
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/core/container"
+                        id="training-catalog-right-container">
+                        <cq:responsive jcr:primaryType="nt:unstructured">
+                            <default
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="3"/>
+                            <phone
+                                jcr:primaryType="nt:unstructured"
+                                offset="0"
+                                width="12"/>
+                        </cq:responsive>
+                        <handlebar_content
+                            jcr:primaryType="nt:unstructured"
+                            sling:resourceType="workday-community/components/content/training-catalog/handlebar-content"
+                            htmlContent="&lt;div id=&quot;container-97e702ac8e&quot; class=&quot;cmp-container&quot;>&#xd;&#xa;&#x9;&lt;div class=&quot;taxonomy&quot;>&#xd;&#xa;&#x9;&#x9;&lt;div class=&quot;cmp-taxonomy&quot; data-cmp-is=&quot;cmp-taxonomy&quot;>&#xd;&#xa;&#x9;&#x9;&#x9;&lt;div class=&quot;cmp-taxonomy__item&quot;>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&lt;p class=&quot;cmp-taxonomy__item-label&quot;>Products&lt;/p>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&lt;span class=&quot;cmp-taxonomy__item-output&quot; data-cmp-hook-taxonomy=&quot;productTags&quot;>Analytics &amp;amp;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;Reporting&lt;/span>&#xd;&#xa;&#x9;&#x9;&#x9;&lt;/div>&#xd;&#xa;&#x9;&#x9;&#x9;&lt;div class=&quot;cmp-taxonomy__item&quot;>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&lt;p class=&quot;cmp-taxonomy__item-label&quot;>Using Workday&lt;/p>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&lt;span class=&quot;cmp-taxonomy__item-output&quot; data-cmp-hook-taxonomy=&quot;usingWorkdayTags&quot;>Analytics &amp;amp;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;Reporting&lt;/span>&#xd;&#xa;&#x9;&#x9;&#x9;&lt;/div>&#xd;&#xa;&#x9;&#x9;&lt;/div>&#xd;&#xa;&#x9;&lt;/div>&#xd;&#xa;&#x9;&lt;div class=&quot;relatedinformation&quot;>&#xd;&#xa;&#x9;&#x9;&lt;div class=&quot;cmp-related-info&quot;>&#xd;&#xa;&#x9;&#x9;&#x9;&lt;div class=&quot;cmp-related-info__heading&quot;>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&lt;h3 class=&quot;cmp-related-info__heading-title&quot;>Related Information&lt;/h3>&#xd;&#xa;&#x9;&#x9;&#x9;&lt;/div>&#xd;&#xa;&#x9;&#x9;&#x9;&lt;div class=&quot;cmp-related-info-curated__image-content&quot;>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&lt;div class=&quot;cmp-related-info__content&quot;>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;ul class=&quot;cmp-related-info__list&quot;>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;li class=&quot;cmp-related-info__item&quot;>&#xd;&#xa;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;a class=&quot;cmp-related-info__item-link&quot;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;href=&quot;/en-us/reference/products/platform-and-product-extensions/core-reporting/next-level/calculated-fields-guidance.html&quot;>&lt;span&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;class=&quot;cmp-related-info__item-title&quot;>Calculated Fields Guidance&lt;/span>&lt;/a>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;/li>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;li class=&quot;cmp-related-info__item&quot;>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;a class=&quot;cmp-related-info__item-link&quot;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;href=&quot;/en-us/kits-and-tools/products/platform-and-product-extensions/core-reporting/next-level/considerations-for-calculated-field-names.html&quot;>&lt;span&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;class=&quot;cmp-related-info__item-title&quot;>Considerations for Calculated Field&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Names&lt;/span>&lt;/a>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;/li>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;li class=&quot;cmp-related-info__item&quot;>&#xd;&#xa;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;a class=&quot;cmp-related-info__item-link&quot;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;href=&quot;https://doc.workday.com/r/3DMnG~27o049IYFWETFtTQ/SOY5zg~8nDRHy~Dm~OFG9A&quot;>&lt;span&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;class=&quot;cmp-related-info__item-title&quot;>Workday Administrator Guide: Calculated Fields:&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Full list of usages&lt;/span>&lt;/a>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;/li>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;li class=&quot;cmp-related-info__item&quot;>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;a class=&quot;cmp-related-info__item-link&quot;&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;href=&quot;https://doc.workday.com/r/3DMnG~27o049IYFWETFtTQ/tXA~TBosVkst0pdVBqURHA&quot;>&lt;span&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;class=&quot;cmp-related-info__item-title&quot;>Workday Administrator Guide: Reference:&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;Calculated Field Functions&lt;/span>&lt;/a>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;/li>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&#x9;&lt;/ul>&#xd;&#xa;&#x9;&#x9;&#x9;&#x9;&lt;/div>&#xd;&#xa;&#x9;&#x9;&#x9;&lt;/div>&#xd;&#xa;&#x9;&#x9;&lt;/div>&#xd;&#xa;&#x9;&lt;/div>&#xd;&#xa;&lt;/div>"/>
+                    </container_rightrail>
+                </container>
+            </container>
+            <footer
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="workday-community/components/react/footer"/>
+        </root>
+        <cq:responsive jcr:primaryType="nt:unstructured">
+            <breakpoints jcr:primaryType="nt:unstructured">
+                <phone
+                    jcr:primaryType="nt:unstructured"
+                    title="Smaller Screen"
+                    width="{Long}768"/>
+                <tablet
+                    jcr:primaryType="nt:unstructured"
+                    title="Tablet"
+                    width="{Long}1200"/>
+            </breakpoints>
+        </cq:responsive>
+    </jcr:content>
+</jcr:root>

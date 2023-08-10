@@ -67,5 +67,10 @@ public final class GlobalConstants {
   private GlobalConstants() {
     throw new IllegalStateException("Utility class");
   }
-  
+
+  /**
+   * The user service user.
+   */
+  public static final String READ_SERVICE_USER = "readserviceuser";
+
 }

@@ -52,6 +52,11 @@ public interface SnapConstants {
   String CUSTOMER_OF_KEY = "customerOf";
 
   /**
+   * The partner track key.
+   */
+  String PARTNER_TRACK_KEY = "partnerTrack";
+
+  /**
    * The wsp key.
    */
   String WSP_KEY = "wsp";

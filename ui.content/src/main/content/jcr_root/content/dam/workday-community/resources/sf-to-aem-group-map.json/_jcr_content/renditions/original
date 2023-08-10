@@ -14,5 +14,10 @@
         "WSP - Accelerate Plus": "customer_wsp_accelerate_plus",
         "WSP - Enhanced": "customer_wsp_enhanced",
         "WSP - Guided": "customer_wsp_guided"
+    },
+    "partnerTrackMapping": {
+        "Innovation": "partner_innovation_track",
+        "Sales": "partner_sales_track",
+        "Services": "partner_services_track"
     }
 }
