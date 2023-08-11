@@ -36,8 +36,8 @@ import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERV
         Resource.class,
         SlingHttpServletRequest.class
     },
-    adapters = {CoveoRelatedInformationModel.class},
-    resourceType = {CoveoRelatedInformationModelImpl.RESOURCE_TYPE},
+    adapters = { CoveoRelatedInformationModel.class },
+    resourceType = { CoveoRelatedInformationModelImpl.RESOURCE_TYPE },
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformationModel {
@@ -91,7 +91,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     pagePath = pagePath.substring(0, pagePath.indexOf("."));
     Page page = pageManager.getPage(pagePath);
     if (page == null) {
-      LOGGER.error(String.format("Page is null: %s", pagePath));
+      LOGGER.error(String.format("getFacetFields in CoveoRelatedInformationModelImpl failed because current Page unresolved, path: %s", pagePath));
       return Collections.unmodifiableList(facetFields);
     }
 
