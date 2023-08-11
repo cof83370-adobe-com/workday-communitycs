@@ -2,6 +2,8 @@ package com.workday.community.aem.core.models.impl;
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.DamException;
@@ -16,11 +18,11 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
-import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,23 +33,21 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+import static com.workday.community.aem.core.constants.TagPropertyName.TAGE_ROOT_PROPERTY_NAME;
 
 @Model(
     adaptables = {
         Resource.class,
         SlingHttpServletRequest.class
     },
-    adapters = { CoveoRelatedInformationModel.class },
-    resourceType = { CoveoRelatedInformationModelImpl.RESOURCE_TYPE },
+    adapters = {CoveoRelatedInformationModel.class},
+    resourceType = {CoveoRelatedInformationModelImpl.RESOURCE_TYPE},
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformationModel {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
   private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";
   protected static final String RESOURCE_TYPE = "/content/workday-community/components/common/relatedinformation";
-
-  @ValueMapValue
-  String[] categories;
 
   @Inject
   ResourceResolverFactory resourceResolverFactory;
@@ -69,6 +69,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
    */
   @OSGiService
   private SnapService snapService;
+
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
       this.request = request;
@@ -84,6 +85,24 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     facetFields = new ArrayList<>();
     try {
       ResourceResolver resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
+
+      // fall back to the page tag properties
+      PageManager pageManager = request.getResourceResolver().adaptTo(PageManager.class);
+      if (pageManager == null) {
+        return facetFields;
+      }
+
+      String pagePath = request.getPathInfo();
+      // Trim .html at end.
+      pagePath = pagePath.substring(0, pagePath.indexOf("."));
+      Page page = pageManager.getPage(pagePath);
+      if (page == null) {
+        LOGGER.error(String.format("Page is null: %s", pagePath));
+        return facetFields;
+      }
+
+      ValueMap data = page.getProperties();
+      String[] categories = (String[]) data.get(TAGE_ROOT_PROPERTY_NAME);
       JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG).getAsJsonObject("tagIdToCoveoField");
       TagManager tagManager = resolver.adaptTo(TagManager.class);
 

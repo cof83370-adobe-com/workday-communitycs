@@ -2,6 +2,8 @@ package com.workday.community.aem.core.models.impl;
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -19,6 +21,7 @@ import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,6 +41,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.workday.community.aem.core.constants.TagPropertyName.TAGE_ROOT_PROPERTY_NAME;
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -45,7 +49,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoRelatedInformationModelTest {
@@ -111,10 +114,22 @@ public class CoveoRelatedInformationModelTest {
   public void testGetFacetFields() throws DamException {
     CoveoRelatedInformationModel relInfoModel = context.currentResource("/component/relatedinformation").adaptTo(CoveoRelatedInformationModel.class);
     ((CoveoRelatedInformationModelImpl)relInfoModel).init(request);
+    ResourceResolver resolver = mock(ResourceResolver.class);
+    lenient().when(request.getResourceResolver()).thenReturn(resolver);
+    String pagePath = "/content/foo.html";
+    lenient().when(request.getPathInfo()).thenReturn(pagePath);
+    PageManager pageManager = mock(PageManager.class);
+    lenient().when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+    Page page = mock(Page.class);
+    lenient().when(pageManager.getPage(anyString())).thenReturn(page);
+    ValueMap properties = mock(ValueMap.class);
+    String[] tags = {"product:", "using-workday:"};
+    lenient().when(page.getProperties()).thenReturn(properties);
+    lenient().when(properties.get(TAGE_ROOT_PROPERTY_NAME)).thenReturn(tags);
     List<String> facetFields = relInfoModel.getFacetFields();
     assertEquals(2, facetFields.size());
-    assertEquals("coveo_using-workday", facetFields.get(0));
-    assertEquals("coveo_product", facetFields.get(1));
+    assertEquals("coveo_product", facetFields.get(0));
+    assertEquals("coveo_using-workday", facetFields.get(1));
   }
 
   @Test
