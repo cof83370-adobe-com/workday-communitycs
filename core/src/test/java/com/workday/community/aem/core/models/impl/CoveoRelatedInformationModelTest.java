@@ -21,7 +21,6 @@ import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,6 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 
-import static com.workday.community.aem.core.constants.TagPropertyName.TAGE_ROOT_PROPERTY_NAME;
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -83,15 +81,22 @@ public class CoveoRelatedInformationModelTest {
     context.registerService(ResourceResolver.class, resourceResolver);
 
     lenient().when(resourceResolver.adaptTo(TagManager.class)).thenReturn(tagManager);
-
     Tag tag1Namespace = mock(Tag.class);
     lenient().when(tag1Namespace.getName()).thenReturn("product");
-
     Tag tag2Namespace = mock(Tag.class);
     lenient().when(tag2Namespace.getName()).thenReturn("using-workday");
     Tag tag1 = mock(Tag.class);
     Tag tag2 = mock(Tag.class);
 
+    ResourceResolver resolver = mock(ResourceResolver.class);
+    lenient().when(request.getResourceResolver()).thenReturn(resolver);
+    String pagePath = "/content/foo.html";
+    lenient().when(request.getPathInfo()).thenReturn(pagePath);
+    PageManager pageManager = mock(PageManager.class);
+    lenient().when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+    Page page = mock(Page.class);
+    lenient().when(pageManager.getPage(anyString())).thenReturn(page);
+    lenient().when(page.getTags()).thenReturn(new Tag[] {tag1, tag2});
     lenient().when(tag1.getNamespace()).thenReturn(tag1Namespace);
     lenient().when(tag2.getNamespace()).thenReturn(tag2Namespace);
     lenient().when(tagManager.resolve("product:")).thenReturn(tag1);
@@ -114,18 +119,7 @@ public class CoveoRelatedInformationModelTest {
   public void testGetFacetFields() throws DamException {
     CoveoRelatedInformationModel relInfoModel = context.currentResource("/component/relatedinformation").adaptTo(CoveoRelatedInformationModel.class);
     ((CoveoRelatedInformationModelImpl)relInfoModel).init(request);
-    ResourceResolver resolver = mock(ResourceResolver.class);
-    lenient().when(request.getResourceResolver()).thenReturn(resolver);
-    String pagePath = "/content/foo.html";
-    lenient().when(request.getPathInfo()).thenReturn(pagePath);
-    PageManager pageManager = mock(PageManager.class);
-    lenient().when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
-    Page page = mock(Page.class);
-    lenient().when(pageManager.getPage(anyString())).thenReturn(page);
-    ValueMap properties = mock(ValueMap.class);
-    String[] tags = {"product:", "using-workday:"};
-    lenient().when(page.getProperties()).thenReturn(properties);
-    lenient().when(properties.get(TAGE_ROOT_PROPERTY_NAME)).thenReturn(tags);
+
     List<String> facetFields = relInfoModel.getFacetFields();
     assertEquals(2, facetFields.size());
     assertEquals("coveo_product", facetFields.get(0));

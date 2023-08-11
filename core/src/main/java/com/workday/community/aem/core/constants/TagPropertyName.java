@@ -18,7 +18,4 @@ public interface TagPropertyName {
    * The Constant RELEASE_NOTES_CHNAGE_TYPE.
    */
   String RELEASE_NOTES_CHNAGE_TYPE = "releasNotesChangeType";
-
-  String TAGE_ROOT_PROPERTY_NAME = "cq:tags";
-
 }
