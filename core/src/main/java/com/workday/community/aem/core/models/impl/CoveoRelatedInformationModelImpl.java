@@ -83,7 +83,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     // fall back to the page tag properties
     PageManager pageManager = request.getResourceResolver().adaptTo(PageManager.class);
     if (pageManager == null) {
-      return facetFields;
+      return Collections.unmodifiableList(facetFields);
     }
 
     String pagePath = request.getPathInfo();
@@ -92,12 +92,12 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     Page page = pageManager.getPage(pagePath);
     if (page == null) {
       LOGGER.error(String.format("Page is null: %s", pagePath));
-      return facetFields;
+      return Collections.unmodifiableList(facetFields);
     }
 
     Tag[] tags = page.getTags();
     if (tags == null || tags.length == 0) {
-      return facetFields;
+      return Collections.unmodifiableList(facetFields);
     }
     try {
       ResourceResolver resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
