@@ -102,7 +102,7 @@ Include conf.d/variables/custom.vars
     <LocationMatch "^/content/workday-community/en-us/.*(\.html)$>"
          Header unset Cache-Control
 	     Header unset Expires
-	     Header always set Cache-Control "max-age=120,s-maxage=600,stale-while-revalidate=43200,stale-if-error=43200"
+	     Header always set Cache-Control "private"
     </LocationMatch>
 
     # Images/Video from DAM: cache mutable resources for 24h on CDN and background refresh to avoid MISS
