@@ -493,6 +493,16 @@
                 main().then(() => {
                 });
             });
+          window.addEventListener('resize', () => {
+    		if (window.innerWidth <= 1023) {
+        		const main = async () => {
+            		const searchInterface = document.querySelector('atomic-search-interface');
+           		 	const engine = searchInterface.engine;
+            		await buildTabs(buildTab, engine);
+        		};
+        		main().then(() => {});
+    		}
+		});
         </script>
     </div>
 </sly>
