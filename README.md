@@ -29,7 +29,7 @@ The main parts of the template are:
   ```
 * Add the following environmental variable to your shell or rerun it if outputting the variable shows no value
     ```bash
-     export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain community-workday --domain-owner 210939474461 --region us-west-2 --query authorizationToken --output text`:
+     export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain community-workday --domain-owner 210939474461 --region us-west-2 --query authorizationToken --output text`
     ```
 * **For all local maven commands use `mvn -s .cloudmanager/maven/settings.xml <your maven command>` or link the settings.xml to your local mvn installation (usually .m2 directory)**
 

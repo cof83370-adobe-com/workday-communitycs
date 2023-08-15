@@ -1,0 +1,47 @@
+x-common-env-variables: &common-env
+  CODEARTIFACT_AUTH_TOKEN: $CODEARTIFACT_AUTH_TOKEN
+  AWS_PROFILE: $AWS_PROFILE
+
+services:
+  author:
+    hostname: author
+    build:
+      context: .
+      dockerfile: docker/aem-base
+      args:
+        <<: *common-env
+      secrets:
+        - aws
+    image: aem-base
+    environment:
+      <<: *common-env
+    ports:
+      - "127.0.0.1:4502:4502"
+    volumes:
+      - $HOME/.aws/credentials:/root/.aws/credentials:ro
+      - $HOME/.aws/config:/root/.aws/config:ro
+      - .:/opt/aem
+    networks:
+      - aem
+  publish:
+    hostname: publish
+    image: aem-base
+    environment:
+      <<: *common-env
+    ports:
+      - "127.0.0.1:4503:4503"
+    volumes:
+      - $HOME/.aws/credentials:/root/.aws/credentials:ro
+      - $HOME/.aws/config:/root/.aws/config:ro
+      - .:/opt/aem
+    networks:
+      - aem
+secrets:
+  aws:
+    file: $HOME/.aws/credentials
+
+volumes:
+  aem:
+
+networks:
+  aem:
