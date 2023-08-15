@@ -35,6 +35,11 @@ public class APIRequest {
   String contentType;
 
   /**
+   * The request form data.
+   */
+  HashMap<String, String> formData;
+
+  /**
    * Getter for body.
    */
   public String getBody() {
@@ -102,5 +107,29 @@ public class APIRequest {
    */
   public Map<String, String> getHeaders() {
     return this.headers;
+  }
+
+  /**
+   * Adds a key value in the request form data.
+   *
+   * @param key   the key name.
+   * @param value the value.
+   */
+  public APIRequest addFormData(String key, String value) {
+    if (this.formData != null)
+      formData.put(key, value);
+    else {
+      formData = new HashMap<String, String>();
+      formData.put(key, value);
+    }
+
+    return this;
+  }
+
+  /**
+   * Getter for Form Data.
+   */
+  public Map<String, String> getFormData() {
+    return this.formData;
   }
 }
