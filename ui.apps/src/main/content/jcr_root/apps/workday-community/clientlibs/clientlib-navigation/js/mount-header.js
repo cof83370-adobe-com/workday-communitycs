@@ -39,7 +39,7 @@ function renderNavHeader() {
 
             headerData = {
                 menus: headerMenu,
-                skipTo: 'mainDivId', //TODO: need to change to correct value once it is finalized.
+                skipTo: 'mainContentId',
                 sticky: true,
                 searchProps: { redirectPath: searchURL }
             };
