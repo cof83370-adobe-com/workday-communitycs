@@ -60,7 +60,6 @@ public class LogoutServletTest {
     logoutServlet.doGet(request, response);
 
     when(oktaService.getCustomDomain()).thenReturn("http://okta.workday.com");
-    when(oktaService.getRedirectUri()).thenReturn("/redirect/uri");
 
     try (MockedStatic<HttpUtils>  mocked = mockStatic(HttpUtils.class)) {
       mocked.when( ()-> HttpUtils.dropCookies(eq(request), eq(response), anyString(), any())).thenReturn(0);
