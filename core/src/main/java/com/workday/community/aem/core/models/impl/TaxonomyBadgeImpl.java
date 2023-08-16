@@ -107,7 +107,7 @@ public class TaxonomyBadgeImpl implements TaxonomyBadge {
      * @param badgeList the badge list
      * @return the retired badge
      */
-    public List<String> getRetiredBadge(List<String> badgeList) {
+    private List<String> getRetiredBadge(List<String> badgeList) {
         if (currentPage.getProperties().get(RETIRED_PROP, "false").equalsIgnoreCase("true"))
             badgeList.add(RETIRED_BADGE_TITLE);
         return badgeList;
