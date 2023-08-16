@@ -599,14 +599,6 @@ atomic-sort-dropdown {
     margin: 5px 0;
   }
 
-  atomic-sort-dropdown {
-    width: 100% !important;
-
-    &::part(select-box), &::part(select) {
-      width: 100% !important;
-    }
-  }
-
   custom-bread-box {
     grid-area: breadbox;
     display: none;
@@ -776,31 +768,32 @@ atomic-refine-toggle::part(button) {
   color: $wdc-color-black-pepper-400;
 }
 
-@media (max-width: 1023px) {
+@media (max-width: 1023px) {  
   atomic-refine-toggle::part(button) {
-    width: 150px;
+	width: 150px;
   }
   atomic-sort-dropdown {
     &::part(select-parent) {
-      margin-top: -5px;
+	margin-top: -5px;
     }
   }
+      
 }
 
-@media (max-width: 720px) {
+@media (max-width: 720px) {  
   atomic-refine-toggle::part(button) {
     margin-top: 42px;
-    width: 150px;
+	width: 150px;
   }
   atomic-sort-dropdown.hydrated,
   atomic-search-box.hydrated {
     width: 100% !important;
     display: inline-flex;
-    margin: 7px 0 7px 0;
+    margin: 7px 0;
   }
   atomic-sort-dropdown {
     width: 100% !important;
-    &::part(select),
+	&::part(select),
     &::part(select-parent) {
       width: 100% !important;
     }

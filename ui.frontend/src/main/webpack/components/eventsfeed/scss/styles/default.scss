@@ -8,22 +8,25 @@
     color: #000000;
     font-family: "Workday Adelle Sans", Roboto, sans-serif;
     background-color: #fff;
-    
-    @media (max-width: 768px) {
-      .feature-event {
+	
+	@media (max-width: 768px) {
+	.feature-event {
+		.feature-image {
         display: none !important;
       }
-      h2.subject {
-        padding-top: 20px;
-      }
-    }
-
-    @media (max-width: 1023px) {
-      h2.subject {
-        margin-left: 45px !important;
-        margin-bottom: 0px !important;
-      }
-    }
+	}
+	h2.subject {
+	padding-top: 20px;
+	}
+	}
+	    
+	@media (max-width: 1023px) {
+	h2.subject {
+	margin-left: 45px !important;
+    margin-bottom: 0 !important;
+	
+	}
+	}
 
     .feature-event {
       display: flex;
@@ -40,7 +43,6 @@
       .feature-image {
         height: 100%;
         border-top-left-radius: 8px;
-        width: 50%;
       }
 
       .detail {
@@ -50,48 +52,42 @@
         padding: 5px;
 
         .title {
-          font-size: 18px;
-          font-weight: 600;
-          line-height: 24px;
-
-          a {
-            text-decoration: none;
-          }
+          font-size: 32px;
         }
         .location {
-          font-size: 15px;
+          font-size: 20px;
         }
         .timespan {
-          font-size: 15px;
-          margin: 10px 0 20px 0;
+          font-size: 20px;
+          margin-bottom: 20px;
         }
         .register {
+          text-decoration: none;
+          min-width: 70px;
+          height: 30px;
+          padding: 0 8px;
           font-size: 0.875rem;
           line-height: normal;
           letter-spacing: 0.015rem;
-          font-weight: 700;
-          cursor: pointer;
+          box-sizing: border-box;
           display: inline-flex;
           -webkit-box-align: center;
           align-items: center;
           -webkit-box-pack: center;
           justify-content: center;
+          background: none transparent;
+          border-radius: 999px;
           box-shadow: none;
+          position: relative;
+          cursor: pointer;
+          font-weight: 500;
           outline: none;
+          vertical-align: middle;
+          border: 1px solid rgb(51, 51, 51);
+          overflow: hidden;
           white-space: nowrap;
           -webkit-font-smoothing: antialiased;
-          border-radius: 999px;
-          position: relative;
-          vertical-align: middle;
-          overflow: hidden;
-          border: 1px solid transparent;
-          background: rgb(8, 117, 225);
           transition: box-shadow 120ms linear 0s, border 120ms linear 0s, background-color 120ms linear 0s, color 120ms linear 0s;
-          height: 40px;
-          color: rgb(255, 255, 255);
-          box-sizing: border-box;
-          min-width: 96px;
-          padding: 0 24px;
         }
       }
     }
@@ -100,23 +96,22 @@
       padding: 0 0 20px 30px !important;
 
       .event-text {
-        color: $wdc-color-blueberry-400 !important;
-        font-family: "Workday Adelle Sans", sans-serif;
-        font-weight: 600;
-        font-size: 14px !important;
+        color: #0875e1!important;
+        font-family: Workday Adelle Sans;
+        font-size: 15px!important;
         letter-spacing: .5px!important;
-        line-height: 20px!important;
+        line-height: 22px!important;
       }
     }
 
     h2.subject {
-      font-size: 20px;
+		margin-left: 30px;
+		margin-bottom: 10px;
+      font-size: 24px;
       font-weight: 600;
       line-height: 26px;
       letter-spacing: 0.5px;
       color: #000000;
-      margin-left: 24px;
-      margin-bottom: 6px;
     }
 
     hr.separator {
