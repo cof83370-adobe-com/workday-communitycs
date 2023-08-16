@@ -1,7 +1,7 @@
 <!--/* Handlebar Content Component */-->
 <sly data-sly-test="${properties.embedModel}">
     <sly data-sly-use.model="com.workday.community.aem.core.models.CourseDetailModel">
-        <div id="handle-bar-title" class="cmp-handlebar-content"
+        <div id="courseDetailData" class="cmp-handlebar-content"
             data-sly-use.rootpathInfo="com.workday.community.aem.core.models.RootPathModel"
             data-model-property="${model.courseDetailData}">
             <sly>${properties.htmlContent @ context = 'html'}

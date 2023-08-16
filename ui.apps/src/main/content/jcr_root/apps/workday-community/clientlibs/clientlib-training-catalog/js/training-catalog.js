@@ -1,5 +1,5 @@
 function renderCourse() {
-  const titleDiv = document.getElementById("handle-bar-title");
+  const titleDiv = document.getElementById("courseDetailData");
   let courseData, course;
   if (titleDiv) {
     courseData = titleDiv.getAttribute('data-model-property');
