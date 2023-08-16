@@ -89,12 +89,6 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     /** The Constant PROP_ALTERNATE_TIMEZONE. */
     private static final String PROP_ALTERNATE_TIMEZONE = "alternateTimezone";
 
-    /** The Constant PROP_UPDATED_DATE. */
-    private static final String PROP_UPDATED_DATE = "updatedDate";
-
-    /** The Constant PROP_RETIREMENT_DATE. */
-    private static final String PROP_RETIREMENT_DATE = "retirementDate";
-
     /** The Constant PROP_AUTHOR. */
     private static final String PROP_AUTHOR = "author";
 
@@ -274,7 +268,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     }
 
     /**
-     * Adds the all tags data.
+     * Adds the all tags and meta data.
      *
      * @param node     the node
      * @param valueMap the value map
@@ -321,9 +315,9 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
         Calendar eventEndDateCalInstance = valueMap.get(PROP_EVENT_END_DATE, Calendar.class);
         eventEndDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,
                 localDate.getDayOfMonth());
-        eventEndDateCalInstance.add(Calendar.DAY_OF_MONTH, eventLength);
+        if(eventLength > 0) 
+           eventEndDateCalInstance.add(Calendar.DAY_OF_MONTH, eventLength);
         node.setProperty(PROP_EVENT_END_DATE, eventEndDateCalInstance);
-
     }
 
     /**
