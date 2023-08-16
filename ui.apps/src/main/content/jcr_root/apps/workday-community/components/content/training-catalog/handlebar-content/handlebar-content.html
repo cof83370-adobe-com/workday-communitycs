@@ -1,7 +1,20 @@
 <!--/* Handlebar Content Component */-->
-<div class="cmp-handlebar-content" data-sly-use.rootpathInfo="com.workday.community.aem.core.models.RootPathModel">
-    <sly>${properties.htmlContent @ context = 'html'}
+<sly data-sly-test="${properties.embedModel}">
+    <sly data-sly-use.model="com.workday.community.aem.core.models.CourseDetailModel">
+        <div id="handle-bar-title" class="cmp-handlebar-content"
+            data-sly-use.rootpathInfo="com.workday.community.aem.core.models.RootPathModel"
+            data-model-property="${model.courseDetailData}">
+            <sly>${properties.htmlContent @ context = 'html'}
+            </sly>
+        </div>
     </sly>
-</div>
+</sly>
+<sly data-sly-test="${!properties.embedModel}">
+    <div class="cmp-handlebar-content" data-sly-use.rootpathInfo="com.workday.community.aem.core.models.RootPathModel">
+        <sly>${properties.htmlContent @ context = 'html'}
+        </sly>
+    </div>
+</sly>
 <sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
-    data-sly-call="${template.placeholder @ isEmpty = !properties.htmlContent, classAppend='cmp-handlebar-content'}"></sly>
+    data-sly-call="${template.placeholder @ isEmpty = !properties.htmlContent, classAppend='cmp-handlebar-content'}">
+</sly>
