@@ -43,6 +43,8 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   @ValueMapValue
   String[] feeds;
 
+  private JsonObject searchConfig;
+
   @Self
   private SlingHttpServletRequest request;
 
@@ -69,14 +71,10 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
 
   @Override
   public JsonObject getSearchConfig() {
-    JsonObject config = new JsonObject();
-    config.addProperty("orgId", this.searchConfigService.getOrgId());
-    config.addProperty("searchHub", this.searchConfigService.getSearchHub());
-    config.addProperty("analytics", true);
-    config.addProperty("clientId", CoveoUtils.getCurrentUserClientId(request, searchConfigService, snapService));
-    config.addProperty("userContext", CoveoUtils.getCurrentUserContext(request, snapService));
-
-    return config;
+    if (this.searchConfig == null) {
+      this.searchConfig = CoveoUtils.getSearchConfig(searchConfigService, request, snapService);
+    }
+    return this.searchConfig;
   }
 
 

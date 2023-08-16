@@ -4,6 +4,8 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+
 /**
  * The snap logic service configuration interface.
  */
@@ -46,7 +48,7 @@ public @interface SnapConfig {
   String navFallbackMenuData() default "/content/dam/workday-community/resources/local-header-data.json";
 
   @AttributeDefinition(name = "Fallback Menu Service user", description = "Fallback Menu service user.", type = AttributeType.STRING)
-  String navFallbackMenuServiceUser() default "readserviceuser";
+  String navFallbackMenuServiceUser() default READ_SERVICE_USER;
 
   @AttributeDefinition(name = "Profile Avatar Url endpoint", description = "Profile Avatar Url endpoint", type = AttributeType.STRING)
   String sfdcUserAvatarUrl();

@@ -28,7 +28,7 @@
     function populateOurmUserInputs() {
         const wrapper = $(this).parents(WRAPPER_CLASS);
         wrapper.find("input").first().val($(this).data('value'));
-        wrapper.siblings(FORM_FIELD_WRAPPER).find("input").first().val($(this).data('profile-image-data'));
+        wrapper.nextAll(FORM_FIELD_WRAPPER).find("input").first().val($(this).data('profile-image-data'));
         wrapper.nextAll(FORM_FIELD_WRAPPER).hide();
     };
 

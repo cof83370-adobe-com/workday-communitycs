@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
@@ -15,7 +17,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.OurmDrupalConfig;
 import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.services.OurmUserService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.OAuth1Util;
@@ -54,7 +55,6 @@ public class OurmUserServiceImpl implements OurmUserService {
         this.ourmDrupalConfig = config;
     }
 
-
     /**
      * Search ourm user list.
      *
@@ -73,7 +73,8 @@ public class OurmUserServiceImpl implements OurmUserService {
                 && StringUtils.isNotBlank(consumerSecret) && StringUtils.isNotBlank(searchPath)) {
             try {
 
-                String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath), searchText);
+                String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath),
+                        URLEncoder.encode(searchText, StandardCharsets.UTF_8));
                 String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());
                 LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
 
@@ -81,11 +82,12 @@ public class OurmUserServiceImpl implements OurmUserService {
                 String jsonResponse = RestApiUtil.doOURMGet(apiUrl, headerString);
                 return gson.fromJson(jsonResponse, JsonObject.class);
 
-            } catch (SnapException | InvalidKeyException | NoSuchAlgorithmException e) {
+            } catch (OurmException | InvalidKeyException | NoSuchAlgorithmException e) {
                 String errorMessage = e.getMessage();
                 LOGGER.error("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl %s", errorMessage);
                 throw new OurmException(
-                        String.format("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl : %s", errorMessage));
+                        String.format("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl : %s",
+                                errorMessage));
             }
         }
         return new JsonObject();

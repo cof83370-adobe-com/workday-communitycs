@@ -106,9 +106,11 @@ coverage/
 reports/
 
 # Others
-dispatcher/src/conf.d/variables/default.vars
 ui.tests/test-module/assets/form/themes/**/*diff.png
 ui.tests/test-module/assets/form/themes/**/*current.png
 
 # AEM repo tool config
 .repo
+
+# Docker AEM packages
+docker/*-crx-quickstart.tar.gz

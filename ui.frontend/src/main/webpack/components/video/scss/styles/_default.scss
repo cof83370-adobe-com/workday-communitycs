@@ -7,6 +7,7 @@
     color: $wdc-color-blueberry-400;
     cursor: pointer;
     display: block;
+    text-decoration: none;
 
     &:before {
         content: url('../resources/images/play.svg');

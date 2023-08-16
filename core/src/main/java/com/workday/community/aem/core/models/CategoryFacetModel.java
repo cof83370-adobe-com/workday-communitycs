@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+
 /**
  * The Class CategoryFacetModel.
  */
@@ -41,11 +43,6 @@ public class CategoryFacetModel {
      * Search config file path.
      */
     private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";
-
-    /**
-     * The user service user.
-     */
-    public static final String READ_SERVICE_USER = "readserviceuser";
 
     /**
      * Search config json object
