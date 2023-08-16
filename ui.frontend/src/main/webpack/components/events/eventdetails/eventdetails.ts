@@ -1,15 +1,15 @@
-(function () {
+(function() {
 
     function convertUTCToLocal(utcTimeString, targetTimezone) {
 
         const newDateObj = new Date(utcTimeString);
 
         const options: Intl.DateTimeFormatOptions = {
-            timeZone: targetTimezone,
-            hour12: true,
-            hour: '2-digit',
-            minute: '2-digit',
-            timeZoneName: 'short'
+          timeZone: targetTimezone,
+          hour12: true,
+          hour: '2-digit',
+          minute: '2-digit',
+          timeZoneName: 'short'
         };
 
         const initialDate = newDateObj.getUTCDate();
@@ -28,7 +28,7 @@
     function onDocumentReady() {
 
         const isEventsPage = document.getElementsByClassName('eventspage');
-        if (isEventsPage && isEventsPage.length > 0) {
+        if(isEventsPage) {
             const hiddenEventStartDate = document.getElementById('hiddenEventStartDate');
             const utcTimeString = hiddenEventStartDate.getAttribute('data-value');
             const hiddenUserTimeZone = document.getElementById('hiddenUserTimeZone');
