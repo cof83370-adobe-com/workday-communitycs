@@ -62,6 +62,11 @@
                             <target>/apps/workday-community-packages/application/install</target>
                         </embedded>
                         <embedded>
+                            <groupId>org.ehcache</groupId>
+                            <artifactId>ehcache</artifactId>
+                            <target>/apps/workday-community-packages/application/install</target>
+                        </embedded>
+                        <embedded>
                             <groupId>com.workday.community.aem</groupId>
                             <artifactId>workday-community.core</artifactId>
                             <target>/apps/workday-community-packages/application/install</target>

@@ -214,6 +214,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.apache.sling</groupId>
+            <artifactId>org.apache.sling.testing.clients</artifactId>
+            <version>3.0.16</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.adobe.cq</groupId>
             <artifactId>core.wcm.components.testing.aem-mock-plugin</artifactId>
             <scope>test</scope>
@@ -231,6 +237,11 @@
             <artifactId>org.apache.sling.models.impl</artifactId>
             <version>1.5.4</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+            <version>3.9.11</version>
         </dependency>
     </dependencies>
 </project>
