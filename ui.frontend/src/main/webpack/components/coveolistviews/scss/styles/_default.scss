@@ -776,11 +776,10 @@ atomic-refine-toggle::part(button) {
     &::part(select-parent) {
 	margin-top: -5px;
     }
-  }
-      
+  }      
 }
 
-@media (max-width: 720px) {  
+@media (max-width: 767px) {  
   atomic-refine-toggle::part(button) {
     margin-top: 42px;
 	width: 150px;
