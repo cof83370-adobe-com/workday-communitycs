@@ -2,6 +2,8 @@ package com.workday.community.aem.core.models.impl;
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -45,7 +47,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoRelatedInformationModelTest {
@@ -80,15 +81,22 @@ public class CoveoRelatedInformationModelTest {
     context.registerService(ResourceResolver.class, resourceResolver);
 
     lenient().when(resourceResolver.adaptTo(TagManager.class)).thenReturn(tagManager);
-
     Tag tag1Namespace = mock(Tag.class);
     lenient().when(tag1Namespace.getName()).thenReturn("product");
-
     Tag tag2Namespace = mock(Tag.class);
     lenient().when(tag2Namespace.getName()).thenReturn("using-workday");
     Tag tag1 = mock(Tag.class);
     Tag tag2 = mock(Tag.class);
 
+    ResourceResolver resolver = mock(ResourceResolver.class);
+    lenient().when(request.getResourceResolver()).thenReturn(resolver);
+    String pagePath = "/content/foo.html";
+    lenient().when(request.getPathInfo()).thenReturn(pagePath);
+    PageManager pageManager = mock(PageManager.class);
+    lenient().when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+    Page page = mock(Page.class);
+    lenient().when(pageManager.getPage(anyString())).thenReturn(page);
+    lenient().when(page.getTags()).thenReturn(new Tag[] {tag1, tag2});
     lenient().when(tag1.getNamespace()).thenReturn(tag1Namespace);
     lenient().when(tag2.getNamespace()).thenReturn(tag2Namespace);
     lenient().when(tagManager.resolve("product:")).thenReturn(tag1);
@@ -111,10 +119,11 @@ public class CoveoRelatedInformationModelTest {
   public void testGetFacetFields() throws DamException {
     CoveoRelatedInformationModel relInfoModel = context.currentResource("/component/relatedinformation").adaptTo(CoveoRelatedInformationModel.class);
     ((CoveoRelatedInformationModelImpl)relInfoModel).init(request);
+
     List<String> facetFields = relInfoModel.getFacetFields();
     assertEquals(2, facetFields.size());
-    assertEquals("coveo_using-workday", facetFields.get(0));
-    assertEquals("coveo_product", facetFields.get(1));
+    assertEquals("coveo_product", facetFields.get(0));
+    assertEquals("coveo_using-workday", facetFields.get(1));
   }
 
   @Test
