@@ -87,7 +87,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
       return;
     }
 
-    String logoutUrl = String.format("%s/login/signout", oktaDomain);
+    String logoutUrl = String.format("%s/bin/user/logout", oktaDomain);
 
     // 1: Drop cookies
     String[] deleteList = new String[] { LOGIN_COOKIE_NAME, COVEO_COOKIE_NAME };
