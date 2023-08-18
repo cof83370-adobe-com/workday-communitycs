@@ -17,7 +17,7 @@ public enum CacheBucketName {
 
   static {
     mapValueTypes.put(CacheBucketName.GENERIC, Object.class);
-    mapValueTypes.put(CacheBucketName.STRINGVALUE, Object.class);
+    mapValueTypes.put(CacheBucketName.STRINGVALUE, String.class);
   }
 
   final String label;

@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services.cache.impl;
 
+import com.adobe.xfa.ut.StringUtils;
 import com.workday.community.aem.core.config.EhCacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.cache.CacheBucketName;
@@ -12,7 +13,10 @@ import org.ehcache.Cache;
 import org.ehcache.CacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
+import org.ehcache.config.units.EntryUnit;
+import org.ehcache.config.units.MemoryUnit;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -23,9 +27,12 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.services.cache.CacheBucketName.mapValueTypes;
 
@@ -39,7 +46,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   private CacheManager cacheManager;
 
   private EhCacheConfig config;
-  final Map<CacheBucketName, Cache> caches = new HashMap<>();
+  final Map<String, Cache> caches = new HashMap<>();
 
   /** The resource resolver factory. */
   @Reference
@@ -50,8 +57,12 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   public void activate(EhCacheConfig config){
     this.config = config;
     if (cacheManager == null) {
-      cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build();
-      cacheManager.init();
+      CacheManagerBuilder<CacheManager> builder = CacheManagerBuilder.newCacheManagerBuilder();
+      String storagePath = config.storagePath();
+      if (!StringUtils.isEmpty(storagePath) && !storagePath.equals(CLOUD_CONFIG_NULL_VALUE)) {
+        builder.with(CacheManagerBuilder.persistence(new File(storagePath, "myData")));
+      }
+      this.cacheManager = builder.build(true);
     }
   }
 
@@ -143,15 +154,26 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   // ================== Private methods ===============//
   private <V> Cache<String, V> getCache(CacheBucketName innerCacheName, String key) throws CacheException  {
     try {
-      Cache<String, V> cache = caches.get(innerCacheName);
+      Cache<String, V> cache = caches.get(innerCacheName.name());
       if (cache != null) return cache;
       if (key == null) return null;
 
+      ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
+          .heap(this.config.heapSize(), EntryUnit.ENTRIES)
+          .offheap(this.config.offHeapSize(), MemoryUnit.MB);
+
+      String storagePath = config.storagePath();
+      if (!StringUtils.isEmpty(storagePath) &&
+          !storagePath.equals(CLOUD_CONFIG_NULL_VALUE) && this.config.diskSize() > 0) {
+        poolsBuilder.disk(this.config.diskSize(), MemoryUnit.MB, true);
+      }
+
       CacheConfigurationBuilder builder =
-          CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class,
-              mapValueTypes.get(innerCacheName), ResourcePoolsBuilder.heap(this.config.heapSize()));
+          CacheConfigurationBuilder.newCacheConfigurationBuilder(
+              String.class, mapValueTypes.get(innerCacheName), poolsBuilder
+              ).withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(config.duration())));
       cache = cacheManager.createCache(innerCacheName.name(), builder);
-      caches.put(innerCacheName, cache);
+      caches.put(innerCacheName.name(), cache);
       return cache;
     } catch (IllegalArgumentException e) {
       throw new CacheException("Can't create or retrieve cache from the cache store");

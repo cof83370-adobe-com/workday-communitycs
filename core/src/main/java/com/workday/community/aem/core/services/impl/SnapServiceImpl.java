@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.workday.community.aem.core.annotation.EnableCache;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
@@ -97,7 +96,6 @@ public class SnapServiceImpl implements SnapService {
   }
 
   @Override
-  @EnableCache(cacheBucketName = "STRING_VALUE", cacheKey="userMenu-${sfId}")
   public String getUserHeaderMenu(String sfId) {
     String menuCacheKey =  String.format("menu-%s", sfId);
     String cacheResult = ehCacheMgr.get(CacheBucketName.STRINGVALUE.name(),menuCacheKey);
