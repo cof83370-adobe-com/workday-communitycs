@@ -80,15 +80,14 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     response.setCharacterEncoding(utfName);
 
     String oktaDomain = oktaService.getCustomDomain();
-    String redirectUri = oktaService.getRedirectUri();
     boolean isOktaEnabled = oktaService.isOktaIntegrationEnabled();
 
-    if (isOktaEnabled && (StringUtils.isEmpty(oktaDomain) || StringUtils.isEmpty(redirectUri))) {
+    if (isOktaEnabled && StringUtils.isEmpty(oktaDomain)) {
       logger.error("Okta domain and logout redirect Url are not configured, please contact admin.");
       return;
     }
 
-    String logoutUrl = String.format("%s/login/signout?fromURI=%s", oktaDomain, redirectUri);
+    String logoutUrl = String.format("%s/login/signout", oktaDomain);
 
     // 1: Drop cookies
     String[] deleteList = new String[] { LOGIN_COOKIE_NAME, COVEO_COOKIE_NAME };
