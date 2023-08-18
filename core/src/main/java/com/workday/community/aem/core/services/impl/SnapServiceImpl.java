@@ -6,22 +6,23 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.workday.community.aem.core.annotation.EnableCache;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.SnapConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.cache.CacheBucketName;
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.DamUtils;
-import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.RestApiUtil;
-import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
@@ -58,15 +59,14 @@ public class SnapServiceImpl implements SnapService {
   /** The logger. */
   private static final Logger logger = LoggerFactory.getLogger(SnapServiceImpl.class);
 
-  private JsonObject defaultMenu;
-
-  private LRUCacheWithTimeout<String, String> snapCache;
-
   /**
    * The Run-mode configuration service.
    */
   @Reference
   RunModeConfigService runModeConfigService;
+
+  @Reference
+  EhCacheManager ehCacheMgr;
 
   /** The resource resolver factory. */
   @Reference
@@ -83,7 +83,6 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public void activate(SnapConfig config) {
     this.config = config;
-    this.snapCache = new LRUCacheWithTimeout<>(config.menuCacheMax(), config.menuCacheTimeout());
     logger.info("SnapService is activated.");
   }
 
@@ -98,12 +97,11 @@ public class SnapServiceImpl implements SnapService {
   }
 
   @Override
+  @EnableCache(cacheBucketName = "STRING_VALUE", cacheKey="userMenu-${sfId}")
   public String getUserHeaderMenu(String sfId) {
-    String cacheKey = String.format("menu_%s", sfId);
-    String cachedResult = snapCache.get(cacheKey);
-    if (cachedResult != null) {
-      return cachedResult;
-    }
+    String menuCacheKey =  String.format("menu-%s", sfId);
+    String cacheResult = ehCacheMgr.get(CacheBucketName.STRINGVALUE.name(),menuCacheKey);
+    if (!StringUtils.isEmpty(cacheResult)) return cacheResult;
 
     String snapUrl = config.snapUrl(), navApi = config.navApi(),
         apiToken = config.navApiToken(), apiKey = config.navApiKey();
@@ -145,11 +143,10 @@ public class SnapServiceImpl implements SnapService {
 
       // Update the user profile data from contactInformation field to userInfo field.
       updateProfileInfoWithNameAndAvatar(sfMenu, sfId);
-
       // Need to make merge sfMenu with local cache with beta experience.
       if (config.beta()) {
         String finalMenu = this.getMergedHeaderMenu(sfMenu, defaultMenu);
-        snapCache.put(cacheKey, finalMenu);
+        ehCacheMgr.put(CacheBucketName.STRINGVALUE.name(), menuCacheKey, finalMenu);
         return finalMenu;
       }
 
@@ -159,11 +156,16 @@ public class SnapServiceImpl implements SnapService {
     } catch (SnapException | JsonSyntaxException | JsonProcessingException e) {
       logger.error("Error in getNavUserData method call :: {}", e.getMessage());
     }
+
     return gson.toJson(this.getDefaultHeaderMenu());
   }
 
   @Override
   public JsonObject getUserContext(String sfId) {
+    String key = String.format("profile-%s", sfId);
+    JsonObject cacheResult = ehCacheMgr.get(CacheBucketName.GENERIC.name(), key);
+    if (cacheResult != null) return cacheResult;
+
     try {
       logger.debug("SnapImpl: Calling SNAP getUserContext()...");
       String url = CommunityUtils.formUrl(config.snapUrl(), config.snapContextPath());
@@ -173,7 +175,9 @@ public class SnapServiceImpl implements SnapService {
 
       url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
-      return gson.fromJson(jsonResponse, JsonObject.class);
+      JsonObject res = gson.fromJson(jsonResponse, JsonObject.class);
+      ehCacheMgr.put(CacheBucketName.GENERIC.name(), key, res);
+      return res;
     } catch (SnapException | JsonSyntaxException e) {
       logger.error("Error in getUserContext method :: {}", e.getMessage());
     }
@@ -184,8 +188,11 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public ProfilePhoto getProfilePhoto(String userId) {
-    String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
+    String key = String.format("photo-%s", userId);
+    ProfilePhoto cacheResult = ehCacheMgr.get(CacheBucketName.GENERIC.name(), key);
+    if (cacheResult != null) return cacheResult;
 
+    String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
     String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
     url = String.format(url, userId);
 
@@ -194,7 +201,9 @@ public class SnapServiceImpl implements SnapService {
       String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
       if (jsonResponse != null) {
         ObjectMapper objectMapper = new ObjectMapper();
-        return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
+        ProfilePhoto profilePhoto = objectMapper.readValue(jsonResponse, ProfilePhoto.class);
+        ehCacheMgr.put(CacheBucketName.GENERIC.name(), key, profilePhoto);
+        return profilePhoto;
       }
     } catch (SnapException | JsonProcessingException e) {
       logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
@@ -208,12 +217,15 @@ public class SnapServiceImpl implements SnapService {
    * @return The menu.
    */
   private JsonObject getDefaultHeaderMenu() {
-    try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resResolverFactory,
-        config.navFallbackMenuServiceUser())) {
+    JsonObject defaultMenu = ehCacheMgr.get(CacheBucketName.GENERIC.name(), "default-menu");
+    if (defaultMenu != null) return defaultMenu;
+    try {
+      ResourceResolver resourceResolver = this.ehCacheMgr.getServiceResolver();
       // Reading the JSON File from DAM.
       defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
+      ehCacheMgr.put(CacheBucketName.GENERIC.name(), "default-menu", defaultMenu);
       return defaultMenu;
-    } catch (RuntimeException | LoginException | DamException e) {
+    } catch (CacheException | DamException e) {
       logger.error(String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s", e.getMessage()));
       return new JsonObject();
     }
@@ -237,17 +249,17 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getUserProfile(String sfId) {
-    String cacheKey = String.format("profile_%s", sfId);
-    String cachedResult = snapCache.get(cacheKey);
-    if (cachedResult != null) {
-      return cachedResult;
-    }
+    String key = String.format("profile-%s", sfId);
+    String cacheResult = ehCacheMgr.get(CacheBucketName.STRINGVALUE.name(), key);
+    if (cacheResult != null) return cacheResult;
+
     try {
       String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
       if (StringUtils.isNotBlank(url)) {
         url = String.format(url, sfId);
         String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
-        snapCache.put(cacheKey, jsonResponse);
+        ehCacheMgr.put(CacheBucketName.STRINGVALUE.name(), "default-menu", jsonResponse);
+
         return jsonResponse;
       }
     } catch (SnapException | JsonSyntaxException e) {
@@ -261,21 +273,21 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
-    String cacheKey = String.format("adobeAnalytics_%s", sfId);
-    String cachedResult = snapCache.get(cacheKey);
-    JsonObject digitalData;
-    if (cachedResult != null) {
-      digitalData = gson.fromJson(cachedResult, JsonObject.class);
-    } else {
-      String profileData = getUserProfile(sfId);
-      digitalData = generateAdobeDigitalData(profileData);
-      snapCache.put(cacheKey, gson.toJson(digitalData));
-    }
+    String key = String.format("%s.%s.%s", sfId, pageTitle, contentType);
+    String cacheResult = ehCacheMgr.get(CacheBucketName.STRINGVALUE.name(), key);
+    if (cacheResult != null) return cacheResult;
+
+    String profileData = getUserProfile(sfId);
+    JsonObject digitalData = generateAdobeDigitalData(profileData);
+
     JsonObject pageProperties = new JsonObject();
     pageProperties.addProperty(CONTENT_TYPE, contentType);
     pageProperties.addProperty(PAGE_NAME, pageTitle);
+
     digitalData.add("page", pageProperties);
-    return String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
+    String res = String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
+    ehCacheMgr.put(CacheBucketName.STRINGVALUE.name(), key, res);
+    return res;
   }
 
   /**
@@ -380,7 +392,15 @@ public class SnapServiceImpl implements SnapService {
    * @return image data as string
    */
   private String getUserAvatar(String sfId) {
-    ProfilePhoto content = getProfilePhoto(sfId);
+    String key = String.format("avatar_%s", sfId);
+    ProfilePhoto content = ehCacheMgr.get(CacheBucketName.GENERIC.name(), key);
+    if (content == null) {
+      content = getProfilePhoto(sfId);
+      if (content != null) {
+        ehCacheMgr.put(CacheBucketName.GENERIC.name(), key, content);
+      }
+    }
+
     String encodedPhoto = "";
     String extension = "";
     if (content != null) {

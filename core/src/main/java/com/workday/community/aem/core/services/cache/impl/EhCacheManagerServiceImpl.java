@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
@@ -37,7 +36,7 @@ import static com.workday.community.aem.core.services.cache.CacheBucketName.mapV
 @Designate(ocd = EhCacheConfig.class)
 public class EhCacheManagerServiceImpl implements EhCacheManager {
   private final static Logger LOGGER = LoggerFactory.getLogger(EhCacheManagerServiceImpl.class);
-  private static CacheManager cacheManager;
+  private CacheManager cacheManager;
 
   private EhCacheConfig config;
   final Map<CacheBucketName, Cache> caches = new HashMap<>();
@@ -61,8 +60,9 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     try {
       CacheBucketName innerName = getInnerCacheName(cacheName);
       Cache<String, V> cache = getCache(innerName, key);
-      return cache.get(key);
-
+      if (cache != null) {
+        return cache.get(key);
+      }
     } catch (CacheException e) {
       LOGGER.error(String.format(
           "Can't get value from cache for cache key: %s in cache name: %s, error: %s",
@@ -78,7 +78,9 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     try {
       CacheBucketName innerName = getInnerCacheName(cacheName);
       Cache<String, V> cache = getCache(innerName, key);
-      cache.put(key, value);
+      if (cache != null) {
+        cache.put(key, value);
+      }
     } catch (CacheException e) {
       LOGGER.error(String.format(
           "Can't put value into cache for cache key: %s with value: %s in cache name: %s, error: %s",
@@ -90,7 +92,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   @Override
   public ResourceResolver getServiceResolver() throws CacheException {
     String serviceCacheKey = "service-resolver";
-    Cache<String, ResourceResolver> cache = getCache(CacheBucketName.RESOLVER, serviceCacheKey);
+    Cache<String, ResourceResolver> cache = getCache(CacheBucketName.GENERIC, serviceCacheKey);
     ResourceResolver resolver = cache.get(serviceCacheKey);
     if (resolver == null) {
       try {
@@ -109,10 +111,11 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     if (cacheName == null) {
       // clear all
       if (caches.isEmpty()) return;
-      Iterator iterator = caches.keySet().iterator();
-      while(iterator != null && iterator.hasNext()) {
-        Cache<String, V> cache = (Cache<String, V>)iterator.next();
+      for (Object cacheKey : caches.keySet()) {
+        String name = (String)cacheKey;
+        Cache<String, V> cache = (Cache<String, V>) caches.get(name);
         cache.clear();
+        this.cacheManager.removeCache(name);
       }
 
       caches.clear();
@@ -123,17 +126,17 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     Cache<String, V> cache = getCache(innerName, key);
     if (cache != null) {
       cache.clear();
-      caches.remove(getInnerCacheName(cacheName));
+      this.cacheManager.removeCache(cacheName);
     }
   }
 
   @Override
-  public <V> void clearCacheBucket(String cacheName) throws CacheException {
+  public void clearCacheBucket(String cacheName) throws CacheException {
     clearCacheBucket(cacheName, null);
   }
 
   @Override
-  public <V> void clearCacheBucket() throws CacheException {
+  public void clearCacheBucket() throws CacheException {
     clearCacheBucket(null, null);
   }
 
@@ -149,7 +152,6 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
               mapValueTypes.get(innerCacheName), ResourcePoolsBuilder.heap(this.config.heapSize()));
       cache = cacheManager.createCache(innerCacheName.name(), builder);
       caches.put(innerCacheName, cache);
-
       return cache;
     } catch (IllegalArgumentException e) {
       throw new CacheException("Can't create or retrieve cache from the cache store");
@@ -160,14 +162,12 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     CacheBucketName innerCacheName;
     try {
       innerCacheName = CacheBucketName.valueOf(cacheName);
-
     } catch (NullPointerException | IllegalArgumentException e) {
       innerCacheName = CacheBucketName.GENERIC;
     }
 
     return innerCacheName;
   }
-
 
   @Deactivate
   private void deactivate() {

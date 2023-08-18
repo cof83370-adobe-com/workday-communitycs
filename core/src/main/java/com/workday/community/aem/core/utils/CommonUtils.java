@@ -160,7 +160,7 @@ public class CommonUtils {
             if (key.equals("href")) {
               String valString = valTarget.getAsString();
               if (valString.contains("beta-content.workday.com")) {
-                if (!env.equalsIgnoreCase("prod")) {
+                if (env != null && !env.equalsIgnoreCase("prod")) {
                   valString = valString.replace("beta-content.workday.com", env + "-content.workday.com");
                 }
                 valTarget = new JsonPrimitive(valString);

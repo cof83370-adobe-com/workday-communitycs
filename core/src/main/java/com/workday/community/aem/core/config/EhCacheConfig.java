@@ -18,5 +18,6 @@ public @interface EhCacheConfig {
       description = "Cache pool heap size",
       type = AttributeType.INTEGER
   )
-  int heapSize();
+  int heapSize() default 10;
+
 }
