@@ -9,7 +9,9 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.ehcache.Cache;
+import org.ehcache.CacheManager;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
+import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -35,6 +37,8 @@ import static com.workday.community.aem.core.services.cache.CacheBucketName.mapV
 @Designate(ocd = EhCacheConfig.class)
 public class EhCacheManagerServiceImpl implements EhCacheManager {
   private final static Logger LOGGER = LoggerFactory.getLogger(EhCacheManagerServiceImpl.class);
+  private static CacheManager cacheManager;
+
   private EhCacheConfig config;
   final Map<CacheBucketName, Cache> caches = new HashMap<>();
 
@@ -46,85 +50,94 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   @Modified
   public void activate(EhCacheConfig config){
     this.config = config;
+    if (cacheManager == null) {
+      cacheManager = CacheManagerBuilder.newCacheManagerBuilder().build();
+      cacheManager.init();
+    }
+  }
+
+  @Override
+  public <V> V get(String cacheName, String key) {
+    try {
+      CacheBucketName innerName = getInnerCacheName(cacheName);
+      Cache<String, V> cache = getCache(innerName, key);
+      return cache.get(key);
+
+    } catch (CacheException e) {
+      LOGGER.error(String.format(
+          "Can't get value from cache for cache key: %s in cache name: %s, error: %s",
+          key, cacheName, e.getMessage()
+      ));
+    }
+
+    return null;
+  }
+
+  @Override
+  public <V> void put(String cacheName, String key, V value) {
+    try {
+      CacheBucketName innerName = getInnerCacheName(cacheName);
+      Cache<String, V> cache = getCache(innerName, key);
+      cache.put(key, value);
+    } catch (CacheException e) {
+      LOGGER.error(String.format(
+          "Can't put value into cache for cache key: %s with value: %s in cache name: %s, error: %s",
+          key, value, cacheName, e.getMessage()
+      ));
+    }
   }
 
   @Override
   public ResourceResolver getServiceResolver() throws CacheException {
-    return null;
-//    String serviceCacheKey = "service-resolver";
-//    Cache<String, ResourceResolver> cache = getCache(CacheBucketName.RESOLVER, serviceCacheKey);
-//    ResourceResolver resolver = cache.get(serviceCacheKey);
-//    if (resolver == null) {
-//      try {
-//        resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
-//      } catch (LoginException e) {
-//        throw new CacheException("Failed to create Resolver in EhCacheManagerImpl");
-//      }
-//      cache.put(serviceCacheKey, resolver);
-//    }
-//
-//    return resolver;
+    String serviceCacheKey = "service-resolver";
+    Cache<String, ResourceResolver> cache = getCache(CacheBucketName.RESOLVER, serviceCacheKey);
+    ResourceResolver resolver = cache.get(serviceCacheKey);
+    if (resolver == null) {
+      try {
+        resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
+      } catch (LoginException e) {
+        throw new CacheException("Failed to create Resolver in EhCacheManagerImpl");
+      }
+      cache.put(serviceCacheKey, resolver);
+    }
+
+    return resolver;
+  }
+
+  @Override
+  public <V> void clearCacheBucket(String cacheName, String key) throws CacheException {
+    if (cacheName == null) {
+      // clear all
+      if (caches.isEmpty()) return;
+      Iterator iterator = caches.keySet().iterator();
+      while(iterator != null && iterator.hasNext()) {
+        Cache<String, V> cache = (Cache<String, V>)iterator.next();
+        cache.clear();
+      }
+
+      caches.clear();
+      return;
+    }
+
+    CacheBucketName innerName = getInnerCacheName(cacheName);
+    Cache<String, V> cache = getCache(innerName, key);
+    if (cache != null) {
+      cache.clear();
+      caches.remove(getInnerCacheName(cacheName));
+    }
+  }
+
+  @Override
+  public <V> void clearCacheBucket(String cacheName) throws CacheException {
+    clearCacheBucket(cacheName, null);
+  }
+
+  @Override
+  public <V> void clearCacheBucket() throws CacheException {
+    clearCacheBucket(null, null);
   }
 
   // ================== Private methods ===============//
-//
-//  private <V> V get(String cacheName, String key) {
-//    try {
-//      CacheBucketName innerName = getInnerCacheName(cacheName);
-//      Cache<String, V> cache = getCache(innerName, key);
-//      return cache.get(key);
-//
-//    } catch (CacheException e) {
-//      LOGGER.error(String.format(
-//          "Can't get value from cache for cache key: %s in cache name: %s, error: %s",
-//          key, cacheName, e.getMessage()
-//      ));
-//    }
-//
-//    return null;
-//  }
-//  private <V> void put(String cacheName, String key, V value) {
-//    try {
-//      CacheBucketName innerName = getInnerCacheName(cacheName);
-//      Cache<String, V> cache = getCache(innerName, key);
-//      cache.put(key, value);
-//    } catch (CacheException e) {
-//      LOGGER.error(String.format(
-//          "Can't put value into cache for cache key: %s with value: %s in cache name: %s, error: %s",
-//          key, value, cacheName, e.getMessage()
-//      ));
-//    }
-//  }
-//  private <V> void clearCacheBucket(String cacheName, String key) throws CacheException {
-//    if (cacheName == null) {
-//      // clear all
-//      if (caches.isEmpty()) return;
-//      Iterator iterator = caches.keySet().iterator();
-//      while(iterator != null && iterator.hasNext()) {
-//        Cache<String, V> cache = (Cache<String, V>)iterator.next();
-//        cache.clear();
-//      }
-//
-//      caches.clear();
-//      return;
-//    }
-//
-//    CacheBucketName innerName = getInnerCacheName(cacheName);
-//    Cache<String, V> cache = getCache(innerName, key);
-//    if (cache != null) {
-//      cache.clear();
-//      caches.remove(getInnerCacheName(cacheName));
-//    }
-//  }
-//
-//  private <V> void clearCacheBucket(String cacheName) throws CacheException {
-//    clearCacheBucket(cacheName, null);
-//  }
-//
-//  private <V> void clearCacheBucket() throws CacheException {
-//    clearCacheBucket(null, null);
-//  }
-//
   private <V> Cache<String, V> getCache(CacheBucketName innerCacheName, String key) throws CacheException  {
     try {
       Cache<String, V> cache = caches.get(innerCacheName);
@@ -134,7 +147,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
       CacheConfigurationBuilder builder =
           CacheConfigurationBuilder.newCacheConfigurationBuilder(String.class,
               mapValueTypes.get(innerCacheName), ResourcePoolsBuilder.heap(this.config.heapSize()));
-      cache = CacheHelper.getCacheManager().createCache(innerCacheName.name(), builder);
+      cache = cacheManager.createCache(innerCacheName.name(), builder);
       caches.put(innerCacheName, cache);
 
       return cache;
@@ -142,24 +155,24 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
       throw new CacheException("Can't create or retrieve cache from the cache store");
     }
   }
-//
-//  private CacheBucketName getInnerCacheName(String cacheName) {
-//    CacheBucketName innerCacheName;
-//    try {
-//      innerCacheName = CacheBucketName.valueOf(cacheName);
-//
-//    } catch (NullPointerException | IllegalArgumentException e) {
-//      innerCacheName = CacheBucketName.GENERIC;
-//    }
-//
-//    return innerCacheName;
-//  }
+
+  private CacheBucketName getInnerCacheName(String cacheName) {
+    CacheBucketName innerCacheName;
+    try {
+      innerCacheName = CacheBucketName.valueOf(cacheName);
+
+    } catch (NullPointerException | IllegalArgumentException e) {
+      innerCacheName = CacheBucketName.GENERIC;
+    }
+
+    return innerCacheName;
+  }
 
 
   @Deactivate
   private void deactivate() {
-//    if (cacheManager != null) {
-//      cacheManager.close();
-//    }
+    if (cacheManager != null) {
+      cacheManager.close();
+    }
   }
 }
