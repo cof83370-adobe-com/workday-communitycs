@@ -129,7 +129,7 @@ public class RestApiUtil {
     // Build the request.
     HttpRequest request = builder.GET().build();
 
-    HttpResponse<String> response = null;
+    HttpResponse<String> response;
     try {
       // Send the HttpGet request using the configured HttpClient.
       response = httpclient.send(request, BodyHandlers.ofString());

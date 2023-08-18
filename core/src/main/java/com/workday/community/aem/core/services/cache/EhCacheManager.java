@@ -41,7 +41,6 @@ public interface EhCacheManager {
   /**
    * Clear all caches in a cache bucket.
    * @param cacheName The cache bucket name.
-   * @param <K> The type of the key.
    * @param <V> The type of returned value.
    * @throws CacheException
    */
@@ -49,10 +48,9 @@ public interface EhCacheManager {
 
   /**
    *
-   * @param <K>  The Cache key type
    * @throws CacheException
    */
-  <V> void clearCacheBucket() throws CacheException;
+  void clearCacheBucket() throws CacheException;
 
   /**
    * Get a service Resource resolver from Cache.
