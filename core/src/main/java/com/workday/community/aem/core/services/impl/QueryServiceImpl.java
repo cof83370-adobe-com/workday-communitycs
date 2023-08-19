@@ -1,8 +1,9 @@
 package com.workday.community.aem.core.services.impl;
 
 import com.day.cq.search.result.Hit;
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.LoginException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +23,6 @@ import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.SearchResult;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.QueryService;
-import com.workday.community.aem.core.utils.ResolverUtil;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -45,6 +45,9 @@ public class QueryServiceImpl implements QueryService {
     @Reference
     QueryBuilder queryBuilder;
 
+    @Reference
+    EhCacheManager ehCacheManager;
+
     /** The resource resolver factory. */
     @Reference
     ResourceResolverFactory resourceResolverFactory;
@@ -53,7 +56,7 @@ public class QueryServiceImpl implements QueryService {
     public long getNumOfTotalPublishedPages() {
         long totalResults = 0;
         Session session = null;
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(READ_SERVICE_USER)) {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
             queryMap.put("type", NT_PAGE);
@@ -64,7 +67,7 @@ public class QueryServiceImpl implements QueryService {
             Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
             SearchResult result = query.getResult();
             totalResults = result.getTotalMatches();
-        } catch (LoginException e) {
+        } catch (CacheException e) {
             logger.error("Exception occurred when running query to get total number of pages {} ", e.getMessage());
         } finally {
             if (session != null) {
@@ -78,7 +81,7 @@ public class QueryServiceImpl implements QueryService {
     public List<String> getPagesByTemplates(String[] templates) {
         Session session = null;
         List<String> paths = new ArrayList<>();
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(READ_SERVICE_USER)) {
             session = resourceResolver.adaptTo(Session.class);
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
@@ -97,7 +100,7 @@ public class QueryServiceImpl implements QueryService {
                 String path = hit.getPath();
                 paths.add(path);
             }
-        } catch (LoginException | RepositoryException e) {
+        } catch (CacheException | RepositoryException e) {
             logger.error("Exception occurred when running query to get pages {} ", e.getMessage());
         } finally {
             if (session != null) {
@@ -111,7 +114,7 @@ public class QueryServiceImpl implements QueryService {
     public List<String> getInactiveUsers() {
         Session session = null;
         List<String> users = new ArrayList<>();
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(READ_SERVICE_USER)) {
             session = resourceResolver.adaptTo(Session.class);
 
             // Get all users.
@@ -139,11 +142,9 @@ public class QueryServiceImpl implements QueryService {
                 String path = hit.getPath();
                 path = path.substring(0, path.indexOf("/.tokens"));
                 // Remove active users.
-                if (users.contains(path)) {
-                    users.remove(path);
-                }
+                users.remove(path);
             }
-        } catch (LoginException | RepositoryException e) {
+        } catch (CacheException | RepositoryException e) {
             logger.error("Exception occurred when running query to get inactive users {} ", e.getMessage());
         } finally {
             if (session != null) {
@@ -165,7 +166,7 @@ public class QueryServiceImpl implements QueryService {
     public List<String> getBookNodesByPath(String bookPagePath, String currentPath) {
         Session session = null;
         List<String> paths = new ArrayList<>();
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(READ_SERVICE_USER)) {
             session = resourceResolver.adaptTo(Session.class);
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_BOOK_ROOT_PATH);
@@ -180,7 +181,7 @@ public class QueryServiceImpl implements QueryService {
                 }
                 paths.add(path);
             }
-        } catch (LoginException | RepositoryException e) {
+        } catch (CacheException | RepositoryException e) {
             logger.error("Exception occurred when running query to get book pages {} ", e.getMessage());
         } finally {
             if (session != null) {

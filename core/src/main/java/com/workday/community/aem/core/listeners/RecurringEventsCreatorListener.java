@@ -5,14 +5,16 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
@@ -27,7 +29,8 @@ import com.day.cq.wcm.api.PageManager;
 import com.day.cq.wcm.api.WCMException;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.enums.EventPeriodEnum;
-import com.workday.community.aem.core.utils.ResolverUtil;
+
+import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 
 /**
  * The listener interface for receiving recurringEventsCreator events.
@@ -38,7 +41,6 @@ import com.workday.community.aem.core.utils.ResolverUtil;
  * the recurringEventsCreator event occurs, that object's appropriate
  * method is invoked.
  *
- * @see RecurringEventsCreatorEvent
  */
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
         ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
@@ -120,9 +122,9 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     /** The Constant PROP_EVENT_FREQUENCY. */
     static final String PROP_EVENT_FREQUENCY = "eventFrequency";
 
-    /** The resource resolver factory. */
+    /** The cache manager */
     @Reference
-    private ResourceResolverFactory resourceResolverFactory;
+    EhCacheManager ehCacheManager;
 
     /**
      * On change.
@@ -146,14 +148,13 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     public void generateRecurringEventPages(String eventPagePath) {
         logger.info("Entered into generateRecurringEventPages method of RecurringEventsCreatorListener:{}",
                 eventPagePath);
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory,
-                "workday-community-administrative-service")) {
-            Node eventNode = resourceResolver.getResource(eventPagePath).adaptTo(Node.class);
+        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+            Node eventNode = Objects.requireNonNull(resourceResolver.getResource(eventPagePath)).adaptTo(Node.class);
             if (eventNode != null && eventNode.hasProperty(PROP_RECURRING_EVENTS)
                     && eventNode.getProperty(PROP_RECURRING_EVENTS).getString()
                             .equalsIgnoreCase("true")) {
                 String title = eventNode.getProperty("jcr:title").getString();
-                ValueMap map = resourceResolver.getResource(eventPagePath).adaptTo(ValueMap.class);
+                ValueMap map = Objects.requireNonNull(resourceResolver.getResource(eventPagePath)).adaptTo(ValueMap.class);
                 String eventFrequency = eventNode.getProperty(PROP_EVENT_FREQUENCY).getString();
                 logger.debug("Creation of recurring events selected and frequency:{}", eventPagePath);
                 Calendar startDate = eventNode.getProperty(PROP_EVENT_START_DATE).getDate();
@@ -168,7 +169,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
                             map);
                 }
             }
-        } catch (Exception exec) {
+        } catch (CacheException | RepositoryException exec) {
             logger.error("Exception occurred when generateRecurringEventPages method {} ", exec.getMessage());
         }
     }
@@ -193,11 +194,11 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
                 eventsRootPath = eventsRootPath.substring(0, lastIndex);
                 logger.debug("Pages to be created under:{}", eventsRootPath);
             }
-            String fullPageName = "";
+            String fullPageName;
             for (LocalDate date : eventDatesList) {
                 fullPageName = String.format("%s-%s", pageName, date.toString());
                 logger.debug("Page to be created in this iteration:{}", fullPageName);
-                Page newPage = pm.create(eventsRootPath, fullPageName, EVENT_TEMPLATE_PATH, title, true);
+                Page newPage = Objects.requireNonNull(pm).create(eventsRootPath, fullPageName, EVENT_TEMPLATE_PATH, title, true);
                 addRequiredPageProps(resourceResolver, newPage, map);
             }
         } catch (WCMException exec) {
@@ -243,7 +244,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
             Node node = resourceResolver.resolve(newPage.getPath() + GlobalConstants.JCR_CONTENT_PATH)
                     .adaptTo(Node.class);
             addAllTagsAndMetaData(node, valueMap);
-            node.getSession().save();
+            Objects.requireNonNull(node).getSession().save();
         } catch (RepositoryException exec) {
             logger.error("Exception occurred in addRequiredPageProps method {} ", exec.getMessage());
         }
@@ -261,27 +262,27 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
         // All Tag type Props
         String[] tags = new String[] { ACCESS_CONTROL_TAGS, EVENT_FORMAT, EVENT_AUDIENCE, RELEASE_TAGS, PRODUCT_TAGS,
                 USING_WORKDAY_TAGS, INDUSTRY_TAGS, PROGRAMS_TOOLS_TAGS, USER_TAGS, REGION_COUNTRY_TAGS, PROP_CONTENT_TYPE };
-        for (int i = 0; i < tags.length; i++) {
-            String[] tagValue = valueMap.get(tags[i], String[].class);
+        for (String tag : tags) {
+            String[] tagValue = valueMap.get(tag, String[].class);
             if (doNullCheckForStringArray(tagValue))
-                node.setProperty(tags[i], tagValue);
+                node.setProperty(tag, tagValue);
         }
 
         // All String type Props
         String[] props = new String[] { PROP_AUTHOR,  PROP_ALTERNATE_TIMEZONE, PROP_EVENT_HOST, PROP_EVENT_LOCATION };
-         for (int i = 0; i < props.length; i++) {
-            String propVal = valueMap.get(props[i], String.class);
-             if (StringUtils.isNotBlank(propVal))
-                node.setProperty(props[i], propVal);
-         }
+        for (String prop : props) {
+            String propVal = valueMap.get(prop, String.class);
+            if (StringUtils.isNotBlank(propVal))
+                node.setProperty(prop, propVal);
+        }
 
          // All Date type Props
          String[] dateTypeProps = new String[] { PROP_EVENT_END_DATE,  PROP_EVENT_START_DATE, PROP_RETIREMENT_DATE, PROP_UPDATED_DATE };
-         for (int i = 0; i < dateTypeProps.length; i++) {
-            Calendar calendarPropVal = valueMap.get(dateTypeProps[i], Calendar.class);
+        for (String dateTypeProp : dateTypeProps) {
+            Calendar calendarPropVal = valueMap.get(dateTypeProp, Calendar.class);
             if (null != calendarPropVal)
-                 node.setProperty(dateTypeProps[i], calendarPropVal);
-         }
+                node.setProperty(dateTypeProp, calendarPropVal);
+        }
     }
 
     /**

@@ -6,7 +6,6 @@ import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOU
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -30,6 +29,7 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.common.collect.ImmutableMap;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -60,6 +60,9 @@ public class ExtractPagePropertiesServiceImplTest {
 
     @Mock
     RunModeConfigService runModeConfigService;
+
+    @Mock
+    EhCacheManager ehCacheManager;
 
     /** The service ExtractPagePropertiesServiceImpl. */
     @InjectMocks
@@ -147,7 +150,7 @@ public class ExtractPagePropertiesServiceImplTest {
     @Test
     public void testPorcessStringFields() {
         ValueMap data = mock(ValueMap.class);
-        HashMap<String, Object> properties = new HashMap<String, Object>();
+        HashMap<String, Object> properties = new HashMap<>();
         doReturn("Page title").when(data).get("jcr:title", String.class);
         doReturn(null).when(data).get("pageTitle", String.class);
         extract.processStringFields(data, properties);
@@ -196,7 +199,7 @@ public class ExtractPagePropertiesServiceImplTest {
     public void testExtractPageProperties() {
         ResourceResolver resourceResolver = mock(ResourceResolver.class);
         try (MockedStatic<ResolverUtil> mock = mockStatic(ResolverUtil.class)) {
-            mock.when(() -> ResolverUtil.newResolver(any(), anyString())).thenReturn(resourceResolver);
+            mock.when(() -> ehCacheManager.getServiceResolver(anyString())).thenReturn(resourceResolver);
             PageManager pageManager = mock(PageManager.class);
             TagManager tagManager = mock(TagManager.class);
             UserManager userManager = mock(UserManager.class);

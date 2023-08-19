@@ -14,6 +14,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.Property;
 
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
@@ -33,8 +34,6 @@ import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.listeners.PageResourceListener;
 import com.workday.community.aem.core.services.QueryService;
-import com.workday.community.aem.core.utils.ResolverUtil;
-
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
@@ -54,6 +53,9 @@ public class PageResourceListenerTest {
      */
     @Mock
     private ResourceResolverFactory resolverFactory;
+
+    @Mock
+    EhCacheManager ehCacheManager;
 
     /**
      * The resolver.
@@ -117,12 +119,12 @@ public class PageResourceListenerTest {
      */
     @Test
     void testRemoveBookNodes() throws Exception {
-        when(ResolverUtil.newResolver(resolverFactory, "workday-community-administrative-service")).thenReturn(resolver);
         List<String> pathList = new ArrayList<>();
         pathList.add("/content/book-1/jcr:content/root/container/container/book");
         lenient().when(queryService.getBookNodesByPath(context.currentPage().getPath(), null)).thenReturn(pathList);
+        lenient().when(ehCacheManager.getServiceResolver(anyString())).thenReturn(resolver);
         pageResourceListener.removeBookNodes(context.currentPage().getPath());
-        verify(resolver).close();  
+        verify(resolver).close();
     }
 
     /**
@@ -164,6 +166,6 @@ public class PageResourceListenerTest {
         when(resource.adaptTo(Node.class)).thenReturn(node);
         when(valueMap.get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class)).thenReturn(aclTags);
         pageResourceListener.addInternalWorkmatesTag(context.currentPage().getContentResource().getPath(), resolver);
-        verify(node, times(1)).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, updatedACLTags.stream().toArray(String[]::new));
+        verify(node, times(1)).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, updatedACLTags.toArray(String[]::new));
     }
 }

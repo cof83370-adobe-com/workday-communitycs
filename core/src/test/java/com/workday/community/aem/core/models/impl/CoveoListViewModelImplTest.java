@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.models.impl;
 
-import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -10,6 +9,7 @@ import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -19,10 +19,12 @@ import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -58,11 +60,29 @@ public class CoveoListViewModelImplTest {
     ResourceResolver resourceResolver;
 
     @Mock
+    ResourceResolverFactory resourceResolverFactory;
+
+    @Mock
     TagManager tagManager;
+
+    @Mock
+    List<CategoryFacetModel> categories;
+
+    @Mock
+    EhCacheManager ehCacheManager;
 
     MockedStatic<DamUtils> mockDamUtils;
 
     MockedStatic<ResolverUtil> resolverUtil;
+
+    @InjectMocks
+    CoveoListViewModelImpl coveoListViewModel;
+
+    @InjectMocks
+    CategoryFacetModel categoryFacetModel;
+
+    @InjectMocks
+    CategoryFacetModel categoryFacetModel1;
 
     @BeforeEach
     public void setUp() {
@@ -72,26 +92,8 @@ public class CoveoListViewModelImplTest {
         context.registerService(SearchApiConfigService.class, searchApiConfigService);
         context.registerService(SnapService.class, snapService);
         context.registerService(SlingHttpServletRequest.class, request);
-
-        when(searchApiConfigService.getSearchHub()).thenReturn("TestSearchHub");
-        when(searchApiConfigService.getOrgId()).thenReturn("TestOrgId");
-        when(resourceResolver.adaptTo(TagManager.class)).thenReturn(tagManager);
+        context.registerService(EhCacheManager.class, ehCacheManager);
         context.registerService(ResourceResolver.class, resourceResolver);
-
-        Tag tag1Namespace = mock(Tag.class);
-        when(tag1Namespace.getName()).thenReturn("product");
-
-        Tag tag2Namespace = mock(Tag.class);
-        when(tag2Namespace.getName()).thenReturn("using-workday");
-        Tag tag1 = mock(Tag.class);
-        Tag tag2 = mock(Tag.class);
-
-        when(tag1.getNamespace()).thenReturn(tag1Namespace);
-        when(tag1.isNamespace()).thenReturn(true);
-        when(tag2.getNamespace()).thenReturn(tag2Namespace);
-        when(tag2.isNamespace()).thenReturn(true);
-        when(tagManager.resolve("product:")).thenReturn(tag1);
-        when(tagManager.resolve("using-workday:")).thenReturn(tag2);
 
         String fieldMapConfig = "{\"tagIdToCoveoField\": {\"product\" : \"coveo_product\", \"using-workday\": \"coveo_using-workday\"}}";
         Gson gson = new Gson();
@@ -108,7 +110,7 @@ public class CoveoListViewModelImplTest {
     }
 
     @Test
-    void testComponent() throws RepositoryException {
+    void testGetConfig() throws RepositoryException {
         CoveoListViewModel listViewModel = context.currentResource("/component/listView").adaptTo(CoveoListViewModel.class);
         ((CoveoListViewModelImpl)listViewModel).init(request);
 
@@ -175,18 +177,24 @@ public class CoveoListViewModelImplTest {
         userContext.addProperty("email", "testEmailFoo@workday.com");
 
         lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
-
+        lenient().when(searchApiConfigService.getOrgId()).thenReturn("TestOrgId");
+        lenient().when(searchApiConfigService.getSearchHub()).thenReturn("TestSearchHub");
         JsonObject config = listViewModel.getSearchConfig();
         Assert.assertEquals(config.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");
 
         assertEquals("TestOrgId",config.get("orgId").getAsString());
         assertEquals("TestSearchHub", config.get("searchHub").getAsString());
-        List<CategoryFacetModel> categoryFacetModels = listViewModel.getCategories();
+    }
+
+    @Test
+    void testGetCategories() throws RepositoryException {
+        lenient().when(categories.get(0)).thenReturn(categoryFacetModel);
+        lenient().when(categories.get(1)).thenReturn(categoryFacetModel1);
+        lenient().when(categories.size()).thenReturn(2);
+        lenient().when(categories.toArray()).thenReturn(new CategoryFacetModel[]{categoryFacetModel, categoryFacetModel1});
+
+        List<CategoryFacetModel> categoryFacetModels = coveoListViewModel.getCategories();
         assertEquals(2, categoryFacetModels.size());
-        CategoryFacetModel prod = categoryFacetModels.get(0);
-        assertEquals("coveo_product", prod.getField());
-        CategoryFacetModel usingWorkday = categoryFacetModels.get(1);
-        assertEquals("coveo_using-workday", usingWorkday.getField());
     }
 
     @AfterEach

@@ -45,6 +45,7 @@ import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.N
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 
 /**
  * The OSGi service implementation for snap logic.
@@ -98,7 +99,7 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public String getUserHeaderMenu(String sfId) {
     String menuCacheKey =  String.format("menu-%s", sfId);
-    String cacheResult = ehCacheMgr.get(CacheBucketName.STRINGVALUE.name(),menuCacheKey);
+    String cacheResult = ehCacheMgr.get(CacheBucketName.STRING_VALUE.name(),menuCacheKey);
     if (!StringUtils.isEmpty(cacheResult)) return cacheResult;
 
     String snapUrl = config.snapUrl(), navApi = config.navApi(),
@@ -144,7 +145,7 @@ public class SnapServiceImpl implements SnapService {
       // Need to make merge sfMenu with local cache with beta experience.
       if (config.beta()) {
         String finalMenu = this.getMergedHeaderMenu(sfMenu, defaultMenu);
-        ehCacheMgr.put(CacheBucketName.STRINGVALUE.name(), menuCacheKey, finalMenu);
+        ehCacheMgr.put(CacheBucketName.STRING_VALUE.name(), menuCacheKey, finalMenu);
         return finalMenu;
       }
 
@@ -218,7 +219,7 @@ public class SnapServiceImpl implements SnapService {
     JsonObject defaultMenu = ehCacheMgr.get(CacheBucketName.GENERIC.name(), "default-menu");
     if (defaultMenu != null) return defaultMenu;
     try {
-      ResourceResolver resourceResolver = this.ehCacheMgr.getServiceResolver();
+      ResourceResolver resourceResolver = this.ehCacheMgr.getServiceResolver(READ_SERVICE_USER);
       // Reading the JSON File from DAM.
       defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
       ehCacheMgr.put(CacheBucketName.GENERIC.name(), "default-menu", defaultMenu);
@@ -248,7 +249,7 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public String getUserProfile(String sfId) {
     String key = String.format("profile-%s", sfId);
-    String cacheResult = ehCacheMgr.get(CacheBucketName.STRINGVALUE.name(), key);
+    String cacheResult = ehCacheMgr.get(CacheBucketName.STRING_VALUE.name(), key);
     if (cacheResult != null) return cacheResult;
 
     try {
@@ -256,7 +257,7 @@ public class SnapServiceImpl implements SnapService {
       if (StringUtils.isNotBlank(url)) {
         url = String.format(url, sfId);
         String jsonResponse = RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
-        ehCacheMgr.put(CacheBucketName.STRINGVALUE.name(), "default-menu", jsonResponse);
+        ehCacheMgr.put(CacheBucketName.STRING_VALUE.name(), "default-menu", jsonResponse);
 
         return jsonResponse;
       }
@@ -272,7 +273,7 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
     String key = String.format("%s.%s.%s", sfId, pageTitle, contentType);
-    String cacheResult = ehCacheMgr.get(CacheBucketName.STRINGVALUE.name(), key);
+    String cacheResult = ehCacheMgr.get(CacheBucketName.STRING_VALUE.name(), key);
     if (cacheResult != null) return cacheResult;
 
     String profileData = getUserProfile(sfId);
@@ -284,7 +285,7 @@ public class SnapServiceImpl implements SnapService {
 
     digitalData.add("page", pageProperties);
     String res = String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
-    ehCacheMgr.put(CacheBucketName.STRINGVALUE.name(), key, res);
+    ehCacheMgr.put(CacheBucketName.STRING_VALUE.name(), key, res);
     return res;
   }
 

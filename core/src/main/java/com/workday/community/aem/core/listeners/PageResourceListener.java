@@ -3,18 +3,19 @@ package com.workday.community.aem.core.listeners;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.jackrabbit.vault.util.JcrConstants;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.Component;
@@ -27,12 +28,12 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.QueryService;
-import com.workday.community.aem.core.utils.ResolverUtil;
+
+import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 
 /**
  * The Class PageResourceListener.
  *
- * @see @PageResourceEvent
  */
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
         ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
@@ -47,13 +48,14 @@ public class PageResourceListener implements ResourceChangeListener {
 
     private static final String TAG_INTERNAL_WORKMATE = "access-control:internal_workmates";
 
-    /** The resolver factory. */
+    /** The cache manager */
     @Reference
-    private ResourceResolverFactory resolverFactory;
+    EhCacheManager ehCacheManager;
 
     /** The query service. */
     @Reference
     QueryService queryService;
+
 
     /**
      * On change.
@@ -78,8 +80,7 @@ public class PageResourceListener implements ResourceChangeListener {
      * @param pagePath the page path.
      */
     public void handleNewPage(String pagePath) {
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resolverFactory,
-                "workday-community-administrative-service")) {
+        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
             if (resourceResolver.getResource(pagePath) != null) {
                 addInternalWorkmatesTag(pagePath, resourceResolver);
                 addAuthorPropertyToContentNode(pagePath, resourceResolver);
@@ -87,7 +88,7 @@ public class PageResourceListener implements ResourceChangeListener {
             if (resourceResolver.hasChanges()) {
                 resourceResolver.commit();
             }
-        } catch (PersistenceException | LoginException e) {
+        } catch (PersistenceException | CacheException e) {
             logger.error("Exception occurred when adding author property to page {} ", e.getMessage());
         }
     }
@@ -101,14 +102,14 @@ public class PageResourceListener implements ResourceChangeListener {
     public void addInternalWorkmatesTag(String pagePath, ResourceResolver resourceResolver) {
         try {
             PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-            Page page = pageManager.getContainingPage(pagePath);
+            Page page = Objects.requireNonNull(pageManager).getContainingPage(pagePath);
             if (null != page) {
                 String[] aclTags = page.getProperties().get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class);
-                List<String> aclTagList = new ArrayList<>(Arrays.asList(aclTags));
+                List<String> aclTagList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(aclTags)));
                 if(!aclTagList.contains(TAG_INTERNAL_WORKMATE)){
                     aclTagList.add(TAG_INTERNAL_WORKMATE);
                     Node pageNode = page.getContentResource().adaptTo(Node.class);
-                    pageNode.setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, aclTagList.stream().toArray(String[]::new));
+                    Objects.requireNonNull(pageNode).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, aclTagList.toArray(String[]::new));
                 }
             }
         }
@@ -125,17 +126,17 @@ public class PageResourceListener implements ResourceChangeListener {
     public void addAuthorPropertyToContentNode(String path, ResourceResolver resourceResolver) {
         try {
             if (resourceResolver.getResource(path) != null) {
-                Node root = resourceResolver.getResource(path).adaptTo(Node.class);
-                String createdUserId = root.getProperty(JcrConstants.JCR_CREATED_BY).getString();
+                Node root = Objects.requireNonNull(resourceResolver.getResource(path)).adaptTo(Node.class);
+                String createdUserId = Objects.requireNonNull(root).getProperty(JcrConstants.JCR_CREATED_BY).getString();
 
                 UserManager userManager = resourceResolver.adaptTo(UserManager.class);
 
-                Authorizable authorizable = userManager.getAuthorizable(createdUserId);
+                Authorizable authorizable = Objects.requireNonNull(userManager).getAuthorizable(createdUserId);
 
                 if (authorizable == null) {
                     logger.warn("No such user: ${userId}");
                 } else {
-                    if (null != authorizable && !authorizable.isGroup()) {
+                    if ( !authorizable.isGroup()) {
                         String firstName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME) != null
                                 ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME)[0].getString()
                                 : null;
@@ -150,7 +151,7 @@ public class PageResourceListener implements ResourceChangeListener {
                     }
                 }
             }
-        } catch (RepositoryException ex) {
+        } catch (RepositoryException | NullPointerException ex) {
             logger.error("Exception occurred when adding author property to page {} ", ex.getMessage());
         }
     }
@@ -161,14 +162,12 @@ public class PageResourceListener implements ResourceChangeListener {
      * @param pagePath the page path
      */
     public void removeBookNodes(String pagePath) {
-
-        try (ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory,
-                "workday-community-administrative-service")) {
+        try (ResourceResolver resolver = ehCacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
             if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
                 List<String> paths = queryService.getBookNodesByPath(pagePath, null);
                 for (String path : paths) {
                     if (resolver.getResource(path) != null) {
-                        Node root = resolver.getResource(path).adaptTo(Node.class);
+                        Node root = Objects.requireNonNull(resolver.getResource(path)).adaptTo(Node.class);
                         if (root != null) {
                             root.remove();
                         }
@@ -179,7 +178,7 @@ public class PageResourceListener implements ResourceChangeListener {
                 }
                 logger.info("Removed node for page {}", pagePath);
             }
-        } catch (PersistenceException | RepositoryException | LoginException e) {
+        } catch (PersistenceException | RepositoryException | CacheException e) {
             logger.error("Can't remove found nodes for page {}", pagePath);
         }
     }

@@ -2,8 +2,7 @@ package com.workday.community.aem.core.services.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
@@ -22,12 +21,12 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import org.apache.jackrabbit.api.security.user.AuthorizableExistsException;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,20 +35,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.workday.community.aem.core.utils.ResolverUtil;
-
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-
-import static com.workday.community.aem.core.services.impl.UserServiceImpl.SERVICE_USER;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class UserServiceImplTest {
-
-    /** The ResourceResolverFactory service. */
-    @Mock
-    ResourceResolverFactory resourceResolverFactory;
-
     /** The userService. */
     @InjectMocks
     UserServiceImpl userService;
@@ -60,6 +50,9 @@ public class UserServiceImplTest {
     /** The ResourceResolver class. */
     @Mock
     ResourceResolver resourceResolver;
+
+    @Mock
+    EhCacheManager ehCacheManager;
     
     /** The UserManager class. */
     @Mock
@@ -76,9 +69,7 @@ public class UserServiceImplTest {
     @BeforeEach
     public void setUp() throws Exception {
         this.resolver = mockStatic(ResolverUtil.class);
-        this.resourceResolver = mock(ResourceResolver.class);
-        resolver.when(() -> ResolverUtil.newResolver(any(), eq(SERVICE_USER))).thenReturn(this.resourceResolver);
-
+        lenient().when(ehCacheManager.getServiceResolver(anyString())).thenReturn(this.resourceResolver);
         session = mock(Session.class);
         userManager = mock(UserManager.class);
         user = mock(User.class);
@@ -89,8 +80,8 @@ public class UserServiceImplTest {
     /**
      * Test updateUser method.
      * 
-     * @throws AuthorizableExistsException
-     * @throws RepositoryException
+     * @throws AuthorizableExistsException AuthorizableExistsException object.
+     * @throws RepositoryException RepositoryException object.
      */
     @Test
     public void testUpdateUser() throws AuthorizableExistsException, RepositoryException {
@@ -121,8 +112,8 @@ public class UserServiceImplTest {
     /**
      * Test updateUser method failed.
      * 
-     * @throws AuthorizableExistsException
-     * @throws RepositoryException
+     * @throws AuthorizableExistsException AuthorizableExistsException object.
+     * @throws RepositoryException RepositoryException object.
      */
     @Test
     public void testUpdateUserFail() throws AuthorizableExistsException, RepositoryException {
@@ -147,7 +138,7 @@ public class UserServiceImplTest {
     /**
      * Test deleteUser method.
      * 
-     * @throws RepositoryException
+     * @throws RepositoryException RepositoryException object.
      */
     @Test
     public void testDeleteUser() throws RepositoryException {
@@ -163,7 +154,7 @@ public class UserServiceImplTest {
      /**
      * Test deleteUser method failed case.
      * 
-     * @throws RepositoryException
+     * @throws RepositoryException RepositoryException object.
      */
     @Test
     public void testDeleteUserFail() throws RepositoryException {
@@ -179,7 +170,7 @@ public class UserServiceImplTest {
     /**
      * Test getUser method.
      * 
-     * @throws RepositoryException
+     * @throws RepositoryException RepositoryException object.
      */
     @Test
     public void testGetUser() throws RepositoryException {
@@ -198,7 +189,7 @@ public class UserServiceImplTest {
     /**
      * Test getUser method.
      *
-     * @throws RepositoryException
+     * @throws RepositoryException RepositoryException object.
      */
     @Test
     public void testGetUserWithResourceResolver() throws RepositoryException {

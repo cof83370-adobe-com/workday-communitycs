@@ -22,7 +22,7 @@ public @interface EhCacheConfig {
 
   @AttributeDefinition(
       name = "Cache duration in seconds",
-      description = "Cache duration in seconds",
+      description = "Cache duration in seconds (-1 no expire)",
       type = AttributeType.INTEGER
   )
   int duration() default 24 * 60 * 60;

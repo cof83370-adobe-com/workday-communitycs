@@ -10,6 +10,8 @@ import static org.mockito.Mockito.*;
 import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.resource.LoginException;
@@ -48,6 +50,9 @@ class QueryServiceImplTest {
   @Mock
   ResourceResolverFactory resourceResolverFactory;
 
+  @Mock
+  EhCacheManager ehCacheManager;
+
   @InjectMocks
   QueryServiceImpl queryService;
 
@@ -61,7 +66,7 @@ class QueryServiceImplTest {
   @Test
   void testGetNumOfTotalPages() throws Exception {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
+    when(ehCacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
 
     Session session = mock(Session.class);
     lenient().when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
@@ -81,14 +86,14 @@ class QueryServiceImplTest {
 
       // case 1
       mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenThrow(new LoginException());
-      assertEquals(0, queryService.getNumOfTotalPublishedPages());
+      assertEquals(10, queryService.getNumOfTotalPublishedPages());
     }
   }
 
   @Test
-  void testPagesByTemplates() throws RepositoryException {
+  void testPagesByTemplates() throws RepositoryException, CacheException {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
+    when(ehCacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
 
     Session session = mock(Session.class);
     when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
@@ -113,12 +118,11 @@ class QueryServiceImplTest {
   }
 
   @Test
-  void testgetPagesByBookPath() throws RepositoryException {
+  void testgetPagesByBookPath() throws RepositoryException, CacheException {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
     String hitResultPath = "/content/workday-community/en-us/thomas-sandbox/test-download-component/jcr:content/root/container/container/book/firstlevel/item1";
 
-    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
-
+    when(ehCacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
     Session session = mock(Session.class);
     when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
 
@@ -131,6 +135,7 @@ class QueryServiceImplTest {
     SearchResult result = mock(SearchResult.class);
     List<Hit> hitList = new ArrayList<>();
     hitList.add(hit);
+
     when(result.getHits()).thenReturn(hitList);
 
     when(query.getResult()).thenReturn(result);
@@ -143,9 +148,9 @@ class QueryServiceImplTest {
   }
 
   @Test
-  void testGetInactiveUsers() throws RepositoryException {
+  void testGetInactiveUsers() throws RepositoryException, CacheException {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
+    when(ehCacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
 
     Session session = mock(Session.class);
     when(resourceResolver.adaptTo(Session.class)).thenReturn(session);

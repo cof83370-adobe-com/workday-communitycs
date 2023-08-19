@@ -3,13 +3,15 @@ package com.workday.community.aem.core.services.impl;
 import com.day.cq.dam.api.Asset;
 import com.day.cq.dam.api.Rendition;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.RunModeConfigService;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -22,6 +24,7 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -57,21 +60,24 @@ public class SnapServiceImplTest {
   @Mock
   RunModeConfigService runModeConfigService;
 
+  @Mock
+  EhCacheManager ehCacheManager;
+
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   private GetSnapConfig snapConfig;
 
-  SnapService snapService;
+  @InjectMocks
+  SnapServiceImpl snapService;
 
   Resource resource;
 
   @BeforeEach
-  public void setup() {
+  public void setup() throws CacheException {
     context.registerService(ResourceResolverFactory.class, resResolverFactory);
     context.registerService(RunModeConfigService.class, runModeConfigService);
     context.registerService(objectMapper);
 
-    snapService = new SnapServiceImpl();
     resource = mock(Resource.class);
     snapService.setResourceResolverFactory(resResolverFactory);
     snapService.setRunModeConfigService(runModeConfigService);
@@ -188,7 +194,7 @@ public class SnapServiceImplTest {
     ResourceResolver resolverMock = mock(ResourceResolver.class);
 
     lenient().when(resolverMock.getResource(any())).thenReturn(resource);
-    lenient().when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(resolverMock);
+    lenient().when(ehCacheManager.getServiceResolver(anyString())).thenReturn(resolverMock);
 
     lenient().when(resource.adaptTo(any())).thenReturn(asset);
     lenient().when(asset.getOriginal()).thenReturn(original);
@@ -251,6 +257,27 @@ public class SnapServiceImplTest {
       lenient().when(runModeConfigService.getEnv()).thenReturn("prod");
       String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(menuData2, menuData3);
+
+      // Case 5 With contact information
+      content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
+      lenient().when(original.adaptTo(any())).thenReturn(content);
+      Gson gson = new Gson();
+      JsonObject sfMenu = gson.fromJson(menuData2, JsonObject.class);
+      JsonObject profileObject = new JsonObject();
+      profileObject.addProperty("firstName", "Justin");
+      profileObject.addProperty("lastName", "Zhang");
+      sfMenu.add("profile", profileObject);
+
+      JsonObject contactInfo = new JsonObject();
+      contactInfo.addProperty("firstName", "Justin");
+      contactInfo.addProperty("lastName", "Zhang");
+      sfMenu.add("contactInformation", contactInfo);
+
+      when(response.getResponseBody()).thenReturn(gson.toJson(sfMenu));
+      when(response.getResponseCode()).thenReturn(200);
+
+      String menuData4 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
+      assertEquals(gson.fromJson(sfMenu, JsonObject.class).size(), gson.fromJson(menuData4, JsonObject.class).size());
     }
   }
 
@@ -259,10 +286,8 @@ public class SnapServiceImplTest {
     Asset asset = mock(Asset.class);
     Rendition original = mock(Rendition.class);
     ResourceResolver resolverMock = mock(ResourceResolver.class);
-
+    when(ehCacheManager.getServiceResolver(anyString())).thenReturn(resolverMock);
     lenient().when(resolverMock.getResource(any())).thenReturn(resource);
-    lenient().when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(resolverMock);
-
     lenient().when(resource.adaptTo(any())).thenReturn(asset);
     lenient().when(asset.getOriginal()).thenReturn(original);
 
@@ -303,7 +328,7 @@ public class SnapServiceImplTest {
   }
 
   @Test
-  public void testGetProfilePhoto() throws Exception {
+  public void testGetProfilePhoto() {
     // Case 1: No return from failed call
     snapService.activate(snapConfig.get(1, 1));
     CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
@@ -311,7 +336,7 @@ public class SnapServiceImplTest {
 
     try (MockedStatic<HttpClients> MockedHttpClients = mockStatic(HttpClients.class);
         MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      MockedHttpClients.when(() -> HttpClients.custom()).thenReturn(builder);
+      MockedHttpClients.when(HttpClients::custom).thenReturn(builder);
       lenient().when(builder.build()).thenReturn(httpClient);
       assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
 
@@ -325,7 +350,7 @@ public class SnapServiceImplTest {
       String mockRet = "test fdfdf";
 
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(mockRet);
-      ProfilePhoto photoObj = this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER);
+      this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER);
       assertEquals(retObj.getBase64content(), "test fdfdf");
     }
   }

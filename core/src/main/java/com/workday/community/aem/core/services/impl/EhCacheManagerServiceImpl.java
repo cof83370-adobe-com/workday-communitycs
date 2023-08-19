@@ -1,4 +1,4 @@
-package com.workday.community.aem.core.services.cache.impl;
+package com.workday.community.aem.core.services.impl;
 
 import com.adobe.xfa.ut.StringUtils;
 import com.workday.community.aem.core.config.EhCacheConfig;
@@ -17,6 +17,7 @@ import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
+import org.ehcache.expiry.ExpiryPolicy;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -33,9 +34,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.services.cache.CacheBucketName.mapValueTypes;
 
+/**
+ * The EhCacheManagerService implementation class.
+ */
 @Component(service = EhCacheManager.class, property = {
     "service.pid=aem.core.services.cache.ehcache"
 }, configurationPid = "com.workday.community.aem.core.config.EhCacheConfig",
@@ -43,6 +46,8 @@ import static com.workday.community.aem.core.services.cache.CacheBucketName.mapV
 @Designate(ocd = EhCacheConfig.class)
 public class EhCacheManagerServiceImpl implements EhCacheManager {
   private final static Logger LOGGER = LoggerFactory.getLogger(EhCacheManagerServiceImpl.class);
+  private final String INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY = "_service-resolver_";
+
   private CacheManager cacheManager;
 
   private EhCacheConfig config;
@@ -101,30 +106,13 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   }
 
   @Override
-  public ResourceResolver getServiceResolver() throws CacheException {
-    String serviceCacheKey = "service-resolver";
-    Cache<String, ResourceResolver> cache = getCache(CacheBucketName.GENERIC, serviceCacheKey);
-    ResourceResolver resolver = cache.get(serviceCacheKey);
-    if (resolver == null) {
-      try {
-        resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
-      } catch (LoginException e) {
-        throw new CacheException("Failed to create Resolver in EhCacheManagerImpl");
-      }
-      cache.put(serviceCacheKey, resolver);
-    }
-
-    return resolver;
-  }
-
-  @Override
-  public <V> void clearCacheBucket(String cacheName, String key) throws CacheException {
+  public void ClearAllCaches(String cacheName, String key)  {
     if (cacheName == null) {
       // clear all
       if (caches.isEmpty()) return;
-      for (Object cacheKey : caches.keySet()) {
-        String name = (String)cacheKey;
-        Cache<String, V> cache = (Cache<String, V>) caches.get(name);
+      for (String cacheKey : caches.keySet()) {
+        String name = cacheKey;
+        Cache cache = caches.get(name);
         cache.clear();
         this.cacheManager.removeCache(name);
       }
@@ -134,7 +122,13 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     }
 
     CacheBucketName innerName = getInnerCacheName(cacheName);
-    Cache<String, V> cache = getCache(innerName, key);
+    Cache cache = null;
+    try {
+      cache = getCache(innerName, key);
+    } catch (CacheException e) {
+     LOGGER.error("Retrieve cache fails");
+    }
+
     if (cache != null) {
       cache.clear();
       this.cacheManager.removeCache(cacheName);
@@ -142,13 +136,31 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   }
 
   @Override
-  public void clearCacheBucket(String cacheName) throws CacheException {
-    clearCacheBucket(cacheName, null);
+  public void ClearAllCaches(String cacheName) {
+    ClearAllCaches(cacheName, null);
   }
 
   @Override
-  public void clearCacheBucket() throws CacheException {
-    clearCacheBucket(null, null);
+  public void ClearAllCaches() {
+    ClearAllCaches(null, null);
+  }
+
+  // ====== Convenient Utility APIs ====== //
+  @Override
+  public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
+    // No expiration of resolver.
+    Cache<String, ResourceResolver> cache = getCache(CacheBucketName.GENERIC, INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
+    ResourceResolver resolver = cache.get(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
+    if (resolver == null) {
+      try {
+        resolver = ResolverUtil.newResolver(this.resourceResolverFactory, serviceUser);
+      } catch (LoginException e) {
+        throw new CacheException("Failed to create Resolver in EhCacheManagerImpl");
+      }
+      cache.put(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY, resolver);
+    }
+
+    return resolver;
   }
 
   // ================== Private methods ===============//
@@ -168,11 +180,21 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
         poolsBuilder.disk(this.config.diskSize(), MemoryUnit.MB, true);
       }
 
-      CacheConfigurationBuilder builder =
+
+      CacheConfigurationBuilder<? extends Object, ? extends Object> builder =
           CacheConfigurationBuilder.newCacheConfigurationBuilder(
               String.class, mapValueTypes.get(innerCacheName), poolsBuilder
-              ).withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(config.duration())));
-      cache = cacheManager.createCache(innerCacheName.name(), builder);
+          );
+
+      int duration = config.duration();
+      // Resolver no need to expire in cache once it is created.
+      if (duration == -1 || key.equals(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY) ) {
+        builder.withExpiry(ExpiryPolicy.NO_EXPIRY);
+      } else if (duration > 0) {
+        builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(duration)));
+      }
+
+      cache = (Cache<String, V>) cacheManager.createCache(innerCacheName.name(), builder);
       caches.put(innerCacheName.name(), cache);
       return cache;
     } catch (IllegalArgumentException e) {
@@ -192,7 +214,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   }
 
   @Deactivate
-  private void deactivate() {
+  public void deactivate() {
     if (cacheManager != null) {
       cacheManager.close();
     }

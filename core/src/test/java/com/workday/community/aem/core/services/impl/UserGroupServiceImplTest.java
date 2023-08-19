@@ -5,6 +5,7 @@ import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.cache.EhCacheManager;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
@@ -60,6 +61,9 @@ class UserGroupServiceImplTest {
 
     @Mock
     ResourceResolver jcrSessionResourceResolver;
+
+    @Mock
+    EhCacheManager ehCacheManager;
 
     @Mock
     Session jcrSession;
