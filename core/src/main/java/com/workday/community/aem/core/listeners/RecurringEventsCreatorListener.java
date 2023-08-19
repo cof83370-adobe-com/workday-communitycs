@@ -11,7 +11,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.cache.EhCacheManager;
+import com.workday.community.aem.core.services.EhCacheManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;

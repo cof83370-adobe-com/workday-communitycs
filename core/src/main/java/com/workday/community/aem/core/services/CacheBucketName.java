@@ -1,4 +1,4 @@
-package com.workday.community.aem.core.services.cache;
+package com.workday.community.aem.core.services;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,13 +11,18 @@ import java.util.Map;
  */
 public enum CacheBucketName {
   GENERIC("generic_object", "Cache bucket name for object value"),
-  STRING_VALUE("string_value", "Cache bucket for string value");
+  STRING_VALUE("string_value", "Cache bucket for string value"),
+  LONG_VALUE("long_value", "Cache bucket for long value"),
+  BYTES_VALUE("bytes_value", "Cache bucket for value as bytes");
+
 
   final public static Map<CacheBucketName, Class> mapValueTypes = new HashMap<>();
 
   static {
     mapValueTypes.put(CacheBucketName.GENERIC, Object.class);
     mapValueTypes.put(CacheBucketName.STRING_VALUE, String.class);
+    mapValueTypes.put(CacheBucketName.LONG_VALUE, Long.class);
+    mapValueTypes.put(CacheBucketName.BYTES_VALUE, Byte.class);
   }
 
   final String label;

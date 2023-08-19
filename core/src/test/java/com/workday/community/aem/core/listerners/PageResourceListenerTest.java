@@ -14,7 +14,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.Property;
 
-import com.workday.community.aem.core.services.cache.EhCacheManager;
+import com.workday.community.aem.core.services.EhCacheManager;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;

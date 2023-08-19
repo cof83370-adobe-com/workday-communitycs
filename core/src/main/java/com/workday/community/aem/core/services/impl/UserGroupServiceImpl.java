@@ -10,7 +10,7 @@ import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
-import com.workday.community.aem.core.services.cache.EhCacheManager;
+import com.workday.community.aem.core.services.EhCacheManager;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.PageUtils;

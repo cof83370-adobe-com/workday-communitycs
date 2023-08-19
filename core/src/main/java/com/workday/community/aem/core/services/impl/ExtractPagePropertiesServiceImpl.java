@@ -7,7 +7,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.cache.EhCacheManager;
+import com.workday.community.aem.core.services.EhCacheManager;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Component;

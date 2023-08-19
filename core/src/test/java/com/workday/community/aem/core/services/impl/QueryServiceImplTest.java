@@ -11,7 +11,7 @@ import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.cache.EhCacheManager;
+import com.workday.community.aem.core.services.EhCacheManager;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.resource.LoginException;

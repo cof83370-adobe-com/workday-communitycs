@@ -2,8 +2,8 @@ package com.workday.community.aem.core.services.impl;
 
 import com.workday.community.aem.core.config.EhCacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.cache.CacheBucketName;
-import com.workday.community.aem.core.services.cache.EhCacheManager;
+import com.workday.community.aem.core.services.CacheBucketName;
+import com.workday.community.aem.core.services.EhCacheManager;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;

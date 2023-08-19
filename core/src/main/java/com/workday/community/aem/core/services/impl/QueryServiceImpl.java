@@ -2,7 +2,7 @@ package com.workday.community.aem.core.services.impl;
 
 import com.day.cq.search.result.Hit;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.cache.EhCacheManager;
+import com.workday.community.aem.core.services.EhCacheManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

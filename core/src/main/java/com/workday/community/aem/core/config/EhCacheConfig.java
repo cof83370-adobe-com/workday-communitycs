@@ -18,7 +18,7 @@ public @interface EhCacheConfig {
       description = "Cache pool off heap size",
       type = AttributeType.INTEGER
   )
-  int offHeapSize() default 1;
+  int offHeapSize() default -1;
 
   @AttributeDefinition(
       name = "Cache duration in seconds",

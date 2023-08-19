@@ -3,8 +3,8 @@ package com.workday.community.aem.core.services.impl;
 import com.adobe.xfa.ut.StringUtils;
 import com.workday.community.aem.core.config.EhCacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.cache.CacheBucketName;
-import com.workday.community.aem.core.services.cache.EhCacheManager;
+import com.workday.community.aem.core.services.CacheBucketName;
+import com.workday.community.aem.core.services.EhCacheManager;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -34,7 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
-import static com.workday.community.aem.core.services.cache.CacheBucketName.mapValueTypes;
+import static com.workday.community.aem.core.services.CacheBucketName.mapValueTypes;
 
 /**
  * The EhCacheManagerService implementation class.
@@ -170,33 +170,37 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
       if (cache != null) return cache;
       if (key == null) return null;
 
-      ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
-          .heap(this.config.heapSize(), EntryUnit.ENTRIES)
-          .offheap(this.config.offHeapSize(), MemoryUnit.MB);
+      synchronized(this) {
+        ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
+            .heap(this.config.heapSize(), EntryUnit.ENTRIES);
 
-      String storagePath = config.storagePath();
-      if (!StringUtils.isEmpty(storagePath) &&
-          !storagePath.equals(CLOUD_CONFIG_NULL_VALUE) && this.config.diskSize() > 0) {
-        poolsBuilder.disk(this.config.diskSize(), MemoryUnit.MB, true);
+        if (this.config.offHeapSize() > 0) {
+          poolsBuilder.offheap(this.config.offHeapSize(), MemoryUnit.MB);
+        }
+
+        String storagePath = config.storagePath();
+        if (this.config.offHeapSize() > 0 && !StringUtils.isEmpty(storagePath) &&
+            !storagePath.equals(CLOUD_CONFIG_NULL_VALUE) && this.config.diskSize() > 0) {
+          poolsBuilder.disk(this.config.diskSize(), MemoryUnit.MB, true);
+        }
+
+        CacheConfigurationBuilder<? extends Object, ? extends Object> builder =
+            CacheConfigurationBuilder.newCacheConfigurationBuilder(
+                String.class, mapValueTypes.get(innerCacheName), poolsBuilder
+            );
+
+        int duration = config.duration();
+        // Resolver no need to expire in cache once it is created.
+        if (duration == -1 || key.equals(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY) ) {
+          builder.withExpiry(ExpiryPolicy.NO_EXPIRY);
+        } else if (duration > 0) {
+          builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(duration)));
+        }
+
+        cache = (Cache<String, V>) cacheManager.createCache(innerCacheName.name(), builder);
+        caches.put(innerCacheName.name(), cache);
+        return cache;
       }
-
-
-      CacheConfigurationBuilder<? extends Object, ? extends Object> builder =
-          CacheConfigurationBuilder.newCacheConfigurationBuilder(
-              String.class, mapValueTypes.get(innerCacheName), poolsBuilder
-          );
-
-      int duration = config.duration();
-      // Resolver no need to expire in cache once it is created.
-      if (duration == -1 || key.equals(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY) ) {
-        builder.withExpiry(ExpiryPolicy.NO_EXPIRY);
-      } else if (duration > 0) {
-        builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(duration)));
-      }
-
-      cache = (Cache<String, V>) cacheManager.createCache(innerCacheName.name(), builder);
-      caches.put(innerCacheName.name(), cache);
-      return cache;
     } catch (IllegalArgumentException e) {
       throw new CacheException("Can't create or retrieve cache from the cache store");
     }
@@ -207,7 +211,11 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     try {
       innerCacheName = CacheBucketName.valueOf(cacheName);
     } catch (NullPointerException | IllegalArgumentException e) {
-      innerCacheName = CacheBucketName.GENERIC;
+      if (this.config.offHeapSize()  == -1) {
+        innerCacheName = CacheBucketName.BYTES_VALUE;
+      } else {
+        innerCacheName = CacheBucketName.GENERIC;
+      }
     }
 
     return innerCacheName;

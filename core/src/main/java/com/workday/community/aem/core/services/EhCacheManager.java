@@ -1,4 +1,4 @@
-package com.workday.community.aem.core.services.cache;
+package com.workday.community.aem.core.services;
 
 import com.workday.community.aem.core.exceptions.CacheException;
 import org.apache.sling.api.resource.ResourceResolver;
