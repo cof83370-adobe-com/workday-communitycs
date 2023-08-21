@@ -15,16 +15,13 @@ public enum CacheBucketName {
   STRING_VALUE("string_value", "Cache bucket for string value"),
   LONG_VALUE("long_value", "Cache bucket for long value"),
   BYTES_VALUE("bytes_value", "Cache bucket for value as bytes");
-
-
-  final private static Map<CacheBucketName, Class> mapValueTypes = new HashMap<>();
-
-  static {
-    mapValueTypes.put(CacheBucketName.GENERIC, Object.class);
-    mapValueTypes.put(CacheBucketName.STRING_VALUE, String.class);
-    mapValueTypes.put(CacheBucketName.LONG_VALUE, Long.class);
-    mapValueTypes.put(CacheBucketName.BYTES_VALUE, Byte.class);
-  }
+  public final static Map<CacheBucketName, Class> mapValueTypes = Map.of(
+      CacheBucketName.GENERIC,
+      Object.class, CacheBucketName.STRING_VALUE,
+      String.class, CacheBucketName.LONG_VALUE,
+      Long.class, CacheBucketName.BYTES_VALUE,
+      Byte.class
+  );
 
   final String label;
   final String name;
@@ -33,9 +30,4 @@ public enum CacheBucketName {
     this.name = name;
     this.label = label;
   }
-
-  public static Map<CacheBucketName, Class> getMapValueTypes() {
-    return Collections.unmodifiableMap(mapValueTypes);
-  }
-
 }

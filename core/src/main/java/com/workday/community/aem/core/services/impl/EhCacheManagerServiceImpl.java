@@ -189,7 +189,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
 
       CacheConfigurationBuilder<? extends Object, ? extends Object> builder =
           CacheConfigurationBuilder.newCacheConfigurationBuilder(
-              String.class, CacheBucketName.getMapValueTypes().get(innerCacheName), poolsBuilder
+              String.class, CacheBucketName.mapValueTypes.get(innerCacheName), poolsBuilder
           );
 
       int duration = config.duration();
