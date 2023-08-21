@@ -1,5 +1,9 @@
 package com.workday.community.aem.core.services.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.osgi.service.component.annotations.Activate;
@@ -108,7 +112,10 @@ public class LmsServiceImpl implements LmsService {
 
                 // Frame the request URL.
                 String url = CommunityUtils.formUrl(lmsUrl, courseDetailPath);
-                url = String.format(url, courseTitle);
+
+                // Encode title and format the URL.
+                url = String.format(url, URLEncoder.encode(courseTitle, StandardCharsets.UTF_8.toString())
+                        .replace(LmsConstants.PLUS, LmsConstants.ENCODED_SPACE));
 
                 // Execute the request.
                 APIResponse lmsResponse = RestApiUtil.doLmsCourseDetailGet(url, bearerToken);
@@ -126,7 +133,7 @@ public class LmsServiceImpl implements LmsService {
                 }
             }
             return StringUtils.EMPTY;
-        } catch (LmsException | JsonSyntaxException e) {
+        } catch (LmsException | JsonSyntaxException | UnsupportedEncodingException e) {
             LOGGER.error("Error in getCourseDetail method call :: {}", e.getMessage());
             throw new LmsException(
                     "There is an error while fetching the course detail. Please contact Community Admin.");
