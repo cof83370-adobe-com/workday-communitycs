@@ -103,6 +103,7 @@ public class RecurringEventsCreatorListenerTest {
     lenient().when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
     lenient().when(resource.adaptTo(Node.class)).thenReturn(expectedEventNode);
     lenient().when(resource.adaptTo(ValueMap.class)).thenReturn(expectedEventMap);
+
   }
 
   /**
@@ -139,8 +140,11 @@ public class RecurringEventsCreatorListenerTest {
     lenient().when(resolver.resolve(anyString())).thenReturn(newPageresource);
     lenient().when(newPageresource.adaptTo(Node.class)).thenReturn(expectedNewEventNode);
     String[] eventFormatTags = {"event:event-format/webinar"};
+    Calendar eventStartDateCalInstance = mock(Calendar.class);
+    Calendar eventEndDateCalInstance = mock(Calendar.class);
+    lenient().when(expectedEventMap.get("eventStartDate", Calendar.class)).thenReturn(eventStartDateCalInstance);
+    lenient().when(expectedEventMap.get("eventEndDate", Calendar.class)).thenReturn(eventEndDateCalInstance);
     lenient().when(expectedEventMap.get("eventFormat", String[].class)).thenReturn(eventFormatTags);
-
     lenient().when(expectedNewEventNode.getSession()).thenReturn(session);
     recurringEventsCreatorListener
         .generateRecurringEventPages(Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
