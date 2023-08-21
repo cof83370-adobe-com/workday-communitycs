@@ -9,7 +9,7 @@
     font-family: "Workday Adelle Sans", Roboto, sans-serif;
     background-color: #fff;
 	
-	@media (max-width: 768px) {
+	@media (max-width: 400px) {
 	.feature-event {
 		.feature-image {
         display: none !important;
@@ -23,8 +23,7 @@
 	@media (max-width: 1023px) {
 	h2.subject {
 	margin-left: 45px !important;
-    margin-bottom: 0 !important;
-	
+    margin-bottom: 0 !important;	
 	}
 	}
 
@@ -43,6 +42,7 @@
       .feature-image {
         height: 100%;
         border-top-left-radius: 8px;
+		width: 50%;
       }
 
       .detail {
@@ -96,18 +96,19 @@
       padding: 0 0 20px 30px !important;
 
       .event-text {
-        color: #0875e1!important;
-        font-family: Workday Adelle Sans;
-        font-size: 15px!important;
+        color: $wdc-color-blueberry-400 !important;
+        font-family: "Workday Adelle Sans", sans-serif;
+        font-weight: 600;
+        font-size: 14px !important;
         letter-spacing: .5px!important;
-        line-height: 22px!important;
+        line-height: 20px!important;
       }
     }
 
     h2.subject {
-		margin-left: 30px;
-		margin-bottom: 10px;
-      font-size: 24px;
+	  margin-left: 30px;
+	  margin-bottom: 10px;
+      font-size: 20px;
       font-weight: 600;
       line-height: 26px;
       letter-spacing: 0.5px;
