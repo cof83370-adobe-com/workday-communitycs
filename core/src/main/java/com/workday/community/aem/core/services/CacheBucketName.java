@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public enum CacheBucketName {
   BYTES_VALUE("bytes_value", "Cache bucket for value as bytes");
 
 
-  final public static Map<CacheBucketName, Class> mapValueTypes = new HashMap<>();
+  final private static Map<CacheBucketName, Class> mapValueTypes = new HashMap<>();
 
   static {
     mapValueTypes.put(CacheBucketName.GENERIC, Object.class);
@@ -32,4 +33,9 @@ public enum CacheBucketName {
     this.name = name;
     this.label = label;
   }
+
+  public static Map<CacheBucketName, Class> getMapValueTypes() {
+    return Collections.unmodifiableMap(mapValueTypes);
+  }
+
 }

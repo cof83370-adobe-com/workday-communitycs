@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.adobe.xfa.ut.StringUtils;
 import com.workday.community.aem.core.config.EhCacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
@@ -28,15 +27,12 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
-import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
-import static com.workday.community.aem.core.services.CacheBucketName.mapValueTypes;
 
 /**
  * The EhCacheManagerService implementation class.
@@ -193,7 +189,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
 
       CacheConfigurationBuilder<? extends Object, ? extends Object> builder =
           CacheConfigurationBuilder.newCacheConfigurationBuilder(
-              String.class, mapValueTypes.get(innerCacheName), poolsBuilder
+              String.class, CacheBucketName.getMapValueTypes().get(innerCacheName), poolsBuilder
           );
 
       int duration = config.duration();
