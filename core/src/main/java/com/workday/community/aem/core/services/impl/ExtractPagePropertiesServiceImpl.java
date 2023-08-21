@@ -190,7 +190,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
             if (!textList.isEmpty()) {
                 String description = String.join(" ", textList);
-                properties.put("description", description);
+                properties.put(org.apache.jackrabbit.vault.packaging.JcrPackageDefinition.NAME_DESCRIPTION, description);
             }
         }
         catch (CacheException | RepositoryException | SlingException e){

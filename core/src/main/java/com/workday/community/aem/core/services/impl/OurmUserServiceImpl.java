@@ -25,6 +25,8 @@ import com.workday.community.aem.core.utils.RestApiUtil;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 
+import static com.workday.community.aem.core.constants.RestApiConstants.GET_API;
+
 /**
  * The Class OurmUserServiceImpl.
  */
@@ -75,7 +77,7 @@ public class OurmUserServiceImpl implements OurmUserService {
 
                 String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath),
                         URLEncoder.encode(searchText, StandardCharsets.UTF_8));
-                String headerString = OAuth1Util.getHeader("GET", apiUrl, consumerKey, consumerSecret, new HashMap<>());
+                String headerString = OAuth1Util.getHeader(GET_API, apiUrl, consumerKey, consumerSecret, new HashMap<>());
                 LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
 
                 // Execute the request.

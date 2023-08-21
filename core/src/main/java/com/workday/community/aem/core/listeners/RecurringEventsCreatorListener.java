@@ -146,7 +146,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
             if (eventNode != null && eventNode.hasProperty(PROP_RECURRING_EVENTS)
                     && eventNode.getProperty(PROP_RECURRING_EVENTS).getString()
                             .equalsIgnoreCase("true")) {
-                String title = eventNode.getProperty("jcr:title").getString();
+                String title = eventNode.getProperty(com.day.cq.commons.jcr.JcrConstants.JCR_TITLE).getString();
                 ValueMap map = Objects.requireNonNull(resourceResolver.getResource(eventPagePath)).adaptTo(ValueMap.class);
                 String eventFrequency = eventNode.getProperty(PROP_EVENT_FREQUENCY).getString();
                 logger.debug("Creation of recurring events selected and frequency:{}", eventPagePath);
