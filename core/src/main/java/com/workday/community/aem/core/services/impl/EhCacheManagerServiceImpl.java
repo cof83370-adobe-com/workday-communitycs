@@ -15,7 +15,6 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
-import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.expiry.ExpiryPolicy;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -29,7 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
@@ -45,9 +46,7 @@ import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERV
 public class EhCacheManagerServiceImpl implements EhCacheManager {
   private final static Logger LOGGER = LoggerFactory.getLogger(EhCacheManagerServiceImpl.class);
   private final String INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY = "_service-resolver_";
-
   private CacheManager cacheManager;
-
   private EhCacheConfig config;
   final Map<String, Cache> caches = new HashMap<>();
 
@@ -72,6 +71,15 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     // Bootstrap some global cache here.
     this.getServiceResolver(READ_SERVICE_USER);
     this.getServiceResolver(ADMIN_SERVICE_USER);
+  }
+
+  @Deactivate
+  public void deactivate() {
+    if (cacheManager != null) {
+      // Need to specifically deal with close of ResourceResolver.
+      ClearAllCaches();
+      cacheManager.close();
+    }
   }
 
   @Override
@@ -113,11 +121,11 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     if (cacheName == null) {
       // clear all
       if (caches.isEmpty()) return;
+      closeCachedResolvers();
       for (String cacheKey : caches.keySet()) {
-        String name = cacheKey;
-        Cache cache = caches.get(name);
+        Cache cache = caches.get(cacheKey);
         cache.clear();
-        this.cacheManager.removeCache(name);
+        this.cacheManager.removeCache(cacheKey);
       }
 
       caches.clear();
@@ -150,10 +158,10 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
 
   // ====== Convenient Utility APIs ====== //
   @Override
-  public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
+  synchronized public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
     // No expiration of resolver.
     Cache<String, ResourceResolver> cache = getCache(CacheBucketName.GENERIC, INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
-    ResourceResolver resolver = cache.get(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
+    ResourceResolver resolver = Objects.requireNonNull(cache).get(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
     if (resolver == null) {
       try {
         resolver = ResolverUtil.newResolver(this.resourceResolverFactory, serviceUser);
@@ -186,7 +194,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
 //          poolsBuilder.disk(this.config.diskSize(), MemoryUnit.MB, true);
 //        }
 
-      CacheConfigurationBuilder<? extends Object, ? extends Object> builder =
+      CacheConfigurationBuilder<?, ?> builder =
           CacheConfigurationBuilder.newCacheConfigurationBuilder(
               String.class, CacheBucketName.mapValueTypes.get(innerCacheName), poolsBuilder
           );
@@ -222,10 +230,15 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     return innerCacheName;
   }
 
-  @Deactivate
-  public void deactivate() {
-    if (cacheManager != null) {
-      cacheManager.close();
+  private void closeCachedResolvers() {
+    Cache<String, ResourceResolver> resolverCache = caches.get(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
+    if (resolverCache != null) {
+      for (Cache.Entry<String, ResourceResolver> item : resolverCache) {
+        ResourceResolver resolver = item.getValue();
+        if (resolver.isLive()) {
+          item.getValue().close();
+        }
+      }
     }
   }
 }
