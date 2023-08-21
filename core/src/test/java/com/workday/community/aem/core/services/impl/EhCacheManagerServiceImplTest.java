@@ -58,7 +58,7 @@ public class EhCacheManagerServiceImplTest {
   @BeforeEach
   public void setup() {
     lenient().when(ehCacheConfig.heapSize()).thenReturn(10);
-    lenient().when(ehCacheConfig.offHeapSize()).thenReturn(1);
+//    lenient().when(ehCacheConfig.offHeapSize()).thenReturn(1);
   }
 
   @Test

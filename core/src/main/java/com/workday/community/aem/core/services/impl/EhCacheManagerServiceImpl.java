@@ -176,11 +176,10 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
       ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
           .heap(this.config.heapSize(), EntryUnit.ENTRIES);
 
-      if (this.config.offHeapSize() > 0) {
-        poolsBuilder.offheap(this.config.offHeapSize(), MemoryUnit.MB);
-      }
+//      if (this.config.offHeapSize() > 0) {
+//        poolsBuilder.offheap(this.config.offHeapSize(), MemoryUnit.MB);
+//      }
 
-      //TODO temporary disable
 //        String storagePath = config.storagePath();
 //        if (this.config.offHeapSize() > 0 && !StringUtils.isEmpty(storagePath) &&
 //            !storagePath.equals(CLOUD_CONFIG_NULL_VALUE) && this.config.diskSize() > 0) {
@@ -213,11 +212,11 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     try {
       innerCacheName = CacheBucketName.valueOf(cacheName);
     } catch (NullPointerException | IllegalArgumentException e) {
-      if (this.config.offHeapSize()  == -1) {
-        innerCacheName = CacheBucketName.BYTES_VALUE;
-      } else {
+//      if (this.config.offHeapSize()  == -1) {
+//        innerCacheName = CacheBucketName.BYTES_VALUE;
+//      } else {
         innerCacheName = CacheBucketName.GENERIC;
-      }
+//      }
     }
 
     return innerCacheName;
