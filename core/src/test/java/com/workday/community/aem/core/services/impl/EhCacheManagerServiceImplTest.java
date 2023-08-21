@@ -4,6 +4,7 @@ import com.workday.community.aem.core.config.EhCacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -27,8 +29,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Test class for EhCacheManagerServiceImpl.
@@ -58,11 +62,15 @@ public class EhCacheManagerServiceImplTest {
   }
 
   @Test
-  public void testActivate() {
+  public void testActivate() throws CacheException, LoginException {
     EhCacheManager ehCacheManager1 = new EhCacheManagerServiceImpl();
     lenient().when(ehCacheConfig.storagePath()).thenReturn("/foo");
-    ((EhCacheManagerServiceImpl) ehCacheManager1).activate(ehCacheConfig);
-    verify(ehCacheConfig, times(1)).storagePath();
+    try(MockedStatic<ResolverUtil> mockResolverUtils = mockStatic(ResolverUtil.class)) {
+      ResourceResolver resolver = mock(ResourceResolver.class);
+      mockResolverUtils.when(()->ResolverUtil.newResolver(any(), anyString())).thenReturn(resolver);
+      ((EhCacheManagerServiceImpl) ehCacheManager1).activate(ehCacheConfig);
+      verify(ehCacheConfig, times(2)).storagePath();
+    }
   }
 
   @Test
@@ -96,7 +104,6 @@ public class EhCacheManagerServiceImplTest {
     Cache cache = mock(Cache.class);
     lenient().when(cache.get(eq(TEST_KEY))).thenReturn(TEST_VALUE);
     lenient().when(cacheManager.createCache(anyString(), (CacheConfigurationBuilder) any())).thenThrow(new IllegalArgumentException("test failed"));
-
     String res = ehCacheManager.get(CacheBucketName.STRING_VALUE.name(), TEST_KEY);
     assertNull(res);
   }
@@ -119,6 +126,14 @@ public class EhCacheManagerServiceImplTest {
     lenient().when(cache.get(eq(TEST_KEY))).thenReturn(TEST_VALUE);
     String res = ehCacheManager.get(CacheBucketName.STRING_VALUE.name(), TEST_KEY);
     assertEquals(res, TEST_VALUE);
+  }
+
+  @Test
+  public void testPutWithException() {
+    lenient().when(cacheManager.createCache(anyString(), (CacheConfigurationBuilder) any())).thenThrow(new IllegalArgumentException("test failed"));
+    ehCacheManager.put(TEST_CACHE_BUCKET, TEST_KEY, TEST_VALUE);
+    String val = ehCacheManager.get(TEST_CACHE_BUCKET, TEST_KEY);
+    assertNull(val);
   }
 
   @Test

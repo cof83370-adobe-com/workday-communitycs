@@ -33,7 +33,9 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.services.CacheBucketName.mapValueTypes;
 
 /**
@@ -59,7 +61,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
 
   @Activate
   @Modified
-  public void activate(EhCacheConfig config){
+  public void activate(EhCacheConfig config) throws CacheException{
     this.config = config;
     if (cacheManager == null) {
       CacheManagerBuilder<CacheManager> builder = CacheManagerBuilder.newCacheManagerBuilder();
@@ -69,6 +71,10 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
       }
       this.cacheManager = builder.build(true);
     }
+
+    // Bootstrap some global cache here.
+    this.getServiceResolver(READ_SERVICE_USER);
+    this.getServiceResolver(ADMIN_SERVICE_USER);
   }
 
   @Override

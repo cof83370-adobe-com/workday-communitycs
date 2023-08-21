@@ -8,6 +8,8 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.services.EhCacheManager;
 import com.workday.community.aem.core.utils.DamUtils;
+import com.workday.community.aem.core.utils.ResolverUtil;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -74,7 +76,10 @@ public class CategoryFacetModel {
      */
     @PostConstruct
     private void init() throws DamException {
-        try (ResourceResolver resolver = ehCacheManager.getServiceResolver(READ_SERVICE_USER)) {
+
+        try (ResourceResolver resolver = ehCacheManager == null?
+            ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER) :
+            ehCacheManager.getServiceResolver(READ_SERVICE_USER)) {
             TagManager tagManager = resolver != null ?  resolver.adaptTo(TagManager.class): null;
             Tag tag = tagManager != null ? tagManager.resolve(category): null;
             if (tag == null) {
@@ -108,7 +113,7 @@ public class CategoryFacetModel {
                     subCategory = "\"" + String.join("\", \"", tags) + "\"";
                 }
             }
-        } catch (CacheException e) {
+        } catch (CacheException | LoginException e) {
             LOGGER.error("Initialization of CategoryFacetModel fails");
         }
     }
