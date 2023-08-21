@@ -65,10 +65,11 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     this.config = config;
     if (cacheManager == null) {
       CacheManagerBuilder<CacheManager> builder = CacheManagerBuilder.newCacheManagerBuilder();
-      String storagePath = config.storagePath();
-      if (!StringUtils.isEmpty(storagePath) && !storagePath.equals(CLOUD_CONFIG_NULL_VALUE)) {
-        builder.with(CacheManagerBuilder.persistence(new File(storagePath, "myData")));
-      }
+      //TODO disable persistence at this point.
+//      String storagePath = config.storagePath();
+//      if (!StringUtils.isEmpty(storagePath) && !storagePath.equals(CLOUD_CONFIG_NULL_VALUE)) {
+//        builder.with(CacheManagerBuilder.persistence(new File(storagePath, "cacheData")));
+//      }
       this.cacheManager = builder.build(true);
     }
 
@@ -176,37 +177,36 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
       if (cache != null) return cache;
       if (key == null) return null;
 
-      synchronized(this) {
-        ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
-            .heap(this.config.heapSize(), EntryUnit.ENTRIES);
+      ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
+          .heap(this.config.heapSize(), EntryUnit.ENTRIES);
 
-        if (this.config.offHeapSize() > 0) {
-          poolsBuilder.offheap(this.config.offHeapSize(), MemoryUnit.MB);
-        }
-
-        String storagePath = config.storagePath();
-        if (this.config.offHeapSize() > 0 && !StringUtils.isEmpty(storagePath) &&
-            !storagePath.equals(CLOUD_CONFIG_NULL_VALUE) && this.config.diskSize() > 0) {
-          poolsBuilder.disk(this.config.diskSize(), MemoryUnit.MB, true);
-        }
-
-        CacheConfigurationBuilder<? extends Object, ? extends Object> builder =
-            CacheConfigurationBuilder.newCacheConfigurationBuilder(
-                String.class, mapValueTypes.get(innerCacheName), poolsBuilder
-            );
-
-        int duration = config.duration();
-        // Resolver no need to expire in cache once it is created.
-        if (duration == -1 || key.equals(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY) ) {
-          builder.withExpiry(ExpiryPolicy.NO_EXPIRY);
-        } else if (duration > 0) {
-          builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(duration)));
-        }
-
-        cache = (Cache<String, V>) cacheManager.createCache(innerCacheName.name(), builder);
-        caches.put(innerCacheName.name(), cache);
-        return cache;
+      if (this.config.offHeapSize() > 0) {
+        poolsBuilder.offheap(this.config.offHeapSize(), MemoryUnit.MB);
       }
+
+      //TODO temporary disable
+//        String storagePath = config.storagePath();
+//        if (this.config.offHeapSize() > 0 && !StringUtils.isEmpty(storagePath) &&
+//            !storagePath.equals(CLOUD_CONFIG_NULL_VALUE) && this.config.diskSize() > 0) {
+//          poolsBuilder.disk(this.config.diskSize(), MemoryUnit.MB, true);
+//        }
+
+      CacheConfigurationBuilder<? extends Object, ? extends Object> builder =
+          CacheConfigurationBuilder.newCacheConfigurationBuilder(
+              String.class, mapValueTypes.get(innerCacheName), poolsBuilder
+          );
+
+      int duration = config.duration();
+      // Resolver no need to expire in cache once it is created.
+      if (duration == -1 || key.equals(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY) ) {
+        builder.withExpiry(ExpiryPolicy.NO_EXPIRY);
+      } else if (duration > 0) {
+        builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(duration)));
+      }
+
+      cache = (Cache<String, V>) cacheManager.createCache(innerCacheName.name(), builder);
+      caches.put(innerCacheName.name(), cache);
+      return cache;
     } catch (IllegalArgumentException e) {
       throw new CacheException("Can't create or retrieve cache from the cache store");
     }

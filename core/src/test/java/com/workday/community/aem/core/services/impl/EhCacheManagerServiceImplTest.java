@@ -64,12 +64,10 @@ public class EhCacheManagerServiceImplTest {
   @Test
   public void testActivate() throws CacheException, LoginException {
     EhCacheManager ehCacheManager1 = new EhCacheManagerServiceImpl();
-    lenient().when(ehCacheConfig.storagePath()).thenReturn("/foo");
     try(MockedStatic<ResolverUtil> mockResolverUtils = mockStatic(ResolverUtil.class)) {
       ResourceResolver resolver = mock(ResourceResolver.class);
       mockResolverUtils.when(()->ResolverUtil.newResolver(any(), anyString())).thenReturn(resolver);
       ((EhCacheManagerServiceImpl) ehCacheManager1).activate(ehCacheConfig);
-      verify(ehCacheConfig, times(2)).storagePath();
     }
   }
 
