@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -76,7 +75,6 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   @Deactivate
   public void deactivate() {
     if (cacheManager != null) {
-      // Need to specifically deal with close of ResourceResolver.
       ClearAllCaches();
       cacheManager.close();
     }

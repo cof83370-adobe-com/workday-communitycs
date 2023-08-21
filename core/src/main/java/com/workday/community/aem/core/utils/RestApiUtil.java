@@ -48,7 +48,7 @@ public class RestApiUtil {
    * @param apiKey   apiKey
    * @param traceId  traceId
    * @return the API response from menu API call
-   * @throws SnapException
+   * @throws SnapException SnapException object.
    */
   public static APIResponse doMenuGet(String url, String apiToken, String apiKey, String traceId)
       throws SnapException {
@@ -70,7 +70,7 @@ public class RestApiUtil {
    * @param authToken Photo API token.
    * @param xApiKey   API secret key.
    * @return the Json response as String from snap logic API call.
-   * @throws SnapException
+   * @throws SnapException SnapException object.
    */
   public static String doSnapGet(String url, String authToken, String xApiKey) throws SnapException {
     try {
@@ -106,7 +106,7 @@ public class RestApiUtil {
    * 
    * @param req API request.
    * @return Response from API.
-   * @throws APIException
+   * @throws APIException APIException object.
    */
   private static APIResponse executeGetRequest(APIRequest req) throws APIException {
     APIResponse apiresponse = new APIResponse();
@@ -171,7 +171,7 @@ public class RestApiUtil {
    * 
    * @param request API Request object
    * @return API Response object
-   * @throws APIException
+   * @throws APIException APIException object.
    */
   private static APIResponse executePostRequest(APIRequest request) throws APIException {
     APIResponse apiresponse = new APIResponse();
@@ -211,7 +211,7 @@ public class RestApiUtil {
    * @param password Password
    * @return Header string
    */
-  private static final String getBasicAuthenticationHeader(String username, String password) {
+  private static String getBasicAuthenticationHeader(String username, String password) {
     String valueToEncode = username + ":" + password;
     return RestApiConstants.BASIC + " " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
   }
@@ -228,9 +228,9 @@ public class RestApiUtil {
       if (builder.length() > 0) {
         builder.append("&");
       }
-      builder.append(URLEncoder.encode(entry.getKey().toString(), StandardCharsets.UTF_8));
+      builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
       builder.append("=");
-      builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
+      builder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
     }
     return HttpRequest.BodyPublishers.ofString(builder.toString());
   }
@@ -265,7 +265,7 @@ public class RestApiUtil {
    * @param clientSecret Client Secret
    * @param refreshToken Refresh Token
    * @return API Response
-   * @throws LmsException
+   * @throws LmsException LmsException object.
    */
   public static APIResponse doLmsTokenGet(String url, String clientId, String clientSecret, String refreshToken)
       throws LmsException {
@@ -286,7 +286,7 @@ public class RestApiUtil {
    * @param url         Url
    * @param bearerToken Bearer Token
    * @return API Response
-   * @throws LmsException
+   * @throws LmsException LmsException object.
    */
   public static APIResponse doLmsCourseDetailGet(String url, String bearerToken) throws LmsException {
     try {
