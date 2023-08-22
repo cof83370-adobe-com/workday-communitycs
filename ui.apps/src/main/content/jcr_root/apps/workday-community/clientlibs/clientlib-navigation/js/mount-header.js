@@ -44,7 +44,7 @@ function renderNavHeader() {
             menus: headerMenu,
             skipTo: 'mainContentId',
             sticky: true,
-            searchProps: { redirectPath: searchURL }
+            searchProps: { redirectPath: searchURL, querySeparator: '#', queryParameterName: 'q' }
         };
 
         if (stringValid(homePage)) {
