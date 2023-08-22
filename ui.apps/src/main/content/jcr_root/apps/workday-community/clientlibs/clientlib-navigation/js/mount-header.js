@@ -15,42 +15,51 @@ function renderNavHeader() {
     const headerDiv = document.getElementById('community-header-div');
 
     if (headerDiv !== undefined && headerDiv !== null) {
-        let headerStringData = headerDiv.getAttribute('data-model-property');
-        let avatarUrl = headerDiv.getAttribute("data-model-avatar");
-        let homePage = headerDiv.getAttribute("data-prop-home");
-        let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
-        let searchURL = headerDiv.getAttribute('data-search-url');
-        if (dataLayer) {
-            let dataLayerObj = JSON.parse(dataLayer);
-            window.digitalData = dataLayerObj.digitalData;
-        }
+        let headerData = sessionStorage.getItem('navigation-data');
+        if (!headerData) {
+            let headerStringData = headerDiv.getAttribute('data-model-property');
+            let avatarUrl = headerDiv.getAttribute("data-model-avatar");
+            let homePage = headerDiv.getAttribute("data-prop-home");
+            let searchURL = headerDiv.getAttribute('data-search-url');
 
-        let headerMenu;
-        if (stringValid(headerStringData)) {
-            headerMenu = JSON.parse(headerStringData);
+            let headerMenu;
+            if (stringValid(headerStringData)) {
+                headerMenu = JSON.parse(headerStringData);
 
-            if (!headerMenu.profile) {
-                headerMenu.profile = [];
+                if (!headerMenu.profile) {
+                    headerMenu.profile = [];
+                }
+
+                if (stringValid(avatarUrl)) {
+                    headerMenu.profile.avatar = { ...headerMenu.profile.avatar, data: avatarUrl };
+                }
+
+                headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
             }
 
-            if (stringValid(avatarUrl)) {
-                headerMenu.profile.avatar = { ...headerMenu.profile.avatar, data: avatarUrl };
+            headerData = {
+                menus: headerMenu,
+                skipTo: 'mainContentId',
+                sticky: true,
+                searchProps: { redirectPath: searchURL, querySeparator: '#', queryParameterName: 'q' }
+            };
+
+            if (stringValid(homePage)) {
+                headerData.homeUrl = homePage;
             }
 
-            headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
+            headerData = JSON.stringify(headerData);
+            sessionStorage.setItem('navigation-data', headerData);
+
+            // Although the digitalData set at window object, we set it in session scope.
+            let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
+            if (dataLayer) {
+              let dataLayerObj = JSON.parse(dataLayer);
+              window.digitalData = dataLayerObj.digitalData;
+            }
         }
 
-        const headerData = {
-            menus: headerMenu,
-            skipTo: 'mainContentId',
-            sticky: true,
-            searchProps: { redirectPath: searchURL, querySeparator: '#', queryParameterName: 'q' }
-        };
-
-        if (stringValid(homePage)) {
-            headerData.homeUrl = homePage;
-        }
-
+        headerData = JSON.parse(headerData);
         const headerElement = React.createElement(Cmty.GlobalHeader, headerData);
         ReactDOM.render(headerElement, headerDiv);
     }

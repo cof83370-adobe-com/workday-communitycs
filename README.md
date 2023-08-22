@@ -2,6 +2,8 @@
 
 This is an AEM project of Wokday Community site. This repository contains community AEM components and integrations of community react library and related systems.
 
+This project is generated with AEM [Archetype 40](https://confluence.workday.com/display/WEBS/Regeneration+of+community+AEM+repository+Archetype+40)
+
 ## Modules
 
 The main parts of the template are:
