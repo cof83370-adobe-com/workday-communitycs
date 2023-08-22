@@ -9,13 +9,12 @@ import java.util.Map;
  *   2: Put it in the mapValueTypes to define data type for values stored in the cache bucket.
  */
 public enum CacheBucketName {
-  REGULAR_GENERIC("generic_object", "Cache bucket name for object value"),
-  STRING_VALUE("string_value", "Cache bucket for string value");
+  OBJECT_VALUE("object_value_cache", "Cache bucket name for cached object"),
+  STRING_VALUE("string_value_cache", "Cache bucket for string value");
 
   public final static Map<CacheBucketName, Class> mapValueTypes = Map.of(
-      CacheBucketName.REGULAR_GENERIC,
-      Object.class, CacheBucketName.STRING_VALUE,
-      Byte.class
+      CacheBucketName.OBJECT_VALUE, Object.class,
+      CacheBucketName.STRING_VALUE, Byte.class
   );
 
   final String label;

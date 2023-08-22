@@ -4,6 +4,7 @@ import com.workday.community.aem.core.config.EhCacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -28,10 +29,6 @@ import org.slf4j.LoggerFactory;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 
 /**
  * The EhCacheManagerService implementation class.
@@ -43,9 +40,9 @@ import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERV
 @Designate(ocd = EhCacheConfig.class)
 public class EhCacheManagerServiceImpl implements EhCacheManager {
   private final static Logger LOGGER = LoggerFactory.getLogger(EhCacheManagerServiceImpl.class);
-  private final String INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY = "_service-resolver_";
   private CacheManager cacheManager;
   private EhCacheConfig config;
+  private final LRUCacheWithTimeout<String, ResourceResolver> resolverCache = new LRUCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
   final Map<String, Cache> caches = new HashMap<>();
 
   /** The resource resolver factory. */
@@ -58,17 +55,8 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     this.config = config;
     if (cacheManager == null) {
       CacheManagerBuilder<CacheManager> builder = CacheManagerBuilder.newCacheManagerBuilder();
-      //TODO disable persistence at this point.
-//      String storagePath = config.storagePath();
-//      if (!StringUtils.isEmpty(storagePath) && !storagePath.equals(CLOUD_CONFIG_NULL_VALUE)) {
-//        builder.with(CacheManagerBuilder.persistence(new File(storagePath, "cacheData")));
-//      }
       this.cacheManager = builder.build(true);
     }
-
-    // Bootstrap some global cache here.
-    this.getServiceResolver(READ_SERVICE_USER);
-    this.getServiceResolver(ADMIN_SERVICE_USER);
   }
 
   @Deactivate
@@ -77,6 +65,8 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
       ClearAllCaches();
       cacheManager.close();
     }
+
+    closeAndClearCachedResolvers();
   }
 
   @Override
@@ -118,7 +108,6 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     if (cacheName == null) {
       // clear all
       if (caches.isEmpty()) return;
-      closeCachedResolvers();
       for (String cacheKey : caches.keySet()) {
         Cache cache = caches.get(cacheKey);
         cache.clear();
@@ -157,15 +146,14 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   @Override
   synchronized public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
     // No expiration of resolver.
-    Cache<String, ResourceResolver> cache = getCache(CacheBucketName.REGULAR_GENERIC, INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
-    ResourceResolver resolver = Objects.requireNonNull(cache).get(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
+    ResourceResolver resolver = resolverCache.get(serviceUser);
     if (resolver == null) {
       try {
         resolver = ResolverUtil.newResolver(this.resourceResolverFactory, serviceUser);
       } catch (LoginException e) {
         throw new CacheException("Failed to create Resolver in EhCacheManagerImpl");
       }
-      cache.put(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY, resolver);
+      resolverCache.put(serviceUser, resolver);
     }
 
     return resolver;
@@ -178,7 +166,8 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
       if (cache != null) return cache;
       if (key == null) return null;
 
-      ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
+      ResourcePoolsBuilder poolsBuilder;
+      poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
           .heap(this.config.heapSize(), EntryUnit.ENTRIES);
 
      CacheConfigurationBuilder<?, ?> builder =
@@ -186,20 +175,8 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
               String.class, CacheBucketName.mapValueTypes.get(innerCacheName), poolsBuilder
           );
 
-      // Resolver no need to expire in cache once it is created.
-      int longDuration = config.longDuration();
-      int regularDuration = config.regularDuration();
-      int shortDuration = config.shortDuration();
-      if (key.equals(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY) && longDuration > 0) {
-        builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(longDuration)));
-      } else if (
-          (key.equals(CacheBucketName.REGULAR_GENERIC.name()) || key.equals(CacheBucketName.STRING_VALUE.name()))
-           && regularDuration > 0
-      ) {
-        builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(regularDuration)));
-      } else if (shortDuration > 0) {
-        builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(shortDuration)));
-      }
+      int regularDuration = config.duration();
+      builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(regularDuration)));
 
       cache = (Cache<String, V>) cacheManager.createCache(innerCacheName.name(), builder);
       caches.put(innerCacheName.name(), cache);
@@ -214,25 +191,19 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
     try {
       innerCacheName = CacheBucketName.valueOf(cacheName);
     } catch (NullPointerException | IllegalArgumentException e) {
-//      if (this.config.offHeapSize()  == -1) {
-//        innerCacheName = CacheBucketName.BYTES_VALUE;
-//      } else {
-        innerCacheName = CacheBucketName.REGULAR_GENERIC;
-//      }
+      innerCacheName = CacheBucketName.OBJECT_VALUE;
     }
 
     return innerCacheName;
   }
 
-  private void closeCachedResolvers() {
-    Cache<String, ResourceResolver> resolverCache = caches.get(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
-    if (resolverCache != null) {
-      for (Cache.Entry<String, ResourceResolver> item : resolverCache) {
-        ResourceResolver resolver = item.getValue();
-        if (resolver.isLive()) {
-          item.getValue().close();
-        }
+  private void closeAndClearCachedResolvers() {
+    for (String key :resolverCache.keySet()) {
+       ResourceResolver resolver = resolverCache.get(key);
+      if (resolver.isLive()) {
+        resolver.close();
       }
     }
+    resolverCache.clear();
   }
 }

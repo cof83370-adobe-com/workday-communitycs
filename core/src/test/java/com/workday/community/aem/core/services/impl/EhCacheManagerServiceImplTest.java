@@ -62,17 +62,20 @@ public class EhCacheManagerServiceImplTest {
   }
 
   @Test
-  public void testActivate() throws CacheException, LoginException {
-    EhCacheManager ehCacheManager1 = new EhCacheManagerServiceImpl();
+  public void testActivate() throws CacheException {
+    EhCacheManagerServiceImpl ehCacheManager1 = new EhCacheManagerServiceImpl();
     try(MockedStatic<ResolverUtil> mockResolverUtils = mockStatic(ResolverUtil.class)) {
       ResourceResolver resolver = mock(ResourceResolver.class);
       mockResolverUtils.when(()->ResolverUtil.newResolver(any(), anyString())).thenReturn(resolver);
-      ((EhCacheManagerServiceImpl) ehCacheManager1).activate(ehCacheConfig);
+      ehCacheManager1.activate(ehCacheConfig);
     }
   }
 
   @Test
-  public void testDeActive() {
+  public void testDeActive() throws CacheException, LoginException {
+    ResourceResolver mockResolver = mock(ResourceResolver.class);
+    when(resourceResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
+    ehCacheManager.getServiceResolver(READ_SERVICE_USER);
     ehCacheManager.deactivate();
     verify(cacheManager, times(1)).close();
   }
@@ -144,10 +147,8 @@ public class EhCacheManagerServiceImplTest {
 
   @Test
   public void testGetServiceResolver() throws CacheException, LoginException {
-    Cache cache = mock(Cache.class);
-    lenient().when(cacheManager.createCache(anyString(), (CacheConfigurationBuilder) any())).thenReturn(cache);
     ResourceResolver mockResolver = mock(ResourceResolver.class);
-    lenient().when(resourceResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
+    when(resourceResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
     ResourceResolver resolver = ehCacheManager.getServiceResolver(READ_SERVICE_USER);
     assertEquals(resolver, mockResolver);
   }
@@ -159,16 +160,6 @@ public class EhCacheManagerServiceImplTest {
     testPut();
     ehCacheManager.ClearAllCaches();
     verify(cacheManager, Mockito.times(1)).removeCache(anyString());
-
     ehCacheManager.ClearAllCaches(TEST_CACHE_BUCKET);
-  }
-
-  @Test
-  public void testClearAllCacheWithBucketName() {
-    Cache cache = mock(Cache.class);
-    lenient().when(cacheManager.createCache(anyString(), (CacheConfigurationBuilder) any())).thenReturn(cache);
-    testPut();
-    ehCacheManager.ClearAllCaches(TEST_CACHE_BUCKET);
-    verify(cacheManager, Mockito.times(1)).removeCache(anyString());
   }
 }

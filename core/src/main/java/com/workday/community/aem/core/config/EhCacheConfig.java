@@ -11,26 +11,12 @@ public @interface EhCacheConfig {
       description = "Cache pool heap size",
       type = AttributeType.INTEGER
   )
-  int heapSize() default 10;
+  int heapSize() default 20;
 
   @AttributeDefinition(
-     name = "Regular Cache duration in seconds",
-     description = "Regular Cache duration in seconds (default 1 day)",
-     type = AttributeType.INTEGER
-  )
- int longDuration() default 12 * 60 * 60;
-
-  @AttributeDefinition(
-      name = "Regular Cache duration in seconds",
-      description = "Regular Cache duration in seconds (default 1 hours)",
+      name = "Cache duration in seconds",
+      description = "Cache duration in seconds (default 1 hours)",
       type = AttributeType.INTEGER
   )
-  int regularDuration() default 60 * 60;
-
-  @AttributeDefinition(
-      name = "Short Cache duration in seconds",
-      description = "Short Cache duration in seconds (default 10 minutes)",
-      type = AttributeType.INTEGER
-  )
-  int shortDuration() default 10 * 60;
+  int duration() default 60 * 60;
 }
