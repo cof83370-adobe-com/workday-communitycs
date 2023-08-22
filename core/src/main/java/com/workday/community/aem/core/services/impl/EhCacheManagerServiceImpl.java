@@ -15,7 +15,6 @@ import org.ehcache.config.builders.CacheManagerBuilder;
 import org.ehcache.config.builders.ExpiryPolicyBuilder;
 import org.ehcache.config.builders.ResourcePoolsBuilder;
 import org.ehcache.config.units.EntryUnit;
-import org.ehcache.expiry.ExpiryPolicy;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -158,7 +157,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   @Override
   synchronized public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
     // No expiration of resolver.
-    Cache<String, ResourceResolver> cache = getCache(CacheBucketName.GENERIC, INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
+    Cache<String, ResourceResolver> cache = getCache(CacheBucketName.REGULAR_GENERIC, INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
     ResourceResolver resolver = Objects.requireNonNull(cache).get(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY);
     if (resolver == null) {
       try {
@@ -182,27 +181,24 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
       ResourcePoolsBuilder poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
           .heap(this.config.heapSize(), EntryUnit.ENTRIES);
 
-//      if (this.config.offHeapSize() > 0) {
-//        poolsBuilder.offheap(this.config.offHeapSize(), MemoryUnit.MB);
-//      }
-
-//        String storagePath = config.storagePath();
-//        if (this.config.offHeapSize() > 0 && !StringUtils.isEmpty(storagePath) &&
-//            !storagePath.equals(CLOUD_CONFIG_NULL_VALUE) && this.config.diskSize() > 0) {
-//          poolsBuilder.disk(this.config.diskSize(), MemoryUnit.MB, true);
-//        }
-
-      CacheConfigurationBuilder<?, ?> builder =
+     CacheConfigurationBuilder<?, ?> builder =
           CacheConfigurationBuilder.newCacheConfigurationBuilder(
               String.class, CacheBucketName.mapValueTypes.get(innerCacheName), poolsBuilder
           );
 
-      int duration = config.duration();
       // Resolver no need to expire in cache once it is created.
-      if (duration == -1 || key.equals(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY) ) {
-        builder.withExpiry(ExpiryPolicy.NO_EXPIRY);
-      } else if (duration > 0) {
-        builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(duration)));
+      int longDuration = config.longDuration();
+      int regularDuration = config.regularDuration();
+      int shortDuration = config.shortDuration();
+      if (key.equals(INTERNAL_READ_SERVICE_RESOLVER_CACHE_KEY) && longDuration > 0) {
+        builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(longDuration)));
+      } else if (
+          (key.equals(CacheBucketName.REGULAR_GENERIC.name()) || key.equals(CacheBucketName.STRING_VALUE.name()))
+           && regularDuration > 0
+      ) {
+        builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(regularDuration)));
+      } else if (shortDuration > 0) {
+        builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(shortDuration)));
       }
 
       cache = (Cache<String, V>) cacheManager.createCache(innerCacheName.name(), builder);
@@ -221,7 +217,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
 //      if (this.config.offHeapSize()  == -1) {
 //        innerCacheName = CacheBucketName.BYTES_VALUE;
 //      } else {
-        innerCacheName = CacheBucketName.GENERIC;
+        innerCacheName = CacheBucketName.REGULAR_GENERIC;
 //      }
     }
 

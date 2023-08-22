@@ -162,7 +162,7 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public JsonObject getUserContext(String sfId) {
     String key = String.format("profile-%s", sfId);
-    JsonObject cacheResult = ehCacheMgr.get(CacheBucketName.GENERIC.name(), key);
+    JsonObject cacheResult = ehCacheMgr.get(CacheBucketName.REGULAR_GENERIC.name(), key);
     if (cacheResult != null) return cacheResult;
 
     try {
@@ -175,7 +175,7 @@ public class SnapServiceImpl implements SnapService {
       url = String.format(url, sfId);
       String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
       JsonObject res = gson.fromJson(jsonResponse, JsonObject.class);
-      ehCacheMgr.put(CacheBucketName.GENERIC.name(), key, res);
+      ehCacheMgr.put(CacheBucketName.REGULAR_GENERIC.name(), key, res);
       return res;
     } catch (SnapException | JsonSyntaxException e) {
       logger.error("Error in getUserContext method :: {}", e.getMessage());
@@ -188,7 +188,7 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public ProfilePhoto getProfilePhoto(String userId) {
     String key = String.format("photo-%s", userId);
-    ProfilePhoto cacheResult = ehCacheMgr.get(CacheBucketName.GENERIC.name(), key);
+    ProfilePhoto cacheResult = ehCacheMgr.get(CacheBucketName.REGULAR_GENERIC.name(), key);
     if (cacheResult != null) return cacheResult;
 
     String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
@@ -201,7 +201,7 @@ public class SnapServiceImpl implements SnapService {
       if (jsonResponse != null) {
         ObjectMapper objectMapper = new ObjectMapper();
         ProfilePhoto profilePhoto = objectMapper.readValue(jsonResponse, ProfilePhoto.class);
-        ehCacheMgr.put(CacheBucketName.GENERIC.name(), key, profilePhoto);
+        ehCacheMgr.put(CacheBucketName.REGULAR_GENERIC.name(), key, profilePhoto);
         return profilePhoto;
       }
     } catch (SnapException | JsonProcessingException e) {
@@ -216,13 +216,13 @@ public class SnapServiceImpl implements SnapService {
    * @return The menu.
    */
   private JsonObject getDefaultHeaderMenu() {
-    JsonObject defaultMenu = ehCacheMgr.get(CacheBucketName.GENERIC.name(), "default-menu");
+    JsonObject defaultMenu = ehCacheMgr.get(CacheBucketName.REGULAR_GENERIC.name(), "default-menu");
     if (defaultMenu != null) return defaultMenu;
     try {
       ResourceResolver resourceResolver = this.ehCacheMgr.getServiceResolver(READ_SERVICE_USER);
       // Reading the JSON File from DAM.
       defaultMenu = DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
-      ehCacheMgr.put(CacheBucketName.GENERIC.name(), "default-menu", defaultMenu);
+      ehCacheMgr.put(CacheBucketName.REGULAR_GENERIC.name(), "default-menu", defaultMenu);
       return defaultMenu;
     } catch (CacheException | DamException e) {
       logger.error(String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s", e.getMessage()));
@@ -392,11 +392,11 @@ public class SnapServiceImpl implements SnapService {
    */
   private String getUserAvatar(String sfId) {
     String key = String.format("avatar_%s", sfId);
-    ProfilePhoto content = ehCacheMgr.get(CacheBucketName.GENERIC.name(), key);
+    ProfilePhoto content = ehCacheMgr.get(CacheBucketName.REGULAR_GENERIC.name(), key);
     if (content == null) {
       content = getProfilePhoto(sfId);
       if (content != null) {
-        ehCacheMgr.put(CacheBucketName.GENERIC.name(), key, content);
+        ehCacheMgr.put(CacheBucketName.REGULAR_GENERIC.name(), key, content);
       }
     }
 
