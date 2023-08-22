@@ -36,6 +36,16 @@
                                             fieldLabel="Handlebar Content"
                                             name="./htmlContent"
                                             required="{Boolean}true" />
+                                            <embedModel
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                            text="Embed model"
+                                            fieldDescription="This value indicates sling model embedding in the component."
+                                            granite:class="embedModel"
+                                            name="./embedModel"
+                                            uncheckedValue="false"
+                                            value="true"
+                                            checked="false" />
                                         </items>
                                     </column>
                                 </items>

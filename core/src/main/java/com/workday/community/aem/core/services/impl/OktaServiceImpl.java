@@ -30,11 +30,6 @@ public class OktaServiceImpl implements OktaService {
   }
 
   @Override
-  public String getRedirectUri() {
-    return config.redirectUri();
-  }
-
-  @Override
   public String getCustomDomain() {
     return config.customDomain();
   }

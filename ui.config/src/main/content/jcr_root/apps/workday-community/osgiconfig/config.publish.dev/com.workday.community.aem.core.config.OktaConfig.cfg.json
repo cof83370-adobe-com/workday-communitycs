@@ -1,5 +1,4 @@
 {
     "customDomain":"$[env:oktaCustomDomain]",
-    "redirectUri":"$[env.oktaRedirectUri]",
     "isOktaIntegrationEnabled": true
 }
