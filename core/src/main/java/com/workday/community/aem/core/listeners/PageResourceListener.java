@@ -9,7 +9,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -50,7 +50,7 @@ public class PageResourceListener implements ResourceChangeListener {
 
     /** The cache manager */
     @Reference
-    EhCacheManager ehCacheManager;
+    CacheManagerService cacheManager;
 
     /** The query service. */
     @Reference
@@ -80,7 +80,7 @@ public class PageResourceListener implements ResourceChangeListener {
      * @param pagePath the page path.
      */
     public void handleNewPage(String pagePath) {
-        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
             if (resourceResolver.getResource(pagePath) != null) {
                 addInternalWorkmatesTag(pagePath, resourceResolver);
                 addAuthorPropertyToContentNode(pagePath, resourceResolver);
@@ -162,7 +162,7 @@ public class PageResourceListener implements ResourceChangeListener {
      * @param pagePath the page path
      */
     public void removeBookNodes(String pagePath) {
-        try (ResourceResolver resolver = ehCacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+        try (ResourceResolver resolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
             if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
                 List<String> paths = queryService.getBookNodesByPath(pagePath, null);
                 for (String path : paths) {

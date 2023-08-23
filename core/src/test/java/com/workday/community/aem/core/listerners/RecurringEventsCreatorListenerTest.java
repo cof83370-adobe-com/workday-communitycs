@@ -14,7 +14,7 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
@@ -46,7 +46,7 @@ public class RecurringEventsCreatorListenerTest {
   RecurringEventsCreatorListener recurringEventsCreatorListener;
 
   @Mock
-  EhCacheManager ehCacheManager;
+  CacheManagerService cacheManager;
 
   /**
    * The page manager.
@@ -94,7 +94,7 @@ public class RecurringEventsCreatorListenerTest {
     Page currentPage = Objects.requireNonNull(context.currentResource("/content/sample-recurring-events-page")).adaptTo(Page.class);
     context.registerService(Page.class, Objects.requireNonNull(currentPage));
     context.registerService(ResourceResolver.class, resolver);
-    lenient().when(ehCacheManager.getServiceResolver(anyString())).thenReturn(resolver);
+    lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
     Resource resource = mock(Resource.class);
     expectedEventNode = mock(Node.class);
     expectedEventMap = mock(ValueMap.class);
@@ -215,7 +215,7 @@ public class RecurringEventsCreatorListenerTest {
     lenient().when(newPageresource.adaptTo(Node.class)).thenReturn(expectedNewEventNode);
     String[] eventFormatTags = {"event:event-format/webinar"};
     lenient().when(expectedEventMap.get("eventFormat", String[].class)).thenReturn(eventFormatTags);
-    lenient().when(ehCacheManager.getServiceResolver(anyString())).thenReturn(resolver);
+    lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
     lenient().when(expectedNewEventNode.getSession()).thenReturn(session);
     recurringEventsCreatorListener
         .generateRecurringEventPages(Objects.requireNonNull(context.currentPage()).getContentResource().getPath());

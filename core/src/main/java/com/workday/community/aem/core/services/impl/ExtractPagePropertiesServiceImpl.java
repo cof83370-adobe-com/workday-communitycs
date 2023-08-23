@@ -7,7 +7,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Component;
@@ -51,7 +51,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
     /** The cache manager **/
     @Reference
-    EhCacheManager ehCacheManager;
+    CacheManagerService cacheManager;
     
     /** The run mode config service. */
     @Reference
@@ -128,7 +128,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     public HashMap<String, Object> extractPageProperties(String path) {
         HashMap<String, Object> properties = new HashMap<>();
 
-        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(READ_SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
             PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
             Page page = null;
             if (pageManager != null) {

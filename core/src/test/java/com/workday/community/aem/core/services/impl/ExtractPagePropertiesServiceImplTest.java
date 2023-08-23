@@ -29,7 +29,7 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.common.collect.ImmutableMap;
 import com.workday.community.aem.core.services.RunModeConfigService;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -62,7 +62,7 @@ public class ExtractPagePropertiesServiceImplTest {
     RunModeConfigService runModeConfigService;
 
     @Mock
-    EhCacheManager ehCacheManager;
+    CacheManagerService cacheManager;
 
     /** The service ExtractPagePropertiesServiceImpl. */
     @InjectMocks
@@ -199,7 +199,7 @@ public class ExtractPagePropertiesServiceImplTest {
     public void testExtractPageProperties() {
         ResourceResolver resourceResolver = mock(ResourceResolver.class);
         try (MockedStatic<ResolverUtil> mock = mockStatic(ResolverUtil.class)) {
-            mock.when(() -> ehCacheManager.getServiceResolver(anyString())).thenReturn(resourceResolver);
+            mock.when(() -> cacheManager.getServiceResolver(anyString())).thenReturn(resourceResolver);
             PageManager pageManager = mock(PageManager.class);
             TagManager tagManager = mock(TagManager.class);
             UserManager userManager = mock(UserManager.class);

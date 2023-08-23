@@ -13,7 +13,7 @@ import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -70,7 +70,7 @@ public class CoveoRelatedInformationModelTest {
   TagManager tagManager;
 
   @Mock
-  EhCacheManager ehCacheManager;
+  CacheManagerService cacheManager;
 
   @InjectMocks
   CoveoRelatedInformationModelImpl coveoRelatedInformationModel;
@@ -119,7 +119,7 @@ public class CoveoRelatedInformationModelTest {
         .thenReturn(fieldMapConfigObj);
 
     resolverUtil = mockStatic(ResolverUtil.class);
-    lenient().when(ehCacheManager.getServiceResolver(anyString())).thenReturn(resourceResolver);
+    lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resourceResolver);
   }
 
   @Test
@@ -135,8 +135,6 @@ public class CoveoRelatedInformationModelTest {
 
   @Test
   void testGetSearchConfig() throws RepositoryException {
-//    CoveoRelatedInformationModel relInfoModel = context.currentResource("/component/relatedinformation").adaptTo(CoveoRelatedInformationModel.class);
-//    ((CoveoRelatedInformationModelImpl)relInfoModel).init(request);
     ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
     Session session = mock(Session.class);
     UserManager userManager = mock(UserManager.class);

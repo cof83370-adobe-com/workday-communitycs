@@ -8,7 +8,7 @@ import java.util.Objects;
 import javax.jcr.*;
 
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -35,14 +35,14 @@ public class UserServiceImpl implements UserService {
 
     /** The cache manager */
     @Reference
-    EhCacheManager ehCacheManager;
+    CacheManagerService cacheManager;
 
     /** The service user. */
     public static final String SERVICE_USER = "adminusergroup";
 
     @Override
     public User getUser(String userId) {
-        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(SERVICE_USER)) {
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
             User user = (User) Objects.requireNonNull(userManager).getAuthorizable(userId);
             if (user != null) {
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(String userId, Map<String, String> fields, List<String> groups) {
         Session session = null;
-        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(SERVICE_USER)) {
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
             session = resourceResolver.adaptTo(Session.class);
             User user = (User) Objects.requireNonNull(userManager).getAuthorizable(userId);
@@ -102,7 +102,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String userParam, boolean isPath) {
         Session session = null;
-        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(SERVICE_USER)) {
             logger.info("Start to delete user with param {}.", userParam);
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
             session = resourceResolver.adaptTo(Session.class);

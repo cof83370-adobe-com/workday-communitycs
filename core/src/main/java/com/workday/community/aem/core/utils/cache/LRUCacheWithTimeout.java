@@ -1,4 +1,4 @@
-package com.workday.community.aem.core.utils;
+package com.workday.community.aem.core.utils.cache;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.collections4.map.LRUMap;

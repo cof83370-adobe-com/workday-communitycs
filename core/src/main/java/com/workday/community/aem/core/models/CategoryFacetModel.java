@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.sling.api.resource.LoginException;
@@ -69,7 +69,7 @@ public class CategoryFacetModel {
 
     /** The cache manager */
     @Reference
-    EhCacheManager ehCacheManager;
+    CacheManagerService cacheManager;
 
     /**
      * Post construct to build facet object.
@@ -77,9 +77,9 @@ public class CategoryFacetModel {
     @PostConstruct
     private void init() throws DamException {
 
-        try (ResourceResolver resolver = ehCacheManager == null?
+        try (ResourceResolver resolver = cacheManager == null?
             ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER) :
-            ehCacheManager.getServiceResolver(READ_SERVICE_USER)) {
+            cacheManager.getServiceResolver(READ_SERVICE_USER)) {
             TagManager tagManager = resolver != null ?  resolver.adaptTo(TagManager.class): null;
             Tag tag = tagManager != null ? tagManager.resolve(category): null;
             if (tag == null) {

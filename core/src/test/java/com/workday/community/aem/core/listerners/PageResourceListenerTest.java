@@ -14,7 +14,7 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.Property;
 
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
@@ -55,7 +55,7 @@ public class PageResourceListenerTest {
     private ResourceResolverFactory resolverFactory;
 
     @Mock
-    EhCacheManager ehCacheManager;
+    CacheManagerService cacheManager;
 
     /**
      * The resolver.
@@ -122,7 +122,7 @@ public class PageResourceListenerTest {
         List<String> pathList = new ArrayList<>();
         pathList.add("/content/book-1/jcr:content/root/container/container/book");
         lenient().when(queryService.getBookNodesByPath(context.currentPage().getPath(), null)).thenReturn(pathList);
-        lenient().when(ehCacheManager.getServiceResolver(anyString())).thenReturn(resolver);
+        lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
         pageResourceListener.removeBookNodes(context.currentPage().getPath());
         verify(resolver).close();
     }

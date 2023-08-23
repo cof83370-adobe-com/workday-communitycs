@@ -11,7 +11,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -117,7 +117,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
 
     /** The cache manager */
     @Reference
-    EhCacheManager ehCacheManager;
+    CacheManagerService cacheManager;
 
     /**
      * On change.
@@ -141,7 +141,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     public void generateRecurringEventPages(String eventPagePath) {
         logger.info("Entered into generateRecurringEventPages method of RecurringEventsCreatorListener:{}",
                 eventPagePath);
-        try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
             Node eventNode = Objects.requireNonNull(resourceResolver.getResource(eventPagePath)).adaptTo(Node.class);
             if (eventNode != null && eventNode.hasProperty(PROP_RECURRING_EVENTS)
                     && eventNode.getProperty(PROP_RECURRING_EVENTS).getString()
@@ -283,35 +283,34 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
         String[] tags = new String[] { ACCESS_CONTROL_TAGS, EVENT_FORMAT, EVENT_AUDIENCE, RELEASE_TAGS, PRODUCT_TAGS,
                 USING_WORKDAY_TAGS, INDUSTRY_TAGS, PROGRAMS_TOOLS_TAGS, USER_TAGS, REGION_COUNTRY_TAGS,
                 PROP_CONTENT_TYPE };
-        for (int i = 0; i < tags.length; i++) {
-            String[] tagValue = valueMap.get(tags[i], String[].class);
+        for (String tag : tags) {
+            String[] tagValue = valueMap.get(tag, String[].class);
             if (doNullCheckForStringArray(tagValue))
-                node.setProperty(tags[i], tagValue);
+                node.setProperty(tag, tagValue);
         }
 
         // All String type Props
         String[] props = new String[] { PROP_AUTHOR, PROP_ALTERNATE_TIMEZONE, PROP_EVENT_HOST, PROP_EVENT_LOCATION };
-         for (int i = 0; i < props.length; i++) {
-            String propVal = valueMap.get(props[i], String.class);
+        for (String prop : props) {
+            String propVal = valueMap.get(prop, String.class);
             if (StringUtils.isNotBlank(propVal))
-                node.setProperty(props[i], propVal);
+                node.setProperty(prop, propVal);
         }
 
-        /**
-         * Event Start Date from Calculated Value, below valuemap reading was required
-         * to
-         * maintain event time from base page of recurring events.
+        /*
+          Event Start Date from Calculated Value, below valuemap reading was required
+          to
+          maintain event time from base page of recurring events.
          */
         Calendar eventStartDateCalInstance = valueMap.get(PROP_EVENT_START_DATE, Calendar.class);
         eventStartDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,
                 localDate.getDayOfMonth());
         node.setProperty(PROP_EVENT_START_DATE, eventStartDateCalInstance);
 
-        /**
-         * Event End Date was calculated based on source page event gap(End date - Start
-         * Date)
-         *
-         * Same gap will be maintained across all auto created pages.
+        /*
+          Event End Date was calculated based on source page event gap(End date - Start
+          Date)
+          Same gap will be maintained across all auto created pages.
          */
         Calendar eventEndDateCalInstance = valueMap.get(PROP_EVENT_END_DATE, Calendar.class);
         eventEndDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,

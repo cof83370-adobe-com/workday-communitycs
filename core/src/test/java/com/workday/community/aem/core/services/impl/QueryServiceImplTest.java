@@ -11,7 +11,7 @@ import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.resource.LoginException;
@@ -51,7 +51,7 @@ class QueryServiceImplTest {
   ResourceResolverFactory resourceResolverFactory;
 
   @Mock
-  EhCacheManager ehCacheManager;
+  CacheManagerService cacheManager;
 
   @InjectMocks
   QueryServiceImpl queryService;
@@ -66,7 +66,7 @@ class QueryServiceImplTest {
   @Test
   void testGetNumOfTotalPages() throws Exception {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    when(ehCacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
+    when(cacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
 
     Session session = mock(Session.class);
     lenient().when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
@@ -93,7 +93,7 @@ class QueryServiceImplTest {
   @Test
   void testPagesByTemplates() throws RepositoryException, CacheException {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    when(ehCacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
+    when(cacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
 
     Session session = mock(Session.class);
     when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
@@ -122,7 +122,7 @@ class QueryServiceImplTest {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
     String hitResultPath = "/content/workday-community/en-us/thomas-sandbox/test-download-component/jcr:content/root/container/container/book/firstlevel/item1";
 
-    when(ehCacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
+    when(cacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
     Session session = mock(Session.class);
     when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
 
@@ -150,7 +150,7 @@ class QueryServiceImplTest {
   @Test
   void testGetInactiveUsers() throws RepositoryException, CacheException {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    when(ehCacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
+    when(cacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
 
     Session session = mock(Session.class);
     when(resourceResolver.adaptTo(Session.class)).thenReturn(session);

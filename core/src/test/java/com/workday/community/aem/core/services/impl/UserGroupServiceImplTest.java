@@ -5,7 +5,7 @@ import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
@@ -63,7 +63,7 @@ class UserGroupServiceImplTest {
     ResourceResolver jcrSessionResourceResolver;
 
     @Mock
-    EhCacheManager ehCacheManager;
+    CacheManagerService cacheManager;
 
     @Mock
     Session jcrSession;
@@ -130,7 +130,6 @@ class UserGroupServiceImplTest {
         when(resourceResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
         when(mockResource.adaptTo(Node.class)).thenReturn(mockNode);
 
-        Property mockProperty = mock(Property.class);
         when(mockNode.hasProperty("roles")).thenReturn(false);
 
         UserGroupServiceImpl userGroupServiceMock = Mockito.spy(userGroupService);
@@ -223,7 +222,7 @@ class UserGroupServiceImplTest {
 
     @Test
     void testCheckLoggedInUserHasAccessControlTags()
-            throws OurmException, ValueFormatException, IllegalStateException, RepositoryException {
+            throws IllegalStateException, RepositoryException {
         List<String> accessControlTags = List.of("authenticated");
         assertTrue(
                 userGroupService.checkLoggedInUserHasAccessControlTags(jcrSessionResourceResolver,

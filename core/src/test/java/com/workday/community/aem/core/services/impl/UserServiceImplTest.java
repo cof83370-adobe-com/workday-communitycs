@@ -21,7 +21,7 @@ import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.ValueFactory;
 
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.jackrabbit.api.security.user.AuthorizableExistsException;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
@@ -52,7 +52,7 @@ public class UserServiceImplTest {
     ResourceResolver resourceResolver;
 
     @Mock
-    EhCacheManager ehCacheManager;
+    CacheManagerService cacheManager;
     
     /** The UserManager class. */
     @Mock
@@ -69,7 +69,7 @@ public class UserServiceImplTest {
     @BeforeEach
     public void setUp() throws Exception {
         this.resolver = mockStatic(ResolverUtil.class);
-        lenient().when(ehCacheManager.getServiceResolver(anyString())).thenReturn(this.resourceResolver);
+        lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(this.resourceResolver);
         session = mock(Session.class);
         userManager = mock(UserManager.class);
         user = mock(User.class);

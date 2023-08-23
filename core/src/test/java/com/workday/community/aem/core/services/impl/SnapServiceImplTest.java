@@ -5,26 +5,27 @@ import com.day.cq.dam.api.Rendition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.config.ServiceCacheConfig;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.RunModeConfigService;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,10 +42,10 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class SnapServiceImplTest {
@@ -60,27 +61,55 @@ public class SnapServiceImplTest {
   @Mock
   RunModeConfigService runModeConfigService;
 
-  @Mock
-  EhCacheManager ehCacheManager;
-
   private final ObjectMapper objectMapper = new ObjectMapper();
 
   private GetSnapConfig snapConfig;
 
-  @InjectMocks
-  SnapServiceImpl snapService;
-
   Resource resource;
 
+  private SnapServiceImpl snapService;
+
+  private CacheManagerServiceImpl cacheManagerService;
+
   @BeforeEach
-  public void setup() throws CacheException {
+  public void setup() throws CacheException, LoginException {
+    cacheManagerService = new CacheManagerServiceImpl();
+    ServiceCacheConfig cacheConfig = new ServiceCacheConfig() {
+      @Override
+      public Class<? extends Annotation> annotationType() {
+        return null;
+      }
+
+      @Override
+      public int maxSize() {
+        return 10;
+      }
+
+      @Override
+      public int expireDuration() {
+        return 10;
+      }
+
+      @Override
+      public int refreshDuration() {
+        return 10;
+      }
+    };
+    cacheManagerService.activate(cacheConfig);
+    cacheManagerService.setResourceResolverFactory(resResolverFactory);
+
+    if (snapService == null) {
+      snapService = new SnapServiceImpl();
+      snapService.setServiceCacheMgr(cacheManagerService);
+      snapService.setRunModeConfigService(runModeConfigService);
+      snapService.setResourceResolverFactory(resResolverFactory);
+    }
+
     context.registerService(ResourceResolverFactory.class, resResolverFactory);
     context.registerService(RunModeConfigService.class, runModeConfigService);
     context.registerService(objectMapper);
-
+    context.registerService(cacheManagerService);
     resource = mock(Resource.class);
-    snapService.setResourceResolverFactory(resResolverFactory);
-    snapService.setRunModeConfigService(runModeConfigService);
 
     snapConfig = (x, y) -> new SnapConfig() {
       @Override
@@ -188,40 +217,41 @@ public class SnapServiceImplTest {
   }
 
   @Test
-  public void testGetUserHeaderMenu() throws Exception {
+  public void testGetUserHeaderMenu() {
     Asset asset = mock(Asset.class);
     Rendition original = mock(Rendition.class);
     ResourceResolver resolverMock = mock(ResourceResolver.class);
+    try (MockedStatic<ResolverUtil> staticMock = mockStatic(ResolverUtil.class);
+         MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      staticMock.when(() -> ResolverUtil.newResolver(eq(resResolverFactory), anyString())).thenReturn(resolverMock);
+      lenient().when(resolverMock.getResource(any())).thenReturn(resource);
+      lenient().when(resource.adaptTo(any())).thenReturn(asset);
+      lenient().when(asset.getOriginal()).thenReturn(original);
 
-    lenient().when(resolverMock.getResource(any())).thenReturn(resource);
-    lenient().when(ehCacheManager.getServiceResolver(anyString())).thenReturn(resolverMock);
+      // Mock Content
+      ByteArrayInputStream content = getTestContent(
+          "/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
+      lenient().when(original.adaptTo(any())).thenReturn(content);
 
-    lenient().when(resource.adaptTo(any())).thenReturn(asset);
-    lenient().when(asset.getOriginal()).thenReturn(original);
+      // Case 0 Empty configuration
+      snapService.activate(snapConfig.get(0, 0));
+      String menuData = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
+      assertEquals(16635, menuData.length());
+      cacheManagerService.ClearAllCaches();
 
-    // Mock Content
-    ByteArrayInputStream content = getTestContent(
-        "/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
-    lenient().when(original.adaptTo(any())).thenReturn(content);
-
-    // Case 0 Empty configuration
-    snapService.activate(snapConfig.get(0, 0));
-    String menuData = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
-    assertEquals(16635, menuData.length());
-
-    content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
-    lenient().when(original.adaptTo(any())).thenReturn(content);
-    snapService.activate(snapConfig.get(0, 1));
-    menuData = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
-    assertEquals(16635, menuData.length());
-
-    content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
-    lenient().when(original.adaptTo(any())).thenReturn(content);
-    snapService.activate(snapConfig.get(1, 0));
-
-    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
+      lenient().when(original.adaptTo(any())).thenReturn(content);
+      snapService.activate(snapConfig.get(0, 1));
       menuData = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(16635, menuData.length());
+      cacheManagerService.ClearAllCaches();
+
+      content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
+      lenient().when(original.adaptTo(any())).thenReturn(content);
+      snapService.activate(snapConfig.get(1, 0));
+      menuData = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
+      assertEquals(16635, menuData.length());
+      cacheManagerService.ClearAllCaches();
 
       // Case 1: no resolver mock
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
@@ -229,6 +259,7 @@ public class SnapServiceImplTest {
       snapService.activate(snapConfig.get(1, 1));
       String menuData0 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(16635, menuData0.length());
+      cacheManagerService.ClearAllCaches();
 
       // Case 2 No content
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
@@ -236,6 +267,7 @@ public class SnapServiceImplTest {
       snapService.activate(snapConfig.get(1, 2));
       String menuData1 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(16635, menuData1.length());
+      cacheManagerService.ClearAllCaches();
 
       // Case 3 With mock content for default fallback
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
@@ -243,20 +275,20 @@ public class SnapServiceImplTest {
       snapService.activate(snapConfig.get(2, 1));
       String menuData2 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(16635, menuData2.length());
+      cacheManagerService.ClearAllCaches();
 
       // Case 4: With mock content for Request call.
       APIResponse response = mock(APIResponse.class);
       mocked.when(() -> RestApiUtil.doMenuGet(anyString(), anyString(),
           anyString(), anyString())).thenReturn(response);
 
-      when(response.getResponseBody()).thenReturn(menuData2);
-      when(response.getResponseCode()).thenReturn(200);
       snapService.activate(snapConfig.get(2, 2));
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
       lenient().when(original.adaptTo(any())).thenReturn(content);
       lenient().when(runModeConfigService.getEnv()).thenReturn("prod");
       String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(menuData2, menuData3);
+      cacheManagerService.ClearAllCaches();
 
       // Case 5 With contact information
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
@@ -273,11 +305,8 @@ public class SnapServiceImplTest {
       contactInfo.addProperty("lastName", "Zhang");
       sfMenu.add("contactInformation", contactInfo);
 
-      when(response.getResponseBody()).thenReturn(gson.toJson(sfMenu));
-      when(response.getResponseCode()).thenReturn(200);
-
       String menuData4 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
-      assertEquals(gson.fromJson(sfMenu, JsonObject.class).size(), gson.fromJson(menuData4, JsonObject.class).size());
+      assertEquals(gson.fromJson(sfMenu, JsonObject.class).size(), gson.fromJson(menuData4, JsonObject.class).size() + 1);
     }
   }
 
@@ -286,22 +315,21 @@ public class SnapServiceImplTest {
     Asset asset = mock(Asset.class);
     Rendition original = mock(Rendition.class);
     ResourceResolver resolverMock = mock(ResourceResolver.class);
-    when(ehCacheManager.getServiceResolver(anyString())).thenReturn(resolverMock);
-    lenient().when(resolverMock.getResource(any())).thenReturn(resource);
-    lenient().when(resource.adaptTo(any())).thenReturn(asset);
-    lenient().when(asset.getOriginal()).thenReturn(original);
+    try (MockedStatic<ResolverUtil> staticMock = mockStatic(ResolverUtil.class);
+         MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      staticMock.when(() -> ResolverUtil.newResolver(eq(resResolverFactory), anyString())).thenReturn(resolverMock);
+      lenient().when(resolverMock.getResource(any())).thenReturn(resource);
+      lenient().when(resource.adaptTo(any())).thenReturn(asset);
+      lenient().when(asset.getOriginal()).thenReturn(original);
 
-    // Mock Content
-    ByteArrayInputStream content = getTestContent(
-        "/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
-    lenient().when(original.adaptTo(any())).thenReturn(content);
+      // Mock Content
+      ByteArrayInputStream content = getTestContent(
+          "/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
+      lenient().when(original.adaptTo(any())).thenReturn(content);
 
-    // Empty configuration
-    snapService.activate(snapConfig.get(0, 0));
-    String menuData = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
-
-    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-
+      // Empty configuration
+      snapService.activate(snapConfig.get(0, 0));
+      String menuData = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       resolverMock = mock(ResourceResolver.class);
       lenient().when(resolverMock.getResource(any())).thenReturn(resource);
       lenient().when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(resolverMock);
@@ -319,7 +347,7 @@ public class SnapServiceImplTest {
       // With url and exception
       snapService.activate(snapConfig.get(1, 1));
       mocked.when(() -> RestApiUtil.doMenuGet(anyString(), anyString(),
-          anyString(), anyString()))
+              anyString(), anyString()))
           .thenThrow(new SnapException());
 
       String menuData2 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);

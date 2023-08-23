@@ -1,0 +1,108 @@
+package com.workday.community.aem.core.services.impl;
+
+import com.workday.community.aem.core.config.ServiceCacheConfig;
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.utils.cache.ValueCallback;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.apache.sling.api.resource.LoginException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.lang.annotation.Annotation;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+/**
+ * Test class for CacheManagerServiceImpl.
+ */
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+public class ServiceCacheManagerServiceImplTest {
+  private static final String TEST_CACHE_BUCKET = "test-cache-bucket";
+  private static final String TEST_KEY = "test-key";
+  private static final String TEST_VALUE = "test-value";
+
+  ServiceCacheConfig serviceCacheConfig;
+
+  @BeforeEach
+  public void setup() {
+     serviceCacheConfig = new ServiceCacheConfig() {
+
+      @Override
+      public Class<? extends Annotation> annotationType() {
+        return null;
+      }
+
+      @Override
+      public int maxSize() {
+        return 10;
+      }
+
+      @Override
+      public int expireDuration() {
+        return 20;
+      }
+
+      @Override
+      public int refreshDuration() {
+        return 10;
+      }
+    };
+  }
+
+  @Test
+  public void testActivate() throws CacheException {
+    CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
+    cacheManager.activate(serviceCacheConfig);
+  }
+
+  @Test
+  public void testDeActive() throws CacheException {
+    CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
+    cacheManager.activate(serviceCacheConfig);
+    cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, (key) -> TEST_VALUE);
+    cacheManager.deactivate();
+  }
+
+  @Test
+  public void testGet() throws CacheException {
+    CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
+    cacheManager.activate(serviceCacheConfig);
+    ValueCallback<String, String> callback = new ValueCallback() {
+      int count = 0;
+      @Override
+      public Object getValue(Object key) {
+        count++;
+        return TEST_VALUE + count;
+      }
+    };
+
+    String res = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
+    assertEquals(res, TEST_VALUE + 1);
+    // Second call will not go through the call back.
+    String res1 = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
+    assertEquals(res1, TEST_VALUE + 1);
+  }
+
+  @Test
+  public void testClearCache() throws CacheException {
+    CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
+    cacheManager.activate(serviceCacheConfig);
+    ValueCallback<String, String> callback = new ValueCallback() {
+      int count = 0;
+      @Override
+      public Object getValue(Object key) {
+        count++;
+        return TEST_VALUE + count;
+      }
+    };
+
+    String res = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
+    assertEquals(res, TEST_VALUE + 1);
+    cacheManager.ClearAllCaches();
+    // since cache is cleared, fetch again will hit callback and count will be 2.
+    String res1 = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
+    assertEquals(res1, TEST_VALUE + 2);
+  }
+}

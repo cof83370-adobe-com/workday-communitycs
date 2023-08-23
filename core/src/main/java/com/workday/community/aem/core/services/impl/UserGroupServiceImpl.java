@@ -10,7 +10,7 @@ import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
-import com.workday.community.aem.core.services.EhCacheManager;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.PageUtils;
@@ -66,7 +66,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     /** The cache manager */
     @Reference
-    EhCacheManager ehCacheManager;
+    CacheManagerService cacheManager;
 
     /**
      * The snap Config.
@@ -270,7 +270,7 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     protected void setSfdcRoleMap() {
         if (sfdcRoleMap == null) {
-            try (ResourceResolver resourceResolver = ehCacheManager.getServiceResolver(READ_SERVICE_USER)) {
+            try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
                 sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
             } catch (CacheException | DamException e) {
                 logger.error("Error reading sfdc role map json file: {}.", e.getMessage());

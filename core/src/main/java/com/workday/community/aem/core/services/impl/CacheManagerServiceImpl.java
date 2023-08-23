@@ -1,21 +1,20 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.workday.community.aem.core.config.EhCacheConfig;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import com.workday.community.aem.core.config.ServiceCacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
-import com.workday.community.aem.core.services.EhCacheManager;
-import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
+import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.utils.cache.ValueCallback;
+import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.ehcache.Cache;
-import org.ehcache.CacheManager;
-import org.ehcache.config.builders.CacheConfigurationBuilder;
-import org.ehcache.config.builders.CacheManagerBuilder;
-import org.ehcache.config.builders.ExpiryPolicyBuilder;
-import org.ehcache.config.builders.ResourcePoolsBuilder;
-import org.ehcache.config.units.EntryUnit;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -26,58 +25,65 @@ import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.time.Duration;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
- * The EhCacheManagerService implementation class.
+ * The CacheManagerService implementation class.
  */
-@Component(service = EhCacheManager.class, property = {
-    "service.pid=aem.core.services.cache.ehcache"
+@Component(service = CacheManagerService.class, property = {
+    "service.pid=aem.core.services.cache.serviceCache"
 }, configurationPid = "com.workday.community.aem.core.config.EhCacheConfig",
     configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
-@Designate(ocd = EhCacheConfig.class)
-public class EhCacheManagerServiceImpl implements EhCacheManager {
-  private final static Logger LOGGER = LoggerFactory.getLogger(EhCacheManagerServiceImpl.class);
-  private CacheManager cacheManager;
-  private EhCacheConfig config;
+@Designate(ocd = ServiceCacheConfig.class)
+public class CacheManagerServiceImpl implements CacheManagerService {
+  private final static Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
+
+  // We maintain the resolver cache here conveniently.
   private final LRUCacheWithTimeout<String, ResourceResolver> resolverCache = new LRUCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
-  final Map<String, Cache> caches = new HashMap<>();
+  private Map<String, LoadingCache> caches;
 
   /** The resource resolver factory. */
   @Reference
   private ResourceResolverFactory resourceResolverFactory;
+  private CacheBuilder builder;
+
+  public CacheManagerServiceImpl() {
+    caches = new ConcurrentHashMap<>();
+  }
+
+  public void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory) {
+    this.resourceResolverFactory = resourceResolverFactory;
+  }
 
   @Activate
   @Modified
-  public void activate(EhCacheConfig config) throws CacheException{
-    this.config = config;
-    if (cacheManager == null) {
-      CacheManagerBuilder<CacheManager> builder = CacheManagerBuilder.newCacheManagerBuilder();
-      this.cacheManager = builder.build(true);
+  public void activate(ServiceCacheConfig config) throws CacheException{
+    if(builder == null) {
+      builder = CacheBuilder.newBuilder()
+          .maximumSize(config.maxSize())
+          .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
+          .expireAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
     }
   }
 
   @Deactivate
   public void deactivate() {
-    if (cacheManager != null) {
-      ClearAllCaches();
-      cacheManager.close();
-    }
-
+    ClearAllCaches();
     closeAndClearCachedResolvers();
   }
 
   @Override
-  public <V> V get(String cacheName, String key) {
+  public <V> V get(String cacheName, String key, ValueCallback<String, V> callback) {
     try {
       CacheBucketName innerName = getInnerCacheName(cacheName);
-      Cache<String, V> cache = getCache(innerName, key);
+      LoadingCache<String, V> cache = getCache(innerName, key, callback);
       if (cache != null) {
         return cache.get(key);
       }
-    } catch (CacheException e) {
+    } catch (CacheException | ExecutionException e) {
       LOGGER.error(String.format(
           "Can't get value from cache for cache key: %s in cache name: %s, error: %s",
           key, cacheName, e.getMessage()
@@ -88,47 +94,15 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   }
 
   @Override
-  public <V> void put(String cacheName, String key, V value) {
-    try {
-      CacheBucketName innerName = getInnerCacheName(cacheName);
-      Cache<String, V> cache = getCache(innerName, key);
-      if (cache != null) {
-        cache.put(key, value);
-      }
-    } catch (CacheException e) {
-      LOGGER.error(String.format(
-          "Can't put value into cache for cache key: %s with value: %s in cache name: %s, error: %s",
-          key, value, cacheName, e.getMessage()
-      ));
-    }
-  }
-
-  @Override
   public void ClearAllCaches(String cacheName, String key)  {
     if (cacheName == null) {
       // clear all
       if (caches.isEmpty()) return;
       for (String cacheKey : caches.keySet()) {
-        Cache cache = caches.get(cacheKey);
-        cache.clear();
-        this.cacheManager.removeCache(cacheKey);
+        LoadingCache cache = caches.get(cacheKey);
+        cache.invalidateAll();
       }
-
       caches.clear();
-      return;
-    }
-
-    CacheBucketName innerName = getInnerCacheName(cacheName);
-    Cache cache = null;
-    try {
-      cache = getCache(innerName, key);
-    } catch (CacheException e) {
-     LOGGER.error("Retrieve cache fails");
-    }
-
-    if (cache != null) {
-      cache.clear();
-      this.cacheManager.removeCache(cacheName);
     }
   }
 
@@ -151,7 +125,7 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
       try {
         resolver = ResolverUtil.newResolver(this.resourceResolverFactory, serviceUser);
       } catch (LoginException e) {
-        throw new CacheException("Failed to create Resolver in EhCacheManagerImpl");
+        throw new CacheException("Failed to create Resolver in CacheManagerImpl");
       }
       resolverCache.put(serviceUser, resolver);
     }
@@ -160,25 +134,36 @@ public class EhCacheManagerServiceImpl implements EhCacheManager {
   }
 
   // ================== Private methods ===============//
-  private <V> Cache<String, V> getCache(CacheBucketName innerCacheName, String key) throws CacheException  {
+  private <String, V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
+                                                       ValueCallback<String, V> callback) throws CacheException  {
     try {
-      Cache<String, V> cache = caches.get(innerCacheName.name());
+      if (caches == null) {
+        caches = new ConcurrentHashMap<>();
+      }
+      LoadingCache<String, V> cache = caches.get(innerCacheName.name());
       if (cache != null) return cache;
       if (key == null) return null;
 
-      ResourcePoolsBuilder poolsBuilder;
-      poolsBuilder = ResourcePoolsBuilder.newResourcePoolsBuilder()
-          .heap(this.config.heapSize(), EntryUnit.ENTRIES);
+      cache = builder.build( new CacheLoader<String, V>() {
+        public V load(String key) throws CacheException {
+          V ret = callback == null ? null : callback.getValue(key);
+          if (ret == null) {
+            throw new CacheException("The returned value is null");
+          }
 
-     CacheConfigurationBuilder<?, ?> builder =
-          CacheConfigurationBuilder.newCacheConfigurationBuilder(
-              String.class, CacheBucketName.mapValueTypes.get(innerCacheName), poolsBuilder
-          );
+          return ret;
+        }
 
-      int regularDuration = config.duration();
-      builder.withExpiry(ExpiryPolicyBuilder.timeToLiveExpiration(Duration.ofSeconds(regularDuration)));
+        public ListenableFuture<V> reload(final String key, V preVal) throws CacheException {
+          ListenableFuture<V> ret = callback == null ? null : Futures.immediateFuture(callback.getValue(key));
+          if (ret == null) {
+            throw new CacheException("The reload value is null");
+          }
 
-      cache = (Cache<String, V>) cacheManager.createCache(innerCacheName.name(), builder);
+          return ret;
+        }
+      });
+
       caches.put(innerCacheName.name(), cache);
       return cache;
     } catch (IllegalArgumentException e) {

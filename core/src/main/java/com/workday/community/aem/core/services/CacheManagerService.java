@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.services;
 
 import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.utils.cache.ValueCallback;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -9,25 +10,18 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 
 @ProviderType
-public interface EhCacheManager {
-
-  /**
-   * Put an entry into the cache.
-   * @param cacheName The pass-in cache name.
-   * @param key The pass-in cache key.
-   * @param <V> The type of returned value.
-   */
-  <V> void put(String cacheName, String key, V value);
+public interface CacheManagerService {
 
   /**
    * Get the cached value from the cache.
    *
    * @param cacheName The pass-in cache name.
    * @param key The pass-in cache key.
+   * @param callback The callback function to retrieve data for the cached key.
    * @return  The value from the cache for the pass-in cache key.
    * @param <V> The type of returned value.
    */
-   <V> V get(String cacheName, String key);
+   <V> V get(String cacheName, String key, ValueCallback<String, V> callback);
 
   /**
    * Clear cache for specific cache key in a cache bucket.
