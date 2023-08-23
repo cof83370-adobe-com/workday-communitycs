@@ -13,6 +13,16 @@
         display: flex;
         flex-direction: row-reverse;
         justify-content: left;
+        max-width: 1200px;
+        margin: 0 auto;
+
+        @media (max-width: $screen-large) {
+            padding-left: 0;
+        }
+
+        @media (min-width: $screen-large) {
+            padding-left: 1em;
+        }
 
         &__content {
             display: inline-block;
