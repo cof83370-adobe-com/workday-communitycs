@@ -115,6 +115,8 @@ public class LogoutServlet extends SlingAllMethodsServlet {
       // case 3: Redirect to okta logout directly in case session expired.
       response.sendRedirect(logoutUrl);
     }
-    authenticator.logout(request, response);
+    if (this.authenticator != null) {
+      authenticator.logout(request, response);
+    }
   }
 }
