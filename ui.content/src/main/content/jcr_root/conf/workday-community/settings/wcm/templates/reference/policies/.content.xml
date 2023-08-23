@@ -39,7 +39,11 @@
                                         <title
                                             cq:policy="workday-community/components/core/title/policy_641528232375303"
                                             jcr:primaryType="nt:unstructured"
-                                            sling:resourceType="wcm/core/components/policies/mapping" />    
+                                            sling:resourceType="wcm/core/components/policies/mapping"/>
+                                        <accordion
+                                            cq:policy="workday-community/components/core/accordion/policy_1692747853801"
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="wcm/core/components/policies/mapping"/>
                                     </core>
                                     <dynamic jcr:primaryType="nt:unstructured">
                                         <image
