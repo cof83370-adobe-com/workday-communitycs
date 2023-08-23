@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.listeners;
 
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
@@ -134,31 +137,34 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     /**
      * Generate recurring event pages.
      *
-     * @param eventPagePath the event page path
+     * @param resourcePath the event page path
      */
-    public void generateRecurringEventPages(String eventPagePath) {
+    public void generateRecurringEventPages(String resourcePath) {
         logger.info("Entered into generateRecurringEventPages method of RecurringEventsCreatorListener:{}",
-                eventPagePath);
+                resourcePath);
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory,
-                "workday-community-administrative-service")) {
-            Node eventNode = resourceResolver.getResource(eventPagePath).adaptTo(Node.class);
-            if (eventNode != null && eventNode.hasProperty(PROP_RECURRING_EVENTS)
-                    && eventNode.getProperty(PROP_RECURRING_EVENTS).getString()
-                            .equalsIgnoreCase("true")) {
-                String title = eventNode.getProperty("jcr:title").getString();
-                ValueMap map = resourceResolver.getResource(eventPagePath).adaptTo(ValueMap.class);
-                String eventFrequency = eventNode.getProperty(PROP_EVENT_FREQUENCY).getString();
-                logger.debug("Creation of recurring events selected and frequency:{}", eventPagePath);
-                Calendar startDate = eventNode.getProperty(PROP_EVENT_START_DATE).getDate();
-                EventPeriodEnum period = eventFrequency.equalsIgnoreCase(EVENT_FREQUENCY_MONTHLY)
-                        ? EventPeriodEnum.MONTHLY
-                        : EventPeriodEnum.BI_WEEKLY;
-                List<LocalDate> eventDatesList = sequentialEventsCalculator(period, startDate);
-                logger.debug("Sequentials event dates list:{}", eventDatesList);
-                if (null != eventDatesList && eventDatesList.size() > 1) {
-                    createEventPage(resourceResolver, eventDatesList,
-                            eventPagePath.replace(GlobalConstants.JCR_CONTENT_PATH, ""), title,
-                            map);
+                WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE)) {
+            Resource addedResource = resourceResolver.getResource(resourcePath);
+            if (null != addedResource && null != addedResource.adaptTo(Node.class)) {
+                Node eventNode = addedResource.adaptTo(Node.class);
+                if (eventNode != null && eventNode.hasProperty(PROP_RECURRING_EVENTS)
+                        && eventNode.getProperty(PROP_RECURRING_EVENTS).getString()
+                                .equalsIgnoreCase("true")) {
+                    String title = eventNode.getProperty("jcr:title").getString();
+                    ValueMap map = resourceResolver.getResource(resourcePath).adaptTo(ValueMap.class);
+                    String eventFrequency = eventNode.getProperty(PROP_EVENT_FREQUENCY).getString();
+                    logger.debug("Creation of recurring events selected and frequency:{}", resourcePath);
+                    Calendar startDate = eventNode.getProperty(PROP_EVENT_START_DATE).getDate();
+                    EventPeriodEnum period = eventFrequency.equalsIgnoreCase(EVENT_FREQUENCY_MONTHLY)
+                            ? EventPeriodEnum.MONTHLY
+                            : EventPeriodEnum.BI_WEEKLY;
+                    List<LocalDate> eventDatesList = sequentialEventsCalculator(period, startDate);
+                    logger.debug("Sequentials event dates list:{}", eventDatesList);
+                    if (null != eventDatesList && eventDatesList.size() > 1) {
+                        createEventPage(resourceResolver, eventDatesList,
+                                resourcePath.replace(GlobalConstants.JCR_CONTENT_PATH, ""), title,
+                                map);
+                    }
                 }
             }
         } catch (Exception exec) {
@@ -252,8 +258,8 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
      * @param resourceResolver the resource resolver
      * @param newPage          the new page
      * @param valueMap         the value map
-     * @param date the date
-     * @param eventLength the event length
+     * @param date             the date
+     * @param eventLength      the event length
      */
     private void addRequiredPageProps(ResourceResolver resourceResolver, Page newPage, ValueMap valueMap,
             LocalDate date, int eventLength) {
@@ -270,9 +276,9 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     /**
      * Adds the all tags and meta data.
      *
-     * @param node     the node
-     * @param valueMap the value map
-     * @param localDate the local date
+     * @param node        the node
+     * @param valueMap    the value map
+     * @param localDate   the local date
      * @param eventLength the event length
      * @throws RepositoryException the repository exception
      */
@@ -315,8 +321,8 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
         Calendar eventEndDateCalInstance = valueMap.get(PROP_EVENT_END_DATE, Calendar.class);
         eventEndDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,
                 localDate.getDayOfMonth());
-        if(eventLength > 0) 
-           eventEndDateCalInstance.add(Calendar.DAY_OF_MONTH, eventLength);
+        if (eventLength > 0)
+            eventEndDateCalInstance.add(Calendar.DAY_OF_MONTH, eventLength);
         node.setProperty(PROP_EVENT_END_DATE, eventEndDateCalInstance);
     }
 
