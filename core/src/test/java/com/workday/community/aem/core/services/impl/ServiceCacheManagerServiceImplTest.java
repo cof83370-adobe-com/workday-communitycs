@@ -1,10 +1,9 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.workday.community.aem.core.config.ServiceCacheConfig;
+import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.utils.cache.ValueCallback;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import org.apache.sling.api.resource.LoginException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,11 +22,11 @@ public class ServiceCacheManagerServiceImplTest {
   private static final String TEST_KEY = "test-key";
   private static final String TEST_VALUE = "test-value";
 
-  ServiceCacheConfig serviceCacheConfig;
+  CacheConfig cacheConfig;
 
   @BeforeEach
   public void setup() {
-     serviceCacheConfig = new ServiceCacheConfig() {
+     cacheConfig = new CacheConfig() {
 
       @Override
       public Class<? extends Annotation> annotationType() {
@@ -54,13 +53,13 @@ public class ServiceCacheManagerServiceImplTest {
   @Test
   public void testActivate() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
-    cacheManager.activate(serviceCacheConfig);
+    cacheManager.activate(cacheConfig);
   }
 
   @Test
   public void testDeActive() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
-    cacheManager.activate(serviceCacheConfig);
+    cacheManager.activate(cacheConfig);
     cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, (key) -> TEST_VALUE);
     cacheManager.deactivate();
   }
@@ -68,7 +67,7 @@ public class ServiceCacheManagerServiceImplTest {
   @Test
   public void testGet() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
-    cacheManager.activate(serviceCacheConfig);
+    cacheManager.activate(cacheConfig);
     ValueCallback<String, String> callback = new ValueCallback() {
       int count = 0;
       @Override
@@ -88,7 +87,7 @@ public class ServiceCacheManagerServiceImplTest {
   @Test
   public void testClearCache() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
-    cacheManager.activate(serviceCacheConfig);
+    cacheManager.activate(cacheConfig);
     ValueCallback<String, String> callback = new ValueCallback() {
       int count = 0;
       @Override

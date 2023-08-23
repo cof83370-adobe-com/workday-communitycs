@@ -1,7 +1,5 @@
 package com.workday.community.aem.core.listeners;
 
-import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -115,9 +113,7 @@ public class PageResourceListener implements ResourceChangeListener {
                     if (!aclTagList.contains(TAG_INTERNAL_WORKMATE)) {
                         aclTagList.add(TAG_INTERNAL_WORKMATE);
                         Node pageNode = page.getContentResource().adaptTo(Node.class);
-                    Objects.requireNonNull(pageNode).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, aclTagList.toArray(String[]::new));
-                        pageNode.setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL,
-                                aclTagList.stream().toArray(String[]::new));
+                        pageNode.setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, aclTagList.toArray(String[]::new));
                     }
                 }
 

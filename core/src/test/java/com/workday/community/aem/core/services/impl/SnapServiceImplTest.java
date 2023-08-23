@@ -5,7 +5,7 @@ import com.day.cq.dam.api.Rendition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.config.ServiceCacheConfig;
+import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.SnapException;
@@ -74,7 +74,7 @@ public class SnapServiceImplTest {
   @BeforeEach
   public void setup() throws CacheException, LoginException {
     cacheManagerService = new CacheManagerServiceImpl();
-    ServiceCacheConfig cacheConfig = new ServiceCacheConfig() {
+    CacheConfig cacheConfig = new CacheConfig() {
       @Override
       public Class<? extends Annotation> annotationType() {
         return null;

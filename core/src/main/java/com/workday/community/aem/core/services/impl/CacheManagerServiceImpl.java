@@ -5,7 +5,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import com.workday.community.aem.core.config.ServiceCacheConfig;
+import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
@@ -37,7 +37,7 @@ import java.util.concurrent.TimeUnit;
     "service.pid=aem.core.services.cache.serviceCache"
 }, configurationPid = "com.workday.community.aem.core.config.EhCacheConfig",
     configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
-@Designate(ocd = ServiceCacheConfig.class)
+@Designate(ocd = CacheConfig.class)
 public class CacheManagerServiceImpl implements CacheManagerService {
   private final static Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
 
@@ -60,7 +60,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   @Activate
   @Modified
-  public void activate(ServiceCacheConfig config) throws CacheException{
+  public void activate(CacheConfig config) throws CacheException{
     if(builder == null) {
       builder = CacheBuilder.newBuilder()
           .maximumSize(config.maxSize())

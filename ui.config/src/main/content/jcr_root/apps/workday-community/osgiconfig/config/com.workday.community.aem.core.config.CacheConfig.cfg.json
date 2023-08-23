@@ -1,0 +1,5 @@
+{
+    "maxSize":"$[env:CacheMaxSize;default=2000]",
+    "expireDuration":"$[env:CacheExpireDuration;default=7200]",
+    "refreshDuration": "$[env:CacheRefreshDuration;default=3600]"
+}

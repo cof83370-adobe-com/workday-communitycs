@@ -1,4 +1,0 @@
-{
-    "ehCacheHeapSize":"$[env:ehCacheHeapSize;default=20]",
-    "ehCacheDuration":"$[env:ehCacheDuration;default=3600]"
-}
