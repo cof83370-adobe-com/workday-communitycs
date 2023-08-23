@@ -1,8 +1,11 @@
 package com.workday.community.aem.core.listeners;
 
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -67,7 +70,7 @@ public class PageResourceListener implements ResourceChangeListener {
         }
 
         changes.stream()
-                .filter(item -> "ADDED".equals(item.getType().toString() )
+                .filter(item -> "ADDED".equals(item.getType().toString())
                         && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
                 .forEach(change -> handleNewPage(change.getPath()));
     }
@@ -79,7 +82,7 @@ public class PageResourceListener implements ResourceChangeListener {
      */
     public void handleNewPage(String pagePath) {
         try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resolverFactory,
-                "workday-community-administrative-service")) {
+                WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE)) {
             if (resourceResolver.getResource(pagePath) != null) {
                 addInternalWorkmatesTag(pagePath, resourceResolver);
                 addAuthorPropertyToContentNode(pagePath, resourceResolver);
@@ -95,7 +98,7 @@ public class PageResourceListener implements ResourceChangeListener {
     /**
      * Adds the Internal Workmates tags to page.
      * 
-     * @param pagePath the newly created page
+     * @param pagePath         the newly created page
      * @param resourceResolver the resource resolver
      */
     public void addInternalWorkmatesTag(String pagePath, ResourceResolver resourceResolver) {
@@ -103,17 +106,24 @@ public class PageResourceListener implements ResourceChangeListener {
             PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
             Page page = pageManager.getContainingPage(pagePath);
             if (null != page) {
-                String[] aclTags = page.getProperties().get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class);
-                List<String> aclTagList = new ArrayList<>(Arrays.asList(aclTags));
-                if(!aclTagList.contains(TAG_INTERNAL_WORKMATE)){
-                    aclTagList.add(TAG_INTERNAL_WORKMATE);
-                    Node pageNode = page.getContentResource().adaptTo(Node.class);
-                    pageNode.setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, aclTagList.stream().toArray(String[]::new));
+                String[] aclTags = Optional
+                        .ofNullable(
+                                page.getProperties().get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class))
+                        .orElse(new String[0]);
+                if (aclTags.length > 0) {
+                    List<String> aclTagList = new ArrayList<>(Arrays.asList(aclTags));
+                    if (!aclTagList.contains(TAG_INTERNAL_WORKMATE)) {
+                        aclTagList.add(TAG_INTERNAL_WORKMATE);
+                        Node pageNode = page.getContentResource().adaptTo(Node.class);
+                        pageNode.setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL,
+                                aclTagList.stream().toArray(String[]::new));
+                    }
                 }
+
             }
-        }
-         catch (RepositoryException exception) {
-            logger.error("Exception occurred when adding Internal Workmates Tag property to page {} ", exception.getMessage());
+        } catch (RepositoryException exception) {
+            logger.error("Exception occurred when adding Internal Workmates Tag property to page {} ",
+                    exception.getMessage());
         }
     }
 
@@ -134,19 +144,17 @@ public class PageResourceListener implements ResourceChangeListener {
 
                 if (authorizable == null) {
                     logger.warn("No such user: ${userId}");
-                } else {
-                    if (null != authorizable && !authorizable.isGroup()) {
-                        String firstName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME) != null
-                                ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME)[0].getString()
-                                : null;
-                        String lastName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME) != null
-                                ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME)[0].getString()
-                                : null;
-                        if (null != firstName || null != lastName) {
-                            String fullName = String.format("%s %s", StringUtils.trimToEmpty(firstName),
-                                    StringUtils.trimToEmpty(lastName));
-                            root.setProperty("author", fullName);
-                        }
+                } else if (!authorizable.isGroup()) {
+                    String firstName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME) != null
+                            ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME)[0].getString()
+                            : null;
+                    String lastName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME) != null
+                            ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME)[0].getString()
+                            : null;
+                    if (null != firstName || null != lastName) {
+                        String fullName = String.format("%s %s", StringUtils.trimToEmpty(firstName),
+                                StringUtils.trimToEmpty(lastName));
+                        root.setProperty("author", fullName);
                     }
                 }
             }
@@ -161,9 +169,8 @@ public class PageResourceListener implements ResourceChangeListener {
      * @param pagePath the page path
      */
     public void removeBookNodes(String pagePath) {
-
         try (ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory,
-                "workday-community-administrative-service")) {
+                WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE)) {
             if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
                 List<String> paths = queryService.getBookNodesByPath(pagePath, null);
                 for (String path : paths) {
