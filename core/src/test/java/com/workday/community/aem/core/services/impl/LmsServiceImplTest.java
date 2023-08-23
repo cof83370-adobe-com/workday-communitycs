@@ -11,14 +11,18 @@ import java.lang.annotation.Annotation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.workday.community.aem.core.config.LmsConfig;
+import com.workday.community.aem.core.constants.LmsConstants;
 import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
+import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.RestApiUtil;
+
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
@@ -27,6 +31,9 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class LmsServiceImplTest {
     private final LmsService service = new LmsServiceImpl();
+
+    @Mock
+    LRUCacheWithTimeout<String, String> lmsCache;
 
     /**
      * Test config.
@@ -68,6 +75,16 @@ public class LmsServiceImplTest {
             return "lmsAPIRefreshToken";
         }
 
+        @Override
+        public int lmsTokenCacheMax() {
+            return 100;
+        }
+
+        @Override
+        public long lmsTokenCacheTimeout() {
+            return 0;
+        }
+
     };
 
     /**
@@ -100,13 +117,13 @@ public class LmsServiceImplTest {
             // Case 2: with response as null
             mocked.when(() -> RestApiUtil.doLmsTokenGet(anyString(), anyString(),
                     anyString(), anyString())).thenReturn(null);
-            token = this.service.getApiToken();
-            assertEquals("", token);
+            String token1 = this.service.getApiToken();
+            assertEquals("", token1);
 
             // Case 3: response doesn't contain access token
             responseBody = "{\"token_type\": \"Bearer\",\"refresh_token\": \"refreshToken\"}";
-            token = this.service.getApiToken();
-            assertEquals("", token);
+            String token2 = this.service.getApiToken();
+            assertEquals("", token2);
         }
     }
 
