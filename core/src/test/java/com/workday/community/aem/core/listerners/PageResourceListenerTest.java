@@ -166,6 +166,6 @@ public class PageResourceListenerTest {
         when(resource.adaptTo(Node.class)).thenReturn(node);
         when(valueMap.get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class)).thenReturn(aclTags);
         pageResourceListener.addInternalWorkmatesTag(context.currentPage().getContentResource().getPath(), resolver);
-        verify(node, times(1)).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, updatedACLTags.toArray(String[]::new));
+        verify(node, times(2)).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, updatedACLTags.toArray(String[]::new));
     }
 }

@@ -14,6 +14,7 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.resource.observation.ResourceChange;
@@ -136,30 +137,33 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     /**
      * Generate recurring event pages.
      *
-     * @param eventPagePath the event page path
+     * @param resourcePath the event page path
      */
-    public void generateRecurringEventPages(String eventPagePath) {
+    public void generateRecurringEventPages(String resourcePath) {
         logger.info("Entered into generateRecurringEventPages method of RecurringEventsCreatorListener:{}",
-                eventPagePath);
+                resourcePath);
         try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-            Node eventNode = Objects.requireNonNull(resourceResolver.getResource(eventPagePath)).adaptTo(Node.class);
-            if (eventNode != null && eventNode.hasProperty(PROP_RECURRING_EVENTS)
-                    && eventNode.getProperty(PROP_RECURRING_EVENTS).getString()
-                            .equalsIgnoreCase("true")) {
-                String title = eventNode.getProperty(com.day.cq.commons.jcr.JcrConstants.JCR_TITLE).getString();
-                ValueMap map = Objects.requireNonNull(resourceResolver.getResource(eventPagePath)).adaptTo(ValueMap.class);
-                String eventFrequency = eventNode.getProperty(PROP_EVENT_FREQUENCY).getString();
-                logger.debug("Creation of recurring events selected and frequency:{}", eventPagePath);
-                Calendar startDate = eventNode.getProperty(PROP_EVENT_START_DATE).getDate();
-                EventPeriodEnum period = eventFrequency.equalsIgnoreCase(EVENT_FREQUENCY_MONTHLY)
-                        ? EventPeriodEnum.MONTHLY
-                        : EventPeriodEnum.BI_WEEKLY;
-                List<LocalDate> eventDatesList = sequentialEventsCalculator(period, startDate);
-                logger.debug("Sequentials event dates list:{}", eventDatesList);
-                if (null != eventDatesList && eventDatesList.size() > 1) {
-                    createEventPage(resourceResolver, eventDatesList,
-                            eventPagePath.replace(GlobalConstants.JCR_CONTENT_PATH, ""), title,
-                            map);
+            Resource addedResource = resourceResolver.getResource(resourcePath);
+            if (null != addedResource && null != addedResource.adaptTo(Node.class)) {
+                Node eventNode = addedResource.adaptTo(Node.class);
+                if (eventNode != null && eventNode.hasProperty(PROP_RECURRING_EVENTS)
+                        && eventNode.getProperty(PROP_RECURRING_EVENTS).getString()
+                                .equalsIgnoreCase("true")) {
+                    String title = eventNode.getProperty("jcr:title").getString();
+                    ValueMap map = resourceResolver.getResource(resourcePath).adaptTo(ValueMap.class);
+                    String eventFrequency = eventNode.getProperty(PROP_EVENT_FREQUENCY).getString();
+                    logger.debug("Creation of recurring events selected and frequency:{}", resourcePath);
+                    Calendar startDate = eventNode.getProperty(PROP_EVENT_START_DATE).getDate();
+                    EventPeriodEnum period = eventFrequency.equalsIgnoreCase(EVENT_FREQUENCY_MONTHLY)
+                            ? EventPeriodEnum.MONTHLY
+                            : EventPeriodEnum.BI_WEEKLY;
+                    List<LocalDate> eventDatesList = sequentialEventsCalculator(period, startDate);
+                    logger.debug("Sequentials event dates list:{}", eventDatesList);
+                    if (null != eventDatesList && eventDatesList.size() > 1) {
+                        createEventPage(resourceResolver, eventDatesList,
+                                resourcePath.replace(GlobalConstants.JCR_CONTENT_PATH, ""), title,
+                                map);
+                    }
                 }
             }
         } catch (CacheException | RepositoryException exec) {
@@ -253,8 +257,8 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
      * @param resourceResolver the resource resolver
      * @param newPage          the new page
      * @param valueMap         the value map
-     * @param date the date
-     * @param eventLength the event length
+     * @param date             the date
+     * @param eventLength      the event length
      */
     private void addRequiredPageProps(ResourceResolver resourceResolver, Page newPage, ValueMap valueMap,
             LocalDate date, int eventLength) {
@@ -271,9 +275,9 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     /**
      * Adds the all tags and meta data.
      *
-     * @param node     the node
-     * @param valueMap the value map
-     * @param localDate the local date
+     * @param node        the node
+     * @param valueMap    the value map
+     * @param localDate   the local date
      * @param eventLength the event length
      * @throws RepositoryException the repository exception
      */

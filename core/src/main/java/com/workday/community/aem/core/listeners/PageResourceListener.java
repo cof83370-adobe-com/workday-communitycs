@@ -1,9 +1,12 @@
 package com.workday.community.aem.core.listeners;
 
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -56,7 +59,6 @@ public class PageResourceListener implements ResourceChangeListener {
     @Reference
     QueryService queryService;
 
-
     /**
      * On change.
      *
@@ -69,7 +71,7 @@ public class PageResourceListener implements ResourceChangeListener {
         }
 
         changes.stream()
-                .filter(item -> "ADDED".equals(item.getType().toString() )
+                .filter(item -> "ADDED".equals(item.getType().toString())
                         && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
                 .forEach(change -> handleNewPage(change.getPath()));
     }
@@ -104,17 +106,25 @@ public class PageResourceListener implements ResourceChangeListener {
             PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
             Page page = Objects.requireNonNull(pageManager).getContainingPage(pagePath);
             if (null != page) {
-                String[] aclTags = page.getProperties().get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class);
-                List<String> aclTagList = new ArrayList<>(Arrays.asList(Objects.requireNonNull(aclTags)));
-                if(!aclTagList.contains(TAG_INTERNAL_WORKMATE)){
-                    aclTagList.add(TAG_INTERNAL_WORKMATE);
-                    Node pageNode = page.getContentResource().adaptTo(Node.class);
+                String[] aclTags = Optional
+                        .ofNullable(
+                                page.getProperties().get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class))
+                        .orElse(new String[0]);
+                if (aclTags.length > 0) {
+                    List<String> aclTagList = new ArrayList<>(Arrays.asList(aclTags));
+                    if (!aclTagList.contains(TAG_INTERNAL_WORKMATE)) {
+                        aclTagList.add(TAG_INTERNAL_WORKMATE);
+                        Node pageNode = page.getContentResource().adaptTo(Node.class);
                     Objects.requireNonNull(pageNode).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, aclTagList.toArray(String[]::new));
+                        pageNode.setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL,
+                                aclTagList.stream().toArray(String[]::new));
+                    }
                 }
+
             }
-        }
-         catch (RepositoryException exception) {
-            logger.error("Exception occurred when adding Internal Workmates Tag property to page {} ", exception.getMessage());
+        } catch (RepositoryException exception) {
+            logger.error("Exception occurred when adding Internal Workmates Tag property to page {} ",
+                    exception.getMessage());
         }
     }
 
@@ -135,23 +145,21 @@ public class PageResourceListener implements ResourceChangeListener {
 
                 if (authorizable == null) {
                     logger.warn("No such user: ${userId}");
-                } else {
-                    if ( !authorizable.isGroup()) {
-                        String firstName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME) != null
-                                ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME)[0].getString()
-                                : null;
-                        String lastName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME) != null
-                                ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME)[0].getString()
-                                : null;
-                        if (null != firstName || null != lastName) {
-                            String fullName = String.format("%s %s", StringUtils.trimToEmpty(firstName),
-                                    StringUtils.trimToEmpty(lastName));
-                            root.setProperty("author", fullName);
-                        }
+                } else if (!authorizable.isGroup()) {
+                    String firstName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME) != null
+                            ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME)[0].getString()
+                            : null;
+                    String lastName = authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME) != null
+                            ? authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_FAMILYNAME)[0].getString()
+                            : null;
+                    if (null != firstName || null != lastName) {
+                        String fullName = String.format("%s %s", StringUtils.trimToEmpty(firstName),
+                                StringUtils.trimToEmpty(lastName));
+                        root.setProperty("author", fullName);
                     }
                 }
             }
-        } catch (RepositoryException | NullPointerException ex) {
+        } catch (RepositoryException ex) {
             logger.error("Exception occurred when adding author property to page {} ", ex.getMessage());
         }
     }
