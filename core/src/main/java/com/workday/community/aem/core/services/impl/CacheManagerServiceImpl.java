@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.adobe.xfa.ut.StringUtils;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -123,6 +124,15 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         cache.invalidateAll();
       }
       caches.clear();
+    } else if (!StringUtils.isEmpty(cacheName)) {
+      LoadingCache cache = caches.get(getInnerCacheName(cacheName).name());
+      if (StringUtils.isEmpty(key)) {
+        // Clear cache with cache name
+        cache.invalidateAll();
+        return;
+      }
+      // Clear cache for specific key in the cache
+      cache.invalidate(key);
     }
   }
 

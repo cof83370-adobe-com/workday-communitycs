@@ -107,10 +107,14 @@ public class CacheManagerServiceImplTest {
 
     String res = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
     assertEquals(res, TEST_VALUE + 1);
-    cacheManager.ClearAllCaches();
-    // since cache is cleared, fetch again will hit callback and count will be 2.
+    cacheManager.ClearAllCaches(TEST_CACHE_BUCKET, TEST_KEY);
+    // Since cache is cleared, fetch again will hit callback and count will be 2.
     String res1 = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
     assertEquals(res1, TEST_VALUE + 2);
+    cacheManager.ClearAllCaches(TEST_CACHE_BUCKET);
+    // Since cache is cleared, fetch again will hit callback and count will be 3.
+    res1 = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
+    assertEquals(res1, TEST_VALUE + 3);
   }
 
   @Test
