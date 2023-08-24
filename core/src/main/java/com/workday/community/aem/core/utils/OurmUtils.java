@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.OurmException;
@@ -80,5 +82,17 @@ public class OurmUtils {
     JsonObject userContext = snapService.getUserContext(sfId);
     return userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
         : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
+  }
+
+  public static boolean isMenuEmpty(Gson gson, String menuString) {
+    JsonObject retAsJsonObject = gson.fromJson(menuString, JsonObject.class).getAsJsonObject("primary");
+    boolean menuEmpty = retAsJsonObject == null || retAsJsonObject.isJsonNull();
+    if (!menuEmpty) {
+      JsonElement primary = retAsJsonObject.get("menu");
+      menuEmpty = (primary == null) || primary.isJsonNull() ||
+          (primary.isJsonArray() && primary.getAsJsonArray().size() == 0);
+    }
+
+    return menuEmpty;
   }
 }

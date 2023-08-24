@@ -19,6 +19,7 @@ import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.DamUtils;
+import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -162,15 +163,7 @@ public class SnapServiceImpl implements SnapService {
       return gson.toJson(this.getDefaultHeaderMenu());
     });
 
-    JsonObject retAsJsonObject = gson.fromJson(retValue, JsonObject.class).getAsJsonObject("menus");
-    boolean menuEmpty = retAsJsonObject == null || retAsJsonObject.isJsonNull();
-    if (!menuEmpty) {
-      JsonElement primary = retAsJsonObject.get("primary");
-      menuEmpty = (primary == null) || primary.isJsonNull() ||
-          (primary.isJsonArray() && primary.getAsJsonArray().size() == 0);
-    }
-
-    if (menuEmpty) {
+    if (OurmUtils.isMenuEmpty(gson, retValue)) {
       serviceCacheMgr.ClearAllCaches(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
     }
 

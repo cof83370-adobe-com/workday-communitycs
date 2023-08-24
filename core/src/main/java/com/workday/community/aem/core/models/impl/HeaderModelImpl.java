@@ -3,6 +3,7 @@ package com.workday.community.aem.core.models.impl;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
+import com.google.gson.Gson;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
@@ -80,6 +81,8 @@ public class HeaderModelImpl implements HeaderModel {
   /** SFID */
   String sfId;
 
+  private Gson gson = new Gson();
+
   /** The global search url. */
   String globalSearchURL;
 
@@ -101,10 +104,9 @@ public class HeaderModelImpl implements HeaderModel {
     if (value != null && value.equals("TRUE")) return null;
 
     String ret = this.snapService.getUserHeaderMenu(sfId);
-    if (ret != null) {
-      Cookie cacheMenuCookie = new Cookie("cacheMenu", "TRUE");
-      HttpUtils.addCookie(cacheMenuCookie, response);
-    }
+    Cookie cacheMenuCookie = new Cookie("cacheMenu",
+        StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret) ? "FALSE" : "TRUE");
+    HttpUtils.addCookie(cacheMenuCookie, response);
 
     return ret;
   }
