@@ -63,23 +63,23 @@
                                                 margin: 5px 0;
                                             }
                                         </style>
-                                      <template>
-                                          <atomic-result-section-title class="title">
-                                              <style>
-                                                  atomic-result-link a {
-                                                      color: #0875e1 !important;
-                                                      display: inline-block;
-                                                      font-size: 14px;
-                                                      font-style: normal;
-                                                      font-weight: 700;
-                                                      letter-spacing: .2px;
-                                                      line-height: 20px;
-                                                      font-family: "Workday Adelle Sans", Roboto, sans-serif;
-                                                  }
-                                              </style>
-                                              <atomic-result-link target="_blank" class="result-link"></atomic-result-link>
-                                          </atomic-result-section-title>
-                                      </template>
+                                        <template>
+                                            <atomic-result-section-title class="title">
+                                                <style>
+                                                    atomic-result-link a {
+                                                        color: #0875e1 !important;
+                                                        display: inline-block;
+                                                        font-size: 14px;
+                                                        font-style: normal;
+                                                        font-weight: 700;
+                                                        letter-spacing: .2px;
+                                                        line-height: 20px;
+                                                        font-family: "Workday Adelle Sans", Roboto, sans-serif;
+                                                    }
+                                                </style>
+                                                <atomic-result-link target="_blank" class="result-link"></atomic-result-link>
+                                            </atomic-result-section-title>
+                                        </template>
                                     </atomic-result-template>
                                 </atomic-result-list>
                                 <atomic-query-error class="query-error-custom"></atomic-query-error>
@@ -154,30 +154,53 @@
                 let currentValues;
                 if (facetFields) {
                     let parts = facetFields.split(",");
-                    currentValues = parts.map(part => ({"value": part, "state": "selected"}));
+                    currentValues = parts.map(part => ({'value': part, 'state': 'selected'}));
                 }
-                let facet = currentValues ? [
-                    {
-                        "facetId": "@commoneventtype",
-                        "numberOfValues": currentValues.length + 1,
-                        "field": "commoneventtype",
-                        "type": "specific",
-                        "injectionDepth": 5000,
-                        "currentValues": currentValues
+                let facet = [];
+                if (currentValues && currentValues.length > 0) {
+                    for(let i = 0; i<currentValues.length; i++) {
+                        let currentValue = currentValues[i].value;
+                        if (currentValue.indexOf('::') != -1) {
+                            let fieldName = currentValue.split('::')[0];
+                            let basePaths = currentValue.split('::')[1].split(':');
+                            facet[i] = {
+                                basePath: basePaths,
+                                'facetId': fieldName,
+                                'numberOfValues': currentValues.length + 1,
+                                delimitingCharacter: '|',
+                                filterByBasePath: true,
+                                'field': fieldName,
+                                'type': 'hierarchical',
+                                'injectionDepth': 5000,
+                                'filterFacetCount': true,
+                                'sortCriteria': 'alphanumeric'
+                            }
+                        } else {
+                            facet[i] = {
+                                'facetId': currentValue,
+                                'numberOfValues': currentValues.length + 1,
+                                'field': currentValue,
+                                'type': 'specific',
+                                'injectionDepth': 5000,
+                                'filterFacetCount': true,
+                                'sortCriteria': 'alphanumeric'
+                            }
+                        }
                     }
-                ] : [];
+                }
 
                 const searchInterface = document.querySelector('atomic-search-interface');
                 await searchInterface.initialize({
                     accessToken: token,
-                    searchHub: searchConfig["searchHub"],
-                    organizationId: searchConfig["orgId"],
+                    searchHub: searchConfig['searchHub'],
+                    organizationId: searchConfig['orgId'],
                     renewAccessToken: getToken,
                     preprocessRequest: (request, clientOrigin) => {
                         if (clientOrigin === 'searchApiFetch') {
                             const body = JSON.parse(request.body);
                             body.maximumAge=30000;
                             body.numberOfResults = rows;
+                            body.sortCriteria = 'date descending';
                             if (facetFields) {
                                 body.facets = facet;
                             }
@@ -218,6 +241,6 @@
 
 </script>
 
-<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
+<sly data-sly-use.template='core/wcm/components/commons/v1/templates.html'
      data-sly-call="${template.placeholder  @ isEmpty=!resource.getChildren, classAppend='cmp-related-info'}">
 </sly>
