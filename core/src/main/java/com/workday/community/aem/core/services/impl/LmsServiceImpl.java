@@ -94,7 +94,10 @@ public class LmsServiceImpl implements LmsService {
         } catch (LmsException | JsonSyntaxException e) {
             LOGGER.error("Error in getAPIToken method call :: {}", e.getMessage());
             throw new LmsException(
-                    "There is an error while fetching the course detail token. Please contact Community Admin.");
+                String.format(
+                    "Error while fetching the course detail token. Please contact Community Admin. error: %s",
+                    e.getMessage())
+            );
         }
     }
 
@@ -133,9 +136,9 @@ public class LmsServiceImpl implements LmsService {
             }
             return StringUtils.EMPTY;
         } catch (LmsException | JsonSyntaxException e) {
-            LOGGER.error("Error in getCourseDetail method call :: {}", e.getMessage());
             throw new LmsException(
-                    "There is an error while fetching the course detail. Please contact Community Admin.");
+                String.format("There is an error while fetching the course detail. Please contact Community Admin. %s",
+                    e.getMessage()));
         }
     }
 

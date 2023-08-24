@@ -86,7 +86,6 @@ public class OurmUserServiceImpl implements OurmUserService {
 
             } catch (OurmException | InvalidKeyException | NoSuchAlgorithmException e) {
                 String errorMessage = e.getMessage();
-                LOGGER.error("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl %s", errorMessage);
                 throw new OurmException(
                         String.format("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl : %s",
                                 errorMessage));

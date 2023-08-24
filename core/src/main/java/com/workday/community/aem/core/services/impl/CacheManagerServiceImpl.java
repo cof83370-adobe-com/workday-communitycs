@@ -118,7 +118,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   // ====== Convenient Utility APIs ====== //
   @Override
-  synchronized public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
+  public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
     // No expiration of resolver.
     ResourceResolver resolver = resolverCache.get(serviceUser);
     if (resolver == null) {
@@ -176,7 +176,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     CacheBucketName innerCacheName;
     try {
       innerCacheName = CacheBucketName.valueOf(cacheName);
-    } catch (NullPointerException | IllegalArgumentException e) {
+    } catch (IllegalArgumentException e) {
       innerCacheName = CacheBucketName.OBJECT_VALUE;
     }
 

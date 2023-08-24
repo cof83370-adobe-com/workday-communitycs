@@ -102,10 +102,6 @@ public class AuthorizationFilter implements Filter {
                 logger.error("---> Exception occurred in AuthorizationFilter: {}.", e.getMessage());
                 ((SlingHttpServletResponse) response).setStatus(SC_INTERNAL_SERVER_ERROR);
                 ((SlingHttpServletResponse) response).sendRedirect(WccConstants.ERROR_PAGE_PATH);
-            } catch (Exception e) {
-                logger.error("---> General Exception in validateTheUser function: {}.", e.getMessage());
-                ((SlingHttpServletResponse) response).setStatus(SC_INTERNAL_SERVER_ERROR);
-                ((SlingHttpServletResponse) response).sendRedirect(WccConstants.ERROR_PAGE_PATH);
             } finally {
                 if (resourceResolver != null && resourceResolver.isLive()) {
                     resourceResolver.close();

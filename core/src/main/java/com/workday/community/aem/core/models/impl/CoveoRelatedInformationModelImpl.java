@@ -107,8 +107,8 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
         facetFields.add(facetFieldObj.getAsString());
       }
     } catch (CacheException e) {
-      LOGGER.error("exception in getFacetFields call in CoveoRelatedInformationModelImpl.");
-      throw new DamException(e.getMessage());
+      throw new DamException(String.format(
+          "Exception in getFacetFields call in CoveoRelatedInformationModelImpl. error %s", e.getMessage()));
     }
 
     return Collections.unmodifiableList(facetFields);

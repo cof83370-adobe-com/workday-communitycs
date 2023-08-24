@@ -42,7 +42,6 @@ public class OurmUtils {
       try {
         User user = (User) userManager.getAuthorizable(session.getUserID());
         if (user == null) {
-          LOGGER.error("User is not in userManager");
           throw new OurmException("User is not in userManager.");
         }
 

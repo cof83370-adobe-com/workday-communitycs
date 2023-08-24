@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
             logger.error("Cannot find user with id {}.", userId);
             return null;
         }
-        catch (CacheException | RepositoryException | NullPointerException e) {
+        catch (CacheException | RepositoryException e) {
             logger.error("Exception occurred when fetch user {}: {}.", userId, e.getMessage());
             return null;
         }
