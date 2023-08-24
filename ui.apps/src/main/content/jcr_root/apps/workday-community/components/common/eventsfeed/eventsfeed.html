@@ -186,7 +186,9 @@
                     let elem = elmCallback();
                     if (elem) {
                         clearTimeout(timeOutHandler);
-                        callback(elem);
+                        if (callback) {
+                            callback(elem);
+                        }
                     } else {
                         timeOutHandler = setTimeout(function () {
                             if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs) {
@@ -317,6 +319,15 @@
                                     }
                                 }
                             })
+                    })
+
+                waitForElementToDisplay(
+                    () => {
+                        return document.getElementsByClassName('no-result-box')[0];
+                    }, (elm) => {
+                        if (elm) {
+                            elm.style.width = width + "px";
+                        }
                     })
             })
         </script>
