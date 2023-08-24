@@ -81,7 +81,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   @Override
   public <V> V get(String cacheName, String key, ValueCallback<String, V> callback) {
     if (!this.config.enabled()) {
-      return callback.getValue(key);
+      return callback == null? null : callback.getValue(key);
     }
     try {
       CacheBucketName innerName = getInnerCacheName(cacheName);
