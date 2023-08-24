@@ -1,5 +1,6 @@
 package com.workday.community.aem.utils;
 
+import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.utils.RestApiUtil;
 
@@ -51,6 +52,80 @@ public class RestApiUtilTest {
 
       RestApiUtil.doMenuGet("url", "apiToken", "apiKey", "traceId");
       RestApiUtil.doSnapGet("url", "authToken", "xapiKey");
+    }
+  }
+
+  /**
+   * Test method for doLmsTokenPost.
+   * 
+   * @throws RestAPIException
+   * @throws IOException
+   * @throws InterruptedException
+   */
+  @Test
+  public void testDoLmsTokenPost()
+      throws LmsException, IOException, InterruptedException {
+    HttpClient httpClient = mock(HttpClient.class);
+    java.net.http.HttpClient.Builder clientBuilder = mock(java.net.http.HttpClient.Builder.class);
+
+    Builder requestBuilder = mock(Builder.class);
+    HttpRequest request = mock(HttpRequest.class);
+
+    try (MockedStatic<HttpClient> mockedClient = mockStatic(HttpClient.class);
+        MockedStatic<HttpRequest> mockedrequest = mockStatic(HttpRequest.class)) {
+      mockedClient.when(HttpClient::newBuilder).thenReturn(clientBuilder);
+      mockedrequest.when(HttpRequest::newBuilder).thenReturn(requestBuilder);
+      lenient().when(clientBuilder.connectTimeout(any())).thenReturn(clientBuilder);
+      lenient().when(clientBuilder.build()).thenReturn(httpClient);
+
+      lenient().when(requestBuilder.uri(any())).thenReturn(requestBuilder);
+      lenient().when(requestBuilder.POST(any())).thenReturn(requestBuilder);
+      lenient().when(requestBuilder.build()).thenReturn(request);
+
+      HttpResponse response = mock(HttpResponse.class);
+      lenient().when(httpClient.send(any(), any())).thenReturn(response);
+
+      when(response.statusCode()).thenReturn(200);
+      when(response.body()).thenReturn("");
+
+      RestApiUtil.doLmsTokenGet("url", "clientId", "clientSecret", "refreshToken");
+    }
+  }
+
+  /**
+   * Test method for doLmsCourseDetailGet.
+   * 
+   * @throws RestAPIException
+   * @throws IOException
+   * @throws InterruptedException
+   */
+  @Test
+  public void testDoLmsCourseDetailGet()
+      throws LmsException, IOException, InterruptedException {
+    HttpClient httpClient = mock(HttpClient.class);
+    java.net.http.HttpClient.Builder clientBuilder = mock(java.net.http.HttpClient.Builder.class);
+
+    Builder requestBuilder = mock(Builder.class);
+    HttpRequest request = mock(HttpRequest.class);
+
+    try (MockedStatic<HttpClient> mockedClient = mockStatic(HttpClient.class);
+        MockedStatic<HttpRequest> mockedrequest = mockStatic(HttpRequest.class)) {
+      mockedClient.when(HttpClient::newBuilder).thenReturn(clientBuilder);
+      mockedrequest.when(HttpRequest::newBuilder).thenReturn(requestBuilder);
+      lenient().when(clientBuilder.connectTimeout(any())).thenReturn(clientBuilder);
+      lenient().when(clientBuilder.build()).thenReturn(httpClient);
+
+      lenient().when(requestBuilder.uri(any())).thenReturn(requestBuilder);
+      lenient().when(requestBuilder.GET()).thenReturn(requestBuilder);
+      lenient().when(requestBuilder.build()).thenReturn(request);
+
+      HttpResponse response = mock(HttpResponse.class);
+      lenient().when(httpClient.send(any(), any())).thenReturn(response);
+
+      when(response.statusCode()).thenReturn(200);
+      when(response.body()).thenReturn("");
+
+      RestApiUtil.doLmsCourseDetailGet("url", "bearerToken");
     }
   }
 }

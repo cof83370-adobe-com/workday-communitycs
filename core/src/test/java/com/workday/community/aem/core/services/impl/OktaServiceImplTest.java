@@ -22,11 +22,6 @@ public class OktaServiceImplTest {
     }
 
     @Override
-    public String redirectUri() {
-      return "https://okta.workday.com/foo";
-    }
-
-    @Override
     public String customDomain() {
       return "community";
     }
@@ -47,6 +42,5 @@ public class OktaServiceImplTest {
   @Test
   public void testConfigs() {
     assertEquals(service.getCustomDomain(), testConfig.customDomain());
-    assertEquals(service.getRedirectUri(), testConfig.redirectUri());
   }
 }

@@ -54,8 +54,6 @@ public class SnapServiceImplTest {
   @Mock
   ResourceResolverFactory resResolverFactory;
 
-
-
   @Mock
   RunModeConfigService runModeConfigService;
 

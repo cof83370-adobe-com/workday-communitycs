@@ -186,7 +186,9 @@
                     let elem = elmCallback();
                     if (elem) {
                         clearTimeout(timeOutHandler);
-                        callback(elem);
+                        if (callback) {
+                            callback(elem);
+                        }
                     } else {
                         timeOutHandler = setTimeout(function () {
                             if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs) {
@@ -290,8 +292,8 @@
 
                 // adjust the image width based on container width
                 const containerWidth = document.getElementsByClassName('eventsfeed')[0].clientWidth;
-                if (containerWidth < 360)  {
-                    document.getElementsByClassName('feature-image')[0].style.maxWidth = '160px';
+                if (containerWidth < 388)  {
+                    document.getElementsByClassName('feature-image')[0].style.display = 'none';
                 } else if (containerWidth < 640) {
                     document.getElementsByClassName('feature-image')[0].style.maxWidth = '280px';
                 }
@@ -317,6 +319,15 @@
                                     }
                                 }
                             })
+                    })
+
+                waitForElementToDisplay(
+                    () => {
+                        return document.getElementsByClassName('no-result-box')[0];
+                    }, (elm) => {
+                        if (elm) {
+                            elm.style.width = width + "px";
+                        }
                     })
             })
         </script>
