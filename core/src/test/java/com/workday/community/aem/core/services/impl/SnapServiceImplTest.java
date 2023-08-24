@@ -16,6 +16,7 @@ import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.apache.http.HttpStatus;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -304,9 +305,10 @@ public class SnapServiceImplTest {
       contactInfo.addProperty("firstName", "Justin");
       contactInfo.addProperty("lastName", "Zhang");
       sfMenu.add("contactInformation", contactInfo);
-
+      lenient().when(response.getResponseCode()).thenReturn(HttpStatus.SC_OK);
+      lenient().when(response.getResponseBody()).thenReturn(gson.toJson(sfMenu));
       String menuData4 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
-      assertEquals(gson.fromJson(sfMenu, JsonObject.class).size(), gson.fromJson(menuData4, JsonObject.class).size() + 1);
+      assertEquals(gson.fromJson(sfMenu, JsonObject.class).size(), gson.fromJson(menuData4, JsonObject.class).size());
     }
   }
 

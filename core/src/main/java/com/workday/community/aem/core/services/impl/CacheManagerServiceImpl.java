@@ -35,13 +35,12 @@ import java.util.concurrent.TimeUnit;
  */
 @Component(service = CacheManagerService.class, property = {
     "service.pid=aem.core.services.cache.serviceCache"
-}, configurationPid = "com.workday.community.aem.core.config.EhCacheConfig",
+}, configurationPid = "com.workday.community.aem.core.config.CacheConfig",
     configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 @Designate(ocd = CacheConfig.class)
 public class CacheManagerServiceImpl implements CacheManagerService {
   private final static Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
 
-  // We maintain the resolver cache here conveniently.
   private final LRUCacheWithTimeout<String, ResourceResolver> resolverCache = new LRUCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
   private Map<String, LoadingCache> caches;
 
@@ -54,6 +53,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     caches = new ConcurrentHashMap<>();
   }
 
+  // This method is mainly for testing purpose.
   public void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory) {
     this.resourceResolverFactory = resourceResolverFactory;
   }
@@ -134,33 +134,39 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   }
 
   // ================== Private methods ===============//
-  private <String, V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
-                                                       ValueCallback<String, V> callback) throws CacheException  {
+  private <V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
+                                               ValueCallback<String, V> callback) throws CacheException  {
     try {
-      if (caches == null) {
-        caches = new ConcurrentHashMap<>();
-      }
       LoadingCache<String, V> cache = caches.get(innerCacheName.name());
       if (cache != null) return cache;
       if (key == null) return null;
 
       cache = builder.build( new CacheLoader<String, V>() {
         public V load(String key) throws CacheException {
-          V ret = callback == null ? null : callback.getValue(key);
+          V ret = null;
+          if (callback != null) {
+            LOGGER.debug("Enter callback method to call API to get value for: " + key);
+            ret = callback.getValue(key);
+          }
           if (ret == null) {
             throw new CacheException("The returned value is null");
           }
-
+          LOGGER.debug("Return value from load(..) method for cache key: " + key);
           return ret;
         }
 
         public ListenableFuture<V> reload(final String key, V preVal) throws CacheException {
           LOGGER.debug(java.lang.String.format("reload value for key %s happens", key));
-          ListenableFuture<V> ret = callback == null ? null : Futures.immediateFuture(callback.getValue(key));
+          ListenableFuture<V> ret = null;
+          if (callback != null) {
+            LOGGER.debug("Enter callback method to call API to reload value again for: " + key);
+            ret = Futures.immediateFuture(callback.getValue(key));
+          }
+
           if (ret == null) {
             throw new CacheException("The reload value is null");
           }
-
+          LOGGER.debug("Return value from reload(..) method for key: " + key);
           return ret;
         }
       });

@@ -105,7 +105,7 @@ public class SnapServiceImpl implements SnapService {
   public String getUserHeaderMenu(String sfId) {
     String menuCacheKey =  String.format("menu-%s", sfId);
 
-    return serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
+    String retValue = serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
       String snapUrl = config.snapUrl(), navApi = config.navApi(),
           apiToken = config.navApiToken(), apiKey = config.navApiKey();
 
@@ -161,12 +161,26 @@ public class SnapServiceImpl implements SnapService {
 
       return gson.toJson(this.getDefaultHeaderMenu());
     });
+
+    JsonObject retAsJsonObject = gson.fromJson(retValue, JsonObject.class).getAsJsonObject("menus");
+    boolean menuEmpty = retAsJsonObject == null || retAsJsonObject.isJsonNull();
+    if (!menuEmpty) {
+      JsonElement primary = retAsJsonObject.get("primary");
+      menuEmpty = (primary == null) || primary.isJsonNull() ||
+          (primary.isJsonArray() && primary.getAsJsonArray().size() == 0);
+    }
+
+    if (menuEmpty) {
+      serviceCacheMgr.ClearAllCaches(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
+    }
+
+    return retValue;
   }
 
   @Override
   public JsonObject getUserContext(String sfId) {
     String cacheKey = String.format("profile-%s", sfId);
-    return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
+    JsonObject ret = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
         logger.debug("SnapImpl: Calling SNAP getUserContext()...");
         String url = CommunityUtils.formUrl(config.snapUrl(), config.snapContextPath());
@@ -185,6 +199,12 @@ public class SnapServiceImpl implements SnapService {
       logger.error("User context is not fetched from the snap context API call without error, please contact admin.");
       return new JsonObject();
     });
+
+    if (ret.isJsonNull()) {
+      serviceCacheMgr.ClearAllCaches(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+    }
+
+    return ret;
   }
 
   @Override
@@ -216,7 +236,8 @@ public class SnapServiceImpl implements SnapService {
    * @return The menu.
    */
   private JsonObject getDefaultHeaderMenu() {
-    return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), "default-menu", (key) -> {
+    String cacheKey = "default-menu";
+    JsonObject ret = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
         ResourceResolver resourceResolver = this.serviceCacheMgr.getServiceResolver(READ_SERVICE_USER);
         // Reading the JSON File from DAM.
@@ -226,6 +247,11 @@ public class SnapServiceImpl implements SnapService {
         return new JsonObject();
       }
     });
+
+    if (ret.isJsonNull()) {
+      serviceCacheMgr.ClearAllCaches(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+    }
+    return ret;
   }
 
   /**
