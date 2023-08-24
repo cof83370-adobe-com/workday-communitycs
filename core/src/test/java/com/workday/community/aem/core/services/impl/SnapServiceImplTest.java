@@ -95,6 +95,11 @@ public class SnapServiceImplTest {
       public int refreshDuration() {
         return 10;
       }
+
+      @Override
+      public boolean enabled() {
+        return true;
+      }
     };
     cacheManagerService.activate(cacheConfig);
     cacheManagerService.setResourceResolverFactory(resResolverFactory);

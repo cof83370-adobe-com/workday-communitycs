@@ -12,14 +12,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.lang.annotation.Annotation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Test class for CacheManagerServiceImpl.
  */
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
-public class ServiceCacheManagerServiceImplTest {
+public class CacheManagerServiceImplTest {
   private static final String TEST_CACHE_BUCKET = "test-cache-bucket";
   private static final String TEST_KEY = "test-key";
+  private static final String NON_EXISTING_KEY = "not-existing-key";
   private static final String TEST_VALUE = "test-value";
 
   CacheConfig cacheConfig;
@@ -47,7 +50,12 @@ public class ServiceCacheManagerServiceImplTest {
       public int refreshDuration() {
         return 10;
       }
-    };
+
+       @Override
+       public boolean enabled() {
+         return true;
+       }
+     };
   }
 
   @Test
@@ -103,5 +111,23 @@ public class ServiceCacheManagerServiceImplTest {
     // since cache is cleared, fetch again will hit callback and count will be 2.
     String res1 = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
     assertEquals(res1, TEST_VALUE + 2);
+  }
+
+  @Test
+  public void testIfCacheExists() throws CacheException {
+    CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
+    cacheManager.activate(cacheConfig);
+    ValueCallback<String, String> callback = new ValueCallback() {
+      @Override
+      public Object getValue(Object key) {
+        return TEST_VALUE;
+      }
+    };
+
+    cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
+    boolean existed = cacheManager.isPresented(TEST_CACHE_BUCKET, TEST_KEY);
+    assertTrue(existed);
+    existed = cacheManager.isPresented(TEST_CACHE_BUCKET, NON_EXISTING_KEY);
+    assertFalse(existed);
   }
 }

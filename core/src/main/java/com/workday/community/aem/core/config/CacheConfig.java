@@ -26,4 +26,11 @@ public @interface CacheConfig {
       type = AttributeType.INTEGER
   )
   int refreshDuration() default 60 * 60;
+
+  @AttributeDefinition(
+      name = "Enable cache",
+      description = "Indicate if the cache is enabled (default TRUE)",
+      type = AttributeType.BOOLEAN
+  )
+  boolean enabled() default true;
 }

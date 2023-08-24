@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -48,6 +49,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   @Reference
   private ResourceResolverFactory resourceResolverFactory;
   private CacheBuilder builder;
+  private CacheConfig config;
 
   public CacheManagerServiceImpl() {
     caches = new ConcurrentHashMap<>();
@@ -62,6 +64,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   @Modified
   public void activate(CacheConfig config) throws CacheException{
     if(builder == null) {
+      this.config = config;
       builder = CacheBuilder.newBuilder()
           .maximumSize(config.maxSize())
           .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
@@ -77,6 +80,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   @Override
   public <V> V get(String cacheName, String key, ValueCallback<String, V> callback) {
+    if (!this.config.enabled()) {
+      return callback.getValue(key);
+    }
     try {
       CacheBucketName innerName = getInnerCacheName(cacheName);
       LoadingCache<String, V> cache = getCache(innerName, key, callback);
@@ -91,6 +97,20 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     }
 
     return null;
+  }
+
+  @Override
+  public <V> boolean isPresented(String cacheName, String key) {
+    try {
+      CacheBucketName innerName = getInnerCacheName(cacheName);
+      LoadingCache<String, V> cache = getCache(innerName, key, null);
+      return Objects.requireNonNull(cache).asMap().containsKey(key);
+    } catch (CacheException e) {
+      LOGGER.error(String.format(
+          "Can't get cache for cache key: %s in cache name: %s, error: %s",
+          key, cacheName, e.getMessage()));
+       return false;
+    }
   }
 
   @Override
