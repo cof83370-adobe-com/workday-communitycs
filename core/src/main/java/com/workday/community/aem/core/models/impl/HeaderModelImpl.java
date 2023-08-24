@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.models.impl;
 
-import com.adobe.xfa.Bool;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;

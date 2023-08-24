@@ -65,7 +65,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       builder = CacheBuilder.newBuilder()
           .maximumSize(config.maxSize())
           .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
-          .expireAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
+          .refreshAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
     }
   }
 
@@ -155,6 +155,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         }
 
         public ListenableFuture<V> reload(final String key, V preVal) throws CacheException {
+          LOGGER.debug(java.lang.String.format("reload value for key %s happens", key));
           ListenableFuture<V> ret = callback == null ? null : Futures.immediateFuture(callback.getValue(key));
           if (ret == null) {
             throw new CacheException("The reload value is null");
