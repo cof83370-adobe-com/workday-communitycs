@@ -2,15 +2,15 @@ package com.workday.community.aem.core.filters;
 
 import com.day.cq.wcm.api.constants.NameConstants;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.engine.EngineConstants;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
@@ -23,8 +23,6 @@ import javax.jcr.Session;
 import javax.servlet.*;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.workday.community.aem.core.constants.WccConstants.*;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
@@ -49,13 +47,13 @@ public class AuthorizationFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(AuthorizationFilter.class);
 
     @Reference
-    private ResourceResolverFactory resolverFactory;
-
-    @Reference
     private transient OktaService oktaService;
 
     @Reference
     private transient UserGroupService userGroupService;
+
+    @Reference
+    private transient CacheManagerService cacheManagerService;
 
     @Reference
     private transient UserService userService;
@@ -76,8 +74,6 @@ public class AuthorizationFilter implements Filter {
             pagePath.contains(WORKDAY_ROOT_PAGE_PATH) &&
             !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT) &&
             !pagePath.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
-            Map<String, Object> serviceParams = new HashMap<>();
-            serviceParams.put(ResourceResolverFactory.SUBSERVICE, WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
             ResourceResolver requestResourceResolver = slingRequest.getResourceResolver();
             Session userSession = requestResourceResolver.adaptTo(Session.class);
             if (userSession == null) {
@@ -89,7 +85,7 @@ public class AuthorizationFilter implements Filter {
             boolean isInValid = true;
             ResourceResolver resourceResolver = null;
             try {
-                resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
+                resourceResolver = cacheManagerService.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
                 User user = userService.getUser(resourceResolver, userId);
                 if (null != user && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
                     isInValid = userGroupService.validateTheUser(resourceResolver, requestResourceResolver, pagePath);
@@ -98,7 +94,7 @@ public class AuthorizationFilter implements Filter {
                     ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
                     ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
                 }
-            } catch (LoginException | RepositoryException e) {
+            } catch (CacheException | RepositoryException e) {
                 logger.error("---> Exception occurred in AuthorizationFilter: {}.", e.getMessage());
                 ((SlingHttpServletResponse) response).setStatus(SC_INTERNAL_SERVER_ERROR);
                 ((SlingHttpServletResponse) response).sendRedirect(WccConstants.ERROR_PAGE_PATH);

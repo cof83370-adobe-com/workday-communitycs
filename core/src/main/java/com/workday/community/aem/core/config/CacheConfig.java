@@ -4,7 +4,7 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-@ObjectClassDefinition(name = "EhCache configuration", description = "Parameters for Eh Cache")
+@ObjectClassDefinition(name = "Cache configuration", description = "Parameters for Cache")
 public @interface CacheConfig {
   @AttributeDefinition(
       name = "Cache maximum size",

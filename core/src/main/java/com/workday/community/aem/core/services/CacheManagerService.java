@@ -6,7 +6,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
- * The EhCache manager definition interface.
+ * The Cache manager definition interface.
  */
 
 @ProviderType
