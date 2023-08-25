@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * The search Token servlet class.
@@ -72,6 +73,8 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     ServletCallback servletCallback = (SlingHttpServletRequest req,
         SlingHttpServletResponse res, String body) -> {
       response.setStatus(HttpStatus.SC_OK);
+      response.setContentType("application/json");
+      response.setCharacterEncoding(StandardCharsets.UTF_8.name());
       response.getWriter().write(body);
       return body;
     };
