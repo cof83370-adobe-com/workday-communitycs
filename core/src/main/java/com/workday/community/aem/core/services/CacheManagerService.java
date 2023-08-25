@@ -20,41 +20,41 @@ public interface CacheManagerService {
    * proper namespace as part of the key to prevent possible key collision. Also,
    * isPresented() method can be used to check if the cache is already existing.
    *
-   * @param cacheName The pass-in cache name.
+   * @param cacheBucketName The pass-in cache name.
    * @param key The pass-in cache key.
    * @param callback The callback function to retrieve data for the cached key.
    * @return The value from the cache for the pass-in cache key.
    * @param <V> The type of returned value.
    */
-   <V> V get(String cacheName, String key, ValueCallback<String, V> callback);
+   <V> V get(String cacheBucketName, String key, ValueCallback<String, V> callback);
 
   /**
    * To check if a key is already presented in a cache with corresponding cache name.
-   * @param cacheName The pass-in cache name.
+   * @param cacheBucketName The pass-in cache name.
    * @param key The pass-in cache key.
    * @return true if the key has associated cache in the cache.
    * @param <V> The type of returned value.
    */
-  <V> boolean isPresented(String cacheName, String key);
+  <V> boolean isPresent(String cacheBucketName, String key);
 
   /**
    * Clear cache for specific cache key in a cache bucket.
    *
-   * @param cacheName The cache bucket name.
+   * @param cacheBucketName The cache bucket name.
    * @param key  The cache key.
    */
-  void ClearAllCaches(String cacheName, String key);
+  void invalidateCache(String cacheBucketName, String key);
 
   /**
    * Clear all caches in a cache bucket.
    * @param cacheName The cache bucket name.
    */
-  void ClearAllCaches(String cacheName);
+  void invalidateCache(String cacheName);
 
   /**
    * Clear all caches
    */
-  void ClearAllCaches() ;
+  void invalidateCache() ;
 
   /**
    * Convenient method to get a service Resource resolver from Cache (create if not existing).

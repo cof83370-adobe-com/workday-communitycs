@@ -107,11 +107,11 @@ public class CacheManagerServiceImplTest {
 
     String res = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
     assertEquals(res, TEST_VALUE + 1);
-    cacheManager.ClearAllCaches(TEST_CACHE_BUCKET, TEST_KEY);
+    cacheManager.invalidateCache(TEST_CACHE_BUCKET, TEST_KEY);
     // Since cache is cleared, fetch again will hit callback and count will be 2.
     String res1 = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
     assertEquals(res1, TEST_VALUE + 2);
-    cacheManager.ClearAllCaches(TEST_CACHE_BUCKET);
+    cacheManager.invalidateCache(TEST_CACHE_BUCKET);
     // Since cache is cleared, fetch again will hit callback and count will be 3.
     res1 = cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
     assertEquals(res1, TEST_VALUE + 3);
@@ -121,17 +121,12 @@ public class CacheManagerServiceImplTest {
   public void testIfCacheExists() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    ValueCallback<String, String> callback = new ValueCallback() {
-      @Override
-      public Object getValue(Object key) {
-        return TEST_VALUE;
-      }
-    };
+    ValueCallback<String, String> callback = (ValueCallback) key -> TEST_VALUE;
 
     cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
-    boolean existed = cacheManager.isPresented(TEST_CACHE_BUCKET, TEST_KEY);
+    boolean existed = cacheManager.isPresent(TEST_CACHE_BUCKET, TEST_KEY);
     assertTrue(existed);
-    existed = cacheManager.isPresented(TEST_CACHE_BUCKET, NON_EXISTING_KEY);
+    existed = cacheManager.isPresent(TEST_CACHE_BUCKET, NON_EXISTING_KEY);
     assertFalse(existed);
   }
 }

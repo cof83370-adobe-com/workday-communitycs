@@ -44,7 +44,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   private final static Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
 
   private final LRUCacheWithTimeout<String, ResourceResolver> resolverCache = new LRUCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
-  private Map<String, LoadingCache> caches;
+  private final Map<String, LoadingCache> caches;
 
   /** The resource resolver factory. */
   @Reference
@@ -56,7 +56,13 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     caches = new ConcurrentHashMap<>();
   }
 
-  // This method is mainly for testing purpose.
+  /**
+   * Set resource resolver factory.
+   *
+   * @param resourceResolverFactory
+   *
+   * Please note that this method is used for testing purpose only.
+   */
   public void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory) {
     this.resourceResolverFactory = resourceResolverFactory;
   }
@@ -75,17 +81,17 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   @Deactivate
   public void deactivate() {
-    ClearAllCaches();
+    invalidateCache();
     closeAndClearCachedResolvers();
   }
 
   @Override
-  public <V> V get(String cacheName, String key, ValueCallback<String, V> callback) {
+  public <V> V get(String cacheBucketName, String key, ValueCallback<String, V> callback) {
     if (!this.config.enabled()) {
       return callback == null? null : callback.getValue(key);
     }
     try {
-      CacheBucketName innerName = getInnerCacheName(cacheName);
+      CacheBucketName innerName = getInnerCacheName(cacheBucketName);
       LoadingCache<String, V> cache = getCache(innerName, key, callback);
       if (cache != null) {
         return cache.get(key);
@@ -93,7 +99,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     } catch (CacheException | ExecutionException e) {
       LOGGER.error(String.format(
           "Can't get value from cache for cache key: %s in cache name: %s, error: %s",
-          key, cacheName, e.getMessage()
+          key, cacheBucketName, e.getMessage()
       ));
     }
 
@@ -101,22 +107,22 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   }
 
   @Override
-  public <V> boolean isPresented(String cacheName, String key) {
+  public <V> boolean isPresent(String cacheBucketName, String key) {
     try {
-      CacheBucketName innerName = getInnerCacheName(cacheName);
+      CacheBucketName innerName = getInnerCacheName(cacheBucketName);
       LoadingCache<String, V> cache = getCache(innerName, key, null);
       return Objects.requireNonNull(cache).asMap().containsKey(key);
     } catch (CacheException e) {
       LOGGER.error(String.format(
           "Can't get cache for cache key: %s in cache name: %s, error: %s",
-          key, cacheName, e.getMessage()));
+          key, cacheBucketName, e.getMessage()));
        return false;
     }
   }
 
   @Override
-  public void ClearAllCaches(String cacheName, String key)  {
-    if (cacheName == null) {
+  public void invalidateCache(String cacheBucketName, String key)  {
+    if (cacheBucketName == null) {
       // clear all
       if (caches.isEmpty()) return;
       for (String cacheKey : caches.keySet()) {
@@ -124,8 +130,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         cache.invalidateAll();
       }
       caches.clear();
-    } else if (!StringUtils.isEmpty(cacheName)) {
-      LoadingCache cache = caches.get(getInnerCacheName(cacheName).name());
+    } else if (!StringUtils.isEmpty(cacheBucketName)) {
+      LoadingCache cache = caches.get(getInnerCacheName(cacheBucketName).name());
       if (StringUtils.isEmpty(key)) {
         // Clear cache with cache name
         cache.invalidateAll();
@@ -137,13 +143,13 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   }
 
   @Override
-  public void ClearAllCaches(String cacheName) {
-    ClearAllCaches(cacheName, null);
+  public void invalidateCache(String cacheBucketName) {
+    invalidateCache(cacheBucketName, null);
   }
 
   @Override
-  public void ClearAllCaches() {
-    ClearAllCaches(null, null);
+  public void invalidateCache() {
+    invalidateCache(null, null);
   }
 
   // ====== Convenient Utility APIs ====== //

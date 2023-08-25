@@ -20,7 +20,7 @@ public interface LmsService {
      */
     String getApiToken() throws LmsException;
 
-  /**
+    /**
      * Gets the course detail data of the given course.
      * 
      * @param courseTitle Course title.

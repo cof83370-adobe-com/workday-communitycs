@@ -149,8 +149,7 @@ public class SnapServiceImpl implements SnapService {
         updateProfileInfoWithNameAndAvatar(sfMenu, sfId);
         // Need to make merge sfMenu with local cache with beta experience.
         if (config.beta()) {
-          String finalMenu = this.getMergedHeaderMenu(sfMenu, defaultMenu);
-          return finalMenu;
+          return this.getMergedHeaderMenu(sfMenu, defaultMenu);
         }
 
         // Non-Beta will directly return the sf menu
@@ -164,7 +163,7 @@ public class SnapServiceImpl implements SnapService {
     });
 
     if (OurmUtils.isMenuEmpty(gson, retValue)) {
-      serviceCacheMgr.ClearAllCaches(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
+      serviceCacheMgr.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
     }
 
     return retValue;
@@ -183,8 +182,7 @@ public class SnapServiceImpl implements SnapService {
 
         url = String.format(url, sfId);
         String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
-        JsonObject res = gson.fromJson(jsonResponse, JsonObject.class);
-        return res;
+        return gson.fromJson(jsonResponse, JsonObject.class);
       } catch (SnapException | JsonSyntaxException e) {
         logger.error("Error in getUserContext method :: {}", e.getMessage());
       }
@@ -193,8 +191,8 @@ public class SnapServiceImpl implements SnapService {
       return new JsonObject();
     });
 
-    if (ret.isJsonNull()) {
-      serviceCacheMgr.ClearAllCaches(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+    if (ret.isJsonNull() || (ret.isJsonObject() && ret.size() == 0)) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
 
     return ret;
@@ -213,8 +211,7 @@ public class SnapServiceImpl implements SnapService {
         String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
         if (jsonResponse != null) {
           ObjectMapper objectMapper = new ObjectMapper();
-          ProfilePhoto profilePhoto = objectMapper.readValue(jsonResponse, ProfilePhoto.class);
-          return profilePhoto;
+          return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
         }
       } catch (SnapException | JsonProcessingException e) {
         logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
@@ -241,8 +238,8 @@ public class SnapServiceImpl implements SnapService {
       }
     });
 
-    if (ret.isJsonNull()) {
-      serviceCacheMgr.ClearAllCaches(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+    if (ret.isJsonNull() || (ret.isJsonObject() && ret.size() == 0)) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
     return ret;
   }
@@ -295,8 +292,7 @@ public class SnapServiceImpl implements SnapService {
       pageProperties.addProperty(PAGE_NAME, pageTitle);
 
       digitalData.add("page", pageProperties);
-      String res = String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
-      return res;
+      return String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
     });
   }
 
@@ -404,7 +400,7 @@ public class SnapServiceImpl implements SnapService {
   private String getUserAvatar(String sfId) {
     String cacheKey = String.format("avatar_%s", sfId);
 
-    return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
+    String retVal = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       ProfilePhoto content = getProfilePhoto(sfId);
       String encodedPhoto = "";
       String extension = "";
@@ -429,5 +425,11 @@ public class SnapServiceImpl implements SnapService {
         return "";
       }
     });
+
+    if (StringUtils.isEmpty(retVal)) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+    }
+
+    return retVal;
   }
 }

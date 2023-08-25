@@ -243,21 +243,21 @@ public class SnapServiceImplTest {
       snapService.activate(snapConfig.get(0, 0));
       String menuData = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(16635, menuData.length());
-      cacheManagerService.ClearAllCaches();
+      cacheManagerService.invalidateCache();
 
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
       lenient().when(original.adaptTo(any())).thenReturn(content);
       snapService.activate(snapConfig.get(0, 1));
       menuData = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(16635, menuData.length());
-      cacheManagerService.ClearAllCaches();
+      cacheManagerService.invalidateCache();
 
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
       lenient().when(original.adaptTo(any())).thenReturn(content);
       snapService.activate(snapConfig.get(1, 0));
       menuData = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(16635, menuData.length());
-      cacheManagerService.ClearAllCaches();
+      cacheManagerService.invalidateCache();
 
       // Case 1: no resolver mock
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
@@ -265,7 +265,7 @@ public class SnapServiceImplTest {
       snapService.activate(snapConfig.get(1, 1));
       String menuData0 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(16635, menuData0.length());
-      cacheManagerService.ClearAllCaches();
+      cacheManagerService.invalidateCache();
 
       // Case 2 No content
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
@@ -273,7 +273,7 @@ public class SnapServiceImplTest {
       snapService.activate(snapConfig.get(1, 2));
       String menuData1 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(16635, menuData1.length());
-      cacheManagerService.ClearAllCaches();
+      cacheManagerService.invalidateCache();
 
       // Case 3 With mock content for default fallback
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
@@ -281,7 +281,7 @@ public class SnapServiceImplTest {
       snapService.activate(snapConfig.get(2, 1));
       String menuData2 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(16635, menuData2.length());
-      cacheManagerService.ClearAllCaches();
+      cacheManagerService.invalidateCache();
 
       // Case 4: With mock content for Request call.
       APIResponse response = mock(APIResponse.class);
@@ -294,7 +294,7 @@ public class SnapServiceImplTest {
       lenient().when(runModeConfigService.getEnv()).thenReturn("prod");
       String menuData3 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(menuData2, menuData3);
-      cacheManagerService.ClearAllCaches();
+      cacheManagerService.invalidateCache();
 
       // Case 5 With contact information
       content = getTestContent("/com/workday/community/aem/core/models/impl/FailStateHeaderTestData.json");
