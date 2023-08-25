@@ -39,7 +39,7 @@ public interface RestApiConstants {
   /**
    * The constant GET_API
    */
-  String GET_API = "GET";
+  String GET_API = org.apache.sling.api.servlets.HttpConstants.METHOD_GET;
 
   /**
    * The constant TIMEOUT

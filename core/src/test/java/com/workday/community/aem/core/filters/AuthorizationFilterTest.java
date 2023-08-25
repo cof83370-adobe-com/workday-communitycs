@@ -3,7 +3,9 @@ package com.workday.community.aem.core.filters;
 import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.OurmException;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
@@ -12,12 +14,10 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.request.RequestPathInfo;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -31,8 +31,6 @@ import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.mockito.Mockito.*;
 
@@ -40,9 +38,6 @@ import static org.mockito.Mockito.*;
 public class AuthorizationFilterTest {
 
     private final AemContext context = new AemContext();
-
-    @Mock
-    ResourceResolverFactory resolverFactory;
 
     @Mock
     ResourceResolver resolver;
@@ -86,18 +81,22 @@ public class AuthorizationFilterTest {
     FilterConfig filterConfig;
 
     @Mock
+    CacheManagerService cacheManagerService;
+
+    @Mock
     RequestPathInfo requestPathInfo;
 
     @InjectMocks
     private AuthorizationFilter authorizationFilter;
 
-    @Test
-    void testD0FilterWithoutValidUser() throws ServletException, IOException, RepositoryException, org.apache.sling.api.resource.LoginException, OurmException {
-        authorizationFilter.init(filterConfig);
+    @BeforeEach
+    void setup() throws CacheException {
+        when(cacheManagerService.getServiceResolver(anyString())).thenReturn(resolver);
+    }
 
-        Map<String, Object> serviceParams = new HashMap<>();
-        serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
-        when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
+    @Test
+    void testD0FilterWithoutValidUser() throws ServletException, IOException, RepositoryException, OurmException {
+        authorizationFilter.init(filterConfig);
         when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
         when(request.getRequestPathInfo()).thenReturn(requestPathInfo);
         when(request.getRequestPathInfo().getResourcePath()).thenReturn("/content/workday-community/en-us/test");
@@ -114,20 +113,10 @@ public class AuthorizationFilterTest {
     }
 
     @Test
-    void testDoFilterWithValidUserAndAuthenticatedTag() throws ServletException, IOException, RepositoryException, LoginException, OurmException {
-
-        Map<String, Object> serviceParams = new HashMap<>();
-        serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
-        when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
+    void testDoFilterWithValidUserAndAuthenticatedTag() throws ServletException, IOException, RepositoryException {
         authorizationFilter.init(filterConfig);
 
         String pagePath = "/content/workday-community/en-us/test";
-        Tag[] tags = new Tag[2];
-        tags[0] = context.create().tag("access-control:authenticated");
-        tags[1] = context.create().tag("access-control:customer_all");
-        String[] tagList = {"access-control:authenticated", "access-control:customer_all"};
-        ValueMap data = mock(ValueMap.class);
-
         when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
         when(request.getRequestPathInfo()).thenReturn(requestPathInfo);
         when(request.getRequestPathInfo().getResourcePath()).thenReturn(pagePath);
@@ -143,19 +132,13 @@ public class AuthorizationFilterTest {
     }
 
     @Test
-    void testDoFilterWithValidUserAndWithOutAuthenticatedTag() throws ServletException, IOException, RepositoryException, LoginException, OurmException {
-
-        Map<String, Object> serviceParams = new HashMap<>();
-        serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
-        when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resolver);
+    void testDoFilterWithValidUserAndWithOutAuthenticatedTag() throws ServletException, IOException, RepositoryException {
         authorizationFilter.init(filterConfig);
 
         String pagePath = "/content/workday-community/en-us/test";
         Tag[] tags = new Tag[2];
         tags[0] = context.create().tag("access-control:customer_all");
         tags[1] = context.create().tag("access-control:customer_name_support_contact");
-        String[] tagList = {"access-control:customer_all", "access-control:customer_name_support_contact"};
-        ValueMap data = mock(ValueMap.class);
 
         when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
         when(request.getRequestPathInfo()).thenReturn(requestPathInfo);

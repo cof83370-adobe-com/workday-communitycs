@@ -57,7 +57,7 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
 
   @Override
   public List<CategoryFacetModel> getCategories() {
-    return new ArrayList<>(categories);
+    return categories == null ? new ArrayList<>() : new ArrayList<>(categories);
   }
 
   @Override

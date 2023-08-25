@@ -66,16 +66,13 @@ public class CoveoUtils {
     String email = userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
         : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
     if (email == null) {
-      LOGGER.error("User email is not in session, please contact admin");
-      LOGGER.info("devMode value: " + isDevMode);
-      throw new ServletException("User email is not in session, please contact admin");
+      throw new ServletException(String.format("User email is not in session, please contact admin. devMode value: %s", isDevMode));
     }
 
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
       String searchToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getSearchTokenAPIKey());
       if (StringUtils.isEmpty(searchToken)) {
-        LOGGER.error("There is no search token generated, please contact community admin.");
         throw new ServletException("There is no search token generated, please contact community admin.");
       }
       String recommendationToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,

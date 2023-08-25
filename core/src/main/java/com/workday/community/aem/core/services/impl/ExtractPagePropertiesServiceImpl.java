@@ -6,6 +6,8 @@ import javax.jcr.NodeIterator;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.*;
 import org.osgi.service.component.annotations.Component;
@@ -19,7 +21,6 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.services.RunModeConfigService;
-import com.workday.community.aem.core.utils.ResolverUtil;
 
 import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
@@ -47,6 +48,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     /** The resource resolver factory. */
     @Reference
     ResourceResolverFactory resourceResolverFactory;
+
+    /** The cache manager **/
+    @Reference
+    CacheManagerService cacheManager;
     
     /** The run mode config service. */
     @Reference
@@ -122,7 +127,8 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     @Override
     public HashMap<String, Object> extractPageProperties(String path) {
         HashMap<String, Object> properties = new HashMap<>();
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
+
+        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
             PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
             Page page = null;
             if (pageManager != null) {
@@ -184,10 +190,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
             if (!textList.isEmpty()) {
                 String description = String.join(" ", textList);
-                properties.put("description", description);
+                properties.put(org.apache.jackrabbit.vault.packaging.JcrPackageDefinition.NAME_DESCRIPTION, description);
             }
         }
-        catch (LoginException | RepositoryException | SlingException e){
+        catch (CacheException | RepositoryException | SlingException e){
             logger.error("Extract page properties {} failed: {}", path, e.getMessage());
             return properties;
         }

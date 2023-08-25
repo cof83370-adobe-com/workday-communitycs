@@ -5,7 +5,6 @@ import com.day.cq.wcm.api.Template;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.HeaderModel;
-import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;

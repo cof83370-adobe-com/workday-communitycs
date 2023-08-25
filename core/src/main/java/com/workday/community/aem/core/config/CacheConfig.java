@@ -1,0 +1,36 @@
+package com.workday.community.aem.core.config;
+
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.AttributeType;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+
+@ObjectClassDefinition(name = "Cache configuration", description = "Parameters for Cache")
+public @interface CacheConfig {
+  @AttributeDefinition(
+      name = "Cache maximum size",
+      description = "Cache maximum size",
+      type = AttributeType.INTEGER
+  )
+  int maxSize() default 5000;
+
+  @AttributeDefinition(
+      name = "Cache duration in seconds before expire",
+      description = "Cache duration in seconds before expire (default 2 hours)",
+      type = AttributeType.INTEGER
+  )
+  int expireDuration() default 2 * 60 * 60;
+
+  @AttributeDefinition(
+      name = "Cache refresh duration in seconds ",
+      description = "Cache duration in seconds (default 1 hours)",
+      type = AttributeType.INTEGER
+  )
+  int refreshDuration() default 60 * 60;
+
+  @AttributeDefinition(
+      name = "Enable cache",
+      description = "Indicate if the cache is enabled (default TRUE)",
+      type = AttributeType.BOOLEAN
+  )
+  boolean enabled() default true;
+}

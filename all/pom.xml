@@ -62,6 +62,17 @@
                             <target>/apps/workday-community-packages/application/install</target>
                         </embedded>
                         <embedded>
+                            <groupId>com.google.guava</groupId>
+                            <artifactId>failureaccess</artifactId>
+                            <target>/apps/workday-community-packages/application/install</target>
+                        </embedded>
+                        <!-- Thanks for using https://jar-download.com -->
+                        <embedded>
+                            <groupId>com.google.guava</groupId>
+                            <artifactId>guava</artifactId>
+                            <target>/apps/workday-community-packages/application/install</target>
+                        </embedded>
+                        <embedded>
                             <groupId>com.workday.community.aem</groupId>
                             <artifactId>workday-community.core</artifactId>
                             <target>/apps/workday-community-packages/application/install</target>

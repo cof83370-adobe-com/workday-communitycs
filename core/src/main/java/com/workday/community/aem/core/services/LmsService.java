@@ -16,16 +16,16 @@ public interface LmsService {
      * Gets the Lms API Bearer token
      * 
      * @return Bearer token.
-     * @throws LmsException
+     * @throws LmsException LmsException Object.
      */
-    String getApiToken() throws LmsException;;
+    String getApiToken() throws LmsException;
 
     /**
      * Gets the course detail data of the given course.
      * 
      * @param courseTitle Course title.
      * @return Course detail json as string.
-     * @throws LmsException
+     * @throws LmsException LmsException object.
      */
     String getCourseDetail(String courseTitle) throws LmsException;
 

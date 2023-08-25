@@ -1,7 +1,5 @@
 package com.workday.community.aem.core.listeners;
 
-import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
-
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -11,11 +9,12 @@ import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.api.resource.observation.ResourceChangeListener;
@@ -30,7 +29,8 @@ import com.day.cq.wcm.api.PageManager;
 import com.day.cq.wcm.api.WCMException;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.enums.EventPeriodEnum;
-import com.workday.community.aem.core.utils.ResolverUtil;
+
+import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 
 /**
  * The listener interface for receiving recurringEventsCreator events.
@@ -41,7 +41,6 @@ import com.workday.community.aem.core.utils.ResolverUtil;
  * the recurringEventsCreator event occurs, that object's appropriate
  * method is invoked.
  *
- * @see RecurringEventsCreatorEvent
  */
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
         ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
@@ -116,9 +115,9 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     /** The Constant PROP_EVENT_FREQUENCY. */
     static final String PROP_EVENT_FREQUENCY = "eventFrequency";
 
-    /** The resource resolver factory. */
+    /** The cache manager */
     @Reference
-    private ResourceResolverFactory resourceResolverFactory;
+    CacheManagerService cacheManager;
 
     /**
      * On change.
@@ -142,15 +141,14 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     public void generateRecurringEventPages(String resourcePath) {
         logger.info("Entered into generateRecurringEventPages method of RecurringEventsCreatorListener:{}",
                 resourcePath);
-        try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory,
-                WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE)) {
+        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
             Resource addedResource = resourceResolver.getResource(resourcePath);
             if (null != addedResource && null != addedResource.adaptTo(Node.class)) {
                 Node eventNode = addedResource.adaptTo(Node.class);
                 if (eventNode != null && eventNode.hasProperty(PROP_RECURRING_EVENTS)
                         && eventNode.getProperty(PROP_RECURRING_EVENTS).getString()
                                 .equalsIgnoreCase("true")) {
-                    String title = eventNode.getProperty("jcr:title").getString();
+                    String title = eventNode.getProperty(com.day.cq.commons.jcr.JcrConstants.JCR_TITLE).getString();
                     ValueMap map = resourceResolver.getResource(resourcePath).adaptTo(ValueMap.class);
                     String eventFrequency = eventNode.getProperty(PROP_EVENT_FREQUENCY).getString();
                     logger.debug("Creation of recurring events selected and frequency:{}", resourcePath);
@@ -167,7 +165,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
                     }
                 }
             }
-        } catch (Exception exec) {
+        } catch (CacheException | RepositoryException exec) {
             logger.error("Exception occurred when generateRecurringEventPages method {} ", exec.getMessage());
         }
     }
@@ -192,7 +190,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
                 eventsRootPath = eventsRootPath.substring(0, lastIndex);
                 logger.debug("Pages to be created under:{}", eventsRootPath);
             }
-            String fullPageName = "";
+            String fullPageName;
             int eventLength = getEventLength(map);
             for (LocalDate date : eventDatesList) {
                 fullPageName = String.format("%s-%s", pageName, date.toString());
@@ -288,41 +286,40 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
         String[] tags = new String[] { ACCESS_CONTROL_TAGS, EVENT_FORMAT, EVENT_AUDIENCE, RELEASE_TAGS, PRODUCT_TAGS,
                 USING_WORKDAY_TAGS, INDUSTRY_TAGS, PROGRAMS_TOOLS_TAGS, USER_TAGS, REGION_COUNTRY_TAGS,
                 PROP_CONTENT_TYPE };
-        for (int i = 0; i < tags.length; i++) {
-            String[] tagValue = valueMap.get(tags[i], String[].class);
+        for (String tag : tags) {
+            String[] tagValue = valueMap.get(tag, String[].class);
             if (doNullCheckForStringArray(tagValue))
-                node.setProperty(tags[i], tagValue);
+                node.setProperty(tag, tagValue);
         }
 
         // All String type Props
         String[] props = new String[] { PROP_AUTHOR, PROP_ALTERNATE_TIMEZONE, PROP_EVENT_HOST, PROP_EVENT_LOCATION };
-        for (int i = 0; i < props.length; i++) {
-            String propVal = valueMap.get(props[i], String.class);
+        for (String prop : props) {
+            String propVal = valueMap.get(prop, String.class);
             if (StringUtils.isNotBlank(propVal))
-                node.setProperty(props[i], propVal);
+                node.setProperty(prop, propVal);
         }
 
-        /**
-         * Event Start Date from Calculated Value, below valuemap reading was required
-         * to
-         * maintain event time from base page of recurring events.
+        /*
+          Event Start Date from Calculated Value, below valuemap reading was required
+          to
+          maintain event time from base page of recurring events.
          */
         Calendar eventStartDateCalInstance = valueMap.get(PROP_EVENT_START_DATE, Calendar.class);
         eventStartDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,
                 localDate.getDayOfMonth());
         node.setProperty(PROP_EVENT_START_DATE, eventStartDateCalInstance);
 
-        /**
-         * Event End Date was calculated based on source page event gap(End date - Start
-         * Date)
-         * 
-         * Same gap will be maintained across all auto created pages.
+        /*
+          Event End Date was calculated based on source page event gap(End date - Start
+          Date)
+          Same gap will be maintained across all auto created pages.
          */
         Calendar eventEndDateCalInstance = valueMap.get(PROP_EVENT_END_DATE, Calendar.class);
         eventEndDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,
                 localDate.getDayOfMonth());
-        if (eventLength > 0)
-            eventEndDateCalInstance.add(Calendar.DAY_OF_MONTH, eventLength);
+        if(eventLength > 0)
+           eventEndDateCalInstance.add(Calendar.DAY_OF_MONTH, eventLength);
         node.setProperty(PROP_EVENT_END_DATE, eventEndDateCalInstance);
     }
 

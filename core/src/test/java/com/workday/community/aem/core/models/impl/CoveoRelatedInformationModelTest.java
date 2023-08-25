@@ -8,10 +8,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.workday.community.aem.core.constants.SnapConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -26,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -34,14 +37,12 @@ import javax.jcr.Binary;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
@@ -68,11 +69,17 @@ public class CoveoRelatedInformationModelTest {
   @Mock
   TagManager tagManager;
 
+  @Mock
+  CacheManagerService cacheManager;
+
+  @InjectMocks
+  CoveoRelatedInformationModelImpl coveoRelatedInformationModel;
+
   MockedStatic<DamUtils> mockDamUtils;
   MockedStatic<ResolverUtil> resolverUtil;
 
   @BeforeEach
-  public void setUp() {
+  public void setUp() throws CacheException {
     context.addModelsForClasses(CoveoRelatedInformationModel.class);
     context.load().json("/com/workday/community/aem/core/models/impl/CoveoRelatedInformationModel.json", "/component");
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
@@ -112,15 +119,15 @@ public class CoveoRelatedInformationModelTest {
         .thenReturn(fieldMapConfigObj);
 
     resolverUtil = mockStatic(ResolverUtil.class);
-    resolverUtil.when(() -> ResolverUtil.newResolver(any(), anyString())).thenReturn(resourceResolver);
+    lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resourceResolver);
   }
 
   @Test
   public void testGetFacetFields() throws DamException {
-    CoveoRelatedInformationModel relInfoModel = context.currentResource("/component/relatedinformation").adaptTo(CoveoRelatedInformationModel.class);
-    ((CoveoRelatedInformationModelImpl)relInfoModel).init(request);
+//    CoveoRelatedInformationModel relInfoModel = context.currentResource("/component/relatedinformation").adaptTo(CoveoRelatedInformationModel.class);
+//    ((CoveoRelatedInformationModelImpl)relInfoModel).init(request);
 
-    List<String> facetFields = relInfoModel.getFacetFields();
+    List<String> facetFields = coveoRelatedInformationModel.getFacetFields();
     assertEquals(2, facetFields.size());
     assertEquals("coveo_product", facetFields.get(0));
     assertEquals("coveo_using-workday", facetFields.get(1));
@@ -128,8 +135,6 @@ public class CoveoRelatedInformationModelTest {
 
   @Test
   void testGetSearchConfig() throws RepositoryException {
-    CoveoRelatedInformationModel relInfoModel = context.currentResource("/component/relatedinformation").adaptTo(CoveoRelatedInformationModel.class);
-    ((CoveoRelatedInformationModelImpl)relInfoModel).init(request);
     ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
     Session session = mock(Session.class);
     UserManager userManager = mock(UserManager.class);
@@ -137,42 +142,42 @@ public class CoveoRelatedInformationModelTest {
 
     Value[] profileSId = new Value[] {new Value() {
       @Override
-      public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
+      public String getString() throws IllegalStateException {
         return "testSFId";
       }
 
       @Override
-      public InputStream getStream() throws RepositoryException {
+      public InputStream getStream() {
         return null;
       }
 
       @Override
-      public Binary getBinary() throws RepositoryException {
+      public Binary getBinary() {
         return null;
       }
 
       @Override
-      public long getLong() throws ValueFormatException, RepositoryException {
+      public long getLong() {
         return 0;
       }
 
       @Override
-      public double getDouble() throws ValueFormatException, RepositoryException {
+      public double getDouble() {
         return 0;
       }
 
       @Override
-      public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+      public BigDecimal getDecimal(){
         return null;
       }
 
       @Override
-      public Calendar getDate() throws ValueFormatException, RepositoryException {
+      public Calendar getDate() {
         return null;
       }
 
       @Override
-      public boolean getBoolean() throws ValueFormatException, RepositoryException {
+      public boolean getBoolean() {
         return false;
       }
 
@@ -193,7 +198,7 @@ public class CoveoRelatedInformationModelTest {
     userContext.addProperty("email", "testEmailFoo@workday.com");
     lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
 
-    JsonObject searchConfig = relInfoModel.getSearchConfig();
+    JsonObject searchConfig = coveoRelatedInformationModel.getSearchConfig();
     assertEquals(5, searchConfig.size());
     Assert.assertEquals(searchConfig.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");
   }

@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.services.impl;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -95,7 +94,10 @@ public class LmsServiceImpl implements LmsService {
         } catch (LmsException | JsonSyntaxException e) {
             LOGGER.error("Error in getAPIToken method call :: {}", e.getMessage());
             throw new LmsException(
-                    "There is an error while fetching the course detail token. Please contact Community Admin.");
+                String.format(
+                    "Error while fetching the course detail token. Please contact Community Admin. error: %s",
+                    e.getMessage())
+            );
         }
     }
 
@@ -114,7 +116,7 @@ public class LmsServiceImpl implements LmsService {
                 String url = CommunityUtils.formUrl(lmsUrl, courseDetailPath);
 
                 // Encode title and format the URL.
-                url = String.format(url, URLEncoder.encode(courseTitle, StandardCharsets.UTF_8.toString())
+                url = String.format(url, URLEncoder.encode(courseTitle, StandardCharsets.UTF_8)
                         .replace(LmsConstants.PLUS, LmsConstants.ENCODED_SPACE));
 
                 // Execute the request.
@@ -133,10 +135,10 @@ public class LmsServiceImpl implements LmsService {
                 }
             }
             return StringUtils.EMPTY;
-        } catch (LmsException | JsonSyntaxException | UnsupportedEncodingException e) {
-            LOGGER.error("Error in getCourseDetail method call :: {}", e.getMessage());
+        } catch (LmsException | JsonSyntaxException e) {
             throw new LmsException(
-                    "There is an error while fetching the course detail. Please contact Community Admin.");
+                String.format("There is an error while fetching the course detail. Please contact Community Admin. %s",
+                    e.getMessage()));
         }
     }
 

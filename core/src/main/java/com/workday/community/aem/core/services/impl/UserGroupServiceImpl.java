@@ -5,14 +5,15 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.PageUtils;
-import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.resource.LoginException;
@@ -63,6 +64,10 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Reference
     ResourceResolverFactory resourceResolverFactory;
 
+    /** The cache manager */
+    @Reference
+    CacheManagerService cacheManager;
+
     /**
      * The snap Config.
      */
@@ -93,11 +98,6 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     private JsonObject sfdcRoleMap;
 
-    /**
-     * The group map json
-     */
-    JsonObject groupMap = null;
-
     @Activate
     @Modified
     @Override
@@ -117,7 +117,7 @@ public class UserGroupServiceImpl implements UserGroupService {
         ResourceResolver jcrSessionResourceResolver = null;
         Session jcrSession = null;
         logger.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
-        String userRole = StringUtils.EMPTY;
+        String userRole;
         List<String> groupIds = new ArrayList<>();
         try {
             User user = CommonUtils.getLoggedInUser(resourceResolver);
@@ -125,8 +125,8 @@ public class UserGroupServiceImpl implements UserGroupService {
             String sfId = values != null && values.length > 0 ? values[0].getString() : null;
             if (sfId != null) {
                 logger.debug("user  sfid {} ", sfId);
-                Node userNode = resourceResolver.getResource(user.getPath()).adaptTo(Node.class);
-                if (userNode.hasProperty(ROLES) && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
+                Node userNode = Objects.requireNonNull(resourceResolver.getResource(user.getPath())).adaptTo(Node.class);
+                if (Objects.requireNonNull(userNode).hasProperty(ROLES) && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
                         userNode.getProperty(ROLES).getString().split(";").length > 0) {
                     userRole = userNode.getProperty(ROLES).getString();
                     groupIds = List.of(userRole.split(";"));
@@ -137,7 +137,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                     jcrSession = jcrSessionResourceResolver.adaptTo(Session.class);
                     groupIds = this.getUserGroupsFromSnap(sfId);
                     userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
-                    jcrSession.save();
+                    Objects.requireNonNull(jcrSession).save();
                 }
                 logger.info("Salesforce roles {}", groupIds);
             }
@@ -163,7 +163,6 @@ public class UserGroupServiceImpl implements UserGroupService {
      * @param requestResourceResolver: the Request resource Resolver
      * @param pagePath                 : The Requested page path.
      * @return boolean: True if user has permissions otherwise false.
-     * @throws LoginException
      */
     public boolean validateTheUser(ResourceResolver resourceResolver, ResourceResolver requestResourceResolver,
             String pagePath) {
@@ -271,10 +270,9 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     protected void setSfdcRoleMap() {
         if (sfdcRoleMap == null) {
-            try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory,
-                    READ_SERVICE_USER)) {
+            try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
                 sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
-            } catch (LoginException | DamException e) {
+            } catch (CacheException | DamException e) {
                 logger.error("Error reading sfdc role map json file: {}.", e.getMessage());
             }
         }

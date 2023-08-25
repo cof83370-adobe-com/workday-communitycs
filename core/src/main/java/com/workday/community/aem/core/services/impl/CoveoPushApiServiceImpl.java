@@ -98,7 +98,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         HashMap<String, String> header = new HashMap<String, String>();
         header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        return callApi(generateBatchUploadUri(fileId), header, "PUT", "");
+        return callApi(generateBatchUploadUri(fileId), header, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, "");
     }
 
     @Override
@@ -107,7 +107,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         containerHeader.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
         containerHeader.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         containerHeader.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        return callApi(generateContainerUri(), containerHeader, "POST", "");
+        return callApi(generateContainerUri(), containerHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_POST, "");
     }
 
     @Override
@@ -116,7 +116,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         HashMap<String, String> header = new HashMap<String, String>();
         header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header, "DELETE", "");
+        HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header, org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
         if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
             logger.error("Deleting all items from coveo failed with status code {}: {}.", response.get("statusCode"), response.get("response"));
         }
@@ -128,7 +128,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         // Coveo reference https://docs.coveo.com/en/171/index-content/deleting-an-item-and-optionally-its-children-in-a-push-source.
         HashMap<String, String> header = new HashMap<>();
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        HashMap<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header, "DELETE", "");
+        HashMap<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header, org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
         if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
             logger.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId, response.get("statusCode"), response.get("response"));
         }
@@ -137,7 +137,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
     @Override
     public HashMap<String, Object> callUploadFileUri(String uploadUri, HashMap<String, String> uploadFileHeader, List<Object> payload) {
-        return callApi(uploadUri, uploadFileHeader, "PUT", transformPayload(payload));
+        return callApi(uploadUri, uploadFileHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, transformPayload(payload));
     }
 
     @Override
