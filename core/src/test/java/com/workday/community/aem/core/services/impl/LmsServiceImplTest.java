@@ -11,16 +11,13 @@ import java.lang.annotation.Annotation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.workday.community.aem.core.config.LmsConfig;
-import com.workday.community.aem.core.constants.LmsConstants;
 import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
-import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.RestApiUtil;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -31,9 +28,6 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class LmsServiceImplTest {
     private final LmsService service = new LmsServiceImpl();
-
-    @Mock
-    LRUCacheWithTimeout<String, String> lmsCache;
 
     /**
      * Test config.
@@ -82,7 +76,7 @@ public class LmsServiceImplTest {
 
         @Override
         public long lmsTokenCacheTimeout() {
-            return 0;
+            return 1000;
         }
 
     };
@@ -99,9 +93,10 @@ public class LmsServiceImplTest {
      * Test method for getAPIToken method.
      * 
      * @throws LmsException
+     * @throws InterruptedException
      */
     @Test
-    public void testGetAPIToken() throws LmsException {
+    public void testGetAPIToken() throws LmsException, InterruptedException {
         try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
             // Case 1: with valid response
             APIResponse response = mock(APIResponse.class);
@@ -114,16 +109,25 @@ public class LmsServiceImplTest {
             String token = this.service.getApiToken();
             assertEquals("bearerToken", token);
 
-            // Case 2: with response as null
+            // Case 2: though response is null, returns from cache
             mocked.when(() -> RestApiUtil.doLmsTokenGet(anyString(), anyString(),
                     anyString(), anyString())).thenReturn(null);
-            String token1 = this.service.getApiToken();
-            assertEquals("", token1);
+            token = this.service.getApiToken();
+            assertEquals("bearerToken", token);
+            Thread.sleep(1001);
 
-            // Case 3: response doesn't contain access token
+            // Case 3: clear cache using sleep interval, with response as null
+            mocked.when(() -> RestApiUtil.doLmsTokenGet(anyString(), anyString(),
+                    anyString(), anyString())).thenReturn(null);
+            token = this.service.getApiToken();
+            assertEquals("", token);
+            Thread.sleep(1001);
+
+            // Case 4: clear cache using sleep interval, response doesn't contain access
+            // token
             responseBody = "{\"token_type\": \"Bearer\",\"refresh_token\": \"refreshToken\"}";
-            String token2 = this.service.getApiToken();
-            assertEquals("", token2);
+            token = this.service.getApiToken();
+            assertEquals("", token);
         }
     }
 

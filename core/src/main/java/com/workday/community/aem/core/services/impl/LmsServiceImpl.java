@@ -152,5 +152,4 @@ public class LmsServiceImpl implements LmsService {
                     "There is an error while fetching the course detail. Please contact Community Admin.");
         }
     }
-
 }
