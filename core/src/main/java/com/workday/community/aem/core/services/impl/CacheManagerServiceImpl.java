@@ -151,7 +151,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
     // No expiration of resolver.
     ResourceResolver resolver = resolverCache.get(serviceUser);
-    if (resolver == null) {
+    if (resolver == null || !resolver.isLive()) {
       try {
         resolver = ResolverUtil.newResolver(this.resourceResolverFactory, serviceUser);
       } catch (LoginException e) {

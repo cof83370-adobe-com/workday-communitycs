@@ -11,7 +11,7 @@ public @interface CacheConfig {
       description = "Cache maximum size",
       type = AttributeType.INTEGER
   )
-  int maxSize() default 2000;
+  int maxSize() default 5000;
 
   @AttributeDefinition(
       name = "Cache duration in seconds before expire",
