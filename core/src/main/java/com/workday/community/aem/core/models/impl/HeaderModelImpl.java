@@ -98,16 +98,16 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
-    Cookie menuCache = request.getCookie("cacheMenu");
-    String value = menuCache == null ? null : menuCache.getValue();
-    // If it is cached in browser, then no need to invoke service call, return null.
-    if (value != null && value.equals("TRUE")) return null;
+    if (HttpUtils.currentMenuCached(request)) {
+      return null;
+    }
 
     String ret = this.snapService.getUserHeaderMenu(sfId);
-    Cookie cacheMenuCookie = new Cookie("cacheMenu",
-        StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret) ? "FALSE" : "TRUE");
-    HttpUtils.addCookie(cacheMenuCookie, response);
-
+    if (StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret)) {
+      HttpUtils.addMenuCacheCookie(response, "FALSE");
+    } else {
+      HttpUtils.addMenuCacheCookie(response, sfId);
+    }
     return ret;
   }
 

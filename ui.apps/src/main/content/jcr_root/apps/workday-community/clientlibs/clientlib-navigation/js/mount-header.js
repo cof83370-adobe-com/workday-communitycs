@@ -67,7 +67,6 @@ function renderNavHeader() {
         try {
             let headerDataJson = JSON.parse(headerData);
             if (dataWithMenu(headerDataJson)) {
-                document.cookie = 'cacheMenu=TRUE';
                 sessionStorage.setItem('navigation-data', headerData);
             } else {
                 document.cookie = 'cacheMenu=FALSE';
@@ -93,6 +92,11 @@ function dataWithMenu(headerData) {
     if (!menu || menu.length === 0) return undefined;
 
     return headerData;
+}
+
+function sameProfile(cachedPrimaryData, ) {
+    let primary = headerData['menus']['primary'];
+
 }
 
 
