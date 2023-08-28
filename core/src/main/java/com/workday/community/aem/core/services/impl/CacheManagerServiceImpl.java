@@ -70,8 +70,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   @Activate
   @Modified
   public void activate(CacheConfig config) throws CacheException{
+    this.config = config;
     if(builder == null) {
-      this.config = config;
       builder = CacheBuilder.newBuilder()
           .maximumSize(config.maxSize())
           .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)

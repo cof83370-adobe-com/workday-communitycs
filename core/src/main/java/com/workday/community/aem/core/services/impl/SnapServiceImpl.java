@@ -171,7 +171,7 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public JsonObject getUserContext(String sfId) {
-    String cacheKey = String.format("profile-%s", sfId);
+    String cacheKey = String.format("userContext-%s", sfId);
     JsonObject ret = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
         logger.debug("SnapImpl: Calling SNAP getUserContext()...");
