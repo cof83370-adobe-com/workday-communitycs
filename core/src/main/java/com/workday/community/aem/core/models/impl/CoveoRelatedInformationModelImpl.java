@@ -31,15 +31,11 @@ import java.util.List;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 
-@Model(
-    adaptables = {
-        Resource.class,
-        SlingHttpServletRequest.class
-    },
-    adapters = { CoveoRelatedInformationModel.class },
-    resourceType = { CoveoRelatedInformationModelImpl.RESOURCE_TYPE },
-    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
-)
+@Model(adaptables = {
+    Resource.class,
+    SlingHttpServletRequest.class
+}, adapters = { CoveoRelatedInformationModel.class }, resourceType = {
+    CoveoRelatedInformationModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformationModel {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
   private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";

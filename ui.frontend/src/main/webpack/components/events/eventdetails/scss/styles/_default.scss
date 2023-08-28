@@ -37,6 +37,7 @@
                 align-items: $align-center;
                 color: $wdc-color-black-pepper-600;
                 text-decoration: none;
+                margin: 0;
             }
 
             &__itemList {
@@ -102,12 +103,13 @@
                 &-label {
                     font-weight: $font-weight-bold;
                     display: inline-block;
-                    margin-left: 16px;
+                    margin: 0 0 0 16px;
                 }
 
                 &-output {
                     padding-left: 40px;
                     list-style-type: none;
+                    font-size: 16px;
 
                     @media (max-width: $screen-small) {
                         padding-bottom: 32px;

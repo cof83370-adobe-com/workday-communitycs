@@ -1,0 +1,56 @@
+FROM amazonlinux
+
+ARG HAPROXY_VERSION="2.8"
+ARG HAPROXY_MINOR_VERSION="1"
+ARG APACHE_VERSION="2.4"
+ARG DISPATCHER_VERSION="4.3.6"
+
+RUN yum -y update && \
+    yum -y install  \
+    httpd  \
+    mod_ssl  \
+    procps  \
+    wget  \
+    iputils  \
+    tree  \
+    telnet  \
+    less  \
+    make \
+    gcc \
+    tar &&  \
+    yum clean all
+
+RUN echo https://www.haproxy.org/download/${HAPROXY_VERSION}/src/haproxy-${HAPROXY_VERSION}.${HAPROXY_MINOR_VERSION}.tar.gz -O haproxy.tar.gz
+
+RUN wget https://www.haproxy.org/download/${HAPROXY_VERSION}/src/haproxy-${HAPROXY_VERSION}.${HAPROXY_MINOR_VERSION}.tar.gz -O haproxy.tar.gz &&  \
+    tar xzvf haproxy.tar.gz -C ~/ && \
+    rm -rf haproxy.tar.gz && \
+    cd /root/haproxy-${HAPROXY_VERSION}.${HAPROXY_MINOR_VERSION} && \
+    make TARGET=linux-glibc && \
+    make install
+
+RUN rm -rf /etc/httpd/conf/* &&  \
+    rm -rf /etc/httpd/conf.d/* &&  \
+    rm -rf /etc/httpd/conf.modules.d/*
+
+RUN mkdir -p /mnt/var/www/html && \
+    chown apache:apache /mnt/var/www/html && \
+    mkdir -p /mnt/var/www/default &&  \
+    chown apache:apache /mnt/var/www/default &&  \
+    mkdir -p /mnt/var/www/author &&  \
+    chown apache:apache /mnt/var/www/author
+
+RUN echo https://download.macromedia.com/dispatcher/download/dispatcher-apache${APACHE_VERSION}-linux-$(arch)-${DISPATCHER_VERSION}.tar.gz
+RUN ls
+
+RUN mkdir -p /tmp/dispatcher && \
+    curl -o /tmp/dispatcher/dispatcher.tar.gz https://download.macromedia.com/dispatcher/download/dispatcher-apache${APACHE_VERSION}-linux-$(arch)-${DISPATCHER_VERSION}.tar.gz &&  \
+    cd /tmp/dispatcher &&  \
+    tar zxvf dispatcher.tar.gz && \
+    cp -v dispatcher-apache${APACHE_VERSION}-${DISPATCHER_VERSION}.so /etc/httpd/modules/mod_dispatcher.so
+
+RUN useradd -ms /bin/bash haproxy && mkdir /var/lib/haproxy/
+
+EXPOSE  80 443
+# Start container
+ENTRYPOINT ["/bin/bash","/scripts/launch.sh"]

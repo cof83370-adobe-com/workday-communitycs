@@ -2,6 +2,8 @@
 
 This is an AEM project of Wokday Community site. This repository contains community AEM components and integrations of community react library and related systems.
 
+This project is generated with AEM [Archetype 40](https://confluence.workday.com/display/WEBS/Regeneration+of+community+AEM+repository+Archetype+40)
+
 ## Modules
 
 The main parts of the template are:
@@ -29,7 +31,7 @@ The main parts of the template are:
   ```
 * Add the following environmental variable to your shell or rerun it if outputting the variable shows no value
     ```bash
-     export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain community-workday --domain-owner 210939474461 --region us-west-2 --query authorizationToken --output text`:
+     export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain community-workday --domain-owner 210939474461 --region us-west-2 --query authorizationToken --output text`
     ```
 * **For all local maven commands use `mvn -s .cloudmanager/maven/settings.xml <your maven command>` or link the settings.xml to your local mvn installation (usually .m2 directory)**
 
