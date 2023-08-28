@@ -48,9 +48,14 @@ function renderNavHeader() {
                 headerData.homeUrl = homePage;
             }
 
-            headerData = JSON.stringify(headerData);
-            sessionStorage.setItem('navigation-data', headerData);
+            if (dataWithMenu(headerData)) {
+                sessionStorage.setItem('navigation-data', headerData);
+            } else {
+                document.cookie = 'cacheMenu=FALSE';
+                sessionStorage.removeItem('navigation-data');
+            }
 
+            headerData = JSON.stringify(headerData);
             // Although the digitalData set at window object, we set it in session scope.
             let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
             if (dataLayer) {
@@ -59,11 +64,37 @@ function renderNavHeader() {
             }
         }
 
-        headerData = JSON.parse(headerData);
-        const headerElement = React.createElement(Cmty.GlobalHeader, headerData);
-        ReactDOM.render(headerElement, headerDiv);
+        try {
+            let headerDataJson = JSON.parse(headerData);
+            if (dataWithMenu(headerDataJson)) {
+                document.cookie = 'cacheMenu=TRUE';
+                sessionStorage.setItem('navigation-data', headerData);
+            } else {
+                document.cookie = 'cacheMenu=FALSE';
+                sessionStorage.removeItem('navigation-data');
+            }
+
+            const headerElement = React.createElement(Cmty.GlobalHeader, headerDataJson);
+            ReactDOM.render(headerElement, headerDiv);
+        } catch (e) {
+            document.cookie = 'cacheMenu=FALSE';
+            sessionStorage.removeItem('navigation-data');
+        }
     }
 }
+
+function dataWithMenu(headerData) {
+    if (!headerData) return undefined;
+    let menus = headerData['menus'];
+    if (!menus) return undefined;
+    let primary = menus['primary'];
+    if (!primary) return undefined;
+    let menu = primary['menu'];
+    if (!menu || menu.length === 0) return undefined;
+
+    return headerData;
+}
+
 
 document.addEventListener('readystatechange', event => {
     if (event.target.readyState === 'complete') {
