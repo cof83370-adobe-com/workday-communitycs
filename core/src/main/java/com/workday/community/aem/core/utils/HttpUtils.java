@@ -136,15 +136,13 @@ public class HttpUtils {
   /**
    *
    * @param request The Sling http request object.
-   * @return true if the menu for current user is cached.
+   * @return CHANGED if the menu for current user is cached.
    */
-  public static boolean currentMenuCached(SlingHttpServletRequest request) {
+  public static String currentMenuCached(SlingHttpServletRequest request) {
     String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
 
     Cookie menuCache = request.getCookie("cacheMenu");
     String value = menuCache == null ? null : menuCache.getValue();
-
-    if (StringUtils.isEmpty(value) || value.equals("FALSE")) return false;
 
     StringBuilder tmp = new StringBuilder();
     final int OFFSET = 4;
@@ -154,9 +152,9 @@ public class HttpUtils {
 
     String reversed = new StringBuffer(tmp.toString()).reverse().toString();
     try {
-      return  (new String(Base64.getDecoder().decode(reversed)).equals(sfId));
+      return  (new String(Base64.getDecoder().decode(reversed)).equals(sfId)) ? "NO_CHANGE" : "CHANGED";
     } catch (IllegalArgumentException e) {
-      return false;
+      return "CHANGED";
     }
   }
 }

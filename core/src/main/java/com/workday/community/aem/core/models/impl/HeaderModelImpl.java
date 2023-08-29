@@ -97,7 +97,7 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
-    if (!cacheStateChanged()) {
+    if (cacheStatus().equals("NO_CHANGE")) {
       return "";
     }
 
@@ -131,7 +131,7 @@ public class HeaderModelImpl implements HeaderModel {
   }
 
   @Override
-  public boolean cacheStateChanged() {
+  public String cacheStatus() {
     return HttpUtils.currentMenuCached(request);
   }
 }

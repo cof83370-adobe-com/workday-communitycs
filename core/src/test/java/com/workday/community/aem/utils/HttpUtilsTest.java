@@ -2,6 +2,7 @@ package com.workday.community.aem.utils;
 
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
+import junit.framework.Assert;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,8 +76,8 @@ public class HttpUtilsTest {
       mock.when( () -> OurmUtils.getSalesForceId(any())).thenReturn("fooTestId");
       when(((SlingHttpServletRequest)request).getCookie(anyString())).thenReturn(cookie);
       when(cookie.getValue()).thenReturn("opIh~ZKZz=q^");
-      boolean ret = HttpUtils.currentMenuCached((SlingHttpServletRequest)request);
-      assertTrue(ret);
+      String ret = HttpUtils.currentMenuCached((SlingHttpServletRequest)request);
+      Assert.assertEquals("NO_CHANGE", ret);
     }
   }
 }

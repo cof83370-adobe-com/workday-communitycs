@@ -90,7 +90,7 @@ public class HeaderModelImplTest {
     HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
     try (MockedStatic<HttpUtils> mock = mockStatic(HttpUtils.class)) {
-      mock.when(() -> HttpUtils.currentMenuCached(any())).thenReturn(false);
+      mock.when(() -> HttpUtils.currentMenuCached(any())).thenReturn("CHANGED");
       assertEquals("", headerModel.getUserHeaderMenus());
     }
   }

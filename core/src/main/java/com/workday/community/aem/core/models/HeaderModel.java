@@ -28,7 +28,7 @@ public interface HeaderModel {
 
   /**
    *
-   * @return true if the cache state is changed.
+   * @return CHANGED if the cache state is changed.
    */
-  boolean cacheStateChanged();
+  String cacheStatus();
 }

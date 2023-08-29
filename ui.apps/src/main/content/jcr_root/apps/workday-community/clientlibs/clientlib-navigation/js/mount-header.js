@@ -13,11 +13,11 @@ const signOutObject = {
 
 function renderNavHeader() {
     const headerDiv = document.getElementById('community-header-div');
-
     if (headerDiv !== undefined && headerDiv !== null) {
         let headerData = sessionStorage.getItem('navigation-data');
-        let cacheChanged = headerDiv.getAttribute('data-cache-changed');
-        if (!headerData || cacheChanged) {
+        let cacheChanged = headerDiv.getAttribute('data-cache-property');
+        cacheChanged = !cacheChanged && cacheChanged === 'CHANGED';
+        if (!headerData || headerData && cacheChanged) {
             let headerStringData = headerDiv.getAttribute('data-model-property');
             let avatarUrl = headerDiv.getAttribute("data-model-avatar");
             let homePage = headerDiv.getAttribute("data-prop-home");
