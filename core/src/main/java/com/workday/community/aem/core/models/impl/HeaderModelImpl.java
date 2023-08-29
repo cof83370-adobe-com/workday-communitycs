@@ -8,6 +8,7 @@ import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
 import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
@@ -74,6 +76,9 @@ public class HeaderModelImpl implements HeaderModel {
   @OSGiService
   SearchApiConfigService searchApiConfigService;
 
+  @OSGiService
+  UserService userService;
+
   @Inject
   private Page currentPage;
 
@@ -97,16 +102,20 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
-    if (cacheStatus().equals("NO_CHANGE")) {
-      return "";
+    Cookie menuCache = request.getCookie("cacheMenu");
+    String value = menuCache == null ? null : menuCache.getValue();
+
+    if (!StringUtils.isEmpty(value)) {
+      // Same user and well cached in browser
+      if (value.equals(userService.getUserUUID(sfId))) return "";
     }
 
     String ret = this.snapService.getUserHeaderMenu(sfId);
-    if (StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret)) {
-      HttpUtils.addMenuCacheCookie(response, "FALSE");
-    } else {
-      HttpUtils.addMenuCacheCookie(response, sfId);
-    }
+    Cookie cacheMenuCookie = new Cookie("cacheMenu",
+        StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret) ?
+            "FALSE" : userService.getUserUUID(sfId));
+    HttpUtils.addCookie(cacheMenuCookie, response);
+
     return ret;
   }
 
@@ -131,7 +140,7 @@ public class HeaderModelImpl implements HeaderModel {
   }
 
   @Override
-  public String cacheStatus() {
-    return HttpUtils.currentMenuCached(request);
+  public String userClientId() {
+    return userService.getUserUUID(sfId);
   }
 }

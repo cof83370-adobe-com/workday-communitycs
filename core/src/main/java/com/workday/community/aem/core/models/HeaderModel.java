@@ -28,7 +28,7 @@ public interface HeaderModel {
 
   /**
    *
-   * @return CHANGED if the cache state is changed.
+   * @return User UUID as user client Id.
    */
-  String cacheStatus();
+  String userClientId();
 }

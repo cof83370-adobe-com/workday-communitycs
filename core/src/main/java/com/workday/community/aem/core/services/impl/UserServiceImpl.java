@@ -8,7 +8,12 @@ import java.util.Objects;
 import javax.jcr.*;
 
 import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.SearchApiConfigService;
+import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.utils.OurmUtils;
+import com.workday.community.aem.core.utils.UUIDUtil;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -36,6 +41,12 @@ public class UserServiceImpl implements UserService {
     /** The cache manager */
     @Reference
     CacheManagerService cacheManager;
+
+    @Reference
+    SearchApiConfigService searchConfigService;
+
+    @Reference
+    SnapService snapService;
 
     /** The service user. */
     public static final String SERVICE_USER = "adminusergroup";
@@ -135,6 +146,15 @@ public class UserServiceImpl implements UserService {
 				session.logout();
 			}
         }
+    }
+
+    @Override
+    public String getUserUUID(String sfId) {
+        String cacheKey = String.format("user_client_id_%s", sfId);
+        return cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, (key) -> {
+            String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
+            return UUIDUtil.getUserClientId(email).toString();
+        });
     }
 
     @Override

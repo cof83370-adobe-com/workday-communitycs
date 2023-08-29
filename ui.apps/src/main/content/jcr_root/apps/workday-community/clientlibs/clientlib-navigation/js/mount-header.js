@@ -16,7 +16,8 @@ function renderNavHeader() {
     if (headerDiv !== undefined && headerDiv !== null) {
         let headerData = sessionStorage.getItem('navigation-data');
         let cacheChanged = headerDiv.getAttribute('data-cache-property');
-        cacheChanged = !cacheChanged && cacheChanged === 'CHANGED';
+        let cookie = getCookie("cacheMenu")
+        cacheChanged = !cacheChanged && cacheChanged !== cookie;
         if (!headerData || headerData && cacheChanged) {
             let headerStringData = headerDiv.getAttribute('data-model-property');
             let avatarUrl = headerDiv.getAttribute("data-model-avatar");
@@ -103,4 +104,10 @@ document.addEventListener('readystatechange', event => {
 
 function stringValid(str) {
     return (str !== undefined && str !== null && str.trim() !== '');
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
 }

@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
 
@@ -114,47 +112,5 @@ public class HttpUtils {
     }
 
     return count;
-  }
-
-  /**
-   *
-   * @param response The Sling http response object.
-   * @param value The value serving for menu cache cookie.
-   */
-  public static void addMenuCacheCookie(HttpServletResponse response, String value) {
-    String b64encoded = Base64.getEncoder().encodeToString(value.getBytes());
-    String reverse = new StringBuffer(b64encoded).reverse().toString();
-    StringBuilder tmp = new StringBuilder();
-    final int OFFSET = 4;
-    for (int i = 0; i < reverse.length(); i++) {
-      tmp.append((char)(reverse.charAt(i) + OFFSET));
-    }
-    Cookie cacheMenuCookie = new Cookie("cacheMenu", tmp.toString());
-    HttpUtils.addCookie(cacheMenuCookie, response);
-  }
-
-  /**
-   *
-   * @param request The Sling http request object.
-   * @return CHANGED if the menu for current user is cached.
-   */
-  public static String currentMenuCached(SlingHttpServletRequest request) {
-    String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
-
-    Cookie menuCache = request.getCookie("cacheMenu");
-    String value = menuCache == null ? null : menuCache.getValue();
-
-    StringBuilder tmp = new StringBuilder();
-    final int OFFSET = 4;
-    for (int i = 0; i < value.length(); i++) {
-      tmp.append((char)(value.charAt(i) - OFFSET));
-    }
-
-    String reversed = new StringBuffer(tmp.toString()).reverse().toString();
-    try {
-      return  (new String(Base64.getDecoder().decode(reversed)).equals(sfId)) ? "NO_CHANGE" : "CHANGED";
-    } catch (IllegalArgumentException e) {
-      return "CHANGED";
-    }
   }
 }
