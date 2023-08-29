@@ -52,17 +52,16 @@
         selectedOption.textContent = option;
         toggleDropdown();
     }
-
-    function toggleButtonColor(button) {
-        button.classList.toggle('clicked');
-    }
 	
 	document.addEventListener('click', (event: MouseEvent) => {
-		const dropdown = document.querySelector('.feedback-option-dropdown-toggle') as HTMLElement;
-		const dropdownButton = document.getElementById('feedback-component-dropdownMenu') as HTMLElement;
-		if (!dropdown.contains(event.target as Node) && event.target !== dropdownButton) {
-			dropdownButton.classList.remove('open');
-	}
+        const container = document.getElementById('feedback-component-container');
+        if (container) {
+            const dropdown = document.querySelector('.feedback-option-dropdown-toggle') as HTMLElement;
+            const dropdownButton = document.getElementById('feedback-component-dropdownMenu') as HTMLElement;
+            if (!dropdown.contains(event.target as Node) && event.target !== dropdownButton) {
+                dropdownButton.classList.remove('open');
+            }
+        }
 	});
 	
 	const feedback = document.getElementById('feedback-component-container');
@@ -70,7 +69,6 @@
         const yesButton = document.getElementById('feedbackYesButtonId');
         const noButton = document.getElementById('feedbackNoButtonId');
 		const cancelButton = document.getElementById('feedback-form-cancel-button');
-        const submitButton = document.querySelector('.feedback-form-submit-button button');
         const dropdownToggle = document.querySelector('.feedback-option-dropdown-toggle');
         yesButton.addEventListener('click', showSuccessImage);
         noButton.addEventListener('click', showFeedbackContainer);
@@ -80,8 +78,11 @@
         const dropdownOptions = document.querySelectorAll('.feedback-dropdown-option');
         dropdownOptions.forEach(function(option) {
             option.addEventListener('click', function() {
-                const optionText = option.textContent;
-                selectOption(optionText);
+                const container = document.getElementById('feedback-component-container');
+                if (container) {
+                    const optionText = option.textContent;
+                    selectOption(optionText);
+                }
              });
         });
     }

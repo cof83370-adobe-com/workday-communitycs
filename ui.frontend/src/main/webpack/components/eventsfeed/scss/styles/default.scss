@@ -3,7 +3,6 @@
 
   .cmp-eventsfeed-container {
     width: 100% !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
     color: #000000;
     font-family: "Workday Adelle Sans", Roboto, sans-serif;
@@ -14,12 +13,9 @@
       align-items: center;
       justify-content: space-between;
       margin: 0 auto;
-      height: 260px;
       overflow: scroll;
-      background-color: rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(0, 0, 0, 0.2);
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
+      background-color: $wdc-color-soap-200;
+      padding: 10px;
 
       .feature-image {
         height: 100%;
@@ -31,7 +27,6 @@
         float: right;
         margin: auto;
         display: block;
-        padding: 5px;
 
         .title {
           font-size: 18px;
@@ -81,7 +76,7 @@
     }
 
     .all-events {
-      padding: 0 0 20px 30px !important;
+      padding-bottom: 20px !important;
 
       .event-text {
         color: $wdc-color-blueberry-400 !important;
@@ -99,7 +94,6 @@
       line-height: 26px;
       letter-spacing: 0.5px;
       color: #000000;
-      margin-left: 24px;
       margin-bottom: 6px;
     }
 
@@ -113,6 +107,10 @@
 
     .no-result-box {
       padding: 0 10px;
+    }
+
+    atomic-search-layout.grid-30 {
+      grid-template-columns: minmax(60%,100%) !important;
     }
   }
 }
