@@ -49,7 +49,7 @@ public interface UserService {
   /**
    *
    * @param sfId the user's sf id.
-   * @return The user client id.
+   * @return The user's UUID.
    */
   String getUserUUID(String sfId);
 }
