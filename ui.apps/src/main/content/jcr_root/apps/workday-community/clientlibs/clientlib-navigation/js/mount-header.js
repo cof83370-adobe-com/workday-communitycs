@@ -16,7 +16,8 @@ function renderNavHeader() {
 
     if (headerDiv !== undefined && headerDiv !== null) {
         let headerData = sessionStorage.getItem('navigation-data');
-        if (!headerData) {
+        let cacheChanged = headerDiv.getAttribute('data-cache-changed');
+        if (!headerData || cacheChanged) {
             let headerStringData = headerDiv.getAttribute('data-model-property');
             let avatarUrl = headerDiv.getAttribute("data-model-avatar");
             let homePage = headerDiv.getAttribute("data-prop-home");
@@ -93,12 +94,6 @@ function dataWithMenu(headerData) {
 
     return headerData;
 }
-
-function sameProfile(cachedPrimaryData, ) {
-    let primary = headerData['menus']['primary'];
-
-}
-
 
 document.addEventListener('readystatechange', event => {
     if (event.target.readyState === 'complete') {

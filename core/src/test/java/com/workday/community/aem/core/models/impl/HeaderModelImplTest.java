@@ -8,6 +8,7 @@ import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.utils.HttpUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,7 @@ import static org.osgi.framework.Constants.SERVICE_RANKING;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
@@ -87,7 +89,10 @@ public class HeaderModelImplTest {
     lenient().when(snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER)).thenReturn("");
     HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
-    assertEquals("", headerModel.getUserHeaderMenus());
+    try (MockedStatic<HttpUtils> mock = mockStatic(HttpUtils.class)) {
+      mock.when(() -> HttpUtils.currentMenuCached(any())).thenReturn(false);
+      assertEquals("", headerModel.getUserHeaderMenus());
+    }
   }
 
   /**

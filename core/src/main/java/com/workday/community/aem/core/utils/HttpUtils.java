@@ -2,7 +2,6 @@ package com.workday.community.aem.core.utils;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,7 +121,7 @@ public class HttpUtils {
    * @param response The Sling http response object.
    * @param value The value serving for menu cache cookie.
    */
-  public static void addMenuCacheCookie(SlingHttpServletResponse response, String value) {
+  public static void addMenuCacheCookie(HttpServletResponse response, String value) {
     String b64encoded = Base64.getEncoder().encodeToString(value.getBytes());
     String reverse = new StringBuffer(b64encoded).reverse().toString();
     StringBuilder tmp = new StringBuilder();
@@ -145,7 +144,7 @@ public class HttpUtils {
     Cookie menuCache = request.getCookie("cacheMenu");
     String value = menuCache == null ? null : menuCache.getValue();
 
-    if (value == null || value.equals("FALSE")) return false;
+    if (StringUtils.isEmpty(value) || value.equals("FALSE")) return false;
 
     StringBuilder tmp = new StringBuilder();
     final int OFFSET = 4;

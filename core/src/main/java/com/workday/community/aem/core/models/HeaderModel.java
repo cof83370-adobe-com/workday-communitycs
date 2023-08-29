@@ -25,4 +25,10 @@ public interface HeaderModel {
    * @return The global search redirection url.
    */
   String getGlobalSearchURL();
+
+  /**
+   *
+   * @return true if the cache state is changed.
+   */
+  boolean cacheStateChanged();
 }

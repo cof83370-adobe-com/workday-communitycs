@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.servlet.http.Cookie;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
 import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
@@ -81,7 +80,7 @@ public class HeaderModelImpl implements HeaderModel {
   /** SFID */
   String sfId;
 
-  private Gson gson = new Gson();
+  private final Gson gson = new Gson();
 
   /** The global search url. */
   String globalSearchURL;
@@ -98,8 +97,8 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
-    if (HttpUtils.currentMenuCached(request)) {
-      return null;
+    if (!cacheStateChanged()) {
+      return "";
     }
 
     String ret = this.snapService.getUserHeaderMenu(sfId);
@@ -129,5 +128,10 @@ public class HeaderModelImpl implements HeaderModel {
     String searchURLFromConfig = searchApiConfigService.getGlobalSearchURL();
     globalSearchURL = StringUtils.isBlank(searchURLFromConfig) ? DEFAULT_SEARCH_REDIRECT : searchURLFromConfig;
     return globalSearchURL;
+  }
+
+  @Override
+  public boolean cacheStateChanged() {
+    return HttpUtils.currentMenuCached(request);
   }
 }
