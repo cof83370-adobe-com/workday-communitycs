@@ -8,6 +8,7 @@ import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -75,13 +76,16 @@ public class HeaderModelImpl implements HeaderModel {
   @OSGiService
   SearchApiConfigService searchApiConfigService;
 
+  @OSGiService
+  UserService userService;
+
   @Inject
   private Page currentPage;
 
   /** SFID */
   String sfId;
 
-  private Gson gson = new Gson();
+  private final Gson gson = new Gson();
 
   /** The global search url. */
   String globalSearchURL;
@@ -100,12 +104,16 @@ public class HeaderModelImpl implements HeaderModel {
   public String getUserHeaderMenus() {
     Cookie menuCache = request.getCookie("cacheMenu");
     String value = menuCache == null ? null : menuCache.getValue();
-    // If it is cached in browser, then no need to invoke service call, return null.
-    if (value != null && value.equals("TRUE")) return null;
+
+    if (!StringUtils.isEmpty(value)) {
+      // Same user and well cached in browser
+      if (value.equals(userService.getUserUUID(sfId))) return "";
+    }
 
     String ret = this.snapService.getUserHeaderMenu(sfId);
     Cookie cacheMenuCookie = new Cookie("cacheMenu",
-        StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret) ? "FALSE" : "TRUE");
+        StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret) ?
+            "FALSE" : userService.getUserUUID(sfId));
     HttpUtils.addCookie(cacheMenuCookie, response);
 
     return ret;
@@ -129,5 +137,10 @@ public class HeaderModelImpl implements HeaderModel {
     String searchURLFromConfig = searchApiConfigService.getGlobalSearchURL();
     globalSearchURL = StringUtils.isBlank(searchURLFromConfig) ? DEFAULT_SEARCH_REDIRECT : searchURLFromConfig;
     return globalSearchURL;
+  }
+
+  @Override
+  public String userClientId() {
+    return userService.getUserUUID(sfId);
   }
 }

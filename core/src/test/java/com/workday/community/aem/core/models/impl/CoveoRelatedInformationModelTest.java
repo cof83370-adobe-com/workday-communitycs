@@ -14,6 +14,7 @@ import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -70,6 +71,9 @@ public class CoveoRelatedInformationModelTest {
   TagManager tagManager;
 
   @Mock
+  UserService userService;
+
+  @Mock
   CacheManagerService cacheManager;
 
   @InjectMocks
@@ -86,7 +90,7 @@ public class CoveoRelatedInformationModelTest {
     context.registerService(SnapService.class, snapService);
     context.registerService(SlingHttpServletRequest.class, request);
     context.registerService(ResourceResolver.class, resourceResolver);
-
+    context.registerService(UserService.class, userService);
     lenient().when(resourceResolver.adaptTo(TagManager.class)).thenReturn(tagManager);
     Tag tag1Namespace = mock(Tag.class);
     lenient().when(tag1Namespace.getName()).thenReturn("product");
@@ -192,9 +196,9 @@ public class CoveoRelatedInformationModelTest {
     lenient().when(mockResourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
     lenient().when(userManager.getAuthorizable(eq("userId"))).thenReturn(user);
     lenient().when(user.getProperty(eq(SnapConstants.PROFILE_SOURCE_ID))).thenReturn(profileSId);
-    JsonParser gsonParser = new JsonParser();
     String testData = "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
-    JsonObject userContext = gsonParser.parse(testData).getAsJsonObject();
+    lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
+    JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");
     lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
 

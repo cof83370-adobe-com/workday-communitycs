@@ -49,7 +49,6 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   /** The resource resolver factory. */
   @Reference
   private ResourceResolverFactory resourceResolverFactory;
-  private CacheBuilder builder;
   private CacheConfig config;
 
   public CacheManagerServiceImpl() {
@@ -71,12 +70,6 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   @Modified
   public void activate(CacheConfig config) throws CacheException{
     this.config = config;
-    if(builder == null) {
-      builder = CacheBuilder.newBuilder()
-          .maximumSize(config.maxSize())
-          .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
-          .refreshAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
-    }
   }
 
   @Deactivate
@@ -177,6 +170,14 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       if (cache != null) return cache;
       if (key == null) return null;
 
+      CacheBuilder builder = CacheBuilder.newBuilder();
+      if (innerCacheName == CacheBucketName.UUID_VALUE) {
+        builder.maximumSize(config.maxUUID());
+      } else {
+        builder.maximumSize(config.maxSize())
+            .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
+            .refreshAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
+      }
       cache = builder.build( new CacheLoader<String, V>() {
         public V load(String key) throws CacheException {
           V ret = null;
