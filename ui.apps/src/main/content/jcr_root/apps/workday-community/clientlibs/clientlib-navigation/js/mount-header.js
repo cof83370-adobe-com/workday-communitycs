@@ -15,66 +15,24 @@ function renderNavHeader() {
     const headerDiv = document.getElementById('community-header-div');
     if (headerDiv !== undefined && headerDiv !== null) {
         let headerData = sessionStorage.getItem('navigation-data');
-        let cacheChanged = headerDiv.getAttribute('data-cache-property');
-        let cookie = getCookie("cacheMenu")
-        cacheChanged = !cacheChanged && cacheChanged !== cookie;
-        if (!headerData || headerData && cacheChanged) {
-            let headerStringData = headerDiv.getAttribute('data-model-property');
-            let avatarUrl = headerDiv.getAttribute("data-model-avatar");
-            let homePage = headerDiv.getAttribute("data-prop-home");
-            let searchURL = headerDiv.getAttribute('data-search-url');
+        let headerDataJson = headerData ? JSON.parse(headerData) : null;
+        let previousId = headerDataJson ? headerDataJson['previousId'] : null;
+        let currentId = headerDiv.getAttribute('data-cache-property');
+        let changed = currentId !== previousId;
 
-            let headerMenu;
-            if (stringValid(headerStringData)) {
-                headerMenu = JSON.parse(headerStringData);
+        if (!headerData || headerData && changed) {
+            headerDataJson = constructData(headerDiv, currentId);
+        }
 
-                if (!headerMenu.profile) {
-                    headerMenu.profile = [];
-                }
-
-                if (stringValid(avatarUrl)) {
-                    headerMenu.profile.avatar = { ...headerMenu.profile.avatar, data: avatarUrl };
-                }
-
-                headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
-            }
-
-            headerData = {
-                menus: headerMenu,
-                skipTo: 'mainContentId',
-                sticky: true,
-                searchProps: { redirectPath: searchURL, querySeparator: '#', queryParameterName: 'q' }
-            };
-
-            if (stringValid(homePage)) {
-                headerData.homeUrl = homePage;
-            }
-
-            if (dataWithMenu(headerData)) {
-                sessionStorage.setItem('navigation-data', headerData);
-            } else {
-                document.cookie = 'cacheMenu=FALSE';
-                sessionStorage.removeItem('navigation-data');
-            }
-
-            headerData = JSON.stringify(headerData);
-            // Although the digitalData set at window object, we set it in session scope.
-            let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
-            if (dataLayer) {
-              let dataLayerObj = JSON.parse(dataLayer);
-              window.digitalData = dataLayerObj.digitalData;
-            }
+        if (dataWithMenu(headerDataJson)) {
+            sessionStorage.setItem('navigation-data', JSON.stringify(headerDataJson));
+        } else {
+            document.cookie = 'cacheMenu=FALSE';
+            sessionStorage.removeItem('navigation-data');
+            headerDataJson = constructData(headerDiv, currentId);
         }
 
         try {
-            let headerDataJson = JSON.parse(headerData);
-            if (dataWithMenu(headerDataJson)) {
-                sessionStorage.setItem('navigation-data', headerData);
-            } else {
-                document.cookie = 'cacheMenu=FALSE';
-                sessionStorage.removeItem('navigation-data');
-            }
-
             const headerElement = React.createElement(Cmty.GlobalHeader, headerDataJson);
             ReactDOM.render(headerElement, headerDiv);
         } catch (e) {
@@ -106,8 +64,45 @@ function stringValid(str) {
     return (str !== undefined && str !== null && str.trim() !== '');
 }
 
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
+function constructData(headerDiv, currentId) {
+    let headerStringData = headerDiv.getAttribute('data-model-property');
+    let avatarUrl = headerDiv.getAttribute("data-model-avatar");
+    let homePage = headerDiv.getAttribute("data-prop-home");
+    let searchURL = headerDiv.getAttribute('data-search-url');
+
+    let headerMenu;
+    if (stringValid(headerStringData)) {
+        headerMenu = JSON.parse(headerStringData);
+
+        if (!headerMenu.profile) {
+            headerMenu.profile = [];
+        }
+
+        if (stringValid(avatarUrl)) {
+            headerMenu.profile.avatar = { ...headerMenu.profile.avatar, data: avatarUrl };
+        }
+
+        headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
+    }
+
+    let headerData = {
+        previousId: currentId,
+        menus: headerMenu,
+        skipTo: 'mainContentId',
+        sticky: true,
+        searchProps: { redirectPath: searchURL, querySeparator: '#', queryParameterName: 'q' }
+    };
+
+    if (stringValid(homePage)) {
+        headerData.homeUrl = homePage;
+    }
+
+    // Although the digitalData set at window object, we set it in session scope.
+    let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
+    if (dataLayer) {
+        let dataLayerObj = JSON.parse(dataLayer);
+        window.digitalData = dataLayerObj.digitalData;
+    }
+
+    return headerData;
 }
