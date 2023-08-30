@@ -19,6 +19,7 @@ import com.workday.community.aem.core.pojos.EventTypes;
 import com.workday.community.aem.core.pojos.EventTypeValue;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import org.apache.http.HttpEntity;
@@ -53,7 +54,10 @@ public class CoveoEventsTypeServletTest {
   SnapService snapService;
 
   @Mock
-  private transient ObjectMapper objectMapper;
+  private ObjectMapper objectMapper;
+
+  @Mock
+  private UserService userService;
 
   @InjectMocks
   CoveoEventsTypeServlet coveoEventTypeServlet;

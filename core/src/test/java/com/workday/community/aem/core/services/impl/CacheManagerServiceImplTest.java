@@ -41,7 +41,11 @@ public class CacheManagerServiceImplTest {
         return 10;
       }
 
-      @Override
+       public int maxUUID() {
+         return 0;
+       }
+
+       @Override
       public int expireDuration() {
         return 20;
       }
