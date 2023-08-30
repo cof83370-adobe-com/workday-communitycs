@@ -12,7 +12,7 @@ import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoTabListModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -66,7 +66,7 @@ public class CoveoTabListModelImplTest {
   SnapService snapService;
 
   @Mock
-  UserService userService;
+  JcrUserService jcrUserService;
 
   private CoveoTabListModel coveoTabListModel;
 
@@ -80,7 +80,7 @@ public class CoveoTabListModelImplTest {
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
     context.registerService(SlingHttpServletRequest.class, slingHttpServletRequest);
     context.registerService(SnapService.class, snapService);
-    context.registerService(UserService.class, userService);
+    context.registerService(JcrUserService.class, jcrUserService);
     context.addModelsForClasses(CoveoTabListModelImpl.class);
     coveoTabListModel = context.getService(ModelFactory.class).createModel(res, CoveoTabListModel.class);
 
@@ -155,7 +155,7 @@ public class CoveoTabListModelImplTest {
     JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");
     lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
-    lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
+    lenient().when(jcrUserService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
 
     JsonObject searchConfig = coveoTabListModel.getSearchConfig();
     assertEquals(5, searchConfig.size());

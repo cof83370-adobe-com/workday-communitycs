@@ -8,7 +8,9 @@ package com.workday.community.aem.core.services;
 public enum CacheBucketName {
   OBJECT_VALUE("object_value_cache", "Cache bucket name for cached object"),
   STRING_VALUE("string_value_cache", "Cache bucket for string value"),
-  UUID_VALUE("uuid_value_cache", "Cache UUID string value");
+  UUID_VALUE("uuid_value_cache", "Cache UUID string value"),
+  JCR_USER("jcr_user_cache", "Cache JCR user" ),
+  SF_USER_GROUP("sf_user_group_cache", "Cache user groups defined in SF");
 
   final String label;
   final String name;

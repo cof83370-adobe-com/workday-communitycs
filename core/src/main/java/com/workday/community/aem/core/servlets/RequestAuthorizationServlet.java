@@ -65,8 +65,8 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
                 logger.debug("Inside Try block of Auth_Checker_Servlet");
 
                 resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
-                boolean isInValid = userGroupService.validateTheUser(resourceResolver, requestResourceResolver, uri);
-                if (isInValid) {
+                boolean isValid = userGroupService.validateCurrentUser(request, uri);
+                if (!isValid) {
                     logger.debug("user don't have access on the page {}", uri);
                     response.setStatus(SC_FORBIDDEN);
                     response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);

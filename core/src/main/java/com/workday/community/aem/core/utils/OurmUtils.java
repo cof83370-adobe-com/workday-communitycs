@@ -6,11 +6,13 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.OurmException;
 
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,20 +31,15 @@ public class OurmUtils {
   private final static Logger LOGGER = LoggerFactory.getLogger(OurmUtils.class);
 
   /**
-   * Get the user's Salesforce id.
-   *
-   * @param resourceResolver the Resource Resolver object
-   * @return the Salesforce id from the session.
+   * Get the current user's Salesforce id.
+   * @param request
+   * @param userService
+   * @return
    */
-  public static String getSalesForceId(ResourceResolver resourceResolver) {
+  public static String getSalesForceId(SlingHttpServletRequest request, JcrUserService userService) {
     String sfId = "";
-
-    Session session = resourceResolver.adaptTo(Session.class);
-    UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-
-    if (userManager != null && session != null) {
       try {
-        User user = (User) userManager.getAuthorizable(session.getUserID());
+        User user = userService.getCurrentUser(request);
         if (user == null) {
           throw new OurmException("User is not in userManager.");
         }
@@ -57,7 +54,7 @@ public class OurmUtils {
       } catch (RepositoryException | RuntimeException | OurmException e) {
         LOGGER.error(String.format("getSalesForceId fails with error: %s.", e.getMessage()));
       }
-    }
+
 
     if (StringUtils.isEmpty(sfId)) {
       // Default fallback

@@ -18,6 +18,7 @@ import javax.jcr.Session;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
 import static org.apache.sling.api.SlingHttpServletResponse.SC_FORBIDDEN;
 import static org.apache.sling.api.SlingHttpServletResponse.SC_OK;
 import static org.mockito.Mockito.verify;
@@ -70,7 +71,7 @@ public class RequestAuthorizationServletTest {
         when(requestResourceResolver.adaptTo(Session.class)).thenReturn(session);
 
         when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resourceResolver);
-        when(userGroupService.validateTheUser(resourceResolver,request.getResourceResolver(), uri)).thenReturn(false);
+        when(userGroupService.validateCurrentUser(request, uri)).thenReturn(false);
 
         // Call the method
         servlet.doHead(request, response);

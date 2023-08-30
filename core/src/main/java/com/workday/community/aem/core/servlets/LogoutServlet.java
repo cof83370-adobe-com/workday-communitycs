@@ -4,16 +4,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.OktaService;
-import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import org.apache.sling.api.auth.Authenticator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
-import org.apache.sling.auth.core.AuthUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -21,13 +19,11 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Session;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import com.workday.community.aem.core.constants.GlobalConstants;
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.HttpConstants.LOGIN_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
@@ -57,7 +53,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
   /** The UserService. */
   @Reference
-  private transient UserService userService;
+  private transient JcrUserService jcrUserService;
 
   /** The RunModeConfigService. */
   @Reference
@@ -97,20 +93,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     }
 
     // 2: Invalid current AEM session
-    ResourceResolver resourceResolver = request.getResourceResolver();
-    if (resourceResolver != null) {
-      Session session = resourceResolver.adaptTo(Session.class);
-      // Delete user on publish instance.
-      if (session != null) {
-        String ins = runModeConfigService.getInstance();
-
-        if (ins != null && ins.equals(GlobalConstants.PUBLISH)) {
-          String userId = session.getUserID();
-          userService.deleteUser(userId, false);
-        }
-        session.logout();
-      }
-    }
+    jcrUserService.invalidCurrentUser(request, false);
     if (isOktaEnabled) {
       // case 3: Redirect to okta logout directly in case session expired.
       response.sendRedirect(logoutUrl);

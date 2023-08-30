@@ -11,7 +11,7 @@ import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -63,7 +63,7 @@ public class CoveoEventFeedModelImplTest {
   @Mock
   SnapService snapService;
   @Mock
-  UserService userService;
+  JcrUserService jcrUserService;
 
   private CoveoEventFeedModel coveoEventFeedModel;
 
@@ -76,7 +76,7 @@ public class CoveoEventFeedModelImplTest {
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
     context.registerService(SnapService.class, snapService);
     context.registerService(SlingHttpServletRequest.class, request);
-    context.registerService(UserService.class, userService);
+    context.registerService(JcrUserService.class, jcrUserService);
     context.addModelsForClasses(CoveoEventFeedModelImpl.class);
 
     coveoEventFeedModel = context.getService(ModelFactory.class).createModel(res, CoveoEventFeedModel.class);
@@ -148,7 +148,7 @@ public class CoveoEventFeedModelImplTest {
     userContext.addProperty("email", "testEmailFoo@workday.com");
 
     lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
-    lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
+    lenient().when(jcrUserService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
     JsonObject searchConfig = coveoEventFeedModel.getSearchConfig();
     assertEquals(5, searchConfig.size());
     assertEquals(searchConfig.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");

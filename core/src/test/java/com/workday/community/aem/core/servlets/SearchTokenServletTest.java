@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -54,7 +54,7 @@ public class SearchTokenServletTest {
   SnapService snapService;
 
   @Mock
-  UserService userService;
+  JcrUserService jcrUserService;
 
   @InjectMocks
   SearchTokenServlet searchTokenServlet;
@@ -141,7 +141,7 @@ public class SearchTokenServletTest {
          MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class);
          MockedStatic<HttpClients> mockHttpClients = mockStatic(HttpClients.class)) {
       mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME)).thenReturn(null);
-      mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any())).thenReturn(DEFAULT_SFID_MASTER);
+      mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any(), any())).thenReturn(DEFAULT_SFID_MASTER);
       mockOurmUtils.when(() -> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("foo@workday.com");
 
       mockHttpClients.when(HttpClients::createDefault).thenReturn(httpClient);

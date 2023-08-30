@@ -15,7 +15,7 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.pojos.EventTypes;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.ServletCallback;
 import org.apache.http.HttpResponse;
@@ -71,7 +71,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
     private transient SnapService snapService;
 
     @Reference
-    UserService userService;
+    JcrUserService jcrUserService;
 
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -116,7 +116,9 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
             return null;
         };
 
-        CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, userService, gson, objectMapper, callback);
+        CoveoUtils.executeSearchForCallback(request,
+            response, searchApiConfigService, snapService, jcrUserService,
+            gson, objectMapper, callback);
     }
 
     private EventTypes getEventTypes(CloseableHttpClient httpClient, String token)  throws IOException  {

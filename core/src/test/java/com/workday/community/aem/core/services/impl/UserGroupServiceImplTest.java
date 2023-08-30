@@ -11,6 +11,7 @@ import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.jackrabbit.api.security.user.User;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -42,7 +43,10 @@ class UserGroupServiceImplTest {
     ResourceResolverFactory resourceResolverFactory;
 
     @Mock
-    UserServiceImpl userService;
+    SlingHttpServletRequest request;
+
+    @Mock
+    JcrJcrUserServiceImpl userService;
 
     @Mock
     SnapService snapService;
@@ -106,7 +110,7 @@ class UserGroupServiceImplTest {
         when(mockNode.getProperty("roles")).thenReturn(mockProperty);
         when(mockProperty.getString()).thenReturn(mockUserRole);
 
-        assertEquals(testAemGroups, userGroupService.getLoggedInUsersGroups(resourceResolver));
+        assertEquals(testAemGroups, userGroupService.getCurrentUsersGroups(request));
     }
 
     @Test
@@ -140,7 +144,7 @@ class UserGroupServiceImplTest {
         when(jcrSessionResourceResolver.adaptTo(Session.class)).thenReturn(jcrSession);
         Mockito.doNothing().when(jcrSession).save();
 
-        assertEquals(testSfGroups, userGroupServiceMock.getLoggedInUsersGroups(resourceResolver));
+        assertEquals(testSfGroups, userGroupServiceMock.getCurrentUsersGroups(request));
 
     }
 
@@ -224,9 +228,7 @@ class UserGroupServiceImplTest {
     void testCheckLoggedInUserHasAccessControlTags()
             throws IllegalStateException, RepositoryException {
         List<String> accessControlTags = List.of("authenticated");
-        assertTrue(
-                userGroupService.checkLoggedInUserHasAccessControlTags(jcrSessionResourceResolver,
-                        accessControlTags));
+        assertTrue(userGroupService.validateCurrentUser(request, accessControlTags));
 
         ResourceResolver resourceResolver = mock(ResourceResolver.class);
         mockResolver.when(() -> ResolverUtil.newResolver(any(), any())).thenReturn(resourceResolver);
@@ -250,9 +252,7 @@ class UserGroupServiceImplTest {
         Property mockProperty = mock(Property.class);
         when(mockNode.getProperty("roles")).thenReturn(mockProperty);
         when(mockProperty.getString()).thenReturn(mockUserRole);
-        assertTrue(
-                userGroupService.checkLoggedInUserHasAccessControlTags(resourceResolver,
-                        testAemGroups));
+        assertTrue(userGroupService.validateCurrentUser(request, testAemGroups));
     }
 
     @AfterEach

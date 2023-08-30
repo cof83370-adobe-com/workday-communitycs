@@ -10,7 +10,7 @@ import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -61,7 +61,7 @@ public class CoveoListViewModelImplTest {
     TagManager tagManager;
 
     @Mock
-    UserService userService;
+    JcrUserService jcrUserService;
 
     MockedStatic<DamUtils> mockDamUtils;
 
@@ -75,7 +75,7 @@ public class CoveoListViewModelImplTest {
         context.registerService(SearchApiConfigService.class, searchApiConfigService);
         context.registerService(SnapService.class, snapService);
         context.registerService(SlingHttpServletRequest.class, request);
-        context.registerService(UserService.class, userService);
+        context.registerService(JcrUserService.class, jcrUserService);
 
         when(searchApiConfigService.getSearchHub()).thenReturn("TestSearchHub");
         when(searchApiConfigService.getOrgId()).thenReturn("TestOrgId");
@@ -108,13 +108,14 @@ public class CoveoListViewModelImplTest {
 
         resolverUtil = mockStatic(ResolverUtil.class);
         resolverUtil.when(() -> ResolverUtil.newResolver(any(), anyString())).thenReturn(resourceResolver);
-
     }
 
     @Test
     void testComponent() throws RepositoryException {
         CoveoListViewModel listViewModel = context.currentResource("/component/listView").adaptTo(CoveoListViewModel.class);
-        ((CoveoListViewModelImpl)listViewModel).init(request);
+        if (listViewModel != null) {
+            ((CoveoListViewModelImpl)listViewModel).init(request);
+        }
 
         ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
         Session session = mock(Session.class);
@@ -178,7 +179,7 @@ public class CoveoListViewModelImplTest {
         userContext.addProperty("email", "testEmailFoo@workday.com");
 
         lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
-        lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
+        lenient().when(jcrUserService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
 
         JsonObject config = listViewModel.getSearchConfig();
         Assert.assertEquals(config.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");

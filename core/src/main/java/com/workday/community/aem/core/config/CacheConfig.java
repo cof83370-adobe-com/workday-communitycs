@@ -21,6 +21,13 @@ public @interface CacheConfig {
   int maxUUID() default 300000; // about 4.6MB
 
   @AttributeDefinition(
+      name = "Cache maximum JCR user size",
+      description = "Cache maximum JCR user size",
+      type = AttributeType.INTEGER
+  )
+  int maxJcrUser() default 2000;
+
+  @AttributeDefinition(
       name = "Cache duration in seconds before expire",
       description = "Cache duration in seconds before expire (default 2 hours)",
       type = AttributeType.INTEGER
@@ -28,11 +35,25 @@ public @interface CacheConfig {
   int expireDuration() default 2 * 60 * 60;
 
   @AttributeDefinition(
+      name = "JCR user cache duration in seconds before expire",
+      description = "Cache duration in seconds before expire (default 2 hours)",
+      type = AttributeType.INTEGER
+  )
+  int JcrUserCacheDuration() default 30 * 60;
+
+  @AttributeDefinition(
       name = "Cache refresh duration in seconds ",
       description = "Cache duration in seconds (default 1 hours)",
       type = AttributeType.INTEGER
   )
   int refreshDuration() default 60 * 60;
+
+  @AttributeDefinition(
+      name = "Cache refresh duration in seconds ",
+      description = "Cache duration in seconds (default 1 hours)",
+      type = AttributeType.INTEGER
+  )
+  int JcrUserRefreshDuration() default 15 * 60;
 
   @AttributeDefinition(
       name = "Enable cache",

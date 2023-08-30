@@ -3,7 +3,7 @@ package com.workday.community.aem.core.servlets;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.RunModeConfigService;
-import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -39,7 +39,7 @@ public class LogoutServletTest {
   RunModeConfigService runModeConfigService;
 
   @Mock
-  UserService userService;
+  JcrUserService jcrUserService;
 
   @Mock
   Authenticator authenticator;

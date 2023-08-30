@@ -8,7 +8,7 @@ import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -77,7 +77,7 @@ public class HeaderModelImpl implements HeaderModel {
   SearchApiConfigService searchApiConfigService;
 
   @OSGiService
-  UserService userService;
+  JcrUserService jcrUserService;
 
   @Inject
   private Page currentPage;
@@ -93,7 +93,7 @@ public class HeaderModelImpl implements HeaderModel {
   @PostConstruct
   protected void init() {
     logger.debug("Initializing HeaderModel ....");
-    sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+    sfId = OurmUtils.getSalesForceId(request, jcrUserService);
   }
 
   /**
@@ -107,13 +107,13 @@ public class HeaderModelImpl implements HeaderModel {
 
     if (!StringUtils.isEmpty(value)) {
       // Same user and well cached in browser
-      if (value.equals(userService.getUserUUID(sfId))) return "";
+      if (value.equals(jcrUserService.getUserUUID(sfId))) return "";
     }
 
     String ret = this.snapService.getUserHeaderMenu(sfId);
     Cookie cacheMenuCookie = new Cookie("cacheMenu",
         StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret) ?
-            "FALSE" : userService.getUserUUID(sfId));
+            "FALSE" : jcrUserService.getUserUUID(sfId));
     HttpUtils.addCookie(cacheMenuCookie, response);
 
     return ret;
@@ -141,6 +141,6 @@ public class HeaderModelImpl implements HeaderModel {
 
   @Override
   public String userClientId() {
-    return userService.getUserUUID(sfId);
+    return jcrUserService.getUserUUID(sfId);
   }
 }
