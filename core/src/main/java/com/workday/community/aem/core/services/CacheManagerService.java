@@ -26,7 +26,7 @@ public interface CacheManagerService {
    * @return The value from the cache for the pass-in cache key.
    * @param <V> The type of returned value.
    */
-   <V> V get(String cacheBucketName, String key, ValueCallback<String, V> callback);
+   <V> V get(String cacheBucketName, String key, ValueCallback<V> callback);
 
   /**
    * To check if a key is already presented in a cache with corresponding cache name.

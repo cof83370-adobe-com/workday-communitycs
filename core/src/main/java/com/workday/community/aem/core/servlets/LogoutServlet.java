@@ -42,7 +42,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.APPLICAT
 public class LogoutServlet extends SlingAllMethodsServlet {
 
   /** The logger. */
-  private static final Logger logger = LoggerFactory.getLogger(LogoutServlet.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LogoutServlet.class);
 
   /** The OktaService. */
   @Reference
@@ -64,7 +64,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    logger.debug("initialize Logout service");
+    LOGGER.debug("initialize Logout service");
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
@@ -79,7 +79,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     boolean isOktaEnabled = oktaService.isOktaIntegrationEnabled();
 
     if (isOktaEnabled && StringUtils.isEmpty(oktaDomain)) {
-      logger.error("Okta domain and logout redirect Url are not configured, please contact admin.");
+      LOGGER.error("Okta domain and logout redirect Url are not configured, please contact admin.");
       return;
     }
 
@@ -89,7 +89,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     String[] deleteList = new String[] { LOGIN_COOKIE_NAME, COVEO_COOKIE_NAME };
     int count = HttpUtils.dropCookies(request, response, "/", deleteList);
     if (count == 0) {
-      logger.debug("no custom cookie to be dropped");
+      LOGGER.debug("no custom cookie to be dropped");
     }
 
     // 2: Invalid current AEM session

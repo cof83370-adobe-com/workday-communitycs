@@ -90,8 +90,7 @@ public class AuthorizationFilterTest {
     private AuthorizationFilter authorizationFilter;
 
     @BeforeEach
-    void setup() throws CacheException {
-        when(cacheManagerService.getServiceResolver(anyString())).thenReturn(resolver);
+    void setup()  {
     }
 
     @Test

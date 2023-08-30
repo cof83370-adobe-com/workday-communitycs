@@ -95,10 +95,10 @@ public class CacheManagerServiceImplTest {
   public void testGet() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    ValueCallback<String, String> callback = new ValueCallback() {
+    ValueCallback<String> callback = new ValueCallback() {
       int count = 0;
       @Override
-      public Object getValue(Object key) {
+      public Object getValue(String key) {
         count++;
         return TEST_VALUE + count;
       }
@@ -115,10 +115,10 @@ public class CacheManagerServiceImplTest {
   public void testClearCache() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    ValueCallback<String, String> callback = new ValueCallback() {
+    ValueCallback<String> callback = new ValueCallback() {
       int count = 0;
       @Override
-      public Object getValue(Object key) {
+      public Object getValue(String key) {
         count++;
         return TEST_VALUE + count;
       }
@@ -140,7 +140,7 @@ public class CacheManagerServiceImplTest {
   public void testIfCacheExists() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    ValueCallback<String, String> callback = (ValueCallback) key -> TEST_VALUE;
+    ValueCallback<String> callback = (ValueCallback) key -> TEST_VALUE;
 
     cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
     boolean existed = cacheManager.isPresent(TEST_CACHE_BUCKET, TEST_KEY);

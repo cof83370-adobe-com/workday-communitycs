@@ -79,7 +79,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   }
 
   @Override
-  public <V> V get(String cacheBucketName, String key, ValueCallback<String, V> callback) {
+  public <V> V get(String cacheBucketName, String key, ValueCallback<V> callback) {
     if (!this.config.enabled()) {
       return callback == null? null : callback.getValue(key);
     }
@@ -164,7 +164,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   // ================== Private methods ===============//
   private <V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
-                                               ValueCallback<String, V> callback) throws CacheException  {
+                                               ValueCallback<V> callback) throws CacheException  {
     try {
       LoadingCache<String, V> cache = caches.get(innerCacheName.name());
       if (cache != null) return cache;

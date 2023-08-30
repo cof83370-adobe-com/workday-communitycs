@@ -125,7 +125,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 } else {
                     ResourceResolver jcrResolver = cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
                     Session jcrSession = jcrResolver.adaptTo(Session.class);
-                    groupIds = this.getUserGroupsFromSnap(sfId);
+                    groupIds = getUserGroupsFromSnap(sfId);
                     userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
                     Objects.requireNonNull(jcrSession).save();
                 }
@@ -176,6 +176,14 @@ public class UserGroupServiceImpl implements UserGroupService {
 
         LOGGER.debug("---> UserGroupServiceImpl: validateCurrentUser - Groups List..{}.", groupsList);
         return !Collections.disjoint(accessControlTags, groupsList);
+    }
+
+    /**
+     * This is used in testing.
+     * @param cacheManager the pass-in Cache manager object.
+     */
+    protected void setCacheManager(CacheManagerService cacheManager) {
+        this.cacheManager = cacheManager;
     }
 
     /**
