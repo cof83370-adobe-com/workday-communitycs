@@ -46,14 +46,29 @@ public class CacheManagerServiceImplTest {
        }
 
        @Override
+       public int maxJcrUser() {
+         return 0;
+       }
+
+       @Override
       public int expireDuration() {
         return 20;
       }
 
-      @Override
+       @Override
+       public int jcrUserExpireDuration() {
+         return 0;
+       }
+
+       @Override
       public int refreshDuration() {
         return 10;
       }
+
+       @Override
+       public int jcrUserRefreshDuration() {
+         return 0;
+       }
 
        @Override
        public boolean enabled() {

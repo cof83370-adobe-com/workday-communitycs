@@ -5,6 +5,7 @@ import com.day.cq.dam.api.Rendition;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
@@ -75,36 +76,7 @@ public class SnapServiceImplTest {
   @BeforeEach
   public void setup() throws CacheException, LoginException {
     cacheManagerService = new CacheManagerServiceImpl();
-    CacheConfig cacheConfig = new CacheConfig() {
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return null;
-      }
-
-      @Override
-      public int maxSize() {
-        return 10;
-      }
-
-      public int maxUUID() {
-        return 0;
-      }
-
-      @Override
-      public int expireDuration() {
-        return 10;
-      }
-
-      @Override
-      public int refreshDuration() {
-        return 10;
-      }
-
-      @Override
-      public boolean enabled() {
-        return true;
-      }
-    };
+    CacheConfig cacheConfig = TestUtil.getCacheConfig();
     cacheManagerService.activate(cacheConfig);
     cacheManagerService.setResourceResolverFactory(resResolverFactory);
 

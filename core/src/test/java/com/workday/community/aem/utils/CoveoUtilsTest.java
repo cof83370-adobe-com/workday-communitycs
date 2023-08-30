@@ -2,6 +2,7 @@ package com.workday.community.aem.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
@@ -25,10 +26,11 @@ public class CoveoUtilsTest {
 
     SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
     SnapService snapService = mock(SnapService.class);
+    JcrUserService userService = mock(JcrUserService.class);
     try (MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class)) {
-      mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any())).thenReturn("testSFID");
+      mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any(), any())).thenReturn("testSFID");
       lenient().when(snapService.getUserContext(eq("testSFID"))).thenReturn(userContext);
-      String ret = CoveoUtils.getCurrentUserContext(request, snapService);
+      String ret = CoveoUtils.getCurrentUserContext(request, snapService, userService);
       assertEquals(ret, "{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"}");
     }
   }

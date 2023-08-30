@@ -1,8 +1,10 @@
 package com.workday.community.aem.utils;
 
+import com.workday.community.aem.core.services.JcrUserService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,27 +22,31 @@ import static org.mockito.Mockito.mock;
 
 @ExtendWith({MockitoExtension.class})
 public class OurmUtilsTest {
-  ResourceResolver resolverMock;
+  SlingHttpServletRequest request;
 
   private UserManager userManager;
 
+  private JcrUserService userService;
+
   @BeforeEach
   public void setup() {
-    resolverMock = mock(ResourceResolver.class);
+    request = mock(SlingHttpServletRequest.class);
     Session session = mock(Session.class);
     userManager = mock(UserManager.class);
 
-    lenient().when(resolverMock.adaptTo(Session.class)).thenReturn(session);
-    lenient().when(session.getUserID()).thenReturn("fool");
+    JcrUserService userService = mock(JcrUserService.class);
 
-    lenient().when(resolverMock.adaptTo(UserManager.class)).thenReturn(userManager);
+//    lenient().when(resolverMock.adaptTo(Session.class)).thenReturn(session);
+//    lenient().when(session.getUserID()).thenReturn("fool");
+//
+//    lenient().when(resolverMock.adaptTo(UserManager.class)).thenReturn(userManager);
   }
 
   @Test
   public void testGetSalesForceIdDefaultMaster() throws Exception {
     // case 1:
     lenient().when(userManager.getAuthorizable(anyString())).thenThrow(new RuntimeException());
-    String sfId = OurmUtils.getSalesForceId(resolverMock);
+    String sfId = OurmUtils.getSalesForceId(request, userService);
     assertEquals(DEFAULT_SFID_MASTER, sfId);
   }
 
@@ -55,7 +61,7 @@ public class OurmUtilsTest {
     lenient().when(val[0].getString()).thenReturn("testSfId");
     lenient().when(userManager.getAuthorizable(anyString())).thenReturn(user);
 
-    String testSfId = OurmUtils.getSalesForceId(resolverMock);
+    String testSfId = OurmUtils.getSalesForceId(request, userService);
     assertEquals("testSfId", testSfId);
   }
 }

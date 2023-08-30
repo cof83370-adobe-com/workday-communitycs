@@ -32,10 +32,10 @@ import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER
     service = JcrUserService.class,
     immediate = true
 )
-public class JcrJcrUserServiceImpl implements JcrUserService {
+public class JcrUserServiceImpl implements JcrUserService {
 
     /** The logger. */
-    private final static Logger LOGGER = LoggerFactory.getLogger(JcrJcrUserServiceImpl.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(JcrUserServiceImpl.class);
 
     /** The cache manager */
     @Reference

@@ -46,7 +46,7 @@ class UserGroupServiceImplTest {
     SlingHttpServletRequest request;
 
     @Mock
-    JcrJcrUserServiceImpl userService;
+    JcrUserServiceImpl userService;
 
     @Mock
     SnapService snapService;
