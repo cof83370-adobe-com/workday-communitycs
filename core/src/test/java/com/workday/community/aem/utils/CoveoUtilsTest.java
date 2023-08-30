@@ -2,7 +2,7 @@ package com.workday.community.aem.utils;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
@@ -26,7 +26,7 @@ public class CoveoUtilsTest {
 
     SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
     SnapService snapService = mock(SnapService.class);
-    JcrUserService userService = mock(JcrUserService.class);
+    UserService userService = mock(UserService.class);
     try (MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class)) {
       mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any(), any())).thenReturn("testSFID");
       lenient().when(snapService.getUserContext(eq("testSFID"))).thenReturn(userContext);

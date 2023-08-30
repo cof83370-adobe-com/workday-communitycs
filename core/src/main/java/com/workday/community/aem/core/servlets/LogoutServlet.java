@@ -2,9 +2,10 @@ package com.workday.community.aem.core.servlets;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.OktaService;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import org.apache.sling.api.auth.Authenticator;
 import org.apache.commons.lang3.StringUtils;
@@ -53,7 +54,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
 
   /** The UserService. */
   @Reference
-  private transient JcrUserService jcrUserService;
+  private transient UserService userService;
 
   /** The RunModeConfigService. */
   @Reference
@@ -93,7 +94,11 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     }
 
     // 2: Invalid current AEM session
-    jcrUserService.invalidCurrentUser(request, false);
+    try {
+      userService.invalidCurrentUser(request, false);
+    } catch (CacheException e) {
+      LOGGER.error("delete user from JCR cache failed during logout");
+    }
     if (isOktaEnabled) {
       // case 3: Redirect to okta logout directly in case session expired.
       response.sendRedirect(logoutUrl);

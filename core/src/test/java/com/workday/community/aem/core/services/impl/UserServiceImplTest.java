@@ -34,12 +34,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-public class JcrUserServiceImplTest {
+public class UserServiceImplTest {
     private final AemContext context = new AemContext();
 
     /** The userService. */
     @InjectMocks
-    JcrUserServiceImpl userService;
+    UserServiceImpl userService;
 
     /** The ResourceResolver class. */
     @Mock
@@ -96,7 +96,7 @@ public class JcrUserServiceImplTest {
      * @throws RepositoryException RepositoryException object.
      */
     @Test
-    public void testDeleteUser() throws RepositoryException {
+    public void testDeleteUser() throws RepositoryException, CacheException {
         String userId = "testUser";
         SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
         lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);

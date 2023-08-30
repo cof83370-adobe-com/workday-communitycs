@@ -11,7 +11,7 @@ import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.CacheManagerService;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -64,7 +64,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   private SnapService snapService;
 
   @OSGiService
-  private JcrUserService jcrUserService;
+  private UserService userService;
 
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
@@ -134,7 +134,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
           searchConfigService,
           request,
           snapService,
-          jcrUserService);
+          userService);
     }
     return this.searchConfig;
   }

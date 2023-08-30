@@ -5,7 +5,7 @@ import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -51,7 +51,7 @@ public class AuthorizationFilter implements Filter {
     private transient UserGroupService userGroupService;
 
     @Reference
-    private transient JcrUserService jcrUserService;
+    private transient UserService userService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -79,7 +79,7 @@ public class AuthorizationFilter implements Filter {
             LOGGER.debug("Current user is {}.", userId);
             boolean isInValid = true;
             try {
-                User user = jcrUserService.getUser(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE, userId);
+                User user = userService.getUser(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE, userId);
                 if (null != user && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
                     isInValid = userGroupService.validateCurrentUser(slingRequest, pagePath);
                 }

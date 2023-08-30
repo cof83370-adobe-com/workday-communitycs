@@ -1,7 +1,7 @@
 package com.workday.community.aem.utils;
 
 import com.workday.community.aem.core.TestUtil;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -23,7 +23,7 @@ public class OurmUtilsTest {
 
   private UserManager userManager;
 
-  private JcrUserService userService;
+  private UserService userService;
 
   @BeforeEach
   public void setup() {
@@ -45,7 +45,7 @@ public class OurmUtilsTest {
     User user = TestUtil.getMockUser();
     lenient().when(userManager.getAuthorizable(anyString())).thenReturn(user);
 
-    JcrUserService userService = mock(JcrUserService.class);
+    UserService userService = mock(UserService.class);
     lenient().when(userService.getCurrentUser(request)).thenReturn(user);
     String testSfId = OurmUtils.getSalesForceId(request, userService);
     assertEquals("testSfId", testSfId);

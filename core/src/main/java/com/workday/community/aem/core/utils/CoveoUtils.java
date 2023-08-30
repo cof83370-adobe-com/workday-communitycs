@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -46,7 +46,7 @@ public class CoveoUtils {
                                               SlingHttpServletResponse response,
                                               SearchApiConfigService searchApiConfigService,
                                               SnapService snapService,
-                                              JcrUserService jcrUserService,
+                                              UserService userService,
                                               Gson gson,
                                               ObjectMapper objectMapper,
                                               ServletCallback servletCallback) throws ServletException, IOException {
@@ -61,7 +61,7 @@ public class CoveoUtils {
       return;
     }
 
-    String sfId = OurmUtils.getSalesForceId(request, jcrUserService);
+    String sfId = OurmUtils.getSalesForceId(request, userService);
     int tokenExpiryTime = searchApiConfigService.getTokenValidTime() / 1000;
     boolean isDevMode = searchApiConfigService.isDevMode();
     JsonObject userContext = snapService.getUserContext(sfId);
@@ -95,7 +95,7 @@ public class CoveoUtils {
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", searchApiConfigService.isDevMode());
 
       //Add coveo_visitorId cookie
-      Cookie visitIdCookie = new Cookie("coveo_visitorId", jcrUserService.getUserUUID(sfId));
+      Cookie visitIdCookie = new Cookie("coveo_visitorId", userService.getUserUUID(sfId));
       HttpUtils.addCookie(visitIdCookie, response);
       servletCallback.execute(request, response, coveoInfo);
     }
@@ -168,7 +168,7 @@ public class CoveoUtils {
    */
   public static String getCurrentUserContext(SlingHttpServletRequest request,
                                              SnapService snapService,
-                                             JcrUserService userService) {
+                                             UserService userService) {
     String sfId = OurmUtils.getSalesForceId(request, userService);
     JsonObject contextString = snapService.getUserContext(sfId);
 
@@ -184,20 +184,20 @@ public class CoveoUtils {
    * @param searchConfigService the search configuration service object.
    * @param request the incoming sling request
    * @param snapService  the snap logic service object
-   * @param jcrUserService  the user service object
+   * @param userService  the user service object
    * @return the search configuration object used by component.
    */
   public static JsonObject getSearchConfig(SearchApiConfigService searchConfigService,
                                            SlingHttpServletRequest request,
                                            SnapService snapService,
-                                           JcrUserService jcrUserService) {
+                                           UserService userService) {
     JsonObject config = new JsonObject();
-    String sfId = OurmUtils.getSalesForceId(request, jcrUserService);
+    String sfId = OurmUtils.getSalesForceId(request, userService);
     config.addProperty("orgId", searchConfigService.getOrgId());
     config.addProperty("searchHub", searchConfigService.getSearchHub());
     config.addProperty("analytics", true);
-    config.addProperty("clientId", jcrUserService.getUserUUID(sfId));
-    config.addProperty("userContext", getCurrentUserContext(request, snapService, jcrUserService));
+    config.addProperty("clientId", userService.getUserUUID(sfId));
+    config.addProperty("userContext", getCurrentUserContext(request, snapService, userService));
     return config;
   }
 }

@@ -5,6 +5,7 @@ import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -45,7 +46,7 @@ class UserGroupServiceImplTest {
     SlingHttpServletRequest request;
 
     @Mock
-    JcrUserServiceImpl userService;
+    UserServiceImpl userService;
 
     @Mock
     SnapService snapService;
@@ -95,7 +96,7 @@ class UserGroupServiceImplTest {
     }
 
     @Test
-    void getUserGroupsBySfIdUserNodeHasGroups() throws RepositoryException {
+    void getUserGroupsBySfIdUserNodeHasGroups() throws RepositoryException, CacheException {
         User mockUser = TestUtil.getMockUser();
         when(request.getResourceResolver()).thenReturn(mockResolver);
         when(userService.getCurrentUser(request)).thenReturn(mockUser);
@@ -113,7 +114,7 @@ class UserGroupServiceImplTest {
     }
 
     @Test
-    void getUserGroupsBySfIdUserNodeDoesNotHaveAnyGroups() throws RepositoryException, LoginException {
+    void getUserGroupsBySfIdUserNodeDoesNotHaveAnyGroups() throws RepositoryException, LoginException, CacheException {
         User mockUser = TestUtil.getMockUser();
         when(request.getResourceResolver()).thenReturn(mockResolver);
         when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
@@ -218,7 +219,7 @@ class UserGroupServiceImplTest {
 
     @Test
     void testCheckLoggedInUserHasAccessControlTags()
-        throws IllegalStateException, RepositoryException {
+        throws IllegalStateException, RepositoryException, CacheException {
         User mockUser = TestUtil.getMockUser();
         when(request.getResourceResolver()).thenReturn(mockResolver);
         when(userService.getCurrentUser(request)).thenReturn(mockUser);

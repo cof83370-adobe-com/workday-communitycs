@@ -8,7 +8,7 @@ import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -71,7 +71,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   private SearchApiConfigService searchConfigService;
 
   @OSGiService
-  private JcrUserService jcrUserService;
+  private UserService userService;
 
   /**
    * The snap service object.
@@ -92,7 +92,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
           this.searchConfigService,
           this.request,
           this.snapService,
-          this.jcrUserService);
+          this.userService);
     }
     return searchConfig;
   }

@@ -36,7 +36,7 @@ public @interface CacheConfig {
 
   @AttributeDefinition(
       name = "JCR user cache duration in seconds before expire",
-      description = "Cache duration in seconds before expire (default 2 hours)",
+      description = "JCR user cache duration in seconds before expire (default 30 minutes)",
       type = AttributeType.INTEGER
   )
   int jcrUserExpireDuration() default 30 * 60;
@@ -50,7 +50,7 @@ public @interface CacheConfig {
 
   @AttributeDefinition(
       name = "Cache refresh duration in seconds ",
-      description = "Cache duration in seconds (default 1 hours)",
+      description = "Cache duration in seconds (default 15 minutes)",
       type = AttributeType.INTEGER
   )
   int jcrUserRefreshDuration() default 15 * 60;

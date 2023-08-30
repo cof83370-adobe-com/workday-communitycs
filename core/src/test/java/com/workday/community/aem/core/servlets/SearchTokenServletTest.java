@@ -5,7 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -54,7 +54,7 @@ public class SearchTokenServletTest {
   SnapService snapService;
 
   @Mock
-  JcrUserService jcrUserService;
+  UserService userService;
 
   @InjectMocks
   SearchTokenServlet searchTokenServlet;

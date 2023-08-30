@@ -7,7 +7,7 @@ import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.services.CacheBucketName;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.CacheManagerService;
@@ -65,7 +65,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     CacheManagerService cacheManager;
 
     @Reference
-    JcrUserService userService;
+    UserService userService;
 
     /**
      * The customer_role_mapping.

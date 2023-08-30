@@ -8,7 +8,7 @@ import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.jackrabbit.api.security.user.User;
@@ -46,7 +46,7 @@ public class AuthorizationFilterTest {
     UserGroupService userGroupService;
 
     @Mock
-    JcrUserService jcrUserService;
+    UserService userService;
 
     @Mock
     Session jcrSession;
@@ -103,7 +103,7 @@ public class AuthorizationFilterTest {
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(jcrSession.getUserID()).thenReturn("test-user1");
 
-        when(jcrUserService.getUser(anyString(), anyString())).thenReturn(user);
+        when(userService.getUser(anyString(), anyString())).thenReturn(user);
         when(user.getPath()).thenReturn("home/users/test-user1");
 
         authorizationFilter.doFilter(request, response, filterChain);
@@ -122,7 +122,7 @@ public class AuthorizationFilterTest {
         when(request.getResourceResolver()).thenReturn(resolver);
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(jcrSession.getUserID()).thenReturn("workday-user1");
-        when(jcrUserService.getUser(any(), anyString())).thenReturn(user);
+        when(userService.getUser(any(), anyString())).thenReturn(user);
         when(user.getPath()).thenReturn("home/users/workdaycommunity/okta/workday-user1");
 
         authorizationFilter.doFilter(request, response, filterChain);
@@ -145,7 +145,7 @@ public class AuthorizationFilterTest {
         when(request.getResourceResolver()).thenReturn(resolver);
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(jcrSession.getUserID()).thenReturn("workday-user1");
-        when(jcrUserService.getUser(any(), anyString())).thenReturn(user);
+        when(userService.getUser(any(), anyString())).thenReturn(user);
         when(user.getPath()).thenReturn("home/users/workdaycommunity/okta/workday-user1");
 
         authorizationFilter.doFilter(request, response, filterChain);

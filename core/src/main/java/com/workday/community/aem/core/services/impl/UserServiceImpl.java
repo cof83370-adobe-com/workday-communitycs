@@ -22,21 +22,22 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
 
 /**
  * The Class UserServiceImpl.
  */
 @Component(
-    service = JcrUserService.class,
+    service = UserService.class,
     immediate = true
 )
-public class JcrUserServiceImpl implements JcrUserService {
+public class UserServiceImpl implements UserService {
 
     /** The logger. */
-  private final static Logger LOGGER = LoggerFactory.getLogger(JcrUserServiceImpl.class);
+  private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     /** The cache manager */
   @Reference
@@ -52,10 +53,10 @@ public class JcrUserServiceImpl implements JcrUserService {
   SnapService snapService;
 
   @Override
-  public User getCurrentUser(SlingHttpServletRequest request) {
-    ResourceResolver resourceResolver = request.adaptTo(ResourceResolver.class);
-    Session session = Objects.requireNonNull(resourceResolver).adaptTo(Session.class);
-    return getUser(resourceResolver, Objects.requireNonNull(session).getUserID());
+  public User getCurrentUser(SlingHttpServletRequest request) throws CacheException {
+    Session session = Objects.requireNonNull(request.getResourceResolver()).adaptTo(Session.class);
+    ResourceResolver serviceResolver = cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+    return getUser(serviceResolver, Objects.requireNonNull(session).getUserID());
   }
 
   @Override
@@ -74,7 +75,7 @@ public class JcrUserServiceImpl implements JcrUserService {
   }
 
   @Override
-  public void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath) {
+  public void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath) throws CacheException {
     ResourceResolver resourceResolver = request.getResourceResolver();
     Session session = resourceResolver.adaptTo(Session.class);
     // Delete user on publish instance.
@@ -84,8 +85,11 @@ public class JcrUserServiceImpl implements JcrUserService {
       if (ins != null && ins.equals(GlobalConstants.PUBLISH)) {
         String userId = session.getUserID();
 
+        ResourceResolver serviceResolver =
+            cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+
         LOGGER.info("Start to delete user with param {}.", userId);
-        UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+        UserManager userManager = serviceResolver.adaptTo(UserManager.class);
         User user;
         try {
           if (isPath) {
@@ -114,6 +118,10 @@ public class JcrUserServiceImpl implements JcrUserService {
     }
   }
 
+  /**
+   * Used in testing only.
+   * @param cacheManager the pass-in CacheManager object.
+   */
   protected void setCacheManager(CacheManagerService cacheManager) {
     this.cacheManager = cacheManager;
   }

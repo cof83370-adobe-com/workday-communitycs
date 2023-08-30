@@ -10,7 +10,7 @@ import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -61,7 +61,7 @@ public class CoveoListViewModelImplTest {
     TagManager tagManager;
 
     @Mock
-    JcrUserService jcrUserService;
+    UserService userService;
 
     MockedStatic<DamUtils> mockDamUtils;
 
@@ -75,7 +75,7 @@ public class CoveoListViewModelImplTest {
         context.registerService(SearchApiConfigService.class, searchApiConfigService);
         context.registerService(SnapService.class, snapService);
         context.registerService(SlingHttpServletRequest.class, request);
-        context.registerService(JcrUserService.class, jcrUserService);
+        context.registerService(UserService.class, userService);
 
         when(searchApiConfigService.getSearchHub()).thenReturn("TestSearchHub");
         when(searchApiConfigService.getOrgId()).thenReturn("TestOrgId");
@@ -179,7 +179,7 @@ public class CoveoListViewModelImplTest {
         userContext.addProperty("email", "testEmailFoo@workday.com");
 
         lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
-        lenient().when(jcrUserService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
+        lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
 
         JsonObject config = listViewModel.getSearchConfig();
         Assert.assertEquals(config.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");

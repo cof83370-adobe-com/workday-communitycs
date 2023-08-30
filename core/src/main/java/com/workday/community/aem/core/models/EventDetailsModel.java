@@ -16,7 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.workday.community.aem.core.constants.EventDetailsConstants;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.services.SnapService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -99,7 +99,7 @@ public class EventDetailsModel {
 	private SnapService snapService;
 
 	@Reference
-	JcrUserService userService;
+	UserService userService;
 
 	/** The Sling Http Servlet Request */
 	@Self

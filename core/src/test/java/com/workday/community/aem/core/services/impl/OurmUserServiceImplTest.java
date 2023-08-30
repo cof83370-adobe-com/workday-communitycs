@@ -25,7 +25,7 @@ import static org.mockito.Mockito.mockStatic;
  * The Class OurmUsersApiConfigServiceImplTest.
  */
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
-public class OurmJcrUserServiceImplTest {
+public class OurmUserServiceImplTest {
 
   /** The ourmUsers api service. */
   private final OurmUserService ourmUserService = new OurmUserServiceImpl();

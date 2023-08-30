@@ -7,13 +7,13 @@ import org.apache.sling.api.SlingHttpServletRequest;
 /**
  * The UserService interface.
  */
-public interface JcrUserService {
+public interface UserService {
   /**
    *
    * @param request The sling request object.
    * @return the current logged-in user.
    */
-  public User getCurrentUser(SlingHttpServletRequest request);
+  public User getCurrentUser(SlingHttpServletRequest request) throws CacheException;
 
   /**
    * Get user.
@@ -36,5 +36,5 @@ public interface JcrUserService {
    * @param request  The current sling request object.
    * @param isPath   Is the user path
    */
-  void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath);
+  void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath) throws CacheException;
 }

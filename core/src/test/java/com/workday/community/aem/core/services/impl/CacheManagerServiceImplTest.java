@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.utils.cache.ValueCallback;
@@ -29,52 +30,7 @@ public class CacheManagerServiceImplTest {
 
   @BeforeEach
   public void setup() {
-     cacheConfig = new CacheConfig() {
-
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return null;
-      }
-
-      @Override
-      public int maxSize() {
-        return 10;
-      }
-
-       public int maxUUID() {
-         return 0;
-       }
-
-       @Override
-       public int maxJcrUser() {
-         return 0;
-       }
-
-       @Override
-      public int expireDuration() {
-        return 20;
-      }
-
-       @Override
-       public int jcrUserExpireDuration() {
-         return 0;
-       }
-
-       @Override
-      public int refreshDuration() {
-        return 10;
-      }
-
-       @Override
-       public int jcrUserRefreshDuration() {
-         return 0;
-       }
-
-       @Override
-       public boolean enabled() {
-         return true;
-       }
-     };
+     cacheConfig = TestUtil.getCacheConfig();
   }
 
   @Test

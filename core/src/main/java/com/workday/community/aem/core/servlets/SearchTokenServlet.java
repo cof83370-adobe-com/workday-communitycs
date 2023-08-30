@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.JcrUserService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.ServletCallback;
 import org.apache.http.HttpStatus;
@@ -44,7 +44,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   private transient SnapService snapService;
 
   @Reference
-  private transient JcrUserService jcrUserService;
+  private transient UserService userService;
 
   private transient ObjectMapper objectMapper = new ObjectMapper();
 
@@ -84,6 +84,6 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     };
 
     logger.debug("Start doGet call for token");
-    CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, jcrUserService, gson, objectMapper, servletCallback);
+    CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, userService, gson, objectMapper, servletCallback);
   }
 }
