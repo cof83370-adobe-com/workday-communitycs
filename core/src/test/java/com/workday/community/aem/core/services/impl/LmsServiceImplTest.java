@@ -19,6 +19,7 @@ import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.RestApiUtil;
+
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
@@ -68,6 +69,16 @@ public class LmsServiceImplTest {
             return "lmsAPIRefreshToken";
         }
 
+        @Override
+        public int lmsTokenCacheMax() {
+            return 100;
+        }
+
+        @Override
+        public long lmsTokenCacheTimeout() {
+            return 1000;
+        }
+
     };
 
     /**
@@ -82,9 +93,10 @@ public class LmsServiceImplTest {
      * Test method for getAPIToken method.
      * 
      * @throws LmsException
+     * @throws InterruptedException
      */
     @Test
-    public void testGetAPIToken() throws LmsException {
+    public void testGetAPIToken() throws LmsException, InterruptedException {
         try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
             // Case 1: with valid response
             APIResponse response = mock(APIResponse.class);
@@ -97,13 +109,22 @@ public class LmsServiceImplTest {
             String token = this.service.getApiToken();
             assertEquals("bearerToken", token);
 
-            // Case 2: with response as null
+            // Case 2: though response is null, returns from cache
+            mocked.when(() -> RestApiUtil.doLmsTokenGet(anyString(), anyString(),
+                    anyString(), anyString())).thenReturn(null);
+            token = this.service.getApiToken();
+            assertEquals("bearerToken", token);
+            Thread.sleep(1001);
+
+            // Case 3: clear cache using sleep interval, with response as null
             mocked.when(() -> RestApiUtil.doLmsTokenGet(anyString(), anyString(),
                     anyString(), anyString())).thenReturn(null);
             token = this.service.getApiToken();
             assertEquals("", token);
+            Thread.sleep(1001);
 
-            // Case 3: response doesn't contain access token
+            // Case 4: clear cache using sleep interval, response doesn't contain access
+            // token
             responseBody = "{\"token_type\": \"Bearer\",\"refresh_token\": \"refreshToken\"}";
             token = this.service.getApiToken();
             assertEquals("", token);
