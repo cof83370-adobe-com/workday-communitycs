@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -51,6 +52,9 @@ public class SearchTokenServletTest {
 
   @Mock
   SnapService snapService;
+
+  @Mock
+  UserService userService;
 
   @InjectMocks
   SearchTokenServlet searchTokenServlet;
@@ -140,7 +144,7 @@ public class SearchTokenServletTest {
       mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any())).thenReturn(DEFAULT_SFID_MASTER);
       mockOurmUtils.when(() -> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("foo@workday.com");
 
-      mockHttpClients.when(() ->HttpClients.createDefault()).thenReturn(httpClient);
+      mockHttpClients.when(HttpClients::createDefault).thenReturn(httpClient);
       when(httpClient.execute(any())).thenReturn(httpResponse);
       try {
         searchTokenServlet.doGet(request, response);

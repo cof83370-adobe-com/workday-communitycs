@@ -14,6 +14,13 @@ public @interface CacheConfig {
   int maxSize() default 5000;
 
   @AttributeDefinition(
+      name = "UUID maximum cache size",
+      description = "UUID maximum cache size",
+      type = AttributeType.INTEGER
+  )
+  int maxUUID() default 300000; // about 4.6MB
+
+  @AttributeDefinition(
       name = "Cache duration in seconds before expire",
       description = "Cache duration in seconds before expire (default 2 hours)",
       type = AttributeType.INTEGER

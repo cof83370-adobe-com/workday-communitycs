@@ -26,4 +26,10 @@ public @interface LmsConfig {
 
     @AttributeDefinition(name = "Lms API Refresh Token", description = "Lms API Refresh Token.", type = AttributeType.STRING)
     String lmsAPIRefreshToken();
+
+    @AttributeDefinition(name = "Lms token cache size", description = "Lms Token Cache size", type = AttributeType.INTEGER)
+    int lmsTokenCacheMax() default 10;
+
+    @AttributeDefinition(name = "Lms token cache timeout duration", description = "Lms Token Cache Timeout Duration (mills)", type = AttributeType.LONG)
+    long lmsTokenCacheTimeout() default 3540000L; // Default to 59 minutes.
 }

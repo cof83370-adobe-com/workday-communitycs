@@ -86,6 +86,10 @@ public class SnapServiceImplTest {
         return 10;
       }
 
+      public int maxUUID() {
+        return 0;
+      }
+
       @Override
       public int expireDuration() {
         return 10;

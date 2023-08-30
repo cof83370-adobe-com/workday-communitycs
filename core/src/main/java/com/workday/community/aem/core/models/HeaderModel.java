@@ -25,4 +25,10 @@ public interface HeaderModel {
    * @return The global search redirection url.
    */
   String getGlobalSearchURL();
+
+  /**
+   *
+   * @return User UUID as user client Id.
+   */
+  String userClientId();
 }

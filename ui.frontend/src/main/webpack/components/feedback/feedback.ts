@@ -52,7 +52,6 @@
         selectedOption.textContent = option;
         toggleDropdown();
     }
-	
 	document.addEventListener('click', (event: MouseEvent) => {
         const container = document.getElementById('feedback-component-container');
         if (container) {

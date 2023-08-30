@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -45,6 +46,7 @@ public class CoveoUtils {
                                               SlingHttpServletResponse response,
                                               SearchApiConfigService searchApiConfigService,
                                               SnapService snapService,
+                                              UserService userService,
                                               Gson gson,
                                               ObjectMapper objectMapper,
                                               ServletCallback servletCallback) throws ServletException, IOException {
@@ -93,8 +95,7 @@ public class CoveoUtils {
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", searchApiConfigService.isDevMode());
 
       //Add coveo_visitorId cookie
-      Cookie visitIdCookie = new Cookie("coveo_visitorId",
-          CoveoUtils.getCurrentUserClientId(request, searchApiConfigService, snapService));
+      Cookie visitIdCookie = new Cookie("coveo_visitorId", userService.getUserUUID(sfId));
       HttpUtils.addCookie(visitIdCookie, response);
       servletCallback.execute(request, response, coveoInfo);
     }
@@ -160,20 +161,6 @@ public class CoveoUtils {
   }
 
   /**
-   * Return the current user's client id.
-   * @param request Pass-in request object.
-   * @param searchConfigService Pass-in searchConfigService object.
-   * @param snapService Pass-in snapService object.
-   * @return the current user's client id as string.
-   */
-  public static String getCurrentUserClientId(
-      SlingHttpServletRequest request, SearchApiConfigService searchConfigService, SnapService snapService) {
-    String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
-    String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
-    return UUIDUtil.getUserClientId(email).toString();
-  }
-
-  /**
    * Return the current user context from salesforce if it is set
    * @param request the Request object.
    * @param snapService The Snap service object.
@@ -195,14 +182,19 @@ public class CoveoUtils {
    * @param searchConfigService the search configuration service object.
    * @param request the incoming sling request
    * @param snapService  the snap logic service object
+   * @param userService  the user service object
    * @return the search configuration object used by component.
    */
-  public static JsonObject getSearchConfig(SearchApiConfigService searchConfigService, SlingHttpServletRequest request, SnapService snapService) {
+  public static JsonObject getSearchConfig(SearchApiConfigService searchConfigService,
+                                           SlingHttpServletRequest request,
+                                           SnapService snapService,
+                                           UserService userService) {
     JsonObject config = new JsonObject();
+    String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
     config.addProperty("orgId", searchConfigService.getOrgId());
     config.addProperty("searchHub", searchConfigService.getSearchHub());
     config.addProperty("analytics", true);
-    config.addProperty("clientId", getCurrentUserClientId(request, searchConfigService, snapService));
+    config.addProperty("clientId", userService.getUserUUID(sfId));
     config.addProperty("userContext", getCurrentUserContext(request, snapService));
     return config;
   }

@@ -3,6 +3,7 @@ package com.workday.community.aem.core.services.impl;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.osgi.service.component.annotations.Activate;
@@ -41,6 +42,9 @@ public class LmsServiceImpl implements LmsService {
     /** The gson service. */
     private final Gson gson = new Gson();
 
+    /** LRU Cache for storing token value */
+    private LRUCacheWithTimeout<String, String> lmsCache;
+
     /**
      * Activates the Lms Service class.
      */
@@ -49,6 +53,7 @@ public class LmsServiceImpl implements LmsService {
     @Override
     public void activate(LmsConfig config) {
         this.config = config;
+        this.lmsCache = new LRUCacheWithTimeout<>(config.lmsTokenCacheMax(), config.lmsTokenCacheTimeout());
         LOGGER.debug("LmsService is activated.");
     }
 
@@ -58,6 +63,10 @@ public class LmsServiceImpl implements LmsService {
      */
     @Override
     public String getApiToken() throws LmsException {
+        String cachedResult = lmsCache.get(LmsConstants.TOKEN_CACHE_KEY);
+        if (StringUtils.isNotBlank(cachedResult)) {
+            return cachedResult;
+        }
         String lmsUrl = config.lmsUrl(), tokenPath = config.lmsTokenPath(),
                 clientId = config.lmsAPIClientId(), clientSecret = config.lmsAPIClientSecret(),
                 refreshToken = config.lmsAPIRefreshToken();
@@ -90,7 +99,11 @@ public class LmsServiceImpl implements LmsService {
                 LOGGER.error("Lms API token is empty.");
                 return StringUtils.EMPTY;
             }
-            return tokenResponse.get("access_token").getAsString();
+
+            // Update the cache with the bearer token.
+            String bearerToken = tokenResponse.get("access_token").getAsString();
+            lmsCache.put(LmsConstants.TOKEN_CACHE_KEY, bearerToken);
+            return bearerToken;
         } catch (LmsException | JsonSyntaxException e) {
             LOGGER.error("Error in getAPIToken method call :: {}", e.getMessage());
             throw new LmsException(
@@ -141,5 +154,4 @@ public class LmsServiceImpl implements LmsService {
                     e.getMessage()));
         }
     }
-
 }
