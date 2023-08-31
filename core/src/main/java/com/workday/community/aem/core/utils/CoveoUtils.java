@@ -78,14 +78,14 @@ public class CoveoUtils {
     }
 
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-      String searchToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
+      String searchToken = getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getSearchTokenAPIKey());
       if (StringUtils.isEmpty(searchToken)) {
         throw new ServletException("There is no search token generated, please contact community admin.");
       }
-      String recommendationToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
+      String recommendationToken = getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getRecommendationAPIKey());
-      String upcomingEventToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
+      String upcomingEventToken = getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getUpcomingEventAPIKey());
 
       userContext.addProperty("searchToken", searchToken);
@@ -104,6 +104,8 @@ public class CoveoUtils {
       Cookie visitIdCookie = new Cookie("coveo_visitorId", userService.getUserUUID(sfId));
       HttpUtils.addCookie(visitIdCookie, response);
       servletCallback.execute(request, response, coveoInfo);
+    } catch (IOException exception) {
+      LOGGER.debug("Get Token call fails with message: {} ", exception.getMessage());
     }
   }
 
@@ -127,15 +129,15 @@ public class CoveoUtils {
 
     HttpResponse response = httpClient.execute(request);
     int status = response.getStatusLine().getStatusCode();
-    if (status == HttpStatus.SC_OK) {
-      LOGGER.debug("getSearchToken API call is successful.");
-      Map result = Collections.unmodifiableMap(objectMapper.readValue(response.getEntity().getContent(),
-          HashMap.class));
+    Map result = Collections.unmodifiableMap(objectMapper.readValue(response.getEntity().getContent(),
+        HashMap.class));
 
+    if (status == HttpStatus.SC_OK || status == HttpStatus.SC_CREATED) {
+      LOGGER.debug("getSearchToken API call is successful.");
       return (String)result.get("token");
     }
 
-    LOGGER.error("getSearchToken API call failed.");
+    LOGGER.error("getSearchToken API call failed. error {}", objectMapper.writeValueAsString(result));
     return "";
   }
 

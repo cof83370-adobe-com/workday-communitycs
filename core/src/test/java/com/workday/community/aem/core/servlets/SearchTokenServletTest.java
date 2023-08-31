@@ -28,7 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -148,7 +147,7 @@ public class SearchTokenServletTest {
       when(httpClient.execute(any())).thenReturn(httpResponse);
       try {
         searchTokenServlet.doGet(request, response);
-      } catch (ServletException | IOException e) {
+      } catch (ServletException e) {
         verify(response).setStatus(200);
       }
     }
