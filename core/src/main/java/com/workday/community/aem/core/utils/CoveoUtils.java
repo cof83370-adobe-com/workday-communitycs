@@ -56,6 +56,7 @@ public class CoveoUtils {
 
     Cookie coveoCookie = HttpUtils.getCookie(request, COVEO_COOKIE_NAME);
     if (coveoCookie != null) {
+      LOGGER.debug("Coveo cookie still active, decode it to send data back");
       String coveoInfo = URLDecoder.decode(coveoCookie.getValue(), utfName);
       servletCallback.execute(request, response, coveoInfo);
       return;
@@ -65,10 +66,15 @@ public class CoveoUtils {
     int tokenExpiryTime = searchApiConfigService.getTokenValidTime() / 1000;
     boolean isDevMode = searchApiConfigService.isDevMode();
     JsonObject userContext = snapService.getUserContext(sfId);
-    String email = userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
-        : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
-    if (email == null) {
-      throw new ServletException(String.format("User email is not in session, please contact admin. devMode value: %s", isDevMode));
+    String email;
+    if (isDevMode) {
+      LOGGER.debug("dev mode is enabled");
+      email = searchApiConfigService.getDefaultEmail();
+    } else {
+      email = userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString() : null;
+    }
+    if (StringUtils.isEmpty(email)) {
+      throw new ServletException("Email for current user is empty, ");
     }
 
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -122,14 +128,14 @@ public class CoveoUtils {
     HttpResponse response = httpClient.execute(request);
     int status = response.getStatusLine().getStatusCode();
     if (status == HttpStatus.SC_OK) {
-      LOGGER.debug("Token API call is successful.");
+      LOGGER.debug("getSearchToken API call is successful.");
       Map result = Collections.unmodifiableMap(objectMapper.readValue(response.getEntity().getContent(),
           HashMap.class));
 
       return (String)result.get("token");
     }
 
-    LOGGER.error("Token API call failed.");
+    LOGGER.error("getSearchToken API call failed.");
     return "";
   }
 
@@ -139,7 +145,7 @@ public class CoveoUtils {
     HashMap<String, Object> payloadMap = new HashMap<>();
 
     String searchHub = searchApiConfigService.getSearchHub();
-    LOGGER.debug(String.format("The configured Search hub is: %s", searchHub));
+    LOGGER.debug(String.format("Inside getTokenPayload method, and the configured Search hub is: %s", searchHub));
 
     userMap.put("name", email);
     userMap.put("provider", searchApiConfigService.getUserIdProvider());

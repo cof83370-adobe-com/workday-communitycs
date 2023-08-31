@@ -104,7 +104,7 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getUserHeaderMenu(String sfId) {
-    String menuCacheKey =  String.format("menu-%s", sfId);
+    String menuCacheKey =  String.format("header_menu_%s", sfId);
 
     String retValue = serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
       String snapUrl = config.snapUrl(), navApi = config.navApi(),
@@ -171,10 +171,10 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public JsonObject getUserContext(String sfId) {
-    String cacheKey = String.format("userContext-%s", sfId);
+    String cacheKey = String.format("user_context_%s", sfId);
     JsonObject ret = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
-        logger.debug("SnapImpl: Calling SNAP getUserContext()...");
+        logger.debug("SnapImpl: Calling snap api getUserContext()...");
         String url = CommunityUtils.formUrl(config.snapUrl(), config.snapContextPath());
         if (url == null) {
           return new JsonObject();
@@ -200,7 +200,7 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public ProfilePhoto getProfilePhoto(String userId) {
-    String cacheKey = String.format("photo-%s", userId);
+    String cacheKey = String.format("profile_photo_%s", userId);
     return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
       String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
@@ -262,7 +262,7 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getUserProfile(String sfId) {
-    String cacheKey = String.format("profile-%s", sfId);
+    String cacheKey = String.format("user_profile-%s", sfId);
     return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
         String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
@@ -398,7 +398,7 @@ public class SnapServiceImpl implements SnapService {
    * @return image data as string
    */
   private String getUserAvatar(String sfId) {
-    String cacheKey = String.format("avatar_%s", sfId);
+    String cacheKey = String.format("user_avatar_%s", sfId);
 
     String retVal = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       ProfilePhoto content = getProfilePhoto(sfId);

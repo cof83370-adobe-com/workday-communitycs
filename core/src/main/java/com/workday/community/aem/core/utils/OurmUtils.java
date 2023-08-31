@@ -40,23 +40,23 @@ public class OurmUtils {
     try {
       User user = userService.getCurrentUser(request);
       if (user == null) {
-        throw new OurmException("User is not in userManager.");
+        throw new OurmException("Current login user can't find in JCR.");
       }
 
       Value[] sfIdObj = user.getProperty(SnapConstants.PROFILE_SOURCE_ID);
       if (sfIdObj == null || sfIdObj.length == 0) {
-        LOGGER.error("Returned User object in JCR session doesn't have salesforceId");
+        LOGGER.error("Current user have no sfId, mostly because no Okta integration, use default.");
         return DEFAULT_SFID_MASTER;
       }
 
       sfId = sfIdObj[0].getString();
     } catch (RepositoryException | RuntimeException | OurmException | CacheException e) {
-      LOGGER.error(String.format("getSalesForceId fails with error: %s.", e.getMessage()));
+      LOGGER.error(String.format("getSalesForceId call fails with error: %s.", e.getMessage()));
     }
 
     if (StringUtils.isEmpty(sfId)) {
       // Default fallback
-      LOGGER.debug("Salesforce Id for current user is unavailable, please check with admin.");
+      LOGGER.debug("Salesforce Id is empty, please check with admin. Use default");
       sfId = DEFAULT_SFID_MASTER;
     }
 
