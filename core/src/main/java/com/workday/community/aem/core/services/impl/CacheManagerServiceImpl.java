@@ -115,6 +115,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   @Override
   public void invalidateCache(String cacheBucketName, String key)  {
+    if (!this.config.enabled()) {
+      return;
+    }
     if (cacheBucketName == null) {
       // clear all
       if (caches.isEmpty()) return;
@@ -125,6 +128,10 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       caches.clear();
     } else if (!StringUtils.isEmpty(cacheBucketName)) {
       LoadingCache cache = caches.get(getInnerCacheName(cacheBucketName).name());
+      if (cache == null) {
+        LOGGER.debug("There are some problems if this get hit, contact community admin.");
+        return;
+      }
       if (StringUtils.isEmpty(key)) {
         // Clear cache with cache name
         cache.invalidateAll();
