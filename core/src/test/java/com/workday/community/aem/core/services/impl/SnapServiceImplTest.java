@@ -157,23 +157,8 @@ public class SnapServiceImplTest {
       }
 
       @Override
-      public String navFallbackMenuServiceUser() {
-        return "navserviceuser";
-      }
-
-      @Override
       public boolean beta() {
         return true;
-      }
-
-      @Override
-      public int menuCacheMax() {
-        return 100;
-      }
-
-      @Override
-      public long menuCacheTimeout() {
-        return 10000;
       }
 
       @Override

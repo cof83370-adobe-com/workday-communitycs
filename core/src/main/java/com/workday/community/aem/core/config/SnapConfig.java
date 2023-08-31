@@ -4,8 +4,6 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
-
 /**
  * The snap logic service configuration interface.
  */
@@ -47,9 +45,6 @@ public @interface SnapConfig {
   @AttributeDefinition(name = "Fallback Menu Data", description = "Fallback Menu Data.", type = AttributeType.STRING)
   String navFallbackMenuData() default "/content/dam/workday-community/resources/local-header-data.json";
 
-  @AttributeDefinition(name = "Fallback Menu Service user", description = "Fallback Menu service user.", type = AttributeType.STRING)
-  String navFallbackMenuServiceUser() default READ_SERVICE_USER;
-
   @AttributeDefinition(name = "Profile Avatar Url endpoint", description = "Profile Avatar Url endpoint", type = AttributeType.STRING)
   String sfdcUserAvatarUrl();
 
@@ -61,12 +56,6 @@ public @interface SnapConfig {
 
   @AttributeDefinition(name = "enable AEM beta", description = "AEM Beta?", type = AttributeType.STRING)
   boolean beta() default true;
-
-  @AttributeDefinition(name = "User max menu cache size", description = "User Max Menu Cache size", type = AttributeType.INTEGER)
-  int menuCacheMax() default 100;
-
-  @AttributeDefinition(name = "User menu cache timeout duration", description = "User Menu Cache Timeout Duration (mills)", type = AttributeType.LONG)
-  long menuCacheTimeout() default 86400000L; // Default to one day.
 
   @AttributeDefinition(name = "User profile URL", description = "User profile page URL", type = AttributeType.STRING)
   String userProfileUrl();
