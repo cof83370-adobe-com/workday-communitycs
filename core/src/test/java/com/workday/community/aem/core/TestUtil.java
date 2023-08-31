@@ -50,11 +50,6 @@ public class TestUtil {
       }
 
       @Override
-      public int jcrUserRefreshDuration() {
-        return 1000;
-      }
-
-      @Override
       public boolean enabled() {
         return true;
       }

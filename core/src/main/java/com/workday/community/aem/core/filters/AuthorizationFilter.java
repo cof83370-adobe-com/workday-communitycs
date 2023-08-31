@@ -77,13 +77,13 @@ public class AuthorizationFilter implements Filter {
             }
             String userId = userSession.getUserID();
             LOGGER.debug("Current user is {}.", userId);
-            boolean isInValid = true;
+            boolean isValid = false;
             try {
-                User user = userService.getUser(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE, userId);
+                User user = userService.getCurrentUser(slingRequest);
                 if (null != user && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
-                    isInValid = userGroupService.validateCurrentUser(slingRequest, pagePath);
+                    isValid = userGroupService.validateCurrentUser(slingRequest, pagePath);
                 }
-                if (isInValid) {
+                if (!isValid) {
                     ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
                     ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
                 }

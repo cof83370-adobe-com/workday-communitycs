@@ -87,16 +87,14 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     private HashMap<String, String> partnerTrackMapping = new HashMap<>();
 
-    /**
-     * SFDC Role mapping json object.
-     */
-    private JsonObject sfdcRoleMap;
-
     @Activate
     @Modified
-    public void activate(SnapConfig config) throws CacheException, DamException {
+    protected void activate(SnapConfig config) throws CacheException, DamException {
         ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER);
-        sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
+        /*
+          SFDC Role mapping json object.
+         */
+        JsonObject sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
         if (sfdcRoleMap != null) {
             Gson g = new Gson();
             customerRoleMapping = g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
@@ -104,38 +102,6 @@ public class UserGroupServiceImpl implements UserGroupService {
             wspMapping = g.fromJson(sfdcRoleMap.get("wspMapping").toString(), HashMap.class);
             partnerTrackMapping = g.fromJson(sfdcRoleMap.get("partnerTrackMapping").toString(), HashMap.class);
         }
-    }
-
-    @Override
-    public List<String> getCurrentUsersGroups(SlingHttpServletRequest request) {
-        LOGGER.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
-        String userRole;
-        List<String> groupIds = new ArrayList<>();
-        try {
-            User user = userService.getCurrentUser(request);
-            String sfId = OurmUtils.getSalesForceId(request, userService);
-            if (sfId != null) {
-                LOGGER.debug("user  sfid {} ", sfId);
-                Node userNode = Objects.requireNonNull(request.getResourceResolver().getResource(user.getPath())).adaptTo(Node.class);
-                if (Objects.requireNonNull(userNode).hasProperty(ROLES) &&
-                    StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
-                    userNode.getProperty(ROLES).getString().split(";").length > 0) {
-                    userRole = userNode.getProperty(ROLES).getString();
-                    groupIds = List.of(userRole.split(";"));
-                } else {
-                    ResourceResolver jcrResolver = cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
-                    Session jcrSession = jcrResolver.adaptTo(Session.class);
-                    groupIds = getUserGroupsFromSnap(sfId);
-                    userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
-                    Objects.requireNonNull(jcrSession).save();
-                }
-                LOGGER.info("Salesforce roles {}", groupIds);
-            }
-
-        } catch ( RepositoryException | CacheException e) {
-            LOGGER.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
-        }
-        return groupIds;
     }
 
     @Override
@@ -153,11 +119,9 @@ public class UserGroupServiceImpl implements UserGroupService {
                 if (accessControlTagsList.contains(AUTHENTICATED)) {
                     isValid = true;
                 } else {
-                    List<String> groupsList = getCurrentUsersGroups(request);
+                    List<String> groupsList = getCurrentUserGroups(request);
                     LOGGER.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
-                    if (Collections.disjoint(accessControlTagsList, groupsList)) {
-                        isValid = false;
-                    }
+                    isValid = !Collections.disjoint(accessControlTagsList, groupsList);
                 }
             }
         } catch (RepositoryException e) {
@@ -172,10 +136,49 @@ public class UserGroupServiceImpl implements UserGroupService {
 
         if (accessControlTags == null || accessControlTags.isEmpty()) return false;
         if (accessControlTags.contains(AUTHENTICATED)) return true;
-        List<String> groupsList = getCurrentUsersGroups(request);
+        List<String> groupsList = getCurrentUserGroups(request);
 
         LOGGER.debug("---> UserGroupServiceImpl: validateCurrentUser - Groups List..{}.", groupsList);
         return !Collections.disjoint(accessControlTags, groupsList);
+    }
+
+    /**
+     * Returns current logged-in users groups.
+     * Check whether user node has property roles. If it is there then return from
+     * node property. If not, call API for roles.
+     *
+     * @param request: current Sling request object.
+     * @return User group list.
+     */
+    public List<String> getCurrentUserGroups(SlingHttpServletRequest request) {
+        LOGGER.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
+        String userRole;
+        List<String> groupIds = new ArrayList<>();
+        try {
+            User user = userService.getCurrentUser(request);
+            String sfId = OurmUtils.getSalesForceId(request, userService);
+            if (sfId != null) {
+                LOGGER.debug("user  sfid {} ", sfId);
+                ResourceResolver jcrResolver = cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+                Node userNode = Objects.requireNonNull(jcrResolver.getResource(user.getPath())).adaptTo(Node.class);
+                if (Objects.requireNonNull(userNode).hasProperty(ROLES) &&
+                    StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
+                    userNode.getProperty(ROLES).getString().split(";").length > 0) {
+                    userRole = userNode.getProperty(ROLES).getString();
+                    groupIds = List.of(userRole.split(";"));
+                } else {
+                    Session jcrSession = jcrResolver.adaptTo(Session.class);
+                    groupIds = getUserGroupsFromSnap(sfId);
+                    userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
+                    Objects.requireNonNull(jcrSession).save();
+                }
+                LOGGER.info("Salesforce roles {}", groupIds);
+            }
+
+        } catch ( RepositoryException | CacheException e) {
+            LOGGER.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
+        }
+        return groupIds;
     }
 
     /**
@@ -192,7 +195,7 @@ public class UserGroupServiceImpl implements UserGroupService {
      * @param sfId User's Salesforce id.
      * @return List of user groups from snap.
      */
-    protected List<String> getUserGroupsFromSnap(final String sfId) {
+    protected List<String> getUserGroupsFromSnap(String sfId) {
         List<String> groups = new ArrayList<>();
         if (StringUtils.isEmpty(sfId)) return groups;
         String cacheKey = String.format("sf-user-groups-%s", sfId);
@@ -255,11 +258,11 @@ public class UserGroupServiceImpl implements UserGroupService {
         return ret;
     }
 
-    private void addGroups(List<String> groups, JsonObject contactInformation, String wspKey, HashMap<String, String> wspMapping) {
-        JsonElement wsp = contactInformation.get(wspKey);
+    private void addGroups(List<String> groups, JsonObject contactInformation, String key, HashMap<String, String> valueMap) {
+        JsonElement wsp = contactInformation.get(key);
         if (!wsp.isJsonNull()) {
             String wspString = wsp.getAsString();
-            for (Map.Entry<String, String> entry : wspMapping.entrySet()) {
+            for (Map.Entry<String, String> entry : valueMap.entrySet()) {
                 if (wspString.contains(entry.getKey())) {
                     groups.add(entry.getValue());
                 }

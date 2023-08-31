@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.workday.community.aem.core.services.UserService;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
-import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
+import static com.workday.community.aem.core.constants.GlobalConstants.SERVICE_USER_GROUP;
 
 /**
  * The Class UserServiceImpl.
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public User getCurrentUser(SlingHttpServletRequest request) throws CacheException {
     Session session = Objects.requireNonNull(request.getResourceResolver()).adaptTo(Session.class);
-    ResourceResolver serviceResolver = cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+    ResourceResolver serviceResolver = cacheManager.getServiceResolver(SERVICE_USER_GROUP);
     return getUser(serviceResolver, Objects.requireNonNull(session).getUserID());
   }
 
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public String getUserUUID(String sfId) {
-    String cacheKey = String.format("user_client_id_%s", sfId);
+    String cacheKey = String.format("user_uuid_%s", sfId);
     return cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, (key) -> {
       String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
       return UUIDUtil.getUserClientId(email).toString();
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
         String userId = session.getUserID();
 
         ResourceResolver serviceResolver =
-            cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+            cacheManager.getServiceResolver(SERVICE_USER_GROUP);
 
         LOGGER.info("Start to delete user with param {}.", userId);
         UserManager userManager = serviceResolver.adaptTo(UserManager.class);
@@ -100,19 +100,24 @@ public class UserServiceImpl implements UserService {
 
           if (user != null) {
             String path = user.getPath();
-
             if (path.contains(OKTA_USER_PATH)) {
               user.remove();
               session.logout();
             } else {
-              LOGGER.error("User with param {} cannot be deleted.", userId);
+              LOGGER.error("User with userID {} cannot be deleted.", userId);
             }
           } else {
-            LOGGER.error("Cannot find user with param {}.", userId);
+            LOGGER.error("Cannot find user with userID {}.", userId);
           }
           Objects.requireNonNull(session).save();
         } catch (RepositoryException e) {
           LOGGER.error("invalidate current user session failed.");
+        } finally {
+          if (resourceResolver.isLive())
+            resourceResolver.close();
+
+          if(session.isLive())
+            session.logout();
         }
       }
     }

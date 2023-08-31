@@ -38,10 +38,6 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class UserGroupServiceImplTest {
-
-    @Mock
-    ResourceResolverFactory resourceResolverFactory;
-
     @Mock
     SlingHttpServletRequest request;
 
@@ -96,9 +92,9 @@ class UserGroupServiceImplTest {
     }
 
     @Test
-    void getUserGroupsBySfIdUserNodeHasGroups() throws RepositoryException, CacheException {
+    void getUserGroupsBySfIdUserNodeHasGroups() throws RepositoryException, CacheException, LoginException {
         User mockUser = TestUtil.getMockUser();
-        when(request.getResourceResolver()).thenReturn(mockResolver);
+        when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
         when(userService.getCurrentUser(request)).thenReturn(mockUser);
         when(mockResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
         when(mockResource.adaptTo(Node.class)).thenReturn(mockNode);
@@ -110,13 +106,12 @@ class UserGroupServiceImplTest {
         when(mockNode.getProperty("roles")).thenReturn(mockProperty);
         when(mockProperty.getString()).thenReturn(mockUserRole);
 
-        assertEquals(testAemGroups, userGroupService.getCurrentUsersGroups(request));
+        assertEquals(testAemGroups, userGroupService.getCurrentUserGroups(request));
     }
 
     @Test
     void getUserGroupsBySfIdUserNodeDoesNotHaveAnyGroups() throws RepositoryException, LoginException, CacheException {
         User mockUser = TestUtil.getMockUser();
-        when(request.getResourceResolver()).thenReturn(mockResolver);
         when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
         when(userService.getCurrentUser(request)).thenReturn(mockUser);
         when(mockResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
@@ -137,7 +132,7 @@ class UserGroupServiceImplTest {
         Session mockSession = mock(Session.class);
         when(mockResolver.adaptTo(Session.class)).thenReturn(mockSession);
 
-        List<String> res = userGroupServiceMock.getCurrentUsersGroups(request);
+        List<String> res = userGroupServiceMock.getCurrentUserGroups(request);
         assertEquals(testSfGroups, res);
     }
 
@@ -219,9 +214,10 @@ class UserGroupServiceImplTest {
 
     @Test
     void testCheckLoggedInUserHasAccessControlTags()
-        throws IllegalStateException, RepositoryException, CacheException {
+        throws IllegalStateException, RepositoryException, CacheException, LoginException {
+        when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
+
         User mockUser = TestUtil.getMockUser();
-        when(request.getResourceResolver()).thenReturn(mockResolver);
         when(userService.getCurrentUser(request)).thenReturn(mockUser);
         when(mockResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
         when(mockResource.adaptTo(Node.class)).thenReturn(mockNode);

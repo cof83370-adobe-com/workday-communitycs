@@ -49,13 +49,6 @@ public @interface CacheConfig {
   int refreshDuration() default 60 * 60;
 
   @AttributeDefinition(
-      name = "Cache refresh duration in seconds ",
-      description = "Cache duration in seconds (default 15 minutes)",
-      type = AttributeType.INTEGER
-  )
-  int jcrUserRefreshDuration() default 15 * 60;
-
-  @AttributeDefinition(
       name = "Enable cache",
       description = "Indicate if the cache is enabled (default TRUE)",
       type = AttributeType.BOOLEAN

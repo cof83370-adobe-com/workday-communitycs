@@ -175,8 +175,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         builder.maximumSize(config.maxUUID());
       } else if (innerCacheName == CacheBucketName.JCR_USER) {
         builder.maximumSize(config.maxJcrUser())
-            .expireAfterAccess(config.jcrUserExpireDuration(), TimeUnit.SECONDS)
-            .refreshAfterWrite(config.jcrUserRefreshDuration(), TimeUnit.SECONDS);
+            .expireAfterAccess(config.jcrUserExpireDuration(), TimeUnit.SECONDS);
       } else {
         builder.maximumSize(config.maxSize())
             .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)

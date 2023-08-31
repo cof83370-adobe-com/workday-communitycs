@@ -1,7 +1,9 @@
 {
     "maxSize":"$[env:CacheMaxSize;default=5000]",
+    "maxUUID": "$[env:CacheMaxSize;default=300000]",
+    "maxJcrUser": "$[env:CacheMaxJcrUser;default=2000]",
     "expireDuration":"$[env:CacheExpireDuration;default=7200]",
+    "jcrUserExpireDuration": "$[env:CacheJcrUserExpireDuration;default=1800]",
     "refreshDuration": "$[env:CacheRefreshDuration;default=3600]",
-    "enabled": "$[env:CacheEnabled;default=true]",
-    "maxUUID": "$[env:CacheMaxSize;default=300000]"
+    "enabled": "$[env:CacheEnabled;default=true]"
 }
