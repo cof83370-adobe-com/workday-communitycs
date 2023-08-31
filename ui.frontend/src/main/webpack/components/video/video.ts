@@ -44,7 +44,6 @@
         sourceElement.player.controls_ = true;
         sourceElement.player.controlBar.el_.style.display = 'flex';
         sourceElement.player.bigPlayButton.el_.style.display = '';
-        vid[0].muted = false;
 
         const spanClose = sourceElement.parentNode.getElementsByClassName(`${video}__close`)[0];
         spanClose.addEventListener('click', function(){
@@ -54,7 +53,7 @@
             sourceElement.player.controls_ = false;
             sourceElement.player.controlBar.el_.style.display = 'none';
             sourceElement.player.bigPlayButton.el_.style.display = 'none';
-            vid[0].muted = true;
+            vid[0].pause();
         });
     }
 
