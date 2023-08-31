@@ -35,7 +35,7 @@ import java.nio.charset.StandardCharsets;
     }
 )
 public class SearchTokenServlet extends SlingAllMethodsServlet {
-  private static final Logger logger = LoggerFactory.getLogger(SearchTokenServlet.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SearchTokenServlet.class);
 
   @Reference
   private transient SearchApiConfigService searchApiConfigService;
@@ -61,7 +61,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    logger.debug("initialize Search token service");
+    LOGGER.debug("initialize Search token service");
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
@@ -74,6 +74,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   @Override
   protected void doGet(SlingHttpServletRequest request,
                        SlingHttpServletResponse response) throws ServletException, IOException {
+    LOGGER.debug("Get search token call, method {}", request.getMethod());
     ServletCallback servletCallback = (SlingHttpServletRequest req,
         SlingHttpServletResponse res, String body) -> {
       response.setStatus(HttpStatus.SC_OK);
@@ -83,7 +84,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
       return body;
     };
 
-    logger.debug("Start doGet call for token");
+    LOGGER.debug("Start doGet call for token");
     CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, userService, gson, objectMapper, servletCallback);
   }
 }
