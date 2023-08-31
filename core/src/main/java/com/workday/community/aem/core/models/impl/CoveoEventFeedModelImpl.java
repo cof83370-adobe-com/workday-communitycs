@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import java.text.SimpleDateFormat;
@@ -128,7 +129,12 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       String featureImage = featuredEvent + EVENT_PATH_ROOT + "eventdetailscontainer/image";
       Resource image = resourceResolver.getResource(featureImage);
       if (image != null) {
-        imagePath = requireNonNull(image.adaptTo(Node.class)).getProperty("fileReference").getValue().getString();
+        try {
+          imagePath = requireNonNull(image.adaptTo(Node.class)).getProperty("fileReference").getValue().getString();
+        } catch (PathNotFoundException e) {
+          LOGGER.error("There is no image for the selected feature event");
+          imagePath = "";
+        }
       }
 
       // Register button

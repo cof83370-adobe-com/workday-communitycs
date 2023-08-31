@@ -28,5 +28,4 @@ public interface LmsService {
      * @throws LmsException LmsException object.
      */
     String getCourseDetail(String courseTitle) throws LmsException;
-
 }
