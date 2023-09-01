@@ -226,17 +226,23 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         String[] accessControlValues = data.get(ACCESS_CONTROL_PROPERTY, String[].class);
         if (accessControlValues != null && accessControlValues.length > 0) {
             for (String accessControlValue: accessControlValues) {
-                String[] drupalRoles = DRUPAL_ROLE_MAPPING.get(accessControlValue).split(";");
-                for (String drupalRole: drupalRoles) {
-                    HashMap<String, Object> permissionGroup = new HashMap<>();
-                    permissionGroup.put("identity", drupalRole);
-                    permissionGroup.put("identityType", IDENTITY_TYPE_GROUP);
-                    permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
-                    permissionGroupAllowedPermissions.add(permissionGroup);
+                if (DRUPAL_ROLE_MAPPING.containsKey(accessControlValue)) {
+                    String[] drupalRoles = DRUPAL_ROLE_MAPPING.get(accessControlValue).split(";");
+
+                    for (String drupalRole : drupalRoles) {
+                        HashMap<String, Object> permissionGroup = new HashMap<>();
+                        permissionGroup.put("identity", drupalRole);
+                        permissionGroup.put("identityType", IDENTITY_TYPE_GROUP);
+                        permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
+                        permissionGroupAllowedPermissions.add(permissionGroup);
+                    }
+                }
+                else {
+                    logger.info("Coveo indexing: Access control value {} missing in the map for the page {}", accessControlValue, properties.get("documentId"));
                 }
             }
         }
-        else {
+        if (permissionGroupAllowedPermissions.isEmpty()) {
             // If access control field is empty, we need to pass a value, or else it will
             // get permission error during coveo indexing.
             HashMap<String, Object> permissionGroup = new HashMap<>();
