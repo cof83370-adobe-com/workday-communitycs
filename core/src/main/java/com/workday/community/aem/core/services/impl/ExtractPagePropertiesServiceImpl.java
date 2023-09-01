@@ -143,7 +143,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             }
             TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-            String documentId = "http://localhost/"; // runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
+            String documentId = runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
             properties.put("documentId", documentId);
             properties.put("isAem", true);
             processDateFields(data, properties);
