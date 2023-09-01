@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.models.impl;
 
-import com.adobe.xfa.Bool;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
@@ -8,23 +7,19 @@ import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
-import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.servlet.http.Cookie;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
 import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
@@ -41,9 +36,6 @@ public class HeaderModelImpl implements HeaderModel {
 
   @Self
   private SlingHttpServletRequest request;
-
-  @SlingObject
-  private SlingHttpServletResponse response;
 
   /**
    * The Constant RESOURCE_TYPE.
@@ -96,18 +88,7 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
-    Cookie menuCache = request.getCookie("cacheMenu");
-    String value = menuCache == null ? null : menuCache.getValue();
-    // If it is cached in browser, then no need to invoke service call, return null.
-    if (value != null && value.equals("TRUE")) return null;
-
-    String ret = this.snapService.getUserHeaderMenu(sfId);
-    if (ret != null) {
-      Cookie cacheMenuCookie = new Cookie("cacheMenu", "TRUE");
-      HttpUtils.addCookie(cacheMenuCookie, response);
-    }
-
-    return ret;
+    return this.snapService.getUserHeaderMenu(sfId);
   }
 
   @Override
