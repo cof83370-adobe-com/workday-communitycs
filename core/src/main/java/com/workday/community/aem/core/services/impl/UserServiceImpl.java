@@ -155,7 +155,7 @@ public class UserServiceImpl implements UserService {
         cacheManager.invalidateCache(CacheBucketName.JCR_USER.name(), cacheKey);
       }
     } catch (RepositoryException e) {
-      throw new RuntimeException(e);
+      LOGGER.error("Exception occurred when clear use from cache {}: {}.", userSessionId, e.getMessage());
     }
 
     return retUser;

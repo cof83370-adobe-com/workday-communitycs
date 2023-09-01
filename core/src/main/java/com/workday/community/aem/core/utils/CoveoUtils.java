@@ -105,7 +105,7 @@ public class CoveoUtils {
       HttpUtils.addCookie(visitIdCookie, response);
       servletCallback.execute(request, response, coveoInfo);
     } catch (IOException exception) {
-      LOGGER.debug("Get Token call fails with message: {} ", exception.getMessage());
+      LOGGER.error("Get Token call fails with message: {} ", exception.getMessage());
     }
   }
 

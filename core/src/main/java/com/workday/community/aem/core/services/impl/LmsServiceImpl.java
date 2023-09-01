@@ -105,12 +105,8 @@ public class LmsServiceImpl implements LmsService {
             lmsCache.put(LmsConstants.TOKEN_CACHE_KEY, bearerToken);
             return bearerToken;
         } catch (LmsException | JsonSyntaxException e) {
-            LOGGER.error("Error in getAPIToken method call :: {}", e.getMessage());
-            throw new LmsException(
-                String.format(
-                    "Error while fetching the course detail token. Please contact Community Admin. error: %s",
-                    e.getMessage())
-            );
+            throw new LmsException(String.format("getApiToken call failed in LmsServiceImpl. Error: %s",
+                e.getMessage()));
         }
     }
 

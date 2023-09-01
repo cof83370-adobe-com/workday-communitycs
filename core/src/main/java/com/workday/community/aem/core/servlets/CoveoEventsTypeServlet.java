@@ -71,7 +71,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
     private transient SnapService snapService;
 
     @Reference
-    UserService userService;
+    private transient UserService userService;
 
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;

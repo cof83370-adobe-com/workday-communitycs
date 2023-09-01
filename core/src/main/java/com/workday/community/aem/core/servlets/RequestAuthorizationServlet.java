@@ -1,10 +1,12 @@
 package com.workday.community.aem.core.servlets;
 
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.UserGroupService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
@@ -75,7 +77,7 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
                     logger.debug("user have access on the page {}", uri);
                     response.setStatus(SC_OK);
                 }
-            } catch (Exception e) {
+            } catch (LoginException | CacheException e) {
                 logger.error("---> Exception occurred in RequestAuthenticationServlet: {}", e.getMessage());
                 response.setStatus(SC_INTERNAL_SERVER_ERROR);
                 response.sendRedirect(WccConstants.ERROR_PAGE_PATH);
