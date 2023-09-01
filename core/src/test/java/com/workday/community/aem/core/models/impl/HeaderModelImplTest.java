@@ -90,6 +90,7 @@ public class HeaderModelImplTest {
   @Test
   void testGetUserHeaderMenu() {
     lenient().when(snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER)).thenReturn("");
+    lenient().when(snapService.enableCache()).thenReturn(true);
     HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
     assertEquals("", headerModel.getUserHeaderMenus());

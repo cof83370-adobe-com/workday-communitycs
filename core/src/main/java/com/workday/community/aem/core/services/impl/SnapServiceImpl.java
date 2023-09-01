@@ -84,7 +84,8 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public void activate(SnapConfig config) {
     this.config = config;
-    logger.info("SnapService is activated.");
+    logger.debug("SnapService is activated. enable Cache: {}, beta: {}",
+        config.enableCache(), config.beta());
   }
 
   @Override
@@ -105,6 +106,9 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public String getUserHeaderMenu(String sfId) {
     String menuCacheKey =  String.format("header_menu_%s", sfId);
+    if (!enableCache()) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
+    }
 
     String retValue = serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
       String snapUrl = config.snapUrl(), navApi = config.navApi(),
@@ -172,6 +176,9 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public JsonObject getUserContext(String sfId) {
     String cacheKey = String.format("user_context_%s", sfId);
+    if (!enableCache()) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+    }
     JsonObject ret = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
         logger.debug("SnapImpl: Calling snap api getUserContext()...");
@@ -201,6 +208,10 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public ProfilePhoto getProfilePhoto(String userId) {
     String cacheKey = String.format("profile_photo_%s", userId);
+    if (!enableCache()) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+    }
+
     return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
       String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
@@ -227,6 +238,9 @@ public class SnapServiceImpl implements SnapService {
    */
   private JsonObject getDefaultHeaderMenu() {
     String cacheKey = "default-menu";
+    if (!enableCache()) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+    }
     JsonObject ret = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
         ResourceResolver resourceResolver = this.serviceCacheMgr.getServiceResolver(READ_SERVICE_USER);
@@ -244,25 +258,12 @@ public class SnapServiceImpl implements SnapService {
     return ret;
   }
 
-  /**
-   * Get merged header menu.
-   * 
-   * @param sfNavObj The json object of nav.
-   * @return The menu.
-   */
-  private String getMergedHeaderMenu(JsonObject sfNavObj, JsonObject defaultMenu) {
-    if (sfNavObj != null && config.beta()) {
-      String env = this.runModeConfigService.getEnv();
-      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu, "id", env);
-      return gson.toJson(sfNavObj);
-    }
-
-    return gson.toJson(sfNavObj);
-  }
-
   @Override
   public String getUserProfile(String sfId) {
     String cacheKey = String.format("user_profile-%s", sfId);
+    if (!enableCache()) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+    }
     return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
         String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
@@ -294,6 +295,27 @@ public class SnapServiceImpl implements SnapService {
       digitalData.add("page", pageProperties);
       return String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
     });
+  }
+
+  @Override
+  public boolean enableCache() {
+    return this.config.enableCache();
+  }
+
+  /**
+   * Get merged header menu.
+   *
+   * @param sfNavObj The json object of nav.
+   * @return The menu.
+   */
+  private String getMergedHeaderMenu(JsonObject sfNavObj, JsonObject defaultMenu) {
+    if (sfNavObj != null && config.beta()) {
+      String env = this.runModeConfigService.getEnv();
+      CommonUtils.updateSourceFromTarget(sfNavObj, defaultMenu, "id", env);
+      return gson.toJson(sfNavObj);
+    }
+
+    return gson.toJson(sfNavObj);
   }
 
   /**

@@ -180,6 +180,10 @@ public class SnapServiceImplTest {
       public String userProfileUrl() {
         return "userProfileURL";
       }
+
+      public boolean enableCache() {
+        return true;
+      }
     };
   }
 

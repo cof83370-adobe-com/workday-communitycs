@@ -216,6 +216,10 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       } else if (innerCacheName == CacheBucketName.JCR_USER) {
         builder.maximumSize(config.maxJcrUser())
             .expireAfterAccess(config.jcrUserExpireDuration(), TimeUnit.SECONDS);
+      } else if (innerCacheName == CacheBucketName.SF_USER_GROUP) {
+        builder.maximumSize(config.maxUserGroup())
+            .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
+            .refreshAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
       } else if (innerCacheName == CacheBucketName.SF_MENU) {
         builder.maximumSize(config.maxMenuSize())
             .weakValues()

@@ -40,6 +40,11 @@ public class TestUtil {
       }
 
       @Override
+      public int maxUserGroup() {
+        return 10;
+      }
+
+      @Override
       public int expireDuration() {
         return 1000;
       }

@@ -59,4 +59,7 @@ public @interface SnapConfig {
 
   @AttributeDefinition(name = "User profile URL", description = "User profile page URL", type = AttributeType.STRING)
   String userProfileUrl();
+
+  @AttributeDefinition(name = "Enable Menu browser cache", description = "Enable Menu browser cache(default true)", type = AttributeType.BOOLEAN)
+  boolean enableCache() default true;
 }

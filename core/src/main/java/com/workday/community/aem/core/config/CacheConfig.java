@@ -35,6 +35,13 @@ public @interface CacheConfig {
   int maxJcrUser() default 2000;
 
   @AttributeDefinition(
+      name = "Maximum user group cache size",
+      description = "Maximum user group cache size",
+      type = AttributeType.INTEGER
+  )
+  int maxUserGroup() default 5000;
+
+  @AttributeDefinition(
       name = "Cache duration in seconds before expire",
       description = "Cache duration in seconds before expire (default 2 hours)",
       type = AttributeType.INTEGER
@@ -68,6 +75,4 @@ public @interface CacheConfig {
       type = AttributeType.BOOLEAN
   )
   boolean enabled() default true;
-
-
 }

@@ -102,6 +102,11 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
+    if (!snapService.enableCache()) {
+      // Get a chance to disable browser cache if needed.
+      return snapService.getUserHeaderMenu(sfId);
+    }
+
     Cookie menuCache = request.getCookie("cacheMenu");
     String cookieValueFromRequest = menuCache == null ? null : menuCache.getValue();
     String cookieValueCurrentUser = userService.getUserUUID(sfId);
