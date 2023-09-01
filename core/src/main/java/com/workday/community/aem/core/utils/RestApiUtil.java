@@ -156,7 +156,7 @@ public class RestApiUtil {
    * @param url       Request URL.
    * @param authToken Auth token.
    * @param xApiKey   API key.
-   * @param traceId   Trace Id in header.
+   * @param traceId   Trace id in header.
    * @return API Request object.
    */
   private static APIRequest getMenuApiRequest(String url, String authToken, String xApiKey, String traceId) {

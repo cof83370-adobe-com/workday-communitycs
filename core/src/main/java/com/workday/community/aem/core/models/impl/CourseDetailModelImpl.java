@@ -82,7 +82,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
     }
 
     /**
-     * Get the query paramater value.
+     * Get the query parameter value.
      * 
      * @param param Query parameter.
      * @return Value of the query parameter.

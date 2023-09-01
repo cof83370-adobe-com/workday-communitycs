@@ -77,7 +77,7 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
                     logger.debug("user have access on the page {}", uri);
                     response.setStatus(SC_OK);
                 }
-            } catch (LoginException | CacheException e) {
+            } catch (LoginException e) {
                 logger.error("---> Exception occurred in RequestAuthenticationServlet: {}", e.getMessage());
                 response.setStatus(SC_INTERNAL_SERVER_ERROR);
                 response.sendRedirect(WccConstants.ERROR_PAGE_PATH);

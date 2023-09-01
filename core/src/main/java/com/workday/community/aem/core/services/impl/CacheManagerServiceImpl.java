@@ -68,7 +68,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   @Activate
   @Modified
-  public void activate(CacheConfig config) throws CacheException{
+  public void activate(CacheConfig config) {
     this.config = config;
     LOGGER.debug("config: enabled:{}, expire:{}, user expire:{}, uuid:{}, user max:{}, refresh:{}",
         config.enabled(), config.expireDuration(), config.jcrUserExpireDuration(),

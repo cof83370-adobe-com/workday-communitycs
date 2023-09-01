@@ -30,9 +30,9 @@ public class OurmUtils {
   /**
    * Get the current user's Salesforce id.
    *
-   * @param request
-   * @param userService
-   * @return
+   * @param request The current Request object.
+   * @param userService The pass-in user service object.
+   * @return The Salesforce id for current logged-in user.
    */
   public static String getSalesForceId(SlingHttpServletRequest request, UserService userService) {
     String sfId = "";

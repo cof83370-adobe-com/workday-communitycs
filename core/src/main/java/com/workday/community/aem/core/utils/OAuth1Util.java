@@ -54,8 +54,8 @@ public class OAuth1Util {
      * @param requestParams request.
      * @return String
      *
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException NoSuchAlgorithmException exception.
+     * @throws InvalidKeyException InvalidKeyException exception.
      */
     public static String getHeader(String httpMethod, String url, String consumerKey, String consumerSecret,
             Map<String, String> requestParams)
@@ -115,8 +115,8 @@ public class OAuth1Util {
      *
      * @param signatureBaseString signature.
      * @return String
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
+     * @throws NoSuchAlgorithmException NoSuchAlgorithmException exception.
+     * @throws InvalidKeyException InvalidKeyException
      */
     private static String generateSignature(final String signatureBaseString, String consumerSecret)
             throws NoSuchAlgorithmException, InvalidKeyException {
@@ -138,7 +138,7 @@ public class OAuth1Util {
      * @return String
      */
     private static String percentEncode(String value) {
-        String encoded = "";
+        String encoded;
         encoded = URLEncoder.encode(value, StandardCharsets.UTF_8);
 
         // Process encoded string to avoid issues with the auth provider.

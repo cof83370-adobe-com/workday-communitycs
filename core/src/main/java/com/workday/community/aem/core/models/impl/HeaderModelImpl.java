@@ -120,20 +120,20 @@ public class HeaderModelImpl implements HeaderModel {
       cookieValueCurrentUser = "FALSE";
     }
 
+    Cookie finalCookie;
     if (menuCache != null) {
       // Update existing cookie value and send back
       menuCache.setValue(cookieValueCurrentUser);
-      HttpUtils.addCookie(menuCache, response);
+      finalCookie = menuCache;
     } else {
       // Create new cookie and setback.
-      Cookie cacheMenuCookie = new Cookie("cacheMenu", cookieValueCurrentUser);
-      // set the cookie at root level.
-      cacheMenuCookie.setPath("/");
-      // set a default expire to 2 hour
-      cacheMenuCookie.setMaxAge(7200);
-      HttpUtils.addCookie(cacheMenuCookie, response);
+      finalCookie= new Cookie("cacheMenu", cookieValueCurrentUser);
     }
-
+    // set the cookie at root level.
+    finalCookie.setPath("/");
+    // set a default expire to 2 hour
+    finalCookie.setMaxAge(7200);
+    HttpUtils.addCookie(finalCookie, response);
     return headerMenu;
   }
 

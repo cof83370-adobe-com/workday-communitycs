@@ -28,7 +28,7 @@ public interface HeaderModel {
 
   /**
    *
-   * @return User UUID as user client Id.
+   * @return User UUID as user client id.
    */
   String userClientId();
 }

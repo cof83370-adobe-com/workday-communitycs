@@ -69,7 +69,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
    * Implementation of the servlet GET method
    * @param request The HttpServletRequest object.
    * @param response The HttpServletResponse object.
-   * @throws IOException if the method call fails with IOException.
+   * @throws ServletException if the method call fails with ServletException.
    */
   @Override
   protected void doGet(SlingHttpServletRequest request,
