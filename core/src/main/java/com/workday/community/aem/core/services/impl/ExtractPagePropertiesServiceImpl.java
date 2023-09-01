@@ -233,7 +233,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                     }
                 }
                 else {
-                    logger.info("Access control value does not exist in the map {} for the page {}", accessControlValue, properties.get("documentId"));
+                    logger.info("Coveo indexing: Access control value {} missing in the map for the page {}", accessControlValue, properties.get("documentId"));
                 }
             }
         }
