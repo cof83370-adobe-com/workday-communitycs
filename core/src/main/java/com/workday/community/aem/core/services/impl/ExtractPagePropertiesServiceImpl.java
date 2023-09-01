@@ -109,9 +109,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     // https://docs.google.com/spreadsheets/d/1h0aPEBm-513U1p8taSSJD4MgaxAdZ5j7MtMGIA4IoV8/edit#gid=625583643.
     private static final Map<String, String> DRUPAL_ROLE_MAPPING = new HashMap<>() {{
         put("access-control:authenticated", "authenticated");
-        put("access-control:customer_all", "customer;community_customer");
+        put("access-control:customer_all", "customer");
         put("access-control:customer_named_support_contact", "customer_named_support_contact");
         put("access-control:customer_training_coordinator", "customer_training_coordinator");
+        put("access-control:customer_touchpoint_pro", "customer_touchpoint_pro");
+        put("access-control:customer_workday_pro", "customer_workday_pro");
         put("access-control:customer_adaptive", "customer_adaptive");
         put("access-control:customer_peakon", "customer_peakon");
         put("access-control:customer_scout", "customer_scout");
@@ -120,7 +122,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         put("access-control:customer_wsp_accelerate_plus", "customer_wsp_accelerate_plus");
         put("access-control:customer_wsp_enhanced", "customer_wsp_enhanced");
         put("access-control:customer_wsp_guided", "customer_wsp_guided");
-        put("access-control:partner_all", "partner_main");
+        put("access-control:partner_all", "partner_all");
+        put("access-control:partner_innovation_track", "partner_innovation_track");
+        put("access-control:partner_sales_track", "partner_sales_track");
+        put("access-control:partner_services_track", "partner_services_track");
         put("access-control:internal_workmates", "workday");
     }};
 
