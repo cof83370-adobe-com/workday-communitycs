@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
 import java.util.Objects;
+import java.util.UUID;
 
 import javax.jcr.*;
 
@@ -70,7 +71,8 @@ public class UserServiceImpl implements UserService {
     String cacheKey = String.format("user_uuid_%s", sfId);
     return cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, (key) -> {
       String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
-      return UUIDUtil.getUserClientId(email).toString();
+      UUID uuid = UUIDUtil.getUserClientId(email);
+      return uuid == null ? null : uuid.toString();
     });
   }
 

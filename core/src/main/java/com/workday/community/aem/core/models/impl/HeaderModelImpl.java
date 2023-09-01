@@ -103,20 +103,34 @@ public class HeaderModelImpl implements HeaderModel {
    */
   public String getUserHeaderMenus() {
     Cookie menuCache = request.getCookie("cacheMenu");
-    String value = menuCache == null ? null : menuCache.getValue();
+    String cookieValueFromRequest = menuCache == null ? null : menuCache.getValue();
+    String cookieValueCurrentUser = userService.getUserUUID(sfId);
 
-    if (!StringUtils.isEmpty(value)) {
+    if (!StringUtils.isEmpty(cookieValueCurrentUser) &&
+        !StringUtils.isEmpty(cookieValueFromRequest) &&
+        cookieValueFromRequest.equals(cookieValueCurrentUser)) {
       // Same user and well cached in browser
-      if (value.equals(userService.getUserUUID(sfId))) return "";
+      return "";
     }
 
-    String ret = this.snapService.getUserHeaderMenu(sfId);
-    Cookie cacheMenuCookie = new Cookie("cacheMenu",
-        StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret) ?
-            "FALSE" : userService.getUserUUID(sfId));
-    HttpUtils.addCookie(cacheMenuCookie, response);
+    String headerMenu = this.snapService.getUserHeaderMenu(sfId);
+    if (StringUtils.isEmpty(headerMenu) ||
+        OurmUtils.isMenuEmpty(gson, headerMenu) ||
+        cookieValueCurrentUser != null) {
+      cookieValueCurrentUser = "FALSE";
+    }
 
-    return ret;
+    if (menuCache != null) {
+      // Update existing cookie value and send back
+      menuCache.setValue(cookieValueCurrentUser);
+      HttpUtils.addCookie(menuCache, response);
+    } else {
+      // Create new cookie and setback.
+      Cookie cacheMenuCookie = new Cookie("cacheMenu", cookieValueCurrentUser);
+      HttpUtils.addCookie(cacheMenuCookie, response);
+    }
+
+    return headerMenu;
   }
 
   @Override
