@@ -2,6 +2,7 @@
     "maxSize":"$[env:CacheMaxSize;default=5000]",
     "maxUUID": "$[env:CacheMaxUUID;default=300000]",
     "maxJcrUser": "$[env:CacheMaxJcrUser;default=2000]",
+    "maxMenuSize": "$[env:CacheMaxMenu;default=1000]",
     "expireDuration":"$[env:CacheExpireDuration;default=7200]",
     "jcrUserExpireDuration": "$[env:CacheJcrUserExpireDuration;default=1800]",
     "refreshDuration": "$[env:CacheRefreshDuration;default=3600]",

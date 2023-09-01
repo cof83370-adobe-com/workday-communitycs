@@ -30,6 +30,11 @@ public class TestUtil {
       }
 
       @Override
+      public int maxMenuSize() {
+        return 10;
+      }
+
+      @Override
       public int maxJcrUser() {
         return 10;
       }
@@ -47,6 +52,11 @@ public class TestUtil {
       @Override
       public int refreshDuration() {
         return 100;
+      }
+
+      @Override
+      public int cacheCleanPeriod() {
+        return 60;
       }
 
       @Override

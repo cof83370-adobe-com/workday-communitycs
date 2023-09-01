@@ -30,6 +30,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -45,6 +48,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   private final LRUCacheWithTimeout<String, ResourceResolver> resolverCache = new LRUCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
   private final Map<String, LoadingCache> caches;
+  private ScheduledFuture<?> cleanCacheHandle;
+
+  private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
   /** The resource resolver factory. */
   @Reference
@@ -70,15 +76,35 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   @Modified
   public void activate(CacheConfig config) {
     this.config = config;
-    LOGGER.debug("config: enabled:{}, expire:{}, user expire:{}, uuid:{}, user max:{}, refresh:{}",
+    if (!config.enabled()) {
+      invalidateCache();
+      closeAndClearCachedResolvers();
+    }
+    setUpRegularCacheClean();
+    LOGGER.debug("config: enabled:{}, expire:{}, user expire:{}, uuid:{}, user max:{}, refresh:{}, menu size {}",
         config.enabled(), config.expireDuration(), config.jcrUserExpireDuration(),
-        config.maxUUID(), config.maxJcrUser(), config.refreshDuration());
+        config.maxUUID(), config.maxJcrUser(), config.refreshDuration(), config.maxMenuSize());
   }
 
   @Deactivate
   public void deactivate() {
     invalidateCache();
     closeAndClearCachedResolvers();
+    if (null != cleanCacheHandle && !cleanCacheHandle.isDone() && !cleanCacheHandle.isCancelled()) {
+      cleanCacheHandle.cancel(true);
+      cleanCacheHandle = null;
+    }
+
+    if (scheduler != null) {
+      scheduler.shutdown();
+      try {
+        if (scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
+          LOGGER.info("Cache clean scheduler is correctly closed.");
+        }
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 
   @Override
@@ -127,6 +153,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       for (String cacheKey : caches.keySet()) {
         LoadingCache cache = caches.get(cacheKey);
         cache.invalidateAll();
+        cache.cleanUp();
       }
       caches.clear();
     } else if (!StringUtils.isEmpty(cacheBucketName)) {
@@ -138,10 +165,12 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       if (StringUtils.isEmpty(key)) {
         // Clear cache with cache name
         cache.invalidateAll();
+        cache.cleanUp();
         return;
       }
       // Clear cache for specific key in the cache
       cache.invalidate(key);
+      cache.cleanUp();
     }
   }
 
@@ -157,16 +186,17 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   // ====== Convenient Utility APIs ====== //
   @Override
-  public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
-    // No expiration of resolver.
-    ResourceResolver resolver = resolverCache.get(serviceUser);
+  synchronized public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
+    ResourceResolver resolver = config.enabled()? resolverCache.get(serviceUser) : null;
     if (resolver == null || !resolver.isLive() ) {
       try {
         resolver = ResolverUtil.newResolver(this.resourceResolverFactory, serviceUser);
       } catch (LoginException e) {
         throw new CacheException("Failed to create Resolver in CacheManagerImpl");
       }
-      resolverCache.put(serviceUser, resolver);
+      if (config.enabled()) {
+        resolverCache.put(serviceUser, resolver);
+      }
     }
 
     return resolver;
@@ -186,6 +216,11 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       } else if (innerCacheName == CacheBucketName.JCR_USER) {
         builder.maximumSize(config.maxJcrUser())
             .expireAfterAccess(config.jcrUserExpireDuration(), TimeUnit.SECONDS);
+      } else if (innerCacheName == CacheBucketName.SF_MENU) {
+        builder.maximumSize(config.maxMenuSize())
+            .weakValues()
+            .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
+            .refreshAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
       } else {
         builder.maximumSize(config.maxSize())
             .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
@@ -247,5 +282,17 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       }
     }
     resolverCache.clear();
+  }
+
+  private void setUpRegularCacheClean() {
+    if (this.config.enabled()) {
+      final Runnable cleanCache = () -> {
+        invalidateCache();
+        closeAndClearCachedResolvers();
+      };
+
+      cleanCacheHandle = scheduler.scheduleAtFixedRate(
+          cleanCache, 10, config.cacheCleanPeriod(), TimeUnit.SECONDS);
+    }
   }
 }

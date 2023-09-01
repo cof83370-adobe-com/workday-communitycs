@@ -145,6 +145,7 @@ public class HeaderModelImpl implements HeaderModel {
       String pageTitle = currentPage.getTitle();
       String templatePath = template.getPath();
       String contentType = CONTENT_TYPE_MAPPING.get(templatePath);
+      if (contentType == null) return null;
       return this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
     }
     return null;

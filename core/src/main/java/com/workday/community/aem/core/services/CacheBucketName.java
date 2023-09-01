@@ -10,7 +10,8 @@ public enum CacheBucketName {
   STRING_VALUE("string_value_cache", "Cache bucket for string value"),
   UUID_VALUE("uuid_value_cache", "Cache UUID string value"),
   JCR_USER("jcr_user_cache", "Cache JCR user" ),
-  SF_USER_GROUP("sf_user_group_cache", "Cache user groups defined in SF");
+  SF_USER_GROUP("sf_user_group_cache", "Cache user groups defined in SF"),
+  SF_MENU("sf_menu_cache", "Cache user menus fetched from sf");
 
   final String label;
   final String name;
