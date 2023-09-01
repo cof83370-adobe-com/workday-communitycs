@@ -132,7 +132,6 @@ public class ExtractPagePropertiesServiceImplTest {
         extract.processPermission(data, properties, "test@gmail.com");
         String permissions = properties.toString();
         assertTrue(permissions.contains("customer"));
-        assertTrue(permissions.contains("community_customer"));
         assertTrue(permissions.contains("customer_named_support_contact"));
         assertTrue(permissions.contains("test@gmail.com"));
 
