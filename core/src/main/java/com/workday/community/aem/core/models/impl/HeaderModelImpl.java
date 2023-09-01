@@ -127,6 +127,10 @@ public class HeaderModelImpl implements HeaderModel {
     } else {
       // Create new cookie and setback.
       Cookie cacheMenuCookie = new Cookie("cacheMenu", cookieValueCurrentUser);
+      // set the cookie at root level.
+      cacheMenuCookie.setPath("/");
+      // set a default expire to 2 hour
+      cacheMenuCookie.setMaxAge(7200);
       HttpUtils.addCookie(cacheMenuCookie, response);
     }
 
