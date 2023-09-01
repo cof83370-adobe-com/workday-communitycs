@@ -186,7 +186,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   // ====== Convenient Utility APIs ====== //
   @Override
-  synchronized public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
+  public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
     ResourceResolver resolver = config.enabled()? resolverCache.get(serviceUser) : null;
     if (resolver == null || !resolver.isLive() ) {
       try {
