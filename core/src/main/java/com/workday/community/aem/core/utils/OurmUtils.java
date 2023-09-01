@@ -5,7 +5,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.exceptions.OurmException;
 
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
@@ -40,7 +39,8 @@ public class OurmUtils {
     try {
       User user = userService.getCurrentUser(request);
       if (user == null) {
-        throw new OurmException("Current login user can't find in JCR.");
+        LOGGER.error("User returned from userService.getCurrentUser is null");
+        return DEFAULT_SFID_MASTER;
       }
 
       Value[] sfIdObj = user.getProperty(SnapConstants.PROFILE_SOURCE_ID);
@@ -50,8 +50,12 @@ public class OurmUtils {
       }
 
       sfId = sfIdObj[0].getString();
-    } catch (RepositoryException | RuntimeException | OurmException | CacheException e) {
-      LOGGER.error(String.format("getSalesForceId call fails with error: %s.", e.getMessage()));
+    } catch (RepositoryException re) {
+      LOGGER.error(String.format("getSalesForceId call fails with Repository Exception: %s.", re.getMessage()));
+    } catch (CacheException  ce) {
+      LOGGER.error("userService.getCurrentUser call fails");
+    } catch (RuntimeException re) {
+      LOGGER.error(String.format("Runtime exception: %s.", re.getMessage()));
     }
 
     if (StringUtils.isEmpty(sfId)) {

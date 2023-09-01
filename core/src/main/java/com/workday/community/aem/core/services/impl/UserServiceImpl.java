@@ -136,7 +136,7 @@ public class UserServiceImpl implements UserService {
   private User getUser(final ResourceResolver resourceResolver, String userSessionId) {
     if (userSessionId == null) return null;
 
-    String cacheKey = String.format("sessionUser-%s", userSessionId);
+    String cacheKey = String.format("session_user_%s", userSessionId);
     User retUser = cacheManager.get(CacheBucketName.JCR_USER.name(), cacheKey, (key) -> {
       try {
         UserManager userManager = resourceResolver.adaptTo(UserManager.class);
