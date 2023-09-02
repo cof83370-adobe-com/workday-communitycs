@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
 import com.workday.community.aem.core.constants.WccConstants;
-import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.UserGroupService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
