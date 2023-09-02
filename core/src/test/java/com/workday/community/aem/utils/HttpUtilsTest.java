@@ -1,6 +1,7 @@
 package com.workday.community.aem.utils;
 
 import com.workday.community.aem.core.utils.HttpUtils;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,7 +27,7 @@ public class HttpUtilsTest {
 
   @BeforeEach
   public void setup() {
-    this.request = mock(HttpServletRequest.class);
+    this.request = mock(SlingHttpServletRequest.class);
     this.response = mock(HttpServletResponse.class);
 
     Cookie[] cookies = new Cookie[] {new Cookie("test", "testValue"),

@@ -57,10 +57,6 @@ public class RestApiUtilTest {
 
   /**
    * Test method for doLmsTokenPost.
-   * 
-   * @throws RestAPIException
-   * @throws IOException
-   * @throws InterruptedException
    */
   @Test
   public void testDoLmsTokenPost()
@@ -94,10 +90,6 @@ public class RestApiUtilTest {
 
   /**
    * Test method for doLmsCourseDetailGet.
-   * 
-   * @throws RestAPIException
-   * @throws IOException
-   * @throws InterruptedException
    */
   @Test
   public void testDoLmsCourseDetailGet()

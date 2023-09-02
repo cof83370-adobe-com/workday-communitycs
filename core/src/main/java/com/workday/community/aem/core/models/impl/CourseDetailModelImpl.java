@@ -82,7 +82,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
     }
 
     /**
-     * Get the query paramater value.
+     * Get the query parameter value.
      * 
      * @param param Query parameter.
      * @return Value of the query parameter.
@@ -107,8 +107,8 @@ public class CourseDetailModelImpl implements CourseDetailModel {
                 // Gson object for json handling.
                 JsonObject courseDetail = gson.fromJson(courseDetailJson, JsonObject.class);
                 if (checkAccessControlTags(courseDetail)) {
-                    ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
-                    ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+                    response.setStatus(SC_FORBIDDEN);
+                    response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
                 }
                 return courseDetail;
             }
@@ -120,7 +120,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
 
     /**
      * Checks the access control tags in the course detail response against the
-     * logged in user's access control.
+     * logged-in user's access control.
      * 
      * @param courseDetail Course detail object.
      * @return True if user has access to view course, else false.
@@ -128,11 +128,9 @@ public class CourseDetailModelImpl implements CourseDetailModel {
     private boolean checkAccessControlTags(JsonObject courseDetail) {
         JsonElement accessControl = courseDetail.get("accessControl");
         if (accessControl != null && !accessControl.isJsonNull()) {
-            List<String> accessControlTags = new ArrayList<String>(
+            List<String> accessControlTags = new ArrayList<>(
                     Arrays.asList(accessControl.getAsString().split(",")));
-            return userGroupService.checkLoggedInUserHasAccessControlTags(
-                    request.getResourceResolver(),
-                    accessControlTags);
+            return userGroupService.validateCurrentUser(request, accessControlTags);
         }
         LOGGER.error("User can't access because access control is not set in the returned course detail object.");
         return false;

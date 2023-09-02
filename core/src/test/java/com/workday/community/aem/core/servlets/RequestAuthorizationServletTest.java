@@ -70,7 +70,7 @@ public class RequestAuthorizationServletTest {
         when(requestResourceResolver.adaptTo(Session.class)).thenReturn(session);
 
         when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resourceResolver);
-        when(userGroupService.validateTheUser(resourceResolver,request.getResourceResolver(), uri)).thenReturn(false);
+        when(userGroupService.validateCurrentUser(request, uri)).thenReturn(true);
 
         // Call the method
         servlet.doHead(request, response);
@@ -78,7 +78,6 @@ public class RequestAuthorizationServletTest {
         // Verify the interactions and assertions
         verify(request).getParameter("uri");
         verify(response).setStatus(SC_OK);
-
     }
 
     @Test

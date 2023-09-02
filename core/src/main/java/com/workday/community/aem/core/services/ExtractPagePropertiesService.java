@@ -100,8 +100,8 @@ public interface ExtractPagePropertiesService {
 	/**
 	 * Process the page tags.
 	 *
-	 * @param page
-	 * @param properties
+	 * @param page the pass-in page object.
+	 * @param properties page properties as a map.
 	 */
 	void processPageTags(Page page, Map<String, Object> properties);
 }

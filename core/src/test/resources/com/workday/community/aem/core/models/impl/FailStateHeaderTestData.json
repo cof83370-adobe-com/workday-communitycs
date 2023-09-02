@@ -2,6 +2,10 @@
     "language": "en",
     "contactNumber": null,
     "contactId": null,
+    "contactInformation": {
+        "lastName": "justin",
+        "firstName": "zhang"
+    },
     "utility": {
         "menu": [
             {

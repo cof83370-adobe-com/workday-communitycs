@@ -18,4 +18,9 @@ public interface LmsConstants {
      * Encoded space string
      */
     String ENCODED_SPACE = "%20";
+
+    /*
+     * Token cache key
+     */
+    String TOKEN_CACHE_KEY = "lmsCourseDetailBearerToken";
 }

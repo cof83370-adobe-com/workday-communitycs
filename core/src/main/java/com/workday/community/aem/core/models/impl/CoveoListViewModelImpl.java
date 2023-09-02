@@ -6,6 +6,7 @@ import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -41,6 +42,9 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
   @OSGiService
   private SearchApiConfigService searchConfigService;
 
+  @OSGiService
+  private UserService userService;
+
   /**
    * The snap service object.
    */
@@ -57,13 +61,17 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
 
   @Override
   public List<CategoryFacetModel> getCategories() {
-    return new ArrayList<>(categories);
+    return categories == null ? new ArrayList<>() : new ArrayList<>(categories);
   }
 
   @Override
   public JsonObject getSearchConfig() {
     if (this.searchConfig == null) {
-      this.searchConfig = CoveoUtils.getSearchConfig(searchConfigService, request, snapService);
+      this.searchConfig = CoveoUtils.getSearchConfig(
+          searchConfigService,
+          request,
+          snapService,
+          userService);
     }
     return this.searchConfig;
   }
