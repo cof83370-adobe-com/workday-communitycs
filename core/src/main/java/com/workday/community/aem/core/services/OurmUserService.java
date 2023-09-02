@@ -1,7 +1,5 @@
 package com.workday.community.aem.core.services;
 
-import java.io.IOException;
-
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.OurmDrupalConfig;
 import com.workday.community.aem.core.exceptions.OurmException;
