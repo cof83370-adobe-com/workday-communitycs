@@ -264,7 +264,7 @@ public class SnapServiceImpl implements SnapService {
     if (!enableCache()) {
       serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
-    return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
+    Object userProfile = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
         String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
         if (StringUtils.isNotBlank(url)) {
@@ -279,6 +279,9 @@ public class SnapServiceImpl implements SnapService {
           .error("User profile data is not fetched from the snap profile API call without error, please contact admin.");
       return null;
     });
+
+    if (userProfile == null) return null;
+    return (userProfile instanceof JsonObject) ? gson.toJson(userProfile) : userProfile.toString();
   }
 
   @Override
