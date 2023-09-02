@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.utils.cache.ValueCallback;
@@ -29,37 +30,7 @@ public class CacheManagerServiceImplTest {
 
   @BeforeEach
   public void setup() {
-     cacheConfig = new CacheConfig() {
-
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return null;
-      }
-
-      @Override
-      public int maxSize() {
-        return 10;
-      }
-
-       public int maxUUID() {
-         return 0;
-       }
-
-       @Override
-      public int expireDuration() {
-        return 20;
-      }
-
-      @Override
-      public int refreshDuration() {
-        return 10;
-      }
-
-       @Override
-       public boolean enabled() {
-         return true;
-       }
-     };
+     cacheConfig = TestUtil.getCacheConfig();
   }
 
   @Test
@@ -80,10 +51,10 @@ public class CacheManagerServiceImplTest {
   public void testGet() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    ValueCallback<String, String> callback = new ValueCallback() {
+    ValueCallback<String> callback = new ValueCallback() {
       int count = 0;
       @Override
-      public Object getValue(Object key) {
+      public Object getValue(String key) {
         count++;
         return TEST_VALUE + count;
       }
@@ -100,10 +71,10 @@ public class CacheManagerServiceImplTest {
   public void testClearCache() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    ValueCallback<String, String> callback = new ValueCallback() {
+    ValueCallback<String> callback = new ValueCallback() {
       int count = 0;
       @Override
-      public Object getValue(Object key) {
+      public Object getValue(String key) {
         count++;
         return TEST_VALUE + count;
       }
@@ -125,7 +96,7 @@ public class CacheManagerServiceImplTest {
   public void testIfCacheExists() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    ValueCallback<String, String> callback = (ValueCallback) key -> TEST_VALUE;
+    ValueCallback<String> callback = (ValueCallback) key -> TEST_VALUE;
 
     cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
     boolean existed = cacheManager.isPresent(TEST_CACHE_BUCKET, TEST_KEY);

@@ -20,6 +20,7 @@ import java.util.Base64;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,10 +134,15 @@ public class RestApiUtil {
     try {
       // Send the HttpGet request using the configured HttpClient.
       response = httpclient.send(request, BodyHandlers.ofString());
-      LOGGER.debug("HTTP response code : {}", response.statusCode());
+      int statusCode = response.statusCode();
+      LOGGER.debug("HTTP response code : {}", statusCode);
       apiresponse.setResponseCode(response.statusCode());
       LOGGER.debug("HTTP response : {}", response.body());
-      apiresponse.setResponseBody(response.body());
+      if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
+        apiresponse.setResponseBody(response.body());
+      } else {
+        apiresponse.setResponseBody("{}");
+      }
     } catch (IOException | InterruptedException e) {
       throw new APIException(
           String.format("Exception in executeGetRequest method while executing the request = %s", e.getMessage()));
@@ -150,7 +156,7 @@ public class RestApiUtil {
    * @param url       Request URL.
    * @param authToken Auth token.
    * @param xApiKey   API key.
-   * @param traceId   Trace Id in header.
+   * @param traceId   Trace id in header.
    * @return API Request object.
    */
   private static APIRequest getMenuApiRequest(String url, String authToken, String xApiKey, String traceId) {

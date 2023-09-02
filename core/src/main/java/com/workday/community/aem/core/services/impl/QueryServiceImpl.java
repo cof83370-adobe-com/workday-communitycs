@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -89,13 +88,7 @@ public class QueryServiceImpl implements QueryService {
             }
             queryMap.put("1_property", "jcr:content/cq:lastReplicationAction");
             queryMap.put("1_property.value", "Activate");
-            queryMap.put("p.limit", "-1");
-            Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
-            SearchResult searchResult = query.getResult();
-            for (Hit hit : searchResult.getHits()) {
-                String path = hit.getPath();
-                paths.add(path);
-            }
+            addToQueryMap(session, paths, queryMap);
         } catch (CacheException | RepositoryException e) {
             logger.error("Exception occurred when running query to get pages {} ", e.getMessage());
         } finally {
@@ -117,13 +110,7 @@ public class QueryServiceImpl implements QueryService {
             Map<String, String> queryMap = new HashMap<>();
             queryMap.put("path", USER_ROOT_PATH.concat(OKTA_USER_PATH));
             queryMap.put("type", "rep:User");
-            queryMap.put("p.limit", "-1");
-            Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
-            SearchResult searchResult = query.getResult();
-            for (Hit hit : searchResult.getHits()) {
-                String path = hit.getPath();
-                users.add(path);
-            }
+            addToQueryMap(session, users, queryMap);
 
             // Get active users.
             Map<String, String> queryMapActive = new HashMap<>();
@@ -185,5 +172,15 @@ public class QueryServiceImpl implements QueryService {
             }
         }
         return paths;
+    }
+
+    private void addToQueryMap(Session session, List<String> paths, Map<String, String> queryMap) throws RepositoryException {
+        queryMap.put("p.limit", "-1");
+        Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
+        SearchResult searchResult = query.getResult();
+        for (Hit hit : searchResult.getHits()) {
+            String path = hit.getPath();
+            paths.add(path);
+        }
     }
 }

@@ -89,7 +89,11 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   @Override
   public JsonObject getSearchConfig() {
     if (searchConfig == null) {
-      searchConfig = CoveoUtils.getSearchConfig(searchConfigService, this.request, this.snapService, this.userService);
+      searchConfig = CoveoUtils.getSearchConfig(
+          this.searchConfigService,
+          this.request,
+          this.snapService,
+          this.userService);
     }
     return searchConfig;
   }

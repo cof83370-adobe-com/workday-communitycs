@@ -7,8 +7,8 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.OktaService;
-import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.impl.UserGroupServiceImpl;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.jackrabbit.api.security.user.User;
@@ -43,7 +43,7 @@ public class AuthorizationFilterTest {
     ResourceResolver resolver;
 
     @Mock
-    UserGroupService userGroupService;
+    UserGroupServiceImpl userGroupService;
 
     @Mock
     UserService userService;
@@ -90,12 +90,11 @@ public class AuthorizationFilterTest {
     private AuthorizationFilter authorizationFilter;
 
     @BeforeEach
-    void setup() throws CacheException {
-        when(cacheManagerService.getServiceResolver(anyString())).thenReturn(resolver);
+    void setup()  {
     }
 
     @Test
-    void testD0FilterWithoutValidUser() throws ServletException, IOException, RepositoryException, OurmException {
+    void testD0FilterWithoutValidUser() throws ServletException, IOException, RepositoryException, CacheException {
         authorizationFilter.init(filterConfig);
         when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
         when(request.getRequestPathInfo()).thenReturn(requestPathInfo);
@@ -104,16 +103,16 @@ public class AuthorizationFilterTest {
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(jcrSession.getUserID()).thenReturn("test-user1");
 
-        when(userService.getUser(any(), anyString())).thenReturn(user);
+        when(userService.getCurrentUser(any())).thenReturn(user);
         when(user.getPath()).thenReturn("home/users/test-user1");
 
         authorizationFilter.doFilter(request, response, filterChain);
 
-        verify(userGroupService, times(0)).getLoggedInUsersGroups(any());
+        verify(userGroupService, times(0)).getCurrentUserGroups(any());
     }
 
     @Test
-    void testDoFilterWithValidUserAndAuthenticatedTag() throws ServletException, IOException, RepositoryException {
+    void testDoFilterWithValidUserAndAuthenticatedTag() throws ServletException, IOException, RepositoryException, CacheException {
         authorizationFilter.init(filterConfig);
 
         String pagePath = "/content/workday-community/en-us/test";
@@ -123,16 +122,16 @@ public class AuthorizationFilterTest {
         when(request.getResourceResolver()).thenReturn(resolver);
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(jcrSession.getUserID()).thenReturn("workday-user1");
-        when(userService.getUser(any(), anyString())).thenReturn(user);
+        when(userService.getCurrentUser(any())).thenReturn(user);
         when(user.getPath()).thenReturn("home/users/workdaycommunity/okta/workday-user1");
 
         authorizationFilter.doFilter(request, response, filterChain);
 
-        verify(userGroupService, times(1)).validateTheUser(any(),any(), anyString());
+        verify(userGroupService, times(1)).validateCurrentUser(any(), anyString());
     }
 
     @Test
-    void testDoFilterWithValidUserAndWithOutAuthenticatedTag() throws ServletException, IOException, RepositoryException {
+    void testDoFilterWithValidUserAndWithOutAuthenticatedTag() throws ServletException, IOException, RepositoryException, CacheException {
         authorizationFilter.init(filterConfig);
 
         String pagePath = "/content/workday-community/en-us/test";
@@ -146,12 +145,12 @@ public class AuthorizationFilterTest {
         when(request.getResourceResolver()).thenReturn(resolver);
         when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
         when(jcrSession.getUserID()).thenReturn("workday-user1");
-        when(userService.getUser(any(), anyString())).thenReturn(user);
+        when(userService.getCurrentUser(any())).thenReturn(user);
         when(user.getPath()).thenReturn("home/users/workdaycommunity/okta/workday-user1");
 
         authorizationFilter.doFilter(request, response, filterChain);
 
-        verify(userGroupService, times(1)).validateTheUser(any(),any(), anyString());
+        verify(userGroupService, times(1)).validateCurrentUser(any(), anyString());
     }
 
 }

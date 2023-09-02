@@ -108,13 +108,14 @@ public class CoveoListViewModelImplTest {
 
         resolverUtil = mockStatic(ResolverUtil.class);
         resolverUtil.when(() -> ResolverUtil.newResolver(any(), anyString())).thenReturn(resourceResolver);
-
     }
 
     @Test
     void testComponent() throws RepositoryException {
         CoveoListViewModel listViewModel = context.currentResource("/component/listView").adaptTo(CoveoListViewModel.class);
-        ((CoveoListViewModelImpl)listViewModel).init(request);
+        if (listViewModel != null) {
+            ((CoveoListViewModelImpl)listViewModel).init(request);
+        }
 
         ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
         Session session = mock(Session.class);

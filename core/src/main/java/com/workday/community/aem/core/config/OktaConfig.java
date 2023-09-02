@@ -4,7 +4,7 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
-@ObjectClassDefinition(name = "Okta Logout Config", description = "Okta Logout Config Values")
+@ObjectClassDefinition(name = "Okta Config", description = "Okta Config Values")
 public @interface OktaConfig {
   @AttributeDefinition(name = "Custom Okta domain name", description = "Custom domain")
   String customDomain();

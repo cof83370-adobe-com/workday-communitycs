@@ -93,7 +93,7 @@ public class HeaderModelImpl implements HeaderModel {
   @PostConstruct
   protected void init() {
     logger.debug("Initializing HeaderModel ....");
-    sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+    sfId = OurmUtils.getSalesForceId(request, userService);
   }
 
   /**
@@ -102,21 +102,44 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
-    Cookie menuCache = request.getCookie("cacheMenu");
-    String value = menuCache == null ? null : menuCache.getValue();
-
-    if (!StringUtils.isEmpty(value)) {
-      // Same user and well cached in browser
-      if (value.equals(userService.getUserUUID(sfId))) return "";
+    if (!snapService.enableCache()) {
+      // Get a chance to disable browser cache if needed.
+      return snapService.getUserHeaderMenu(sfId);
     }
 
-    String ret = this.snapService.getUserHeaderMenu(sfId);
-    Cookie cacheMenuCookie = new Cookie("cacheMenu",
-        StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret) ?
-            "FALSE" : userService.getUserUUID(sfId));
-    HttpUtils.addCookie(cacheMenuCookie, response);
+    Cookie menuCache = request.getCookie("cacheMenu");
+    String cookieValueFromRequest = menuCache == null ? null : menuCache.getValue();
+    String cookieValueCurrentUser = userService.getUserUUID(sfId);
 
-    return ret;
+    if (!StringUtils.isEmpty(cookieValueCurrentUser) &&
+        !StringUtils.isEmpty(cookieValueFromRequest) &&
+        cookieValueFromRequest.equals(cookieValueCurrentUser)) {
+      // Same user and well cached in browser
+      return "";
+    }
+
+    String headerMenu = this.snapService.getUserHeaderMenu(sfId);
+    if (StringUtils.isEmpty(headerMenu) ||
+        OurmUtils.isMenuEmpty(gson, headerMenu) ||
+        cookieValueCurrentUser != null) {
+      cookieValueCurrentUser = "FALSE";
+    }
+
+    Cookie finalCookie;
+    if (menuCache != null) {
+      // Update existing cookie value and send back
+      menuCache.setValue(cookieValueCurrentUser);
+      finalCookie = menuCache;
+    } else {
+      // Create new cookie and setback.
+      finalCookie= new Cookie("cacheMenu", cookieValueCurrentUser);
+    }
+    // set the cookie at root level.
+    finalCookie.setPath("/");
+    // set a default expire to 2 hour
+    finalCookie.setMaxAge(7200);
+    HttpUtils.addCookie(finalCookie, response);
+    return headerMenu;
   }
 
   @Override
@@ -127,6 +150,7 @@ public class HeaderModelImpl implements HeaderModel {
       String pageTitle = currentPage.getTitle();
       String templatePath = template.getPath();
       String contentType = CONTENT_TYPE_MAPPING.get(templatePath);
+      if (contentType == null) return null;
       return this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
     }
     return null;

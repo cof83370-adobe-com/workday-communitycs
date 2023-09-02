@@ -71,7 +71,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
     private transient SnapService snapService;
 
     @Reference
-    UserService userService;
+    private transient UserService userService;
 
     public void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
@@ -116,7 +116,9 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
             return null;
         };
 
-        CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, userService, gson, objectMapper, callback);
+        CoveoUtils.executeSearchForCallback(request,
+            response, searchApiConfigService, snapService, userService,
+            gson, objectMapper, callback);
     }
 
     private EventTypes getEventTypes(CloseableHttpClient httpClient, String token)  throws IOException  {

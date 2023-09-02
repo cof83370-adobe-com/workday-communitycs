@@ -10,7 +10,7 @@ public interface IndexServices {
     /**
      * Create Index jobs for the page, and it's child pages.
      *
-     * @param paths
+     * @param paths the page paths.
      */
     void indexPages(List<String> paths);
 }

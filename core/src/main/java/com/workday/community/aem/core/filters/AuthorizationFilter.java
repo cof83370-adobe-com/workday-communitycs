@@ -3,7 +3,6 @@ package com.workday.community.aem.core.filters;
 import com.day.cq.wcm.api.constants.NameConstants;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
@@ -43,8 +42,7 @@ import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
                 EngineConstants.SLING_FILTER_EXTENSIONS + "=html"
         })
 public class AuthorizationFilter implements Filter {
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthorizationFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationFilter.class);
 
     @Reference
     private transient OktaService oktaService;
@@ -53,14 +51,11 @@ public class AuthorizationFilter implements Filter {
     private transient UserGroupService userGroupService;
 
     @Reference
-    private transient CacheManagerService cacheManagerService;
-
-    @Reference
     private transient UserService userService;
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        logger.debug("AuthorizationFilter is initialized.");
+        LOGGER.debug("AuthorizationFilter is initialized.");
     }
 
     @Override
@@ -68,8 +63,8 @@ public class AuthorizationFilter implements Filter {
                          final FilterChain filterChain) throws IOException, ServletException {
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
         String pagePath = slingRequest.getRequestPathInfo().getResourcePath();
-        logger.debug("Request for {}, with selector {}.", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
-        logger.debug("AuthorizationFilter: Time before validating the user is {}.", new Date().getTime());
+        LOGGER.debug("Request for {}, with selector {}.", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
+        LOGGER.debug("AuthorizationFilter: Time before validating the user is {}.", new Date().getTime());
         if (oktaService.isOktaIntegrationEnabled() &&
             pagePath.contains(WORKDAY_ROOT_PAGE_PATH) &&
             !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT) &&
@@ -81,37 +76,31 @@ public class AuthorizationFilter implements Filter {
                 return;
             }
             String userId = userSession.getUserID();
-            logger.debug("Current user is {}.", userId);
-            boolean isInValid = true;
-            ResourceResolver resourceResolver = null;
+            LOGGER.debug("Current user is {}.", userId);
+            boolean isValid = false;
             try {
-                resourceResolver = cacheManagerService.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
-                User user = userService.getUser(resourceResolver, userId);
+                User user = userService.getCurrentUser(slingRequest);
                 if (null != user && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
-                    isInValid = userGroupService.validateTheUser(resourceResolver, requestResourceResolver, pagePath);
+                    isValid = userGroupService.validateCurrentUser(slingRequest, pagePath);
                 }
-                if (isInValid) {
+                if (!isValid) {
                     ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
                     ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
                 }
             } catch (CacheException | RepositoryException e) {
-                logger.error("---> Exception occurred in AuthorizationFilter: {}.", e.getMessage());
+                LOGGER.error("---> Exception occurred in AuthorizationFilter: {}.", e.getMessage());
                 ((SlingHttpServletResponse) response).setStatus(SC_INTERNAL_SERVER_ERROR);
                 ((SlingHttpServletResponse) response).sendRedirect(WccConstants.ERROR_PAGE_PATH);
-            } finally {
-                if (resourceResolver != null && resourceResolver.isLive()) {
-                    resourceResolver.close();
-                }
             }
         }
-        logger.debug("AuthorizationFilter:Time after validating the user  is {}.", new Date().getTime());
+        LOGGER.debug("AuthorizationFilter:Time after validating the user  is {}.", new Date().getTime());
         filterChain.doFilter(request, response);
     }
 
 
     @Override
     public void destroy() {
-        logger.debug("Destroy AuthorizationFilter.");
+        LOGGER.debug("Destroy AuthorizationFilter.");
     }
 
 }

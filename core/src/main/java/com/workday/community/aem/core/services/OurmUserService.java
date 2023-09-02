@@ -25,8 +25,7 @@ public interface OurmUserService {
    * @param searchText the search text
    * @return the json object
    * @throws OurmException the ourm exception
-   * @throws IOException Signals that an I/O exception has occurred.
    */
-  JsonObject searchOurmUserList(String searchText) throws OurmException, IOException;
+  JsonObject searchOurmUserList(String searchText) throws OurmException;
 
 }

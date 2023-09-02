@@ -9,7 +9,7 @@ public enum EventPeriodEnum {
     /** The monthly. */
     MONTHLY,
 
-    /** The bi weekly. */
+    /** The bi-weekly. */
     BI_WEEKLY
 
 }

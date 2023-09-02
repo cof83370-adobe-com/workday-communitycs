@@ -1,22 +1,22 @@
 package com.workday.community.aem.core.services.impl;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 
 import javax.jcr.*;
 
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.UUIDUtil;
-import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -24,7 +24,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.workday.community.aem.core.services.UserService;
+
 import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
+import static com.workday.community.aem.core.constants.GlobalConstants.SERVICE_USER_GROUP;
 
 /**
  * The Class UserServiceImpl.
@@ -36,142 +38,128 @@ import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER
 public class UserServiceImpl implements UserService {
 
     /** The logger. */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
     /** The cache manager */
-    @Reference
-    CacheManagerService cacheManager;
+  @Reference
+  CacheManagerService cacheManager;
 
-    @Reference
-    SearchApiConfigService searchConfigService;
+  @Reference
+  SearchApiConfigService searchConfigService;
 
-    @Reference
-    SnapService snapService;
+  @Reference
+  RunModeConfigService runModeConfigService;
 
-    /** The service user. */
-    public static final String SERVICE_USER = "adminusergroup";
+  @Reference
+  SnapService snapService;
 
-    @Override
-    public User getUser(String userId) {
-        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(SERVICE_USER)) {
-            UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-            User user = (User) Objects.requireNonNull(userManager).getAuthorizable(userId);
-            if (user != null) {
-                return user;
-            }
-            logger.error("Cannot find user with id {}.", userId);
-            return null;
-        }
-        catch (CacheException | RepositoryException e) {
-            logger.error("Exception occurred when fetch user {}: {}.", userId, e.getMessage());
-            return null;
-        }
-    }
+  @Override
+  public User getCurrentUser(SlingHttpServletRequest request) throws CacheException {
+    Session session = Objects.requireNonNull(request.getResourceResolver()).adaptTo(Session.class);
+    ResourceResolver serviceResolver = cacheManager.getServiceResolver(SERVICE_USER_GROUP);
+    return getUser(serviceResolver, Objects.requireNonNull(session).getUserID());
+  }
 
-    @Override
-    public void updateUser(String userId, Map<String, String> fields, List<String> groups) {
-        Session session = null;
-        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(SERVICE_USER)) {
-            UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-            session = resourceResolver.adaptTo(Session.class);
-            User user = (User) Objects.requireNonNull(userManager).getAuthorizable(userId);
-            if (user != null) {
-                ValueFactory valueFactory = Objects.requireNonNull(session).getValueFactory();
-                for (Map.Entry<String, String> entry : fields.entrySet()) {
-                    Value fieldValue = valueFactory.createValue(entry.getValue(), PropertyType.STRING);
-                    user.setProperty(entry.getKey(), fieldValue);
-                }  
-                if (!groups.isEmpty()) {
-                    Iterator<Group> groupsIt = user.memberOf();
-                    while (groupsIt.hasNext()) {
-                        Group group = groupsIt.next();
-                        group.removeMember(user);
-                    }
-                    for(String groupId: groups) {
-                        Group group = (Group) userManager.getAuthorizable(groupId);
-                        if (group == null) {
-                            group = userManager.createGroup(groupId);
-                        }
-                        group.addMember(user);
-                    }
-                }
-            }
-            else {
-                logger.error("Cannot find user with id {}.", userId);
-            }
-        } 
-        catch (CacheException | RepositoryException e) {
-            logger.error("Exception occurred when update user {}: {}.", userId, e.getMessage());
-        }
-        finally {
-            if (session != null && session.isLive()) {
-				session.logout();
-			}
-        }
-    }
+  @Override
+  public User getUser(String serviceUserId, String userSessionId) throws CacheException {
+    ResourceResolver resourceResolver = cacheManager.getServiceResolver(serviceUserId);
+    return getUser(resourceResolver, userSessionId);
+  }
 
-    @Override
-    public void deleteUser(String userParam, boolean isPath) {
-        Session session = null;
-        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(SERVICE_USER)) {
-            logger.info("Start to delete user with param {}.", userParam);
-            UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-            session = resourceResolver.adaptTo(Session.class);
-            User user;
-            if (isPath) {
-                user = (User) Objects.requireNonNull(userManager).getAuthorizableByPath(userParam);
-            }
-            else {
-               user = (User) Objects.requireNonNull(userManager).getAuthorizable(userParam);
-            }
-            if (user != null) {
-                String path = user.getPath();
-                if (path.contains(OKTA_USER_PATH)) {
-                    user.remove();
-                }
-                else {
-                    logger.error("User with param {} cannot be deleted.", userParam);
-                }
-            }
-            else {
-                logger.error("Cannot find user with param {}.", userParam);
-            }  
-            Objects.requireNonNull(session).save();
-        } 
-        catch (CacheException | RepositoryException e) {
-            logger.error("Exception occurred when delete user with param {}: {}.", userParam, e.getMessage());
-        }
-        finally {
-            if (session != null && session.isLive()) {
-				session.logout();
-			}
-        }
-    }
+  @Override
+  public String getUserUUID(String sfId) {
+    String cacheKey = String.format("user_uuid_%s", sfId);
+    return cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, (key) -> {
+      String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
+      UUID uuid = UUIDUtil.getUserClientId(email);
+      return uuid == null ? null : uuid.toString();
+    });
+  }
 
-    @Override
-    public String getUserUUID(String sfId) {
-        String cacheKey = String.format("user_client_id_%s", sfId);
-        return cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, (key) -> {
-            String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
-            return UUIDUtil.getUserClientId(email).toString();
-        });
-    }
+  @Override
+  public void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath) throws CacheException {
+    ResourceResolver resourceResolver = request.getResourceResolver();
+    Session session = resourceResolver.adaptTo(Session.class);
+    // Delete user on publish instance.
+    if (session != null) {
+      String ins = runModeConfigService.getInstance();
 
-    @Override
-    public User getUser(ResourceResolver resourceResolver, String userId) {
+      if (ins != null && ins.equals(GlobalConstants.PUBLISH)) {
+        String userId = session.getUserID();
+
+        ResourceResolver serviceResolver =
+            cacheManager.getServiceResolver(SERVICE_USER_GROUP);
+
+        LOGGER.info("Start to delete user with param {}.", userId);
+        UserManager userManager = serviceResolver.adaptTo(UserManager.class);
+        User user;
         try {
-            UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-            User user = (User) Objects.requireNonNull(userManager).getAuthorizable(userId);
-            if (user != null) {
-                return user;
+          if (isPath) {
+            user = (User) Objects.requireNonNull(userManager).getAuthorizableByPath(userId);
+          } else {
+            user = (User) Objects.requireNonNull(userManager).getAuthorizable(userId);
+          }
+
+          if (user != null) {
+            String path = user.getPath();
+            if (path.contains(OKTA_USER_PATH)) {
+              user.remove();
+              session.logout();
+            } else {
+              LOGGER.error("User with userID {} cannot be deleted.", userId);
             }
-            logger.error("Cannot find user with id {}.", userId);
-            return null;
+          } else {
+            LOGGER.error("Cannot find user with userID {}.", userId);
+          }
+          Objects.requireNonNull(session).save();
+        } catch (RepositoryException e) {
+          LOGGER.error("invalidate current user session failed.");
+        } finally {
+          if (resourceResolver.isLive())
+            resourceResolver.close();
+
+          if(session.isLive())
+            session.logout();
         }
-        catch (RepositoryException e) {
-            logger.error("Exception occurred when fetch user {}: {}.", userId, e.getMessage());
-            return null;
-        }
+      }
     }
-    
+  }
+
+  /**
+   * Used in testing only.
+   * @param cacheManager the pass-in CacheManager object.
+   */
+  protected void setCacheManager(CacheManagerService cacheManager) {
+    this.cacheManager = cacheManager;
+  }
+
+  private User getUser(final ResourceResolver resourceResolver, String userSessionId) {
+    if (userSessionId == null) return null;
+
+    String cacheKey = String.format("session_user_%s", userSessionId);
+    User retUser = cacheManager.get(CacheBucketName.JCR_USER.name(), cacheKey, (key) -> {
+      try {
+        UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+        User user = (User) Objects.requireNonNull(userManager).getAuthorizable(userSessionId);
+        if (user != null) {
+          return user;
+        }
+        LOGGER.error("Cannot find user with id {}.", userSessionId);
+        return null;
+      } catch (RepositoryException e) {
+        LOGGER.error("Exception occurred when fetch user {}: {}.", userSessionId, e.getMessage());
+        return null;
+      }
+    });
+
+    try {
+      if (retUser.isDisabled()) {
+        cacheManager.invalidateCache(CacheBucketName.JCR_USER.name(), cacheKey);
+      }
+    } catch (RepositoryException e) {
+      LOGGER.error("Exception occurred when clear use from cache {}: {}.", userSessionId, e.getMessage());
+    }
+
+    return retUser;
+  }
 }
