@@ -87,7 +87,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   }
 
   @Deactivate
-  public void deactivate() {
+  public void deactivate() throws CacheException {
     invalidateCache();
     closeAndClearCachedResolvers();
     if (null != cleanCacheHandle && !cleanCacheHandle.isDone() && !cleanCacheHandle.isCancelled()) {
@@ -102,7 +102,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
           LOGGER.info("Cache clean scheduler is correctly closed.");
         }
       } catch (InterruptedException e) {
-        throw new RuntimeException(e);
+        throw new CacheException(e.getMessage());
       }
     }
   }
