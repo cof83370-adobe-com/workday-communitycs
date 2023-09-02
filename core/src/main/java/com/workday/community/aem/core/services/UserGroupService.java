@@ -1,8 +1,6 @@
 package com.workday.community.aem.core.services;
 
-import com.workday.community.aem.core.config.SnapConfig;
-import com.workday.community.aem.core.exceptions.OurmException;
-import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.osgi.annotation.versioning.ProviderType;
 
 import java.util.List;
@@ -10,37 +8,21 @@ import java.util.List;
 @ProviderType
 public interface UserGroupService {
     /**
-     * Activate user group service.
+     * Validates the user based on Roles tagged to the page and User roles from
+     * Salesforce.
      *
-     * @param config Snap config.
+     * @param request the Sling Request object
+     * @param pagePath The Requested page path.
+     * @return boolean: True if user has permissions to access the page, otherwise false.
      */
-    void activate(SnapConfig config);
+    boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath);
 
     /**
-     * List of user groups from SF.
+     * Validates if logged-in user has the passed in access control tags.
      *
-     * @return User groups
+     * @param request the current Sling request object.
+     * @param accessControlTags List of access control tags to be checked against.
+     * @return True if logged-in user has given access control tags, else false.
      */
-    List<String> getLoggedInUsersGroups(ResourceResolver resourceResolve) throws OurmException;
-
-    /**
-     *
-     * @param resourceResolver        the admin user resource resolver
-     * @param requestResourceResolver the request resource resolver
-     * @param pagePath                the requested page path
-     * @return boolean to indicate whether the user is valid user or invalid user.
-     */
-    boolean validateTheUser(ResourceResolver resourceResolver, ResourceResolver requestResourceResolver,
-            String pagePath);
-
-    /**
-     * Validates if logged in user has the passed in access control tags.
-     * 
-     * @param requestResourceResolver Request resource resolver.
-     * @param accessControlTags       List of access control tags to be checked
-     *                                against.
-     * @return True if logged in user has given access control tags, else false.
-     */
-    boolean checkLoggedInUserHasAccessControlTags(ResourceResolver requestResourceResolver,
-            List<String> accessControlTags);
+    boolean validateCurrentUser(SlingHttpServletRequest request, List<String> accessControlTags);
 }

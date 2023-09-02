@@ -3,23 +3,29 @@ package com.workday.community.aem.core.models.impl;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
+import com.google.gson.Gson;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.servlet.http.Cookie;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
 import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
@@ -36,6 +42,9 @@ public class HeaderModelImpl implements HeaderModel {
 
   @Self
   private SlingHttpServletRequest request;
+
+  @SlingObject
+  private SlingHttpServletResponse response;
 
   /**
    * The Constant RESOURCE_TYPE.
@@ -67,11 +76,16 @@ public class HeaderModelImpl implements HeaderModel {
   @OSGiService
   SearchApiConfigService searchApiConfigService;
 
+  @OSGiService
+  UserService userService;
+
   @Inject
   private Page currentPage;
 
   /** SFID */
   String sfId;
+
+  private final Gson gson = new Gson();
 
   /** The global search url. */
   String globalSearchURL;
@@ -79,7 +93,7 @@ public class HeaderModelImpl implements HeaderModel {
   @PostConstruct
   protected void init() {
     logger.debug("Initializing HeaderModel ....");
-    sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+    sfId = OurmUtils.getSalesForceId(request, userService);
   }
 
   /**
@@ -88,7 +102,44 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
-    return this.snapService.getUserHeaderMenu(sfId);
+    if (!snapService.enableCache()) {
+      // Get a chance to disable browser cache if needed.
+      return snapService.getUserHeaderMenu(sfId);
+    }
+
+    Cookie menuCache = request.getCookie("cacheMenu");
+    String cookieValueFromRequest = menuCache == null ? null : menuCache.getValue();
+    String cookieValueCurrentUser = userService.getUserUUID(sfId);
+
+    if (!StringUtils.isEmpty(cookieValueCurrentUser) &&
+        !StringUtils.isEmpty(cookieValueFromRequest) &&
+        cookieValueFromRequest.equals(cookieValueCurrentUser)) {
+      // Same user and well cached in browser
+      return "";
+    }
+
+    String headerMenu = this.snapService.getUserHeaderMenu(sfId);
+    if (StringUtils.isEmpty(headerMenu) ||
+        OurmUtils.isMenuEmpty(gson, headerMenu) ||
+        cookieValueCurrentUser != null) {
+      cookieValueCurrentUser = "FALSE";
+    }
+
+    Cookie finalCookie;
+    if (menuCache != null) {
+      // Update existing cookie value and send back
+      menuCache.setValue(cookieValueCurrentUser);
+      finalCookie = menuCache;
+    } else {
+      // Create new cookie and setback.
+      finalCookie= new Cookie("cacheMenu", cookieValueCurrentUser);
+    }
+    // set the cookie at root level.
+    finalCookie.setPath("/");
+    // set a default expire to 2 hour
+    finalCookie.setMaxAge(7200);
+    HttpUtils.addCookie(finalCookie, response);
+    return headerMenu;
   }
 
   @Override
@@ -99,6 +150,7 @@ public class HeaderModelImpl implements HeaderModel {
       String pageTitle = currentPage.getTitle();
       String templatePath = template.getPath();
       String contentType = CONTENT_TYPE_MAPPING.get(templatePath);
+      if (contentType == null) return null;
       return this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
     }
     return null;
@@ -109,5 +161,10 @@ public class HeaderModelImpl implements HeaderModel {
     String searchURLFromConfig = searchApiConfigService.getGlobalSearchURL();
     globalSearchURL = StringUtils.isBlank(searchURLFromConfig) ? DEFAULT_SEARCH_REDIRECT : searchURLFromConfig;
     return globalSearchURL;
+  }
+
+  @Override
+  public String userClientId() {
+    return userService.getUserUUID(sfId);
   }
 }

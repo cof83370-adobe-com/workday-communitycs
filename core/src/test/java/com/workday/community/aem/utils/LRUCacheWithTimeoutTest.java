@@ -1,6 +1,6 @@
 package com.workday.community.aem.utils;
 
-import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
+import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
 import org.junit.jupiter.api.Test;
 
 import static junit.framework.Assert.assertNotNull;

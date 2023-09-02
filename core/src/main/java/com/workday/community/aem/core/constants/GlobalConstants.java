@@ -73,4 +73,9 @@ public final class GlobalConstants {
    */
   public static final String READ_SERVICE_USER = "readserviceuser";
 
+  /**
+   * Admin service user
+   */
+  public static final String ADMIN_SERVICE_USER = "workday-community-administrative-service";
+  public static final String SERVICE_USER_GROUP = "adminusergroup";
 }

@@ -26,6 +26,12 @@
       width: 100% !important;
     }
 
+    @media only screen and (min-width: 1024px) {
+      atomic-search-layout {
+        grid-template-columns: 30px minmax(60%, 100%) !important;
+      }
+    }
+
     atomic-search-layout.grid-30 {
       grid-template-columns: 30px !important;
     }
@@ -134,10 +140,10 @@
       }
     }
 
-    .all-events {
+    .all-feeds {
       padding: 0 0 20px 10px !important;
 
-      .event-text {
+      .all-feeds-text {
         font-family: "Workday Adelle Sans";
         color: #0875E1 !important;
         font-size: 15px !important;

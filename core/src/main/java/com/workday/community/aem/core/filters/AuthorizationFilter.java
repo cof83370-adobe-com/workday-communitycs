@@ -2,15 +2,14 @@ package com.workday.community.aem.core.filters;
 
 import com.day.cq.wcm.api.constants.NameConstants;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.engine.EngineConstants;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
@@ -23,8 +22,6 @@ import javax.jcr.Session;
 import javax.servlet.*;
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import static com.workday.community.aem.core.constants.WccConstants.*;
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
@@ -45,11 +42,7 @@ import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
                 EngineConstants.SLING_FILTER_EXTENSIONS + "=html"
         })
 public class AuthorizationFilter implements Filter {
-
-    private static final Logger logger = LoggerFactory.getLogger(AuthorizationFilter.class);
-
-    @Reference
-    private ResourceResolverFactory resolverFactory;
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationFilter.class);
 
     @Reference
     private transient OktaService oktaService;
@@ -62,7 +55,7 @@ public class AuthorizationFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        logger.debug("AuthorizationFilter is initialized.");
+        LOGGER.debug("AuthorizationFilter is initialized.");
     }
 
     @Override
@@ -70,14 +63,12 @@ public class AuthorizationFilter implements Filter {
                          final FilterChain filterChain) throws IOException, ServletException {
         final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
         String pagePath = slingRequest.getRequestPathInfo().getResourcePath();
-        logger.debug("Request for {}, with selector {}.", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
-        logger.debug("AuthorizationFilter: Time before validating the user is {}.", new Date().getTime());
+        LOGGER.debug("Request for {}, with selector {}.", pagePath, slingRequest.getRequestPathInfo().getSelectorString());
+        LOGGER.debug("AuthorizationFilter: Time before validating the user is {}.", new Date().getTime());
         if (oktaService.isOktaIntegrationEnabled() &&
             pagePath.contains(WORKDAY_ROOT_PAGE_PATH) &&
             !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT) &&
             !pagePath.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
-            Map<String, Object> serviceParams = new HashMap<>();
-            serviceParams.put(ResourceResolverFactory.SUBSERVICE, WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
             ResourceResolver requestResourceResolver = slingRequest.getResourceResolver();
             Session userSession = requestResourceResolver.adaptTo(Session.class);
             if (userSession == null) {
@@ -85,41 +76,31 @@ public class AuthorizationFilter implements Filter {
                 return;
             }
             String userId = userSession.getUserID();
-            logger.debug("Current user is {}.", userId);
-            boolean isInValid = true;
-            ResourceResolver resourceResolver = null;
+            LOGGER.debug("Current user is {}.", userId);
+            boolean isValid = false;
             try {
-                resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
-                User user = userService.getUser(resourceResolver, userId);
+                User user = userService.getCurrentUser(slingRequest);
                 if (null != user && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
-                    isInValid = userGroupService.validateTheUser(resourceResolver, requestResourceResolver, pagePath);
+                    isValid = userGroupService.validateCurrentUser(slingRequest, pagePath);
                 }
-                if (isInValid) {
+                if (!isValid) {
                     ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
                     ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
                 }
-            } catch (LoginException | RepositoryException e) {
-                logger.error("---> Exception occurred in AuthorizationFilter: {}.", e.getMessage());
+            } catch (CacheException | RepositoryException e) {
+                LOGGER.error("---> Exception occurred in AuthorizationFilter: {}.", e.getMessage());
                 ((SlingHttpServletResponse) response).setStatus(SC_INTERNAL_SERVER_ERROR);
                 ((SlingHttpServletResponse) response).sendRedirect(WccConstants.ERROR_PAGE_PATH);
-            } catch (Exception e) {
-                logger.error("---> General Exception in validateTheUser function: {}.", e.getMessage());
-                ((SlingHttpServletResponse) response).setStatus(SC_INTERNAL_SERVER_ERROR);
-                ((SlingHttpServletResponse) response).sendRedirect(WccConstants.ERROR_PAGE_PATH);
-            } finally {
-                if (resourceResolver != null && resourceResolver.isLive()) {
-                    resourceResolver.close();
-                }
             }
         }
-        logger.debug("AuthorizationFilter:Time after validating the user  is {}.", new Date().getTime());
+        LOGGER.debug("AuthorizationFilter:Time after validating the user  is {}.", new Date().getTime());
         filterChain.doFilter(request, response);
     }
 
 
     @Override
     public void destroy() {
-        logger.debug("Destroy AuthorizationFilter.");
+        LOGGER.debug("Destroy AuthorizationFilter.");
     }
 
 }

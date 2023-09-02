@@ -50,7 +50,7 @@ public class HttpsURLConnectionService {
 	 * @return The api response
 	 */
     public HashMap<String, Object> send(String url, HashMap<String, String> header, String httpMethod, String payload) {
-        HashMap<String, Object> apiResponse = new HashMap<String, Object>();
+        HashMap<String, Object> apiResponse = new HashMap<>();
 
         try {
             HttpsURLConnection request = this.getHttpsURLConnection(url);

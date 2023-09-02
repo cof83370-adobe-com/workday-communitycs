@@ -1,5 +1,6 @@
 {
     "snapUrl":"$[env:snapUrl]",
+    "enableCache": "$[env:snapEnableCache;default=true]",
     "snapContextPath":"$[env:snapContextPath]",
     "snapContextApiToken":"$[secret:snapContextApiToken]",
     "snapContextApiKey":"$[secret:snapContextApiKey]",

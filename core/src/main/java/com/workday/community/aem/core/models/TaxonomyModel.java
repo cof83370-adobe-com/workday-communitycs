@@ -20,8 +20,6 @@ import com.workday.community.aem.core.utils.CommunityUtils;
 
 /**
  * The Class TaxonomyModel.
- * 
- * 
  * @author palla.pentayya
  */
 @Model(adaptables = { Resource.class,
@@ -55,7 +53,7 @@ public class TaxonomyModel {
     private Boolean hasContent = false;
 
     /**
-     * Inits the.
+     * Inits method.
      */
     @PostConstruct
     protected void init() {

@@ -21,6 +21,7 @@ import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoSourceApiService;
 import com.workday.community.aem.core.constants.RestApiConstants;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static com.workday.community.aem.core.constants.RestApiConstants.GET_API;
 
 /**
  * The Class CoveoSourceApiServiceImpl.
@@ -84,7 +85,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
 
     @Override
     public HashMap<String, Object> callApi() {
-        return restApiService.send(this.generateSourceApiUri(), generateHeader(), "GET", ""); 
+        return restApiService.send(this.generateSourceApiUri(), generateHeader(), GET_API, "");
     }
 
     @Override

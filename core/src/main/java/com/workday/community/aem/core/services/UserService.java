@@ -1,49 +1,40 @@
 package com.workday.community.aem.core.services;
 
-import java.util.List;
-import java.util.Map;
-
+import com.workday.community.aem.core.exceptions.CacheException;
 import org.apache.jackrabbit.api.security.user.User;
-import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.SlingHttpServletRequest;
 
 /**
  * The UserService interface.
  */
 public interface UserService {
+  /**
+   *
+   * @param request The sling request object.
+   * @return the current logged-in user.
+   */
+  User getCurrentUser(SlingHttpServletRequest request) throws CacheException;
 
-	/**
-	 * Get user.
-	 * 
-	 * @param userId The user id
-	 * @return The user
-	 */
-	User getUser(String userId);
+  /**
+   * Get user.
+   * @param serviceUserId The service user id
+   * @param userId   The user id
+   * @return The user
+   */
+  User getUser(String serviceUserId, String userId) throws CacheException;
 
-	/**
-	 * Get user.
-	 *
-	 * @param resourceResolver the ResourceResolver object.
-	 * @param userId The user id
-	 *
-	 * @return The user
-	 */
-	User getUser(ResourceResolver resourceResolver, String userId);
+  /**
+   *
+   * @param sfId the user's sf id.
+   * @return The user's UUID.
+   */
+  String getUserUUID(String sfId);
 
-    /**
-	 * Update user.
-	 *
-	 * @param userId The user id
-	 * @param fields The fields need update
-	 * @param groups The user groups
-	 */
-	void updateUser(String userId, Map<String, String> fields, List<String> groups);
-
-    /**
-	 * Delete user.
-	 *
-	 * @param userParam The user is or user path
-	 * @param isPath Is the user path
-	 */
-    void deleteUser(String userParam, boolean isPath);
-    
+  /**
+   * Delete the current user.
+   *
+   * @param request  The current sling request object.
+   * @param isPath   Is the user path
+   */
+  void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath) throws CacheException;
 }

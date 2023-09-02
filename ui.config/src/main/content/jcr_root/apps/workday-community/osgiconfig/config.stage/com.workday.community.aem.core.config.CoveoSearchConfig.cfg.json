@@ -11,5 +11,5 @@
     "userType": "$[env:coveoSearchUserType]",
     "tokenValidTime": 6000,
     "devMode": "$[env:devMode;default=false]",
-    "globalSearchURL": "https://stage-resourcecenter.workday.com/en-us/wrc/home/search.html"
+    "globalSearchURL": "$[env:globalSearchURL]"
 }

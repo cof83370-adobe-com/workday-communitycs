@@ -39,9 +39,6 @@ public class BookOperationsServiceImpl implements BookOperationsService {
     /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(BookOperationsServiceImpl.class);
 
-    /** The Constant SERVICE_USER. */
-    public static final String SERVICE_USER = "adminusergroup";
-
     /** The query service. */
     @Reference
     QueryService queryService;
@@ -86,7 +83,7 @@ public class BookOperationsServiceImpl implements BookOperationsService {
                     if (resolver.hasChanges()) {
                         resolver.commit();
                     }
-                    logger.trace("processBook...completeBookData %s", bookPathDataList);
+                    logger.trace("processBook...completeBookData {}", bookPathDataList);
                 }
             }
         } catch (RepositoryException | PersistenceException e) {

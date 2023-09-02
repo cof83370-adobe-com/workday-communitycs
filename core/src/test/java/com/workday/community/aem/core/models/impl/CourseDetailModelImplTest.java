@@ -66,7 +66,7 @@ public class CourseDetailModelImplTest {
         Gson gson = new Gson();
         JsonObject detailJson = gson.fromJson(detailResponse, JsonObject.class);
         lenient().when(lmsService.getCourseDetail("")).thenReturn(detailResponse);
-        lenient().when(userGroupService.checkLoggedInUserHasAccessControlTags(any(), anyList())).thenReturn(true);
+        lenient().when(userGroupService.validateCurrentUser(any(), anyList())).thenReturn(true);
         CourseDetailModel courseDetailModel = context.request().adaptTo(CourseDetailModel.class);
         assertNotNull(courseDetailModel);
         assertEquals(detailJson, courseDetailModel.getCourseDetailData());
