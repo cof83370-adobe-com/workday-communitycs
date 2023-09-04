@@ -105,11 +105,10 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getUserHeaderMenu(String sfId) {
-    String menuCacheKey =  String.format("header_menu_%s", sfId);
+    String menuCacheKey =  String.format("header_menu_%s_%s", getEnv(), sfId);
     if (!enableCache()) {
       serviceCacheMgr.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
     }
-
     String retValue = serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
       String snapUrl = config.snapUrl(), navApi = config.navApi(),
           apiToken = config.navApiToken(), apiKey = config.navApiKey();
@@ -175,7 +174,7 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public JsonObject getUserContext(String sfId) {
-    String cacheKey = String.format("user_context_%s", sfId);
+    String cacheKey = String.format("user_context_%s_%s", getEnv(), sfId);
     if (!enableCache()) {
       serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
@@ -207,11 +206,10 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public ProfilePhoto getProfilePhoto(String userId) {
-    String cacheKey = String.format("profile_photo_%s", userId);
+    String cacheKey = String.format("profile_photo_%s_%s", getEnv(), userId);
     if (!enableCache()) {
       serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
-
     return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
       String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
@@ -237,7 +235,7 @@ public class SnapServiceImpl implements SnapService {
    * @return The menu.
    */
   private JsonObject getDefaultHeaderMenu() {
-    String cacheKey = "default-menu";
+    String cacheKey = "default_menu_" + getEnv();
     if (!enableCache()) {
       serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
@@ -260,7 +258,7 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getUserProfile(String sfId) {
-    String cacheKey = String.format("user_profile-%s", sfId);
+    String cacheKey = String.format("user_profile_%s_%s", getEnv(), sfId);
     if (!enableCache()) {
       serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
@@ -286,7 +284,7 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
-    String cacheKey = String.format("%s.%s.%s", sfId, pageTitle, contentType);
+    String cacheKey = String.format("%s_%s.%s.%s", getEnv(), sfId, pageTitle, contentType);
     return serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), cacheKey, (key) -> {
       String profileData = getUserProfile(sfId);
       JsonObject digitalData = generateAdobeDigitalData(profileData);
@@ -423,7 +421,7 @@ public class SnapServiceImpl implements SnapService {
    * @return image data as string
    */
   private String getUserAvatar(String sfId) {
-    String cacheKey = String.format("user_avatar_%s", sfId);
+    String cacheKey = String.format("user_avatar_%s_%s", getEnv(), sfId);
 
     Object retVal = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       ProfilePhoto content = getProfilePhoto(sfId);
@@ -459,4 +457,10 @@ public class SnapServiceImpl implements SnapService {
 
     return res;
   }
+
+  private String getEnv() {
+    String env = this.runModeConfigService.getEnv();
+    return (env == null) ? "local" : env;
+  }
+
 }
