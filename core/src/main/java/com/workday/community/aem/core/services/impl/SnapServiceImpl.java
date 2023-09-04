@@ -425,7 +425,7 @@ public class SnapServiceImpl implements SnapService {
   private String getUserAvatar(String sfId) {
     String cacheKey = String.format("user_avatar_%s", sfId);
 
-    String retVal = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
+    Object retVal = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       ProfilePhoto content = getProfilePhoto(sfId);
       String encodedPhoto = "";
       String extension = "";
@@ -450,11 +450,13 @@ public class SnapServiceImpl implements SnapService {
         return "";
       }
     });
+    if (retVal == null) return "";
+    String res = (retVal instanceof JsonObject) ? gson.toJson(retVal) : retVal.toString();
 
-    if (StringUtils.isEmpty(retVal)) {
+    if (StringUtils.isEmpty(res) || res.equals("{}")) {
       serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
 
-    return retVal;
+    return res;
   }
 }
