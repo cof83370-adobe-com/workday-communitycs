@@ -25,7 +25,7 @@
             background: #fff;
             z-index: 999;
             margin-top: 0;
-            height: 100%;
+            height: auto;
         }
 
         .cmp-toc__item {
@@ -99,6 +99,31 @@
     .hide-modal {
         @media (max-width: $screen-small) {
             display: none;
+        }
+    }
+
+    &__skip {
+        display: inline-block;
+        position: absolute;
+        opacity: 0;
+        top: auto;
+        font-size: 12px;
+        text-decoration: underline;
+        font-weight: $font-weight-normal;
+        color: $wdc-color-french-vanilla-100 !important;
+        background-color: $wdc-color-licorice-500;
+        border-radius: 0 0 4px 4px;
+        border: 2px solid transparent;
+        padding: 4px 8px;
+        overflow: hidden;
+        z-index: -999;
+
+        &:focus {
+            opacity: 1;
+            z-index: 9999;
+            border-color: $wdc-color-french-vanilla-100;
+            outline: none;
+            position: inherit;
         }
     }
 }

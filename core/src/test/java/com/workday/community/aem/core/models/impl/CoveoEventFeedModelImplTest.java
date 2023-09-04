@@ -11,6 +11,7 @@ import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -34,7 +35,6 @@ import javax.jcr.Binary;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -62,6 +62,8 @@ public class CoveoEventFeedModelImplTest {
   SearchApiConfigService searchApiConfigService;
   @Mock
   SnapService snapService;
+  @Mock
+  UserService userService;
 
   private CoveoEventFeedModel coveoEventFeedModel;
 
@@ -74,6 +76,7 @@ public class CoveoEventFeedModelImplTest {
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
     context.registerService(SnapService.class, snapService);
     context.registerService(SlingHttpServletRequest.class, request);
+    context.registerService(UserService.class, userService);
     context.addModelsForClasses(CoveoEventFeedModelImpl.class);
 
     coveoEventFeedModel = context.getService(ModelFactory.class).createModel(res, CoveoEventFeedModel.class);
@@ -89,42 +92,42 @@ public class CoveoEventFeedModelImplTest {
 
     Value[] profileSId = new Value[] {new Value() {
       @Override
-      public String getString() throws ValueFormatException, IllegalStateException, RepositoryException {
+      public String getString() throws IllegalStateException {
         return "testSFId";
       }
 
       @Override
-      public InputStream getStream() throws RepositoryException {
+      public InputStream getStream() {
         return null;
       }
 
       @Override
-      public Binary getBinary() throws RepositoryException {
+      public Binary getBinary() {
         return null;
       }
 
       @Override
-      public long getLong() throws ValueFormatException, RepositoryException {
+      public long getLong() {
         return 0;
       }
 
       @Override
-      public double getDouble() throws ValueFormatException, RepositoryException {
+      public double getDouble() {
         return 0;
       }
 
       @Override
-      public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
+      public BigDecimal getDecimal() {
         return null;
       }
 
       @Override
-      public Calendar getDate() throws ValueFormatException, RepositoryException {
+      public Calendar getDate() {
         return null;
       }
 
       @Override
-      public boolean getBoolean() throws ValueFormatException, RepositoryException {
+      public boolean getBoolean() {
         return false;
       }
 
@@ -140,13 +143,12 @@ public class CoveoEventFeedModelImplTest {
     lenient().when(userManager.getAuthorizable(eq("userId"))).thenReturn(user);
     lenient().when(user.getProperty(eq(SnapConstants.PROFILE_SOURCE_ID))).thenReturn(profileSId);
 
-    JsonParser gsonParser = new JsonParser();
     String testData = "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
-    JsonObject userContext = gsonParser.parse(testData).getAsJsonObject();
+    JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");
 
     lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
-
+    lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
     JsonObject searchConfig = coveoEventFeedModel.getSearchConfig();
     assertEquals(5, searchConfig.size());
     assertEquals(searchConfig.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");

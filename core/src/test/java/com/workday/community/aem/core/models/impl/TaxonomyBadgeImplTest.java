@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.models.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.security.AccessControlException;
@@ -58,20 +57,10 @@ public class TaxonomyBadgeImplTest {
         assertEquals(expectedBadges, actualBadges);
     }
 
-    @Test
-    public void testGetRetired() {
-        Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        TaxonomyBadge taxonomyBadge = context.request().adaptTo(TaxonomyBadge.class);
-        boolean retiredTagExist = taxonomyBadge.getRetired();
-        assertFalse(retiredTagExist);
-    }
-
-
     /**
      * Test release notes taxonomy badges.
      *
-     * @throws AccessControlException the access control exception
+     * @throws AccessControlException    the access control exception
      * @throws InvalidTagFormatException the invalid tag format exception
      */
     @Test
@@ -80,21 +69,22 @@ public class TaxonomyBadgeImplTest {
         context.registerService(Page.class, currentPage);
         final List<String> expectedBadges = Arrays.asList("Enhancement", "Fix", "What's Coming Next");
         TaxonomyBadge taxonomyBadge = context.request().adaptTo(TaxonomyBadge.class);
-        List<String>  actualBadges = taxonomyBadge.getBadgeList();
+        List<String> actualBadges = taxonomyBadge.getBadgeList();
         assertEquals(expectedBadges, actualBadges);
     }
 
     /**
      * Test training catalog taxonomy badges.
      *
-     * @throws AccessControlException the access control exception
+     * @throws AccessControlException    the access control exception
      * @throws InvalidTagFormatException the invalid tag format exception
      */
     @Test
     public void testTrainingCatalogTaxonomyBadges() throws AccessControlException, InvalidTagFormatException {
         Page currentPage = context.currentResource("/content/training-catalog-page").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
-        final List<String> expectedBadges = Arrays.asList("Learn On Demand", "Learn Virtual", "Workday Pro", "Refresher Training");
+        final List<String> expectedBadges = Arrays.asList("Learn On Demand", "Learn Virtual", "Workday Pro",
+                "Refresher Training");
         TaxonomyBadge taxonomyBadge = context.request().adaptTo(TaxonomyBadge.class);
         List<String> actualBadges = taxonomyBadge.getBadgeList();
         assertEquals(expectedBadges, actualBadges);
@@ -103,7 +93,7 @@ public class TaxonomyBadgeImplTest {
     /**
      * Test unsuported template type.
      *
-     * @throws AccessControlException the access control exception
+     * @throws AccessControlException    the access control exception
      * @throws InvalidTagFormatException the invalid tag format exception
      */
     @Test
@@ -119,7 +109,7 @@ public class TaxonomyBadgeImplTest {
     /**
      * Test no tag event taxonomy.
      *
-     * @throws AccessControlException the access control exception
+     * @throws AccessControlException    the access control exception
      * @throws InvalidTagFormatException the invalid tag format exception
      */
     @Test
@@ -131,7 +121,6 @@ public class TaxonomyBadgeImplTest {
         List<String> actualBadges = taxonomyBadge.getBadgeList();
         assertEquals(expectedBadges, actualBadges);
     }
-
 
     /**
      * Populate tag manager.

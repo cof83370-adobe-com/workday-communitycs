@@ -27,26 +27,32 @@
         const acc = [];
 
         firstLevelItems.forEach(function(item) {
-          const parentElement = item.closest('.cmp-toc__item-link');
-          if (parentElement) {
-            acc.push(parentElement);
+          const siblingElement = item.nextElementSibling;
+          if (siblingElement && siblingElement.classList.contains('cmp-toc__chevron')) {
+            acc.push(siblingElement);
           }
         });
 
         const panel = document.getElementsByClassName('cmp-toc__group cmp-toc__secondlevellist');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
-                const setClasses = !this.classList.contains('active');
-                setClass(acc, 'active', 'remove');
+                const setClasses = !this.parentElement.classList.contains('active');
+                const accLinks = [];
+                acc.forEach(function(item) {
+                  const accParent = item.parentElement;
+                    accLinks.push(accParent);
+                });
+
+                setClass(accLinks, 'active', 'remove');
                 setClass(panel, 'show', 'remove');
                 if (setClasses) {
-                    this.classList.toggle('active');
-                    if(this.nextElementSibling) {
-                        this.nextElementSibling.classList.toggle('show');
-                        this.setAttribute('aria-expanded', true);
+                    this.parentElement.classList.toggle('active');
+                    if(this.parentElement.nextElementSibling) {
+                        this.parentElement.nextElementSibling.classList.toggle('show');
+                        this.parentElement.setAttribute('aria-expanded', true);
                     }
                 } else {
-                    this.setAttribute('aria-expanded', false);
+                    this.parentElement.setAttribute('aria-expanded', false);
                 }
             });
         }
@@ -63,9 +69,9 @@
         const acc = [];
 
         firstLevelItems.forEach(function(item) {
-          const parentElement = item.closest('.cmp-toc__item-link');
-          if (parentElement) {
-            acc.push(parentElement);
+          const siblingElement = item.nextElementSibling;
+          if (siblingElement && siblingElement.classList.contains('cmp-toc__chevron')) {
+            acc.push(siblingElement);
           }
         });
 
@@ -73,17 +79,23 @@
         const panel = document.getElementsByClassName('cmp-toc__group cmp-toc__thirdlevellist');
         for (var i = 0; i < acc.length; i++) {
             acc[i].addEventListener('click', function () {
-                const setClasses = !this.classList.contains('active');
-                setClass(acc, 'active', 'remove');
+                const setClasses = !this.parentElement.classList.contains('active');
+                const accLinks = [];
+                acc.forEach(function(item) {
+                  const accParent = item.parentElement;
+                    accLinks.push(accParent);
+                });
+
+                setClass(accLinks, 'active', 'remove');
                 setClass(panel, 'show', 'remove');
                 if (setClasses) {
-                    this.classList.toggle('active');
-                    if(this.nextElementSibling) {
-                        this.nextElementSibling.classList.toggle('show');
-                        this.setAttribute('aria-expanded', true);
+                    this.parentElement.classList.toggle('active');
+                    if(this.parentElement.nextElementSibling) {
+                        this.parentElement.nextElementSibling.classList.toggle('show');
+                        this.parentElement.setAttribute('aria-expanded', true);
                     }
                 } else {
-                    this.setAttribute('aria-expanded', false);
+                    this.parentElement.setAttribute('aria-expanded', false);
                 }
             });
         }

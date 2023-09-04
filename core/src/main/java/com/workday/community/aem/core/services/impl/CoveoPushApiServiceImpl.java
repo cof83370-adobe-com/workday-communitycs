@@ -95,28 +95,28 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
     @Override
     public HashMap<String, Object> callBatchUploadUri(String fileId) {
-        HashMap<String, String> header = new HashMap<String, String>();
+        HashMap<String, String> header = new HashMap<>();
         header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        return callApi(generateBatchUploadUri(fileId), header, "PUT", "");
+        return callApi(generateBatchUploadUri(fileId), header, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, "");
     }
 
     @Override
     public HashMap<String, Object> callCreateContainerUri() {
-        HashMap<String, String> containerHeader = new HashMap<String, String>();
+        HashMap<String, String> containerHeader = new HashMap<>();
         containerHeader.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
         containerHeader.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         containerHeader.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        return callApi(generateContainerUri(), containerHeader, "POST", "");
+        return callApi(generateContainerUri(), containerHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_POST, "");
     }
 
     @Override
     public Integer callDeleteAllItemsUri() {
         // Coveo reference https://docs.coveo.com/en/131/index-content/deleting-old-items-in-a-push-source.
-        HashMap<String, String> header = new HashMap<String, String>();
+        HashMap<String, String> header = new HashMap<>();
         header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header, "DELETE", "");
+        HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header, org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
         if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
             logger.error("Deleting all items from coveo failed with status code {}: {}.", response.get("statusCode"), response.get("response"));
         }
@@ -128,7 +128,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         // Coveo reference https://docs.coveo.com/en/171/index-content/deleting-an-item-and-optionally-its-children-in-a-push-source.
         HashMap<String, String> header = new HashMap<>();
         header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        HashMap<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header, "DELETE", "");
+        HashMap<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header, org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
         if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
             logger.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId, response.get("statusCode"), response.get("response"));
         }
@@ -137,7 +137,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
     @Override
     public HashMap<String, Object> callUploadFileUri(String uploadUri, HashMap<String, String> uploadFileHeader, List<Object> payload) {
-        return callApi(uploadUri, uploadFileHeader, "PUT", transformPayload(payload));
+        return callApi(uploadUri, uploadFileHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, transformPayload(payload));
     }
 
     @Override
@@ -185,7 +185,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
     @Override
     public String transformPayload(List<Object> payload) {
-        HashMap<String, Object> data = new HashMap<String, Object>();
+        HashMap<String, Object> data = new HashMap<>();
         data.put("addOrUpdate", payload);
         ObjectMapper mapperObj = new ObjectMapper();
         String transformedPayload = "";
@@ -201,7 +201,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
     @Override
     public HashMap<String, Object> transformCreateContainerResponse(String response) {
-        HashMap<String, Object> transformedResponse = new HashMap<String, Object>();
+        HashMap<String, Object> transformedResponse = new HashMap<>();
 
         ObjectMapper mapper = new ObjectMapper();
         JsonFactory factory = mapper.getFactory();
@@ -223,7 +223,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         HashMap<String, String> header;
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            header = objectMapper.readValue(requiredHeaders, new TypeReference<HashMap<String, String>>() {});
+            header = objectMapper.readValue(requiredHeaders, new TypeReference<>() {});
         } 
         catch (JsonProcessingException e) {
             logger.error("Generate requiredheader array failed: {}", e.getMessage());

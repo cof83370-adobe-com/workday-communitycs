@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -18,6 +20,7 @@ public class UUIDUtil {
    * @return the user's client id as UUID.
    */
   public static UUID getUserClientId(String email) {
+    if (StringUtils.isEmpty(email)) return null;
 
     byte[] name = Objects.requireNonNull(email, "name == null").getBytes(UTF8);
     MessageDigest md;

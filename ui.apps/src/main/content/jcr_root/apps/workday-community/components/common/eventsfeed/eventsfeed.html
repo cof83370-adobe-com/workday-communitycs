@@ -1,11 +1,11 @@
 <sly data-sly-use.model="com.workday.community.aem.core.models.CoveoEventFeedModel">
     <div class="cmp-eventsfeed-container">
-        <span id="eventTypesId" data-property="${properties.eventTypes}"></span>
-        <span id="rowsId" data-property="${properties.rows}"></span>
-        <span id="searchConfigId" data-model-search-config="${model.getSearchConfig}"></span>
-        <span id="sortCriteriaId" data-model-sort-criteria="${model.sortCriteria}"></span>
-        <span id="extraCriteriaId" data-model-extra-criteria="${model.extraCriteria}"></span>
-        <span id="eventCriteriaId" data-model-event-criteria="${model.eventCriteria}"></span>
+        <span id="eventFeedTypesId" data-property="${properties.eventTypes}"></span>
+        <span id="eventFeedRowsId" data-property="${properties.rows}"></span>
+        <span id="eventFeedSearchConfigId" data-model-search-config="${model.getSearchConfig}"></span>
+        <span id="eventFeedSortCriteriaId" data-model-sort-criteria="${model.sortCriteria}"></span>
+        <span id="eventFeedExtraCriteriaId" data-model-extra-criteria="${model.extraCriteria}"></span>
+        <span id="eventFeedCriteriaId" data-model-event-criteria="${model.eventCriteria}"></span>
 
         <div class="feature-event">
             <img class="feature-image" alt="feature event" src="${model.featureEvent.image}" />
@@ -41,8 +41,6 @@
                                 <style>
                                     .data-row {
                                         display: block;
-                                        width: max-content;
-                                        padding: 0 30px;
                                     }
 
                                     .data-row-left {
@@ -52,7 +50,7 @@
                                     }
 
                                     .data-row-right {
-                                        display: block;
+                                        display: table;
                                     }
 
                                     .field-left {
@@ -138,7 +136,9 @@
                                         <atomic-field-condition class="field" if-defined="commoneventstartdate">
                                             <atomic-result-date field="commoneventstartdate" format="ddd MMM, D YYYY"/>
                                         </atomic-field-condition>
-                                        <span> - </span>
+                                        <atomic-field-condition class="field" if-defined="commoneventstartdate">
+                                            <span> - </span>
+                                        </atomic-field-condition>
                                         <atomic-field-condition class="field" if-defined="commoneventenddate">
                                             <atomic-result-date field="commoneventenddate" format="ddd MMM, D YYYY"/>
                                         </atomic-field-condition>
@@ -186,7 +186,9 @@
                     let elem = elmCallback();
                     if (elem) {
                         clearTimeout(timeOutHandler);
-                        callback(elem);
+                        if (callback) {
+                            callback(elem);
+                        }
                     } else {
                         timeOutHandler = setTimeout(function () {
                             if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs) {
@@ -204,7 +206,7 @@
                 const main = async () => {
                     const tokenUrl = '/bin/search/token';
                     await customElements.whenDefined('atomic-search-interface');
-                    const searchConfigNode = document.getElementById("searchConfigId");
+                    const searchConfigNode = document.getElementById("eventFeedSearchConfigId");
                     const search_config = JSON.parse(searchConfigNode.getAttribute("data-model-search-config"));
                     let token = await getRequest(tokenUrl);
                     token = token['searchToken'];
@@ -216,12 +218,12 @@
                         return payload;
                     };
 
-                    const selectedEventType = document.getElementById('eventTypesId').getAttribute('data-property');
-                    let eventRows = document.getElementById('rowsId').getAttribute('data-property');
+                    const selectedEventType = document.getElementById('eventFeedTypesId').getAttribute('data-property');
+                    let eventRows = document.getElementById('eventFeedRowsId').getAttribute('data-property');
                     eventRows = Number(eventRows) > 3 ? Number(eventRows) : 3 ;
-                    const sortCriteria = document.getElementById("sortCriteriaId").getAttribute("data-model-sort-criteria");
-                    const extraCriteria = document.getElementById("extraCriteriaId").getAttribute("data-model-extra-criteria");
-                    const eventCriteria = document.getElementById("eventCriteriaId").getAttribute("data-model-event-criteria");
+                    const sortCriteria = document.getElementById("eventFeedSortCriteriaId").getAttribute("data-model-sort-criteria");
+                    const extraCriteria = document.getElementById("eventFeedExtraCriteriaId").getAttribute("data-model-extra-criteria");
+                    const eventCriteria = document.getElementById("eventFeedCriteriaId").getAttribute("data-model-event-criteria");
                     let facet = [];
                     let currentValues;
                     if (selectedEventType) {
@@ -240,7 +242,7 @@
                         }
                     ];
 
-                    const searchInterface = document.querySelector('atomic-search-interface');
+                    const searchInterface = document.getElementById('eventFeedSearchId');
                     await searchInterface.initialize({
                         accessToken: token,
                         searchHub: search_config["searchHub"],
@@ -290,8 +292,8 @@
 
                 // adjust the image width based on container width
                 const containerWidth = document.getElementsByClassName('eventsfeed')[0].clientWidth;
-                if (containerWidth < 360)  {
-                    document.getElementsByClassName('feature-image')[0].style.maxWidth = '160px';
+                if (containerWidth < 388)  {
+                    document.getElementsByClassName('feature-image')[0].style.display = 'none';
                 } else if (containerWidth < 640) {
                     document.getElementsByClassName('feature-image')[0].style.maxWidth = '280px';
                 }
@@ -317,6 +319,15 @@
                                     }
                                 }
                             })
+                    })
+
+                waitForElementToDisplay(
+                    () => {
+                        return document.getElementsByClassName('no-result-box')[0];
+                    }, (elm) => {
+                        if (elm) {
+                            elm.style.width = width + "px";
+                        }
                     })
             })
         </script>

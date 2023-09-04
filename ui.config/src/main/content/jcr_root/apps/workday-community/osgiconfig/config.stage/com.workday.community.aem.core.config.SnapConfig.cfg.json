@@ -1,5 +1,6 @@
 {
     "snapUrl":"$[env:snapUrl]",
+    "enableCache": "$[env:snapEnableCache;default=true]",
     "snapContextPath":"$[env:snapContextPath]",
     "snapContextApiToken":"$[secret:snapContextApiToken]",
     "snapContextApiKey":"$[secret:snapContextApiKey]",
@@ -12,7 +13,6 @@
     "navApiToken":"$[secret:navApiToken]",
     "navFallbackMenuData": "/content/dam/workday-community/resources/local-header-data.json",
     "navFallbackMenuServiceUser": "$[env:navFallbackMenuServiceUser;default=\"readserviceuser\"]",
-    "menuCacheMax": "$[env:navMenuCacheMax]",
     "menuCacheTimeout": "$[env:navMenuCacheTimeout]",
     "sfdcUserAvatarUrl": "$[env:sfdcUserAvatarUrl]",
     "sfdcUserAvatarToken": "$[secret:sfdcUserAvatarToken]",

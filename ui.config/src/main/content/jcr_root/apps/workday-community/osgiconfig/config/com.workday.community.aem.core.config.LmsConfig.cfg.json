@@ -4,5 +4,7 @@
     "lmsCourseDetailPath":"$[env:lmsCourseDetailPath]",
     "lmsAPIClientId":"$[secret:lmsAPIClientId]",
     "lmsAPIClientSecret":"$[secret:lmsAPIClientSecret]",
-    "lmsAPIRefreshToken":"$[secret:lmsAPIRefreshToken]"
+    "lmsAPIRefreshToken":"$[secret:lmsAPIRefreshToken]",
+    "lmsTokenCacheMax":10,
+    "lmsTokenCacheTimeout":3540000
 }

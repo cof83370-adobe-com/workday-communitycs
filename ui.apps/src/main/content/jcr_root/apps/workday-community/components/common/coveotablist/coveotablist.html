@@ -1,12 +1,12 @@
 <sly data-sly-use.model="com.workday.community.aem.core.models.CoveoTabListModel">
     <div class="multi-tab-container">
-        <span id="titleId"  data-comp-props-data="${properties.title}"></span>
-        <span id="rowsId" data-comp-props-data="${properties.rows}"></span>
-        <span id="feedUrlBaseId" data-comp-props-data="${model.feedUrlBase}"></span>
-        <span id="searchConfigId" data-model-search-config="${model.getSearchConfig}"></span>
-        <span id="productCriteriaId" data-product-criteria="${model.getProductCriteria}"></span>
-        <span id="selectedFieldsId" data-field-criteria="${model.getSelectedFields}"></span>
-        <span id="extraCriteriaDataId" data-extra-criteria="${model.getExtraCriteria}"></span>
+        <span id="tabListTitleId"  data-comp-props-data="${properties.title}"></span>
+        <span id="tabListRowsId" data-comp-props-data="${properties.rows}"></span>
+        <span id="tabListFeedUrlBaseId" data-comp-props-data="${model.feedUrlBase}"></span>
+        <span id="tabListSearchConfigId" data-model-search-config="${model.getSearchConfig}"></span>
+        <span id="tabListProductCriteriaId" data-product-criteria="${model.getProductCriteria}"></span>
+        <span id="tabListSelectedFieldsId" data-field-criteria="${model.getSelectedFields}"></span>
+        <span id="tabListExtraCriteriaDataId" data-extra-criteria="${model.getExtraCriteria}"></span>
         <h2 class="multi-tab-title">${model.compConfig.title}</h2>
         <!-- start of the tab -->
         <nav class="multi-tab-navbar" id="multiTabListContainerId" aria-label="Multi-tab navigation">
@@ -129,8 +129,8 @@
             </atomic-search-layout>
         </atomic-search-interface>
         <hr class="separator" />
-        <div class="all-events">
-            <span class="event-text"></span>
+        <div class="all-feeds">
+            <span class="all-feeds-text"></span>
         </div>
 
         <script type="module">
@@ -142,21 +142,21 @@
             } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
 
             //1 This should come from component editor dialog.
-            const compTitle = document.getElementById("titleId").getAttribute("data-comp-props-data");
-            let listRows = document.getElementById("rowsId").getAttribute("data-comp-props-data");
-            const productCriteria = document.getElementById("productCriteriaId").getAttribute("data-product-criteria");
-            const extraCriteria = document.getElementById("extraCriteriaDataId").getAttribute("data-extra-criteria");
+            const compTitle = document.getElementById("tabListTitleId").getAttribute("data-comp-props-data");
+            let listRows = document.getElementById("tabListRowsId").getAttribute("data-comp-props-data");
+            const productCriteria = document.getElementById("tabListProductCriteriaId").getAttribute("data-product-criteria");
+            const extraCriteria = document.getElementById("tabListExtraCriteriaDataId").getAttribute("data-extra-criteria");
             const compWidth = '100%';
             listRows = listRows ? listRows : 5;
 
             // 2 Field definition is from Coveo, (predefined in model/service?)
-            let search_fields = JSON.parse("[".concat(document.getElementById("selectedFieldsId").getAttribute("data-field-criteria")).concat("]"));
+            let search_fields = JSON.parse("[".concat(document.getElementById("tabListSelectedFieldsId").getAttribute("data-field-criteria")).concat("]"));
             if (search_fields.length === 1 && search_fields[0] === null) {
                 search_fields = [];
             }
             search_fields.forEach( field => field['dataExpression'] = field['dataExpression'] + productCriteria + extraCriteria);
             // 3 From the service
-            const search_config = JSON.parse(document.getElementById("searchConfigId").getAttribute("data-model-search-config"));
+            const search_config = JSON.parse(document.getElementById("tabListSearchConfigId").getAttribute("data-model-search-config"));
 
             function setActive(currentTab) {
                 if (!currentTab.className.includes("item-button-active")) {
@@ -172,8 +172,8 @@
                 }
 
                 // set active update all event
-                const allEventContainer = document.getElementsByClassName('event-text')[0];
-                const urlBase = document.getElementById("feedUrlBaseId").getAttribute("data-comp-props-data");
+                const allEventContainer = document.getElementsByClassName('all-feeds-text')[0];
+                const urlBase = document.getElementById("tabListFeedUrlBaseId").getAttribute("data-comp-props-data");
                 const innerHtml = "<a href=\"" + urlBase  + currentTab.textContent + "\">All " + currentTab.textContent + "</a>";
                 allEventContainer.innerHTML = innerHtml;
             }
@@ -427,7 +427,7 @@
                 const main = async () => {
                     let token = await getToken();
                     await customElements.whenDefined('atomic-search-interface');
-                    const searchInterface = document.querySelector('atomic-search-interface');
+                    const searchInterface = document.getElementById('multiTabSearchId');
                     await searchInterface.initialize({
                         accessToken: token,
                         searchHub: search_config["searchHub"],
@@ -493,6 +493,16 @@
                 main().then(() => {
                 });
             });
+          window.addEventListener('resize', () => {
+    		if (window.innerWidth <= 1023) {
+        		const main = async () => {
+            		const searchInterface = document.querySelector('atomic-search-interface');
+           		 	const engine = searchInterface.engine;
+            		await buildTabs(buildTab, engine);
+        		};
+        		main().then(() => {});
+    		}
+		});
         </script>
     </div>
 </sly>

@@ -30,14 +30,16 @@
         const isEventsPage = document.getElementsByClassName('eventspage');
         if(isEventsPage) {
             const hiddenEventStartDate = document.getElementById('hiddenEventStartDate');
-            const utcTimeString = hiddenEventStartDate.getAttribute('data-value');
-            const hiddenUserTimeZone = document.getElementById('hiddenUserTimeZone');
-            const timeZoneString = hiddenUserTimeZone.getAttribute('data-value') || Intl.DateTimeFormat().resolvedOptions().timeZone;
+            if (hiddenEventStartDate) {
+                const utcTimeString = hiddenEventStartDate.getAttribute('data-value');
+                const hiddenUserTimeZone = document.getElementById('hiddenUserTimeZone');
+                const timeZoneString = hiddenUserTimeZone.getAttribute('data-value') || Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-            if (utcTimeString) {
-                const localTime = convertUTCToLocal(utcTimeString, timeZoneString);
-                const eventDateElement = document.querySelector('.cmp-eventdetails__item-output') as HTMLElement;
-                eventDateElement.innerText = `${eventDateElement.innerText} (${localTime})`;
+                if (utcTimeString) {
+                    const localTime = convertUTCToLocal(utcTimeString, timeZoneString);
+                    const eventDateElement = document.querySelector('.cmp-eventdetails__item-output') as HTMLElement;
+                    eventDateElement.innerText = `${eventDateElement.innerText} (${localTime})`;
+                }
             }
         }
     }

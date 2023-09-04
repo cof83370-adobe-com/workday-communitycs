@@ -50,7 +50,7 @@ public class IndexServicesImpl implements IndexServices {
     /**
      * Create job with given list.
      *
-     * @param pagePaths
+     * @param pagePaths the page paths
      * @return created Job
      */
     protected Job createJobs(ArrayList<String> pagePaths) {
