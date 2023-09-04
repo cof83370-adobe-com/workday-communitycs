@@ -14,7 +14,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.utils.ResolverUtil;
@@ -24,9 +23,9 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 
 /**
  * The Class ComponentFilter.
@@ -41,26 +40,22 @@ import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
 public class ComponentFilter implements Filter {
 
     /** The Constant whiteList. */
-    static final String dynamicResourceTypePath = "workday-community/components/dynamic/";
+    static final String DYNAMIC_RESOURCE_TYPE_PATH = "workday-community/components/dynamic/";
 
     /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(ComponentFilter.class);
 
     /** The resolver factory. */
     @Reference
-    private transient ResourceResolverFactory resolverFactory;
+    private  ResourceResolverFactory resolverFactory;
 
     /** The user group service. */
     @Reference
-    private transient UserGroupService userGroupService;
+    private UserGroupService userGroupService;
 
     /** The run mode config service. */
     @Reference
     RunModeConfigService runModeConfigService;
-    /**
-     * The user service user.
-     */
-    public static final String READ_SERVICE_USER = "readserviceuser";
 
     /**
      * Inits the.
@@ -91,11 +86,11 @@ public class ComponentFilter implements Filter {
             SlingHttpServletRequest request = (SlingHttpServletRequest) servletRequest;
             String instance = runModeConfigService.getInstance();
             if (instance != null && instance.equals(PUBLISH)
-                    && request.getResource().getResourceType().contains(dynamicResourceTypePath)) {
+                    && request.getResource().getResourceType().contains(DYNAMIC_RESOURCE_TYPE_PATH)) {
                 Instant start = Instant.now();
                 try (ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory,
                         READ_SERVICE_USER)) {
-                    List<String> groupsList = userGroupService.getLoggedInUsersGroups(resolver);
+                    List<String> groupsList = userGroupService.getCurrentUserGroups(request);
                     ValueMap properties = request.getResource().getValueMap();
                     List<String> accessControlList = Arrays
                             .asList(properties.get("componentACLTags", new String[0]));
@@ -106,7 +101,7 @@ public class ComponentFilter implements Filter {
                             && CollectionUtils.isEmpty(groupsList)) {
                         return;
                     }
-                } catch (OurmException | LoginException e) {
+                } catch (LoginException e) {
                     logger.error("Exception retrieving Resource Resolver for path {}",
                             request.getResource().getPath());
                 }
