@@ -19,5 +19,5 @@
     "sfdcUserAvatarToken": "$[secret:sfdcUserAvatarToken]",
     "sfdcUserAvatarApiKey": "$[secret:sfdcUserAvatarApiKey]",
     "beta": "$[env:isBeta]",
-    "userProfileUrl": "https://dev-resourcecenter.workday.com/en-us/wrc/profile.html"
+    "userProfileUrl": "$[env:userProfileUrl]"
 }

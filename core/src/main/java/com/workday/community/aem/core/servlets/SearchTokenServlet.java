@@ -73,7 +73,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
    */
   @Override
   protected void doGet(SlingHttpServletRequest request,
-                       SlingHttpServletResponse response) throws ServletException {
+                       SlingHttpServletResponse response) {
     LOGGER.debug("Get search token call, method {}", request.getMethod());
     ServletCallback servletCallback = (SlingHttpServletRequest req,
         SlingHttpServletResponse res, String body) -> {
@@ -87,7 +87,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
 
     try {
       CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, userService, gson, objectMapper, servletCallback);
-    } catch (IOException e) {
+    } catch (IOException | ServletException e) {
       LOGGER.error("get Token fails with error: {}", e.getMessage());
     }
   }

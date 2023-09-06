@@ -198,10 +198,14 @@ public class RestApiUtil {
 
     try {
       HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-      LOGGER.debug("HTTP response code : {}", response.statusCode());
-      apiresponse.setResponseCode(response.statusCode());
-      LOGGER.debug("HTTP response : {}", response.body());
-      apiresponse.setResponseBody(response.body());
+      int resCode = response.statusCode();
+      String resBody = response.body();
+      if (resCode != HttpStatus.SC_OK && resCode != HttpStatus.SC_CREATED) {
+        LOGGER.debug("HTTP response code : {}", resCode);
+        LOGGER.debug("HTTP response : {}", resBody);
+      }
+      apiresponse.setResponseCode(resCode);
+      apiresponse.setResponseBody(resBody);
     } catch (IOException | InterruptedException e) {
       throw new APIException(
           String.format("Exception in executePostRequest method while executing the request = %s", e.getMessage()));

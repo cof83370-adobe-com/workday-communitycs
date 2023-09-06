@@ -25,7 +25,6 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -145,11 +144,8 @@ public class SearchTokenServletTest {
 
       mockHttpClients.when(HttpClients::createDefault).thenReturn(httpClient);
       when(httpClient.execute(any())).thenReturn(httpResponse);
-      try {
-        searchTokenServlet.doGet(request, response);
-      } catch (ServletException e) {
-        verify(response).setStatus(200);
-      }
+      searchTokenServlet.doGet(request, response);
+      verify(response).setStatus(200);
     }
   }
 
