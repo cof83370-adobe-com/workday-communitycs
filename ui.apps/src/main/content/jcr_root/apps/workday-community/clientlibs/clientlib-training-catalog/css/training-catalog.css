@@ -1,0 +1,43 @@
+#training-catalog-main {
+    margin-bottom: 32px;
+}
+
+#training-catalog-center-container {
+    .event-image-details {
+        margin-bottom: 0;
+    }
+}
+
+.cmp-handlebar-content {
+
+    .cmp-eventdetails {
+        padding-top: 32px;
+
+        .cmp-eventdetails__item-label {
+            margin: 0;
+        }
+
+        .cmp-eventdetails__item-output {
+            padding-left: 0;
+        }
+    }
+
+    .cmp-download {
+        margin-top: 32px;
+        flex-direction: row-reverse;
+        justify-content: left;
+
+        .cmp-download__title-link::before {
+            content: '';
+            margin-right: 0;
+        }
+    }
+
+    .cmp-text {
+        word-wrap: break-word;
+    }
+
+    .cmp-taxonomy__item-output {
+        word-wrap: break-word;
+    }
+}
