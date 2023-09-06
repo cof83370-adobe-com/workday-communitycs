@@ -272,7 +272,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
     }
 
     /**
-     * Adds the all tags and meta data.
+     * Adds the all tags and metadata.
      *
      * @param node        the node
      * @param valueMap    the value map

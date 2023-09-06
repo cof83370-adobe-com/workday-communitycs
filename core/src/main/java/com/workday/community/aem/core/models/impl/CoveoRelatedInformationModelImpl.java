@@ -130,7 +130,11 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   @Override
   public JsonObject getSearchConfig() {
     if (this.searchConfig == null) {
-      this.searchConfig = CoveoUtils.getSearchConfig(searchConfigService, request, snapService, userService);
+      this.searchConfig = CoveoUtils.getSearchConfig(
+          searchConfigService,
+          request,
+          snapService,
+          userService);
     }
     return this.searchConfig;
   }

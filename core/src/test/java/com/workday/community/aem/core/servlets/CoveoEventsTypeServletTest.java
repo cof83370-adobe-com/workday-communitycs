@@ -79,7 +79,7 @@ public class CoveoEventsTypeServletTest {
 
     try (MockedStatic<OurmUtils> ourmUtilsMock = mockStatic(OurmUtils.class);
     MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class)){
-      ourmUtilsMock.when(()-> OurmUtils.getSalesForceId(any())).thenReturn(DEFAULT_SFID_MASTER);
+      ourmUtilsMock.when(()-> OurmUtils.getSalesForceId(any(), any())).thenReturn(DEFAULT_SFID_MASTER);
       ourmUtilsMock.when(()-> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("test@workday.com");
 
       CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
@@ -102,7 +102,7 @@ public class CoveoEventsTypeServletTest {
       eventTypes.getValues().add(new EventTypeValue("test", "test"));
       lenient().when(objectMapper.readValue(inputStream, HashMap.class)).thenReturn(result);
       lenient().when(objectMapper.readValue(inputStream, EventTypes.class)).thenReturn(eventTypes);
-
+      lenient().when(searchApiConfigService.isDevMode()).thenReturn(true);
       coveoEventTypeServlet.setObjectMapper(this.objectMapper);
       try {
         coveoEventTypeServlet.doGet(request, response);
@@ -110,6 +110,7 @@ public class CoveoEventsTypeServletTest {
         // do nothing.
       }
 
+      lenient().when(searchApiConfigService.isDevMode()).thenReturn(false);
       lenient().when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn(CLOUD_CONFIG_NULL_VALUE);
       try {
         coveoEventTypeServlet.doGet(request, response);

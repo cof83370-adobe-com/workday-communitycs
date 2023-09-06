@@ -128,9 +128,6 @@ public class CoveoRelatedInformationModelTest {
 
   @Test
   public void testGetFacetFields() throws DamException {
-//    CoveoRelatedInformationModel relInfoModel = context.currentResource("/component/relatedinformation").adaptTo(CoveoRelatedInformationModel.class);
-//    ((CoveoRelatedInformationModelImpl)relInfoModel).init(request);
-
     List<String> facetFields = coveoRelatedInformationModel.getFacetFields();
     assertEquals(2, facetFields.size());
     assertEquals("coveo_product", facetFields.get(0));

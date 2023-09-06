@@ -1,4 +1,4 @@
-(function () {
+(function() {
     function showFeedbackContainer() {
         const no = document.getElementById('feedbackNoButtonId');
         const yes = document.getElementById('feedbackYesButtonId');
@@ -39,50 +39,50 @@
         dropdownMenu.classList.toggle('open');
         dropdowContainer.style.border = '2px solid #0875E1';
     }
-
-    function cancelFeedback() {
+	
+	function cancelFeedback() {
         const no = document.getElementById('feedbackNoButtonId');
-        const feedbackContainer = document.getElementById('feedback-form-Container');
-        feedbackContainer.style.display = 'none';
-        no.classList.remove('clicked');
-    }
+		const feedbackContainer = document.getElementById('feedback-form-Container');
+		feedbackContainer.style.display = 'none';
+		no.classList.remove('clicked');	
+	}
 
     function selectOption(option) {
         const selectedOption = document.querySelector('.feedback-dropdown-selected-option');
         selectedOption.textContent = option;
         toggleDropdown();
     }
-
-    function toggleButtonColor(button) {
-        button.classList.toggle('clicked');
-    }
-
-    const feedback = document.getElementById('feedback-component-container');
-    if (feedback) {
-        document.addEventListener('click', (event: MouseEvent) => {
+	document.addEventListener('click', (event: MouseEvent) => {
+        const container = document.getElementById('feedback-component-container');
+        if (container) {
             const dropdown = document.querySelector('.feedback-option-dropdown-toggle') as HTMLElement;
             const dropdownButton = document.getElementById('feedback-component-dropdownMenu') as HTMLElement;
             if (!dropdown.contains(event.target as Node) && event.target !== dropdownButton) {
                 dropdownButton.classList.remove('open');
             }
-        });
-
+        }
+	});
+	
+	const feedback = document.getElementById('feedback-component-container');
+	if(feedback) {
         const yesButton = document.getElementById('feedbackYesButtonId');
         const noButton = document.getElementById('feedbackNoButtonId');
-        const cancelButton = document.getElementById('feedback-form-cancel-button');
-        const submitButton = document.querySelector('.feedback-form-submit-button button');
+		const cancelButton = document.getElementById('feedback-form-cancel-button');
         const dropdownToggle = document.querySelector('.feedback-option-dropdown-toggle');
         yesButton.addEventListener('click', showSuccessImage);
         noButton.addEventListener('click', showFeedbackContainer);
         dropdownToggle.addEventListener('click', toggleDropdown);
-        cancelButton.addEventListener('click', cancelFeedback);
+		cancelButton.addEventListener('click', cancelFeedback);
 
         const dropdownOptions = document.querySelectorAll('.feedback-dropdown-option');
-        dropdownOptions.forEach(function (option) {
-            option.addEventListener('click', function () {
-                const optionText = option.textContent;
-                selectOption(optionText);
-            });
+        dropdownOptions.forEach(function(option) {
+            option.addEventListener('click', function() {
+                const container = document.getElementById('feedback-component-container');
+                if (container) {
+                    const optionText = option.textContent;
+                    selectOption(optionText);
+                }
+             });
         });
     }
 })();

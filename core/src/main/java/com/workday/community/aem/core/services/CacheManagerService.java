@@ -15,7 +15,7 @@ public interface CacheManagerService {
   /**
    * Get the cached value from the cache based on pass-in cache bucket number
    * and key. The cache bucket name is predefined in CacheBucketName class
-   * (@CacheBucketName), if not match, it will pick up CacheBuckerName.OBJECT_VALUE.
+   * (@CacheBucketName), if not match, it will pick up CacheBucketName.OBJECT_VALUE.
    * For the cache key, please follow a naming conversion and introduce
    * proper namespace as part of the key to prevent possible key collision. Also,
    * isPresented() method can be used to check if the cache is already existing.
@@ -26,7 +26,7 @@ public interface CacheManagerService {
    * @return The value from the cache for the pass-in cache key.
    * @param <V> The type of returned value.
    */
-   <V> V get(String cacheBucketName, String key, ValueCallback<String, V> callback);
+   <V> V get(String cacheBucketName, String key, ValueCallback<V> callback);
 
   /**
    * To check if a key is already presented in a cache with corresponding cache name.

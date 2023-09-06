@@ -57,7 +57,7 @@ public class RunModeConfigService {
     /**
      * Get publish instance domain.
      *
-     * @return The publish instance domain.
+     * @return The publishing instance domain.
      */
     public String getPublishInstanceDomain() {
         return config.publishInstanceDomain();

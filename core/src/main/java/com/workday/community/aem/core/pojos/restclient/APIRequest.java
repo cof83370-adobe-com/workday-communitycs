@@ -95,7 +95,7 @@ public class APIRequest {
     if (this.headers != null)
       headers.put(header, value);
     else {
-      headers = new HashMap<String, String>();
+      headers = new HashMap<>();
       headers.put(header, value);
     }
 
@@ -119,7 +119,7 @@ public class APIRequest {
     if (this.formData != null)
       formData.put(key, value);
     else {
-      formData = new HashMap<String, String>();
+      formData = new HashMap<>();
       formData.put(key, value);
     }
 

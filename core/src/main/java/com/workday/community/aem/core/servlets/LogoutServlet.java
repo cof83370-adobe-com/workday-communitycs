@@ -2,6 +2,7 @@ package com.workday.community.aem.core.servlets;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserService;
@@ -10,10 +11,8 @@ import org.apache.sling.api.auth.Authenticator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
-import org.apache.sling.auth.core.AuthUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -21,13 +20,11 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Session;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import com.workday.community.aem.core.constants.GlobalConstants;
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.HttpConstants.LOGIN_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
@@ -46,7 +43,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.APPLICAT
 public class LogoutServlet extends SlingAllMethodsServlet {
 
   /** The logger. */
-  private static final Logger logger = LoggerFactory.getLogger(LogoutServlet.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LogoutServlet.class);
 
   /** The OktaService. */
   @Reference
@@ -68,7 +65,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    logger.debug("initialize Logout service");
+    LOGGER.debug("initialize Logout service");
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
@@ -83,7 +80,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     boolean isOktaEnabled = oktaService.isOktaIntegrationEnabled();
 
     if (isOktaEnabled && StringUtils.isEmpty(oktaDomain)) {
-      logger.error("Okta domain and logout redirect Url are not configured, please contact admin.");
+      LOGGER.error("Okta domain and logout redirect Url are not configured, please contact admin.");
       return;
     }
 
@@ -93,23 +90,14 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     String[] deleteList = new String[] { LOGIN_COOKIE_NAME, COVEO_COOKIE_NAME };
     int count = HttpUtils.dropCookies(request, response, "/", deleteList);
     if (count == 0) {
-      logger.debug("no custom cookie to be dropped");
+      LOGGER.debug("no custom cookie to be dropped");
     }
 
     // 2: Invalid current AEM session
-    ResourceResolver resourceResolver = request.getResourceResolver();
-    if (resourceResolver != null) {
-      Session session = resourceResolver.adaptTo(Session.class);
-      // Delete user on publish instance.
-      if (session != null) {
-        String ins = runModeConfigService.getInstance();
-
-        if (ins != null && ins.equals(GlobalConstants.PUBLISH)) {
-          String userId = session.getUserID();
-          userService.deleteUser(userId, false);
-        }
-        session.logout();
-      }
+    try {
+      userService.invalidCurrentUser(request, false);
+    } catch (CacheException e) {
+      LOGGER.error("delete user from JCR cache failed during logout");
     }
     if (isOktaEnabled) {
       // case 3: Redirect to okta logout directly in case session expired.

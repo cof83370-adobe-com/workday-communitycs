@@ -9,6 +9,7 @@ import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -62,6 +63,9 @@ public class HeaderModelImplTest {
   @Mock
   Page currentPage;
 
+  @Mock
+  UserService userService;
+
   /**
    * RunModeConfig service.
    */
@@ -85,6 +89,7 @@ public class HeaderModelImplTest {
     context.registerService(RunModeConfigService.class, runModeConfigService);
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
     context.registerService(DrupalService.class, drupalService);
+    context.registerService(UserService.class, userService);
   }
 
   /**
@@ -93,6 +98,7 @@ public class HeaderModelImplTest {
   @Test
   void testGetUserHeaderMenu() {
     lenient().when(snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER)).thenReturn("");
+    lenient().when(snapService.enableCache()).thenReturn(true);
     HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
     assertEquals("", headerModel.getUserHeaderMenus());

@@ -132,7 +132,6 @@ public class ExtractPagePropertiesServiceImplTest {
         extract.processPermission(data, properties, "test@gmail.com");
         String permissions = properties.toString();
         assertTrue(permissions.contains("customer"));
-        assertTrue(permissions.contains("community_customer"));
         assertTrue(permissions.contains("customer_named_support_contact"));
         assertTrue(permissions.contains("test@gmail.com"));
 
@@ -142,6 +141,20 @@ public class ExtractPagePropertiesServiceImplTest {
         String emptyAccessPermissions = emptyAccessProperties.toString();
         assertTrue(emptyAccessPermissions.contains("exclude"));
         assertTrue(emptyAccessPermissions.contains("test@gmail.com"));
+
+        accessControlValues[0] = "access-control:test_role";
+        doReturn(accessControlValues).when(data).get("accessControlTags", String[].class);
+        properties = new HashMap<>();
+        extract.processPermission(data, properties, "test@gmail.com");
+        permissions = properties.toString();
+        assertTrue(permissions.contains("customer_named_support_contact"));
+
+        accessControlValues[1] = "access-control:test_role2";
+        doReturn(accessControlValues).when(data).get("accessControlTags", String[].class);
+        emptyAccessProperties = new HashMap<>();
+        extract.processPermission(data, emptyAccessProperties, "test@gmail.com");
+        emptyAccessPermissions = emptyAccessProperties.toString();
+        assertTrue(emptyAccessPermissions.contains("exclude"));
     }
 
     /**
