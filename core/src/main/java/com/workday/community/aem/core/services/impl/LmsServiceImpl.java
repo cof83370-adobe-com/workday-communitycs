@@ -21,7 +21,7 @@ import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.CommunityUtils;
-import com.workday.community.aem.core.utils.LRUCacheWithTimeout;
+import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.RestApiUtil;
 
 /**
@@ -107,10 +107,9 @@ public class LmsServiceImpl implements LmsService {
         } catch (LmsException | JsonSyntaxException e) {
             LOGGER.error("Error in getAPIToken method call :: {}", e.getMessage());
             throw new LmsException(
-                String.format(
-                    "Error while fetching the course detail token. Please contact Community Admin. error: %s",
-                    e.getMessage())
-            );
+                    String.format(
+                            "Error while fetching the course detail token. Please contact Community Admin. error: %s",
+                            e.getMessage()));
         }
     }
 
@@ -150,8 +149,9 @@ public class LmsServiceImpl implements LmsService {
             return StringUtils.EMPTY;
         } catch (LmsException | JsonSyntaxException e) {
             throw new LmsException(
-                String.format("There is an error while fetching the course detail. Please contact Community Admin. %s",
-                    e.getMessage()));
+                    String.format(
+                            "There is an error while fetching the course detail. Please contact Community Admin. %s",
+                            e.getMessage()));
         }
     }
 }

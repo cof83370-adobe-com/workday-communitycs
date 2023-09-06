@@ -5,6 +5,7 @@ import com.day.cq.wcm.api.Template;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.HeaderModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
@@ -50,6 +51,12 @@ public class HeaderModelImplTest {
   SnapService snapService;
 
   /**
+   * Drupal service object.
+   */
+  @Mock
+  DrupalService drupalService;
+
+  /**
    * Page service.
    */
   @Mock
@@ -77,6 +84,7 @@ public class HeaderModelImplTest {
     context.registerService(Page.class, currentPage);
     context.registerService(RunModeConfigService.class, runModeConfigService);
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
+    context.registerService(DrupalService.class, drupalService);
   }
 
   /**
@@ -125,7 +133,7 @@ public class HeaderModelImplTest {
     lenient().when(template.getPath()).thenReturn("/conf/workday-community/settings/wcm/templates/faq");
     lenient().when(currentPage.getTemplate()).thenReturn(template);
     lenient().when(currentPage.getTitle()).thenReturn(title);
-    lenient().when(snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER, title, title)).thenReturn(digitalDataString);
+    lenient().when(drupalService.getAdobeDigitalData(DEFAULT_SFID_MASTER, title, title)).thenReturn(digitalDataString);
     lenient().when(runModeConfigService.getInstance()).thenReturn("publish");
     String data = headerModel.getDataLayerData();
     assertTrue(data.contains(contactNumber));

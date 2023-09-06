@@ -16,6 +16,7 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -66,6 +67,12 @@ public class SnapServiceImpl implements SnapService {
   @Reference
   RunModeConfigService runModeConfigService;
 
+  /**
+   * The Drupal service.
+   */
+  @Reference
+  DrupalService drupalService;
+
   @Reference
   CacheManagerService serviceCacheMgr;
 
@@ -97,6 +104,11 @@ public class SnapServiceImpl implements SnapService {
     this.runModeConfigService = runModeConfigService;
   }
 
+  @Override
+  public void setDrupalService(DrupalService drupalService) {
+    this.drupalService = drupalService;
+  }
+
   // Following methods is for testing purpose
   public void setServiceCacheMgr(CacheManagerService serviceCacheMgr) {
     this.serviceCacheMgr = serviceCacheMgr;
@@ -104,7 +116,7 @@ public class SnapServiceImpl implements SnapService {
 
   @Override
   public String getUserHeaderMenu(String sfId) {
-    String menuCacheKey =  String.format("menu-%s", sfId);
+    String menuCacheKey = String.format("menu-%s", sfId);
 
     String retValue = serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
       String snapUrl = config.snapUrl(), navApi = config.navApi(),
@@ -113,9 +125,9 @@ public class SnapServiceImpl implements SnapService {
       if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi) ||
           StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
         // No Snap configuration provided, just return the default one.
-        logger.debug(String.format("there is no value " +
-                "for one or multiple configuration parameter: " +
-                "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
+        logger.debug(String.format("There is no value " +
+            "for one or multiple configuration parameter: " +
+            "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
             snapUrl, navApi, apiToken, apiKey));
         return gson.toJson(this.getDefaultHeaderMenu());
       }
@@ -233,7 +245,8 @@ public class SnapServiceImpl implements SnapService {
         // Reading the JSON File from DAM.
         return DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
       } catch (CacheException | DamException e) {
-        logger.error(String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s", e.getMessage()));
+        logger
+            .error(String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s", e.getMessage()));
         return new JsonObject();
       }
     });
@@ -265,17 +278,20 @@ public class SnapServiceImpl implements SnapService {
     String cacheKey = String.format("profile-%s", sfId);
     return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
-        String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
+        String url = CommunityUtils.formUrl(config.snapUrl(),
+            config.snapProfilePath());
         if (StringUtils.isNotBlank(url)) {
           url = String.format(url, sfId);
-          return RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
+          return RestApiUtil.doSnapGet(url, config.snapProfileApiToken(),
+              config.snapProfileApiKey());
         }
-      } catch (SnapException | JsonSyntaxException e) {
+      } catch (SnapException e) {
         logger.error("Error in getUserProfile method :: {}", e.getMessage());
       }
 
       logger
-          .error("User profile data is not fetched from the snap profile API call without error, please contact admin.");
+          .error(
+              "User profile data is not fetched from the snap profile API call without error, please contact admin.");
       return null;
     });
   }
@@ -385,7 +401,7 @@ public class SnapServiceImpl implements SnapService {
 
         // Populate profile photo information.
         JsonObject avatarObject = new JsonObject();
-        avatarObject.addProperty(SnapConstants.IMAGE_DATA_KEY, getUserAvatar(sfId));
+        avatarObject.addProperty(SnapConstants.IMAGE_DATA_KEY, this.drupalService.getUserProfileImage(sfId));
         profileObject.add(SnapConstants.AVATAR_KEY, avatarObject);
       }
     }

@@ -11,6 +11,7 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.utils.RestApiUtil;
@@ -61,6 +62,9 @@ public class SnapServiceImplTest {
 
   @Mock
   RunModeConfigService runModeConfigService;
+
+  @Mock
+  DrupalService drupalService;
 
   private final ObjectMapper objectMapper = new ObjectMapper();
 
@@ -113,10 +117,12 @@ public class SnapServiceImplTest {
       snapService.setServiceCacheMgr(cacheManagerService);
       snapService.setRunModeConfigService(runModeConfigService);
       snapService.setResourceResolverFactory(resResolverFactory);
+      snapService.setDrupalService(drupalService);
     }
 
     context.registerService(ResourceResolverFactory.class, resResolverFactory);
     context.registerService(RunModeConfigService.class, runModeConfigService);
+    context.registerService(DrupalService.class, drupalService);
     context.registerService(objectMapper);
     context.registerService(cacheManagerService);
     resource = mock(Resource.class);
@@ -232,7 +238,7 @@ public class SnapServiceImplTest {
     Rendition original = mock(Rendition.class);
     ResourceResolver resolverMock = mock(ResourceResolver.class);
     try (MockedStatic<ResolverUtil> staticMock = mockStatic(ResolverUtil.class);
-         MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+        MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       staticMock.when(() -> ResolverUtil.newResolver(eq(resResolverFactory), anyString())).thenReturn(resolverMock);
       lenient().when(resolverMock.getResource(any())).thenReturn(resource);
       lenient().when(resource.adaptTo(any())).thenReturn(asset);
@@ -327,7 +333,7 @@ public class SnapServiceImplTest {
     Rendition original = mock(Rendition.class);
     ResourceResolver resolverMock = mock(ResourceResolver.class);
     try (MockedStatic<ResolverUtil> staticMock = mockStatic(ResolverUtil.class);
-         MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+        MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       staticMock.when(() -> ResolverUtil.newResolver(eq(resResolverFactory), anyString())).thenReturn(resolverMock);
       lenient().when(resolverMock.getResource(any())).thenReturn(resource);
       lenient().when(resource.adaptTo(any())).thenReturn(asset);
@@ -358,7 +364,7 @@ public class SnapServiceImplTest {
       // With url and exception
       snapService.activate(snapConfig.get(1, 1));
       mocked.when(() -> RestApiUtil.doMenuGet(anyString(), anyString(),
-              anyString(), anyString()))
+          anyString(), anyString()))
           .thenThrow(new SnapException());
 
       String menuData2 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);

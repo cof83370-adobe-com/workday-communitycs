@@ -5,6 +5,7 @@ import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
 import com.workday.community.aem.core.models.HeaderModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
@@ -68,6 +69,13 @@ public class HeaderModelImpl implements HeaderModel {
   @OSGiService
   SnapService snapService;
 
+  /**
+   * The Drupal service.
+   */
+  @NotNull
+  @OSGiService
+  DrupalService drupalService;
+
   /** The run mode config service. */
   @OSGiService
   RunModeConfigService runModeConfigService;
@@ -107,13 +115,13 @@ public class HeaderModelImpl implements HeaderModel {
 
     if (!StringUtils.isEmpty(value)) {
       // Same user and well cached in browser
-      if (value.equals(userService.getUserUUID(sfId))) return "";
+      if (value.equals(userService.getUserUUID(sfId)))
+        return "";
     }
 
     String ret = this.snapService.getUserHeaderMenu(sfId);
     Cookie cacheMenuCookie = new Cookie("cacheMenu",
-        StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret) ?
-            "FALSE" : userService.getUserUUID(sfId));
+        StringUtils.isEmpty(ret) || OurmUtils.isMenuEmpty(gson, ret) ? "FALSE" : userService.getUserUUID(sfId));
     HttpUtils.addCookie(cacheMenuCookie, response);
 
     return ret;
@@ -127,7 +135,7 @@ public class HeaderModelImpl implements HeaderModel {
       String pageTitle = currentPage.getTitle();
       String templatePath = template.getPath();
       String contentType = CONTENT_TYPE_MAPPING.get(templatePath);
-      return this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
+      return this.drupalService.getAdobeDigitalData(sfId, pageTitle, contentType);
     }
     return null;
   }

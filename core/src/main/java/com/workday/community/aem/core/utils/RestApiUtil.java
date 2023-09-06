@@ -2,6 +2,7 @@ package com.workday.community.aem.core.utils;
 
 import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.exceptions.APIException;
+import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.exceptions.SnapException;
@@ -217,7 +218,7 @@ public class RestApiUtil {
   }
 
   /**
-   * Builds the form data for post call.
+   * Builds the form url encoded data for post call.
    * 
    * @param data Map with input data
    * @return Body publisher
@@ -301,6 +302,71 @@ public class RestApiUtil {
     } catch (APIException e) {
       throw new LmsException(
           String.format("Exception in doLmsCourseDetailGet method while executing the request = %s", e.getMessage()));
+    }
+  }
+
+  /**
+   * Frames the Drupal Token call request.
+   * 
+   * @param url      Url
+   * @param username Client Id
+   * @param password Client Secret
+   * @return API Request
+   */
+  private static APIRequest getDrupalTokenRequest(String url, String clientId, String clientSecret) {
+    APIRequest apiRequestInfo = new APIRequest();
+
+    apiRequestInfo.setUrl(url);
+    apiRequestInfo.addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_URL_ENCODED)
+        .addFormData(RestApiConstants.GRANT_TYPE, RestApiConstants.CLIENT_CREDENTIALS)
+        .addFormData(RestApiConstants.CLIENT_ID, clientId)
+        .addFormData(RestApiConstants.CLIENT_SECRET, clientSecret);
+
+    return apiRequestInfo;
+  }
+
+  /**
+   * Frames the request and gets the response.
+   * 
+   * @param url          Url
+   * @param clientId     Client Id
+   * @param clientSecret Client Secret
+   * @return API Response
+   * @throws DrupalException DrupalException object.
+   */
+  public static APIResponse doDrupalTokenGet(String url, String clientId, String clientSecret) throws DrupalException {
+    try {
+      // Construct the request header.
+      LOGGER.debug("RestAPIUtil: Calling REST doDrupalTokenGet()...= {}", url);
+      APIRequest req = getDrupalTokenRequest(url, clientId, clientSecret);
+      return executePostRequest(req);
+    } catch (APIException e) {
+      throw new DrupalException(
+          String.format("Exception in doDrupalTokenGet method while executing the request = %s", e.getMessage()));
+    }
+  }
+
+  /**
+   * Frames the Drupal API user data get request.
+   * 
+   * @param url         Url
+   * @param bearerToken Bearer Token
+   * @return API Response
+   * @throws DrupalException DrupalException object.
+   */
+  public static APIResponse doDrupalUserDataGet(String url, String bearerToken) throws DrupalException {
+    try {
+      APIRequest apiRequestInfo = new APIRequest();
+
+      apiRequestInfo.setUrl(url);
+      apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
+          .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
+          .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+
+      return executeGetRequest(apiRequestInfo);
+    } catch (APIException e) {
+      throw new DrupalException(
+          String.format("Exception in doDrupalUserDataGet method while executing the request = %s", e.getMessage()));
     }
   }
 }

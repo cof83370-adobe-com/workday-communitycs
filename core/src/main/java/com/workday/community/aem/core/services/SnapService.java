@@ -35,6 +35,13 @@ public interface SnapService {
   void setRunModeConfigService(RunModeConfigService runModeConfigService);
 
   /**
+   * @param drupalService DrupalService object. This method is used
+   *                      to explicitly pass the
+   *                      drupalService to the snap logic service
+   */
+  void setDrupalService(DrupalService drupalService);
+
+  /**
    * @param sfId Salesforce Id.
    * @return The menu object as a string for common nav menus in the global header
    *         of the page.
@@ -50,7 +57,7 @@ public interface SnapService {
   /**
    * @param sfId Salesforce Id.
    * @return The profile avatar icon data used for the profile in the global
-   * header of the page.
+   *         header of the page.
    */
   ProfilePhoto getProfilePhoto(String sfId);
 

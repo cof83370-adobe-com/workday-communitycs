@@ -1,16 +1,19 @@
 package com.workday.community.aem.core.services.impl;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
+import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.PageUtils;
@@ -60,6 +63,12 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     @Reference
     SnapService snapService;
+
+    /**
+     * The drupal service.
+     */
+    @Reference
+    DrupalService drupalService;
 
     @Reference
     ResourceResolverFactory resourceResolverFactory;
@@ -125,8 +134,10 @@ public class UserGroupServiceImpl implements UserGroupService {
             String sfId = values != null && values.length > 0 ? values[0].getString() : null;
             if (sfId != null) {
                 logger.debug("user  sfid {} ", sfId);
-                Node userNode = Objects.requireNonNull(resourceResolver.getResource(user.getPath())).adaptTo(Node.class);
-                if (Objects.requireNonNull(userNode).hasProperty(ROLES) && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
+                Node userNode = Objects.requireNonNull(resourceResolver.getResource(user.getPath()))
+                        .adaptTo(Node.class);
+                if (Objects.requireNonNull(userNode).hasProperty(ROLES)
+                        && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
                         userNode.getProperty(ROLES).getString().split(";").length > 0) {
                     userRole = userNode.getProperty(ROLES).getString();
                     groupIds = List.of(userRole.split(";"));
@@ -135,7 +146,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                     serviceParams.put(ResourceResolverFactory.SUBSERVICE, WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
                     jcrSessionResourceResolver = resourceResolverFactory.getServiceResourceResolver(serviceParams);
                     jcrSession = jcrSessionResourceResolver.adaptTo(Session.class);
-                    groupIds = this.getUserGroupsFromSnap(sfId);
+                    groupIds = this.getUserGroupsFromDrupal(sfId);
                     userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
                     Objects.requireNonNull(jcrSession).save();
                 }
@@ -311,5 +322,27 @@ public class UserGroupServiceImpl implements UserGroupService {
             logger.error("---> Exception in checkLoggedInUserHasAccessControlTags method: {}.", e.getMessage());
         }
         return false;
+    }
+
+    /**
+     * Get user groups from Drupal API.
+     *
+     * @param sfId User's Salesforce id.
+     * @return List of user groups from Drupal.
+     */
+    protected List<String> getUserGroupsFromDrupal(String sfId) {
+        List<String> groups = new ArrayList<>();
+        try {
+            Gson gson = new Gson();
+            String userData = drupalService.getUserData(sfId);
+            JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
+            JsonArray rolesArray = userDataObject.getAsJsonArray("roles");
+            for (int i = 0; i < rolesArray.size(); i++) {
+                groups.add(rolesArray.get(i).getAsString());
+            }
+        } catch (DrupalException e) {
+            logger.error("---> Exception in getUserGroupsFromDrupal method: {}.", e.getMessage());
+        }
+        return groups;
     }
 }

@@ -1,0 +1,7 @@
+{
+    "drupalApiUrl":"$[env:drupalApiUrl]",
+    "drupalTokenPath":"$[env:drupalTokenPath]",
+    "drupalUserDataPath":"$[env:drupalUserDataPath]",
+    "drupalApiClientId":"$[secret:drupalApiClientId]",
+    "drupalApiClientSecret":"$[secret:drupalApiClientSecret]"
+}

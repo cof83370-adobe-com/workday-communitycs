@@ -3,12 +3,17 @@ package com.workday.community.aem.core.services.impl;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.exceptions.OurmException;
+import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
+import com.workday.community.aem.core.utils.RestApiUtil;
+
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.resource.LoginException;
@@ -46,6 +51,9 @@ class UserGroupServiceImplTest {
 
     @Mock
     SnapService snapService;
+
+    @Mock
+    DrupalService drupalService;
 
     /**
      * The SnapConfig.
@@ -133,7 +141,7 @@ class UserGroupServiceImplTest {
         when(mockNode.hasProperty("roles")).thenReturn(false);
 
         UserGroupServiceImpl userGroupServiceMock = Mockito.spy(userGroupService);
-        doReturn(testSfGroups).when(userGroupServiceMock).getUserGroupsFromSnap(userId);
+        doReturn(testSfGroups).when(userGroupServiceMock).getUserGroupsFromDrupal(userId);
 
         when(resourceResolverFactory.getServiceResourceResolver(any())).thenReturn(jcrSessionResourceResolver);
 
@@ -145,7 +153,7 @@ class UserGroupServiceImplTest {
     }
 
     @Test
-    void testCustomerRoles() throws NoSuchFieldException, IllegalAccessException {
+    void testCustomerRoles() throws NoSuchFieldException, IllegalAccessException, DrupalException {
         HashMap<String, String> customerRoleMap = new HashMap<>();
         customerRoleMap.put("Named Support Contact", "customer_name_support_contact");
         customerRoleMap.put("Training Coordinator", "customer_training_coordinator");
@@ -169,26 +177,12 @@ class UserGroupServiceImplTest {
         wspField.set(userGroupService, wspMap);
 
         String SF_ID = "test=123";
-        JsonObject context = new JsonObject();
-        JsonObject contextInfoObj = new JsonObject();
-        contextInfoObj.addProperty("contactRole", "Named Support Contact;Training Coordinator");
-        contextInfoObj.addProperty("type", "customer");
-        contextInfoObj.addProperty("isWorkmate", false);
-        JsonObject contactInformationObj = new JsonObject();
-        contactInformationObj.addProperty("propertyAccess", "Community");
-        contactInformationObj.addProperty("customerOf", "Adaptive Planning;VNDLY");
-        contactInformationObj.addProperty("wsp", "Customer - WSP Enhanced");
-        context.add("contextInfo", contextInfoObj);
-        context.add("contactInformation", contactInformationObj);
-        when(snapService.getUserContext(SF_ID)).thenReturn(context);
-        List<String> groups = userGroupService.getUserGroupsFromSnap(SF_ID);
+        String userDataResponse = "{\"roles\":[\"authenticated\",\"customer_adaptive\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
+        when(drupalService.getUserData(SF_ID)).thenReturn(userDataResponse);
+        List<String> groups = userGroupService.getUserGroupsFromDrupal(SF_ID);
         assertTrue(groups.contains("authenticated"));
         assertTrue(groups.contains("customer_adaptive"));
-        assertTrue(groups.contains("customer_vndly"));
-        assertTrue(groups.contains("customer_wsp_enhanced"));
-        assertTrue(groups.contains("customer_name_support_contact"));
-        assertTrue(groups.contains("customer_training_coordinator"));
-        assertTrue(groups.contains("customer_all"));
+
     }
 
     @Test

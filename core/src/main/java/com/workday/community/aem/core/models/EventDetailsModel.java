@@ -16,7 +16,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.workday.community.aem.core.constants.EventDetailsConstants;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.exceptions.DrupalException;
+import com.workday.community.aem.core.services.DrupalService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -92,13 +93,13 @@ public class EventDetailsModel {
 	@Inject
 	private ResourceResolver resolver;
 
-	/** The Snap Service */
+	/** The Drupal Service */
 	@Inject
-	private SnapService snapService;
+	private DrupalService drupalService;
 
 	/** The Sling Http Servlet Request */
 	@Self
-  	private SlingHttpServletRequest request;
+	private SlingHttpServletRequest request;
 
 	/**
 	 * Inits the model.
@@ -125,18 +126,28 @@ public class EventDetailsModel {
 
 	/**
 	 * Populates User TimeZone
+	 * 
 	 * @return user time zone string
 	 */
 	private String populateUserTimeZone() {
 		String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
 		String timeZoneStr = "";
 		Gson gson = new Gson();
-		if(StringUtils.isNotBlank(sfId) && null != snapService) {
-			String profileData = snapService.getUserProfile(sfId);
-			if(StringUtils.isNotBlank(profileData)){
-				JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
-        		JsonElement timeZoneElement = profileObject.get("timeZone");
-        		timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" : timeZoneElement.getAsString();
+		if (StringUtils.isNotBlank(sfId) && null != drupalService) {
+			try {
+				String userData = drupalService.getUserData(sfId);
+				if (StringUtils.isNotBlank(userData)) {
+					JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
+					JsonObject adobeObject = userDataObject.getAsJsonObject("adobe");
+					// Process user data
+					JsonObject userObject = adobeObject.getAsJsonObject("user");
+					JsonElement timeZoneElement = userObject.get("timeZone");
+					timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? ""
+							: timeZoneElement.getAsString();
+				}
+			} catch (DrupalException e) {
+				logger.error("Exception occurred at populateUserTimeZone method of EventDetailsModel:{} ",
+						e.getMessage());
 			}
 		}
 		return timeZoneStr;
