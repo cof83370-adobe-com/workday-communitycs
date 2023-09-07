@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,7 +16,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,8 +85,8 @@ public class EventDetailsModelTest {
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
         context.registerService(DrupalService.class, drupalService);
-        String userDataResponse = "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"123\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/New_York\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
-        lenient().when(drupalService.getUserData(anyString())).thenReturn(userDataResponse);
+        String timeZoneResponse = "{\"timeZone\":\"America/New_York\"}";
+        lenient().when(drupalService.getUserTimezone(anyString())).thenReturn(timeZoneResponse);
     }
 
     /**

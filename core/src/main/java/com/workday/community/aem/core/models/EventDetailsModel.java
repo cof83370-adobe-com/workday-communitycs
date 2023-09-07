@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.workday.community.aem.core.constants.EventDetailsConstants;
-import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.UserService;
 
@@ -136,26 +135,10 @@ public class EventDetailsModel {
 	 */
 	private String populateUserTimeZone() {
 		String sfId = OurmUtils.getSalesForceId(request, userService);
-		String timeZoneStr = "";
-		Gson gson = new Gson();
 		if (StringUtils.isNotBlank(sfId) && null != drupalService) {
-			try {
-				String userData = drupalService.getUserData(sfId);
-				if (StringUtils.isNotBlank(userData)) {
-					JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
-					JsonObject adobeObject = userDataObject.getAsJsonObject("adobe");
-					// Process user data
-					JsonObject userObject = adobeObject.getAsJsonObject("user");
-					JsonElement timeZoneElement = userObject.get("timeZone");
-					timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? ""
-							: timeZoneElement.getAsString();
-				}
-			} catch (DrupalException e) {
-				logger.error("Exception occurred at populateUserTimeZone method of EventDetailsModel:{} ",
-						e.getMessage());
-			}
+			return drupalService.getUserTimezone(sfId);
 		}
-		return timeZoneStr;
+		return StringUtils.EMPTY;
 	}
 
 	/**

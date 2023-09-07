@@ -39,6 +39,14 @@ public interface DrupalService {
     String getUserProfileImage(String sfId);
 
     /**
+     * Gets the user timezone data from drupal user data API
+     * 
+     * @param sfId SFID
+     * @return timezone as string
+     */
+    String getUserTimezone(String sfId);
+
+    /**
      * Gets the adobe data to be set on digital data object on frontend.
      * 
      * @param sfId        SFID.

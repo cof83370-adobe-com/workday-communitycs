@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -11,7 +10,6 @@ import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
-import com.workday.community.aem.core.pojos.ProfilePhoto;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.CacheBucketName;
@@ -36,17 +34,6 @@ import org.slf4j.LoggerFactory;
 import org.apache.http.HttpStatus;
 
 import java.util.Date;
-import java.util.regex.PatternSyntaxException;
-
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.IS_NSC;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.NSC;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 
 /**
@@ -216,31 +203,6 @@ public class SnapServiceImpl implements SnapService {
     return ret;
   }
 
-  @Override
-  public ProfilePhoto getProfilePhoto(String userId) {
-    String cacheKey = String.format("profile_photo_%s_%s", getEnv(), userId);
-    if (!enableCache()) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
-    }
-    return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
-      String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
-      String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
-      url = String.format(url, userId);
-
-      try {
-        logger.info("SnapImpl: Calling SNAP getProfilePhoto(), url is {}", url);
-        String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(), config.sfdcUserAvatarApiKey());
-        if (jsonResponse != null) {
-          ObjectMapper objectMapper = new ObjectMapper();
-          return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
-        }
-      } catch (SnapException | JsonProcessingException e) {
-        logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
-      }
-      return null;
-    });
-  }
-
   /**
    * Get default header menu.
    *
@@ -270,52 +232,6 @@ public class SnapServiceImpl implements SnapService {
   }
 
   @Override
-  public String getUserProfile(String sfId) {
-    String cacheKey = String.format("user_profile_%s_%s", getEnv(), sfId);
-    if (!enableCache()) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
-    }
-    Object userProfile = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
-      try {
-        String url = CommunityUtils.formUrl(config.snapUrl(),
-            config.snapProfilePath());
-        if (StringUtils.isNotBlank(url)) {
-          url = String.format(url, sfId);
-          return RestApiUtil.doSnapGet(url, config.snapProfileApiToken(),
-              config.snapProfileApiKey());
-        }
-      } catch (SnapException e) {
-        logger.error("Error in getUserProfile method :: {}", e.getMessage());
-      }
-
-      logger
-          .error(
-              "User profile data is not fetched from the snap profile API call without error, please contact admin.");
-      return null;
-    });
-
-    if (userProfile == null)
-      return null;
-    return (userProfile instanceof JsonObject) ? gson.toJson(userProfile) : userProfile.toString();
-  }
-
-  @Override
-  public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
-    String cacheKey = String.format("%s_%s.%s.%s", getEnv(), sfId, pageTitle, contentType);
-    return serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), cacheKey, (key) -> {
-      String profileData = getUserProfile(sfId);
-      JsonObject digitalData = generateAdobeDigitalData(profileData);
-
-      JsonObject pageProperties = new JsonObject();
-      pageProperties.addProperty(CONTENT_TYPE, contentType);
-      pageProperties.addProperty(PAGE_NAME, pageTitle);
-
-      digitalData.add("page", pageProperties);
-      return String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
-    });
-  }
-
-  @Override
   public boolean enableCache() {
     return this.config.enableCache();
   }
@@ -334,63 +250,6 @@ public class SnapServiceImpl implements SnapService {
     }
 
     return gson.toJson(sfNavObj);
-  }
-
-  /**
-   * Generate adobe digital data.
-   * 
-   * @param profileData The user profile api response as string.
-   * @return The digital data.
-   */
-  private JsonObject generateAdobeDigitalData(String profileData) {
-    JsonObject digitalData = new JsonObject();
-    JsonObject userProperties = new JsonObject();
-    JsonObject orgProperties = new JsonObject();
-    String contactRole = "";
-    String contactNumber = "";
-    String accountID = "";
-    String accountName = "";
-    String accountType = "";
-    boolean isNSC = false;
-    String timeZoneStr = "";
-    if (profileData != null) {
-      try {
-        JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
-        JsonElement contactRoleElement = profileObject.get(CONTACT_ROLE);
-        contactRole = (contactRoleElement == null || contactRoleElement.isJsonNull()) ? ""
-            : contactRoleElement.getAsString();
-        JsonElement contactNumberElement = profileObject.get(CONTACT_NUMBER);
-        contactNumber = (contactRoleElement == null || contactNumberElement.isJsonNull()) ? ""
-            : contactNumberElement.getAsString();
-        isNSC = contactRole.contains(NSC);
-        JsonElement wrcOrgId = profileObject.get("wrcOrgId");
-        accountID = (wrcOrgId == null || wrcOrgId.isJsonNull()) ? "" : wrcOrgId.getAsString();
-        JsonElement organizationName = profileObject.get("organizationName");
-        accountName = (organizationName == null || organizationName.isJsonNull()) ? "" : organizationName.getAsString();
-        JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-        boolean isWorkdayMate = isWorkmateElement != null && !isWorkmateElement.isJsonNull() &&
-            isWorkmateElement.getAsBoolean();
-        JsonElement typeElement = profileObject.get("type");
-        accountType = isWorkdayMate ? "workday"
-            : (typeElement == null || typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
-        JsonElement timeZoneElement = profileObject.get("timeZone");
-        timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" : timeZoneElement.getAsString();
-      } catch (JsonSyntaxException e) {
-        logger.error("Error in generateAdobeDigitalData method :: {}",
-            e.getMessage());
-      }
-    }
-    userProperties.addProperty(CONTACT_ROLE, contactRole);
-    userProperties.addProperty(CONTACT_NUMBER, contactNumber);
-    userProperties.addProperty(IS_NSC, isNSC);
-    userProperties.addProperty("timeZone", timeZoneStr);
-    orgProperties.addProperty(ACCOUNT_ID, accountID);
-    orgProperties.addProperty(ACCOUNT_NAME, accountName);
-    orgProperties.addProperty(ACCOUNT_TYPE, accountType);
-    digitalData.add("user", userProperties);
-    digitalData.add("org", orgProperties);
-
-    return digitalData;
   }
 
   /**
@@ -431,54 +290,8 @@ public class SnapServiceImpl implements SnapService {
     }
   }
 
-  /**
-   * Gets the user avatar data
-   * 
-   * @param sfId SFID
-   * @return image data as string
-   */
-  private String getUserAvatar(String sfId) {
-    String cacheKey = String.format("user_avatar_%s_%s", getEnv(), sfId);
-
-    Object retVal = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
-      ProfilePhoto content = getProfilePhoto(sfId);
-      String encodedPhoto = "";
-      String extension = "";
-      if (content != null) {
-        encodedPhoto = content.getBase64content();
-        extension = content.getFileNameWithExtension();
-      }
-      try {
-        String[] extensionSplit = extension.split("\\.");
-        if (extensionSplit.length > 0) {
-          extension = extensionSplit[extensionSplit.length - 1];
-        } else {
-          logger.error("No extension found in the data");
-        }
-      } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
-        logger.error("An exception occurred" + e.getMessage());
-      }
-      if (StringUtils.isNotBlank(extension) && StringUtils.isNotBlank(encodedPhoto)) {
-        return "data:image/" + extension + ";base64," + encodedPhoto;
-      } else {
-        logger.error("getUserAvatar method returns null.");
-        return "";
-      }
-    });
-    if (retVal == null)
-      return "";
-    String res = (retVal instanceof JsonObject) ? gson.toJson(retVal) : retVal.toString();
-
-    if (StringUtils.isEmpty(res) || res.equals("{}")) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
-    }
-
-    return res;
-  }
-
   private String getEnv() {
     String env = this.runModeConfigService.getEnv();
     return (env == null) ? "local" : env;
   }
-
 }

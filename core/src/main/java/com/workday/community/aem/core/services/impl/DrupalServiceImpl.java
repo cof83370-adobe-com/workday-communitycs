@@ -271,4 +271,29 @@ public class DrupalServiceImpl implements DrupalService {
 
         return digitalData;
     }
+
+    /**
+     * Gets the user timezone from drupal user data API
+     * 
+     * @param sfId SFID
+     * @return image data as string
+     */
+    @Override
+    public String getUserTimezone(String sfId) {
+        try {
+            String userData = this.getUserData(sfId);
+            if (StringUtils.isNotBlank(userData)) {
+                JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
+                JsonObject adobeObject = userDataObject.getAsJsonObject(ADOBE);
+                // Process user data
+                JsonObject userObject = adobeObject.getAsJsonObject(USER);
+                JsonElement timeZoneElement = userObject.get(TIMEZONE);
+                return (timeZoneElement == null || timeZoneElement.isJsonNull()) ? StringUtils.EMPTY
+                        : timeZoneElement.getAsString();
+            }
+        } catch (DrupalException e) {
+            LOGGER.error("Error in getUserProfileImage method, {} ", e.getMessage());
+        }
+        return StringUtils.EMPTY;
+    }
 }

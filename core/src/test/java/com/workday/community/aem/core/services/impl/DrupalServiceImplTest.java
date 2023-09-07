@@ -2,9 +2,6 @@ package com.workday.community.aem.core.services.impl;
 
 import java.lang.annotation.Annotation;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,10 +17,8 @@ import com.workday.community.aem.core.utils.RestApiUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
@@ -190,6 +185,32 @@ public class DrupalServiceImplTest {
 
             String imageReturn = this.service.getUserProfileImage(DEFAULT_SFID_MASTER);
             assertEquals(imageReturn, "data:image/jpeg;base64,");
+        }
+    }
+
+    /**
+     * Test method for getUserTimezone method.
+     */
+    @Test
+    public void testGetUserTimezone() {
+        try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+            APIResponse tokenResponse = mock(APIResponse.class);
+            mocked.when(() -> RestApiUtil.doDrupalTokenGet(anyString(), anyString(),
+                    anyString())).thenReturn(tokenResponse);
+            String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"expires_in\": 1799}";
+            when(tokenResponse.getResponseBody()).thenReturn(responseBody);
+            when(tokenResponse.getResponseCode()).thenReturn(200);
+
+            // Return from drupal api
+            APIResponse response = mock(APIResponse.class);
+            mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString())).thenReturn(response);
+
+            String userDataResponse = "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
+            when(response.getResponseBody()).thenReturn(userDataResponse);
+            when(response.getResponseCode()).thenReturn(200);
+
+            String imageReturn = this.service.getUserTimezone(DEFAULT_SFID_MASTER);
+            assertEquals(imageReturn, "America/Los_Angeles");
         }
     }
 
