@@ -5,6 +5,9 @@ import org.osgi.annotation.versioning.ProviderType;
 
 import java.util.List;
 
+/**
+ * The Interface UserGroupService.
+ */
 @ProviderType
 public interface UserGroupService {
     /**
@@ -25,4 +28,14 @@ public interface UserGroupService {
      * @return True if logged-in user has given access control tags, else false.
      */
     boolean validateCurrentUser(SlingHttpServletRequest request, List<String> accessControlTags);
+
+    /**
+     * Returns current logged-in users groups.
+     * Check whether user node has property roles. If it is there then return from
+     * node property. If not, call API for roles.
+     *
+     * @param request: current Sling request object.
+     * @return User group list.
+     */
+    List<String> getCurrentUserGroups(SlingHttpServletRequest request);
 }
