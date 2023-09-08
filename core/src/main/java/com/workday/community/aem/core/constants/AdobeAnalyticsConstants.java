@@ -24,12 +24,12 @@ public interface AdobeAnalyticsConstants {
      * The Constant NSC.
      */
     String NSC = "Named Support Contact";
-    
+
     /**
      * The Constant ACCOUNT_ID.
      */
     String ACCOUNT_ID = "accountID";
-    
+
     /**
      * The Constant ACCOUNT_NAME.
      */
@@ -49,4 +49,29 @@ public interface AdobeAnalyticsConstants {
      * The Constant PAGE_NAME.
      */
     String PAGE_NAME = "pageName";
+
+    /**
+     * The Constant ADOBE.
+     */
+    String ADOBE = "adobe";
+
+    /**
+     * The constant USER.
+     */
+    String USER = "user";
+
+    /**
+     * The constant TIMEZONE.
+     */
+    String TIMEZONE = "timeZone";
+
+    /**
+     * The Constant ACCOUNTID.
+     */
+    String ACCOUNTID = "accountId";
+
+    /**
+     * The Constant ORG.
+     */
+    String ORG = "org";
 }

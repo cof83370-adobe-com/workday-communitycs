@@ -3,7 +3,6 @@ package com.workday.community.aem.core.services.impl;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.osgi.service.component.annotations.Activate;
@@ -22,6 +21,7 @@ import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.CommunityUtils;
+import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.RestApiUtil;
 
 /**
@@ -106,7 +106,7 @@ public class LmsServiceImpl implements LmsService {
             return bearerToken;
         } catch (LmsException | JsonSyntaxException e) {
             throw new LmsException(String.format("getApiToken call failed in LmsServiceImpl. Error: %s",
-                e.getMessage()));
+                    e.getMessage()));
         }
     }
 
@@ -146,8 +146,9 @@ public class LmsServiceImpl implements LmsService {
             return StringUtils.EMPTY;
         } catch (LmsException | JsonSyntaxException e) {
             throw new LmsException(
-                String.format("There is an error while fetching the course detail. Please contact Community Admin. %s",
-                    e.getMessage()));
+                    String.format(
+                            "There is an error while fetching the course detail. Please contact Community Admin. %s",
+                            e.getMessage()));
         }
     }
 }

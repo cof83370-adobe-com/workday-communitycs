@@ -1,0 +1,9 @@
+{
+    "drupalApiUrl":"$[env:drupalApiUrl]",
+    "drupalTokenPath":"$[env:drupalTokenPath]",
+    "drupalUserDataPath":"$[env:drupalUserDataPath]",
+    "drupalApiClientId":"$[secret:drupalApiClientId]",
+    "drupalApiClientSecret":"$[secret:drupalApiClientSecret]",
+    "drupalTokenCacheMax":10,
+    "drupalTokenCacheTimeout":1740000
+}

@@ -16,8 +16,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.workday.community.aem.core.constants.EventDetailsConstants;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.UserService;
-import com.workday.community.aem.core.services.SnapService;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -94,9 +94,9 @@ public class EventDetailsModel {
 	@Inject
 	private ResourceResolver resolver;
 
-	/** The Snap Service */
+	/** The Drupal Service */
 	@Inject
-	private SnapService snapService;
+	private DrupalService drupalService;
 
 	@Reference
 	UserService userService;
@@ -130,21 +130,15 @@ public class EventDetailsModel {
 
 	/**
 	 * Populates User TimeZone
+	 * 
 	 * @return user time zone string
 	 */
 	private String populateUserTimeZone() {
 		String sfId = OurmUtils.getSalesForceId(request, userService);
-		String timeZoneStr = "";
-		Gson gson = new Gson();
-		if(StringUtils.isNotBlank(sfId) && null != snapService) {
-			String profileData = snapService.getUserProfile(sfId);
-			if(StringUtils.isNotBlank(profileData)){
-				JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
-        		JsonElement timeZoneElement = profileObject.get("timeZone");
-        		timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" : timeZoneElement.getAsString();
-			}
+		if (StringUtils.isNotBlank(sfId) && null != drupalService) {
+			return drupalService.getUserTimezone(sfId);
 		}
-		return timeZoneStr;
+		return StringUtils.EMPTY;
 	}
 
 	/**

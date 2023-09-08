@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,7 +16,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +27,7 @@ import org.mockito.Mockito;
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.DrupalService;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -39,7 +36,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class EventDetailsModelTest.
  */
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class EventDetailsModelTest {
 
     /** The context. */
@@ -50,22 +47,22 @@ public class EventDetailsModelTest {
 
     /** The current page. */
     private Page currentPage;
-    
+
     /** The resource. */
     private Resource resource;
-    
+
     /** The tm. */
     private TagManager tm;
-    
+
     /** The tag. */
     private Tag tag;
 
     /** The resolver. */
     private ResourceResolver resolver;
 
-    /** The Snap Service */
+    /** The Drupal Service */
     @Mock
-    private SnapService snapService;
+    private DrupalService drupalService;
 
     /**
      * Setup.
@@ -87,9 +84,9 @@ public class EventDetailsModelTest {
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
-        context.registerService(SnapService.class, snapService);   
-        String profileResponse = "{\"timeZone\":\"America/New_York\"}";
-        lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse); 
+        context.registerService(DrupalService.class, drupalService);
+        String timeZoneResponse = "{\"timeZone\":\"America/New_York\"}";
+        lenient().when(drupalService.getUserTimezone(anyString())).thenReturn(timeZoneResponse);
     }
 
     /**
@@ -97,13 +94,13 @@ public class EventDetailsModelTest {
      *
      * @throws Exception the exception
      */
-   // @Test
+    // @Test
     void testGetTimeFormat() throws Exception {
         eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		Date formattedStartDate = formatter.parse(currentPage.getProperties().get("eventStartDate", String.class));
-		ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
+        Date formattedStartDate = formatter.parse(currentPage.getProperties().get("eventStartDate", String.class));
+        ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
         ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
         assertEquals("00:44", DateTimeFormatter.ofPattern("HH:mm").format(originDatetime));
     }

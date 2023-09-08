@@ -5,6 +5,7 @@ import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
 import com.workday.community.aem.core.models.HeaderModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
@@ -67,6 +68,13 @@ public class HeaderModelImpl implements HeaderModel {
   @NotNull
   @OSGiService
   SnapService snapService;
+
+  /**
+   * The Drupal service.
+   */
+  @NotNull
+  @OSGiService
+  DrupalService drupalService;
 
   /** The run mode config service. */
   @OSGiService
@@ -132,7 +140,7 @@ public class HeaderModelImpl implements HeaderModel {
       finalCookie = menuCache;
     } else {
       // Create new cookie and setback.
-      finalCookie= new Cookie("cacheMenu", cookieValueCurrentUser);
+      finalCookie = new Cookie("cacheMenu", cookieValueCurrentUser);
     }
     // set the cookie at root level.
     finalCookie.setPath("/");
@@ -150,8 +158,9 @@ public class HeaderModelImpl implements HeaderModel {
       String pageTitle = currentPage.getTitle();
       String templatePath = template.getPath();
       String contentType = CONTENT_TYPE_MAPPING.get(templatePath);
-      if (contentType == null) return null;
-      return this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
+      if (contentType == null)
+        return null;
+      return this.drupalService.getAdobeDigitalData(sfId, pageTitle, contentType);
     }
     return null;
   }

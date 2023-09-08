@@ -22,6 +22,16 @@ public interface RestApiConstants {
   String X_API_KEY = "X-api-key";
 
   /**
+   * The constant ACCEPT
+   */
+  String ACCEPT = "Accept";
+
+  /**
+   * The constant STAR_SLASH_STAR
+   */
+  String STAR_SLASH_STAR = "*/*";
+
+  /**
    * The constant CONTENT_TYPE
    */
   String CONTENT_TYPE = "Content-Type";
@@ -60,4 +70,24 @@ public interface RestApiConstants {
    * The constant REFRESH_TOKEN
    */
   String REFRESH_TOKEN = "refresh_token";
+
+  /**
+   * The constant CLIENT_CREDENTIALS
+   */
+  String CLIENT_CREDENTIALS = "client_credentials";
+
+  /**
+   * The constant CLIENT_ID
+   */
+  String CLIENT_ID = "client_id";
+
+  /**
+   * The constant CLIENT_CREDENTIALS
+   */
+  String CLIENT_SECRET = "client_secret";
+
+  /**
+   * The constant APPLICATION_URL_ENCODED
+   */
+  String APPLICATION_URL_ENCODED = "application/x-www-form-urlencoded";
 }
