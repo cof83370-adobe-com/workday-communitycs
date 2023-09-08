@@ -76,6 +76,7 @@ public class DrupalServiceImpl implements DrupalService {
     @Override
     public String getUserData(String sfId) throws DrupalException {
         try {
+            sfId = "0034X00002xaPU2QAM"; // For testing
             if (StringUtils.isNotBlank(sfId)) {
                 String drupalUrl = config.drupalApiUrl(), userDataPath = config.drupalUserDataPath();
                 // Get the bearer token needed for user data API call.
