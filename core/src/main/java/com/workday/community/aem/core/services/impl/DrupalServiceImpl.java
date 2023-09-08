@@ -41,13 +41,13 @@ import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.T
  * The OSGi service implementation for Drupal APIs.
  */
 @Component(service = DrupalService.class, property = {
-        "service.pid=aem.core.services.snap"
+        "service.pid=aem.core.services.drupalservice"
 }, configurationPid = "com.workday.community.aem.core.config.DrupalConfig", immediate = true)
 @Designate(ocd = DrupalConfig.class)
 public class DrupalServiceImpl implements DrupalService {
 
     /** The logger. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(SnapServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DrupalServiceImpl.class);
 
     /** The snap Config. */
     private DrupalConfig config;
@@ -100,7 +100,7 @@ public class DrupalServiceImpl implements DrupalService {
         } catch (DrupalException e) {
             throw new DrupalException(
                     String.format(
-                            "There is an error while fetching the course detail. Please contact Community Admin. %s",
+                            "There is an error while fetching the user data from Drupal. Please contact Community Admin. %s",
                             e.getMessage()));
         }
     }
@@ -122,7 +122,7 @@ public class DrupalServiceImpl implements DrupalService {
             // No Drupal configuration provided, just return the default one.
             LOGGER.debug(String.format("There is no value " +
                     "for one or multiple configuration parameters: " +
-                    "lmsUrl=%s;tokenPath=%s;clientId=%s;clientSecret=%s;refreshToken=%s",
+                    "drupalUrl=%s;tokenPath=%s;clientId=%s;clientSecret=%s",
                     drupalUrl, tokenPath, clientId, clientSecret));
             return StringUtils.EMPTY;
         }
@@ -153,7 +153,7 @@ public class DrupalServiceImpl implements DrupalService {
             LOGGER.error("Error in getAPIToken method call :: {}", e.getMessage());
             throw new DrupalException(
                     String.format(
-                            "Error while fetching the course detail token. Please contact Community Admin. Error: %s",
+                            "Error while fetching the Drupal Api token. Please contact Community Admin. Error: %s",
                             e.getMessage()));
         }
     }
@@ -292,7 +292,7 @@ public class DrupalServiceImpl implements DrupalService {
                         : timeZoneElement.getAsString();
             }
         } catch (DrupalException e) {
-            LOGGER.error("Error in getUserProfileImage method, {} ", e.getMessage());
+            LOGGER.error("Error in getUserTimezone method, {} ", e.getMessage());
         }
         return StringUtils.EMPTY;
     }
