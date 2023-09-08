@@ -27,7 +27,7 @@ public interface RestApiConstants {
   String ACCEPT = "Accept";
 
   /**
-   * The constant APPLICATION_SLASH_JSON
+   * The constant STAR_SLASH_STAR
    */
   String STAR_SLASH_STAR = "*/*";
 
