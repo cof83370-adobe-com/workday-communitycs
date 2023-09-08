@@ -49,7 +49,7 @@ public class DrupalServiceImpl implements DrupalService {
     /** The logger. */
     private static final Logger LOGGER = LoggerFactory.getLogger(DrupalServiceImpl.class);
 
-    /** The snap Config. */
+    /** The drupal Config. */
     private DrupalConfig config;
 
     /** The gson service. */
