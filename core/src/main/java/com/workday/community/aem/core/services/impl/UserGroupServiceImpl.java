@@ -161,6 +161,7 @@ public class UserGroupServiceImpl implements UserGroupService {
      * @param request: current Sling request object.
      * @return User group list.
      */
+    @Override
     public List<String> getCurrentUserGroups(SlingHttpServletRequest request) {
         LOGGER.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
         String userRole;
