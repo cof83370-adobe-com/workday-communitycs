@@ -5,6 +5,7 @@ import org.apache.http.HttpStatus;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,10 @@ import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.constants.DrupalConstants;
 import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import com.workday.community.aem.core.services.CacheBucketName;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.DrupalService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
@@ -60,6 +64,36 @@ public class DrupalServiceImpl implements DrupalService {
     private LRUCacheWithTimeout<String, String> drupalApiCache;
 
     /**
+     * Cache manager service.
+     */
+    @Reference
+    CacheManagerService serviceCacheMgr;
+
+    /**
+     * The Run-mode configuration service.
+     */
+    @Reference
+    RunModeConfigService runModeConfigService;
+
+    /**
+     * This is used in testing.
+     * 
+     * @param serviceCacheMgr the pass-in Cache manager object.
+     */
+    public void setServiceCacheMgr(CacheManagerService serviceCacheMgr) {
+        this.serviceCacheMgr = serviceCacheMgr;
+    }
+
+    /**
+     * This is used in testing.
+     * 
+     * @param runModeConfigService the pass-in run mode config service object.
+     */
+    public void setRunModeConfigService(RunModeConfigService runModeConfigService) {
+        this.runModeConfigService = runModeConfigService;
+    }
+
+    /**
      * Activates the Drupal Service class.
      */
     @Activate
@@ -75,35 +109,46 @@ public class DrupalServiceImpl implements DrupalService {
      * Makes Drupal API call and fetches the user data for logged in user.
      */
     @Override
-    public String getUserData(String sfId) throws DrupalException {
-        try {
-            if (StringUtils.isNotBlank(sfId)) {
-                String drupalUrl = config.drupalApiUrl(), userDataPath = config.drupalUserDataPath();
-                // Get the bearer token needed for user data API call.
-                String bearerToken = getApiToken();
-                if (StringUtils.isNotBlank(bearerToken)) {
-                    // Frame the request URL.
-                    String url = CommunityUtils.formUrl(drupalUrl, userDataPath);
-                    // Format the URL.
-                    url = String.format(url, sfId);
-                    // Execute the request.
-                    APIResponse userDataResponse = RestApiUtil.doDrupalUserDataGet(url, bearerToken);
-                    if (userDataResponse == null || StringUtils.isEmpty(userDataResponse.getResponseBody())
-                            || userDataResponse.getResponseCode() != HttpStatus.SC_OK) {
-                        LOGGER.error("Drupal API user data response is empty.");
-                        return StringUtils.EMPTY;
-                    }
-
-                    return userDataResponse.getResponseBody();
-                }
-            }
-            return StringUtils.EMPTY;
-        } catch (DrupalException e) {
-            throw new DrupalException(
-                    String.format(
-                            "There is an error while fetching the user data from Drupal. Please contact Community Admin. %s",
-                            e.getMessage()));
+    public String getUserData(String sfId) {
+        String userDataCacheKey = String.format("user_data_%s_%s", getEnv(), sfId);
+        if (!config.enableCache()) {
+            serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey);
         }
+        String retValue = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey, (key) -> {
+            try {
+                if (StringUtils.isNotBlank(sfId)) {
+                    String drupalUrl = config.drupalApiUrl(), userDataPath = config.drupalUserDataPath();
+                    // Get the bearer token needed for user data API call.
+                    String bearerToken = getApiToken();
+                    if (StringUtils.isNotBlank(bearerToken)) {
+                        // Frame the request URL.
+                        String url = CommunityUtils.formUrl(drupalUrl, userDataPath);
+                        // Format the URL.
+                        url = String.format(url, sfId);
+                        // Execute the request.
+                        APIResponse userDataResponse = RestApiUtil.doDrupalUserDataGet(url, bearerToken);
+                        if (userDataResponse == null || StringUtils.isEmpty(userDataResponse.getResponseBody())
+                                || userDataResponse.getResponseCode() != HttpStatus.SC_OK) {
+                            LOGGER.error("Drupal API user data response is empty.");
+                            return StringUtils.EMPTY;
+                        }
+
+                        return userDataResponse.getResponseBody();
+                    }
+                }
+                return StringUtils.EMPTY;
+            } catch (DrupalException e) {
+                LOGGER.error(
+                        String.format(
+                                "There is an error while fetching the user data. Please contact Community Admin. %s",
+                                e.getMessage()));
+                return null;
+            }
+        });
+        if (StringUtils.isEmpty(retValue)) {
+            serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey);
+        }
+        return retValue;
     }
 
     /**
@@ -169,11 +214,15 @@ public class DrupalServiceImpl implements DrupalService {
     public String getUserProfileImage(String sfId) {
         try {
             String userData = this.getUserData(sfId);
+            if (StringUtils.isEmpty(userData)) {
+                LOGGER.error("Error in getUserProfileImage method - empty user data response.");
+                return StringUtils.EMPTY;
+            }
             JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
             JsonElement profileImageElement = userDataObject.get("profileImage");
             return (profileImageElement == null || profileImageElement.isJsonNull()) ? ""
                     : profileImageElement.getAsString();
-        } catch (DrupalException e) {
+        } catch (JsonSyntaxException e) {
             LOGGER.error("Error in getUserProfileImage method, {} ", e.getMessage());
             return StringUtils.EMPTY;
         }
@@ -191,15 +240,18 @@ public class DrupalServiceImpl implements DrupalService {
     public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
         try {
             String userData = getUserData(sfId);
+            if (StringUtils.isEmpty(userData)) {
+                LOGGER.error("Error in getAdobeDigitalData method - empty user data response.");
+                return StringUtils.EMPTY;
+            }
             JsonObject digitalData = generateAdobeDigitalData(userData);
-
             JsonObject pageProperties = new JsonObject();
             pageProperties.addProperty(CONTENT_TYPE, contentType);
             pageProperties.addProperty(PAGE_NAME, pageTitle);
 
             digitalData.add("page", pageProperties);
             return String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
-        } catch (DrupalException e) {
+        } catch (JsonSyntaxException e) {
             LOGGER.error("Error in getAdobeDigitalData method, {} ", e.getMessage());
             return StringUtils.EMPTY;
         }
@@ -283,6 +335,10 @@ public class DrupalServiceImpl implements DrupalService {
     public String getUserTimezone(String sfId) {
         try {
             String userData = this.getUserData(sfId);
+            if (StringUtils.isEmpty(userData)) {
+                LOGGER.error("Error in getUserTimezone method - empty user data response.");
+                return StringUtils.EMPTY;
+            }
             if (StringUtils.isNotBlank(userData)) {
                 JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
                 JsonObject adobeObject = userDataObject.getAsJsonObject(ADOBE);
@@ -292,7 +348,7 @@ public class DrupalServiceImpl implements DrupalService {
                 return (timeZoneElement == null || timeZoneElement.isJsonNull()) ? StringUtils.EMPTY
                         : timeZoneElement.getAsString();
             }
-        } catch (DrupalException e) {
+        } catch (JsonSyntaxException e) {
             LOGGER.error("Error in getUserTimezone method, {} ", e.getMessage());
         }
         return StringUtils.EMPTY;
@@ -312,9 +368,19 @@ public class DrupalServiceImpl implements DrupalService {
                 JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
                 return userDataObject.getAsJsonObject(USER_CONTEXT_INFO_KEY);
             }
-        } catch (DrupalException e) {
+        } catch (JsonSyntaxException e) {
             LOGGER.error("Error in getUserContext method, {} ", e.getMessage());
         }
         return new JsonObject();
+    }
+
+    /**
+     * Returns the environment name.
+     * 
+     * @return Environment name.
+     */
+    private String getEnv() {
+        String env = this.runModeConfigService.getEnv();
+        return (env == null) ? "local" : env;
     }
 }

@@ -2,23 +2,32 @@ package com.workday.community.aem.core.services.impl;
 
 import java.lang.annotation.Annotation;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.workday.community.aem.core.TestUtil;
+import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
-import com.workday.community.aem.core.services.DrupalService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.RestApiUtil;
 
+import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
@@ -30,7 +39,17 @@ import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFI
  */
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class DrupalServiceImplTest {
-    private final DrupalService service = new DrupalServiceImpl();
+    private final DrupalServiceImpl service = new DrupalServiceImpl();
+
+    /**
+     * AemContext
+     */
+    private final AemContext context = new AemContext();
+
+    @Mock
+    RunModeConfigService runModeConfigService;
+
+    private CacheManagerServiceImpl cacheManagerService;
 
     /**
      * Test config.
@@ -76,6 +95,11 @@ public class DrupalServiceImplTest {
         public long drupalTokenCacheTimeout() {
             return 1000;
         }
+
+        @Override
+        public boolean enableCache() {
+            return true;
+        }
     };
 
     /**
@@ -83,6 +107,16 @@ public class DrupalServiceImplTest {
      */
     @BeforeEach
     public void setup() {
+        cacheManagerService = new CacheManagerServiceImpl();
+        CacheConfig cacheConfig = TestUtil.getCacheConfig();
+        cacheManagerService.activate(cacheConfig);
+
+        service.setServiceCacheMgr(cacheManagerService);
+        service.setRunModeConfigService(runModeConfigService);
+
+        context.registerService(RunModeConfigService.class, runModeConfigService);
+        context.registerService(cacheManagerService);
+
         ((DrupalServiceImpl) service).activate(testConfig);
     }
 
@@ -111,14 +145,14 @@ public class DrupalServiceImplTest {
                     anyString())).thenReturn(null);
             token = this.service.getApiToken();
             assertEquals("bearerToken", token);
-            Thread.sleep(1001);
+            Thread.sleep(2000);
 
             // Case 3: clear cache using sleep interval, with response as null
             mocked.when(() -> RestApiUtil.doDrupalTokenGet(anyString(), anyString(),
                     anyString())).thenReturn(null);
             token = this.service.getApiToken();
             assertEquals("", token);
-            Thread.sleep(1001);
+            Thread.sleep(2000);
 
             // Case 4: clear cache using sleep interval, response doesn't contain access
             // token
@@ -129,13 +163,10 @@ public class DrupalServiceImplTest {
     }
 
     /**
-     * 
      * Test method for getUserData method.
-     * 
-     * @throws DrupalException
      */
     @Test
-    public void testGetUserData() throws DrupalException {
+    public void testGetUserData() {
         try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
             APIResponse tokenResponse = mock(APIResponse.class);
             mocked.when(() -> RestApiUtil.doDrupalTokenGet(anyString(), anyString(),
@@ -154,6 +185,7 @@ public class DrupalServiceImplTest {
 
             String userData = this.service.getUserData("sfId");
             assertEquals(userDataResponse, userData);
+            cacheManagerService.invalidateCache();
 
             // Case 2: with response as null
             mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString())).thenReturn(null);
@@ -167,13 +199,22 @@ public class DrupalServiceImplTest {
      */
     @Test
     public void testGetUserProfileImage() {
-        try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+        CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
+        HttpClientBuilder builder = mock(HttpClientBuilder.class);
+        try (MockedStatic<HttpClients> MockedHttpClients = mockStatic(HttpClients.class);
+                MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+
             APIResponse tokenResponse = mock(APIResponse.class);
             mocked.when(() -> RestApiUtil.doDrupalTokenGet(anyString(), anyString(),
                     anyString())).thenReturn(tokenResponse);
             String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"expires_in\": 1799}";
             when(tokenResponse.getResponseBody()).thenReturn(responseBody);
             when(tokenResponse.getResponseCode()).thenReturn(200);
+
+            MockedHttpClients.when(HttpClients::custom).thenReturn(builder);
+            lenient().when(builder.build()).thenReturn(httpClient);
+            assertEquals(this.service.getUserProfileImage("sfId"), StringUtils.EMPTY);
+            cacheManagerService.invalidateCache();
 
             // Return from drupal api
             APIResponse response = mock(APIResponse.class);
@@ -183,8 +224,28 @@ public class DrupalServiceImplTest {
             when(response.getResponseBody()).thenReturn(userDataResponse);
             when(response.getResponseCode()).thenReturn(200);
 
-            String imageReturn = this.service.getUserProfileImage(DEFAULT_SFID_MASTER);
+            String imageReturn = this.service.getUserProfileImage("sfId");
             assertEquals(imageReturn, "data:image/jpeg;base64,");
+
+            // From cache
+            userDataResponse = "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/png;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
+            imageReturn = this.service.getUserProfileImage("sfId");
+            assertEquals(imageReturn, "data:image/jpeg;base64,");
+        }
+    }
+
+    @Test
+    public void testGetUserProfileImageWithException() {
+        try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+            APIResponse tokenResponse = mock(APIResponse.class);
+            mocked.when(() -> RestApiUtil.doDrupalTokenGet(anyString(), anyString(),
+                    anyString())).thenReturn(tokenResponse);
+            String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"expires_in\": 1799}";
+            when(tokenResponse.getResponseBody()).thenReturn(responseBody);
+            when(tokenResponse.getResponseCode()).thenReturn(200);
+            mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString()))
+                    .thenThrow(new DrupalException());
+            assertEquals(this.service.getUserProfileImage("sfId"), StringUtils.EMPTY);
         }
     }
 
@@ -209,8 +270,13 @@ public class DrupalServiceImplTest {
             when(response.getResponseBody()).thenReturn(userDataResponse);
             when(response.getResponseCode()).thenReturn(200);
 
-            String imageReturn = this.service.getUserTimezone(DEFAULT_SFID_MASTER);
-            assertEquals(imageReturn, "America/Los_Angeles");
+            String timeZoneReturn = this.service.getUserTimezone("sfId");
+            assertEquals(timeZoneReturn, "America/Los_Angeles");
+
+            // From cache
+            userDataResponse = "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/New York\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
+            timeZoneReturn = this.service.getUserTimezone("sfId");
+            assertEquals(timeZoneReturn, "America/Los_Angeles");
         }
     }
 
@@ -238,13 +304,13 @@ public class DrupalServiceImplTest {
             String contentType = "FAQ";
             String contactNumber = "123";
             String organizationName = "Workday";
-            String adobeData = this.service.getAdobeDigitalData(DEFAULT_SFID_MASTER, pageTitle, contentType);
+            String adobeData = this.service.getAdobeDigitalData("sfId", pageTitle, contentType);
             assertTrue(adobeData.contains(pageTitle));
             assertTrue(adobeData.contains(contentType));
             assertTrue(adobeData.contains(contactNumber));
             assertTrue(adobeData.contains(organizationName));
 
-            String adobeData1 = this.service.getAdobeDigitalData(DEFAULT_SFID_MASTER, pageTitle, contentType);
+            String adobeData1 = this.service.getAdobeDigitalData("sfId", pageTitle, contentType);
             assertEquals(adobeData, adobeData1);
         }
     }
@@ -274,5 +340,4 @@ public class DrupalServiceImplTest {
             assertEquals(contextReturn, "{\"isWorkmate\":\"false\"}");
         }
     }
-
 }

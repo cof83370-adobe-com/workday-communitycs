@@ -3,6 +3,7 @@ package com.workday.community.aem.core.utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DrupalException;
@@ -85,7 +86,7 @@ public class OurmUtils {
       JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
       return userDataObject.has(EMAIL_NAME) ? userDataObject.get(EMAIL_NAME).getAsString()
           : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
-    } catch (DrupalException e) {
+    } catch (JsonSyntaxException e) {
       LOGGER.error("Exception in getUserEmail method in OurmUtils class: {}", e.getMessage());
       return null;
     }

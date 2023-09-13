@@ -68,7 +68,7 @@ public class CoveoEventsTypeServletTest {
   }
 
   @Test
-  public void testDoGet() throws IOException, DrupalException {
+  public void testDoGet() throws IOException {
     SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
     SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
     ResourceResolver resourceResolver = mock(ResourceResolver.class);

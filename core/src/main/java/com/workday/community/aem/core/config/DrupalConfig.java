@@ -29,4 +29,7 @@ public @interface DrupalConfig {
 
     @AttributeDefinition(name = "Drupal API token cache timeout duration", description = "Drupal API Token Cache Timeout Duration (mills)", type = AttributeType.LONG)
     long drupalTokenCacheTimeout() default 1740000L; // Default to 29 minutes.
+
+    @AttributeDefinition(name = "Enable cache", description = "Enable cache(default true)", type = AttributeType.BOOLEAN)
+    boolean enableCache() default true;
 }

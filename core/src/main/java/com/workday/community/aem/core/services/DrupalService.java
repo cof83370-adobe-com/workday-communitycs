@@ -29,7 +29,7 @@ public interface DrupalService {
      * @return The user data as a string for roles and adobe data.
      * @throws DrupalException DrupalException Object.
      */
-    String getUserData(String sfId) throws DrupalException;
+    String getUserData(String sfId);
 
     /**
      * Gets the user profile image data from drupal user data API
