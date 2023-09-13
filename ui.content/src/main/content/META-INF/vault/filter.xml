@@ -24,5 +24,5 @@
     <filter root="/content/cq:tags/khoros" mode="merge"/>
     <filter root="/content/experience-fragments/workday-community" mode="merge"/>
     <filter root="/var/workflow/models/workday-community" mode="merge"/>
-    <filter root="/conf/global/settings/workflow/models/workday-community" mode="replace"/>
+    <filter root="/conf/global/settings/workflow/models/workday-community" mode="merge"/>
 </workspaceFilter>
