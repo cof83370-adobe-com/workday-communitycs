@@ -36,6 +36,7 @@ import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.A
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.USER;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ORG;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.TIMEZONE;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
 
 /**
  * The OSGi service implementation for Drupal APIs.
@@ -295,5 +296,25 @@ public class DrupalServiceImpl implements DrupalService {
             LOGGER.error("Error in getUserTimezone method, {} ", e.getMessage());
         }
         return StringUtils.EMPTY;
+    }
+
+    /**
+     * Gets the user context from drupal user data API
+     * 
+     * @param sfId SFID
+     * @return User context json object
+     */
+    @Override
+    public JsonObject getUserContext(String sfId) {
+        try {
+            String userData = this.getUserData(sfId);
+            if (StringUtils.isNotBlank(userData)) {
+                JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
+                return userDataObject.getAsJsonObject(USER_CONTEXT_INFO_KEY);
+            }
+        } catch (DrupalException e) {
+            LOGGER.error("Error in getUserContext method, {} ", e.getMessage());
+        }
+        return new JsonObject();
     }
 }

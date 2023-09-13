@@ -9,7 +9,7 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
@@ -58,10 +58,10 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   CacheManagerService cacheManager;
 
   /**
-   * The snap service object.
+   * The drupal service object.
    */
   @OSGiService
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   @OSGiService
   private UserService userService;
@@ -91,7 +91,9 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     pagePath = pagePath.substring(0, pagePath.indexOf("."));
     Page page = pageManager.getPage(pagePath);
     if (page == null) {
-      LOGGER.error(String.format("getFacetFields in CoveoRelatedInformationModelImpl failed because current Page unresolved, path: %s", pagePath));
+      LOGGER.error(String.format(
+          "getFacetFields in CoveoRelatedInformationModelImpl failed because current Page unresolved, path: %s",
+          pagePath));
       return Collections.unmodifiableList(facetFields);
     }
 
@@ -100,12 +102,14 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       return Collections.unmodifiableList(facetFields);
     }
     try (ResourceResolver resolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
-      JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG).getAsJsonObject("tagIdToCoveoField");
+      JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG)
+          .getAsJsonObject("tagIdToCoveoField");
       for (Tag tag : tags) {
         JsonElement facetFieldObj = fieldMapConfig.get(tag.getNamespace().getName());
-        if (facetFieldObj == null || facetFieldObj.isJsonNull()) continue;
+        if (facetFieldObj == null || facetFieldObj.isJsonNull())
+          continue;
         String basePath = "";
-        while(tag.getParent() != null) {
+        while (tag.getParent() != null) {
           if (basePath.isEmpty()) {
             basePath = tag.getTitle();
           } else {
@@ -133,7 +137,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       this.searchConfig = CoveoUtils.getSearchConfig(
           searchConfigService,
           request,
-          snapService,
+          drupalService,
           userService);
     }
     return this.searchConfig;

@@ -11,7 +11,7 @@ import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.UUIDUtil;
 import org.apache.jackrabbit.api.security.user.User;
@@ -31,16 +31,13 @@ import static com.workday.community.aem.core.constants.GlobalConstants.SERVICE_U
 /**
  * The Class UserServiceImpl.
  */
-@Component(
-    service = UserService.class,
-    immediate = true
-)
+@Component(service = UserService.class, immediate = true)
 public class UserServiceImpl implements UserService {
 
-    /** The logger. */
+  /** The logger. */
   private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    /** The cache manager */
+  /** The cache manager */
   @Reference
   CacheManagerService cacheManager;
 
@@ -51,7 +48,7 @@ public class UserServiceImpl implements UserService {
   RunModeConfigService runModeConfigService;
 
   @Reference
-  SnapService snapService;
+  DrupalService drupalService;
 
   @Override
   public User getCurrentUser(SlingHttpServletRequest request) throws CacheException {
@@ -70,7 +67,7 @@ public class UserServiceImpl implements UserService {
   public String getUserUUID(String sfId) {
     String cacheKey = String.format("user_uuid_%s", sfId);
     return cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, (key) -> {
-      String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
+      String email = OurmUtils.getUserEmail(sfId, searchConfigService, drupalService);
       UUID uuid = UUIDUtil.getUserClientId(email);
       return uuid == null ? null : uuid.toString();
     });
@@ -87,8 +84,7 @@ public class UserServiceImpl implements UserService {
       if (ins != null && ins.equals(GlobalConstants.PUBLISH)) {
         String userId = session.getUserID();
 
-        ResourceResolver serviceResolver =
-            cacheManager.getServiceResolver(SERVICE_USER_GROUP);
+        ResourceResolver serviceResolver = cacheManager.getServiceResolver(SERVICE_USER_GROUP);
 
         LOGGER.info("Start to delete user with param {}.", userId);
         UserManager userManager = serviceResolver.adaptTo(UserManager.class);
@@ -118,7 +114,7 @@ public class UserServiceImpl implements UserService {
           if (resourceResolver.isLive())
             resourceResolver.close();
 
-          if(session.isLive())
+          if (session.isLive())
             session.logout();
         }
       }
@@ -127,6 +123,7 @@ public class UserServiceImpl implements UserService {
 
   /**
    * Used in testing only.
+   * 
    * @param cacheManager the pass-in CacheManager object.
    */
   protected void setCacheManager(CacheManagerService cacheManager) {
@@ -134,7 +131,8 @@ public class UserServiceImpl implements UserService {
   }
 
   private User getUser(final ResourceResolver resourceResolver, String userSessionId) {
-    if (userSessionId == null) return null;
+    if (userSessionId == null)
+      return null;
 
     String cacheKey = String.format("session_user_%s", userSessionId);
     User retUser = cacheManager.get(CacheBucketName.JCR_USER.name(), cacheKey, (key) -> {

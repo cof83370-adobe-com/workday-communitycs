@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services;
 
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.exceptions.DrupalException;
 
@@ -55,4 +56,12 @@ public interface DrupalService {
      * @return Adobe data.
      */
     String getAdobeDigitalData(String sfId, String pageTitle, String contentType);
+
+    /**
+     * Returns the user context as json object.
+     * 
+     * @param sfId SFID.
+     * @return User context json object.
+     */
+    JsonObject getUserContext(String sfId);
 }

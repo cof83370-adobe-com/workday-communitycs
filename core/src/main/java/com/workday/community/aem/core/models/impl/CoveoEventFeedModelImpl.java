@@ -6,8 +6,8 @@ import com.day.cq.wcm.api.PageManager;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -41,15 +41,11 @@ import static java.util.Objects.*;
 /**
  * The CoveoEventFeedModel implementation Class.
  */
-@Model(
-    adaptables = {
-        Resource.class,
-        SlingHttpServletRequest.class
-    },
-    adapters = { CoveoEventFeedModel.class },
-    resourceType = { CoveoEventFeedModelImpl.RESOURCE_TYPE },
-    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
-)
+@Model(adaptables = {
+    Resource.class,
+    SlingHttpServletRequest.class
+}, adapters = { CoveoEventFeedModel.class }, resourceType = {
+    CoveoEventFeedModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
   protected static final String RESOURCE_TYPE = "/content/workday-community/components/common/coveoeventfeed";
@@ -75,10 +71,10 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   private UserService userService;
 
   /**
-   * The snap service object.
+   * The drupal service object.
    */
   @OSGiService
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
@@ -92,7 +88,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       searchConfig = CoveoUtils.getSearchConfig(
           this.searchConfigService,
           this.request,
-          this.snapService,
+          this.drupalService,
           this.userService);
     }
     return searchConfig;
@@ -112,13 +108,13 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       return new HashMap<>();
     }
 
-    GregorianCalendar startTime = (GregorianCalendar)pageObject.getProperties().get("eventStartDate");
-    GregorianCalendar endTime = (GregorianCalendar)pageObject.getProperties().get("eventEndDate");
+    GregorianCalendar startTime = (GregorianCalendar) pageObject.getProperties().get("eventStartDate");
+    GregorianCalendar endTime = (GregorianCalendar) pageObject.getProperties().get("eventEndDate");
     SimpleDateFormat fmt = new SimpleDateFormat("MMM dd, yyyy");
     fmt.setCalendar(startTime);
     fmt.setCalendar(endTime);
-    String eventLocation = (String)pageObject.getProperties().get("eventLocation");
-    String eventHost = (String)pageObject.getProperties().get("eventHost");
+    String eventLocation = (String) pageObject.getProperties().get("eventLocation");
+    String eventHost = (String) pageObject.getProperties().get("eventHost");
 
     String imagePath = "";
     String registerPath = "";
@@ -175,12 +171,12 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   }
 
   @Override
-  public String getSortCriteria() throws DamException{
+  public String getSortCriteria() throws DamException {
     return this.getModelConfig().get("sortCriteria").getAsString();
   }
 
   @Override
-  public String getEventCriteria() throws DamException{
+  public String getEventCriteria() throws DamException {
     LocalDate localDate = LocalDate.now();
     ZonedDateTime startOfDay = localDate.atStartOfDay(ZoneId.of("Z"));
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy/MM/dd@HH:mm");

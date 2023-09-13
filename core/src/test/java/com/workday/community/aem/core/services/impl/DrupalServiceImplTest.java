@@ -249,4 +249,30 @@ public class DrupalServiceImplTest {
         }
     }
 
+    /**
+     * Test method for getUserContext method.
+     */
+    @Test
+    public void testGetUserContext() {
+        try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+            APIResponse tokenResponse = mock(APIResponse.class);
+            mocked.when(() -> RestApiUtil.doDrupalTokenGet(anyString(), anyString(),
+                    anyString())).thenReturn(tokenResponse);
+            String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"expires_in\": 1799}";
+            when(tokenResponse.getResponseBody()).thenReturn(responseBody);
+            when(tokenResponse.getResponseCode()).thenReturn(200);
+
+            // Return from drupal api
+            APIResponse response = mock(APIResponse.class);
+            mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString())).thenReturn(response);
+
+            String userDataResponse = "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"email\":\"foo@workday.com\",\"contextInfo\":{\"isWorkmate\":\"false\"},\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
+            when(response.getResponseBody()).thenReturn(userDataResponse);
+            when(response.getResponseCode()).thenReturn(200);
+
+            String contextReturn = this.service.getUserContext(DEFAULT_SFID_MASTER).toString();
+            assertEquals(contextReturn, "{\"isWorkmate\":\"false\"}");
+        }
+    }
+
 }

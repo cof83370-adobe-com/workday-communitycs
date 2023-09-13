@@ -9,8 +9,8 @@ import com.google.gson.JsonParser;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -49,7 +49,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class CoveoEventFeedModelImplTest {
   /**
    * AemContext
@@ -61,7 +61,7 @@ public class CoveoEventFeedModelImplTest {
   @Mock
   SearchApiConfigService searchApiConfigService;
   @Mock
-  SnapService snapService;
+  DrupalService drupalService;
   @Mock
   UserService userService;
 
@@ -74,7 +74,7 @@ public class CoveoEventFeedModelImplTest {
     Page currentPage = res.adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
-    context.registerService(SnapService.class, snapService);
+    context.registerService(DrupalService.class, drupalService);
     context.registerService(SlingHttpServletRequest.class, request);
     context.registerService(UserService.class, userService);
     context.addModelsForClasses(CoveoEventFeedModelImpl.class);
@@ -84,13 +84,13 @@ public class CoveoEventFeedModelImplTest {
 
   @Test
   void testGetSearchConfig() throws RepositoryException {
-    ((CoveoEventFeedModelImpl)coveoEventFeedModel).init(request);
+    ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(request);
     ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
     Session session = mock(Session.class);
     UserManager userManager = mock(UserManager.class);
     User user = mock(User.class);
 
-    Value[] profileSId = new Value[] {new Value() {
+    Value[] profileSId = new Value[] { new Value() {
       @Override
       public String getString() throws IllegalStateException {
         return "testSFId";
@@ -135,7 +135,7 @@ public class CoveoEventFeedModelImplTest {
       public int getType() {
         return 0;
       }
-    }};
+    } };
     lenient().when(request.getResourceResolver()).thenReturn(mockResourceResolver);
     lenient().when(mockResourceResolver.adaptTo(Session.class)).thenReturn(session);
     lenient().when(session.getUserID()).thenReturn("userId");
@@ -147,7 +147,7 @@ public class CoveoEventFeedModelImplTest {
     JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");
 
-    lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
+    lenient().when(drupalService.getUserContext(anyString())).thenReturn(userContext);
     lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
     JsonObject searchConfig = coveoEventFeedModel.getSearchConfig();
     assertEquals(5, searchConfig.size());
@@ -156,7 +156,7 @@ public class CoveoEventFeedModelImplTest {
 
   @Test
   void testGetFeatureEventNotResolved() throws RepositoryException {
-    ((CoveoEventFeedModelImpl)coveoEventFeedModel).init(request);
+    ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(request);
 
     ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
     PageManager pageManager = mock(PageManager.class);
@@ -173,7 +173,8 @@ public class CoveoEventFeedModelImplTest {
       ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(this.request);
       JsonObject modelConfig = new JsonObject();
       modelConfig.addProperty("eventCriteria", "foo");
-      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.request.getResourceResolver()), anyString())).thenReturn(modelConfig);
+      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.request.getResourceResolver()), anyString()))
+          .thenReturn(modelConfig);
 
       String res = coveoEventFeedModel.getEventCriteria();
       assertEquals("(foo)", res);
@@ -188,7 +189,8 @@ public class CoveoEventFeedModelImplTest {
       modelConfig.addProperty("sortCriteria", "foo");
       modelConfig.addProperty("allEventsUrl", "foo1");
       modelConfig.addProperty("extraCriteria", "foo2");
-      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.request.getResourceResolver()), anyString())).thenReturn(modelConfig);
+      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.request.getResourceResolver()), anyString()))
+          .thenReturn(modelConfig);
 
       assertEquals("foo", coveoEventFeedModel.getSortCriteria());
       assertEquals("foo1", coveoEventFeedModel.getAllEventsUrl());
@@ -198,17 +200,16 @@ public class CoveoEventFeedModelImplTest {
 
   @Test
   void testGetFeatureEventResolved() throws RepositoryException {
-    ((CoveoEventFeedModelImpl)coveoEventFeedModel).init(request);
+    ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(request);
 
     ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
     PageManager pageManager = mock(PageManager.class);
     Page page = mock(Page.class);
 
     ValueMap testValues = new ValueMapDecorator(ImmutableMap.of(
-        "eventStartDate", new GregorianCalendar(2023, JUNE,3),
-        "eventEndDate", new GregorianCalendar(2023, OCTOBER,3),
-        "eventLocation", "Bay area"
-    ));
+        "eventStartDate", new GregorianCalendar(2023, JUNE, 3),
+        "eventEndDate", new GregorianCalendar(2023, OCTOBER, 3),
+        "eventLocation", "Bay area"));
 
     lenient().when(request.getResourceResolver()).thenReturn(mockResourceResolver);
     lenient().when(mockResourceResolver.adaptTo(PageManager.class)).thenReturn(pageManager);

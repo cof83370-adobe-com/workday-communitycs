@@ -8,8 +8,8 @@ import com.google.gson.JsonParser;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
@@ -40,7 +40,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class CoveoListViewModelImplTest {
     /** The AemContext object. */
     private final AemContext context = new AemContext();
@@ -49,7 +49,7 @@ public class CoveoListViewModelImplTest {
     SlingHttpServletRequest request;
 
     @Mock
-    SnapService snapService;
+    DrupalService drupalService;
 
     @Mock
     SearchApiConfigService searchApiConfigService;
@@ -73,7 +73,7 @@ public class CoveoListViewModelImplTest {
         context.addModelsForClasses(CategoryFacetModel.class);
         context.load().json("/com/workday/community/aem/core/models/impl/CoveoListViewModel.json", "/component");
         context.registerService(SearchApiConfigService.class, searchApiConfigService);
-        context.registerService(SnapService.class, snapService);
+        context.registerService(DrupalService.class, drupalService);
         context.registerService(SlingHttpServletRequest.class, request);
         context.registerService(UserService.class, userService);
 
@@ -103,7 +103,9 @@ public class CoveoListViewModelImplTest {
 
         mockDamUtils = mockStatic(DamUtils.class);
 
-        mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver), eq("/content/dam/workday-community/resources/coveo-field-map.json")))
+        mockDamUtils
+                .when(() -> DamUtils.readJsonFromDam(eq(resourceResolver),
+                        eq("/content/dam/workday-community/resources/coveo-field-map.json")))
                 .thenReturn(fieldMapConfigObj);
 
         resolverUtil = mockStatic(ResolverUtil.class);
@@ -112,9 +114,10 @@ public class CoveoListViewModelImplTest {
 
     @Test
     void testComponent() throws RepositoryException {
-        CoveoListViewModel listViewModel = context.currentResource("/component/listView").adaptTo(CoveoListViewModel.class);
+        CoveoListViewModel listViewModel = context.currentResource("/component/listView")
+                .adaptTo(CoveoListViewModel.class);
         if (listViewModel != null) {
-            ((CoveoListViewModelImpl)listViewModel).init(request);
+            ((CoveoListViewModelImpl) listViewModel).init(request);
         }
 
         ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
@@ -122,7 +125,7 @@ public class CoveoListViewModelImplTest {
         UserManager userManager = mock(UserManager.class);
         User user = mock(User.class);
 
-        Value[] profileSId = new Value[] {new Value() {
+        Value[] profileSId = new Value[] { new Value() {
             @Override
             public String getString() throws IllegalStateException {
                 return "testSFId";
@@ -167,7 +170,7 @@ public class CoveoListViewModelImplTest {
             public int getType() {
                 return 0;
             }
-        }};
+        } };
         lenient().when(request.getResourceResolver()).thenReturn(mockResourceResolver);
         lenient().when(mockResourceResolver.adaptTo(Session.class)).thenReturn(session);
         lenient().when(session.getUserID()).thenReturn("userId");
@@ -178,13 +181,13 @@ public class CoveoListViewModelImplTest {
         JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
         userContext.addProperty("email", "testEmailFoo@workday.com");
 
-        lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
+        lenient().when(drupalService.getUserContext(anyString())).thenReturn(userContext);
         lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
 
         JsonObject config = listViewModel.getSearchConfig();
         Assert.assertEquals(config.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");
 
-        assertEquals("TestOrgId",config.get("orgId").getAsString());
+        assertEquals("TestOrgId", config.get("orgId").getAsString());
         assertEquals("TestSearchHub", config.get("searchHub").getAsString());
         List<CategoryFacetModel> categoryFacetModels = listViewModel.getCategories();
         assertEquals(2, categoryFacetModels.size());
