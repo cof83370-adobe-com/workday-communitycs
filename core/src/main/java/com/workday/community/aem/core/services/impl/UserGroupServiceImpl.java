@@ -198,10 +198,13 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     protected List<String> getUserGroupsFromSnap(String sfId) {
         List<String> groups = new ArrayList<>();
-        if (StringUtils.isEmpty(sfId)) return groups;
+        if (StringUtils.isBlank(sfId)) return groups;
         String cacheKey = String.format("sf-user-groups-%s", sfId);
         List<String> ret = cacheManager.get(CacheBucketName.SF_USER_GROUP.name(), cacheKey, (key) -> {
             JsonObject context = snapService.getUserContext(sfId);
+
+            if(null == context || context.isJsonNull() || context.size() == 0 ) return groups;
+
             JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
 
             JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
