@@ -327,29 +327,6 @@ public class SnapServiceImplTest {
     }
   }
 
-  @Test
-  public void testGetUserContext() {
-    snapService.activate(snapConfig.get(1, 1));
-    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      String testUserContext = "{\"email\":\"foo@workday.com\"}";
-
-      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenReturn(testUserContext);
-
-      JsonObject ret = this.snapService.getUserContext(DEFAULT_SFID_MASTER);
-      assertEquals(testUserContext, ret.toString());
-    }
-  }
-
-  @Test
-  public void testGetUserContextWithException() {
-    snapService.activate(snapConfig.get(1, 1));
-    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
-      mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString())).thenThrow(new SnapException());
-      JsonObject ret = this.snapService.getUserContext(DEFAULT_SFID_MASTER);
-      assertEquals(ret, new JsonObject());
-    }
-  }
-
   private ByteArrayInputStream getTestContent(String jsonFile) {
     InputStream inputStream = getClass().getResourceAsStream(jsonFile);
     assert inputStream != null;

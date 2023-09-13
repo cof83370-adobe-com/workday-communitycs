@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.services;
 
-import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -46,12 +45,6 @@ public interface SnapService {
    *         of the page.
    */
   String getUserHeaderMenu(String sfId);
-
-  /**
-   * @param sfId Salesforce Id.
-   * @return the user email from the snap logic api call.
-   */
-  JsonObject getUserContext(String sfId);
 
   /**
    *
