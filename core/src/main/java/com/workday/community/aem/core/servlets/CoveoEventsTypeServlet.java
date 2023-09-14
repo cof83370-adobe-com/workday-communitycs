@@ -37,15 +37,15 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.SimpleDataSource;
 import com.adobe.granite.ui.components.ds.ValueMapResource;
 
-import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
-import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
 
 /**
  * The Class CoveoEventsTypeServlet.
@@ -131,8 +131,8 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
         String endpoint = this.searchApiConfigService.getSearchFieldLookupAPI();
         endpoint += EVENT_TYPE_CRITERIA;
         HttpGet request = new HttpGet(endpoint);
-        request.addHeader(HttpConstants.HEADER_ACCEPT, APPLICATION_SLASH_JSON);
-        request.addHeader(CONTENT_TYPE, APPLICATION_SLASH_JSON);
+        request.addHeader(HttpConstants.HEADER_ACCEPT, JSON);
+        request.addHeader(CONTENT_TYPE, JSON);
         request.addHeader(AUTHORIZATION, BEARER_TOKEN.token(token));
         HttpResponse response = httpClient.execute(request);
         int status = response.getStatusLine().getStatusCode();

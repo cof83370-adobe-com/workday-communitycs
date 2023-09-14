@@ -16,8 +16,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.HttpsURLConnectionService;
-import com.workday.community.aem.core.constants.RestApiConstants;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 
@@ -26,9 +28,9 @@ import io.wcm.testing.mock.aem.junit5.AemContext;
  */
 @ExtendWith(MockitoExtension.class)
 public class CoveoSourceApiServiceImplTest {
- 
+
     /** The service CoveoSourceApiServiceImpl. */
-    @Spy 
+    @Spy
     private CoveoSourceApiServiceImpl service;
 
     /** The service HttpsURLConnectionService. */
@@ -45,7 +47,8 @@ public class CoveoSourceApiServiceImplTest {
     @Test
     public void testGenerateSourceApiUri() {
         service = this.registerService();
-        String expected = coveoIndexApiConfigService.getSourceApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/sources/" + coveoIndexApiConfigService.getSourceId();
+        String expected = coveoIndexApiConfigService.getSourceApiUri() + coveoIndexApiConfigService.getOrganizationId()
+                + "/sources/" + coveoIndexApiConfigService.getSourceId();
         assertEquals(expected, service.generateSourceApiUri());
     }
 
@@ -56,18 +59,19 @@ public class CoveoSourceApiServiceImplTest {
     public void testGenerateHeader() {
         service = this.registerService();
         HashMap<String, String> header = service.generateHeader();
-        assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(HttpConstants.HEADER_ACCEPT));
-        assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(RestApiConstants.CONTENT_TYPE));
-        assertEquals(BEARER_TOKEN.token(coveoIndexApiConfigService.getCoveoApiKey()), header.get(RestApiConstants.AUTHORIZATION));
+        assertEquals(JSON, header.get(HttpConstants.HEADER_ACCEPT));
+        assertEquals(JSON, header.get(CONTENT_TYPE));
+        assertEquals(BEARER_TOKEN.token(coveoIndexApiConfigService.getCoveoApiKey()), header.get(AUTHORIZATION));
     }
 
     /**
      * Test getTotalIndexedNumbe failed.
      */
-    @Test void testGetTotalIndexedNumbeFailed() {
+    @Test
+    void testGetTotalIndexedNumbeFailed() {
         HashMap<String, Object> response = new HashMap<>();
         response.put("statusCode", 403);
-        String responseString = "{\"error\": {\"message\": \"failed\"}}"; 
+        String responseString = "{\"error\": {\"message\": \"failed\"}}";
         response.put("response", responseString);
         doReturn(response).when(service).callApi();
         Assertions.assertEquals(-1, service.getTotalIndexedNumber());
@@ -76,25 +80,26 @@ public class CoveoSourceApiServiceImplTest {
     /**
      * Test getTotalIndexedNumbe pass.
      */
-    @Test void testGetTotalIndexedNumber() {
+    @Test
+    void testGetTotalIndexedNumber() {
         HashMap<String, Object> response = new HashMap<>();
         response.put("statusCode", HttpStatus.SC_OK);
-        String responseString = "{\"information\": {\"numberOfDocuments\": \"20\"}}"; 
+        String responseString = "{\"information\": {\"numberOfDocuments\": \"20\"}}";
         response.put("response", responseString);
         doReturn(response).when(service).callApi();
         Assertions.assertEquals(20, service.getTotalIndexedNumber());
     }
 
     /**
-	 * Helper method to register service.
-	 *
-	 * @return The CoveoSourceApiServiceImpl instance
-	 */
+     * Helper method to register service.
+     *
+     * @return The CoveoSourceApiServiceImpl instance
+     */
     private CoveoSourceApiServiceImpl registerService() {
-        AemContext context = new AemContext(); 
+        AemContext context = new AemContext();
         coveoIndexApiConfigService = context.registerInjectActivateService(new CoveoIndexApiConfigService());
         restApiService = context.registerInjectActivateService(new HttpsURLConnectionService());
         return context.registerInjectActivateService(new CoveoSourceApiServiceImpl());
     }
-    
+
 }

@@ -7,6 +7,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.metatype.annotations.Designate;
@@ -24,8 +25,6 @@ import com.workday.community.aem.core.utils.RestApiUtil;
 
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
-
-import static com.workday.community.aem.core.constants.RestApiConstants.GET_API;
 
 /**
  * The Class OurmUserServiceImpl.
@@ -77,7 +76,8 @@ public class OurmUserServiceImpl implements OurmUserService {
 
                 String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath),
                         URLEncoder.encode(searchText, StandardCharsets.UTF_8));
-                String headerString = OAuth1Util.getHeader(GET_API, apiUrl, consumerKey, consumerSecret, new HashMap<>());
+                String headerString = OAuth1Util.getHeader(HttpConstants.METHOD_GET, apiUrl, consumerKey,
+                        consumerSecret, new HashMap<>());
                 LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
 
                 // Execute the request.

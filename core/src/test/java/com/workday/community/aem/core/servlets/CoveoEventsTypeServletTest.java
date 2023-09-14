@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
-import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -15,7 +14,6 @@ import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workday.community.aem.core.pojos.EventTypes;
-import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.pojos.EventTypeValue;
 import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;

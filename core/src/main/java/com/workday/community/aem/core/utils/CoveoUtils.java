@@ -33,12 +33,12 @@ import java.util.Map;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
-import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
-import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
 public class CoveoUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoUtils.class);
@@ -52,7 +52,7 @@ public class CoveoUtils {
       ObjectMapper objectMapper,
       ServletCallback servletCallback) throws ServletException, IOException, DrupalException {
     String utfName = StandardCharsets.UTF_8.name();
-    response.setContentType(APPLICATION_SLASH_JSON);
+    response.setContentType(JSON);
     response.setCharacterEncoding(utfName);
 
     Cookie coveoCookie = HttpUtils.getCookie(request, COVEO_COOKIE_NAME);
@@ -130,7 +130,7 @@ public class CoveoUtils {
 
     request.addHeader(AUTHORIZATION, BEARER_TOKEN.token(apiKey));
     request.addHeader(HttpConstants.HEADER_ACCEPT, "*/*");
-    request.addHeader(CONTENT_TYPE, APPLICATION_SLASH_JSON);
+    request.addHeader(CONTENT_TYPE, JSON);
     request.setEntity(entity);
 
     HttpResponse response = httpClient.execute(request);

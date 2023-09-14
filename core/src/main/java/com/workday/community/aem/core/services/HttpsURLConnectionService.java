@@ -15,50 +15,47 @@ import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.workday.community.aem.core.constants.RestApiConstants;
+import com.workday.community.aem.core.constants.HttpConstants;
 
 /**
  * The Class HttpsURLConnectionService.
  */
-@Component(
-    service = HttpsURLConnectionService.class,
-    immediate = true
-)
+@Component(service = HttpsURLConnectionService.class, immediate = true)
 public class HttpsURLConnectionService {
 
     /** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /**
-	 * Set up http url connection.
-	 *
+     * Set up http url connection.
+     *
      * @param apiUrl The api url
-	 * @return The HttpsURLConnection
-	 */
+     * @return The HttpsURLConnection
+     */
     protected HttpsURLConnection getHttpsURLConnection(String apiUrl) throws IOException {
         URL url = new URL(apiUrl);
         return (HttpsURLConnection) url.openConnection();
     }
 
     /**
-	 * Send the api request.
-	 *
-     * @param url The api url
-	 * @param header  The api header
+     * Send the api request.
+     *
+     * @param url        The api url
+     * @param header     The api header
      * @param httpMethod The api call method
-     * @param payload The api call payload
-	 * @return The api response
-	 */
+     * @param payload    The api call payload
+     * @return The api response
+     */
     public HashMap<String, Object> send(String url, HashMap<String, String> header, String httpMethod, String payload) {
         HashMap<String, Object> apiResponse = new HashMap<>();
 
         try {
             HttpsURLConnection request = this.getHttpsURLConnection(url);
-            request.setConnectTimeout(RestApiConstants.TIMEOUT);
-            request.setReadTimeout(RestApiConstants.TIMEOUT);
+            request.setConnectTimeout(HttpConstants.HTTP_TIMEMOUT);
+            request.setReadTimeout(HttpConstants.HTTP_TIMEMOUT);
             request.setRequestMethod(httpMethod);
             if (!header.isEmpty()) {
-                for (HashMap.Entry<String,String> entry : header.entrySet()) {
+                for (HashMap.Entry<String, String> entry : header.entrySet()) {
                     request.setRequestProperty(entry.getKey(), entry.getValue());
                 }
             }
@@ -66,23 +63,22 @@ public class HttpsURLConnectionService {
                 request.setDoOutput(true);
                 OutputStream os = request.getOutputStream();
                 byte[] input = payload.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);	
-                os.flush();	
-                os.close();	
+                os.write(input, 0, input.length);
+                os.flush();
+                os.close();
             }
             apiResponse.put("statusCode", request.getResponseCode());
             BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String inputLine;
             StringBuilder response = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {                  
+            while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
             in.close();
             apiResponse.put("response", response.toString());
             request.disconnect();
             return apiResponse;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Rest api call in HttpsURLConnectionService failed: {}", e.getMessage());
             if (!apiResponse.containsKey("statusCode")) {
                 apiResponse.put("statusCode", HttpStatus.SC_BAD_REQUEST);
