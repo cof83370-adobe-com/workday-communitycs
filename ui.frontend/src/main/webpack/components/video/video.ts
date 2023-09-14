@@ -57,11 +57,23 @@
             }
         });
 
-        if(isModalOpen == true) {
-            document.addEventListener('keydown', function (event) {
+        let keydownEventListener;
+        if (isModalOpen === true) {
+            keydownEventListener = function (event) {
                 if (isModalOpen && event.key === 'Escape') {
                     closeVideoModal();
+                    document.removeEventListener('keydown', keydownEventListener);
                 }
+                if (isModalOpen && event.key === 'Tab') {
+                    event.preventDefault();
+                    spanClose.focus();
+                }
+            };
+
+            document.addEventListener('keydown', keydownEventListener);
+
+            spanClose.addEventListener('focus', function () {
+                document.removeEventListener('keydown', keydownEventListener);
             });
         }
 
