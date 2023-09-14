@@ -384,4 +384,28 @@ public class RestApiUtil {
           String.format("Exception in doDrupalUserDataGet method while executing the request = %s", e.getMessage()));
     }
   }
+
+  /**
+   * Frames the Drupal API user search get request.
+   * 
+   * @param url         Url
+   * @param bearerToken Bearer Token
+   * @return API Response
+   * @throws DrupalException DrupalException object.
+   */
+  public static APIResponse doDrupalUserSearchGet(String url, String bearerToken) throws DrupalException {
+    try {
+      APIRequest apiRequestInfo = new APIRequest();
+
+      apiRequestInfo.setUrl(url);
+      apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
+          .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
+          .addHeader(CONTENT_TYPE, ContentType.JSON);
+
+      return executeGetRequest(apiRequestInfo);
+    } catch (APIException e) {
+      throw new DrupalException(
+          String.format("Exception in doDrupalUserSearchGet method while executing the request = %s", e.getMessage()));
+    }
+  }
 }

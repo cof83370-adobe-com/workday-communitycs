@@ -64,4 +64,13 @@ public interface DrupalService {
      * @return User context json object.
      */
     JsonObject getUserContext(String sfId);
+
+    /**
+     * Searches the given user email.
+     * 
+     * @param searchText User email.
+     * @return User data as json object.
+     * @throws DrupalException DrupalException.
+     */
+    JsonObject searchOurmUserList(String searchText) throws DrupalException;
 }

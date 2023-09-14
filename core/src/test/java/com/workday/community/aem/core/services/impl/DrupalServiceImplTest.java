@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.config.DrupalConfig;
@@ -99,6 +100,11 @@ public class DrupalServiceImplTest {
         @Override
         public boolean enableCache() {
             return true;
+        }
+
+        @Override
+        public String drupalUserSearchPath() {
+            return "drupalUserSearchPath";
         }
     };
 
@@ -338,6 +344,58 @@ public class DrupalServiceImplTest {
 
             String contextReturn = this.service.getUserContext(DEFAULT_SFID_MASTER).toString();
             assertEquals(contextReturn, "{\"isWorkmate\":\"false\"}");
+        }
+    }
+
+    /**
+     * Test method for searchOurmUserList.
+     */
+    @Test
+    public void testSearchOurmUserList() throws DrupalException {
+        String searchText = "fakeString";
+        try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+            APIResponse tokenResponse = mock(APIResponse.class);
+            mocked.when(() -> RestApiUtil.doDrupalTokenGet(anyString(), anyString(),
+                    anyString())).thenReturn(tokenResponse);
+            String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"expires_in\": 1799}";
+            when(tokenResponse.getResponseBody()).thenReturn(responseBody);
+            when(tokenResponse.getResponseCode()).thenReturn(200);
+
+            String testUserContext = "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
+            // Return from drupal api
+            APIResponse response = mock(APIResponse.class);
+            mocked.when(() -> RestApiUtil.doDrupalUserSearchGet(anyString(), anyString())).thenReturn(response);
+            when(response.getResponseBody()).thenReturn(testUserContext);
+            when(response.getResponseCode()).thenReturn(200);
+
+            JsonObject ret = this.service.searchOurmUserList(searchText);
+            assertEquals(testUserContext, ret.toString());
+        }
+    }
+
+    /**
+     * Test method for searchOurmUserList with space in input parameter.
+     */
+    @Test
+    public void testSearchOurmUserListWithSpace() throws DrupalException {
+        String searchText = "fake String";
+        try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+            APIResponse tokenResponse = mock(APIResponse.class);
+            mocked.when(() -> RestApiUtil.doDrupalTokenGet(anyString(), anyString(),
+                    anyString())).thenReturn(tokenResponse);
+            String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"expires_in\": 1799}";
+            when(tokenResponse.getResponseBody()).thenReturn(responseBody);
+            when(tokenResponse.getResponseCode()).thenReturn(200);
+
+            String testUserContext = "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
+            // Return from drupal api
+            APIResponse response = mock(APIResponse.class);
+            mocked.when(() -> RestApiUtil.doDrupalUserSearchGet(anyString(), anyString())).thenReturn(response);
+            when(response.getResponseBody()).thenReturn(testUserContext);
+            when(response.getResponseCode()).thenReturn(200);
+
+            JsonObject ret = this.service.searchOurmUserList(searchText);
+            assertEquals(testUserContext, ret.toString());
         }
     }
 }

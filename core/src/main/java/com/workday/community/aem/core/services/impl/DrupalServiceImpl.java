@@ -375,6 +375,49 @@ public class DrupalServiceImpl implements DrupalService {
     }
 
     /**
+     * Search ourm user list.
+     *
+     * @param searchText the search text
+     * @return the json object
+     * @throws OurmException the ourm exception
+     */
+    @Override
+    public JsonObject searchOurmUserList(String searchText) throws DrupalException {
+        try {
+            if (StringUtils.isNotBlank(searchText)) {
+                String drupalUrl = config.drupalApiUrl(), userSearchPath = config.drupalUserSearchPath();
+                // Get the bearer token needed for user data API call.
+                String bearerToken = getApiToken();
+                if (StringUtils.isNotBlank(bearerToken)) {
+                    // Frame the request URL.
+                    String url = CommunityUtils.formUrl(drupalUrl, userSearchPath);
+                    // Format the URL.
+                    url = String.format(url, searchText);
+                    // Execute the request.
+                    APIResponse userSearchResponse = RestApiUtil.doDrupalUserSearchGet(url, bearerToken);
+                    if (userSearchResponse == null || StringUtils.isEmpty(userSearchResponse.getResponseBody())
+                            || userSearchResponse.getResponseCode() != HttpStatus.SC_OK) {
+                        LOGGER.error("Drupal API user search response is empty.");
+                        return new JsonObject();
+                    }
+
+                    return gson.fromJson(userSearchResponse.getResponseBody(), JsonObject.class);
+                }
+            }
+            return new JsonObject();
+        } catch (DrupalException e) {
+            LOGGER.error(
+                    String.format(
+                            "Error Occurred in searchOurmUserList Method in DrupalServiceImpl : %s",
+                            e.getMessage()));
+            throw new DrupalException(
+                    String.format(
+                            "There is an error while fetching user search data. Please contact Community Admin. %s",
+                            e.getMessage()));
+        }
+    }
+
+    /**
      * Returns the environment name.
      * 
      * @return Environment name.

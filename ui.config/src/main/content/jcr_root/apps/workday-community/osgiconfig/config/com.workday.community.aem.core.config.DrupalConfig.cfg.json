@@ -2,6 +2,7 @@
     "drupalApiUrl":"$[env:drupalApiUrl]",
     "drupalTokenPath":"$[env:drupalTokenPath]",
     "drupalUserDataPath":"$[env:drupalUserDataPath]",
+    "drupalUserSearchPath":"$[env:drupalUserSearchPath]",
     "drupalApiClientId":"$[secret:drupalApiClientId]",
     "drupalApiClientSecret":"$[secret:drupalApiClientSecret]",
     "drupalTokenCacheMax":10,
