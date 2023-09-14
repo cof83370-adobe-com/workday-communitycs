@@ -91,14 +91,18 @@ public class ComponentFilter implements Filter {
                 try (ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory,
                         READ_SERVICE_USER)) {
                     List<String> groupsList = userGroupService.getCurrentUserGroups(request);
+                    logger.debug("ComponentFilter::ACL Tags of user {}", groupsList);
                     ValueMap properties = request.getResource().getValueMap();
                     List<String> accessControlList = Arrays
                             .asList(properties.get("componentACLTags", new String[0]));
+                    logger.debug("ComponentFilter::ACL Tags of component {}", accessControlList);
                     if (CollectionUtils.isNotEmpty(accessControlList) && CollectionUtils.isNotEmpty(groupsList)
                             && CollectionUtils.intersection(accessControlList, groupsList).isEmpty()) {
+                        logger.debug("ComponentFilter::Permission not matching.. not rendeing component.");
                         return;
                     } else if (CollectionUtils.isNotEmpty(accessControlList)
                             && CollectionUtils.isEmpty(groupsList)) {
+                        logger.debug("ComponentFilter::User permissions are empty.. not rendeing component.");
                         return;
                     }
                 } catch (LoginException e) {
