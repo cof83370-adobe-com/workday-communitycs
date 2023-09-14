@@ -69,4 +69,10 @@ public interface SnapService {
    * @return The adobe digital data.
    */
   String getAdobeDigitalData(String sfId, String pageTitle, String contentType);
+
+  /**
+   *
+   * @return true if the cache is enabled.
+   */
+  boolean enableCache();
 }

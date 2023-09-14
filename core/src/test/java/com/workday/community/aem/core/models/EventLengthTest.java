@@ -8,6 +8,7 @@ import static org.mockito.Mockito.lenient;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.workday.community.aem.core.services.UserService;
 import org.apache.sling.api.resource.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,6 +44,9 @@ public class EventLengthTest {
     @Mock
     private SnapService snapService;
 
+    @Mock
+    UserService userService;
+
     /**
      * Setup.
      *
@@ -50,8 +54,9 @@ public class EventLengthTest {
      */
     @BeforeEach
     public void setup() throws Exception {
+        context.registerService(SnapService.class, snapService);
+        context.registerService(UserService.class, userService);
         context.addModelsForClasses(EventDetailsModel.class);
-        context.registerService(SnapService.class, snapService);   
         String profileResponse = "{\"timeZone\":\"America/New_York\"}";
         lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse); 
     }

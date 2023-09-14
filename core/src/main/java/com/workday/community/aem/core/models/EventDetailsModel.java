@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import com.workday.community.aem.core.constants.EventDetailsConstants;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.services.SnapService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,6 +27,7 @@ import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,9 +98,12 @@ public class EventDetailsModel {
 	@Inject
 	private SnapService snapService;
 
+	@Reference
+	UserService userService;
+
 	/** The Sling Http Servlet Request */
 	@Self
-  	private SlingHttpServletRequest request;
+	private SlingHttpServletRequest request;
 
 	/**
 	 * Inits the model.
@@ -128,7 +133,7 @@ public class EventDetailsModel {
 	 * @return user time zone string
 	 */
 	private String populateUserTimeZone() {
-		String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+		String sfId = OurmUtils.getSalesForceId(request, userService);
 		String timeZoneStr = "";
 		Gson gson = new Gson();
 		if(StringUtils.isNotBlank(sfId) && null != snapService) {

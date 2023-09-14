@@ -4,7 +4,9 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.sling.api.resource.LoginException;
@@ -14,6 +16,8 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -28,6 +32,8 @@ import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERV
  */
 @Model(adaptables = Resource.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class CategoryFacetModel {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryFacetModel.class);
 
     /**
      * Facet field.
@@ -61,44 +67,54 @@ public class CategoryFacetModel {
     @Inject
     ResourceResolverFactory resourceResolverFactory;
 
+    /** The cache manager */
+    @Inject
+    CacheManagerService cacheManager;
+
     /**
      * Post construct to build facet object.
      */
     @PostConstruct
     private void init() throws DamException {
-        ResourceResolver resolver = getResourceResolver();
-        TagManager tagManager = resolver != null ?  resolver.adaptTo(TagManager.class): null;
-        Tag tag = tagManager != null ? tagManager.resolve(category): null;
-        if (tag == null) {
-            return;
-        }
-        String nameSpace = tag.getNamespace().getName();
-        if (searchHelpText == null) {
-            searchHelpText = tag.getNamespace().getTitle();
-        }
-        if (nameSpace == null) {
-            return;
-        }
 
-        JsonElement facetField = this.getFieldMapConfig(resolver).get(nameSpace);
-        if (facetField != null) {
-            field = facetField.getAsString();
-            StringBuilder sb = new StringBuilder();
-            List<String> tags = new ArrayList<>();
-            while (!tag.isNamespace()) {
-                if (sb.length() > 0) {
-                    sb.insert(0, ", ");
+        try (ResourceResolver resolver = cacheManager == null?
+            ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER) :
+            cacheManager.getServiceResolver(READ_SERVICE_USER)) {
+            TagManager tagManager = resolver != null ?  resolver.adaptTo(TagManager.class): null;
+            Tag tag = tagManager != null ? tagManager.resolve(category): null;
+            if (tag == null) {
+                return;
+            }
+            String nameSpace = tag.getNamespace().getName();
+            if (searchHelpText == null) {
+                searchHelpText = tag.getNamespace().getTitle();
+            }
+            if (nameSpace == null) {
+                return;
+            }
+
+            JsonElement facetField = this.getFieldMapConfig(resolver).get(nameSpace);
+            if (facetField != null) {
+                field = facetField.getAsString();
+                StringBuilder sb = new StringBuilder();
+                List<String> tags = new ArrayList<>();
+                while (!tag.isNamespace()) {
+                    if (sb.length() > 0) {
+                        sb.insert(0, ", ");
+                    }
+                    sb.insert(0, "\"" + tag.getTitle() + "\"");
+
+                    tags.add(tag.getTitle());
+                    tag = tag.getParent();
+
                 }
-                sb.insert(0, "\"" + tag.getTitle() + "\"");
-
-                tags.add(tag.getTitle());
-                tag = tag.getParent();
-
+                if (!tags.isEmpty()) {
+                    Collections.reverse(tags);
+                    subCategory = "\"" + String.join("\", \"", tags) + "\"";
+                }
             }
-            if (!tags.isEmpty()) {
-                Collections.reverse(tags);
-                subCategory = "\"" + String.join("\", \"", tags) + "\"";
-            }
+        } catch (CacheException | LoginException e) {
+            LOGGER.error("Initialization of CategoryFacetModel fails");
         }
     }
 
@@ -150,18 +166,4 @@ public class CategoryFacetModel {
     public String getSearchHelpText() {
         return searchHelpText;
     }
-
-    /**
-     * return resource resolver.
-     * 
-     * @return
-     */
-    private ResourceResolver getResourceResolver() {
-        try {
-            return ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
-        } catch (LoginException e) {
-            return null;
-        }
-    }
-
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.ServletCallback;
 import org.apache.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * The search Token servlet class.
@@ -33,13 +35,16 @@ import java.io.IOException;
     }
 )
 public class SearchTokenServlet extends SlingAllMethodsServlet {
-  private static final Logger logger = LoggerFactory.getLogger(SearchTokenServlet.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(SearchTokenServlet.class);
 
   @Reference
   private transient SearchApiConfigService searchApiConfigService;
 
   @Reference
   private transient SnapService snapService;
+
+  @Reference
+  private transient UserService userService;
 
   private transient ObjectMapper objectMapper = new ObjectMapper();
 
@@ -56,7 +61,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    logger.debug("initialize Search token service");
+    LOGGER.debug("initialize Search token service");
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
@@ -64,19 +69,26 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
    * Implementation of the servlet GET method
    * @param request The HttpServletRequest object.
    * @param response The HttpServletResponse object.
-   * @throws IOException if the method call fails with IOException.
+   * @throws ServletException if the method call fails with ServletException.
    */
   @Override
   protected void doGet(SlingHttpServletRequest request,
-                       SlingHttpServletResponse response) throws ServletException, IOException {
+                       SlingHttpServletResponse response) {
+    LOGGER.debug("Get search token call, method {}", request.getMethod());
     ServletCallback servletCallback = (SlingHttpServletRequest req,
         SlingHttpServletResponse res, String body) -> {
+      LOGGER.debug("inside getToken API callback with response; {}", body);
       response.setStatus(HttpStatus.SC_OK);
+      response.setContentType("application/json");
+      response.setCharacterEncoding(StandardCharsets.UTF_8.name());
       response.getWriter().write(body);
       return body;
     };
 
-    logger.debug("Start doGet call for token");
-    CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, gson, objectMapper, servletCallback);
+    try {
+      CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, userService, gson, objectMapper, servletCallback);
+    } catch (IOException | ServletException e) {
+      LOGGER.error("get Token fails with error: {}", e.getMessage());
+    }
   }
 }

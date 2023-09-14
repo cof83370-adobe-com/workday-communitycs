@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -45,6 +46,7 @@ public class CoveoUtils {
                                               SlingHttpServletResponse response,
                                               SearchApiConfigService searchApiConfigService,
                                               SnapService snapService,
+                                              UserService userService,
                                               Gson gson,
                                               ObjectMapper objectMapper,
                                               ServletCallback servletCallback) throws ServletException, IOException {
@@ -54,33 +56,36 @@ public class CoveoUtils {
 
     Cookie coveoCookie = HttpUtils.getCookie(request, COVEO_COOKIE_NAME);
     if (coveoCookie != null) {
+      LOGGER.debug("Coveo cookie still active, decode it to send data back");
       String coveoInfo = URLDecoder.decode(coveoCookie.getValue(), utfName);
       servletCallback.execute(request, response, coveoInfo);
       return;
     }
 
-    String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+    String sfId = OurmUtils.getSalesForceId(request, userService);
     int tokenExpiryTime = searchApiConfigService.getTokenValidTime() / 1000;
     boolean isDevMode = searchApiConfigService.isDevMode();
     JsonObject userContext = snapService.getUserContext(sfId);
-    String email = userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
-        : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
-    if (email == null) {
-      LOGGER.error("User email is not in session, please contact admin");
-      LOGGER.info("devMode value: " + isDevMode);
-      throw new ServletException("User email is not in session, please contact admin");
+    String email;
+    if (isDevMode) {
+      LOGGER.debug("dev mode is enabled");
+      email = searchApiConfigService.getDefaultEmail();
+    } else {
+      email = userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString() : null;
+    }
+    if (StringUtils.isEmpty(email)) {
+      throw new ServletException("Email for current user is empty, ");
     }
 
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-      String searchToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
+      String searchToken = getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getSearchTokenAPIKey());
       if (StringUtils.isEmpty(searchToken)) {
-        LOGGER.error("There is no search token generated, please contact community admin.");
         throw new ServletException("There is no search token generated, please contact community admin.");
       }
-      String recommendationToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
+      String recommendationToken = getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getRecommendationAPIKey());
-      String upcomingEventToken = CoveoUtils.getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
+      String upcomingEventToken = getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
           email, searchApiConfigService.getUpcomingEventAPIKey());
 
       userContext.addProperty("searchToken", searchToken);
@@ -96,10 +101,11 @@ public class CoveoUtils {
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/", searchApiConfigService.isDevMode());
 
       //Add coveo_visitorId cookie
-      Cookie visitIdCookie = new Cookie("coveo_visitorId",
-          CoveoUtils.getCurrentUserClientId(request, searchApiConfigService, snapService));
+      Cookie visitIdCookie = new Cookie("coveo_visitorId", userService.getUserUUID(sfId));
       HttpUtils.addCookie(visitIdCookie, response);
       servletCallback.execute(request, response, coveoInfo);
+    } catch (IOException exception) {
+      LOGGER.error("Get Token call fails with message: {} ", exception.getMessage());
     }
   }
 
@@ -123,15 +129,15 @@ public class CoveoUtils {
 
     HttpResponse response = httpClient.execute(request);
     int status = response.getStatusLine().getStatusCode();
-    if (status == HttpStatus.SC_OK) {
-      LOGGER.debug("Token API call is successful.");
-      Map result = Collections.unmodifiableMap(objectMapper.readValue(response.getEntity().getContent(),
-          HashMap.class));
+    Map result = Collections.unmodifiableMap(objectMapper.readValue(response.getEntity().getContent(),
+        HashMap.class));
 
+    if (status == HttpStatus.SC_OK || status == HttpStatus.SC_CREATED) {
+      LOGGER.debug("getSearchToken API call is successful.");
       return (String)result.get("token");
     }
 
-    LOGGER.error("Token API call failed.");
+    LOGGER.error("getSearchToken API call failed. error {}", objectMapper.writeValueAsString(result));
     return "";
   }
 
@@ -141,7 +147,7 @@ public class CoveoUtils {
     HashMap<String, Object> payloadMap = new HashMap<>();
 
     String searchHub = searchApiConfigService.getSearchHub();
-    LOGGER.debug(String.format("The configured Search hub is: %s", searchHub));
+    LOGGER.debug(String.format("Inside getTokenPayload method, and the configured Search hub is: %s", searchHub));
 
     userMap.put("name", email);
     userMap.put("provider", searchApiConfigService.getUserIdProvider());
@@ -163,27 +169,15 @@ public class CoveoUtils {
   }
 
   /**
-   * Return the current user's client id.
-   * @param request Pass-in request object.
-   * @param searchConfigService Pass-in searchConfigService object.
-   * @param snapService Pass-in snapService object.
-   * @return the current user's client id as string.
-   */
-  public static String getCurrentUserClientId(
-      SlingHttpServletRequest request, SearchApiConfigService searchConfigService, SnapService snapService) {
-    String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
-    String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
-    return UUIDUtil.getUserClientId(email).toString();
-  }
-
-  /**
    * Return the current user context from salesforce if it is set
    * @param request the Request object.
    * @param snapService The Snap service object.
    * @return The current user context as string.
    */
-  public static String getCurrentUserContext(SlingHttpServletRequest request, SnapService snapService) {
-    String sfId = OurmUtils.getSalesForceId(request.getResourceResolver());
+  public static String getCurrentUserContext(SlingHttpServletRequest request,
+                                             SnapService snapService,
+                                             UserService userService) {
+    String sfId = OurmUtils.getSalesForceId(request, userService);
     JsonObject contextString = snapService.getUserContext(sfId);
 
     if (contextString.has(USER_CONTEXT_INFO_KEY)) {
@@ -198,15 +192,20 @@ public class CoveoUtils {
    * @param searchConfigService the search configuration service object.
    * @param request the incoming sling request
    * @param snapService  the snap logic service object
+   * @param userService  the user service object
    * @return the search configuration object used by component.
    */
-  public static JsonObject getSearchConfig(SearchApiConfigService searchConfigService, SlingHttpServletRequest request, SnapService snapService) {
+  public static JsonObject getSearchConfig(SearchApiConfigService searchConfigService,
+                                           SlingHttpServletRequest request,
+                                           SnapService snapService,
+                                           UserService userService) {
     JsonObject config = new JsonObject();
+    String sfId = OurmUtils.getSalesForceId(request, userService);
     config.addProperty("orgId", searchConfigService.getOrgId());
     config.addProperty("searchHub", searchConfigService.getSearchHub());
     config.addProperty("analytics", true);
-    config.addProperty("clientId", getCurrentUserClientId(request, searchConfigService, snapService));
-    config.addProperty("userContext", getCurrentUserContext(request, snapService));
+    config.addProperty("clientId", userService.getUserUUID(sfId));
+    config.addProperty("userContext", getCurrentUserContext(request, snapService, userService));
     return config;
   }
 }

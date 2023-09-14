@@ -5,26 +5,26 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
-import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -41,9 +41,6 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";
   protected static final String RESOURCE_TYPE = "/content/workday-community/components/common/relatedinformation";
 
-  @Inject
-  ResourceResolverFactory resourceResolverFactory;
-
   @Self
   private SlingHttpServletRequest request;
 
@@ -56,11 +53,18 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   @OSGiService
   private SearchApiConfigService searchConfigService;
 
+  /** The cache manager */
+  @Reference
+  CacheManagerService cacheManager;
+
   /**
    * The snap service object.
    */
   @OSGiService
   private SnapService snapService;
+
+  @OSGiService
+  private UserService userService;
 
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
@@ -95,8 +99,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     if (tags == null || tags.length == 0) {
       return Collections.unmodifiableList(facetFields);
     }
-    try {
-      ResourceResolver resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
+    try (ResourceResolver resolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
       JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG).getAsJsonObject("tagIdToCoveoField");
       for (Tag tag : tags) {
         JsonElement facetFieldObj = fieldMapConfig.get(tag.getNamespace().getName());
@@ -116,9 +119,9 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
           facetFields.add(facetFieldObj.getAsString());
         }
       }
-    } catch (LoginException e) {
-      LOGGER.error("exception in getFacetFields call in CoveoRelatedInformationModelImpl.");
-      throw new DamException(e.getMessage());
+    } catch (CacheException e) {
+      throw new DamException(String.format(
+          "Exception in getFacetFields call in CoveoRelatedInformationModelImpl. error %s", e.getMessage()));
     }
 
     return Collections.unmodifiableList(facetFields);
@@ -127,7 +130,11 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   @Override
   public JsonObject getSearchConfig() {
     if (this.searchConfig == null) {
-      this.searchConfig = CoveoUtils.getSearchConfig(searchConfigService, request, snapService);
+      this.searchConfig = CoveoUtils.getSearchConfig(
+          searchConfigService,
+          request,
+          snapService,
+          userService);
     }
     return this.searchConfig;
   }

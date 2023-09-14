@@ -36,7 +36,7 @@ public class CoveoDeleteAllServlet extends SlingAllMethodsServlet {
      *
      * @param request The HTTP request
      * @param response The HTTP response
-     * @throws IOException
+     * @throws IOException An IOException object.
      */
     @Override
     public void doDelete(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {

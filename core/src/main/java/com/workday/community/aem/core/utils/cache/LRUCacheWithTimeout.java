@@ -1,7 +1,8 @@
-package com.workday.community.aem.core.utils;
+package com.workday.community.aem.core.utils.cache;
 
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.collections4.map.LRUMap;
+import org.apache.sling.api.resource.ResourceResolver;
 
 import java.util.Map;
 
@@ -36,6 +37,9 @@ public class LRUCacheWithTimeout<K, V> extends LRUMap<K, V> {
     Long keyTimeStamp = this.keyTimeStamps.get(ks);
     if (value != null && keyTimeStamp != null && isExpired(keyTimeStamp)) {
       // If the retrieved item has expired, remove it from the cache and return null.
+      if (value instanceof ResourceResolver && ((ResourceResolver) value).isLive()) {
+        ((ResourceResolver)value).close();
+      }
       remove(key);
       this.keyTimeStamps.remove(ks);
       return null;

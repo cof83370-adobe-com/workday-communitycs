@@ -4,20 +4,20 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
-import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
-import com.workday.community.aem.core.exceptions.OurmException;
+import com.workday.community.aem.core.services.CacheBucketName;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
-import com.workday.community.aem.core.utils.CommonUtils;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.DamUtils;
+import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.PageUtils;
-import com.workday.community.aem.core.utils.ResolverUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
-import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     /**
      * The logger.
      */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserGroupServiceImpl.class);
 
     /**
      * The snap service.
@@ -60,13 +60,12 @@ public class UserGroupServiceImpl implements UserGroupService {
     @Reference
     SnapService snapService;
 
+    /** The cache manager */
     @Reference
-    ResourceResolverFactory resourceResolverFactory;
+    CacheManagerService cacheManager;
 
-    /**
-     * The snap Config.
-     */
-    private SnapConfig config;
+    @Reference
+    UserService userService;
 
     /**
      * The customer_role_mapping.
@@ -88,108 +87,106 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     private HashMap<String, String> partnerTrackMapping = new HashMap<>();
 
-    /**
-     * SFDC Role mapping json object.
-     */
-    private JsonObject sfdcRoleMap;
-
-    /**
-     * The group map json
-     */
-    JsonObject groupMap = null;
-
     @Activate
     @Modified
+    protected void activate(SnapConfig config) throws CacheException, DamException {
+        ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER);
+        /*
+          SFDC Role mapping json object.
+         */
+        JsonObject sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
+        if (sfdcRoleMap != null) {
+            Gson g = new Gson();
+            customerRoleMapping = g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
+            customerOfMapping = g.fromJson(sfdcRoleMap.get("customerOfMapping").toString(), HashMap.class);
+            wspMapping = g.fromJson(sfdcRoleMap.get("wspMapping").toString(), HashMap.class);
+            partnerTrackMapping = g.fromJson(sfdcRoleMap.get("partnerTrackMapping").toString(), HashMap.class);
+        }
+    }
+
     @Override
-    public void activate(SnapConfig config) {
-        this.config = config;
+    public boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath) {
+        LOGGER.debug(" inside validateTheUser method. -->");
+
+        boolean isValid = false;
+        try {
+            LOGGER.debug("---> UserGroupServiceImpl: Before Access control tag List");
+            List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
+                    ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
+            LOGGER.debug("---> UserGroupServiceImpl: After Access control tag List");
+            if (!accessControlTagsList.isEmpty()) {
+                LOGGER.debug("---> UserGroupServiceImpl:Access control tag List.. {}.", accessControlTagsList);
+                if (accessControlTagsList.contains(AUTHENTICATED)) {
+                    isValid = true;
+                } else {
+                    List<String> groupsList = getCurrentUserGroups(request);
+                    LOGGER.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
+                    isValid = !Collections.disjoint(accessControlTagsList, groupsList);
+                }
+            }
+        } catch (RepositoryException e) {
+            LOGGER.error("---> Exception in validateTheUser function: {}.", e.getMessage());
+        }
+        return isValid;
+    }
+
+    @Override
+    public boolean validateCurrentUser(SlingHttpServletRequest request, List<String> accessControlTags) {
+        LOGGER.debug("Inside checkLoggedInUserHasAccessControlValues method. -->");
+
+        if (accessControlTags == null || accessControlTags.isEmpty()) return false;
+        if (accessControlTags.contains(AUTHENTICATED)) return true;
+        List<String> groupsList = getCurrentUserGroups(request);
+
+        LOGGER.debug("---> UserGroupServiceImpl: validateCurrentUser - Groups List..{}.", groupsList);
+        return !Collections.disjoint(accessControlTags, groupsList);
     }
 
     /**
      * Returns current logged-in users groups.
      * Check whether user node has property roles. If it is there then return from
      * node property. If not, call API for roles.
-     * 
-     * @param resourceResolver: User's request resourceResolver.
+     *
+     * @param request: current Sling request object.
      * @return User group list.
      */
-    public List<String> getLoggedInUsersGroups(ResourceResolver resourceResolver) throws OurmException {
-        ResourceResolver jcrSessionResourceResolver = null;
-        Session jcrSession = null;
-        logger.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
-        String userRole = StringUtils.EMPTY;
+    public List<String> getCurrentUserGroups(SlingHttpServletRequest request) {
+        LOGGER.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
+        String userRole;
         List<String> groupIds = new ArrayList<>();
         try {
-            User user = CommonUtils.getLoggedInUser(resourceResolver);
-            Value[] values = user.getProperty(WccConstants.PROFILE_SOURCE_ID);
-            String sfId = values != null && values.length > 0 ? values[0].getString() : null;
+            User user = userService.getCurrentUser(request);
+            String sfId = OurmUtils.getSalesForceId(request, userService);
             if (sfId != null) {
-                logger.debug("user  sfid {} ", sfId);
-                Node userNode = resourceResolver.getResource(user.getPath()).adaptTo(Node.class);
-                if (userNode.hasProperty(ROLES) && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
-                        userNode.getProperty(ROLES).getString().split(";").length > 0) {
+                LOGGER.debug("user  sfid {} ", sfId);
+                ResourceResolver jcrResolver = cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+                Node userNode = Objects.requireNonNull(jcrResolver.getResource(user.getPath())).adaptTo(Node.class);
+                if (Objects.requireNonNull(userNode).hasProperty(ROLES) &&
+                    StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
+                    userNode.getProperty(ROLES).getString().split(";").length > 0) {
                     userRole = userNode.getProperty(ROLES).getString();
                     groupIds = List.of(userRole.split(";"));
                 } else {
-                    Map<String, Object> serviceParams = new HashMap<>();
-                    serviceParams.put(ResourceResolverFactory.SUBSERVICE, WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
-                    jcrSessionResourceResolver = resourceResolverFactory.getServiceResourceResolver(serviceParams);
-                    jcrSession = jcrSessionResourceResolver.adaptTo(Session.class);
-                    groupIds = this.getUserGroupsFromSnap(sfId);
+                    Session jcrSession = jcrResolver.adaptTo(Session.class);
+                    groupIds = getUserGroupsFromSnap(sfId);
                     userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
-                    jcrSession.save();
+                    Objects.requireNonNull(jcrSession).save();
                 }
-                logger.info("Salesforce roles {}", groupIds);
+                LOGGER.info("Salesforce roles {}", groupIds);
             }
 
-        } catch (LoginException | RepositoryException e) {
-            logger.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
-        } finally {
-            if (jcrSessionResourceResolver != null && jcrSessionResourceResolver.isLive()) {
-                jcrSessionResourceResolver.close();
-            }
-            if (jcrSession != null && jcrSession.isLive()) {
-                jcrSession.logout();
-            }
+        } catch ( RepositoryException | CacheException e) {
+            LOGGER.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
         }
         return groupIds;
     }
 
     /**
-     * Validates the user based on Roles tagged to the page and User roles from
-     * Salesforce.
-     *
-     * @param resourceResolver:        the Request resource Resolver
-     * @param requestResourceResolver: the Request resource Resolver
-     * @param pagePath                 : The Requested page path.
-     * @return boolean: True if user has permissions otherwise false.
-     * @throws LoginException
+     * This is used in testing.
+     * @param cacheManager the pass-in Cache manager object.
      */
-    public boolean validateTheUser(ResourceResolver resourceResolver, ResourceResolver requestResourceResolver,
-            String pagePath) {
-        logger.debug(" inside validateTheUser method. -->");
-        boolean isInValid = true;
-        try {
-            logger.debug("---> UserGroupServiceImpl: Before Access control tag List");
-            List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(resourceResolver, pagePath,
-                    ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
-            logger.debug("---> UserGroupServiceImpl: After Access control tag List");
-            if (!accessControlTagsList.isEmpty()) {
-                logger.debug("---> UserGroupServiceImpl:Access control tag List.. {}.", accessControlTagsList);
-                if (accessControlTagsList.contains(AUTHENTICATED)) {
-                    isInValid = false;
-                } else {
-                    List<String> groupsList = getLoggedInUsersGroups(requestResourceResolver);
-                    logger.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
-                    if (!Collections.disjoint(accessControlTagsList, groupsList)) {
-                        isInValid = false;
-                    }
-                }
-            }
-        } catch (RepositoryException | OurmException e) {
-            logger.error("---> Exception in validateTheUser function: {}.", e.getMessage());
-        }
-        return isInValid;
+    protected void setCacheManager(CacheManagerService cacheManager) {
+        this.cacheManager = cacheManager;
     }
 
     /**
@@ -200,118 +197,76 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     protected List<String> getUserGroupsFromSnap(String sfId) {
         List<String> groups = new ArrayList<>();
-        JsonObject context = snapService.getUserContext(sfId);
-        setSfdcRoleMap();
+        if (StringUtils.isEmpty(sfId)) return groups;
+        String cacheKey = String.format("sf-user-groups-%s", sfId);
+        List<String> ret = cacheManager.get(CacheBucketName.SF_USER_GROUP.name(), cacheKey, (key) -> {
+            JsonObject context = snapService.getUserContext(sfId);
+            JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
 
-        JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
-        JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
-        boolean hasCommunityAccess = false;
-        if (!propertyAccess.isJsonNull() && propertyAccess.getAsString().contains(PROPERTY_ACCESS_COMMUNITY)) {
-            groups.add(AUTHENTICATED);
-            hasCommunityAccess = true;
+            JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
+            boolean hasCommunityAccess = false;
+            if (!propertyAccess.isJsonNull() && propertyAccess.getAsString().contains(PROPERTY_ACCESS_COMMUNITY)) {
+                groups.add(AUTHENTICATED);
+                hasCommunityAccess = true;
+            }
+            addGroups(groups, contactInformation, WSP_KEY, wspMapping);
+
+            JsonObject contextInfo = context.get(USER_CONTEXT_INFO_KEY).getAsJsonObject();
+            addGroups(groups, contextInfo, USER_CONTACT_ROLE_KEY, customerRoleMapping);
+
+            JsonElement type = contextInfo.get(USER_TYPE_KEY);
+            JsonElement customerOf = contactInformation.get(CUSTOMER_OF_KEY);
+            JsonElement partnerTrack = contactInformation.get(PARTNER_TRACK_KEY);
+            JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
+            boolean isWorkmateUser = false;
+            if (!isWorkmate.isJsonNull()) {
+                isWorkmateUser = isWorkmate.getAsBoolean();
+            }
+            if (!type.isJsonNull()) {
+                String typeString = type.getAsString();
+                if (typeString.equals("customer") && !isWorkmateUser && !customerOf.isJsonNull()) {
+                    String customerOfString = customerOf.getAsString();
+                    for (Map.Entry<String, String> entry : customerOfMapping.entrySet()) {
+                        if (customerOfString.contains(entry.getKey())) {
+                            groups.add(entry.getValue());
+                        }
+                    }
+                }
+                if (typeString.equals("partner") && !partnerTrack.isJsonNull()) {
+                    String partnerTrackString = partnerTrack.getAsString();
+                    for (Map.Entry<String, String> entry : partnerTrackMapping.entrySet()) {
+                        if (partnerTrackString.contains(entry.getKey())) {
+                            groups.add(entry.getValue());
+                        }
+                    }
+                }
+            }
+            if (isWorkmateUser) {
+                groups.add(INTERNAL_WORKMATES);
+            } else {
+                if (hasCommunityAccess && !type.isJsonNull()) {
+                    groups.add(type.getAsString() + "_all");
+                }
+            }
+            return groups;
+        });
+
+        if (ret != null && ret.isEmpty()) {
+            cacheManager.invalidateCache(CacheBucketName.SF_USER_GROUP.name(), cacheKey);
         }
-        JsonElement wsp = contactInformation.get(WSP_KEY);
+
+        return ret;
+    }
+
+    private void addGroups(List<String> groups, JsonObject contactInformation, String key, HashMap<String, String> valueMap) {
+        JsonElement wsp = contactInformation.get(key);
         if (!wsp.isJsonNull()) {
             String wspString = wsp.getAsString();
-            for (Map.Entry<String, String> entry : wspMapping.entrySet()) {
+            for (Map.Entry<String, String> entry : valueMap.entrySet()) {
                 if (wspString.contains(entry.getKey())) {
                     groups.add(entry.getValue());
                 }
             }
         }
-        JsonObject contextInfo = context.get(USER_CONTEXT_INFO_KEY).getAsJsonObject();
-        JsonElement contactRolesObj = contextInfo.get(USER_CONTACT_ROLE_KEY);
-        if (!contactRolesObj.isJsonNull()) {
-            String contactRoles = contactRolesObj.getAsString();
-            for (Map.Entry<String, String> entry : customerRoleMapping.entrySet()) {
-                if (contactRoles.contains(entry.getKey())) {
-                    groups.add(entry.getValue());
-                }
-            }
-        }
-        JsonElement type = contextInfo.get(USER_TYPE_KEY);
-        JsonElement customerOf = contactInformation.get(CUSTOMER_OF_KEY);
-        JsonElement partnerTrack = contactInformation.get(PARTNER_TRACK_KEY);
-        JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
-        boolean isWorkmateUser = false;
-        if (!isWorkmate.isJsonNull()) {
-            isWorkmateUser = isWorkmate.getAsBoolean();
-        }
-        if (!type.isJsonNull()) {
-            String typeString = type.getAsString();
-            if (typeString.equals("customer") && !isWorkmateUser && !customerOf.isJsonNull()) {
-                String customerOfString = customerOf.getAsString();
-                for (Map.Entry<String, String> entry : customerOfMapping.entrySet()) {
-                    if (customerOfString.contains(entry.getKey())) {
-                        groups.add(entry.getValue());
-                    }
-                }
-            }
-            if (typeString.equals("partner") && !partnerTrack.isJsonNull()) {
-                String partnerTrackString = partnerTrack.getAsString();
-                for (Map.Entry<String, String> entry : partnerTrackMapping.entrySet()) {
-                    if (partnerTrackString.contains(entry.getKey())) {
-                        groups.add(entry.getValue());
-                    }
-                }
-            }
-        }
-        if (isWorkmateUser) {
-            groups.add(INTERNAL_WORKMATES);
-        } else {
-            if (hasCommunityAccess && !type.isJsonNull()) {
-                groups.add(type.getAsString() + "_all");
-            }
-        }
-        return groups;
-    }
-
-    /**
-     * Set sfdc role map json object.
-     */
-    protected void setSfdcRoleMap() {
-        if (sfdcRoleMap == null) {
-            try (ResourceResolver resourceResolver = ResolverUtil.newResolver(resourceResolverFactory,
-                    READ_SERVICE_USER)) {
-                sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
-            } catch (LoginException | DamException e) {
-                logger.error("Error reading sfdc role map json file: {}.", e.getMessage());
-            }
-        }
-        if (sfdcRoleMap != null) {
-            Gson g = new Gson();
-            customerRoleMapping = g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
-            customerOfMapping = g.fromJson(sfdcRoleMap.get("customerOfMapping").toString(), HashMap.class);
-            wspMapping = g.fromJson(sfdcRoleMap.get("wspMapping").toString(), HashMap.class);
-            partnerTrackMapping = g.fromJson(sfdcRoleMap.get("partnerTrackMapping").toString(), HashMap.class);
-        }
-
-    }
-
-    /**
-     * Validates if logged in user has the passed in access control tags.
-     * 
-     * @param requestResourceResolver Request resource resolver.
-     * @param accessControlTags       List of access control tags to be checked
-     *                                against.
-     * @return True if logged in user has given access control tags, else false.
-     */
-    public boolean checkLoggedInUserHasAccessControlTags(ResourceResolver requestResourceResolver,
-            List<String> accessControlTags) {
-        logger.debug("Inside checkLoggedInUserHasAccessControlValues method. -->");
-        try {
-            if (accessControlTags == null || accessControlTags.isEmpty())
-                return false;
-            if (accessControlTags.contains(AUTHENTICATED))
-                return true;
-            List<String> groupsList = getLoggedInUsersGroups(requestResourceResolver);
-            logger.debug(
-                    "---> UserGroupServiceImpl: checkLoggedInUserHasAccessControlValues - Groups List..{}.",
-                    groupsList);
-            return !Collections.disjoint(accessControlTags, groupsList);
-        } catch (OurmException e) {
-            logger.error("---> Exception in checkLoggedInUserHasAccessControlTags method: {}.", e.getMessage());
-        }
-        return false;
     }
 }

@@ -20,6 +20,7 @@ import java.util.Base64;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,7 @@ public class RestApiUtil {
    * @param apiKey   apiKey
    * @param traceId  traceId
    * @return the API response from menu API call
-   * @throws SnapException
+   * @throws SnapException SnapException object.
    */
   public static APIResponse doMenuGet(String url, String apiToken, String apiKey, String traceId)
       throws SnapException {
@@ -70,7 +71,7 @@ public class RestApiUtil {
    * @param authToken Photo API token.
    * @param xApiKey   API secret key.
    * @return the Json response as String from snap logic API call.
-   * @throws SnapException
+   * @throws SnapException SnapException object.
    */
   public static String doSnapGet(String url, String authToken, String xApiKey) throws SnapException {
     try {
@@ -106,7 +107,7 @@ public class RestApiUtil {
    * 
    * @param req API request.
    * @return Response from API.
-   * @throws APIException
+   * @throws APIException APIException object.
    */
   private static APIResponse executeGetRequest(APIRequest req) throws APIException {
     APIResponse apiresponse = new APIResponse();
@@ -129,14 +130,19 @@ public class RestApiUtil {
     // Build the request.
     HttpRequest request = builder.GET().build();
 
-    HttpResponse<String> response = null;
+    HttpResponse<String> response;
     try {
       // Send the HttpGet request using the configured HttpClient.
       response = httpclient.send(request, BodyHandlers.ofString());
-      LOGGER.debug("HTTP response code : {}", response.statusCode());
+      int statusCode = response.statusCode();
+      LOGGER.debug("HTTP response code : {}", statusCode);
       apiresponse.setResponseCode(response.statusCode());
       LOGGER.debug("HTTP response : {}", response.body());
-      apiresponse.setResponseBody(response.body());
+      if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
+        apiresponse.setResponseBody(response.body());
+      } else {
+        apiresponse.setResponseBody("{}");
+      }
     } catch (IOException | InterruptedException e) {
       throw new APIException(
           String.format("Exception in executeGetRequest method while executing the request = %s", e.getMessage()));
@@ -150,7 +156,7 @@ public class RestApiUtil {
    * @param url       Request URL.
    * @param authToken Auth token.
    * @param xApiKey   API key.
-   * @param traceId   Trace Id in header.
+   * @param traceId   Trace id in header.
    * @return API Request object.
    */
   private static APIRequest getMenuApiRequest(String url, String authToken, String xApiKey, String traceId) {
@@ -171,7 +177,7 @@ public class RestApiUtil {
    * 
    * @param request API Request object
    * @return API Response object
-   * @throws APIException
+   * @throws APIException APIException object.
    */
   private static APIResponse executePostRequest(APIRequest request) throws APIException {
     APIResponse apiresponse = new APIResponse();
@@ -192,10 +198,14 @@ public class RestApiUtil {
 
     try {
       HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-      LOGGER.debug("HTTP response code : {}", response.statusCode());
-      apiresponse.setResponseCode(response.statusCode());
-      LOGGER.debug("HTTP response : {}", response.body());
-      apiresponse.setResponseBody(response.body());
+      int resCode = response.statusCode();
+      String resBody = response.body();
+      if (resCode != HttpStatus.SC_OK && resCode != HttpStatus.SC_CREATED) {
+        LOGGER.debug("HTTP response code : {}", resCode);
+        LOGGER.debug("HTTP response : {}", resBody);
+      }
+      apiresponse.setResponseCode(resCode);
+      apiresponse.setResponseBody(resBody);
     } catch (IOException | InterruptedException e) {
       throw new APIException(
           String.format("Exception in executePostRequest method while executing the request = %s", e.getMessage()));
@@ -211,7 +221,7 @@ public class RestApiUtil {
    * @param password Password
    * @return Header string
    */
-  private static final String getBasicAuthenticationHeader(String username, String password) {
+  private static String getBasicAuthenticationHeader(String username, String password) {
     String valueToEncode = username + ":" + password;
     return RestApiConstants.BASIC + " " + Base64.getEncoder().encodeToString(valueToEncode.getBytes());
   }
@@ -228,9 +238,9 @@ public class RestApiUtil {
       if (builder.length() > 0) {
         builder.append("&");
       }
-      builder.append(URLEncoder.encode(entry.getKey().toString(), StandardCharsets.UTF_8));
+      builder.append(URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8));
       builder.append("=");
-      builder.append(URLEncoder.encode(entry.getValue().toString(), StandardCharsets.UTF_8));
+      builder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
     }
     return HttpRequest.BodyPublishers.ofString(builder.toString());
   }
@@ -265,7 +275,7 @@ public class RestApiUtil {
    * @param clientSecret Client Secret
    * @param refreshToken Refresh Token
    * @return API Response
-   * @throws LmsException
+   * @throws LmsException LmsException object.
    */
   public static APIResponse doLmsTokenGet(String url, String clientId, String clientSecret, String refreshToken)
       throws LmsException {
@@ -286,7 +296,7 @@ public class RestApiUtil {
    * @param url         Url
    * @param bearerToken Bearer Token
    * @return API Response
-   * @throws LmsException
+   * @throws LmsException LmsException object.
    */
   public static APIResponse doLmsCourseDetailGet(String url, String bearerToken) throws LmsException {
     try {

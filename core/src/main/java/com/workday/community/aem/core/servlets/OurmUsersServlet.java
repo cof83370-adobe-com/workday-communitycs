@@ -46,8 +46,6 @@ public class OurmUsersServlet extends SlingSafeMethodsServlet {
     @Override
     protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
             throws ServletException {
-
-
         try {
             String searchText = request.getParameter("searchText");
             JsonObject jsonObject = ourmUserService.searchOurmUserList(searchText);
@@ -55,7 +53,7 @@ public class OurmUsersServlet extends SlingSafeMethodsServlet {
             response.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
             response.getWriter().write(jsonObject.toString());
         } catch (IOException | OurmException e) {
-          LOGGER.error(String.format("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage()));
+          LOGGER.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
         }
     }
 }
