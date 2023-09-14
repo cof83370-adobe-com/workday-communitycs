@@ -4,6 +4,7 @@
         imageElement: `[class="${image}"]`,
         expandOption: '[class="expand-media"]'
     };
+    let isModalOpen = false;
 
     function addExpandImageOption(config: any) {
         const expandLink = document.createElement('a');
@@ -38,6 +39,8 @@
 
         const closeModal = document.createElement('span');
         closeModal.className = `${image}__close`;
+        closeModal.setAttribute('tabindex', '0');
+        closeModal.setAttribute('aria-label', 'Close expanded image');
 
         const modalContent = document.createElement('img');
         modalContent.className = `${image}__modal-content`;
@@ -52,13 +55,34 @@
         const imgModalContentItem = imgModalContent.length == 1 ? imgModalContent[0] : null;
         imgModal.style.display = 'block';
         imgModalContentItem.src = img.src;
+        isModalOpen = true;
 
         const spanClose = img.parentNode.getElementsByClassName(`${image}__close`)[0];
 
-        spanClose.addEventListener('click', function(){
-            imgModal.style.display = 'none';
-            img.parentNode.removeChild(modalDiv);
+        spanClose.addEventListener('click', closeImageModal);
+
+        spanClose.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                closeImageModal();
+            }
         });
+
+        if(isModalOpen == true) {
+            document.addEventListener('keydown', function (event) {
+                if (isModalOpen && event.key === 'Escape') {
+                    closeImageModal();
+                }
+            });
+        }
+
+        function closeImageModal() {
+            imgModal.style.display = 'none';
+            const modalToRemove = img.parentNode.querySelector('.cmp-image__modal');
+            if (modalToRemove) {
+                modalToRemove.remove();
+            }
+            isModalOpen = false;
+        }
     }
 
     function onDocumentReady() {

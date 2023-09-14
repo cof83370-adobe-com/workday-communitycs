@@ -4,6 +4,7 @@
         playOption: '[class="play-video"]'
     };
     const videoPlayer = document.getElementsByClassName('brightcoveplayer');
+    let isModalOpen = false;
 
     function addPlayVideoOption(config: any) {
         const playLink = document.createElement('a');
@@ -27,6 +28,8 @@
 
         const closeModal = document.createElement('span');
         closeModal.className = `${video}__close`;
+        closeModal.setAttribute('tabindex', '0');
+        closeModal.setAttribute('aria-label', 'Close video player');
 
         const modalContent = document.createElement('div');
         modalContent.className = `${video}__modal-content`;
@@ -44,17 +47,36 @@
         sourceElement.player.controls_ = true;
         sourceElement.player.controlBar.el_.style.display = 'flex';
         sourceElement.player.bigPlayButton.el_.style.display = '';
+        isModalOpen = true;
 
         const spanClose = sourceElement.parentNode.getElementsByClassName(`${video}__close`)[0];
-        spanClose.addEventListener('click', function(){
+        spanClose.addEventListener('click', closeVideoModal);
+        spanClose.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' || event.keyCode === 13) {
+                closeVideoModal();
+            }
+        });
+
+        if(isModalOpen == true) {
+            document.addEventListener('keydown', function (event) {
+                if (isModalOpen && event.key === 'Escape') {
+                    closeVideoModal();
+                }
+            });
+        }
+
+        function closeVideoModal() {
             sourceElement.classList.remove('modal-play-video');
             vidModal.style.display = 'none';
-            sourceElement.parentNode.removeChild(modalDiv);
+            const modalToRemove = sourceElement.parentNode.querySelector('.video__modal');
+            if (modalToRemove) {
+                modalToRemove.remove();
+            }
             sourceElement.player.controls_ = false;
             sourceElement.player.controlBar.el_.style.display = 'none';
             sourceElement.player.bigPlayButton.el_.style.display = 'none';
             vid[0].pause();
-        });
+        }
     }
 
     function onDocumentReady() {
