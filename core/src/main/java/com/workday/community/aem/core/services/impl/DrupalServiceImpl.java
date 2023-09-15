@@ -379,7 +379,7 @@ public class DrupalServiceImpl implements DrupalService {
      *
      * @param searchText the search text
      * @return the json object
-     * @throws OurmException the ourm exception
+     * @throws DrupalException drupal exception
      */
     @Override
     public JsonObject searchOurmUserList(String searchText) throws DrupalException {

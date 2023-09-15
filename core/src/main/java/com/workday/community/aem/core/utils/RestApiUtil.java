@@ -4,7 +4,6 @@ import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.exceptions.APIException;
 import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.exceptions.LmsException;
-import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.exceptions.SnapException;
 
 import java.net.URLEncoder;
@@ -91,20 +90,6 @@ public class RestApiUtil {
     } catch (APIException e) {
       throw new SnapException(
           String.format("Exception in doSnapGet method while executing the request = %s", e.getMessage()));
-    }
-  }
-
-  public static String doOURMGet(String url, String header) throws OurmException {
-    try {
-      LOGGER.debug("RestAPIUtil: Calling REST requestOurmJsonResponse()...= {}", url);
-      APIRequest apiRequestInfo = new APIRequest();
-
-      apiRequestInfo.setUrl(url);
-      apiRequestInfo.addHeader(AUTHORIZATION, header);
-      return executeGetRequest(apiRequestInfo).getResponseBody();
-    } catch (APIException e) {
-      throw new OurmException(
-          String.format("Exception in doOURMGet method while executing the request = %s", e.getMessage()));
     }
   }
 
