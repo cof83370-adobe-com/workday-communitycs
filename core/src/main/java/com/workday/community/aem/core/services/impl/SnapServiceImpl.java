@@ -429,16 +429,12 @@ public class SnapServiceImpl implements SnapService {
    * @return image data as string
    */
   private String getUserAvatar(String sfId) {
-    String cacheKey = String.format("user_avatar_%s_%s", getEnv(), sfId);
-
-    Object retVal = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
-      ProfilePhoto content = getProfilePhoto(sfId);
-      String encodedPhoto = StringUtils.EMPTY;;
-      String extension = StringUtils.EMPTY;
-      if (content != null && null != content.getBase64content() && null != content.getFileNameWithExtension()) {
-        encodedPhoto = content.getBase64content();
-        extension = content.getFileNameWithExtension();
-      }
+    ProfilePhoto content = getProfilePhoto(sfId);
+    String encodedPhoto = StringUtils.EMPTY;
+    String extension = StringUtils.EMPTY;
+    if (content != null) {
+      encodedPhoto = content.getBase64content();
+      extension = content.getFileNameWithExtension();
       try {
         String[] extensionSplit = StringUtils.isNotBlank(extension) ? extension.split("\\.") : new String[] {};
         if (extensionSplit.length > 0) {
