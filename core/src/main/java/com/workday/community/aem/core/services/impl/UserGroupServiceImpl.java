@@ -165,13 +165,20 @@ public class UserGroupServiceImpl implements UserGroupService {
                 if (Objects.requireNonNull(userNode).hasProperty(ROLES) &&
                     StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
                     userNode.getProperty(ROLES).getString().split(";").length > 0) {
+                    LOGGER.debug("---> UserGroupServiceImpl: getCurrentUserGroups - User has Groups in CRX...{}",
+                            userNode.getProperty(ROLES).getString());
                     userRole = userNode.getProperty(ROLES).getString();
                     groupIds = List.of(userRole.split(";"));
                 } else {
+                    LOGGER.debug("---> UserGroupServiceImpl: getCurrentUserGroups - Trying to get Groups from SNAP");
                     Session jcrSession = jcrResolver.adaptTo(Session.class);
                     groupIds = getUserGroupsFromSnap(sfId);
                     userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
                     Objects.requireNonNull(jcrSession).save();
+                    if(null != groupIds && !groupIds.isEmpty()) {
+                         LOGGER.debug("---> UserGroupServiceImpl: getCurrentUserGroups - Groups from SNAP ... {} ",
+                                StringUtils.join(groupIds, ";"));
+                    }
                 }
                 LOGGER.info("Salesforce roles {}", groupIds);
             }
@@ -198,10 +205,13 @@ public class UserGroupServiceImpl implements UserGroupService {
      */
     protected List<String> getUserGroupsFromSnap(String sfId) {
         List<String> groups = new ArrayList<>();
-        if (StringUtils.isEmpty(sfId)) return groups;
+        if (StringUtils.isBlank(sfId)) return groups;
         String cacheKey = String.format("sf-user-groups-%s", sfId);
         List<String> ret = cacheManager.get(CacheBucketName.SF_USER_GROUP.name(), cacheKey, (key) -> {
             JsonObject context = snapService.getUserContext(sfId);
+
+            if(null == context || context.isJsonNull() || context.size() == 0 ) return groups;
+
             JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
 
             JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
