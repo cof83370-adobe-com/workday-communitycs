@@ -427,16 +427,18 @@ public class SnapServiceImpl implements SnapService {
       ProfilePhoto content = getProfilePhoto(sfId);
       String encodedPhoto = "";
       String extension = "";
-      if (content != null) {
+      if (content != null && null != content.getBase64content() && null != content.getFileNameWithExtension()) {
         encodedPhoto = content.getBase64content();
         extension = content.getFileNameWithExtension();
       }
       try {
-        String[] extensionSplit = extension.split("\\.");
-        if (extensionSplit.length > 0) {
-          extension = extensionSplit[extensionSplit.length - 1];
-        } else {
-          logger.error("No extension found in the data");
+        if (StringUtils.isNotBlank(extension)) {
+            String[] extensionSplit = extension.split("\\.");
+            if (null != extensionSplit && extensionSplit.length > 0) {
+              extension = extensionSplit[extensionSplit.length - 1];
+            } else {
+              logger.error("No extension found in the data");
+            }
         }
       } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
         logger.error("An exception occurred" + e.getMessage());
