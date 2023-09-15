@@ -262,4 +262,5 @@ public class SnapServiceImpl implements SnapService {
     String env = this.runModeConfigService.getEnv();
     return (env == null) ? "local" : env;
   }
+
 }
