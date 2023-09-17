@@ -239,16 +239,17 @@ public class DrupalServiceImpl implements DrupalService {
     @Override
     public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
         try {
+            JsonObject digitalData = new JsonObject();
             String userData = getUserData(sfId);
             if (StringUtils.isEmpty(userData)) {
                 LOGGER.error("Error in getAdobeDigitalData method - empty user data response.");
-                return StringUtils.EMPTY;
             }
-            JsonObject digitalData = generateAdobeDigitalData(userData);
+            else {
+                digitalData = generateAdobeDigitalData(userData);
+            }
             JsonObject pageProperties = new JsonObject();
             pageProperties.addProperty(CONTENT_TYPE, contentType);
             pageProperties.addProperty(PAGE_NAME, pageTitle);
-
             digitalData.add("page", pageProperties);
             return String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
         } catch (JsonSyntaxException e) {

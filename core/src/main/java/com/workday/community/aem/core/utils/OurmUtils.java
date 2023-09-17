@@ -83,7 +83,8 @@ public class OurmUtils {
       userData = drupalService.getUserData(sfId);
       Gson gson = new Gson();
       JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
-      return userDataObject.has(EMAIL_NAME) ? userDataObject.get(EMAIL_NAME).getAsString()
+      return userDataObject != null && !userDataObject.isJsonNull() && userDataObject.has(EMAIL_NAME)
+          ? userDataObject.get(EMAIL_NAME).getAsString()
           : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
     } catch (JsonSyntaxException e) {
       LOGGER.error("Exception in getUserEmail method in OurmUtils class: {}", e.getMessage());
