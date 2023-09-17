@@ -2,16 +2,16 @@
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:isCheckedOut="{Boolean}false"
     jcr:primaryType="cq:WorkflowModel"
-    jcr:uuid="cb769d27-f7eb-49bf-9543-5c2f976dd7d5"
+    jcr:uuid="6c8de181-1b5b-422c-9ca9-09bccb72bdc1"
     sling:resourceType="cq/workflow/components/model"
     description="A workflow to add retirement badge to the page immediately."
     title="Retirement Workflow (Immediate)">
     <metaData
-        cq:generatingPage="/conf/global/settings/workflow/models/workday-community/retirement-workflow--immediate-/jcr:content"
-        cq:lastModified="{Long}1694454854158"
+        cq:generatingPage="/conf/global/settings/workflow/models/workday-community/retirement_workflow_immediate/jcr:content"
+        cq:lastModified="{Long}1694960348449"
         cq:lastModifiedBy="admin"
         jcr:primaryType="nt:unstructured"
-        lastSynced="{Date}2023-09-11T23:24:14.122+05:30"/>
+        lastSynced="{Date}2023-09-17T19:49:08.445+05:30"/>
     <nodes jcr:primaryType="nt:unstructured">
         <node0
             jcr:primaryType="cq:WorkflowNode"
@@ -21,13 +21,11 @@
         </node0>
         <node1
             jcr:primaryType="cq:WorkflowNode"
-            description="Description of step 1"
-            title="Step 1"
-            type="DYNAMIC_PARTICIPANT">
+            title="Retire Page Immediately"
+            type="PROCESS">
             <metaData
                 jcr:primaryType="nt:unstructured"
-                DYNAMIC_PARTICIPANT="/libs/workflow/scripts/initiator-participant-chooser.ecma"
-                PROCESS_AUTO_ADVANCE="true"/>
+                PROCESS="com.workday.community.aem.core.workflows.PageRetireProcessStep"/>
         </node1>
         <node2
             jcr:primaryType="cq:WorkflowNode"
