@@ -123,13 +123,20 @@ public class UserGroupServiceImpl implements UserGroupService {
                 if (Objects.requireNonNull(userNode).hasProperty(ROLES) &&
                         StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
                         userNode.getProperty(ROLES).getString().split(";").length > 0) {
+                    LOGGER.debug("---> UserGroupServiceImpl: getCurrentUserGroups - User has Groups in CRX...{}",
+                            userNode.getProperty(ROLES).getString());
                     userRole = userNode.getProperty(ROLES).getString();
                     groupIds = List.of(userRole.split(";"));
                 } else {
+                    LOGGER.debug("---> UserGroupServiceImpl: getCurrentUserGroups - Trying to get Groups from SNAP");
                     Session jcrSession = jcrResolver.adaptTo(Session.class);
                     groupIds = getUserGroupsFromDrupal(sfId);
                     userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
                     Objects.requireNonNull(jcrSession).save();
+                    if (null != groupIds && !groupIds.isEmpty()) {
+                        LOGGER.debug("---> UserGroupServiceImpl: getCurrentUserGroups - Groups from SNAP ... {} ",
+                                StringUtils.join(groupIds, ";"));
+                    }
                 }
                 LOGGER.info("Salesforce roles {}", groupIds);
             }
