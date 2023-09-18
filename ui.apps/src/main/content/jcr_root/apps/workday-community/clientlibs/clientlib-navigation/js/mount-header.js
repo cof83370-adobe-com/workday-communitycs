@@ -35,6 +35,11 @@ function renderNavHeader() {
         try {
             const headerElement = React.createElement(Cmty.GlobalHeader, headerDataJson);
             ReactDOM.render(headerElement, headerDiv);
+            let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
+            if (dataLayer) {
+                let dataLayerObj = JSON.parse(dataLayer);
+                window.digitalData = dataLayerObj.digitalData;
+            }
         } catch (e) {
             document.cookie = 'cacheMenu=FALSE';
             sessionStorage.removeItem('navigation-data');
