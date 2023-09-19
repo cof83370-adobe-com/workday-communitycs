@@ -8,10 +8,9 @@
     title="Retirement Workflow (Immediate)">
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/workday-community/retirement_workflow_immediate/jcr:content"
-        cq:lastModified="{Long}1694960348449"
         cq:lastModifiedBy="admin"
         jcr:primaryType="nt:unstructured"
-        lastSynced="{Date}2023-09-17T19:49:08.445+05:30"/>
+        lastSynced="{Date}2023-09-18T17:05:48.820+05:30"/>
     <nodes jcr:primaryType="nt:unstructured">
         <node0
             jcr:primaryType="cq:WorkflowNode"
@@ -21,11 +20,13 @@
         </node0>
         <node1
             jcr:primaryType="cq:WorkflowNode"
+            description="A workflow to add retirement badge to the page immediately"
             title="Retire Page Immediately"
             type="PROCESS">
             <metaData
                 jcr:primaryType="nt:unstructured"
-                PROCESS="com.workday.community.aem.core.workflows.PageRetireProcessStep"/>
+                PROCESS="com.workday.community.aem.core.workflows.PageRetireProcessStep"
+                PROCESS_AUTO_ADVANCE="true"/>
         </node1>
         <node2
             jcr:primaryType="cq:WorkflowNode"
