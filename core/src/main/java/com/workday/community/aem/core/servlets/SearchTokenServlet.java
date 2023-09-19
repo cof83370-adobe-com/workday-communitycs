@@ -3,8 +3,9 @@ package com.workday.community.aem.core.servlets;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.workday.community.aem.core.exceptions.DrupalException;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.ServletCallback;
@@ -26,14 +27,11 @@ import java.nio.charset.StandardCharsets;
 /**
  * The search Token servlet class.
  */
-@Component(
-    service = Servlet.class,
-    property = {
-        org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Search Token Servlet",
-        "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-        "sling.servlet.paths=" + "/bin/search/token"
-    }
-)
+@Component(service = Servlet.class, property = {
+    org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Search Token Servlet",
+    "sling.servlet.methods=" + HttpConstants.METHOD_GET,
+    "sling.servlet.paths=" + "/bin/search/token"
+})
 public class SearchTokenServlet extends SlingAllMethodsServlet {
   private static final Logger LOGGER = LoggerFactory.getLogger(SearchTokenServlet.class);
 
@@ -41,7 +39,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   private transient SearchApiConfigService searchApiConfigService;
 
   @Reference
-  private transient SnapService snapService;
+  private transient DrupalService drupalService;
 
   @Reference
   private transient UserService userService;
@@ -52,6 +50,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
 
   /**
    * Pass in ObjectMapper for the search service.
+   * 
    * @param objectMapper the pass-in ObjectMapper object.
    */
   public void setObjectMapper(ObjectMapper objectMapper) {
@@ -67,13 +66,14 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
 
   /**
    * Implementation of the servlet GET method
-   * @param request The HttpServletRequest object.
+   * 
+   * @param request  The HttpServletRequest object.
    * @param response The HttpServletResponse object.
    * @throws ServletException if the method call fails with ServletException.
    */
   @Override
   protected void doGet(SlingHttpServletRequest request,
-                       SlingHttpServletResponse response) {
+      SlingHttpServletResponse response) {
     LOGGER.debug("Get search token call, method {}", request.getMethod());
     ServletCallback servletCallback = (SlingHttpServletRequest req,
         SlingHttpServletResponse res, String body) -> {
@@ -86,8 +86,9 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     };
 
     try {
-      CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, userService, gson, objectMapper, servletCallback);
-    } catch (IOException | ServletException e) {
+      CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, drupalService, userService, gson,
+          objectMapper, servletCallback);
+    } catch (IOException | ServletException | DrupalException e) {
       LOGGER.error("get Token fails with error: {}", e.getMessage());
     }
   }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
@@ -49,7 +49,7 @@ public class SearchTokenServletTest {
   SearchApiConfigService searchApiConfigService;
 
   @Mock
-  SnapService snapService;
+  DrupalService drupalService;
 
   @Mock
   UserService userService;
@@ -63,7 +63,7 @@ public class SearchTokenServletTest {
   public void testDoGetWithExistingCookieInRequest() throws Exception {
 
     Cookie[] testCookies = new Cookie[] {
-      new Cookie("test", "testValue"), new Cookie(COVEO_COOKIE_NAME, "coveo_cookie_value")
+        new Cookie("test", "testValue"), new Cookie(COVEO_COOKIE_NAME, "coveo_cookie_value")
     };
 
     MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
@@ -98,8 +98,8 @@ public class SearchTokenServletTest {
     when(searchApiConfigService.getOrgId()).thenReturn("mockOrgId");
     when(searchApiConfigService.getSearchTokenAPI()).thenReturn("http://coveo/token/api");
 
-    JsonObject testUserContext = gson.fromJson("{\"email\":\"foo@workday.com\"}", JsonObject.class);
-    when(snapService.getUserContext(anyString())).thenReturn(testUserContext);
+    String userData = "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"email\":\"foo@workday.com\",\"contextInfo\":{\"isWorkmate\":\"false\"},\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
+    when(drupalService.getUserData(anyString())).thenReturn(userData);
     CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
     CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
 
@@ -136,8 +136,8 @@ public class SearchTokenServletTest {
 
     // Invoke your servlet
     try (MockedStatic<HttpUtils> mockHttpUtils = mockStatic(HttpUtils.class);
-         MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class);
-         MockedStatic<HttpClients> mockHttpClients = mockStatic(HttpClients.class)) {
+        MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class);
+        MockedStatic<HttpClients> mockHttpClients = mockStatic(HttpClients.class)) {
       mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME)).thenReturn(null);
       mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any(), any())).thenReturn(DEFAULT_SFID_MASTER);
       mockOurmUtils.when(() -> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("foo@workday.com");

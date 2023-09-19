@@ -171,38 +171,6 @@ public class SnapServiceImpl implements SnapService {
     return retValue;
   }
 
-  @Override
-  public JsonObject getUserContext(String sfId) {
-    String cacheKey = String.format("user_context_%s_%s", getEnv(), sfId);
-    if (!enableCache()) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
-    }
-    JsonObject ret = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
-      try {
-        logger.debug("SnapImpl: Calling snap api getUserContext()...");
-        String url = CommunityUtils.formUrl(config.snapUrl(), config.snapContextPath());
-        if (url == null) {
-          return new JsonObject();
-        }
-
-        url = String.format(url, sfId);
-        String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
-        return gson.fromJson(jsonResponse, JsonObject.class);
-      } catch (SnapException | JsonSyntaxException e) {
-        logger.error("Error in getUserContext method :: {}", e.getMessage());
-      }
-
-      logger.error("User context is not fetched from the snap context API call without error, please contact admin.");
-      return new JsonObject();
-    });
-
-    if (ret.isJsonNull() || (ret.isJsonObject() && ret.size() == 0)) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
-    }
-
-    return ret;
-  }
-
   /**
    * Get default header menu.
    *
@@ -294,4 +262,5 @@ public class SnapServiceImpl implements SnapService {
     String env = this.runModeConfigService.getEnv();
     return (env == null) ? "local" : env;
   }
+
 }

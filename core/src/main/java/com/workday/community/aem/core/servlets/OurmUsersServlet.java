@@ -5,8 +5,8 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.services.OurmUserService;
+import com.workday.community.aem.core.exceptions.DrupalException;
+import com.workday.community.aem.core.services.DrupalService;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -32,9 +32,9 @@ public class OurmUsersServlet extends SlingSafeMethodsServlet {
     /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(OurmUsersServlet.class);
 
-    /** The OurmUsers api service. */
+    /** The DrupalService object. */
     @Reference
-    private transient OurmUserService ourmUserService;
+    private transient DrupalService drupalService;
 
     /**
      * Do get.
@@ -48,12 +48,12 @@ public class OurmUsersServlet extends SlingSafeMethodsServlet {
             throws ServletException {
         try {
             String searchText = request.getParameter("searchText");
-            JsonObject jsonObject = ourmUserService.searchOurmUserList(searchText);
+            JsonObject jsonObject = drupalService.searchOurmUserList(searchText);
 
             response.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
             response.getWriter().write(jsonObject.toString());
-        } catch (IOException | OurmException e) {
-          LOGGER.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
+        } catch (IOException | DrupalException e) {
+            LOGGER.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
         }
     }
 }

@@ -3,12 +3,12 @@ package com.workday.community.aem.core.utils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
-
 import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -30,7 +30,7 @@ public class OurmUtils {
   /**
    * Get the current user's Salesforce id.
    *
-   * @param request The current Request object.
+   * @param request     The current Request object.
    * @param userService The pass-in user service object.
    * @return The Salesforce id for current logged-in user.
    */
@@ -52,7 +52,7 @@ public class OurmUtils {
       sfId = sfIdObj[0].getString();
     } catch (RepositoryException re) {
       LOGGER.error(String.format("getSalesForceId call fails with Repository Exception: %s.", re.getMessage()));
-    } catch (CacheException  ce) {
+    } catch (CacheException ce) {
       LOGGER.error("userService.getCurrentUser call fails");
     } catch (RuntimeException re) {
       LOGGER.error(String.format("Runtime exception: %s.", re.getMessage()));
@@ -72,16 +72,24 @@ public class OurmUtils {
    *
    * @param sfId                   User's Salesforce id.
    * @param searchApiConfigService Pass-in SearchApiConfigService object.
-   * @param snapService            Pass-in snapService object
+   * @param drupalService          Pass-in DrupalService object
    * @return the user's email address.
    */
   public static String getUserEmail(
-      String sfId, SearchApiConfigService searchApiConfigService, SnapService snapService
-  ) {
+      String sfId, SearchApiConfigService searchApiConfigService, DrupalService drupalService) {
     boolean isDevMode = searchApiConfigService.isDevMode();
-    JsonObject userContext = snapService.getUserContext(sfId);
-    return userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
-        : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
+    String userData;
+    try {
+      userData = drupalService.getUserData(sfId);
+      Gson gson = new Gson();
+      JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
+      return userDataObject != null && !userDataObject.isJsonNull() && userDataObject.has(EMAIL_NAME)
+          ? userDataObject.get(EMAIL_NAME).getAsString()
+          : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
+    } catch (JsonSyntaxException e) {
+      LOGGER.error("Exception in getUserEmail method in OurmUtils class: {}", e.getMessage());
+      return null;
+    }
   }
 
   public static boolean isMenuEmpty(Gson gson, String menuString) {

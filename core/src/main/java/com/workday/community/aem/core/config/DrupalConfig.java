@@ -24,9 +24,15 @@ public @interface DrupalConfig {
     @AttributeDefinition(name = "Drupal API Client Secret", description = "Drupal API Client Secret.", type = AttributeType.STRING)
     String drupalApiClientSecret();
 
-    @AttributeDefinition(name = "Drupal API token cache size", description = "Drupal API Token Cache size", type = AttributeType.INTEGER)
+    @AttributeDefinition(name = "Drupal API token cache size", description = "Drupal API Token Cache size.", type = AttributeType.INTEGER)
     int drupalTokenCacheMax() default 10;
 
-    @AttributeDefinition(name = "Drupal API token cache timeout duration", description = "Drupal API Token Cache Timeout Duration (mills)", type = AttributeType.LONG)
+    @AttributeDefinition(name = "Drupal API token cache timeout duration", description = "Drupal API Token Cache Timeout Duration (mills).", type = AttributeType.LONG)
     long drupalTokenCacheTimeout() default 1740000L; // Default to 29 minutes.
+
+    @AttributeDefinition(name = "Enable cache", description = "Enable cache(default true).", type = AttributeType.BOOLEAN)
+    boolean enableCache() default true;
+
+    @AttributeDefinition(name = "Drupal User Search API Path", description = "Drupal User Search API Path.")
+    String drupalUserSearchPath();
 }

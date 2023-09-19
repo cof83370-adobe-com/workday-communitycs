@@ -11,7 +11,7 @@ import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoTabListModel;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -47,7 +47,7 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class CoveoTabListModelImplTest {
   /**
    * AemContext
@@ -63,7 +63,7 @@ public class CoveoTabListModelImplTest {
   @Mock
   SearchApiConfigService searchApiConfigService;
   @Mock
-  SnapService snapService;
+  DrupalService drupalService;
 
   @Mock
   UserService userService;
@@ -79,7 +79,7 @@ public class CoveoTabListModelImplTest {
     context.registerService(JsonObject.class, modelConfig);
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
     context.registerService(SlingHttpServletRequest.class, slingHttpServletRequest);
-    context.registerService(SnapService.class, snapService);
+    context.registerService(DrupalService.class, drupalService);
     context.registerService(UserService.class, userService);
     context.addModelsForClasses(CoveoTabListModelImpl.class);
     coveoTabListModel = context.getService(ModelFactory.class).createModel(res, CoveoTabListModel.class);
@@ -93,13 +93,13 @@ public class CoveoTabListModelImplTest {
 
   @Test
   void testGetSearchConfig() throws RepositoryException {
-    ((CoveoTabListModelImpl)coveoTabListModel).init(request);
+    ((CoveoTabListModelImpl) coveoTabListModel).init(request);
     ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
     Session session = mock(Session.class);
     UserManager userManager = mock(UserManager.class);
     User user = mock(User.class);
 
-    Value[] profileSId = new Value[] {new Value() {
+    Value[] profileSId = new Value[] { new Value() {
       @Override
       public String getString() throws IllegalStateException {
         return "testSFId";
@@ -144,7 +144,7 @@ public class CoveoTabListModelImplTest {
       public int getType() {
         return 0;
       }
-    }};
+    } };
     lenient().when(request.getResourceResolver()).thenReturn(mockResourceResolver);
     lenient().when(mockResourceResolver.adaptTo(Session.class)).thenReturn(session);
     lenient().when(session.getUserID()).thenReturn("userId");
@@ -154,7 +154,7 @@ public class CoveoTabListModelImplTest {
     String testData = "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
     JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");
-    lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
+    lenient().when(drupalService.getUserContext(anyString())).thenReturn(userContext);
     lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
 
     JsonObject searchConfig = coveoTabListModel.getSearchConfig();
@@ -166,7 +166,8 @@ public class CoveoTabListModelImplTest {
   void TestGetFields() throws DamException {
     try (MockedStatic<DamUtils> mocked = mockStatic(DamUtils.class)) {
       ((CoveoTabListModelImpl) coveoTabListModel).init(this.slingHttpServletRequest);
-      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.slingHttpServletRequest.getResourceResolver()), anyString())).thenReturn(modelConfig);
+      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.slingHttpServletRequest.getResourceResolver()), anyString()))
+          .thenReturn(modelConfig);
       JsonArray res = coveoTabListModel.getFields();
       assertEquals(1, res.size());
     }
@@ -176,7 +177,8 @@ public class CoveoTabListModelImplTest {
   void TestGetSelectedFields() throws DamException {
     try (MockedStatic<DamUtils> mocked = mockStatic(DamUtils.class)) {
       ((CoveoTabListModelImpl) coveoTabListModel).init(this.slingHttpServletRequest);
-      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.slingHttpServletRequest.getResourceResolver()), anyString())).thenReturn(modelConfig);
+      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.slingHttpServletRequest.getResourceResolver()), anyString()))
+          .thenReturn(modelConfig);
       JsonArray res = coveoTabListModel.getSelectedFields();
       assertEquals(1, res.size());
     }
@@ -185,7 +187,9 @@ public class CoveoTabListModelImplTest {
   @Test
   void TestGetProductCriteria() {
     try (MockedStatic<DamUtils> mockedStatic = mockStatic(DamUtils.class)) {
-      mockedStatic.when(() -> DamUtils.readJsonFromDam(eq(this.slingHttpServletRequest.getResourceResolver()), anyString())).thenReturn(modelConfig);
+      mockedStatic
+          .when(() -> DamUtils.readJsonFromDam(eq(this.slingHttpServletRequest.getResourceResolver()), anyString()))
+          .thenReturn(modelConfig);
       ResourceResolver resolverMock = mock(ResourceResolver.class);
       TagManager tagManager = mock(TagManager.class);
       Tag parentTag = new Tag() {

@@ -2,19 +2,14 @@ package com.workday.community.aem.core.services.impl;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.config.SnapConfig;
+import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.exceptions.DamException;
-import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.DrupalService;
-import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.UserService;
-import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.PageUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,21 +23,9 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import java.util.*;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
-import static com.workday.community.aem.core.constants.WccConstants.INTERNAL_WORKMATES;
 import static com.workday.community.aem.core.constants.WccConstants.ROLES;
 import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_ROLE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_TYPE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_INFORMATION_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.CUSTOMER_OF_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.PARTNER_TRACK_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.WSP_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_TAG;
 
@@ -74,43 +57,6 @@ public class UserGroupServiceImpl implements UserGroupService {
 
     @Reference
     UserService userService;
-
-    /**
-     * The customer_role_mapping.
-     */
-    private HashMap<String, String> customerRoleMapping = new HashMap<>();
-
-    /**
-     * The customer_of_mapping.
-     */
-    private HashMap<String, String> customerOfMapping = new HashMap<>();
-
-    /**
-     * The wsp_mapping.
-     */
-    private HashMap<String, String> wspMapping = new HashMap<>();
-
-    /**
-     * The partner_track_mapping.
-     */
-    private HashMap<String, String> partnerTrackMapping = new HashMap<>();
-
-    @Activate
-    @Modified
-    protected void activate(SnapConfig config) throws CacheException, DamException {
-        ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER);
-        /*
-         * SFDC Role mapping json object.
-         */
-        JsonObject sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
-        if (sfdcRoleMap != null) {
-            Gson g = new Gson();
-            customerRoleMapping = g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
-            customerOfMapping = g.fromJson(sfdcRoleMap.get("customerOfMapping").toString(), HashMap.class);
-            wspMapping = g.fromJson(sfdcRoleMap.get("wspMapping").toString(), HashMap.class);
-            partnerTrackMapping = g.fromJson(sfdcRoleMap.get("partnerTrackMapping").toString(), HashMap.class);
-        }
-    }
 
     @Override
     public boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath) {
@@ -221,12 +167,16 @@ public class UserGroupServiceImpl implements UserGroupService {
         try {
             Gson gson = new Gson();
             String userData = drupalService.getUserData(sfId);
+            if (StringUtils.isEmpty(userData)) {
+                LOGGER.error("Error in getUserGroupsFromDrupal method - empty user data response.");
+                return groups;
+            }
             JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
             JsonArray rolesArray = userDataObject.getAsJsonArray("roles");
             for (int i = 0; i < rolesArray.size(); i++) {
                 groups.add(rolesArray.get(i).getAsString());
             }
-        } catch (DrupalException e) {
+        } catch (JsonSyntaxException e) {
             LOGGER.error("---> Exception in getUserGroupsFromDrupal method: {}.", e.getMessage());
         }
         return groups;

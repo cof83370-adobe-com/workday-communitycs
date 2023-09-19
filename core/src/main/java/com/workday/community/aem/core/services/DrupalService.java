@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services;
 
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.exceptions.DrupalException;
 
@@ -28,7 +29,7 @@ public interface DrupalService {
      * @return The user data as a string for roles and adobe data.
      * @throws DrupalException DrupalException Object.
      */
-    String getUserData(String sfId) throws DrupalException;
+    String getUserData(String sfId);
 
     /**
      * Gets the user profile image data from drupal user data API
@@ -55,4 +56,21 @@ public interface DrupalService {
      * @return Adobe data.
      */
     String getAdobeDigitalData(String sfId, String pageTitle, String contentType);
+
+    /**
+     * Returns the user context as json object.
+     * 
+     * @param sfId SFID.
+     * @return User context json object.
+     */
+    JsonObject getUserContext(String sfId);
+
+    /**
+     * Searches the given user email.
+     * 
+     * @param searchText User email.
+     * @return User data as json object.
+     * @throws DrupalException DrupalException.
+     */
+    JsonObject searchOurmUserList(String searchText) throws DrupalException;
 }

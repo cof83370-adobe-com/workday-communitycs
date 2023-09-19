@@ -35,6 +35,12 @@ function renderNavHeader() {
         try {
             const headerElement = React.createElement(Cmty.GlobalHeader, headerDataJson);
             ReactDOM.render(headerElement, headerDiv);
+            // Get the adobe data and bind to digitalData property of window object.
+            let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
+            if (dataLayer) {
+                let dataLayerObj = JSON.parse(dataLayer);
+                window.digitalData = dataLayerObj.digitalData;
+            }
         } catch (e) {
             document.cookie = 'cacheMenu=FALSE';
             sessionStorage.removeItem('navigation-data');
@@ -95,13 +101,6 @@ function constructData(headerDiv, currentId) {
 
     if (stringValid(homePage)) {
         headerData.homeUrl = homePage;
-    }
-
-    // Although the digitalData set at window object, we set it in session scope.
-    let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
-    if (dataLayer) {
-        let dataLayerObj = JSON.parse(dataLayer);
-        window.digitalData = dataLayerObj.digitalData;
     }
 
     return headerData;

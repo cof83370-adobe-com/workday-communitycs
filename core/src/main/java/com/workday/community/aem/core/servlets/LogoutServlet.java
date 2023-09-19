@@ -27,19 +27,16 @@ import java.nio.charset.StandardCharsets;
 
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.HttpConstants.LOGIN_COOKIE_NAME;
-import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 
 /**
  * The user logout servlet class to redirect the action to okta logout.
  */
-@Component(
-  service = Servlet.class,
-  property = {
+@Component(service = Servlet.class, property = {
     org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Logout Servlet",
     "sling.servlet.methods=" + HttpConstants.METHOD_GET,
     "sling.servlet.paths=" + "/bin/user/logout"
-  }
-)
+})
 public class LogoutServlet extends SlingAllMethodsServlet {
 
   /** The logger. */
@@ -73,7 +70,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
       throws IOException {
     String utfName = StandardCharsets.UTF_8.name();
-    response.setContentType(APPLICATION_SLASH_JSON);
+    response.setContentType(JSON);
     response.setCharacterEncoding(utfName);
 
     String oktaDomain = oktaService.getCustomDomain();

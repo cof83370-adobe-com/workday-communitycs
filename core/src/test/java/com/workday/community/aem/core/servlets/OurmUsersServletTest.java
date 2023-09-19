@@ -21,8 +21,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.services.OurmUserService;
+import com.workday.community.aem.core.exceptions.DrupalException;
+import com.workday.community.aem.core.services.DrupalService;
 
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
@@ -32,30 +32,32 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class OurmUsersServletTest {
 
-  /** The ourmUsers api service. */
+  /** The DrupalService. */
   @Mock
-  OurmUserService ourmUserService;
+  DrupalService drupalService;
 
   /** The ourmUsers servlet. */
   @InjectMocks
   OurmUsersServlet ourmUsersServlet;
 
   private final Gson gson = new Gson();
+
   /**
    * Setup.
    */
   @BeforeEach
-  public void setup() { }
+  public void setup() {
+  }
 
   /**
    * Test do get.
    *
    * @throws IOException      Signals that an I/O exception has occurred.
-   * @throws OurmException the ourm exception
+   * @throws DrupalException  the drupal exception
    * @throws ServletException the servlet exception
    */
   @Test
-  public void testDoGet() throws IOException, OurmException, ServletException {
+  public void testDoGet() throws IOException, DrupalException, ServletException {
     SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
     SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
 
@@ -63,7 +65,7 @@ public class OurmUsersServletTest {
 
     String testUserContext = "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
     JsonObject userContext = gson.fromJson(testUserContext, JsonObject.class);
-    when(ourmUserService.searchOurmUserList(anyString())).thenReturn(userContext);
+    when(drupalService.searchOurmUserList(anyString())).thenReturn(userContext);
     PrintWriter pr = mock(PrintWriter.class);
     lenient().when(response.getWriter()).thenReturn(pr);
     ourmUsersServlet.doGet(request, response);

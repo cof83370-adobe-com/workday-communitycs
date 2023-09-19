@@ -4,7 +4,6 @@ import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.exceptions.APIException;
 import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.exceptions.LmsException;
-import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.exceptions.SnapException;
 
 import java.net.URLEncoder;
@@ -30,7 +29,12 @@ import com.workday.community.aem.core.pojos.restclient.APIRequest;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static com.workday.community.aem.core.constants.RestApiConstants.CLIENT_CREDENTIALS;
 import static com.workday.community.aem.core.constants.HttpConstants.HTTP_TIMEMOUT;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import org.apache.oltu.oauth2.common.OAuth;
+import org.apache.oltu.oauth2.common.OAuth.ContentType;
 
 /**
  * The Class RESTAPIUtil.
@@ -80,26 +84,12 @@ public class RestApiUtil {
       APIRequest apiRequestInfo = new APIRequest();
 
       apiRequestInfo.setUrl(url);
-      apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
+      apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(authToken))
           .addHeader(RestApiConstants.X_API_KEY, xApiKey);
       return executeGetRequest(apiRequestInfo).getResponseBody();
     } catch (APIException e) {
       throw new SnapException(
           String.format("Exception in doSnapGet method while executing the request = %s", e.getMessage()));
-    }
-  }
-
-  public static String doOURMGet(String url, String header) throws OurmException {
-    try {
-      LOGGER.debug("RestAPIUtil: Calling REST requestOurmJsonResponse()...= {}", url);
-      APIRequest apiRequestInfo = new APIRequest();
-
-      apiRequestInfo.setUrl(url);
-      apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, header);
-      return executeGetRequest(apiRequestInfo).getResponseBody();
-    } catch (APIException e) {
-      throw new OurmException(
-          String.format("Exception in doOURMGet method while executing the request = %s", e.getMessage()));
     }
   }
 
@@ -115,7 +105,7 @@ public class RestApiUtil {
 
     LOGGER.debug("RESTAPIUtil executeGetRequest: Calling REST executeGetRequest().");
     if (StringUtils.isBlank(req.getMethod())) {
-      req.setMethod(RestApiConstants.GET_API);
+      req.setMethod(HttpConstants.METHOD_GET);
     }
 
     HttpClient httpclient = HttpClient.newBuilder().connectTimeout(Duration.ofMillis(HTTP_TIMEMOUT)).build();
@@ -164,9 +154,9 @@ public class RestApiUtil {
     APIRequest apiRequestInfo = new APIRequest();
 
     apiRequestInfo.setUrl(url);
-    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
-        .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
-        .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON)
+    apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(authToken))
+        .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
+        .addHeader(CONTENT_TYPE, ContentType.JSON)
         .addHeader(RestApiConstants.X_API_KEY, xApiKey)
         .addHeader(RestApiConstants.TRACE_ID, traceId);
 
@@ -259,11 +249,11 @@ public class RestApiUtil {
     APIRequest apiRequestInfo = new APIRequest();
 
     apiRequestInfo.setUrl(url);
-    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, getBasicAuthenticationHeader(username, password))
-        .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
-        .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON)
-        .addFormData(RestApiConstants.GRANT_TYPE, RestApiConstants.REFRESH_TOKEN)
-        .addFormData(RestApiConstants.REFRESH_TOKEN, refreshToken);
+    apiRequestInfo.addHeader(AUTHORIZATION, getBasicAuthenticationHeader(username, password))
+        .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
+        .addHeader(CONTENT_TYPE, ContentType.JSON)
+        .addFormData(OAuth.OAUTH_GRANT_TYPE, OAuth.OAUTH_REFRESH_TOKEN)
+        .addFormData(OAuth.OAUTH_REFRESH_TOKEN, refreshToken);
 
     return apiRequestInfo;
   }
@@ -304,9 +294,9 @@ public class RestApiUtil {
       APIRequest apiRequestInfo = new APIRequest();
 
       apiRequestInfo.setUrl(url);
-      apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
-          .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
-          .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+      apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
+          .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
+          .addHeader(CONTENT_TYPE, ContentType.JSON);
 
       return executeGetRequest(apiRequestInfo);
     } catch (APIException e) {
@@ -327,10 +317,10 @@ public class RestApiUtil {
     APIRequest apiRequestInfo = new APIRequest();
 
     apiRequestInfo.setUrl(url);
-    apiRequestInfo.addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_URL_ENCODED)
-        .addFormData(RestApiConstants.GRANT_TYPE, RestApiConstants.CLIENT_CREDENTIALS)
-        .addFormData(RestApiConstants.CLIENT_ID, clientId)
-        .addFormData(RestApiConstants.CLIENT_SECRET, clientSecret);
+    apiRequestInfo.addHeader(CONTENT_TYPE, org.apache.http.client.utils.URLEncodedUtils.CONTENT_TYPE)
+        .addFormData(OAuth.OAUTH_GRANT_TYPE, CLIENT_CREDENTIALS)
+        .addFormData(OAuth.OAUTH_CLIENT_ID, clientId)
+        .addFormData(OAuth.OAUTH_CLIENT_SECRET, clientSecret);
 
     return apiRequestInfo;
   }
@@ -369,14 +359,38 @@ public class RestApiUtil {
       APIRequest apiRequestInfo = new APIRequest();
 
       apiRequestInfo.setUrl(url);
-      apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
-          .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
-          .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+      apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
+          .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
+          .addHeader(CONTENT_TYPE, ContentType.JSON);
 
       return executeGetRequest(apiRequestInfo);
     } catch (APIException e) {
       throw new DrupalException(
           String.format("Exception in doDrupalUserDataGet method while executing the request = %s", e.getMessage()));
+    }
+  }
+
+  /**
+   * Frames the Drupal API user search get request.
+   * 
+   * @param url         Url
+   * @param bearerToken Bearer Token
+   * @return API Response
+   * @throws DrupalException DrupalException object.
+   */
+  public static APIResponse doDrupalUserSearchGet(String url, String bearerToken) throws DrupalException {
+    try {
+      APIRequest apiRequestInfo = new APIRequest();
+
+      apiRequestInfo.setUrl(url);
+      apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
+          .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
+          .addHeader(CONTENT_TYPE, ContentType.JSON);
+
+      return executeGetRequest(apiRequestInfo);
+    } catch (APIException e) {
+      throw new DrupalException(
+          String.format("Exception in doDrupalUserSearchGet method while executing the request = %s", e.getMessage()));
     }
   }
 }

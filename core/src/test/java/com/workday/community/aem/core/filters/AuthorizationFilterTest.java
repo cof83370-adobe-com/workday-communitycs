@@ -4,7 +4,6 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserService;
@@ -34,7 +33,7 @@ import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class AuthorizationFilterTest {
 
     private final AemContext context = new AemContext();
@@ -90,7 +89,7 @@ public class AuthorizationFilterTest {
     private AuthorizationFilter authorizationFilter;
 
     @BeforeEach
-    void setup()  {
+    void setup() {
     }
 
     @Test
@@ -112,7 +111,8 @@ public class AuthorizationFilterTest {
     }
 
     @Test
-    void testDoFilterWithValidUserAndAuthenticatedTag() throws ServletException, IOException, RepositoryException, CacheException {
+    void testDoFilterWithValidUserAndAuthenticatedTag()
+            throws ServletException, IOException, RepositoryException, CacheException {
         authorizationFilter.init(filterConfig);
 
         String pagePath = "/content/workday-community/en-us/test";
@@ -131,7 +131,8 @@ public class AuthorizationFilterTest {
     }
 
     @Test
-    void testDoFilterWithValidUserAndWithOutAuthenticatedTag() throws ServletException, IOException, RepositoryException, CacheException {
+    void testDoFilterWithValidUserAndWithOutAuthenticatedTag()
+            throws ServletException, IOException, RepositoryException, CacheException {
         authorizationFilter.init(filterConfig);
 
         String pagePath = "/content/workday-community/en-us/test";

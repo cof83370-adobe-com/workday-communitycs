@@ -1,20 +1,13 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.google.gson.JsonObject;
 import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.constants.WccConstants;
-import com.workday.community.aem.core.exceptions.DrupalException;
-import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
-import com.workday.community.aem.core.utils.ResolverUtil;
-import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.exceptions.CacheException;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.jackrabbit.api.security.user.User;
@@ -35,8 +28,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.jcr.*;
 
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -147,29 +138,7 @@ class UserGroupServiceImplTest {
     }
 
     @Test
-    void testCustomerRoles() throws NoSuchFieldException, IllegalAccessException, DrupalException {
-        HashMap<String, String> customerRoleMap = new HashMap<>();
-        customerRoleMap.put("Named Support Contact", "customer_name_support_contact");
-        customerRoleMap.put("Training Coordinator", "customer_training_coordinator");
-        Field customerRoleField = userGroupService.getClass().getDeclaredField("customerRoleMapping");
-        customerRoleField.setAccessible(true);
-        customerRoleField.set(userGroupService, customerRoleMap);
-
-        HashMap<String, String> nscMap = new HashMap<>();
-        nscMap.put("Adaptive Planning", "customer_adaptive");
-        nscMap.put("Scout", "customer_scount");
-        nscMap.put("Peakon", "customer_peakon");
-        nscMap.put("VNDLY", "customer_vndly");
-        Field nscField = userGroupService.getClass().getDeclaredField("customerOfMapping");
-        nscField.setAccessible(true);
-        nscField.set(userGroupService, nscMap);
-
-        HashMap<String, String> wspMap = new HashMap<>();
-        wspMap.put("Customer - WSP Enhanced", "customer_wsp_enhanced");
-        Field wspField = userGroupService.getClass().getDeclaredField("wspMapping");
-        wspField.setAccessible(true);
-        wspField.set(userGroupService, wspMap);
-
+    void testCustomerRoles() throws NoSuchFieldException, IllegalAccessException {
         String SF_ID = "test=123";
         String userDataResponse = "{\"roles\":[\"authenticated\",\"customer_adaptive\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
         when(drupalService.getUserData(SF_ID)).thenReturn(userDataResponse);
@@ -180,15 +149,7 @@ class UserGroupServiceImplTest {
     }
 
     @Test
-    void testPartnerRoles() throws NoSuchFieldException, IllegalAccessException, DrupalException {
-        HashMap<String, String> partnerRoleMap = new HashMap<>();
-        partnerRoleMap.put("Innovation", "partner_innovation_track");
-        partnerRoleMap.put("Sales", "partner_sales_track");
-        partnerRoleMap.put("Services", "partner_services_track");
-        Field partnerTrackMappingField = userGroupService.getClass().getDeclaredField("partnerTrackMapping");
-        partnerTrackMappingField.setAccessible(true);
-        partnerTrackMappingField.set(userGroupService, partnerRoleMap);
-
+    void testPartnerRoles() throws NoSuchFieldException, IllegalAccessException {
         String SF_ID = "test=123";
         String userDataResponse = "{\"roles\":[\"authenticated\",\"partner_all\",\"partner_innovation_track\",\"partner_sales_track\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
         when(drupalService.getUserData(SF_ID)).thenReturn(userDataResponse);

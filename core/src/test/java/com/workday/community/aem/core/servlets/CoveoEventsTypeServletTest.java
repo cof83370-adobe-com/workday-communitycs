@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
-import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -14,11 +13,10 @@ import java.io.InputStream;
 import java.util.HashMap;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonObject;
 import com.workday.community.aem.core.pojos.EventTypes;
 import com.workday.community.aem.core.pojos.EventTypeValue;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -51,7 +49,7 @@ public class CoveoEventsTypeServletTest {
   SearchApiConfigService searchApiConfigService;
 
   @Mock
-  SnapService snapService;
+  DrupalService drupalService;
 
   @Mock
   private ObjectMapper objectMapper;
@@ -74,18 +72,17 @@ public class CoveoEventsTypeServletTest {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
     lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);
     lenient().when(searchApiConfigService.isDevMode()).thenReturn(true);
-    JsonObject userObject = new JsonObject();
-    userObject.addProperty(EMAIL_NAME, "test@workday.com");
+    String userData = "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"email\":\"foo@workday.com\",\"contextInfo\":{\"isWorkmate\":\"false\"},\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
 
     try (MockedStatic<OurmUtils> ourmUtilsMock = mockStatic(OurmUtils.class);
-    MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class)){
-      ourmUtilsMock.when(()-> OurmUtils.getSalesForceId(any(), any())).thenReturn(DEFAULT_SFID_MASTER);
-      ourmUtilsMock.when(()-> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("test@workday.com");
+        MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class)) {
+      ourmUtilsMock.when(() -> OurmUtils.getSalesForceId(any(), any())).thenReturn(DEFAULT_SFID_MASTER);
+      ourmUtilsMock.when(() -> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("test@workday.com");
 
       CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
       httpClientsMockedStatic.when(HttpClients::createDefault).thenReturn(httpClient);
       lenient().when(searchApiConfigService.getSearchTokenAPI()).thenReturn("https://foo");
-      lenient().when(snapService.getUserContext(anyString())).thenReturn(userObject);
+      lenient().when(drupalService.getUserData(anyString())).thenReturn(userData);
       CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
       StatusLine statusLine = mock(StatusLine.class);
       HttpEntity entity = mock(HttpEntity.class);
@@ -106,7 +103,7 @@ public class CoveoEventsTypeServletTest {
       coveoEventTypeServlet.setObjectMapper(this.objectMapper);
       try {
         coveoEventTypeServlet.doGet(request, response);
-      } catch (ServletException | IOException exception){
+      } catch (ServletException | IOException exception) {
         // do nothing.
       }
 
@@ -114,7 +111,7 @@ public class CoveoEventsTypeServletTest {
       lenient().when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn(CLOUD_CONFIG_NULL_VALUE);
       try {
         coveoEventTypeServlet.doGet(request, response);
-      } catch (ServletException | IOException exception){
+      } catch (ServletException | IOException exception) {
         // do nothing.
       }
 
@@ -122,7 +119,7 @@ public class CoveoEventsTypeServletTest {
       lenient().when(searchApiConfigService.getUserIdType()).thenReturn("test user type");
       try {
         coveoEventTypeServlet.doGet(request, response);
-      } catch (ServletException | IOException exception){
+      } catch (ServletException | IOException exception) {
         // do nothing.
       }
     }

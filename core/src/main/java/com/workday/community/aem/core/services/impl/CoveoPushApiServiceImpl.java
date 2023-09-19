@@ -23,24 +23,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoPushApiService;
 import com.workday.community.aem.core.services.HttpsURLConnectionService;
-import com.workday.community.aem.core.constants.RestApiConstants;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 
 /**
  * The Class CoveoPushApiServiceImpl.
  */
-@Component(
-    service = CoveoPushApiService.class,
-    immediate = false
-)
+@Component(service = CoveoPushApiService.class, immediate = false)
 public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
     /** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
     /** The push api uri. */
     private String pushApiUri;
-    
+
     /** The organization id. */
     private String organizationId;
 
@@ -55,12 +54,12 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     private HttpsURLConnectionService restApiService;
 
     /** The CoveoIndexApiConfigService. */
-    @Reference 
+    @Reference
     private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     @Activate
     @Modified
-    protected void activate(){
+    protected void activate() {
         this.pushApiUri = coveoIndexApiConfigService.getPushApiUri();
         this.organizationId = coveoIndexApiConfigService.getOrganizationId();
         this.apiKey = coveoIndexApiConfigService.getCoveoApiKey();
@@ -69,7 +68,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
     @Override
     public String generateBatchUploadUri(String fileId) {
-        return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId + "/documents/batch?fileId=" + fileId;
+        return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId + "/documents/batch?fileId="
+                + fileId;
     }
 
     @Override
@@ -80,73 +80,88 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     @Override
     public String generateDeleteAllItemsUri() {
         String time = Long.toString(System.currentTimeMillis());
-        return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId + "/documents/olderthan?orderingId=" + time + "&queueDelay=15";
+        return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId + "/documents/olderthan?orderingId="
+                + time + "&queueDelay=15";
     }
 
     @Override
     public String generateDeleteSingleItemUri(String documentId) {
-        return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId + "/documents?deleteChildren=false&documentId=" + documentId;
+        return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
+                + "/documents?deleteChildren=false&documentId=" + documentId;
     }
 
     @Override
-    public HashMap<String, Object> callApi(String uri, HashMap<String, String> header, String httpMethod, String payload) {
-        return restApiService.send(uri, header, httpMethod, payload); 
+    public HashMap<String, Object> callApi(String uri, HashMap<String, String> header, String httpMethod,
+            String payload) {
+        return restApiService.send(uri, header, httpMethod, payload);
     }
 
     @Override
     public HashMap<String, Object> callBatchUploadUri(String fileId) {
         HashMap<String, String> header = new HashMap<>();
-        header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
-        header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        return callApi(generateBatchUploadUri(fileId), header, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, "");
+        header.put(CONTENT_TYPE, JSON);
+        header.put(AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+        return callApi(generateBatchUploadUri(fileId), header, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT,
+                "");
     }
 
     @Override
     public HashMap<String, Object> callCreateContainerUri() {
         HashMap<String, String> containerHeader = new HashMap<>();
-        containerHeader.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
-        containerHeader.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
-        containerHeader.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        return callApi(generateContainerUri(), containerHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_POST, "");
+        containerHeader.put(CONTENT_TYPE, JSON);
+        containerHeader.put(HttpConstants.HEADER_ACCEPT, JSON);
+        containerHeader.put(AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+        return callApi(generateContainerUri(), containerHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_POST,
+                "");
     }
 
     @Override
     public Integer callDeleteAllItemsUri() {
-        // Coveo reference https://docs.coveo.com/en/131/index-content/deleting-old-items-in-a-push-source.
+        // Coveo reference
+        // https://docs.coveo.com/en/131/index-content/deleting-old-items-in-a-push-source.
         HashMap<String, String> header = new HashMap<>();
-        header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
-        header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header, org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
+        header.put(HttpConstants.HEADER_ACCEPT, JSON);
+        header.put(AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+        HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header,
+                org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
         if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
-            logger.error("Deleting all items from coveo failed with status code {}: {}.", response.get("statusCode"), response.get("response"));
+            logger.error("Deleting all items from coveo failed with status code {}: {}.", response.get("statusCode"),
+                    response.get("response"));
         }
         return (Integer) response.get("statusCode");
     }
 
     @Override
     public Integer callDeleteSingleItemUri(String documentId) {
-        // Coveo reference https://docs.coveo.com/en/171/index-content/deleting-an-item-and-optionally-its-children-in-a-push-source.
+        // Coveo reference
+        // https://docs.coveo.com/en/171/index-content/deleting-an-item-and-optionally-its-children-in-a-push-source.
         HashMap<String, String> header = new HashMap<>();
-        header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        HashMap<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header, org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
+        header.put(AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+        HashMap<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header,
+                org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
         if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
-            logger.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId, response.get("statusCode"), response.get("response"));
+            logger.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId,
+                    response.get("statusCode"), response.get("response"));
         }
         return (Integer) response.get("statusCode");
     }
 
     @Override
-    public HashMap<String, Object> callUploadFileUri(String uploadUri, HashMap<String, String> uploadFileHeader, List<Object> payload) {
-        return callApi(uploadUri, uploadFileHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, transformPayload(payload));
+    public HashMap<String, Object> callUploadFileUri(String uploadUri, HashMap<String, String> uploadFileHeader,
+            List<Object> payload) {
+        return callApi(uploadUri, uploadFileHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT,
+                transformPayload(payload));
     }
 
     @Override
     public Integer indexItems(List<Object> payload) {
-        // Coveo reference https://docs.coveo.com/en/90/index-content/manage-batches-of-items-in-a-push-source.
+        // Coveo reference
+        // https://docs.coveo.com/en/90/index-content/manage-batches-of-items-in-a-push-source.
         Integer apiStatusCode = 0;
         HashMap<String, Object> createContainerResponse = callCreateContainerUri();
         if ((Integer) createContainerResponse.get("statusCode") == HttpStatus.SC_CREATED) {
-            HashMap<String, Object> fileInfo = transformCreateContainerResponse(createContainerResponse.get("response").toString());
+            HashMap<String, Object> fileInfo = transformCreateContainerResponse(
+                    createContainerResponse.get("response").toString());
             String uploadUri = fileInfo.get("uploadUri").toString();
             HashMap<String, String> uploadFileHeader = (HashMap<String, String>) fileInfo.get("requiredHeaders");
             String fileId = fileInfo.get("fileId").toString();
@@ -155,12 +170,11 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
                 HashMap<String, Object> batchUploadResponse = callBatchUploadUri(fileId);
                 if ((Integer) batchUploadResponse.get("statusCode") == HttpStatus.SC_ACCEPTED) {
                     return HttpStatus.SC_ACCEPTED;
+                } else {
+                    logger.error("Triggering batch ingestion failed with status code {}: {}.",
+                            batchUploadResponse.get("statusCode"), batchUploadResponse.get("response"));
                 }
-                else {
-                    logger.error("Triggering batch ingestion failed with status code {}: {}.", batchUploadResponse.get("statusCode"), batchUploadResponse.get("response"));
-                }
-            }
-            else if ((Integer) uploadFileResponse.get("statusCode") == HttpStatus.SC_REQUEST_TOO_LONG) {
+            } else if ((Integer) uploadFileResponse.get("statusCode") == HttpStatus.SC_REQUEST_TOO_LONG) {
                 // Split payload.
                 int chunckStatusCode = -1;
                 List<List<Object>> chunks = ListUtils.partition(payload, payload.size() / 2 + 1);
@@ -171,13 +185,13 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
                     }
                 }
                 return chunckStatusCode;
+            } else {
+                logger.error("Uploading batch file to file container failed with status code {}: {}.",
+                        uploadFileResponse.get("statusCode"), uploadFileResponse.get("response"));
             }
-            else {
-                logger.error("Uploading batch file to file container failed with status code {}: {}.", uploadFileResponse.get("statusCode"), uploadFileResponse.get("response"));
-            }
-        }
-        else {
-            logger.error("Creating push container failed with status code {}: {}.", createContainerResponse.get("statusCode"), createContainerResponse.get("response"));
+        } else {
+            logger.error("Creating push container failed with status code {}: {}.",
+                    createContainerResponse.get("statusCode"), createContainerResponse.get("response"));
         }
 
         return apiStatusCode;
@@ -191,8 +205,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         String transformedPayload = "";
         try {
             transformedPayload = mapperObj.writeValueAsString(data);
-        } 
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Transform payload failed: {}.", e.getMessage());
             return transformedPayload;
         }
@@ -214,8 +227,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
             fileId = node.get("fileId").asText();
             uploadUri = node.get("uploadUri").asText();
             requiredHeaders = node.get("requiredHeaders").toPrettyString();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("Parse create container response failed: {}", e.getMessage());
             return transformedResponse;
         }
@@ -223,9 +235,9 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         HashMap<String, String> header;
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            header = objectMapper.readValue(requiredHeaders, new TypeReference<>() {});
-        } 
-        catch (JsonProcessingException e) {
+            header = objectMapper.readValue(requiredHeaders, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException e) {
             logger.error("Generate requiredheader array failed: {}", e.getMessage());
             return transformedResponse;
         }
@@ -234,5 +246,5 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         transformedResponse.put("requiredHeaders", header);
         return transformedResponse;
     }
-    
+
 }
