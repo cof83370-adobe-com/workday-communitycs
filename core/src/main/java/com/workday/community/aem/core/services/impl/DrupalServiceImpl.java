@@ -196,7 +196,6 @@ public class DrupalServiceImpl implements DrupalService {
             drupalApiCache.put(DrupalConstants.TOKEN_CACHE_KEY, bearerToken);
             return bearerToken;
         } catch (DrupalException e) {
-            LOGGER.error("Error in getAPIToken method call :: {}", e.getMessage());
             throw new DrupalException(
                     String.format(
                             "Error while fetching the Drupal Api token. Please contact Community Admin. Error: %s",
@@ -243,8 +242,7 @@ public class DrupalServiceImpl implements DrupalService {
             String userData = getUserData(sfId);
             if (StringUtils.isEmpty(userData)) {
                 LOGGER.error("Error in getAdobeDigitalData method - empty user data response.");
-            }
-            else {
+            } else {
                 digitalData = generateAdobeDigitalData(userData);
             }
             JsonObject pageProperties = new JsonObject();
@@ -407,10 +405,6 @@ public class DrupalServiceImpl implements DrupalService {
             }
             return new JsonObject();
         } catch (DrupalException e) {
-            LOGGER.error(
-                    String.format(
-                            "Error Occurred in searchOurmUserList Method in DrupalServiceImpl : %s",
-                            e.getMessage()));
             throw new DrupalException(
                     String.format(
                             "There is an error while fetching user search data. Please contact Community Admin. %s",
