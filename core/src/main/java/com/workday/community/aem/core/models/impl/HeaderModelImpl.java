@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.jcr.Session;
 import javax.servlet.http.Cookie;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
@@ -102,6 +104,11 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
+    ResourceResolver requestResourceResolver = request.getResourceResolver();
+    Session userSession = requestResourceResolver.adaptTo(Session.class);
+    if (userSession == null) {
+      return "{\"unAuthenticated\": true}";
+    }
     if (!snapService.enableCache()) {
       // Get a chance to disable browser cache if needed.
       return snapService.getUserHeaderMenu(sfId);

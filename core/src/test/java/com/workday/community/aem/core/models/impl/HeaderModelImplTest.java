@@ -9,9 +9,12 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
 import static junit.framework.Assert.assertNotNull;
@@ -22,7 +25,10 @@ import static org.osgi.framework.Constants.SERVICE_RANKING;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import javax.jcr.Session;
 
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
@@ -71,6 +77,16 @@ public class HeaderModelImplTest {
   @Mock
   SearchApiConfigService searchApiConfigService;
 
+  @Mock
+  ResourceResolver resolver;
+
+  @Spy
+  @InjectMocks
+  MockSlingHttpServletRequest request = context.request();
+
+  @Mock
+  Session jcrSession;
+
   /**
    * Set up method for test run.
    */
@@ -89,9 +105,14 @@ public class HeaderModelImplTest {
    */
   @Test
   void testGetUserHeaderMenu() {
+    HeaderModel headerModel = request.adaptTo(HeaderModel.class);
+    assertNotNull(headerModel);
+    assertEquals("{\"unAuthenticated\": true}", headerModel.getUserHeaderMenus());
+    when(request.getResourceResolver()).thenReturn(resolver);
+    when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
     lenient().when(snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER)).thenReturn("");
     lenient().when(snapService.enableCache()).thenReturn(true);
-    HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
+    headerModel = request.adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
     assertEquals("", headerModel.getUserHeaderMenus());
   }

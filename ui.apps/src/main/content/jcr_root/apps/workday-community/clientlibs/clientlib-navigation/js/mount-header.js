@@ -71,18 +71,23 @@ function constructData(headerDiv, currentId) {
     let searchURL = headerDiv.getAttribute('data-search-url');
 
     let headerMenu;
+    console.log('test');
+    let searchProps;
     if (stringValid(headerStringData)) {
         headerMenu = JSON.parse(headerStringData);
+        if (headerMenu.unAuthenticated === undefined || headerMenu.unAuthenticated === false) {
+            if (!headerMenu.profile) {
+                headerMenu.profile = [];
+            }
 
-        if (!headerMenu.profile) {
-            headerMenu.profile = [];
+            if (stringValid(avatarUrl)) {
+                headerMenu.profile.avatar = { ...headerMenu.profile.avatar, data: avatarUrl };
+            }
+
+            headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
+            searchProps = { redirectPath: searchURL, querySeparator: '#', queryParameterName: 'q' };
         }
 
-        if (stringValid(avatarUrl)) {
-            headerMenu.profile.avatar = { ...headerMenu.profile.avatar, data: avatarUrl };
-        }
-
-        headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
     }
 
     let headerData = {
@@ -90,18 +95,11 @@ function constructData(headerDiv, currentId) {
         menus: headerMenu,
         skipTo: 'mainContentId',
         sticky: true,
-        searchProps: { redirectPath: searchURL, querySeparator: '#', queryParameterName: 'q' }
+        searchProps: searchProps
     };
 
     if (stringValid(homePage)) {
         headerData.homeUrl = homePage;
-    }
-
-    // Although the digitalData set at window object, we set it in session scope.
-    let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
-    if (dataLayer) {
-        let dataLayerObj = JSON.parse(dataLayer);
-        window.digitalData = dataLayerObj.digitalData;
     }
 
     return headerData;
