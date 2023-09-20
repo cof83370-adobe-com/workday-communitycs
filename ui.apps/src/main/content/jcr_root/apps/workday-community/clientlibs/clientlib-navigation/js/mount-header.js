@@ -72,7 +72,7 @@ function constructData(headerDiv, currentId) {
 
     let headerMenu;
     let searchProps;
-    if (stringValid(headerStringData)) {
+    if (stringValid(headerStringData) && headerStringData !== 'HIDE_MENU_UNAUTHENTICATED') {
         headerMenu = JSON.parse(headerStringData);
         if (headerMenu.unAuthenticated === undefined || headerMenu.unAuthenticated === false) {
             if (!headerMenu.profile) {

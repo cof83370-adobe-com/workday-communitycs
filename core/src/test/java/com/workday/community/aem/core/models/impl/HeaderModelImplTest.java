@@ -107,9 +107,10 @@ public class HeaderModelImplTest {
   void testGetUserHeaderMenu() {
     HeaderModel headerModel = request.adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
-    assertEquals("{\"unAuthenticated\": true}", headerModel.getUserHeaderMenus());
+    assertEquals("HIDE_MENU_UNAUTHENTICATED", headerModel.getUserHeaderMenus());
     when(request.getResourceResolver()).thenReturn(resolver);
     when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
+    when(jcrSession.isLive()).thenReturn(true);
     lenient().when(snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER)).thenReturn("");
     lenient().when(snapService.enableCache()).thenReturn(true);
     headerModel = request.adaptTo(HeaderModel.class);

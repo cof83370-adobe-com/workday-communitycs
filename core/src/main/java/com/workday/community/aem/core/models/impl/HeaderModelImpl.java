@@ -104,10 +104,9 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
-    ResourceResolver requestResourceResolver = request.getResourceResolver();
-    Session userSession = requestResourceResolver.adaptTo(Session.class);
-    if (userSession == null) {
-      return "{\"unAuthenticated\": true}";
+    Session userSession = request.getResourceResolver().adaptTo(Session.class);
+    if (userSession == null || !userSession.isLive()) {
+      return "HIDE_MENU_UNAUTHENTICATED";
     }
     if (!snapService.enableCache()) {
       // Get a chance to disable browser cache if needed.
