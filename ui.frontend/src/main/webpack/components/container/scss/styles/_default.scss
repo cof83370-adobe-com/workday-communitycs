@@ -178,24 +178,8 @@
             }
 
             .cmp-toc__item.active {
-                > .cmp-toc__item-link.active {
-                    > .cmp-toc__firstlevelitem-title {
-                        color: $wdc-color-blueberry-500;
-                    }
-                }
-            }
-
-            .cmp-toc__item.active {
-                > .cmp-toc__item-link.active {
-                    > .cmp-toc__secondlevelitem-title {
-                        color: $wdc-color-blueberry-500;
-                    }
-                }
-            }
-
-            .cmp-toc__item.active {
                 > .cmp-toc__item-link {
-                    > .cmp-toc__thirdlevelitem-title {
+                    > .cmp-toc__firstlevelitem-title, .cmp-toc__secondlevelitem-title, .cmp-toc__thirdlevelitem-title {
                         color: $wdc-color-blueberry-500;
                     }
                 }
