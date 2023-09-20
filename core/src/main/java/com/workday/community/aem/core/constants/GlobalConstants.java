@@ -13,7 +13,7 @@ import java.util.Map;
 public final class GlobalConstants {
 
   /** The Constant COMMUNITY_CONTENT_ROOT_PATH. */
-  public static final String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
+ public static final  String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
   /** The Constant COMMUNITY_COVEO_JOB. */
   public static final String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
@@ -60,10 +60,15 @@ public final class GlobalConstants {
   /** The Constant COMMUNITY_BOOK_ROOT_PATH. */
   public static final String COMMUNITY_CONTENT_BOOK_ROOT_PATH ="/content/workday-community/en-us/admin-tools/books";
 
+  /** The Constant CLOUD_CONFIG_NULL_VALUE. */
   public static final String CLOUD_CONFIG_NULL_VALUE = "null";
 
+  /** The Constant TAG_PROPERTY_ACCESS_CONTROL. */
   public static final String TAG_PROPERTY_ACCESS_CONTROL = "accessControlTags";
 
+  /**
+   * Instantiates a new global constants.
+   */
   private GlobalConstants() {
     throw new IllegalStateException("Utility class");
   }
@@ -73,9 +78,18 @@ public final class GlobalConstants {
    */
   public static final String READ_SERVICE_USER = "readserviceuser";
 
-  /**
-   * Admin service user
-   */
+  /** Admin service user. */
   public static final String ADMIN_SERVICE_USER = "workday-community-administrative-service";
+  
+  /** The Constant SERVICE_USER_GROUP. */
   public static final String SERVICE_USER_GROUP = "adminusergroup";
+
+  /** The Constant RETIREMENT_STATUS_PROP. */
+  public static final String RETIREMENT_STATUS_PROP = "retirementStatus";
+  
+  /** The Constant RETIREMENT_STATUS_VAL. */
+  public static final String RETIREMENT_STATUS_VAL = "retired";
+  
+  /** The Constant RETIRED_BADGE_TITLE. */
+  public static final String RETIRED_BADGE_TITLE = "RETIRED";
 }

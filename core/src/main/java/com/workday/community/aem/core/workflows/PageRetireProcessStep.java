@@ -1,6 +1,8 @@
 package com.workday.community.aem.core.workflows;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
+import static com.workday.community.aem.core.constants.GlobalConstants.RETIREMENT_STATUS_PROP;
+import static com.workday.community.aem.core.constants.GlobalConstants.RETIREMENT_STATUS_VAL;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,9 +40,9 @@ import com.workday.community.aem.core.services.QueryService;
  * 3. Replicate the page to publisher.
  */
 @Component(property = {
-        Constants.SERVICE_DESCRIPTION + "=Process to retire/unretire pages",
-        Constants.SERVICE_VENDOR + "=Workday Communities",
-        "process.label" + "=Retire the page immediately"
+        Constants.SERVICE_DESCRIPTION + "=Process to retire the given page",
+        Constants.SERVICE_VENDOR + "=Workday Community",
+        "process.label" + "=Retire the page"
 })
 public class PageRetireProcessStep implements WorkflowProcess {
 
@@ -125,7 +127,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
         try {
             ModifiableValueMap map = resource.adaptTo(ModifiableValueMap.class);
             // Add retirement badge.
-            map.put("retirePageImmediately", "true");
+            map.put(RETIREMENT_STATUS_PROP, RETIREMENT_STATUS_VAL);
             resolver.commit();
         } catch (Exception exec) {
             logger.error("Exception occured while addRetirementBadge: {}", exec.getMessage());

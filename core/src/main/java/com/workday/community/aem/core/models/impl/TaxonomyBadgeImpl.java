@@ -1,23 +1,26 @@
 package com.workday.community.aem.core.models.impl;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.RETIRED_BADGE_TITLE;
+import static com.workday.community.aem.core.constants.GlobalConstants.RETIREMENT_STATUS_PROP;
+import static com.workday.community.aem.core.constants.GlobalConstants.RETIREMENT_STATUS_VAL;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import com.workday.community.aem.core.constants.PageResourceType;
-import com.workday.community.aem.core.constants.TagPropertyName;
-
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
+import org.apache.sling.models.annotations.Model;
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
+import com.workday.community.aem.core.constants.PageResourceType;
+import com.workday.community.aem.core.constants.TagPropertyName;
 import com.workday.community.aem.core.models.TaxonomyBadge;
 
 /**
@@ -30,12 +33,6 @@ public class TaxonomyBadgeImpl implements TaxonomyBadge {
 
     /** The Constant RESOURCE_TYPE. */
     protected static final String RESOURCE_TYPE = "workday-community/components/common/taxonomybadge";
-
-    /** The Constant RETIRED_PROP. */
-    protected static final String RETIRED_PROP = "retirePageImmediately";
-
-    /** The Constant RETIRED_BADGE_TITLE. */
-    protected static final String RETIRED_BADGE_TITLE = "RETIRED";
 
     /** The badge list. */
     private List<String> badgeList = new ArrayList<>();
@@ -108,7 +105,7 @@ public class TaxonomyBadgeImpl implements TaxonomyBadge {
      * @return the retired badge
      */
     private List<String> getRetiredBadge(List<String> badgeList) {
-        if (currentPage.getProperties().get(RETIRED_PROP, "false").equalsIgnoreCase("true"))
+        if (currentPage.getProperties().get(RETIREMENT_STATUS_PROP, "").equalsIgnoreCase(RETIREMENT_STATUS_VAL))
             badgeList.add(RETIRED_BADGE_TITLE);
         return badgeList;
     }

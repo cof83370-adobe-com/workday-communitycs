@@ -190,13 +190,6 @@
                                         multiple="{Boolean}true"
                                         name="./industryTags"
                                         rootPath="/content/cq:tags/industry"/>
-                                    <retirePageImmediately
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                        name="./retirePageImmediately"
-                                        text="Retire Page Immediately"
-                                        uncheckedValue="false"
-                                        value="true"/>
                                 </items>
                             </column>
                         </items>
