@@ -20,22 +20,20 @@
             <sly data-sly-test="${booksMultifield.name == 'firstlevel'}">
                 <ul class="cmp-toc__group cmp-toc__firstlevellist"
                     data-sly-list.booklink="${booksMultifield.getChildren}">
-                    <li class="cmp-toc__item" data-sly-test="${booklink.mainpagepath}"><a class="cmp-toc__item-link"
-                            data-sly-use.bookPathMainTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=booklink.mainpagepath }"
-                            href="${booklink.mainpagepath}${bookPathMainTitle.rootPath in  booklink.mainpagepath ? '.html' : ''}"><span
-                                class="cmp-toc__firstlevelitem-title">${bookPathMainTitle.bookPage.title ||
-                                booklink.mainpagepath}</span></a>
+                    <li class="cmp-toc__item" data-sly-test="${booklink.mainpagepath}"><div class="cmp-toc__item-link">
+                        <a class="cmp-toc__firstlevelitem-title" data-sly-use.bookPathMainTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=booklink.mainpagepath }"
+                           href="${booklink.mainpagepath}${bookPathMainTitle.rootPath in  booklink.mainpagepath ? '.html' : ''}" tabindex="0">${bookPathMainTitle.bookPage.title ||
+                            booklink.mainpagepath}</a></div>
                         <sly class="cmp-toc__secondlevelheading"
                             data-sly-list.secondlevelMultifield="${booklink.getChildren}">
                             <sly data-sly-test="${booklink.getChildren && secondlevelMultifield.name == 'secondlevel'}">
                                 <ul class="cmp-toc__group cmp-toc__secondlevellist"
                                     data-sly-list.secondlink="${secondlevelMultifield.getChildren}">
-                                    <li class="cmp-toc__item" data-sly-test="${secondlink.secondpagepath}"><a
-                                            class="cmp-toc__item-link"
-                                            data-sly-use.bookPathSecondTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=secondlink.secondpagepath}"
-                                            href="${secondlink.secondpagepath}${bookPathSecondTitle.rootPath in  secondlink.secondpagepath ? '.html' : ''}"><span
-                                                class="cmp-toc__secondlevelitem-title">${bookPathSecondTitle.bookPage.title
-                                                || secondlink.secondpagepath}</span></a>
+                                    <li class="cmp-toc__item" data-sly-test="${secondlink.secondpagepath}"><div
+                                            class="cmp-toc__item-link">
+                                        <a class="cmp-toc__secondlevelitem-title" data-sly-use.bookPathSecondTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=secondlink.secondpagepath}"
+                                           href="${secondlink.secondpagepath}${bookPathSecondTitle.rootPath in  secondlink.secondpagepath ? '.html' : ''}" tabindex="0">${bookPathSecondTitle.bookPage.title
+                                            || secondlink.secondpagepath}</a></div>
                                         <sly class="cmp-toc__thirdlevelheading"
                                             data-sly-list.thirdlevelMultifield="${secondlink.getChildren}">
                                             <sly
