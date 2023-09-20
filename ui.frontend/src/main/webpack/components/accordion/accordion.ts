@@ -12,8 +12,7 @@
 		let header = config.element.getElementsByClassName('cmp-accordion__header');
 		header = header.length == 1 ? header[0] : null;
 		if (panel.getAttribute('data-collpase-title')) {
-			const collapseButton = document.createElement('a');
-			collapseButton.href = '#';
+			const collapseButton = document.createElement('button');
 			collapseButton.innerText = panel.getAttribute('data-collpase-title');
 			collapseButton.classList.add('collapse-button');
             collapseButton.ariaLabel = `${collapseButton.innerText}${panel.parentElement.innerText}`;
