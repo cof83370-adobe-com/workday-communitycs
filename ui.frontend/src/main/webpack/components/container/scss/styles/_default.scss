@@ -72,6 +72,8 @@
 
                 .cmp-toc__chevron {
                     float: left;
+                    border: none;
+                    background: transparent;
                 }
 
             }
@@ -159,6 +161,8 @@
                 width: 80%;
                 display: inline-block;
                 overflow: hidden;
+                text-decoration: none;
+                color: initial;
             }
 
             .cmp-toc__secondlevelitem-title:not(:has(+ .cmp-toc__chevron)) {
@@ -167,6 +171,34 @@
 
             .cmp-toc__thirdlevelitem-title:not(:has(+ .cmp-toc__chevron)) {
                 padding-left: 40px;
+            }
+
+            .cmp-toc__chevron + .cmp-toc__secondlevelitem-title {
+                padding-left: 0;
+            }
+
+            .cmp-toc__item.active {
+                > .cmp-toc__item-link.active {
+                    > .cmp-toc__firstlevelitem-title {
+                        color: $wdc-color-blueberry-500;
+                    }
+                }
+            }
+
+            .cmp-toc__item.active {
+                > .cmp-toc__item-link.active {
+                    > .cmp-toc__secondlevelitem-title {
+                        color: $wdc-color-blueberry-500;
+                    }
+                }
+            }
+
+            .cmp-toc__item.active {
+                > .cmp-toc__item-link {
+                    > .cmp-toc__thirdlevelitem-title {
+                        color: $wdc-color-blueberry-500;
+                    }
+                }
             }
         }
     }
