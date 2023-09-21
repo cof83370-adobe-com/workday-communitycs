@@ -82,6 +82,7 @@
                 modalToRemove.remove();
             }
             isModalOpen = false;
+            img.parentElement.querySelector('.expand-media').focus();
         }
     }
 
