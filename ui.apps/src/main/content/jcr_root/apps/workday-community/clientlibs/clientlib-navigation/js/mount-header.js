@@ -35,7 +35,8 @@ function renderNavHeader() {
         try {
             const headerElement = React.createElement(Cmty.GlobalHeader, headerDataJson);
             ReactDOM.render(headerElement, headerDiv);
-            // Get the adobe data and bind to digitalData property of window object.
+
+            // Set adobe data on window.digitalData property.
             let dataLayer = headerDiv.getAttribute('data-cmp-data-layer');
             if (dataLayer) {
                 let dataLayerObj = JSON.parse(dataLayer);

@@ -24,6 +24,9 @@
                     disableShadowing="false"
                     hideCurrent="false"
                     showHidden="false"/>
+                <taxonomybadge
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="workday-community/components/common/taxonomybadge"/>
                 <container
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="workday-community/components/core/container"
