@@ -9,7 +9,7 @@
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/workday-community/retirement_workflow_30_days/jcr:content"
         jcr:primaryType="nt:unstructured"
-        lastSynced="{Date}2023-09-22T11:25:34.248+05:30"/>
+        lastSynced="{Date}2023-09-22T14:04:59.840+05:30"/>
     <nodes jcr:primaryType="nt:unstructured">
         <node0
             jcr:primaryType="cq:WorkflowNode"
@@ -26,7 +26,7 @@
                 jcr:primaryType="nt:unstructured"
                 PARTICIPANT="administrators"
                 timeoutHandler="com.adobe.granite.workflow.console.timeout.autoadvance.AbsoluteTimeAutoAdvancer"
-                timeoutMillis="120000"/>
+                timeoutMillis="2592000000"/>
         </node1>
         <node2
             jcr:primaryType="cq:WorkflowNode"
@@ -36,8 +36,7 @@
             <metaData
                 jcr:primaryType="nt:unstructured"
                 PROCESS="com.workday.community.aem.core.workflows.PageRetireProcessStep"
-                PROCESS_AUTO_ADVANCE="true"
-                timeoutMillis="2592000000"/>
+                PROCESS_AUTO_ADVANCE="true"/>
         </node2>
         <node3
             jcr:primaryType="cq:WorkflowNode"
