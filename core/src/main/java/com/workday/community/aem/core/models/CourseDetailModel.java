@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.models;
 
+import java.io.IOException;
+
 import com.google.gson.JsonObject;
 
 public interface CourseDetailModel {
@@ -8,5 +10,5 @@ public interface CourseDetailModel {
      *
      * @return The course detail json for UI.
      */
-    JsonObject getCourseDetailData();
+    JsonObject getCourseDetailData() throws IOException;
 }
