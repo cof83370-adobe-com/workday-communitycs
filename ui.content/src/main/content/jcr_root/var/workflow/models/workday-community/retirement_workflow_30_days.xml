@@ -9,7 +9,7 @@
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/workday-community/retirement_workflow_30_days/jcr:content"
         jcr:primaryType="nt:unstructured"
-        lastSynced="{Date}2023-09-22T14:04:59.840+05:30"/>
+        lastSynced="{Date}2023-09-25T13:13:58.131+05:30"/>
     <nodes jcr:primaryType="nt:unstructured">
         <node0
             jcr:primaryType="cq:WorkflowNode"
@@ -21,10 +21,11 @@
             jcr:primaryType="cq:WorkflowNode"
             description="This step will maintain the process for the specified timeout settings or until the participant does not provide approval. In the event that the participant approves, their decision will take precedence over the timeout settings."
             title="Approve Immediate or Hold for Scheduled Time"
-            type="PARTICIPANT">
+            type="DYNAMIC_PARTICIPANT">
             <metaData
                 jcr:primaryType="nt:unstructured"
-                PARTICIPANT="administrators"
+                DYNAMIC_PARTICIPANT="com.workday.community.aem.core.workflows.PageRetireDynamicParticipantStep"
+                PROCESS_ARGS="CMTY CC Admin"
                 timeoutHandler="com.adobe.granite.workflow.console.timeout.autoadvance.AbsoluteTimeAutoAdvancer"
                 timeoutMillis="2592000000"/>
         </node1>

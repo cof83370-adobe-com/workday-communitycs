@@ -8,21 +8,22 @@
         jcr:primaryType="cq:PageContent"
         jcr:title="Retirement Workflow (30 Days)"
         sling:resourceType="cq/workflow/components/pages/model"
-        lastSynced="{Date}2023-09-22T14:04:59.840+05:30">
+        lastSynced="{Date}2023-09-25T13:13:58.131+05:30">
         <flow
             jcr:primaryType="nt:unstructured"
             sling:resourceType="foundation/components/parsys">
-            <participant
+            <dynamic_participant
                 jcr:description="This step will maintain the process for the specified timeout settings or until the participant does not provide approval. In the event that the participant approves, their decision will take precedence over the timeout settings."
                 jcr:primaryType="nt:unstructured"
                 jcr:title="Approve Immediate or Hold for Scheduled Time"
-                sling:resourceType="cq/workflow/components/model/participant">
+                sling:resourceType="cq/workflow/components/model/dynamic_participant">
                 <metaData
                     jcr:primaryType="nt:unstructured"
-                    PARTICIPANT="administrators"
+                    DYNAMIC_PARTICIPANT="com.workday.community.aem.core.workflows.PageRetireDynamicParticipantStep"
+                    PROCESS_ARGS="CMTY CC Admin"
                     timeoutHandler="com.adobe.granite.workflow.console.timeout.autoadvance.AbsoluteTimeAutoAdvancer"
                     timeoutMillis="2592000000"/>
-            </participant>
+            </dynamic_participant>
             <process_1822959395
                 jcr:description="A workflow to add retirement badge to the page after 30 days from Initiation"
                 jcr:primaryType="nt:unstructured"
