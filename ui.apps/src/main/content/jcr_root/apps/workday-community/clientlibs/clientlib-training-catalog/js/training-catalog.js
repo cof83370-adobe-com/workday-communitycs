@@ -12,13 +12,17 @@ function renderCourse() {
 
   if (tcCenter !== undefined && tcCenter !== null) {
     let populateCenterContainer = Handlebars.compile(cleanHandlebars(tcCenter.innerHTML));
-    var hbsOutput = populateCenterContainer(course.Report_Entry[0]);
-    tcCenter.innerHTML = hbsOutput;
+    if(course){
+        var hbsOutput = populateCenterContainer(course.Report_Entry[0]);
+        tcCenter.innerHTML = hbsOutput;
+    }
   }
 
   if (tcRight !== undefined && tcRight !== null) {
     let populateRightContainer = Handlebars.compile(cleanHandlebars(tcRight.innerHTML));
-    tcRight.innerHTML = populateRightContainer(course.Report_Entry[0]);
+    if(course){
+        tcRight.innerHTML = populateRightContainer(course.Report_Entry[0]);
+    }
   }
 }
 
@@ -32,7 +36,7 @@ Handlebars.registerHelper("download", function (text, url) {
 Handlebars.registerHelper("button", function (text, url) {
   var url = Handlebars.escapeExpression(url),
     text = Handlebars.escapeExpression(text)
-  return new Handlebars.SafeString("<a class=\"cmp-button\" href='" + url + "'><span class=\"cmp-button__text\">Enroll" + text + "</span></a>");
+  return new Handlebars.SafeString("<a class=\"cmp-button\" href='" + url + "' target=\"_blank\"><span class=\"cmp-button__text\">Enroll" + text + "</span></a>");
 });
 
 Handlebars.registerHelper('isNotEmptyOrNull', function (value, options) {
