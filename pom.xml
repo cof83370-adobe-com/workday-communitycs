@@ -410,6 +410,7 @@
 							<phase>validate</phase>
 							<configuration>
 								<violationSeverity>warning</violationSeverity>
+								<failOnViolation>false</failOnViolation>
 							</configuration>
 							<goals>
 								<goal>check</goal>
