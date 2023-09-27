@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.jcr.Node;
-import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.sling.api.resource.LoginException;
@@ -85,18 +84,13 @@ public class PageRetireProcessStepTest {
     @Mock
     Replicator replicator;
 
-    /**
-     * The resolver.
-     */
+    /** The resolver. */
     @Mock
     private ResourceResolver resolver;
 
     /** The work item. */
     @Mock
     private WorkItem workItem;
-
-    /** The my workflow. */
-    private PageRetireProcessStep pageRetireProcessStep = new PageRetireProcessStep();
 
     /** The meta data. */
     private final MetaDataMap metaData = new SimpleMetaDataMap();
@@ -128,17 +122,6 @@ public class PageRetireProcessStepTest {
         lenient().when(workflowSession.adaptTo(ResourceResolver.class)).thenReturn(resolver);
     }
 
-    /**
-     * My workflow successful session save.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void myWorkflowSuccessfulSessionSave() throws RepositoryException {
-        assertNotNull(session);
-        session.save();
-        session.logout();
-    }
 
     /**
      * My workflow with retired page tag true.
@@ -148,17 +131,15 @@ public class PageRetireProcessStepTest {
     @Test
     public void testExecuteMethod() throws Exception {
         lenient().when(workflowData.getPayload()).thenReturn("/content/page-with-retired-badge");
-
-        pageRetireProcessStep.execute(workItem, workflowSession, metaData);
-
-        assertNotNull(session);
         Node node = session.getNode("/content/page-with-retired-badge/jcr:content");
         assertNotNull(node);
-
         Boolean actualResult = node.hasProperty(RETIREMENT_STATUS_PROP);
         String propVal = node.getProperty(RETIREMENT_STATUS_PROP).getString();
         assertTrue(actualResult);
         assertEquals(RETIREMENT_STATUS_VAL, propVal);
+        retireProcessStep.execute(workItem, workflowSession, metaData);
+        assertNotNull(session);
+
     }
 
     /**

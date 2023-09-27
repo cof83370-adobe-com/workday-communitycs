@@ -77,13 +77,24 @@ public class PageRetireProcessStep implements WorkflowProcess {
         if (StringUtils.equals(payloadType, "JCR_PATH")) {
             // Get the JCR path from the payload
             String path = workItem.getWorkflowData().getPayload().toString();
+            Session jcrSession = null;
             try {
-                Session jcrSession = workflowSession.adaptTo(Session.class);
-                removeBookNodes(path, jcrSession);
-                addRetirementBadge(path);
-                replicatePage(jcrSession, path);
+                jcrSession = workflowSession.adaptTo(Session.class);
+                if (null != jcrSession) {
+                    removeBookNodes(path, jcrSession);
+                    addRetirementBadge(path);
+                    replicatePage(jcrSession, path);
+                }
             } catch (Exception e) {
                 logger.error("payload type - {} is not valid", payloadType);
+            } finally {
+                try {
+                    if (null != jcrSession && jcrSession.isLive()) {
+                        jcrSession.logout();
+                    }
+                } catch (Exception e) {
+                    logger.error("Exception occured while session logout:{}", e.getMessage());
+                }
             }
         }
     }
@@ -91,7 +102,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
     /**
      * Removes the book nodes.
      *
-     * @param pagePath the page path
+     * @param pagePath   the page path
      * @param jcrSession the jcr session
      */
     public void removeBookNodes(String pagePath, Session jcrSession) {
@@ -142,7 +153,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
      * Replicate page.
      *
      * @param jcrSession the jcr session
-     * @param pagePath         the page path
+     * @param pagePath   the page path
      */
     public void replicatePage(Session jcrSession, String pagePath) {
         try {
