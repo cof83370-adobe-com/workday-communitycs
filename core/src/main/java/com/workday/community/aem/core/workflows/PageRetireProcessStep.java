@@ -77,9 +77,8 @@ public class PageRetireProcessStep implements WorkflowProcess {
         if (StringUtils.equals(payloadType, "JCR_PATH")) {
             // Get the JCR path from the payload
             String path = workItem.getWorkflowData().getPayload().toString();
-            Session jcrSession = null;
             try {
-                jcrSession = workflowSession.adaptTo(Session.class);
+                Session jcrSession = workflowSession.adaptTo(Session.class);
                 if (null != jcrSession) {
                     removeBookNodes(path, jcrSession);
                     addRetirementBadge(path);
@@ -87,15 +86,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
                 }
             } catch (Exception e) {
                 logger.error("payload type - {} is not valid", payloadType);
-            } finally {
-                try {
-                    if (null != jcrSession && jcrSession.isLive()) {
-                        jcrSession.logout();
-                    }
-                } catch (Exception e) {
-                    logger.error("Exception occured while session logout:{}", e.getMessage());
-                }
-            }
+            } 
         }
     }
 
