@@ -393,7 +393,7 @@
 					</configuration>
 				</plugin>
 
-				<plugin> <!-- Maven checkstyle plugin on validate phase-->
+				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>${maven-checkstyle-plugin.version}</version>
