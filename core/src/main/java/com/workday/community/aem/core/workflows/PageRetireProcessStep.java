@@ -77,32 +77,38 @@ public class PageRetireProcessStep implements WorkflowProcess {
         if (StringUtils.equals(payloadType, "JCR_PATH")) {
             // Get the JCR path from the payload
             String path = workItem.getWorkflowData().getPayload().toString();
-            try (ResourceResolver resolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-                removeBookNodes(resolver, path);
-                addRetirementBadge(resolver, path);
-                replicatePage(resolver, workflowSession, path);
+            try {
+                Session jcrSession = workflowSession.adaptTo(Session.class);
+                if (null != jcrSession) {
+                    removeBookNodes(path, jcrSession);
+                    addRetirementBadge(path);
+                    replicatePage(jcrSession, path);
+                }
             } catch (Exception e) {
                 logger.error("payload type - {} is not valid", payloadType);
-            }
+            } 
         }
     }
 
     /**
      * Removes the book nodes.
      *
-     * @param resolver the resolver
-     * @param pagePath the page path
+     * @param pagePath   the page path
+     * @param jcrSession the jcr session
      */
-    public void removeBookNodes(ResourceResolver resolver, String pagePath) {
-        try {
+    public void removeBookNodes(String pagePath, Session jcrSession) {
+        try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
             if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
                 List<String> paths = queryService.getBookNodesByPath(pagePath, null);
-                paths.stream().filter(item -> resolver.getResource(item) != null)
+                paths.stream().filter(item -> rresolver.getResource(item) != null)
                         .forEach(path -> {
                             try {
-                                Node root = Objects.requireNonNull(resolver.getResource(path)).adaptTo(Node.class);
+                                Node root = Objects.requireNonNull(rresolver.getResource(path)).adaptTo(Node.class);
                                 if (root != null) {
+                                    final String pathToReplicate = root.getParent().getPath();
                                     root.remove();
+                                    rresolver.commit();
+                                    replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pathToReplicate);
                                 }
                             } catch (Exception e) {
                                 logger.error("Exception occured while removing the node: {}", path);
@@ -119,16 +125,16 @@ public class PageRetireProcessStep implements WorkflowProcess {
     /**
      * Adds the retirement badge.
      *
-     * @param resolver the resolver
      * @param pagePath the page path
      */
-    public void addRetirementBadge(ResourceResolver resolver, String pagePath) {
-        Resource resource = Objects.requireNonNull(resolver.getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH));
-        try {
+    public void addRetirementBadge(String pagePath) {
+        try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+            Resource resource = Objects
+                    .requireNonNull(rresolver.getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH));
             ModifiableValueMap map = resource.adaptTo(ModifiableValueMap.class);
             // Add retirement badge.
             map.put(RETIREMENT_STATUS_PROP, RETIREMENT_STATUS_VAL);
-            resolver.commit();
+            rresolver.commit();
         } catch (Exception exec) {
             logger.error("Exception occured while addRetirementBadge: {}", exec.getMessage());
         }
@@ -137,16 +143,13 @@ public class PageRetireProcessStep implements WorkflowProcess {
     /**
      * Replicate page.
      *
-     * @param resourceResolver the resource resolver
-     * @param workflowSession  the workflow session
-     * @param pagePath         the page path
+     * @param jcrSession the jcr session
+     * @param pagePath   the page path
      */
-    public void replicatePage(ResourceResolver resourceResolver, WorkflowSession workflowSession, String pagePath) {
+    public void replicatePage(Session jcrSession, String pagePath) {
         try {
             if (replicator != null) {
-                Session jcrSession = workflowSession.adaptTo(Session.class);
                 replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pagePath);
-                resourceResolver.commit();
             }
         } catch (Exception e) {
             logger.info("Exception occured while replicatePage method: {}", e.getMessage());
