@@ -13,8 +13,6 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.lenient;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
-import java.io.IOException;
-
 import org.apache.commons.lang3.StringUtils;
 
 import com.google.gson.Gson;
@@ -63,10 +61,9 @@ public class CourseDetailModelImplTest {
      * Test method for getCourseDetailData in CourseDetailModel class.
      * 
      * @throws LmsException
-     * @throws IOException
      */
     @Test
-    public void testGetCourseDetailData() throws LmsException, IOException {
+    public void testGetCourseDetailData() throws LmsException {
         String detailResponse = "{\"Report_Entry\":[{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}]}";
         Gson gson = new Gson();
         JsonObject detailJson = gson.fromJson(detailResponse, JsonObject.class);
