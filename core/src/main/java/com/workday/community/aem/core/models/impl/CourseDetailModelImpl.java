@@ -103,7 +103,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
      * @throws IOException
      */
     @Override
-    public JsonObject getCourseDetailData() throws IOException {
+    public JsonObject getCourseDetailData() {
         try {
             String courseDetailJson = lmsService.getCourseDetail(courseTitle);
             // Redirect to 404 page when title is not present/ empty/ response is empty.
@@ -124,8 +124,6 @@ public class CourseDetailModelImpl implements CourseDetailModel {
 
         } catch (LmsException | IOException ex) {
             LOGGER.error("Exception occurred in getCourseDetailData: {}.", ex.getMessage());
-            response.setStatus(SC_NOT_FOUND);
-            response.sendRedirect(WccConstants.PAGE_NOT_FOUND_PATH);
         }
         return null;
     }
