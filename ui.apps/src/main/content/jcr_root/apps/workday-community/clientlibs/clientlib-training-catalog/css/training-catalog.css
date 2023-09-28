@@ -66,4 +66,45 @@
         vertical-align: top;
         margin-left: 5px;
     }
+
+    .img-prerequisite {
+        @media (min-width: 768px) {
+            display: flex;
+        }
+
+        .image {
+            @media (max-width: 768px) {
+                margin-bottom: 24px;
+            }
+
+            @media (min-width: 768px) {
+                min-width: 33%;
+                vertical-align: top;
+
+                .cmp-image {
+                    margin-right: 32px;
+                }
+            }
+        }
+
+        .text {
+             @media (min-width: 768px) {
+                min-width: 66%;
+                display: inline-block;
+                vertical-align: top;
+
+                .req-Prereq {
+                    margin-bottom: 15px;
+                }
+            }
+        }
+
+        .reg-prereq-title, .sug-prereq-title {
+            margin: 0;
+        }
+
+        .reg-prereq-content, .sug-prereq-content {
+            margin-top: 0;
+        }
+    }
 }
