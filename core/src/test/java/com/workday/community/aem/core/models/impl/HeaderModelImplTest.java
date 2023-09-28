@@ -4,11 +4,13 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -104,13 +106,10 @@ public class HeaderModelImplTest {
    * Test method for getUserHeaderMenu in HeaderModel class.
    */
   @Test
-  void testGetUserHeaderMenu() {
+  void testGetUserHeaderMenu() throws CacheException {
     HeaderModel headerModel = request.adaptTo(HeaderModel.class);
-    assertNotNull(headerModel);
-    assertEquals("HIDE_MENU_UNAUTHENTICATED", headerModel.getUserHeaderMenus());
-    when(request.getResourceResolver()).thenReturn(resolver);
-    when(resolver.adaptTo(Session.class)).thenReturn(jcrSession);
-    when(jcrSession.isLive()).thenReturn(true);
+    User user = mock(User.class);
+    lenient().when(userService.getCurrentUser(request)).thenReturn(user);
     lenient().when(snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER)).thenReturn("");
     lenient().when(snapService.enableCache()).thenReturn(true);
     headerModel = request.adaptTo(HeaderModel.class);
