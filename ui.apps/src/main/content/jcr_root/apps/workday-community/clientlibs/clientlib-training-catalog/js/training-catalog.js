@@ -24,19 +24,30 @@ function renderCourse() {
         tcRight.innerHTML = populateRightContainer(course.Report_Entry[0]);
     }
   }
+
+  // Update active breadcrumb item
+  const activeBreadcrumbElement = document.querySelector('.cmp-breadcrumb__item.cmp-breadcrumb__item--active [itemprop="name"]');
+  const courseDetailTitleText = document.querySelector('#courseDetailData .cmp-title__text');
+
+  if (activeBreadcrumbElement && courseDetailTitleText) {
+    const activeBreadcrumbName = activeBreadcrumbElement.textContent;
+    if (activeBreadcrumbName !== courseDetailTitleText.textContent) {
+      activeBreadcrumbElement.textContent = courseDetailTitleText.textContent;
+    }
+  }
 }
 
 Handlebars.registerHelper("download", function (text, url) {
   var url = Handlebars.escapeExpression(url),
     text = Handlebars.escapeExpression(text)
 
-  return new Handlebars.SafeString("<a class=\"cmp-download__title-link\" href='" + url + "'>" + text + "</a>");
+  return new Handlebars.SafeString("<a class=\"cmp-download__title-link\" href='" + url + "' target=\"_blank\">" + text + "</a>");
 });
 
 Handlebars.registerHelper("button", function (text, url) {
   var url = Handlebars.escapeExpression(url),
     text = Handlebars.escapeExpression(text)
-  return new Handlebars.SafeString("<a class=\"cmp-button\" href='" + url + "' target=\"_blank\"><span class=\"cmp-button__text\">Enroll" + text + "</span></a>");
+  return new Handlebars.SafeString("<a class=\"cmp-button\" href='" + url + "' target=\"_blank\"><button class=\"cmp-button__text\">Enroll " + text + "</button></a>");
 });
 
 Handlebars.registerHelper('isNotEmptyOrNull', function (value, options) {
