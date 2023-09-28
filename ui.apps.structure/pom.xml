@@ -49,7 +49,7 @@
 
                         <!-- DAM folder root, will be created via repoinit -->
                         <filter><root>/content/dam/workday-community</root></filter>
-
+                        <filter><root>/var/workflow/models/workday-community</root></filter>
                     </filters>
                 </configuration>
             </plugin>

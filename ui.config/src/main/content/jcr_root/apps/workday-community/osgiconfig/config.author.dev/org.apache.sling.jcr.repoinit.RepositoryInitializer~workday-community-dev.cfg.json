@@ -31,8 +31,38 @@
     "set ACL for \"CMTY CC Admin {QA}\"\r\n allow jcr:versionManagement, jcr:read, crx:replicate, rep:write, jcr:lockManagement on /content/dam/workday-community\r\n end",
     "set ACL for \"CMTY CC Admin {QA}\"\r\n allow jcr:versionManagement, jcr:read, crx:replicate, rep:write, jcr:lockManagement on /content/experience-fragments/workday-community\r\n end",
     "set ACL for \"CMTY CC Admin {QA}\"\r\n allow jcr:versionManagement, crx:replicate, rep:write, jcr:lockManagement on /content/cq:tags\r\n end",
-    "set ACL for \"CMTY CC Admin {QA}\"\r\n allow jcr:versionManagement, jcr:modifyProperties, jcr:read, jcr:addChildNodes, crx:replicate, jcr:lockManagement, jcr:nodeTypeManagement on /conf/workday-community\r\n end" 
-  
-  
+    "set ACL for \"CMTY CC Admin {QA}\"\r\n allow jcr:versionManagement, jcr:modifyProperties, jcr:read, jcr:addChildNodes, crx:replicate, jcr:lockManagement, jcr:nodeTypeManagement on /conf/workday-community\r\n end",
+   
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/publish_example/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/launch-review/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/InboxRequest/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/request_for_activation/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/request_for_deactivation/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/request_for_deletion/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/request_for_deletion_without_deactivation/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/request_to_complete_move_operation/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/publish_to_campaign/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/ac-newsletter-workflow-simple/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/s7dam/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/cloudservices/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/wcm-translation/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/dam/)\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/projects/)\r\n end",
+
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/publish_example/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/launch-review/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/InboxRequest/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/request_for_activation/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/request_for_deactivation/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/request_for_deletion/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/request_for_deletion_without_deactivation/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/request_to_complete_move_operation/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/publish_to_campaign/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:glob,/ac-newsletter-workflow-simple/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/s7dam/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/cloudservices/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/wcm-translation/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/dam/)\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/projects/)\r\n end"
   ]
 }

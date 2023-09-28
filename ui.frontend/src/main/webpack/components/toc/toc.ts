@@ -27,7 +27,7 @@
         const acc = [];
 
         firstLevelItems.forEach(function(item) {
-          const siblingElement = item.nextElementSibling;
+          const siblingElement = item.previousElementSibling;
           if (siblingElement && siblingElement.classList.contains('cmp-toc__chevron')) {
             acc.push(siblingElement);
           }
@@ -49,10 +49,10 @@
                     this.parentElement.classList.toggle('active');
                     if(this.parentElement.nextElementSibling) {
                         this.parentElement.nextElementSibling.classList.toggle('show');
-                        this.parentElement.setAttribute('aria-expanded', true);
+                        this.setAttribute('aria-expanded', true);
                     }
                 } else {
-                    this.parentElement.setAttribute('aria-expanded', false);
+                    this.setAttribute('aria-expanded', false);
                 }
             });
         }
@@ -69,7 +69,7 @@
         const acc = [];
 
         firstLevelItems.forEach(function(item) {
-          const siblingElement = item.nextElementSibling;
+          const siblingElement = item.previousElementSibling;
           if (siblingElement && siblingElement.classList.contains('cmp-toc__chevron')) {
             acc.push(siblingElement);
           }
@@ -92,10 +92,10 @@
                     this.parentElement.classList.toggle('active');
                     if(this.parentElement.nextElementSibling) {
                         this.parentElement.nextElementSibling.classList.toggle('show');
-                        this.parentElement.setAttribute('aria-expanded', true);
+                        this.setAttribute('aria-expanded', true);
                     }
                 } else {
-                    this.parentElement.setAttribute('aria-expanded', false);
+                    this.setAttribute('aria-expanded', false);
                 }
             });
         }
@@ -107,13 +107,15 @@
     }
 
     function addChevronImage() {
-        const tocListItems = document.querySelectorAll('.cmp-toc__group li a:has(+ ul)');
+        const tocListItems = document.querySelectorAll('.cmp-toc__group li .cmp-toc__item-link:has(+ ul)');
 
         if(tocListItems && tocListItems.length != 0) {
             tocListItems.forEach(function(item) {
-                const listChevron = document.createElement('span');
+                const listChevron = document.createElement('button');
                 listChevron.classList.add('cmp-toc__chevron');
-                item.appendChild(listChevron);
+                listChevron.setAttribute('tabindex', '0');
+                const firstChild = item.firstChild;
+                item.insertBefore(listChevron, firstChild);
             });
         }
     }
@@ -174,7 +176,7 @@
         activeItemLinks.forEach(itemLink => {
             const siblingUl = itemLink.nextElementSibling;
             if (siblingUl && siblingUl.tagName === 'UL') {
-                itemLink.setAttribute('aria-expanded', true.toString());
+                itemLink.children[0].setAttribute('aria-expanded', true.toString());
             }
         });
 
@@ -182,7 +184,7 @@
         itemLinksWithoutActiveClass.forEach(itemLink => {
             const siblingUl = itemLink.nextElementSibling;
             if (siblingUl && siblingUl.tagName === 'UL') {
-                itemLink.setAttribute('aria-expanded', false.toString());
+                itemLink.children[0].setAttribute('aria-expanded', false.toString());
             }
         });
     }
