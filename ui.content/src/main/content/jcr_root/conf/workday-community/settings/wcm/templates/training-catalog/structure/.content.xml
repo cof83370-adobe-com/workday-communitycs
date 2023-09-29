@@ -74,7 +74,7 @@
                             <handlebar_content
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="workday-community/components/content/training-catalog/handlebar-content"
-                                htmlContent="\{{#isNotEmptyOrNull videoUrl}}&#xd;&#xa;    &lt;div class=&quot;title&quot;>&#xd;&#xa;        &lt;div class=&quot;cmp-title&quot;>&#xd;&#xa;            &lt;h2 class=&quot;cmp-title__text&quot;>Video&lt;/h2>&#xd;&#xa;        &lt;/div>&#xd;&#xa;    &lt;/div>&#xd;&#xa;    &lt;!--/* Coming soon brightcove video integration */-->&#xd;&#xa;{{/isNotEmptyOrNull}}"/>
+                                htmlContent="\{{#isNotEmptyOrNull videoId}}&#xd;&#xa;    &lt;div class=&quot;title&quot;>&#xd;&#xa;        &lt;div class=&quot;cmp-title&quot;>&#xd;&#xa;            &lt;h2 class=&quot;cmp-title__text&quot;>Video&lt;/h2>&#xd;&#xa;        &lt;/div>&#xd;&#xa;    &lt;/div>&#xd;&#xa;    &lt;!--/* Coming soon brightcove video integration */-->&#xd;&#xa;{{/isNotEmptyOrNull}}"/>
                         </container_coursevideo>
                         <container_download
                             jcr:primaryType="nt:unstructured"
