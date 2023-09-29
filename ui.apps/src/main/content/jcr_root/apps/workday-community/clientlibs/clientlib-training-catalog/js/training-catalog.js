@@ -1,8 +1,11 @@
+const courseObj = "{\n    \"Report_Entry\": [\n        {\n            \"accessControl\": \"authenticated\",\n            \"communityUrl\": \"https://qa-content.workday.com/en-us/collections/learn/training-information/training-catalog/course-detail.html?title=Business Assets\",\n            \"creditsRange\": \"1.5\",\n            \"deliveryOptionsTitle1\": \"Business Assets - Learn Independent\",\n            \"deliveryOptionsTitle2\": \"NULL\",\n            \"deliveryOptionsTitle3\": \"NULL\",\n            \"deliveryOptionsTitle4\": \"NULL\",\n            \"deliveryOptionsUrl1\": \"https://wd5-impl.workday.com/workday5/d/inst/1$17815/17815$1642.htmld\",\n            \"deliveryOptionsUrl2\": \"NULL\",\n            \"deliveryOptionsUrl3\": \"NULL\",\n            \"deliveryOptionsUrl4\": \"NULL\",\n            \"description\": \"This course is designed for buyers, business asset specialists, and tax managers responsible for maintaining assets in Workday Financial Management.\\n\\nIn Workday, an asset is anything you want to track. Workday Business Assets combines the traditionally separate domains of fixed assets with the emerging importance of managing high-value and low-cost items. In this course, you will learn to set up the business process of Workday Business Assets functionality.\\n\\nThe goal is to get familiar with transactions so you can make better decisions for your Assets deployment.\\nThis course offering is being taught as Learn Independent. Students must meet additional requirements to attend Learn Independent. To learn more, visit the Learn Independent Resource Center on Workday Community. See the course info sheet for a more detailed course description.Note: This course will require approximately 12 hours of work, and the assigned training tenant will be available for 7 days (168 hours).\",\n            \"durationRange\": \"12 Hours\",\n            \"graphicUrl\": \"http://localhost:4502/assetdetails.html/content/dam/workday-community/img.jpeg\",\n             \"groupedTitle\": \"Business Assets\",\n            \"industry\": \"NULL\",\n            \"infosheetUrl\": \"NULL\",\n            \"library\": \"NULL\",\n            \"productLines\": \"Financial Management,Asset Management\",\n            \"relatedCourseTitle1\": \"Link1\",\n            \"relatedCourseTitle2\": \"NULL\",\n            \"relatedCourseTitle3\": \"NULL\",\n            \"relatedCourseTitle4\": \"NULL\",\n            \"relatedCourseUrl1\": \"http://localhost:4502/content/workday-community/en-us.html\",\n            \"relatedCourseUrl2\": \"NULL\",\n            \"relatedCourseUrl3\": \"NULL\",\n            \"relatedCourseUrl4\": \"NULL\",\n            \"reqPrereq\": \"Sugges Aliquam eget consectetur orci. Donec sit amet urna nunc. Proin erat ligula, laoreet acaliquam fermentum blandit lacus, sit amet pulvinar velit rhoncus vitae. Suggested Prerequisites Sugges Aliquam eget consectetur orci. Donec sit amet urna nunc. Proin erat ligula, laoreet acaliquam fermentum blandit lacus, sit amet pulvinar velit rhoncus vitae.\",\n            \"roles\": \"Functional Lead,Workday Administrator\",\n            \"sugPrereq\": \"Financial Fundamentals or Workday Foundations\",\n            \"usingWorkday\": \"Training Tools \& Materials\",\n            \"videoUrl\": \"NULL\"\n        }\n    ]\n}";
+
 function renderCourse() {
   const titleDiv = document.getElementById("courseDetailData");
   let courseData, course;
   if (titleDiv) {
-    courseData = titleDiv.getAttribute('data-model-property');
+    //courseData = titleDiv.getAttribute('data-model-property');
+    courseData = courseObj;
     if (stringValid(courseData)) {
       course = JSON.parse(courseData);
     }
@@ -48,6 +51,17 @@ Handlebars.registerHelper("button", function (text, url) {
   var url = Handlebars.escapeExpression(url),
     text = Handlebars.escapeExpression(text)
   return new Handlebars.SafeString("<a class=\"cmp-button\" href='" + url + "' target=\"_blank\"><button class=\"cmp-button__text\">Enroll " + text + "</button></a>");
+});
+
+Handlebars.registerHelper("relatedCourse", function (text, url) {
+  var url = Handlebars.escapeExpression(url),
+    text = Handlebars.escapeExpression(text)
+  return new Handlebars.SafeString("<a class=\"cmp-related-info__item-link\" href='" + url + "' target=\"_blank\">" + "<span class=\"cmp-related-info__item-title\">" + text + "</span>" + "</a>");
+});
+
+Handlebars.registerHelper("image", function (url) {
+  var url = Handlebars.escapeExpression(url)
+  return new Handlebars.SafeString("<img src='" + url + "' class=\"cmp-image__image\" loading=\"lazy\" alt=\"Course detail image\">" + "</img>");
 });
 
 Handlebars.registerHelper('isNotEmptyOrNull', function (value, options) {
