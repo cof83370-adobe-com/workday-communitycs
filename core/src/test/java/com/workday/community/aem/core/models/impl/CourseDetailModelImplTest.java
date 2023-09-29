@@ -13,6 +13,8 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.lenient;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.LmsException;
@@ -70,6 +72,9 @@ public class CourseDetailModelImplTest {
         CourseDetailModel courseDetailModel = context.request().adaptTo(CourseDetailModel.class);
         assertNotNull(courseDetailModel);
         assertEquals(detailJson, courseDetailModel.getCourseDetailData());
+
+        lenient().when(lmsService.getCourseDetail("")).thenReturn(StringUtils.EMPTY);
+        assertEquals(null, courseDetailModel.getCourseDetailData());
     }
 
 }
