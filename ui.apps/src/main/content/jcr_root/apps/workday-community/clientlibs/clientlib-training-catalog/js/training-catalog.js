@@ -12,7 +12,7 @@ function renderCourse() {
 
   if (tcCenter !== undefined && tcCenter !== null) {
     let populateCenterContainer = Handlebars.compile(cleanHandlebars(tcCenter.innerHTML));
-    if(course){
+    if(course && course.Report_Entry && course.Report_Entry.length > 0){
         var hbsOutput = populateCenterContainer(course.Report_Entry[0]);
         tcCenter.innerHTML = hbsOutput;
     }
@@ -20,7 +20,7 @@ function renderCourse() {
 
   if (tcRight !== undefined && tcRight !== null) {
     let populateRightContainer = Handlebars.compile(cleanHandlebars(tcRight.innerHTML));
-    if(course){
+    if(course && course.Report_Entry && course.Report_Entry.length > 0){
         tcRight.innerHTML = populateRightContainer(course.Report_Entry[0]);
     }
   }
