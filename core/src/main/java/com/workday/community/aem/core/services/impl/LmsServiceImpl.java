@@ -139,7 +139,8 @@ public class LmsServiceImpl implements LmsService {
                 // Gson object for json handling.
                 JsonObject response = gson.fromJson(lmsResponse.getResponseBody(), JsonObject.class);
                 if (response.get(LmsConstants.REPORT_ENTRY_KEY) != null
-                        && !response.get(LmsConstants.REPORT_ENTRY_KEY).isJsonNull()) {
+                        && !response.get(LmsConstants.REPORT_ENTRY_KEY).isJsonNull()
+                        && !response.getAsJsonArray(LmsConstants.REPORT_ENTRY_KEY).isEmpty()) {
                     return gson.toJson(response);
                 }
             }

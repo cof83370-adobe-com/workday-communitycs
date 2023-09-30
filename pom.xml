@@ -52,6 +52,8 @@
 		<aem.sdk.api>2023.2.11289.20230224T170559Z-230100</aem.sdk.api>
 		<aemanalyser.version>1.5.8</aemanalyser.version>
 		<componentGroupName>Workday Community Site</componentGroupName>
+		<checkstyle.version>10.12.3</checkstyle.version>
+		<maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
 	</properties>
 	<build>
 		<plugins>
@@ -359,8 +361,8 @@
                 				</pluginExecution>
 								<pluginExecution>
 								<pluginExecutionFilter>
-									<groupId>org.apache.maven.plugins</groupId>																		
-									<artifactId>maven-dependency-plugin</artifactId>					
+									<groupId>org.apache.maven.plugins</groupId>
+									<artifactId>maven-dependency-plugin</artifactId>
 									<versionRange>[2.2,)</versionRange>
 									<goals>
 										<goal>copy-dependencies</goal>
@@ -389,6 +391,32 @@
               				</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>${maven-checkstyle-plugin.version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>${checkstyle.version}</version>
+						</dependency>
+					</dependencies>
+					<executions>
+						<execution>
+							<id>validate</id>
+							<phase>validate</phase>
+							<configuration>
+								<violationSeverity>warning</violationSeverity>
+								<failOnViolation>false</failOnViolation>
+							</configuration>
+							<goals>
+								<goal>check</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -685,6 +713,12 @@
 				<groupId>org.apache.sling</groupId>
 				<artifactId>org.apache.sling.dynamic-include</artifactId>
 				<version>3.3.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.puppycrawl.tools</groupId>
+				<artifactId>checkstyle</artifactId>
+				<version>${checkstyle.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
