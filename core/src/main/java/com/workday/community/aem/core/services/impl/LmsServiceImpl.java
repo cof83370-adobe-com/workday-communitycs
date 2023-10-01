@@ -106,7 +106,7 @@ public class LmsServiceImpl implements LmsService {
             return bearerToken;
         } catch (LmsException | JsonSyntaxException e) {
             throw new LmsException(String.format("getApiToken call failed in LmsServiceImpl. Error: %s",
-                e.getMessage()));
+                    e.getMessage()));
         }
     }
 
@@ -139,15 +139,17 @@ public class LmsServiceImpl implements LmsService {
                 // Gson object for json handling.
                 JsonObject response = gson.fromJson(lmsResponse.getResponseBody(), JsonObject.class);
                 if (response.get(LmsConstants.REPORT_ENTRY_KEY) != null
-                        && !response.get(LmsConstants.REPORT_ENTRY_KEY).isJsonNull()) {
+                        && !response.get(LmsConstants.REPORT_ENTRY_KEY).isJsonNull()
+                        && !response.getAsJsonArray(LmsConstants.REPORT_ENTRY_KEY).isEmpty()) {
                     return gson.toJson(response);
                 }
             }
             return StringUtils.EMPTY;
         } catch (LmsException | JsonSyntaxException e) {
             throw new LmsException(
-                String.format("There is an error while fetching the course detail. Please contact Community Admin. %s",
-                    e.getMessage()));
+                    String.format(
+                            "There is an error while fetching the course detail. Please contact Community Admin. %s",
+                            e.getMessage()));
         }
     }
 }

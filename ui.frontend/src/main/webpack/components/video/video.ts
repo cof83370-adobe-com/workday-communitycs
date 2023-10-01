@@ -88,6 +88,7 @@
             sourceElement.player.controlBar.el_.style.display = 'none';
             sourceElement.player.bigPlayButton.el_.style.display = 'none';
             vid[0].pause();
+            vid[0].parentElement.closest('.brightcoveplayer').querySelector('.play-video').focus();
         }
     }
 

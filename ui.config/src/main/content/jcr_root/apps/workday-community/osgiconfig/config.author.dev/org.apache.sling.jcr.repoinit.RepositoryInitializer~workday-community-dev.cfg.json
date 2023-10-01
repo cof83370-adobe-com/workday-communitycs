@@ -63,6 +63,16 @@
     "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/cloudservices/)\r\n end",
     "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/wcm-translation/)\r\n end",
     "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/dam/)\r\n end",
-    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/projects/)\r\n end"
+    "set ACL for \"CMTY CC Admin {QA}\"\r\ndeny jcr:read on /var/workflow/models restriction(rep:subtrees,/projects/)\r\n end",
+
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\nallow jcr:read on /content/cq:tags/khoros\r\n end",
+    "set ACL for \"CMTY CC Admin {DEV}\"\r\nallow jcr:read on /content/cq:tags/customer-center\r\n end",
+    "set ACL for \"everyone\"\r\ndeny jcr:read on /content/cq:tags/khoros\r\n end",
+    "set ACL for \"everyone\"\r\ndeny jcr:read on /content/cq:tags/customer-center\r\n end",
+
+    "set ACL for \"CMTY CC Admin {QA}\"\r\nallow jcr:read on /content/cq:tags/khoros\r\n end",
+    "set ACL for \"CMTY CC Admin {QA}\"\r\nallow jcr:read on /content/cq:tags/customer-center\r\n end",
+    "set ACL for \"everyone\"\r\ndeny jcr:read on /content/cq:tags/khoros\r\n end",
+    "set ACL for \"everyone\"\r\ndeny jcr:read on /content/cq:tags/customer-center\r\n end"
   ]
 }
