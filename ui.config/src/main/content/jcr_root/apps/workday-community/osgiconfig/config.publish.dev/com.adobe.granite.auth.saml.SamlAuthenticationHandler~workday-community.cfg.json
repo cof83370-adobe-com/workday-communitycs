@@ -16,7 +16,8 @@
   "idpCertAlias":"$[env:idpCertAlias]",
   "addGroupMemberships":true,
   "path":[
-    "/content/workday-community"
+    "/content/workday-community",
+    "/content/dam/workday-community/en-us/images"
   ],
   "digestMethod":"http://www.w3.org/2001/04/xmlenc#sha256",
   "synchronizeAttributes":[

@@ -86,14 +86,33 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
                 }
             }
             logger.debug("RequestAuthenticationServlet:Time after validating the user  is {}.", new Date().getTime());
+        } else {
+            handlePublicPagesAndAssets(uri,request,response);
         }
-        else if(uri.contains(WORKDAY_PUBLIC_PAGE_PATH))
+
+    }
+
+    private void handlePublicPagesAndAssets (String uri, SlingHttpServletRequest request, SlingHttpServletResponse response)
+            throws IOException {
+        if(StringUtils.isNotBlank(uri) && ( uri.contains(WORKDAY_PUBLIC_PAGE_PATH) ||
+                uri.contains(WORKDAY_PUBLIC_ASSETS_PATH) || uri.contains(WORKDAY_ERROR_PAGES_FORMAT) ))
         {
-            logger.debug("Requested page is public page: {}", uri);
+            logger.debug("Requested page/asset is public page: {}", uri);
+            response.setStatus(SC_OK);
+        }
+        else if(StringUtils.isNotBlank(uri) && uri.contains(WORKDAY_SECURED_ASSETS_PATH) &&
+                ! uri.contains(WORKDAY_PUBLIC_ASSETS_PATH)){
+            logger.debug("Requested Asset is Secured Asset: {}", uri);
+            ResourceResolver requestResourceResolver = request.getResourceResolver();
+            Session userSession = requestResourceResolver.adaptTo(Session.class);
+            if (userSession == null) {
+                response.setStatus(SC_FORBIDDEN);
+                return;
+            }
             response.setStatus(SC_OK);
         }
         else {
-            logger.debug("Requested page is not in correct format: {}", uri);
+            logger.debug("Requested page/Asset is not in correct format: {}", uri);
             response.setStatus(SC_FORBIDDEN);
             response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
         }
