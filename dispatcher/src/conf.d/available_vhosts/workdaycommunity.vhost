@@ -99,10 +99,20 @@ Include conf.d/variables/custom.vars
 
     # Specific HTML pages: CDN cache for 10min with background refresh to avoid MISS, also incl. html requests with query parameter
 
+    # Authenticated pages gets cached only in Dispatcher
     <LocationMatch "^/content/workday-community/en-us/.*(\.html)$>"
          Header unset Cache-Control
-	     Header unset Expires
-	     Header always set Cache-Control "private"
+	     Header always set Cache-Control "no-store, max-age=0"
+         Header always set Surrogate-Control "no-store, max-age=0"
+         Header set Age 0
+    </LocationMatch>
+
+    # Un-Authenticated (public) pages gets cached in Dispatcher and CDN as well.
+    <LocationMatch "^/content/workday-community/en-us/public/.*(\.html)$>"
+         Header unset Cache-Control
+	     Header always set Cache-Control "max-age=300"
+	     Header always set Surrogate-Control "stale-while-revalidate=43200,stale-if-error=43200" "expr=%{REQUEST_STATUS} < 400"
+	     Header set Age 0
     </LocationMatch>
 
     # Images/Video from DAM: cache mutable resources for 24h on CDN and background refresh to avoid MISS

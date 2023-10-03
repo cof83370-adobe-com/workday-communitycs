@@ -29,10 +29,15 @@
 
     function getActiveItem() {
         const currentUrl = window.location.href;
-        const links = document.querySelectorAll('.cmp-toc__item a');
+        const links = document.querySelectorAll('.cmp-toc__item .cmp-toc__item-link');
         let activeIndex;
         for (var i = 0; i < links.length; i++) {
-            const linkUrl = links[i].getAttribute('href');
+            let linkUrl;
+            if (links[i].tagName === 'A' || links[i].tagName === 'a') {
+                linkUrl = links[i].getAttribute('href');
+            } else {
+                linkUrl = links[i].querySelector('a').getAttribute('href');
+            }
 
             if (currentUrl.indexOf(linkUrl) !== -1) {
                 tocNav.style.display = 'block';

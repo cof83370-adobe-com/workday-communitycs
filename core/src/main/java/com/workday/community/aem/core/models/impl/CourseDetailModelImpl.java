@@ -10,6 +10,7 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +22,13 @@ import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.models.CourseDetailModel;
 import com.workday.community.aem.core.services.LmsService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.UserGroupService;
 
 import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
+
+import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +47,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
     @Self
     private SlingHttpServletRequest request;
 
-    @Self
+    @SlingObject
     private SlingHttpServletResponse response;
 
     /**
@@ -68,6 +73,10 @@ public class CourseDetailModelImpl implements CourseDetailModel {
     @NotNull
     @OSGiService
     UserGroupService userGroupService;
+
+    /** The run mode config service. */
+    @OSGiService
+    RunModeConfigService runModeConfigService;
 
     /** Course Title */
     String courseTitle;
@@ -98,20 +107,34 @@ public class CourseDetailModelImpl implements CourseDetailModel {
      * Gets the course detail data.
      * 
      * @return Course detail json.
+     * @throws IOException
      */
     @Override
     public JsonObject getCourseDetailData() {
         try {
+            // Make API call
             String courseDetailJson = lmsService.getCourseDetail(courseTitle);
-            if (StringUtils.isNotBlank(courseDetailJson)) {
-                // Gson object for json handling.
-                JsonObject courseDetail = gson.fromJson(courseDetailJson, JsonObject.class);
+            // Gson object for json handling.
+            JsonObject courseDetail = gson.fromJson(courseDetailJson, JsonObject.class);
+
+            // Apply further processing and redirections only in publish
+            // instance.
+            String instance = runModeConfigService.getInstance();
+            if (instance != null && instance.equals(PUBLISH)) {
+                // Redirect to 404 page when title is not present/ empty/ response is empty.
+                if (StringUtils.isBlank(courseDetailJson)) {
+                    response.setStatus(SC_NOT_FOUND);
+                    response.sendRedirect(WccConstants.PAGE_NOT_FOUND_PATH);
+                    return null;
+                }
+                // Redirect to 403 page when logged in user doesn't have access to course.
                 if (checkAccessControlTags(courseDetail)) {
                     response.setStatus(SC_FORBIDDEN);
                     response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+                    return null;
                 }
-                return courseDetail;
             }
+            return courseDetail;
         } catch (LmsException | IOException ex) {
             LOGGER.error("Exception occurred in getCourseDetailData: {}.", ex.getMessage());
         }

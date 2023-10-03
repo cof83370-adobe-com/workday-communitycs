@@ -49,5 +49,6 @@
     "set properties on /content/experience-fragments/workday-community\r\n  set cq:conf{String} to /conf/workday-community\r\n set sling:configRef{String} to /conf/workday-community\r\n  set jcr:title{String} to \"Workday Community Site Fragments\"\r\nend",
     "create service user admin-user-group\r\nset ACL on /home\r\n allow jcr:all for admin-user-group\r\nend",
     "set principal ACL for sling-distribution-importer\r\nallow jcr:read, rep:write, jcr:versionManagement, jcr:modifyAccessControl ,jcr:readAccessControl, jcr:lockManagement on /var\r\nend"
+    
   ]
 }
