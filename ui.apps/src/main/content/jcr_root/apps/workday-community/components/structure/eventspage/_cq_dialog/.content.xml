@@ -121,8 +121,7 @@
                                         emptyText="Event Host"
                                         fieldDescription="Enter event host. default will be 'Workday'"
                                         fieldLabel="Event Host"
-                                        name="./eventHost"
-                                    />
+                                        name="./eventHost"/>
                                     <eventimage
                                         granite:class="cmp-image__editor"
                                         jcr:primaryType="nt:unstructured"
