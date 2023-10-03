@@ -21,7 +21,7 @@ import com.workday.community.aem.core.services.RunModeConfigService;
  */
 @Component(service = ParticipantStepChooser.class, property = {
         Constants.SERVICE_DESCRIPTION + "=Participant step to choose the assignee group based on environment/workflow",
-        Constants.SERVICE_VENDOR + "=Workday Community", "chooser.label=" + "Page Retire Dynamic Participant"
+        Constants.SERVICE_VENDOR + "=Workday Community", "chooser.label=" + "Env Speicifc Dynamic Participant"
 })
 public class PageRetireDynamicParticipantStep implements ParticipantStepChooser {
     /** The Constant log. */
@@ -63,8 +63,7 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
      */
     public String getDynamicParticipant(final String commonNameOfApprover, final String environment,
             final String workflowTitle) {
-        final String dynamicParticipant = String.format("%s %s", commonNameOfApprover.trim(), environment.trim())
-                .trim();
+        final String dynamicParticipant=     commonNameOfApprover.trim().replace("#ENV#", environment.trim());
         logger.debug("Dynamic participant for {} >>>>>> {}", workflowTitle, dynamicParticipant);
         return dynamicParticipant;
     }
