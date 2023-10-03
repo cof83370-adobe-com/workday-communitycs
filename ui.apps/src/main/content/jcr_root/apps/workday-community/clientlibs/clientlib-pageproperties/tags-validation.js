@@ -1,20 +1,23 @@
 (function(document, window, $, Granite) {
     /**
-     * Form id for page properties.
-     * @type {string}
-     */
-    var PROPERTIES_FORM = "cq-sites-properties-form";
-    /**
      * Max allowed tags on the page.
      * @type {number}
      */
-    var MAX_ALLOWED_TAGS = 10;
-    $(document).one("foundation-contentloaded", function(){
-        // Click of save button.
-        $("button[type='submit'][form='" + PROPERTIES_FORM + "']").on('click', function(e){
+    const MAX_ALLOWED_TAGS = 10;
+
+    /**
+     * Error message
+     * @type {string}
+     */
+    const ERROR_MESSAGE = 'No more than 10 subscribable tags allowed on a page.';
+
+    $(window).adaptTo('foundation-registry').register('foundation.validation.validator', {
+        selector: '[data-foundation-validation=tag-limit]',
+        validate: function(el) {
             var tagCount = 0;
-            // Subscribable tags
-            var tags = ["./eventFormat", "./industryTags", "./productTags",  "./usingWorkdayTags",  "./regionCountryTags",  "./programsToolsTags", "./releaseTags", "./releaseNoteTags"];
+            // Subscribable tags.
+            var tags = ['./eventFormat', './industryTags', './productTags',  './usingWorkdayTags',  './regionCountryTags',  './programsToolsTags', './releaseTags', './releaseNoteTags'];
+            var invalidTags = [];
             $(tags).each(function (i, fieldName) {
                 // Get all hidden input field with selected values.
                 var tagElements = $('input[name="' + fieldName + '"]');
@@ -22,15 +25,39 @@
                     tagElements.each(function(index, tagElement){
                         if (tagElement.value != undefined && tagElement.value != "") {
                             tagCount++;
+                            invalidTags.push(fieldName);
                         }
                     });
                 }
             });
+
+            $(tags).each(function (i, fieldName) {
+                var tagElements = $('foundation-autocomplete[name="' + fieldName + '"]');
+                if (tagElements != undefined && tagElements.length > 0) {
+                    tagElements.each(function(index, tagElement){
+                        if (tagElement != undefined) {
+                            if (invalidTags.includes(fieldName) && tagCount > MAX_ALLOWED_TAGS) {
+                                $(tagElement).setCustomValidity(ERROR_MESSAGE);
+                                $(tagElement).updateErrorUI();
+                                $(tagElement).setCustomValidity('');
+                            }
+                            else {
+                                $(tagElement).setCustomValidity('');
+                                $(tagElement).updateErrorUI();
+                                if ($(tagElement).validationMessage() != '') {
+                                    $(tagElement).checkValidity();
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+
             if (tagCount > MAX_ALLOWED_TAGS) {
-                alert("No more than 10 subscribable tags allowed on a page.");
-                e.preventDefault();
-                e.stopPropagation();
+                return ERROR_MESSAGE;
             }
-        });
+        }
     });
+
 })(document, window, Granite.$, Granite);
+

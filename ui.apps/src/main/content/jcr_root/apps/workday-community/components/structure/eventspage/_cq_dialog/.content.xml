@@ -121,7 +121,8 @@
                                         emptyText="Event Host"
                                         fieldDescription="Enter event host. default will be 'Workday'"
                                         fieldLabel="Event Host"
-                                        name="./eventHost"/>
+                                        name="./eventHost"
+                                    />
                                     <eventimage
                                         granite:class="cmp-image__editor"
                                         jcr:primaryType="nt:unstructured"
@@ -180,7 +181,8 @@
                                         multiple="{Boolean}true"
                                         name="./eventFormat"
                                         required="{Boolean}true"
-                                        rootPath="/content/cq:tags/event/event-format"/>
+                                        rootPath="/content/cq:tags/event/event-format"
+                                        validation="tag-limit"/>
                                     <eventaudience
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -210,7 +212,8 @@
                                         fieldLabel="Region &amp; Country Tags"
                                         multiple="{Boolean}true"
                                         name="./regionCountryTags"
-                                        rootPath="/content/cq:tags/region-and-country"/>
+                                        rootPath="/content/cq:tags/region-and-country"
+                                        validation="tag-limit"/>
                                     <industry
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -220,7 +223,9 @@
                                         fieldLabel="Industry Tags"
                                         multiple="{Boolean}true"
                                         name="./industryTags"
-                                        rootPath="/content/cq:tags/industry"/>
+                                        rootPath="/content/cq:tags/industry"
+                                        validation="tag-limit"
+                                    />
                                     <release
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -230,7 +235,8 @@
                                         fieldLabel="Release Tags"
                                         multiple="{Boolean}true"
                                         name="./releaseTags"
-                                        rootPath="/content/cq:tags/release"/>
+                                        rootPath="/content/cq:tags/release"
+                                        validation="tag-limit"/>
                                     <usingworkday
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -240,7 +246,8 @@
                                         fieldLabel="Using Workday Tags"
                                         multiple="{Boolean}true"
                                         name="./usingWorkdayTags"
-                                        rootPath="/content/cq:tags/using-workday"/>
+                                        rootPath="/content/cq:tags/using-workday"
+                                        validation="tag-limit"/>
                                     <product
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -250,7 +257,8 @@
                                         fieldLabel="Product Tags"
                                         multiple="{Boolean}true"
                                         name="./productTags"
-                                        rootPath="/content/cq:tags/product"/>
+                                        rootPath="/content/cq:tags/product"
+                                        validation="tag-limit"/>
                                     <programstools
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -260,7 +268,8 @@
                                         fieldLabel="Programs &amp; Tools Tags"
                                         multiple="{Boolean}true"
                                         name="./programsToolsTags"
-                                        rootPath="/content/cq:tags/programs-tools"/>
+                                        rootPath="/content/cq:tags/programs-tools"
+                                        validation="tag-limit"/>
                                     <retirementdate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
