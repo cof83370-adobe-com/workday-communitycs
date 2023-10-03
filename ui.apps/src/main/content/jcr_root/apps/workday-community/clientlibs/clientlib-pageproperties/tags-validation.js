@@ -14,16 +14,16 @@
     $(window).adaptTo('foundation-registry').register('foundation.validation.validator', {
         selector: '[data-foundation-validation=tag-limit]',
         validate: function(el) {
-            var tagCount = 0;
+            let tagCount = 0;
             // Subscribable tags.
-            var tags = ['./eventFormat', './industryTags', './productTags',  './usingWorkdayTags',  './regionCountryTags',  './programsToolsTags', './releaseTags', './releaseNoteTags'];
-            var invalidTags = [];
+            const tags = ['./eventFormat', './industryTags', './productTags', './usingWorkdayTags', './regionCountryTags', './programsToolsTags', './releaseTags', './releaseNoteTags'];
+            const invalidTags = [];
             $(tags).each(function (i, fieldName) {
                 // Get all hidden input field with selected values.
                 var tagElements = $('input[name="' + fieldName + '"]');
-                if (tagElements != undefined && tagElements.length > 0) {
+                if (tagElements && tagElements.length > 0) {
                     tagElements.each(function(index, tagElement){
-                        if (tagElement.value != undefined && tagElement.value != "") {
+                        if (tagElement.value && tagElement.value != "") {
                             tagCount++;
                             invalidTags.push(fieldName);
                         }
@@ -33,7 +33,7 @@
 
             $(tags).each(function (i, fieldName) {
                 var tagElements = $('foundation-autocomplete[name="' + fieldName + '"]');
-                if (tagElements && tagElements.length > 0) {
+                if (tagElements  && tagElements.length > 0) {
                     tagElements.each(function(index, tagElement){
                         if (invalidTags.includes(fieldName) && tagCount > MAX_ALLOWED_TAGS) {
                             $(tagElement).setCustomValidity(ERROR_MESSAGE);
