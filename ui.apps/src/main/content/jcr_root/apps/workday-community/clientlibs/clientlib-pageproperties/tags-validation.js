@@ -33,22 +33,21 @@
 
             $(tags).each(function (i, fieldName) {
                 var tagElements = $('foundation-autocomplete[name="' + fieldName + '"]');
-                if (tagElements != undefined && tagElements.length > 0) {
+                if (tagElements && tagElements.length > 0) {
                     tagElements.each(function(index, tagElement){
-                        if (tagElement != undefined) {
-                            if (invalidTags.includes(fieldName) && tagCount > MAX_ALLOWED_TAGS) {
-                                $(tagElement).setCustomValidity(ERROR_MESSAGE);
-                                $(tagElement).updateErrorUI();
-                                $(tagElement).setCustomValidity('');
-                            }
-                            else {
-                                $(tagElement).setCustomValidity('');
-                                $(tagElement).updateErrorUI();
-                                if ($(tagElement).validationMessage() != '') {
-                                    $(tagElement).checkValidity();
-                                }
+                        if (invalidTags.includes(fieldName) && tagCount > MAX_ALLOWED_TAGS) {
+                            $(tagElement).setCustomValidity(ERROR_MESSAGE);
+                            $(tagElement).updateErrorUI();
+                            $(tagElement).setCustomValidity('');
+                        }
+                        else {
+                            $(tagElement).setCustomValidity('');
+                            $(tagElement).updateErrorUI();
+                            if ($(tagElement).validationMessage() != '') {
+                                $(tagElement).checkValidity();
                             }
                         }
+
                     });
                 }
             });
