@@ -6,3 +6,5 @@ author-component.js
 search-based-pathbrowser.js
 ourm-speakers-component.js
 xml-assetview.js
+related-info-multifield-validation.js
+related-info-skipalt.js

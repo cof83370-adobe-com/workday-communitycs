@@ -11,7 +11,7 @@
             <div class="cmp-related-info-curated__image-content">
                 <sly data-sly-test="${properties.fileReference}">
                     <div class="cmp-related-info-curated__image">
-                        <img src="${properties.fileReference}" alt="${properties.alttext || true}"
+                        <img src="${properties.fileReference}" alt="${(properties.isDecorative ? true : properties.alttext) || true }"
                              class="cmp-related-info-curated__imagesrc"/>
                     </div>
                 </sly>
