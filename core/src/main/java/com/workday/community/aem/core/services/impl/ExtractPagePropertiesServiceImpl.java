@@ -24,6 +24,7 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 
 import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_PUBLIC_PAGE_PATH;
 import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
 import org.apache.jackrabbit.api.security.user.User;
@@ -148,7 +149,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             }
             TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
             UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-            String documentId = runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
+            String documentId = "http://test/".concat(path).concat(".html");
             properties.put("documentId", documentId);
             properties.put("isAem", true);
             processDateFields(data, properties);
@@ -179,7 +180,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
             processPageTags(page, properties);
 
-            processPermission(data, properties, email);
+            processPermission(data, properties, email, path);
 
             Resource resource = resourceResolver.getResource(path.concat(JCR_CONTENT_PATH));
             Node node = null;
@@ -220,7 +221,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     }
 
     @Override
-    public void processPermission(ValueMap data, HashMap<String, Object> properties, String email) {
+    public void processPermission(ValueMap data, HashMap<String, Object> properties, String email, String path) {
         // Coveo permission example: https://docs.coveo.com/en/107/cloud-v2-developers/simple-permission-model-definition-examples.
         ArrayList<Object> permissionGroupAllowedPermissions = new ArrayList<>();
         String[] accessControlValues = data.get(ACCESS_CONTROL_PROPERTY, String[].class);
@@ -260,7 +261,12 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         }
 
         HashMap<String, Object> permissionGroup = new HashMap<>();
-        permissionGroup.put("allowAnonymous", false);
+        if (path.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
+            permissionGroup.put("allowAnonymous", true);
+        }
+        else  {
+            permissionGroup.put("allowAnonymous", false);
+        }
         permissionGroup.put("allowedPermissions", permissionGroupAllowedPermissions);
         ArrayList<Object> permission = new ArrayList<>();
         permission.add(permissionGroup);
