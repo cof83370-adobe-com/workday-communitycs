@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:designPath="/libs/settings/wcm/designs/default"
+        cq:template="/libs/cq/workflow/templates/model"
+        jcr:description="Content Publishing Workflow"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="Content Publishing Workflow"
+        sling:resourceType="cq/workflow/components/pages/model"
+        lastSynced="{Date}2023-10-04T12:59:35.185-05:00">
+        <flow
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="foundation/components/parsys">
+            <process
+                jcr:description="Terminate all retirement workflows that are in 'RUNNING' status for the current payload"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Terminate retirement workflows"
+                sling:resourceType="cq/workflow/components/model/process">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    PROCESS="com.workday.community.aem.core.workflows.TerminateRetirementWorkflowProcess"
+                    PROCESS_AUTO_ADVANCE="true"/>
+            </process>
+            <dynamic_participant
+                jcr:description="Review Content"
+                jcr:primaryType="nt:unstructured"
+                jcr:title="Review Content"
+                sling:resourceType="cq/workflow/components/model/dynamic_participant">
+                <metaData
+                    jcr:primaryType="nt:unstructured"
+                    DIALOG_PATH="/apps/workday-community/components/workflows/content-review-publish-workflow/cq:dialog"
+                    DYNAMIC_PARTICIPANT="com.workday.community.aem.core.workflows.PageRetireDynamicParticipantStep"
+                    PROCESS_ARGS="CMTY CC Admin {#ENV#}"/>
+            </dynamic_participant>
+            <or
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="cq/workflow/components/model/or"
+                branches="2"
+                branchName1="Branch 1"
+                branchName2="Branch 2"
+                branchOrder="[0,1]"
+                default1="true"
+                orSplit="true">
+                <_x0031_
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="cq/flow/components/parsys">
+                    <initiatorparticipant
+                        jcr:description="Rejecting as the content is not valid"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Send back for further edits"
+                        sling:resourceType="cq/workflow/components/workflow/initiatorparticipantchooser">
+                        <metaData
+                            jcr:primaryType="nt:unstructured"
+                            DYNAMIC_PARTICIPANT="/libs/workflow/scripts/initiator-participant-chooser.ecma"
+                            PROCESS_AUTO_ADVANCE="true"/>
+                    </initiatorparticipant>
+                    <goto
+                        jcr:description="Resend for Review"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Resend for Review"
+                        sling:resourceType="cq/workflow/components/model/goto">
+                        <metaData
+                            jcr:primaryType="nt:unstructured"
+                            PROCESS="com.adobe.granite.workflow.core.process.GotoProcess"
+                            PROCESS_AUTO_ADVANCE="false"
+                            script="function check() {&#xd;&#xa;    return true;&#xd;&#xa;}"
+                            TARGET_NODE_PATH="/conf/global/settings/workflow/models/content-publishing-workflow/jcr:content/flow/dynamic_participant"/>
+                    </goto>
+                </_x0031_>
+                <_x0032_
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="cq/flow/components/parsys">
+                    <process
+                        jcr:description="Publish Content page"
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="Publish Content"
+                        sling:resourceType="cq/workflow/components/model/process">
+                        <metaData
+                            jcr:primaryType="nt:unstructured"
+                            PROCESS="com.workday.community.aem.core.workflows.ContentPublishingWorkflowProcess"
+                            PROCESS_AUTO_ADVANCE="true"/>
+                    </process>
+                </_x0032_>
+            </or>
+        </flow>
+    </jcr:content>
+</jcr:root>

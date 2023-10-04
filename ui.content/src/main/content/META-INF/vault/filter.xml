@@ -25,4 +25,6 @@
     <filter root="/content/experience-fragments/workday-community" mode="merge"/>
     <filter root="/var/workflow/models/workday-community" mode="merge"/>
     <filter root="/conf/global/settings/workflow/models/workday-community" mode="merge"/>
+    <filter root="/conf/global/settings/workflow/models/content-publishing-workflow" mode="merge"/>
+    <filter root="/var/workflow/models/content-publishing-workflow" mode="merge"/>
 </workspaceFilter>

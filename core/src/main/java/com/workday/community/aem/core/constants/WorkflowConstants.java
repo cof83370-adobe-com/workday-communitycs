@@ -40,4 +40,22 @@ public interface WorkflowConstants {
 
     /** The default fallback group. */
     String DEFAULT_FALL_BACK_GROUP = "administrators";
+    
+    /** The Constant REVIEW_REMINDER_DATE. */
+    String REVIEW_REMINDER_DATE = "reviewReminderDate";
+    
+    /** The Constant RETIREMENT_NOTIFICATION_DATE. */
+    String RETIREMENT_NOTIFICATION_DATE = "retirementNotificationDate";
+    
+    /** The Constant SCHEDULED_RETIREMENT_DATE. */
+    String SCHEDULED_RETIREMENT_DATE = "scheduledRetirementDate";
+    
+    /** The Constant EVENT_TEMPLATE_PATH. */
+    String EVENT_TEMPLATE_PATH = "/conf/workday-community/settings/wcm/templates/events";
+    
+    /** The time zone. */
+    String TIME_ZONE = "GMT";
+    
+    /** The retirement workflow. */
+    String RETIREMENT_WORKFLOW = "/var/workflow/models/workday-community/retirement_workflow_30_days";
 }
