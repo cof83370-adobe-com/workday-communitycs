@@ -225,6 +225,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         // Coveo permission example: https://docs.coveo.com/en/107/cloud-v2-developers/simple-permission-model-definition-examples.
         ArrayList<Object> permissionGroupAllowedPermissions = new ArrayList<>();
         String[] accessControlValues = data.get(ACCESS_CONTROL_PROPERTY, String[].class);
+        boolean allowAnonymous = false;
         if (accessControlValues != null && accessControlValues.length > 0) {
             for (String accessControlValue: accessControlValues) {
                 if (DRUPAL_ROLE_MAPPING.containsKey(accessControlValue)) {
@@ -237,6 +238,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                         permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
                         permissionGroupAllowedPermissions.add(permissionGroup);
                     }
+                }
+                else if (accessControlValue.equals("access-control:unauthenticated")) {
+                    allowAnonymous = true;
                 }
                 else {
                     logger.info("Coveo indexing: Access control value {} missing in the map for the page {}", accessControlValue, properties.get("documentId"));
@@ -262,11 +266,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
         HashMap<String, Object> permissionGroup = new HashMap<>();
         if (path.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
-            permissionGroup.put("allowAnonymous", true);
+            allowAnonymous = true;
         }
-        else  {
-            permissionGroup.put("allowAnonymous", false);
-        }
+        permissionGroup.put("allowAnonymous", allowAnonymous);
+
         permissionGroup.put("allowedPermissions", permissionGroupAllowedPermissions);
         ArrayList<Object> permission = new ArrayList<>();
         permission.add(permissionGroup);
