@@ -14,7 +14,6 @@
     $(window).adaptTo('foundation-registry').register('foundation.validation.validator', {
         selector: '[data-foundation-validation=tag-limit]',
         validate: function(el) {
-            console.log('test');
             let tagCount = 0;
             // Subscribable tags.
             const tags = ['./eventFormat', './industryTags', './productTags', './usingWorkdayTags', './regionCountryTags', './programsToolsTags', './releaseTags', './releaseNoteTags'];
@@ -37,6 +36,7 @@
                 if (tagElements  && tagElements.length > 0) {
                     tagElements.each(function(index, tagElement){
                         if (invalidTags[fieldName] && tagCount > MAX_ALLOWED_TAGS) {
+                            // This logic is here to add fake error message on other tag fields.
                             $(tagElement).setCustomValidity(ERROR_MESSAGE);
                             $(tagElement).updateErrorUI();
                             $(tagElement).setCustomValidity('');
