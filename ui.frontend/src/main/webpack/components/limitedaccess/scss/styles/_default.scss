@@ -1,0 +1,36 @@
+.wd-limited-access {
+    &__container::before, &__text::before, &__image::before, &__download::before, &__brightcoveplayer::before, &__relatedinformation::before {
+        content: 'LIMITED ACCESS ' url('../resources/images/info.svg');
+        position: absolute;
+        color: $wdc-color-cinnamon-500;
+        font-size: $font-size-xsmall;
+        font-weight: $font-weight-normal;
+        text-transform: uppercase;
+        line-height: 18px;
+        letter-spacing: 0.20px;
+        word-wrap: break-word;
+    }
+
+    &__container {
+        .cmp-container {
+            padding-top: 7px;
+        }
+    }
+
+    &__text {
+        .cmp-text {
+            padding-top: 7px;
+        }
+    }
+
+    &__image::before {
+        background-color: rgba(255, 255, 255, 0.5);
+    }
+
+    &__download {
+        .cmp-download {
+            height: 50px;
+            align-items: end;
+        }
+    }
+}
