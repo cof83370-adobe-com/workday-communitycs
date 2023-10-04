@@ -12,6 +12,7 @@
 
     .cmp-eventdetails {
         padding-top: 32px;
+        margin-top: 32px;
 
         .cmp-eventdetails__item-label {
             margin: 0;
@@ -39,5 +40,71 @@
 
     .cmp-taxonomy__item-output {
         word-wrap: break-word;
+    }
+
+    .cmp-button {
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .cmp-button__text {
+        background: #0875e1;
+        border-radius: 24px;
+        border: none;
+        padding: 12px 24px 12px 32px;
+        height: 48px;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 24px;
+        letter-spacing: 0.16px;
+        word-wrap: break-word;
+    }
+
+    .cmp-button__text::after {
+        content: url('../../clientlib-site/resources/images/wd-icon-ext-link.svg');
+        vertical-align: top;
+        margin-left: 5px;
+    }
+
+    .img-prerequisite {
+        @media (min-width: 768px) {
+            display: flex;
+        }
+
+        .image {
+            @media (max-width: 768px) {
+                margin-bottom: 24px;
+            }
+
+            @media (min-width: 768px) {
+                min-width: 33%;
+                vertical-align: top;
+
+                .cmp-image {
+                    margin-right: 32px;
+                }
+            }
+        }
+
+        .text {
+             @media (min-width: 768px) {
+                min-width: 66%;
+                display: inline-block;
+                vertical-align: top;
+
+                .req-Prereq {
+                    margin-bottom: 15px;
+                }
+            }
+        }
+
+        .reg-prereq-title, .sug-prereq-title {
+            margin: 0;
+        }
+
+        .reg-prereq-content, .sug-prereq-content {
+            margin-top: 0;
+        }
     }
 }
