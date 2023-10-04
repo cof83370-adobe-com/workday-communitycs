@@ -8,8 +8,6 @@
     title="Content Publishing Workflow">
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/content-publishing-workflow/jcr:content"
-        cq:lastModified="{Long}1696352559349"
-        cq:lastModifiedBy="admin"
         jcr:primaryType="nt:unstructured"
         lastSynced="{Date}2023-10-03T22:32:39.334+05:30"/>
     <nodes jcr:primaryType="nt:unstructured">

@@ -78,7 +78,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
         String path = "";
         Session jcrSession = null;
         
-        log.info("Payload type: {}", payloadType);
+        log.debug("Payload type: {}", payloadType);
         if (StringUtils.equals(payloadType, "JCR_PATH")) {
             path = workItem.getWorkflowData().getPayload().toString();
             log.info("Payload path: {}", path);
@@ -107,7 +107,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     public void updatePageProperties(String pagePath, Session jcrSession, ResourceResolver resResolver) {
     	try {
     		LocalDate date = LocalDate.now();
-    		log.info("Current Date: {}", date);
+    		log.debug("Current Date: {}", date);
     		
     		// Add 10 month to the date
     		LocalDate reviewReminderDate = date.plusMonths(10); 
@@ -177,9 +177,9 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
             	 //replicate assets referred in page
             	 replicateReferencedAssets(jcrSession, pagePath, resResolver);
             	
-	             log.info("PAGE ACTIVATION STARTED");
+	             log.debug("PAGE ACTIVATION STARTED");
 	             replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pagePath);
-	             log.info("ACTIVATION ENDED");
+	             log.debug("ACTIVATION ENDED");
             }
         } catch (ReplicationException e) {
         	log.error("Exception occured while replicatePage method: {}", e.getMessage());
@@ -204,10 +204,10 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
 	             allref.putAll(ref.search());
 	             for (Map.Entry<String, Asset> entry : allref.entrySet()) {   
 	                 String assetPath = entry.getKey();
-	                 log.info(assetPath+"<br>"); // Path of all Asset ref in page
-	                 log.info(assetPath +" ASSET ACTIVATION STARTED");
+	                 log.debug("\n {}", assetPath); // Path of all Asset ref in page
+	                 log.debug("Asset activation started for {}", assetPath);
 	                 replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, assetPath);
-	                 log.info(assetPath +" ASSET ACTIVATION ENDED");
+	                 log.debug("Asset Activation ended for {}", assetPath);
 	             }
             }
         } catch (ReplicationException e) {

@@ -34,7 +34,7 @@ public class TerminateRetirementWorkflowProcess implements WorkflowProcess {
         String payloadType = workItem.getWorkflowData().getPayloadType();
         String path = "";
         
-        log.info("Payload type: {}", payloadType);
+        log.debug("Payload type: {}", payloadType);
         if (StringUtils.equals(payloadType, "JCR_PATH")) {
             path = workItem.getWorkflowData().getPayload().toString();
             log.info("Payload path: {}", path);
