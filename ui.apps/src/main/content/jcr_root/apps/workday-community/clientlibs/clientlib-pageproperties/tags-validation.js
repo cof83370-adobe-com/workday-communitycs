@@ -1,4 +1,4 @@
-(function(document, window, $, Granite) {
+(function(window, $, Granite) {
     /**
      * Max allowed tags on the page.
      * @type {number}
@@ -58,5 +58,5 @@
         }
     });
 
-})(document, window, Granite.$, Granite);
+})(window, Granite.$, Granite);
 
