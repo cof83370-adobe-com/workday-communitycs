@@ -1,2 +1,0 @@
-#base=css
-review-publish.css

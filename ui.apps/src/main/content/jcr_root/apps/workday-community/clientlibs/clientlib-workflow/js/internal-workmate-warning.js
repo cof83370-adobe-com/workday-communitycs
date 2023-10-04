@@ -10,9 +10,9 @@
         $.getJSON( url, function( json ) {
 			propVal = json.accessControlTags;
             if(propVal.includes("access-control:internal_workmates")) {
-                $('.coral-label-display').hide();
+                $('.internal-workmate-warning-label').hide();
             } else {
-                $('.coral-label-display').show();
+                $('.internal-workmate-warning-label').show();
             }
         });
 	});
