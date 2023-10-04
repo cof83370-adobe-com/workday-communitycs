@@ -14,10 +14,10 @@ import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
@@ -67,6 +67,11 @@ public class HeaderModelImpl implements HeaderModel {
   private final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
 
   /**
+   * Unauthenticated user's menu data.
+   */
+  protected static final String UNAUTHENTICATED_MENU = "HIDE_MENU_UNAUTHENTICATED";
+
+  /**
    * The navMenuApi service.
    */
   @NotNull
@@ -109,18 +114,15 @@ public class HeaderModelImpl implements HeaderModel {
   public String getUserHeaderMenus() {
     try {
       User user = userService.getCurrentUser(request);
-      if (user == null) {
-        logger.debug("Current logged in user is null");
-        return "HIDE_MENU_UNAUTHENTICATED";
+      if (user == null || (UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())) {
+        return UNAUTHENTICATED_MENU;
       } else {
         logger.debug("Current logged in user " + user.getID());
       }
-    } catch (CacheException e) {
-      throw new RuntimeException(e);
-    } catch (RepositoryException e) {
-      throw new RuntimeException(e);
+    } catch (CacheException | RepositoryException e) {
+      logger.debug("Unable to check user session.");
+      return UNAUTHENTICATED_MENU;
     }
-
 
     if (!snapService.enableCache()) {
       // Get a chance to disable browser cache if needed.

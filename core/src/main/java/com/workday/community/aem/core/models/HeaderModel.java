@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.models;
 
+import javax.jcr.RepositoryException;
+
 /**
  * The HeaderModel interface.
  */
@@ -11,7 +13,7 @@ public interface HeaderModel {
    * @return The menu object as a string for common nav menus in the global header
    *         of the page.
    */
-  String getUserHeaderMenus();
+  String getUserHeaderMenus() throws RepositoryException;
 
   /**
    *
