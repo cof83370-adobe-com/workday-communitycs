@@ -1,7 +1,9 @@
 package com.workday.community.aem.core.servlets;
 
 import com.workday.community.aem.core.services.UserGroupService;
+import com.workday.community.aem.core.services.UserService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -50,13 +52,19 @@ public class RequestAuthorizationServletTest {
     @Mock
     private UserGroupService userGroupService;
 
+    @Mock
+    private UserService userService;
+
+    @Mock
+    private User user;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void testDoHead_ValidUser() throws Exception {
+    void testDoHeadValidUserForPages() throws Exception {
 
         // Set up test parameters
         String uri = "/content/workday-community/en-us/example-uri";
@@ -79,9 +87,30 @@ public class RequestAuthorizationServletTest {
         verify(request).getParameter("uri");
         verify(response).setStatus(SC_OK);
     }
+    @Test
+    void testDoHeadValidUserForAssets() throws Exception {
+
+        // Set up test parameters
+        String uri = "/content/dam/workday-community/en-us/images/test1.jpeg";
+        Map<String, Object> serviceParams = new HashMap<>();
+        serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
+
+
+        // Mock behavior
+        when(request.getParameter("uri")).thenReturn(uri);
+        when(userService.getCurrentUser(request)).thenReturn(user);
+        when(user.getPath()).thenReturn("/workday-community/okta/user1");
+
+        // Call the method
+        servlet.doHead(request, response);
+
+        // Verify the interactions and assertions
+        verify(request).getParameter("uri");
+        verify(response).setStatus(SC_OK);
+    }
 
     @Test
-    void testDoHead_InvalidUser() throws Exception {
+    void testDoHead_InvalidUserForPages() throws Exception {
 
         // Set up test parameters
         String uri = "/content/workday-community/en-us/example-uri";
@@ -92,6 +121,26 @@ public class RequestAuthorizationServletTest {
         when(request.getParameter("uri")).thenReturn(uri);
         when(request.getResourceResolver()).thenReturn(resourceResolver);
         when(resourceResolver.adaptTo(Session.class)).thenReturn(null);
+
+        // Call the method
+        servlet.doHead(request, response);
+
+        // Verify the interactions and assertions
+        verify(request).getParameter("uri");
+        verify(response).setStatus(SC_FORBIDDEN);
+
+    }
+
+    @Test
+    void testDoHead_InvalidUserForAssets() throws Exception {
+
+        // Set up test parameters
+        String uri = "/content/dam/workday-community/en-us/images/test2.jpeg";
+        Map<String, Object> serviceParams = new HashMap<>();
+        serviceParams.put(ResourceResolverFactory.SUBSERVICE, "workday-community-administrative-service");
+
+        // Mock behavior
+        when(request.getParameter("uri")).thenReturn(uri);
 
         // Call the method
         servlet.doHead(request, response);
