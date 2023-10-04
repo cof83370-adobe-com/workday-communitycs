@@ -37,4 +37,7 @@ public interface WorkflowConstants {
 
     /** The process args. */
     String PROCESS_ARGS = "PROCESS_ARGS";
+
+    /** The default fallback group. */
+    String DEFAULT_FALL_BACK_GROUP = "administrators";
 }

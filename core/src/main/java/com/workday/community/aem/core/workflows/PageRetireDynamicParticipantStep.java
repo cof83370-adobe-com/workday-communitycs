@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.workflows;
 
 import static com.workday.community.aem.core.constants.WorkflowConstants.PROCESS_ARGS;
+import static com.workday.community.aem.core.constants.WorkflowConstants.DEFAULT_FALL_BACK_GROUP;
 
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.framework.Constants;
@@ -27,7 +28,7 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
     /** The Constant log. */
     private static final Logger logger = LoggerFactory.getLogger(PageRetireDynamicParticipantStep.class);
 
-    /** The run mode config service. */
+    private static final String ENV_VAR = "#ENV#";
     @Reference
     private RunModeConfigService runModeConfigService;
 
@@ -49,7 +50,7 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
         String env = runModeConfigService.getEnv();
         return (StringUtils.isNotBlank(env) && StringUtils.isNotBlank(commonName))
                 ? getDynamicParticipant(commonName, env, workflowTitle)
-                : "administrators";
+                : DEFAULT_FALL_BACK_GROUP;
 
     }
 
@@ -63,7 +64,7 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
      */
     public String getDynamicParticipant(final String commonNameOfApprover, final String environment,
             final String workflowTitle) {
-        final String dynamicParticipant=     commonNameOfApprover.trim().replace("#ENV#", environment.trim());
+        final String dynamicParticipant=     commonNameOfApprover.trim().replace(ENV_VAR, environment.trim());
         logger.debug("Dynamic participant for {} >>>>>> {}", workflowTitle, dynamicParticipant);
         return dynamicParticipant;
     }
