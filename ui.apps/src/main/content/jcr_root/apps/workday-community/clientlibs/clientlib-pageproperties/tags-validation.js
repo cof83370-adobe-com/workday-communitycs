@@ -20,10 +20,10 @@
             const invalidTags = {};
             $(tags).each(function (i, fieldName) {
                 // Get all hidden input field with selected values.
-                var tagElements = $('input[name="' + fieldName + '"]');
+                const tagElements = $('input[name="' + fieldName + '"]');
                 if (tagElements && tagElements.length > 0) {
                     tagElements.each(function(index, tagElement){
-                        if (tagElement.value && tagElement.value != '') {
+                        if (tagElement.value) {
                             tagCount++;
                             invalidTags[fieldName] = true;
                         }
@@ -33,7 +33,7 @@
 
             $(tags).each(function (i, fieldName) {
                 const tagElements = $('foundation-autocomplete[name="' + fieldName + '"]');
-                if (tagElements  && tagElements.length > 0) {
+                if (tagElements && tagElements.length > 0) {
                     tagElements.each(function(index, tagElement){
                         if (invalidTags[fieldName] && tagCount > MAX_ALLOWED_TAGS) {
                             // This logic is here to add fake error message on other tag fields.
@@ -48,7 +48,6 @@
                                 $(tagElement).checkValidity();
                             }
                         }
-
                     });
                 }
             });
