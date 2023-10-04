@@ -75,7 +75,7 @@ public class TerminateRetirementWorkflowProcessTest {
     private WorkItem workItem;
     
     /** The workflow array. */
-    private Workflow[] wfArray;
+    private WorkItem[] wiArray;
     
     /** The workflow session. */
     @Mock
@@ -97,7 +97,7 @@ public class TerminateRetirementWorkflowProcessTest {
         lenient().when(workflow.getWorkflowData()).thenReturn(workflowData);
         lenient().when(workflow.getWorkflowModel()).thenReturn(workflowModel);
         lenient().when(workflow.getState()).thenReturn("RUNNING");
-        wfArray = new Workflow[]{workflow};
+        wiArray = new WorkItem[]{workItem};
         lenient().when(workItem.getWorkflowData()).thenReturn(workflowData);
         lenient().when(workflowData.getPayload()).thenReturn("/content/terminate-retirement-process");
 
@@ -115,10 +115,10 @@ public class TerminateRetirementWorkflowProcessTest {
     @Test
     public void testExecuteMethod() throws Exception {
         lenient().when(workflowData.getPayload()).thenReturn("/content/terminate-retirement-process");
-        lenient().when(workflowSession.getAllWorkflows()).thenReturn(wfArray);
+        lenient().when(workflowSession.getActiveWorkItems()).thenReturn(wiArray);
         lenient().when(workflowModel.getId()).thenReturn("/var/workflow/models/workday-community/retirement_workflow_30_days");
         terminateRetWfProcess.execute(workItem, workflowSession, metaData);
 
-        verify(workflowSession,times(1)).terminateWorkflow(wfArray[0]);
+        verify(workflowSession,times(1)).terminateWorkflow(wiArray[0].getWorkflow());
     }
 }

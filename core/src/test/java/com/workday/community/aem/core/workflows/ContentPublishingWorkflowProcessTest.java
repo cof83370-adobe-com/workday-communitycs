@@ -153,7 +153,7 @@ public class ContentPublishingWorkflowProcessTest {
         AssetReferenceSearch ref = new AssetReferenceSearch(node,DamConstants.MOUNTPOINT_ASSETS,resolver);
         Property pt = mock(Property.class);
         PropertyIterator pIter = mock(PropertyIterator.class);
-        lenient().when(node.setProperty("hi", "hello")).thenReturn(pt);
+        lenient().when(node.setProperty("test", "testing")).thenReturn(pt);
         lenient().when(node.getProperties()).thenReturn(pIter);
         NodeIterator nIter = mock(NodeIterator.class);
         lenient().when(node.getNodes()).thenReturn(nIter);
@@ -177,7 +177,7 @@ public class ContentPublishingWorkflowProcessTest {
         AssetReferenceSearch ref = new AssetReferenceSearch(node,DamConstants.MOUNTPOINT_ASSETS,resolver);
         Property pt = mock(Property.class);
         PropertyIterator pIter = mock(PropertyIterator.class);
-        lenient().when(node.setProperty("hi", "hello")).thenReturn(pt);
+        lenient().when(node.setProperty("test", "testing")).thenReturn(pt);
         lenient().when(node.getProperties()).thenReturn(pIter);
         NodeIterator nIter = mock(NodeIterator.class);
         lenient().when(node.getNodes()).thenReturn(nIter);
