@@ -11,7 +11,6 @@ import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
-import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,7 +49,7 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
     /**
      * The UserService.
      */
-    @OSGiService
+    @Reference
     private transient UserService userService;
 
     @Override
@@ -119,15 +118,17 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
             User user = null;
             try {
                 user = userService.getCurrentUser(request);
-                if (null != user && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
+                if (null != user && StringUtils.isNotBlank(user.getPath()) && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
+                    logger.debug("Requested user has access on the page/asset: {}", uri);
                     response.setStatus(SC_OK);
                 } else {
+                    logger.debug("Requested user has access on the page/asset: {}", uri);
                     logger.debug("Requested page/Asset is not in correct format: {}", uri);
                     response.setStatus(SC_FORBIDDEN);
                     response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
                 }
             } catch (Exception e) {
-                logger.error("Getting the error While including the TOC Component {}", e.getMessage());
+                logger.error("Getting the error While checking the user user authentication {}", e.getStackTrace());
             }
         } else {
             logger.debug("Requested page/Asset is not in correct format: {}", uri);
