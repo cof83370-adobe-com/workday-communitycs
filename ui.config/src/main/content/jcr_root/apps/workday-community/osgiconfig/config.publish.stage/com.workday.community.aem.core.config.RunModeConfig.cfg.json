@@ -1,6 +1,6 @@
 {
     "instance":"publish",
-    "env":"stage",
+    "env":"$[env:envName]",
     "adobeAnalyticsUri":"$[env:adobeAnalyticsUri]",
     "publishInstanceDomain":"$[env:publishInstanceDomain]"
 }
