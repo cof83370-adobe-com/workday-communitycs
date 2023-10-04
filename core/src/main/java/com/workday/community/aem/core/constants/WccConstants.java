@@ -29,7 +29,10 @@ public class WccConstants {
     public static final String WORKDAY_PUBLIC_ASSETS_PATH = "/content/dam/workday-community/en-us/public";
 
     /** The Constant for Secured asset. */
-    public static final String WORKDAY_SECURED_ASSETS_PATH = "/content/dam/workday-community/en-us";
+    public static final String WORKDAY_SECURED_ASSETS_PATH = "/content/dam/workday-community/en-us/images";
+
+    /** The Constant for Secured asset. */
+    public static final String WORKDAY_SECURED_DOCUMENTS_PATH = "/content/dam/workday-community/en-us/documents";
 
     /** The Constant ROLES. */
     public static final String WORKDAY_ERROR_PAGES_FORMAT = "/errors/";
