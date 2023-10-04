@@ -25,10 +25,14 @@ import com.workday.community.aem.core.services.RunModeConfigService;
         Constants.SERVICE_VENDOR + "=Workday Community", "chooser.label=" + "Env Speicifc Dynamic Participant"
 })
 public class PageRetireDynamicParticipantStep implements ParticipantStepChooser {
-    /** The Constant log. */
-    private static final Logger logger = LoggerFactory.getLogger(PageRetireDynamicParticipantStep.class);
 
+    /** The Constant log. */
+    private static final Logger LOGGER = LoggerFactory.getLogger(PageRetireDynamicParticipantStep.class);
+
+    /** The Constant ENV_VAR. */
     private static final String ENV_VAR = "#ENV#";
+    
+    /** The run mode config service. */
     @Reference
     private RunModeConfigService runModeConfigService;
 
@@ -44,7 +48,7 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
     @Override
     public String getParticipant(WorkItem workItem, WorkflowSession workflowSession,
             MetaDataMap metaDataMap) throws WorkflowException {
-        logger.info("Entering PageRetireDynamicParticipantStep >>>>>> ");
+        LOGGER.info("Entering PageRetireDynamicParticipantStep >>>>>> ");
         String commonName = metaDataMap.get(PROCESS_ARGS, String.class);
         String workflowTitle = workItem.getWorkflow().getWorkflowModel().getTitle();
         String env = runModeConfigService.getEnv();
@@ -65,7 +69,7 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
     public String getDynamicParticipant(final String commonNameOfApprover, final String environment,
             final String workflowTitle) {
         final String dynamicParticipant=     commonNameOfApprover.trim().replace(ENV_VAR, environment.trim());
-        logger.debug("Dynamic participant for {} >>>>>> {}", workflowTitle, dynamicParticipant);
+        LOGGER.debug("Dynamic participant for {} >>>>>> {}", workflowTitle, dynamicParticipant);
         return dynamicParticipant;
     }
 }

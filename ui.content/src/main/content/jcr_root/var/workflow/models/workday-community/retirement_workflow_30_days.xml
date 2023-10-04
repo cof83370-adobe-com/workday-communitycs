@@ -9,7 +9,7 @@
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/workday-community/retirement_workflow_30_days/jcr:content"
         jcr:primaryType="nt:unstructured"
-        lastSynced="{Date}2023-10-03T21:16:14.106+05:30"/>
+        lastSynced="{Date}2023-10-04T22:07:31.013+05:30"/>
     <nodes jcr:primaryType="nt:unstructured">
         <node0
             jcr:primaryType="cq:WorkflowNode"
@@ -20,7 +20,7 @@
         <node1
             jcr:primaryType="cq:WorkflowNode"
             description="This step will maintain the process for the specified timeout settings or until the participant does not provide approval. In the event that the participant approves, their decision will take precedence over the timeout settings."
-            title="Approve Immediate or Hold for Scheduled Time"
+            title="Scheduled for Retirement"
             type="DYNAMIC_PARTICIPANT">
             <metaData
                 jcr:primaryType="nt:unstructured"
@@ -32,7 +32,7 @@
         <node2
             jcr:primaryType="cq:WorkflowNode"
             description="A workflow to add retirement badge to the page after 30 days from Initiation"
-            title="Scheduling Page Retire Process"
+            title="Process Retirement"
             type="PROCESS">
             <metaData
                 jcr:primaryType="nt:unstructured"
