@@ -13,11 +13,14 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.lenient;
 import static org.osgi.framework.Constants.SERVICE_RANKING;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.models.CourseDetailModel;
 import com.workday.community.aem.core.services.LmsService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.UserGroupService;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -46,6 +49,12 @@ public class CourseDetailModelImplTest {
     UserGroupService userGroupService;
 
     /**
+     * RunModeConfig service.
+     */
+    @Mock
+    RunModeConfigService runModeConfigService;
+
+    /**
      * Set up method for test run.
      */
     @BeforeEach
@@ -53,6 +62,7 @@ public class CourseDetailModelImplTest {
         context.addModelsForClasses(CourseDetailModelImpl.class);
         context.registerService(LmsService.class, lmsService, SERVICE_RANKING, Integer.MAX_VALUE);
         context.registerService(UserGroupService.class, userGroupService, SERVICE_RANKING, Integer.MAX_VALUE);
+        context.registerService(RunModeConfigService.class, runModeConfigService);
     }
 
     /**
@@ -65,11 +75,15 @@ public class CourseDetailModelImplTest {
         String detailResponse = "{\"Report_Entry\":[{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}]}";
         Gson gson = new Gson();
         JsonObject detailJson = gson.fromJson(detailResponse, JsonObject.class);
+        lenient().when(runModeConfigService.getInstance()).thenReturn("publish");
         lenient().when(lmsService.getCourseDetail("")).thenReturn(detailResponse);
         lenient().when(userGroupService.validateCurrentUser(any(), anyList())).thenReturn(true);
         CourseDetailModel courseDetailModel = context.request().adaptTo(CourseDetailModel.class);
         assertNotNull(courseDetailModel);
         assertEquals(detailJson, courseDetailModel.getCourseDetailData());
+
+        lenient().when(lmsService.getCourseDetail("")).thenReturn(StringUtils.EMPTY);
+        assertEquals(null, courseDetailModel.getCourseDetailData());
     }
 
 }
