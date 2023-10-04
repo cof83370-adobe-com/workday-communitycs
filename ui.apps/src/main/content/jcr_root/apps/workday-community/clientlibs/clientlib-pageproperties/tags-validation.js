@@ -14,28 +14,29 @@
     $(window).adaptTo('foundation-registry').register('foundation.validation.validator', {
         selector: '[data-foundation-validation=tag-limit]',
         validate: function(el) {
+            console.log('test');
             let tagCount = 0;
             // Subscribable tags.
             const tags = ['./eventFormat', './industryTags', './productTags', './usingWorkdayTags', './regionCountryTags', './programsToolsTags', './releaseTags', './releaseNoteTags'];
-            const invalidTags = [];
+            const invalidTags = {};
             $(tags).each(function (i, fieldName) {
                 // Get all hidden input field with selected values.
                 var tagElements = $('input[name="' + fieldName + '"]');
                 if (tagElements && tagElements.length > 0) {
                     tagElements.each(function(index, tagElement){
-                        if (tagElement.value && tagElement.value != "") {
+                        if (tagElement.value && tagElement.value != '') {
                             tagCount++;
-                            invalidTags.push(fieldName);
+                            invalidTags[fieldName] = true;
                         }
                     });
                 }
             });
 
             $(tags).each(function (i, fieldName) {
-                var tagElements = $('foundation-autocomplete[name="' + fieldName + '"]');
+                const tagElements = $('foundation-autocomplete[name="' + fieldName + '"]');
                 if (tagElements  && tagElements.length > 0) {
                     tagElements.each(function(index, tagElement){
-                        if (invalidTags.includes(fieldName) && tagCount > MAX_ALLOWED_TAGS) {
+                        if (invalidTags[fieldName] && tagCount > MAX_ALLOWED_TAGS) {
                             $(tagElement).setCustomValidity(ERROR_MESSAGE);
                             $(tagElement).updateErrorUI();
                             $(tagElement).setCustomValidity('');
@@ -43,7 +44,7 @@
                         else {
                             $(tagElement).setCustomValidity('');
                             $(tagElement).updateErrorUI();
-                            if ($(tagElement).validationMessage() != '') {
+                            if ($(tagElement).validationMessage()) {
                                 $(tagElement).checkValidity();
                             }
                         }
