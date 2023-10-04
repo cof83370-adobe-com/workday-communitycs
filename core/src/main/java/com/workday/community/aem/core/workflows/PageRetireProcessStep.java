@@ -1,9 +1,18 @@
 package com.workday.community.aem.core.workflows;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
-import static com.workday.community.aem.core.constants.GlobalConstants.RETIREMENT_STATUS_PROP;
-import static com.workday.community.aem.core.constants.GlobalConstants.RETIREMENT_STATUS_VAL;
+import static com.workday.community.aem.core.constants.GlobalConstants.ISO_8601_FORMAT;
+import static com.workday.community.aem.core.constants.WorkflowConstants.ACTUAL_RETIREMENT_DATE;
+import static com.workday.community.aem.core.constants.WorkflowConstants.IMMEDIATE_RETIREMENT;
+import static com.workday.community.aem.core.constants.WorkflowConstants.LAST_RETIREMENT_ACTION;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_PROP;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_VAL;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_WORKFLOW_30_DAYS_MODEL_NAME;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_WORKFLOW_IMMEDIATE_MODEL_NAME;
+import static com.workday.community.aem.core.constants.WorkflowConstants.SCHEDULED_RETIREMENT;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,12 +90,12 @@ public class PageRetireProcessStep implements WorkflowProcess {
                 Session jcrSession = workflowSession.adaptTo(Session.class);
                 if (null != jcrSession) {
                     removeBookNodes(path, jcrSession);
-                    addRetirementBadge(path);
+                    addRetirementBadge(path, workItem);
                     replicatePage(jcrSession, path);
                 }
             } catch (Exception e) {
                 logger.error("payload type - {} is not valid", payloadType);
-            } 
+            }
         }
     }
 
@@ -126,17 +135,46 @@ public class PageRetireProcessStep implements WorkflowProcess {
      * Adds the retirement badge.
      *
      * @param pagePath the page path
+     * @param workItem the work item
      */
-    public void addRetirementBadge(String pagePath) {
+    public void addRetirementBadge(String pagePath, WorkItem workItem) {
         try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
             Resource resource = Objects
                     .requireNonNull(rresolver.getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH));
-            ModifiableValueMap map = resource.adaptTo(ModifiableValueMap.class);
-            // Add retirement badge.
-            map.put(RETIREMENT_STATUS_PROP, RETIREMENT_STATUS_VAL);
+            String modelPath = workItem.getWorkflow().getWorkflowModel().getId();
+            int lastIndex = modelPath.lastIndexOf('/');
+            String workflowModelName = "";
+            if (lastIndex != -1)
+                workflowModelName = modelPath.substring(lastIndex + 1);
+            if (StringUtils.isNotBlank(workflowModelName))
+                addWorkflowModelSpecificProps(resource, workflowModelName);
             rresolver.commit();
         } catch (Exception exec) {
             logger.error("Exception occured while addRetirementBadge: {}", exec.getMessage());
+        }
+    }
+
+    /**
+     * Adds the workflow model specific props.
+     *
+     * @param resource  the resource
+     * @param modelName the model name
+     */
+    private void addWorkflowModelSpecificProps(Resource resource, final String modelName) {
+        // Add retirement badge.
+        ModifiableValueMap map = resource.adaptTo(ModifiableValueMap.class);
+        map.put(RETIREMENT_STATUS_PROP, RETIREMENT_STATUS_VAL);
+        map.put(ACTUAL_RETIREMENT_DATE, Objects.requireNonNull(getCurrentTimeInIso8601Format()));
+        switch (modelName) {
+            case RETIREMENT_WORKFLOW_IMMEDIATE_MODEL_NAME:
+                map.put(LAST_RETIREMENT_ACTION, IMMEDIATE_RETIREMENT);
+                break;
+            case RETIREMENT_WORKFLOW_30_DAYS_MODEL_NAME:
+                map.put(LAST_RETIREMENT_ACTION, SCHEDULED_RETIREMENT);
+                break;
+            default:
+                logger.debug("Workflow model name is: {}  which was not as expected:", modelName);
+                break;
         }
     }
 
@@ -151,8 +189,26 @@ public class PageRetireProcessStep implements WorkflowProcess {
             if (replicator != null) {
                 replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pagePath);
             }
-        } catch (Exception e) {
-            logger.info("Exception occured while replicatePage method: {}", e.getMessage());
+        } catch (Exception exec) {
+            logger.error("Exception occured while replicatePage method: {}", exec.getMessage());
         }
+    }
+
+    /**
+     * Gets the current time in iso 8601 format.
+     *
+     * @return the current time in iso 8601 format
+     */
+    public Calendar getCurrentTimeInIso8601Format() {
+        try {
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat sdf = new SimpleDateFormat(ISO_8601_FORMAT);
+            String iso8601String = sdf.format(calendar.getTime());
+            calendar.setTime(sdf.parse(iso8601String));
+            return calendar;
+        } catch (Exception exec) {
+            logger.error("Exception occured in getCurrentTimeInIso8601Format method: {}", exec.getMessage());
+        }
+        return null;
     }
 }

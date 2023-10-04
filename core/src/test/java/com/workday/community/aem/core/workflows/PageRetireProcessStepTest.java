@@ -1,7 +1,10 @@
 package com.workday.community.aem.core.workflows;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.RETIREMENT_STATUS_PROP;
-import static com.workday.community.aem.core.constants.GlobalConstants.RETIREMENT_STATUS_VAL;
+import static com.workday.community.aem.core.constants.WorkflowConstants.IMMEDIATE_RETIREMENT;
+import static com.workday.community.aem.core.constants.WorkflowConstants.LAST_RETIREMENT_ACTION;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_PROP;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_VAL;
+import static com.workday.community.aem.core.constants.WorkflowConstants.SCHEDULED_RETIREMENT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,6 +38,7 @@ import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
+import com.adobe.granite.workflow.model.WorkflowModel;
 import com.day.cq.replication.Replicator;
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.services.CacheManagerService;
@@ -122,7 +126,6 @@ public class PageRetireProcessStepTest {
         lenient().when(workflowSession.adaptTo(ResourceResolver.class)).thenReturn(resolver);
     }
 
-
     /**
      * My workflow with retired page tag true.
      *
@@ -170,14 +173,52 @@ public class PageRetireProcessStepTest {
      * @throws Exception the exception
      */
     @Test
-    void testAddRetirementBadge() throws Exception {
+    void testAddRetirementBadgeFor30DaysWorkflowModel() throws Exception {
         lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
         Resource mockedResource = mock(Resource.class);
         lenient().when(resolver.getResource(anyString())).thenReturn(mockedResource);
+
         ModifiableValueMap modiMap = mock(ModifiableValueMap.class);
         lenient().when(mockedResource.adaptTo(ModifiableValueMap.class)).thenReturn(modiMap);
-        retireProcessStep.addRetirementBadge("/content/page-no-retired-badge");
-        verify(modiMap, times(1)).put(RETIREMENT_STATUS_PROP, RETIREMENT_STATUS_VAL);
+
+        Workflow workflowMock = mock(Workflow.class);
+        lenient().when(workItem.getWorkflow()).thenReturn(workflowMock);
+
+        WorkflowModel workflowModelMock = mock(WorkflowModel.class);
+        lenient().when(workflowMock.getWorkflowModel()).thenReturn(workflowModelMock);
+
+        lenient().when(workflowModelMock.getId())
+                .thenReturn("/var/workflow/models/workday-community/retirement_workflow_30_days");
+
+        retireProcessStep.addRetirementBadge("/content/page-no-retired-badge", workItem);
+        verify(modiMap, times(1)).put(LAST_RETIREMENT_ACTION, SCHEDULED_RETIREMENT);
+    }
+
+    /**
+     * Test add retirement badge for immediate workflow model.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    void testAddRetirementBadgeForImmediateWorkflowModel() throws Exception {
+        lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
+        Resource mockedResource = mock(Resource.class);
+        lenient().when(resolver.getResource(anyString())).thenReturn(mockedResource);
+
+        ModifiableValueMap modiMap = mock(ModifiableValueMap.class);
+        lenient().when(mockedResource.adaptTo(ModifiableValueMap.class)).thenReturn(modiMap);
+
+        Workflow workflowMock = mock(Workflow.class);
+        lenient().when(workItem.getWorkflow()).thenReturn(workflowMock);
+
+        WorkflowModel workflowModelMock = mock(WorkflowModel.class);
+        lenient().when(workflowMock.getWorkflowModel()).thenReturn(workflowModelMock);
+
+        lenient().when(workflowModelMock.getId())
+                .thenReturn("/var/workflow/models/workday-community/retirement_workflow_immediate");
+
+        retireProcessStep.addRetirementBadge("/content/page-no-retired-badge", workItem);
+        verify(modiMap, times(1)).put(LAST_RETIREMENT_ACTION, IMMEDIATE_RETIREMENT);
     }
 
     /**
