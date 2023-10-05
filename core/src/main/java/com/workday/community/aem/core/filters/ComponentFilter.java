@@ -41,7 +41,6 @@ import org.slf4j.LoggerFactory;
     EngineConstants.SLING_FILTER_PATTERN + "=/content/workday-community/(.*)",
 
 })
-
 public class ComponentFilter implements Filter {
 
   /**
@@ -73,10 +72,7 @@ public class ComponentFilter implements Filter {
   private UserGroupService userGroupService;
 
   /**
-   * Inits the.
-   *
-   * @param filterConfig the filter config
-   * @throws ServletException the servlet exception
+   * {@inheritDoc}
    */
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
@@ -84,13 +80,7 @@ public class ComponentFilter implements Filter {
   }
 
   /**
-   * Do filter.
-   *
-   * @param servletRequest  the servlet request
-   * @param servletResponse the servlet response
-   * @param filterChain     the filter chain
-   * @throws IOException      Signals that an I/O exception has occurred.
-   * @throws ServletException the servlet exception
+   * {@inheritDoc}
    */
   @Override
   public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
@@ -109,26 +99,26 @@ public class ComponentFilter implements Filter {
           List<String> userGroupsList = userGroupService.getCurrentUserGroups(request);
           logger.debug("ComponentFilter::ACL Tags of user {}", userGroupsList);
           ValueMap properties = request.getResource().getValueMap();
-          List<String> componentACLTags = Arrays
-              .asList(properties.get("componentACLTags", new String[0]));
+          List<String> componentAclTags = Arrays
+              .asList(properties.get("componentAclTags", new String[0]));
           List<String> accessControlList = new ArrayList<>();
-          componentACLTags
+          componentAclTags
               .forEach(
                   tag -> accessControlList.add(tag.replace(ACCESS_CONTROL_TAG.concat(":"), "")));
           logger.debug("ComponentFilter::ACL Tags of component {}", accessControlList);
-          if (CollectionUtils.isNotEmpty(accessControlList) &&
-              CollectionUtils.isNotEmpty(userGroupsList)
+          if (CollectionUtils.isNotEmpty(accessControlList)
+              && CollectionUtils.isNotEmpty(userGroupsList)
               && CollectionUtils.intersection(accessControlList, userGroupsList).isEmpty()) {
             logger.debug("ComponentFilter::Permission not matching.. not rendeing component.");
             logger.debug(
-                "......................Execution time of filter method for resource {} {}...............",
+                "...............Execution time of filter method for resource {} {}...............",
                 resourceType, Duration.between(start, Instant.now()));
             return;
           } else if (CollectionUtils.isNotEmpty(accessControlList)
               && CollectionUtils.isEmpty(userGroupsList)) {
             logger.debug("ComponentFilter::User permissions are empty.. not rendeing component.");
             logger.debug(
-                "......................Execution time of filter method for resource {} {}...............",
+                "...............Execution time of filter method for resource {} {}...............",
                 resourceType, Duration.between(start, Instant.now()));
             return;
           }
@@ -138,7 +128,7 @@ public class ComponentFilter implements Filter {
         }
       }
       logger.debug(
-          "......................Component Filter Execution time for resource {} {}...............",
+          "...............Component Filter Execution time for resource {} {}...............",
           resourceType, Duration.between(start, Instant.now()));
     }
 
@@ -146,7 +136,7 @@ public class ComponentFilter implements Filter {
   }
 
   /**
-   * Destroy.
+   * {@inheritDoc}
    */
   @Override
   public void destroy() {

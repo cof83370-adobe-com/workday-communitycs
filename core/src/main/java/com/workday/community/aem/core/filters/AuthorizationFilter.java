@@ -34,11 +34,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Authorization servlet filter component that checks the authorization for incoming requests.
  */
-
 @Component(service = Filter.class,
     property = {
         Constants.SERVICE_DESCRIPTION + "= Workday Authorization filter incoming requests",
@@ -74,10 +72,10 @@ public class AuthorizationFilter implements Filter {
         slingRequest.getRequestPathInfo().getSelectorString());
     LOGGER.debug("AuthorizationFilter: Time before validating the user is {}.",
         new Date().getTime());
-    if (oktaService.isOktaIntegrationEnabled() &&
-        pagePath.contains(WORKDAY_ROOT_PAGE_PATH) &&
-        !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT) &&
-        !pagePath.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
+    if (oktaService.isOktaIntegrationEnabled()
+        && pagePath.contains(WORKDAY_ROOT_PAGE_PATH)
+        && !pagePath.contains(WORKDAY_ERROR_PAGES_FORMAT)
+        && !pagePath.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
       ResourceResolver requestResourceResolver = slingRequest.getResourceResolver();
       Session userSession = requestResourceResolver.adaptTo(Session.class);
       if (userSession == null) {
