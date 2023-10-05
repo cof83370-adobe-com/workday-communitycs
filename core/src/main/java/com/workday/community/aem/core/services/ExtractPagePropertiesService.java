@@ -40,8 +40,9 @@ public interface ExtractPagePropertiesService {
      * @param data The value map data
      * @param properties The extracted page properties
      * @param email Page author's email
+	 * @param path of the current page
 	 */
-    void processPermission(ValueMap data, HashMap<String, Object> properties, String email);
+    void processPermission(ValueMap data, HashMap<String, Object> properties, String email, String path);
 
     /**
 	 * Process string fields.
