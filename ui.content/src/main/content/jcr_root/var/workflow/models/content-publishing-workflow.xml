@@ -9,7 +9,7 @@
     <metaData
         cq:generatingPage="/conf/global/settings/workflow/models/content-publishing-workflow/jcr:content"
         jcr:primaryType="nt:unstructured"
-        lastSynced="{Date}2023-10-03T22:32:39.334+05:30"/>
+        lastSynced="{Date}2023-10-04T12:59:35.185-05:00"/>
     <nodes jcr:primaryType="nt:unstructured">
         <node0
             jcr:primaryType="cq:WorkflowNode"
@@ -71,7 +71,7 @@
                 PROCESS_AUTO_ADVANCE="false"
                 script="function check() {&#xd;&#xa;    return true;&#xd;&#xa;}"
                 TARGET_NODE_ID="node2"
-                TARGET_NODE_PATH="/conf/global/settings/workflow/models/content-publishing-workflow-sample/jcr:content/flow/dynamic_participant"/>
+                TARGET_NODE_PATH="/conf/global/settings/workflow/models/content-publishing-workflow/jcr:content/flow/dynamic_participant"/>
         </node6>
         <node7
             jcr:primaryType="cq:WorkflowNode"
