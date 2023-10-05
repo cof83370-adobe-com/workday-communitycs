@@ -35,6 +35,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Request authorization servlet.
+ */
 @Component(service = Servlet.class, property = {
     Constants.SERVICE_DESCRIPTION + "= Authenticate the page based on tags added on the page.",
     "sling.servlet.paths=" + "/bin/workday/community/authcheck"
@@ -64,9 +67,9 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
 
     String uri = request.getParameter("uri").replace(".html", "");
     logger.debug("Request URL {}", uri);
-    if (StringUtils.isNotBlank(uri) && uri.contains(WORKDAY_ROOT_PAGE_PATH) &&
-        !uri.contains(WORKDAY_ERROR_PAGES_FORMAT) &&
-        !uri.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
+    if (StringUtils.isNotBlank(uri) && uri.contains(WORKDAY_ROOT_PAGE_PATH)
+        && !uri.contains(WORKDAY_ERROR_PAGES_FORMAT)
+        && !uri.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
       logger.debug("RequestAuthenticationServlet:Time before validating the user  is {}.",
           new Date().getTime());
       ResourceResolver requestResourceResolver = request.getResourceResolver();
@@ -129,8 +132,8 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
       User user = null;
       try {
         user = userService.getCurrentUser(request);
-        if (null != user && StringUtils.isNotBlank(user.getPath()) &&
-            user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
+        if (null != user && StringUtils.isNotBlank(user.getPath())
+            && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
           logger.debug("Requested user has access on the page/asset: {}", uri);
           response.setStatus(SC_OK);
         } else {

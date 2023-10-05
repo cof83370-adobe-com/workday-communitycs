@@ -45,13 +45,9 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
   @Reference
   private transient BookOperationsService bookOperationsService;
 
+
   /**
-   * Do Post.
-   *
-   * @param req  the req
-   * @param resp the resp
-   * @throws ServletException the servlet exception
-   * @throws IOException      Signals that an I/O exception has occurred.
+   * {@inheritDoc}
    */
   @Override
   protected void doPost(final SlingHttpServletRequest req, final SlingHttpServletResponse resp)

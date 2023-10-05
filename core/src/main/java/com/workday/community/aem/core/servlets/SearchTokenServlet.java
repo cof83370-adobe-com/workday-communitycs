@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
     }
 )
 public class SearchTokenServlet extends SlingAllMethodsServlet {
+
   private static final Logger LOGGER = LoggerFactory.getLogger(SearchTokenServlet.class);
 
   private final transient Gson gson = new Gson();
@@ -58,6 +59,9 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     this.objectMapper = objectMapper;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void init() throws ServletException {
     super.init();
@@ -66,15 +70,10 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   }
 
   /**
-   * Implementation of the servlet GET method
-   *
-   * @param request  The HttpServletRequest object.
-   * @param response The HttpServletResponse object.
-   * @throws ServletException if the method call fails with ServletException.
+   * {@inheritDoc}
    */
   @Override
-  protected void doGet(SlingHttpServletRequest request,
-                       SlingHttpServletResponse response) {
+  protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
     LOGGER.debug("Get search token call, method {}", request.getMethod());
     ServletCallback servletCallback = (SlingHttpServletRequest req,
                                        SlingHttpServletResponse res, String body) -> {
@@ -93,4 +92,5 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
       LOGGER.error("get Token fails with error: {}", e.getMessage());
     }
   }
+
 }

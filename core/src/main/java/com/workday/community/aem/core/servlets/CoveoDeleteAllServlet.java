@@ -12,6 +12,9 @@ import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
+/**
+ * Coveo delete all servlet.
+ */
 @Component(service = {Servlet.class}, property = {
     "sling.servlet.paths=" + CoveoDeleteAllServlet.RESOURCE_PATH, "sling.servlet.methods=DELETE"})
 public class CoveoDeleteAllServlet extends SlingAllMethodsServlet {

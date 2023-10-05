@@ -42,7 +42,7 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
   /**
    * The log.
    */
-  private final static Logger LOGGER = LoggerFactory.getLogger(TemplatesListProviderServlet.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(TemplatesListProviderServlet.class);
 
   /**
    * The Constant serialVersionUID.
@@ -56,10 +56,7 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
   private transient CoveoIndexApiConfigService coveoIndexApiConfigService;
 
   /**
-   * Do get.
-   *
-   * @param request  the request
-   * @param response the response
+   * {@inheritDoc}
    */
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
@@ -96,4 +93,5 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
       LOGGER.error("Error in Get Drop Down Values {}", e.getMessage());
     }
   }
+
 }

@@ -46,7 +46,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
    */
   private static final Logger LOGGER = LoggerFactory.getLogger(LogoutServlet.class);
 
-  private transient final ObjectMapper objectMapper = new ObjectMapper();
+  private final transient ObjectMapper objectMapper = new ObjectMapper();
 
   /**
    * The OktaService.
