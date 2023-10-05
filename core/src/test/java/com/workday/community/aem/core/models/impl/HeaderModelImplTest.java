@@ -35,7 +35,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class HeaderModelImplTest.
  */
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class HeaderModelImplTest {
 
   /**
@@ -122,15 +122,18 @@ public class HeaderModelImplTest {
     digitalData.add("user", userProperties);
     digitalData.add("org", orgProperties);
     digitalData.add("page", pageProperties);
-    String digitalDataString = String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
+    String digitalDataString =
+        String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
 
     HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
     Template template = mock(Template.class);
-    lenient().when(template.getPath()).thenReturn("/conf/workday-community/settings/wcm/templates/faq");
+    lenient().when(template.getPath())
+        .thenReturn("/conf/workday-community/settings/wcm/templates/faq");
     lenient().when(currentPage.getTemplate()).thenReturn(template);
     lenient().when(currentPage.getTitle()).thenReturn(title);
-    lenient().when(snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER, title, title)).thenReturn(digitalDataString);
+    lenient().when(snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER, title, title))
+        .thenReturn(digitalDataString);
     lenient().when(runModeConfigService.getInstance()).thenReturn("publish");
     String data = headerModel.getDataLayerData();
     assertTrue(data.contains(contactNumber));

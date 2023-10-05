@@ -33,46 +33,51 @@ import org.slf4j.LoggerFactory;
  *
  * @author wangchun zhang
  */
-@Component(service = Servlet.class, property = {Constants.SERVICE_DESCRIPTION + "= Coveo Feed Fields Servlet",
-        "sling.servlet.paths=" + "/bin/feedFields", "sling.servlet.methods=" + HttpConstants.METHOD_GET
+@Component(service = Servlet.class, property = {
+    Constants.SERVICE_DESCRIPTION + "= Coveo Feed Fields Servlet",
+    "sling.servlet.paths=" + "/bin/feedFields", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
 public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
 
-    /** The Constant LOGGER. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(CoveoFeedFieldsServlet.class);
+  /**
+   * The Constant LOGGER.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(CoveoFeedFieldsServlet.class);
 
-    /**
-     * Do get.
-     *
-     * @param request  the request
-     * @param response the response
-     */
-    @Override
-    protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
-      LOGGER.debug("start to fetch feed fields");
-      ResourceResolver resourceResolver = request.getResourceResolver();
-      List<Resource> resourceList = new ArrayList<>();
-      CoveoTabListModel model = request.adaptTo(CoveoTabListModel.class);
-      JsonArray fields = null;
-      try {
-        fields = Objects.requireNonNull(model).getFields();
-      } catch (DamException e) {
-        LOGGER.error("Feed fields are not fetched from CoveoTabListModel, please fix it.");
-      }
-
-      if (fields != null && fields.size() > 0) {
-        fields.forEach( field -> {
-          ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
-          valueMap.put("value", ((JsonObject)field).get("name").getAsString());
-          valueMap.put("text",  ((JsonObject)field).get("desc").getAsString());
-          resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), NT_UNSTRUCTURED, valueMap));
-        });
-      } else {
-        LOGGER.debug("Feed fields are not fetched from CoveoTabListModel, please fix it.");
-      }
-
-      /*Create a DataSource that is used to populate the drop-down control*/
-      DataSource dataSource = new SimpleDataSource(resourceList.iterator());
-      request.setAttribute(DataSource.class.getName(), dataSource);
+  /**
+   * Do get.
+   *
+   * @param request  the request
+   * @param response the response
+   */
+  @Override
+  protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
+    LOGGER.debug("start to fetch feed fields");
+    ResourceResolver resourceResolver = request.getResourceResolver();
+    List<Resource> resourceList = new ArrayList<>();
+    CoveoTabListModel model = request.adaptTo(CoveoTabListModel.class);
+    JsonArray fields = null;
+    try {
+      fields = Objects.requireNonNull(model).getFields();
+    } catch (DamException e) {
+      LOGGER.error("Feed fields are not fetched from CoveoTabListModel, please fix it.");
     }
+
+    if (fields != null && fields.size() > 0) {
+      fields.forEach(field -> {
+        ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
+        valueMap.put("value", ((JsonObject) field).get("name").getAsString());
+        valueMap.put("text", ((JsonObject) field).get("desc").getAsString());
+        resourceList.add(
+            new ValueMapResource(resourceResolver, new ResourceMetadata(), NT_UNSTRUCTURED,
+                valueMap));
+      });
+    } else {
+      LOGGER.debug("Feed fields are not fetched from CoveoTabListModel, please fix it.");
+    }
+
+    /*Create a DataSource that is used to populate the drop-down control*/
+    DataSource dataSource = new SimpleDataSource(resourceList.iterator());
+    request.setAttribute(DataSource.class.getName(), dataSource);
+  }
 }

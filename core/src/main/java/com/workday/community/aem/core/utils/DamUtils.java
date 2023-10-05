@@ -22,44 +22,48 @@ import org.slf4j.LoggerFactory;
  */
 public class DamUtils {
 
-	/** The logger. */
-	private static final Logger LOGGER = LoggerFactory.getLogger(DamUtils.class);
+  /**
+   * The logger.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(DamUtils.class);
 
-	/**
-	 * Get file content as json object.
-	 *
-	 * @param resourceResolver The Resource Resolver object.
-	 * @param path The file path.
-	 * @return Json object of file content.
-	 * @throws DamException The DamException object.
-	 */
-	public static JsonObject readJsonFromDam(ResourceResolver resourceResolver, String path) throws DamException {
-		try {
-			Resource resource = resourceResolver.getResource(path);
-			Asset asset = requireNonNull(resource).adaptTo(Asset.class);
-			Resource original = requireNonNull(asset).getOriginal();
-			InputStream content = original.adaptTo(InputStream.class);
-			if (content == null) {
-				LOGGER.error("Empty json file.");
-				return new JsonObject();
-			}
+  /**
+   * Get file content as json object.
+   *
+   * @param resourceResolver The Resource Resolver object.
+   * @param path             The file path.
+   * @return Json object of file content.
+   * @throws DamException The DamException object.
+   */
+  public static JsonObject readJsonFromDam(ResourceResolver resourceResolver, String path)
+      throws DamException {
+    try {
+      Resource resource = resourceResolver.getResource(path);
+      Asset asset = requireNonNull(resource).adaptTo(Asset.class);
+      Resource original = requireNonNull(asset).getOriginal();
+      InputStream content = original.adaptTo(InputStream.class);
+      if (content == null) {
+        LOGGER.error("Empty json file.");
+        return new JsonObject();
+      }
 
-			StringBuilder sb = new StringBuilder();
-			String line;
-			BufferedReader br = new BufferedReader(new InputStreamReader(content, StandardCharsets.UTF_8));
+      StringBuilder sb = new StringBuilder();
+      String line;
+      BufferedReader br =
+          new BufferedReader(new InputStreamReader(content, StandardCharsets.UTF_8));
 
-			while ((line = br.readLine()) != null) {
-				sb.append(line);
-			}
-			content.close();
-			br.close();
+      while ((line = br.readLine()) != null) {
+        sb.append(line);
+      }
+      content.close();
+      br.close();
 
-			// Gson object for json handling.
-			Gson gson = new Gson();
-			return gson.fromJson(sb.toString(), JsonObject.class);
-		}  catch (IOException | SlingException e) {
-			throw new DamException();
-		}
-	}
+      // Gson object for json handling.
+      Gson gson = new Gson();
+      return gson.fromJson(sb.toString(), JsonObject.class);
+    } catch (IOException | SlingException e) {
+      throw new DamException();
+    }
+  }
 
 }

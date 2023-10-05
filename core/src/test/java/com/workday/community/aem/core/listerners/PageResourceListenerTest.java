@@ -37,132 +37,157 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class PageResourceListenerTest.
  */
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class PageResourceListenerTest {
-    /**
-     * The PageResourceListener.
-     */
-    @InjectMocks
-    PageResourceListener pageResourceListener;
+  /**
+   * The context.
+   */
+  private final AemContext context = new AemContext(ResourceResolverType.RESOURCERESOLVER_MOCK);
 
-    /**
-     * The resolver factory.
-     */
-    @Mock
-    private ResourceResolverFactory resolverFactory;
+  /**
+   * The PageResourceListener.
+   */
+  @InjectMocks
+  PageResourceListener pageResourceListener;
 
-    @Mock
-    CacheManagerService cacheManager;
+  @Mock
+  CacheManagerService cacheManager;
 
-    /**
-     * The resolver.
-     */
-    @Mock
-    private ResourceResolver resolver;
+  /**
+   * The query service.
+   */
+  @Mock
+  QueryService queryService;
 
-    /**
-     * The query service.
-     */
-    @Mock
-    QueryService queryService;
+  /**
+   * The Node
+   */
+  @Mock
+  Node node;
 
-    /** The user. */
-    private User user;
+  /**
+   * The resolver factory.
+   */
+  @Mock
+  private ResourceResolverFactory resolverFactory;
 
-    /** The service UserManager. */
-    private UserManager userManager;
+  /**
+   * The resolver.
+   */
+  @Mock
+  private ResourceResolver resolver;
 
-    /** The service PageManager. */
-    @Mock
-    private PageManager pageManager;
-    /** The ValueMap */
-    @Mock
-    private ValueMap valueMap;
+  /**
+   * The user.
+   */
+  private User user;
 
-    /** The Page */
-    @Mock
-    private Page page;
+  /**
+   * The service UserManager.
+   */
+  private UserManager userManager;
 
-    /** The Node */
-    @Mock Node node;
+  /**
+   * The service PageManager.
+   */
+  @Mock
+  private PageManager pageManager;
 
-    /** The Resource */
-    @Mock
-    private Resource resource;
+  /**
+   * The ValueMap
+   */
+  @Mock
+  private ValueMap valueMap;
 
-    /**
-     * The context.
-     */
-    private final AemContext context = new AemContext(ResourceResolverType.RESOURCERESOLVER_MOCK);
+  /**
+   * The Page
+   */
+  @Mock
+  private Page page;
 
-    /**
-     * Sets the up.
-     *
-     * @throws Exception the exception
-     */
-    @BeforeEach
-    public void setUp() throws Exception {
-        context.load().json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
-                "/content");
-        Page currentPage = context.currentResource("/content/book-faq-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        context.registerService(ResourceResolver.class, resolver);
-    }
+  /**
+   * The Resource
+   */
+  @Mock
+  private Resource resource;
 
-    /**
-     * Test Remove Book Nodes.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testRemoveBookNodes() throws Exception {
-        List<String> pathList = new ArrayList<>();
-        pathList.add("/content/book-1/jcr:content/root/container/container/book");
-        lenient().when(queryService.getBookNodesByPath(context.currentPage().getPath(), null)).thenReturn(pathList);
-        lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
-        pageResourceListener.removeBookNodes(context.currentPage().getPath());
-        verify(resolver).close();
-    }
+  /**
+   * Sets the up.
+   *
+   * @throws Exception the exception
+   */
+  @BeforeEach
+  public void setUp() throws Exception {
+    context.load()
+        .json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
+            "/content");
+    Page currentPage = context.currentResource("/content/book-faq-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(ResourceResolver.class, resolver);
+  }
 
-    /**
-     * Test Adding Author Property to Content Node.
-     *
-     * @throws Exception the exception
-     */
+  /**
+   * Test Remove Book Nodes.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testRemoveBookNodes() throws Exception {
+    List<String> pathList = new ArrayList<>();
+    pathList.add("/content/book-1/jcr:content/root/container/container/book");
+    lenient().when(queryService.getBookNodesByPath(context.currentPage().getPath(), null))
+        .thenReturn(pathList);
+    lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
+    pageResourceListener.removeBookNodes(context.currentPage().getPath());
+    verify(resolver).close();
+  }
 
-    @Test
-    void tesAddAuthorPropertyToContentNode() throws Exception {
-        Resource resource = mock(Resource.class);
-        Node expectedUserNode = mock(Node.class);
-        userManager = mock(UserManager.class);
-        Property prop1 =mock(Property.class);
-        user = mock(User.class);
-        lenient().when(resolver.getResource(context.currentPage().getContentResource().getPath())).thenReturn(resource);
-        lenient().when(resource.adaptTo(Node.class)).thenReturn(expectedUserNode);
-        lenient().when(expectedUserNode.getProperty(anyString())).thenReturn(prop1);
-        lenient().when(prop1.getString()).thenReturn("test user");
-        lenient().when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        lenient().when(userManager.getAuthorizable(anyString())).thenReturn(user);
+  /**
+   * Test Adding Author Property to Content Node.
+   *
+   * @throws Exception the exception
+   */
 
-        pageResourceListener.addAuthorPropertyToContentNode(context.currentPage().getContentResource().getPath(), resolver);
-    }
+  @Test
+  void tesAddAuthorPropertyToContentNode() throws Exception {
+    Resource resource = mock(Resource.class);
+    Node expectedUserNode = mock(Node.class);
+    userManager = mock(UserManager.class);
+    Property prop1 = mock(Property.class);
+    user = mock(User.class);
+    lenient().when(resolver.getResource(context.currentPage().getContentResource().getPath()))
+        .thenReturn(resource);
+    lenient().when(resource.adaptTo(Node.class)).thenReturn(expectedUserNode);
+    lenient().when(expectedUserNode.getProperty(anyString())).thenReturn(prop1);
+    lenient().when(prop1.getString()).thenReturn("test user");
+    lenient().when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    lenient().when(userManager.getAuthorizable(anyString())).thenReturn(user);
 
-    /**
-     *  Test Add Internal Workmates Tag.
-     *
-     * @throws Exception Exception object.
-     */
-    @Test
-    void testAddInternalWorkmatesTag() throws Exception {
-        List<String> updatedACLTags = new ArrayList<>(Arrays.asList("product:hcm", "access-control:internal_workmates"));
-        String [] aclTags = {"product:hcm"};
-        when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
-        when(pageManager.getContainingPage(context.currentPage().getContentResource().getPath())).thenReturn(page);
-        when(page.getProperties()).thenReturn(valueMap);
-        when(page.getContentResource()).thenReturn(resource);
-        when(resource.adaptTo(Node.class)).thenReturn(node);
-        when(valueMap.get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class)).thenReturn(aclTags);
-        pageResourceListener.addInternalWorkmatesTag(context.currentPage().getContentResource().getPath(), resolver);
-        verify(node, times(1)).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, updatedACLTags.toArray(String[]::new));
-    }
+    pageResourceListener.addAuthorPropertyToContentNode(
+        context.currentPage().getContentResource().getPath(), resolver);
+  }
+
+  /**
+   * Test Add Internal Workmates Tag.
+   *
+   * @throws Exception Exception object.
+   */
+  @Test
+  void testAddInternalWorkmatesTag() throws Exception {
+    List<String> updatedACLTags =
+        new ArrayList<>(Arrays.asList("product:hcm", "access-control:internal_workmates"));
+    String[] aclTags = {"product:hcm"};
+    when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+    when(pageManager.getContainingPage(
+        context.currentPage().getContentResource().getPath())).thenReturn(page);
+    when(page.getProperties()).thenReturn(valueMap);
+    when(page.getContentResource()).thenReturn(resource);
+    when(resource.adaptTo(Node.class)).thenReturn(node);
+    when(valueMap.get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class)).thenReturn(
+        aclTags);
+    pageResourceListener.addInternalWorkmatesTag(
+        context.currentPage().getContentResource().getPath(), resolver);
+    verify(node, times(1)).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL,
+        updatedACLTags.toArray(String[]::new));
+  }
 }

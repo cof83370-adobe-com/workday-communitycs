@@ -33,90 +33,113 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class TerminateRetirementWorkflowProcessTest {
 
-    /** The context. */
-    private final AemContext context = new AemContext(ResourceResolverType.JCR_MOCK);
+  /**
+   * The context.
+   */
+  private final AemContext context = new AemContext(ResourceResolverType.JCR_MOCK);
 
-    /** The session. */
-    private final Session session = context.resourceResolver().adaptTo(Session.class);
+  /**
+   * The session.
+   */
+  private final Session session = context.resourceResolver().adaptTo(Session.class);
 
-    @InjectMocks
-    TerminateRetirementWorkflowProcess terminateRetWfProcess;
+  /**
+   * The meta data.
+   */
+  private final MetaDataMap metaData = new SimpleMetaDataMap();
 
-    /** The workflow session. */
-    @Mock
-    private WorkflowSession workflowSession;
+  @InjectMocks
+  TerminateRetirementWorkflowProcess terminateRetWfProcess;
 
-    /** The workflow. */
-    @Mock
-    private Workflow workflow;
+  /**
+   * The cache manager.
+   */
+  @Mock
+  CacheManagerService cacheManager;
 
-    /** The workflow data. */
-    @Mock
-    private WorkflowData workflowData;
+  /**
+   * The workflow session.
+   */
+  @Mock
+  private WorkflowSession workflowSession;
 
-    /** The query service. */
-    @Mock
-    private QueryService queryService;
+  /**
+   * The workflow.
+   */
+  @Mock
+  private Workflow workflow;
 
-    /** The cache manager. */
-    @Mock
-    CacheManagerService cacheManager;
+  /**
+   * The workflow data.
+   */
+  @Mock
+  private WorkflowData workflowData;
 
-    /**
-     * The resolver.
-     */
-    @Mock
-    private ResourceResolver resolver;
+  /**
+   * The query service.
+   */
+  @Mock
+  private QueryService queryService;
 
-    /** The work item. */
-    @Mock
-    private WorkItem workItem;
+  /**
+   * The resolver.
+   */
+  @Mock
+  private ResourceResolver resolver;
 
-    /** The workflow array. */
-    private WorkItem[] wiArray;
+  /**
+   * The work item.
+   */
+  @Mock
+  private WorkItem workItem;
 
-    /** The workflow session. */
-    @Mock
-    private WorkflowModel workflowModel;
+  /**
+   * The workflow array.
+   */
+  private WorkItem[] wiArray;
 
-    /** The meta data. */
-    private final MetaDataMap metaData = new SimpleMetaDataMap();
+  /**
+   * The workflow session.
+   */
+  @Mock
+  private WorkflowModel workflowModel;
 
-    /**
-     * Setup.
-     *
-     * @throws LoginException the login exception
-     */
-    @BeforeEach
-    void setup() throws LoginException {
-        lenient().when(workflow.getMetaDataMap()).thenReturn(metaData);
-        lenient().when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-        lenient().when(workItem.getWorkflow()).thenReturn(workflow);
-        lenient().when(workflow.getWorkflowData()).thenReturn(workflowData);
-        lenient().when(workflow.getWorkflowModel()).thenReturn(workflowModel);
-        lenient().when(workflow.getState()).thenReturn("RUNNING");
-        wiArray = new WorkItem[]{workItem};
-        lenient().when(workItem.getWorkflowData()).thenReturn(workflowData);
-        lenient().when(workflowData.getPayload()).thenReturn("/content/terminate-retirement-process");
+  /**
+   * Setup.
+   *
+   * @throws LoginException the login exception
+   */
+  @BeforeEach
+  void setup() throws LoginException {
+    lenient().when(workflow.getMetaDataMap()).thenReturn(metaData);
+    lenient().when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
+    lenient().when(workItem.getWorkflow()).thenReturn(workflow);
+    lenient().when(workflow.getWorkflowData()).thenReturn(workflowData);
+    lenient().when(workflow.getWorkflowModel()).thenReturn(workflowModel);
+    lenient().when(workflow.getState()).thenReturn("RUNNING");
+    wiArray = new WorkItem[] {workItem};
+    lenient().when(workItem.getWorkflowData()).thenReturn(workflowData);
+    lenient().when(workflowData.getPayload()).thenReturn("/content/terminate-retirement-process");
 
-        context.registerAdapter(WorkflowSession.class, Session.class, session);
-        context.load().json(
-                "/com/workday/community/aem/core/models/impl/TerminateRetirementWorkflowProcessTestData.json",
-                "/content");
-    }
+    context.registerAdapter(WorkflowSession.class, Session.class, session);
+    context.load().json(
+        "/com/workday/community/aem/core/models/impl/TerminateRetirementWorkflowProcessTestData.json",
+        "/content");
+  }
 
-    /**
-     * Terminate Retirement Workflows.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    public void testExecuteMethod() throws Exception {
-        lenient().when(workflowData.getPayload()).thenReturn("/content/terminate-retirement-process");
-        lenient().when(workflowSession.getActiveWorkItems()).thenReturn(wiArray);
-        lenient().when(workflowModel.getId()).thenReturn("/var/workflow/models/workday-community/retirement_workflow_30_days");
-        terminateRetWfProcess.execute(workItem, workflowSession, metaData);
+  /**
+   * Terminate Retirement Workflows.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  public void testExecuteMethod() throws Exception {
+    lenient().when(workflowData.getPayload()).thenReturn("/content/terminate-retirement-process");
+    lenient().when(workflowSession.getActiveWorkItems()).thenReturn(wiArray);
+    lenient().when(workflowModel.getId())
+        .thenReturn("/var/workflow/models/workday-community/retirement_workflow_30_days");
+    terminateRetWfProcess.execute(workItem, workflowSession, metaData);
 
-        verify(workflowSession,times(1)).terminateWorkflow(wiArray[0].getWorkflow());
-    }
+    verify(workflowSession, times(1)).terminateWorkflow(wiArray[0].getWorkflow());
+  }
 }

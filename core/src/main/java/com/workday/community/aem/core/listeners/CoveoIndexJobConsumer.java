@@ -26,75 +26,85 @@ import org.slf4j.LoggerFactory;
 )
 public class CoveoIndexJobConsumer implements JobConsumer {
 
-    /** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  /**
+   * The logger.
+   */
+  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** The query service. */
-    @Reference
-    private CoveoPushApiService coveoPushApiService;
+  /**
+   * The query service.
+   */
+  @Reference
+  private CoveoPushApiService coveoPushApiService;
 
-    /** The extract page properties service. */
-    @Reference
-    private ExtractPagePropertiesService extractPagePropertiesService;
+  /**
+   * The extract page properties service.
+   */
+  @Reference
+  private ExtractPagePropertiesService extractPagePropertiesService;
 
-    /** The run mode config service. */
-    @Reference
-    private RunModeConfigService runModeConfigService;
+  /**
+   * The run mode config service.
+   */
+  @Reference
+  private RunModeConfigService runModeConfigService;
 
-    @Override
-    public JobResult process(Job job) {
-        ArrayList<String> paths = (ArrayList<String>) job.getProperty("paths");
-        String op = (String) job.getProperty("op");
-        if (paths != null) {
-            if (op.equals("delete")) {
-                return startCoveoDelete(paths);
-            }
+  @Override
+  public JobResult process(Job job) {
+    ArrayList<String> paths = (ArrayList<String>) job.getProperty("paths");
+    String op = (String) job.getProperty("op");
+    if (paths != null) {
+      if (op.equals("delete")) {
+        return startCoveoDelete(paths);
+      }
 
-            if(op.equals("index")) {
-                return startCoveoIndex(paths);
-            }
-        }
-
-        logger.error("Error occur in Coveo index job consumer, job does not have required properties: path and op.");
-        return JobResult.FAILED;
+      if (op.equals("index")) {
+        return startCoveoIndex(paths);
+      }
     }
 
-    /**
-	 * Start coveo deleteing.
-     *
-     * @param paths Page paths
-	 * @return Job result
-	 */
-    public JobResult startCoveoDelete(ArrayList<String> paths) {
-        boolean hasError = false;
-        for (String path : paths) {
-            String documentId = runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
-            Integer status = coveoPushApiService.callDeleteSingleItemUri(documentId);
-            if (status != HttpStatus.SC_ACCEPTED) {
-                hasError = true;
-                logger.error("Error occurred in coveo job consumer when deleting path: {}", path);
-            }
-        }
-        return hasError ? JobResult.FAILED : JobResult.OK;
-    }
+    logger.error(
+        "Error occur in Coveo index job consumer, job does not have required properties: path and op.");
+    return JobResult.FAILED;
+  }
 
-    /**
-	 * Start coveo indexing.
-     *
-     * @param paths Page paths
-	 * @return Job result
-	 */
-    public JobResult startCoveoIndex(ArrayList<String> paths) {
-        List<Object> payload = new ArrayList<>();
-        for (String path : paths) {
-            payload.add(extractPagePropertiesService.extractPageProperties(path));
-        }
-        Integer status = coveoPushApiService.indexItems(payload);
-        if (status != HttpStatus.SC_ACCEPTED) {
-            logger.error("Error occurred in coveo job consumer when indexing paths: {}", paths.toArray());
-            return JobResult.FAILED;
-        }
-        return JobResult.OK;
+  /**
+   * Start coveo deleteing.
+   *
+   * @param paths Page paths
+   * @return Job result
+   */
+  public JobResult startCoveoDelete(ArrayList<String> paths) {
+    boolean hasError = false;
+    for (String path : paths) {
+      String documentId =
+          runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
+      Integer status = coveoPushApiService.callDeleteSingleItemUri(documentId);
+      if (status != HttpStatus.SC_ACCEPTED) {
+        hasError = true;
+        logger.error("Error occurred in coveo job consumer when deleting path: {}", path);
+      }
     }
+    return hasError ? JobResult.FAILED : JobResult.OK;
+  }
+
+  /**
+   * Start coveo indexing.
+   *
+   * @param paths Page paths
+   * @return Job result
+   */
+  public JobResult startCoveoIndex(ArrayList<String> paths) {
+    List<Object> payload = new ArrayList<>();
+    for (String path : paths) {
+      payload.add(extractPagePropertiesService.extractPageProperties(path));
+    }
+    Integer status = coveoPushApiService.indexItems(payload);
+    if (status != HttpStatus.SC_ACCEPTED) {
+      logger.error("Error occurred in coveo job consumer when indexing paths: {}", paths.toArray());
+      return JobResult.FAILED;
+    }
+    return JobResult.OK;
+  }
 
 }

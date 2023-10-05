@@ -40,7 +40,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 class QueryServiceImplTest {
 
   @Mock
@@ -84,7 +84,8 @@ class QueryServiceImplTest {
       assertEquals(10, queryService.getNumOfTotalPublishedPages());
 
       // case 1
-      mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenThrow(new LoginException());
+      mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER)))
+          .thenThrow(new LoginException());
       assertEquals(10, queryService.getNumOfTotalPublishedPages());
     }
   }
@@ -110,7 +111,7 @@ class QueryServiceImplTest {
 
     when(query.getResult()).thenReturn(result);
 
-    List<String> paths = queryService.getPagesByTemplates(new String[] { "template/path" });
+    List<String> paths = queryService.getPagesByTemplates(new String[] {"template/path"});
     assertEquals("/test/path", paths.get(0));
     verify(session).logout();
 
@@ -119,7 +120,8 @@ class QueryServiceImplTest {
   @Test
   void testgetPagesByBookPath() throws RepositoryException, CacheException {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    String hitResultPath = "/content/workday-community/en-us/thomas-sandbox/test-download-component/jcr:content/root/container/container/book/firstlevel/item1";
+    String hitResultPath =
+        "/content/workday-community/en-us/thomas-sandbox/test-download-component/jcr:content/root/container/container/book/firstlevel/item1";
 
     when(cacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
     Session session = mock(Session.class);
@@ -139,8 +141,9 @@ class QueryServiceImplTest {
 
     when(query.getResult()).thenReturn(result);
 
-    List<String> paths = queryService.getBookNodesByPath("/content/workday-community/en-us/sprint-17/cmtyaem-341",
-        "/content/workday-community/en-us/products/human-capital-management/resources/next-level/faq");
+    List<String> paths =
+        queryService.getBookNodesByPath("/content/workday-community/en-us/sprint-17/cmtyaem-341",
+            "/content/workday-community/en-us/products/human-capital-management/resources/next-level/faq");
     assertEquals(hitResultPath, paths.get(0));
     verify(session).logout();
 

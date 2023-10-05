@@ -40,7 +40,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoEventsTypeServletTest {
   private final AemContext context = new AemContext();
 
@@ -50,14 +50,14 @@ public class CoveoEventsTypeServletTest {
   @Mock
   SnapService snapService;
 
+  @InjectMocks
+  CoveoEventsTypeServlet coveoEventTypeServlet;
+
   @Mock
   private ObjectMapper objectMapper;
 
   @Mock
   private UserService userService;
-
-  @InjectMocks
-  CoveoEventsTypeServlet coveoEventTypeServlet;
 
   @BeforeEach
   public void setup() {
@@ -75,9 +75,11 @@ public class CoveoEventsTypeServletTest {
     userObject.addProperty(EMAIL_NAME, "test@workday.com");
 
     try (MockedStatic<OurmUtils> ourmUtilsMock = mockStatic(OurmUtils.class);
-    MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class)){
-      ourmUtilsMock.when(()-> OurmUtils.getSalesForceId(any(), any())).thenReturn(DEFAULT_SFID_MASTER);
-      ourmUtilsMock.when(()-> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("test@workday.com");
+         MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class)) {
+      ourmUtilsMock.when(() -> OurmUtils.getSalesForceId(any(), any()))
+          .thenReturn(DEFAULT_SFID_MASTER);
+      ourmUtilsMock.when(() -> OurmUtils.getUserEmail(anyString(), any(), any()))
+          .thenReturn("test@workday.com");
 
       CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
       httpClientsMockedStatic.when(HttpClients::createDefault).thenReturn(httpClient);
@@ -103,15 +105,16 @@ public class CoveoEventsTypeServletTest {
       coveoEventTypeServlet.setObjectMapper(this.objectMapper);
       try {
         coveoEventTypeServlet.doGet(request, response);
-      } catch (ServletException | IOException exception){
+      } catch (ServletException | IOException exception) {
         // do nothing.
       }
 
       lenient().when(searchApiConfigService.isDevMode()).thenReturn(false);
-      lenient().when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn(CLOUD_CONFIG_NULL_VALUE);
+      lenient().when(searchApiConfigService.getSearchTokenAPIKey())
+          .thenReturn(CLOUD_CONFIG_NULL_VALUE);
       try {
         coveoEventTypeServlet.doGet(request, response);
-      } catch (ServletException | IOException exception){
+      } catch (ServletException | IOException exception) {
         // do nothing.
       }
 
@@ -119,7 +122,7 @@ public class CoveoEventsTypeServletTest {
       lenient().when(searchApiConfigService.getUserIdType()).thenReturn("test user type");
       try {
         coveoEventTypeServlet.doGet(request, response);
-      } catch (ServletException | IOException exception){
+      } catch (ServletException | IOException exception) {
         // do nothing.
       }
     }

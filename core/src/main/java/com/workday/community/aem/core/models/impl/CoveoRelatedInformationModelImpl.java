@@ -33,17 +33,28 @@ import org.slf4j.LoggerFactory;
 @Model(adaptables = {
     Resource.class,
     SlingHttpServletRequest.class
-}, adapters = { CoveoRelatedInformationModel.class }, resourceType = {
-    CoveoRelatedInformationModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+}, adapters = {CoveoRelatedInformationModel.class}, resourceType = {
+    CoveoRelatedInformationModelImpl.RESOURCE_TYPE}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformationModel {
+  protected static final String RESOURCE_TYPE =
+      "/content/workday-community/components/common/relatedinformation";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
-  private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";
-  protected static final String RESOURCE_TYPE = "/content/workday-community/components/common/relatedinformation";
+
+  private static final String COVEO_FILED_MAP_CONFIG =
+      "/content/dam/workday-community/resources/coveo-field-map.json";
+
+  /**
+   * The cache manager
+   */
+  @Reference
+  CacheManagerService cacheManager;
 
   @Self
   private SlingHttpServletRequest request;
 
   private JsonObject searchConfig;
+
   private List<String> facetFields;
 
   /**
@@ -51,10 +62,6 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
    */
   @OSGiService
   private SearchApiConfigService searchConfigService;
-
-  /** The cache manager */
-  @Reference
-  CacheManagerService cacheManager;
 
   /**
    * The snap service object.
@@ -90,7 +97,9 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     pagePath = pagePath.substring(0, pagePath.indexOf("."));
     Page page = pageManager.getPage(pagePath);
     if (page == null) {
-      LOGGER.error(String.format("getFacetFields in CoveoRelatedInformationModelImpl failed because current Page unresolved, path: %s", pagePath));
+      LOGGER.error(String.format(
+          "getFacetFields in CoveoRelatedInformationModelImpl failed because current Page unresolved, path: %s",
+          pagePath));
       return Collections.unmodifiableList(facetFields);
     }
 
@@ -99,12 +108,15 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       return Collections.unmodifiableList(facetFields);
     }
     try (ResourceResolver resolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
-      JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG).getAsJsonObject("tagIdToCoveoField");
+      JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG)
+          .getAsJsonObject("tagIdToCoveoField");
       for (Tag tag : tags) {
         JsonElement facetFieldObj = fieldMapConfig.get(tag.getNamespace().getName());
-        if (facetFieldObj == null || facetFieldObj.isJsonNull()) continue;
+        if (facetFieldObj == null || facetFieldObj.isJsonNull()) {
+          continue;
+        }
         String basePath = "";
-        while(tag.getParent() != null) {
+        while (tag.getParent() != null) {
           if (basePath.isEmpty()) {
             basePath = tag.getTitle();
           } else {
@@ -120,7 +132,8 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       }
     } catch (CacheException e) {
       throw new DamException(String.format(
-          "Exception in getFacetFields call in CoveoRelatedInformationModelImpl. error %s", e.getMessage()));
+          "Exception in getFacetFields call in CoveoRelatedInformationModelImpl. error %s",
+          e.getMessage()));
     }
 
     return Collections.unmodifiableList(facetFields);

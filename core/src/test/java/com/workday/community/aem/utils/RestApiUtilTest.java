@@ -31,7 +31,7 @@ public class RestApiUtilTest {
     HttpRequest request = mock(HttpRequest.class);
 
     try (MockedStatic<HttpClient> mockedClient = mockStatic(HttpClient.class);
-        MockedStatic<HttpRequest> mockedrequest = mockStatic(HttpRequest.class)) {
+         MockedStatic<HttpRequest> mockedrequest = mockStatic(HttpRequest.class)) {
       mockedClient.when(HttpClient::newBuilder).thenReturn(clientBuilder);
       mockedrequest.when(HttpRequest::newBuilder).thenReturn(requestBuilder);
       lenient().when(clientBuilder.connectTimeout(any())).thenReturn(clientBuilder);
@@ -65,7 +65,7 @@ public class RestApiUtilTest {
     HttpRequest request = mock(HttpRequest.class);
 
     try (MockedStatic<HttpClient> mockedClient = mockStatic(HttpClient.class);
-        MockedStatic<HttpRequest> mockedrequest = mockStatic(HttpRequest.class)) {
+         MockedStatic<HttpRequest> mockedrequest = mockStatic(HttpRequest.class)) {
       mockedClient.when(HttpClient::newBuilder).thenReturn(clientBuilder);
       mockedrequest.when(HttpRequest::newBuilder).thenReturn(requestBuilder);
       lenient().when(clientBuilder.connectTimeout(any())).thenReturn(clientBuilder);
@@ -98,7 +98,7 @@ public class RestApiUtilTest {
     HttpRequest request = mock(HttpRequest.class);
 
     try (MockedStatic<HttpClient> mockedClient = mockStatic(HttpClient.class);
-        MockedStatic<HttpRequest> mockedrequest = mockStatic(HttpRequest.class)) {
+         MockedStatic<HttpRequest> mockedrequest = mockStatic(HttpRequest.class)) {
       mockedClient.when(HttpClient::newBuilder).thenReturn(clientBuilder);
       mockedrequest.when(HttpRequest::newBuilder).thenReturn(requestBuilder);
       lenient().when(clientBuilder.connectTimeout(any())).thenReturn(clientBuilder);

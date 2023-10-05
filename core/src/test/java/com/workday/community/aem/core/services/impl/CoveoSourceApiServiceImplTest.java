@@ -24,74 +24,87 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class CoveoSourceApiServiceImplTest {
 
-    /** The service CoveoSourceApiServiceImpl. */
-    @Spy
-    private CoveoSourceApiServiceImpl service;
+  /**
+   * The service HttpsURLConnectionService.
+   */
+  @Mock
+  HttpsURLConnectionService restApiService;
 
-    /** The service HttpsURLConnectionService. */
-    @Mock
-    HttpsURLConnectionService restApiService;
+  /**
+   * The service CoveoIndexApiConfigService.
+   */
+  @Mock
+  CoveoIndexApiConfigService coveoIndexApiConfigService;
 
-    /** The service CoveoIndexApiConfigService. */
-    @Mock
-    CoveoIndexApiConfigService coveoIndexApiConfigService;
+  /**
+   * The service CoveoSourceApiServiceImpl.
+   */
+  @Spy
+  private CoveoSourceApiServiceImpl service;
 
-    /**
-     * Test generateSourceApiUri.
-     */
-    @Test
-    public void testGenerateSourceApiUri() {
-        service = this.registerService();
-        String expected = coveoIndexApiConfigService.getSourceApiUri() + coveoIndexApiConfigService.getOrganizationId() + "/sources/" + coveoIndexApiConfigService.getSourceId();
-        assertEquals(expected, service.generateSourceApiUri());
-    }
+  /**
+   * Test generateSourceApiUri.
+   */
+  @Test
+  public void testGenerateSourceApiUri() {
+    service = this.registerService();
+    String expected = coveoIndexApiConfigService.getSourceApiUri() +
+        coveoIndexApiConfigService.getOrganizationId() + "/sources/" +
+        coveoIndexApiConfigService.getSourceId();
+    assertEquals(expected, service.generateSourceApiUri());
+  }
 
-    /**
-     * Test generateHeader.
-     */
-    @Test
-    public void testGenerateHeader() {
-        service = this.registerService();
-        HashMap<String, String> header = service.generateHeader();
-        assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(HttpConstants.HEADER_ACCEPT));
-        assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(RestApiConstants.CONTENT_TYPE));
-        assertEquals(BEARER_TOKEN.token(coveoIndexApiConfigService.getCoveoApiKey()), header.get(RestApiConstants.AUTHORIZATION));
-    }
+  /**
+   * Test generateHeader.
+   */
+  @Test
+  public void testGenerateHeader() {
+    service = this.registerService();
+    HashMap<String, String> header = service.generateHeader();
+    assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(HttpConstants.HEADER_ACCEPT));
+    assertEquals(RestApiConstants.APPLICATION_SLASH_JSON,
+        header.get(RestApiConstants.CONTENT_TYPE));
+    assertEquals(BEARER_TOKEN.token(coveoIndexApiConfigService.getCoveoApiKey()),
+        header.get(RestApiConstants.AUTHORIZATION));
+  }
 
-    /**
-     * Test getTotalIndexedNumbe failed.
-     */
-    @Test void testGetTotalIndexedNumbeFailed() {
-        HashMap<String, Object> response = new HashMap<>();
-        response.put("statusCode", 403);
-        String responseString = "{\"error\": {\"message\": \"failed\"}}";
-        response.put("response", responseString);
-        doReturn(response).when(service).callApi();
-        Assertions.assertEquals(-1, service.getTotalIndexedNumber());
-    }
+  /**
+   * Test getTotalIndexedNumbe failed.
+   */
+  @Test
+  void testGetTotalIndexedNumbeFailed() {
+    HashMap<String, Object> response = new HashMap<>();
+    response.put("statusCode", 403);
+    String responseString = "{\"error\": {\"message\": \"failed\"}}";
+    response.put("response", responseString);
+    doReturn(response).when(service).callApi();
+    Assertions.assertEquals(-1, service.getTotalIndexedNumber());
+  }
 
-    /**
-     * Test getTotalIndexedNumbe pass.
-     */
-    @Test void testGetTotalIndexedNumber() {
-        HashMap<String, Object> response = new HashMap<>();
-        response.put("statusCode", HttpStatus.SC_OK);
-        String responseString = "{\"information\": {\"numberOfDocuments\": \"20\"}}";
-        response.put("response", responseString);
-        doReturn(response).when(service).callApi();
-        Assertions.assertEquals(20, service.getTotalIndexedNumber());
-    }
+  /**
+   * Test getTotalIndexedNumbe pass.
+   */
+  @Test
+  void testGetTotalIndexedNumber() {
+    HashMap<String, Object> response = new HashMap<>();
+    response.put("statusCode", HttpStatus.SC_OK);
+    String responseString = "{\"information\": {\"numberOfDocuments\": \"20\"}}";
+    response.put("response", responseString);
+    doReturn(response).when(service).callApi();
+    Assertions.assertEquals(20, service.getTotalIndexedNumber());
+  }
 
-    /**
-	 * Helper method to register service.
-	 *
-	 * @return The CoveoSourceApiServiceImpl instance
-	 */
-    private CoveoSourceApiServiceImpl registerService() {
-        AemContext context = new AemContext();
-        coveoIndexApiConfigService = context.registerInjectActivateService(new CoveoIndexApiConfigService());
-        restApiService = context.registerInjectActivateService(new HttpsURLConnectionService());
-        return context.registerInjectActivateService(new CoveoSourceApiServiceImpl());
-    }
+  /**
+   * Helper method to register service.
+   *
+   * @return The CoveoSourceApiServiceImpl instance
+   */
+  private CoveoSourceApiServiceImpl registerService() {
+    AemContext context = new AemContext();
+    coveoIndexApiConfigService =
+        context.registerInjectActivateService(new CoveoIndexApiConfigService());
+    restApiService = context.registerInjectActivateService(new HttpsURLConnectionService());
+    return context.registerInjectActivateService(new CoveoSourceApiServiceImpl());
+  }
 
 }

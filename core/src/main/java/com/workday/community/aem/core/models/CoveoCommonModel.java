@@ -13,6 +13,7 @@ public interface CoveoCommonModel {
 
   /**
    * Get extra custom criteria portion
+   *
    * @return Extra custom criteria as string.
    */
   String getExtraCriteria() throws DamException;

@@ -32,34 +32,42 @@ import org.slf4j.LoggerFactory;
  * The user logout servlet class to redirect the action to okta logout.
  */
 @Component(
-  service = Servlet.class,
-  property = {
-    org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Logout Servlet",
-    "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-    "sling.servlet.paths=" + "/bin/user/logout"
-  }
+    service = Servlet.class,
+    property = {
+        org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Logout Servlet",
+        "sling.servlet.methods=" + HttpConstants.METHOD_GET,
+        "sling.servlet.paths=" + "/bin/user/logout"
+    }
 )
 public class LogoutServlet extends SlingAllMethodsServlet {
 
-  /** The logger. */
+  /**
+   * The logger.
+   */
   private static final Logger LOGGER = LoggerFactory.getLogger(LogoutServlet.class);
 
-  /** The OktaService. */
+  private transient final ObjectMapper objectMapper = new ObjectMapper();
+
+  /**
+   * The OktaService.
+   */
   @Reference
   private transient OktaService oktaService;
 
   @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
   private transient volatile Authenticator authenticator;
 
-  /** The UserService. */
+  /**
+   * The UserService.
+   */
   @Reference
   private transient UserService userService;
 
-  /** The RunModeConfigService. */
+  /**
+   * The RunModeConfigService.
+   */
   @Reference
   private transient RunModeConfigService runModeConfigService;
-
-  private transient final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
   public void init() throws ServletException {
@@ -86,7 +94,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     String logoutUrl = String.format("%s/bin/user/logout", oktaDomain);
 
     // 1: Drop cookies
-    String[] deleteList = new String[] { LOGIN_COOKIE_NAME, COVEO_COOKIE_NAME };
+    String[] deleteList = new String[] {LOGIN_COOKIE_NAME, COVEO_COOKIE_NAME};
     int count = HttpUtils.dropCookies(request, response, "/", deleteList);
     if (count == 0) {
       LOGGER.debug("no custom cookie to be dropped");

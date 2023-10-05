@@ -26,96 +26,104 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class CoveoIndexJobConsumerTest {
 
-    /** The CoveoIndexJobConsumer. */
-    @InjectMocks
-    private CoveoIndexJobConsumer consumer;
+  /**
+   * The CoveoIndexJobConsumer.
+   */
+  @InjectMocks
+  private CoveoIndexJobConsumer consumer;
 
-    /** The CoveoPushApiService. */
-    @Mock
-    private CoveoPushApiService coveoPushService;
+  /**
+   * The CoveoPushApiService.
+   */
+  @Mock
+  private CoveoPushApiService coveoPushService;
 
-    /** The RunModeConfigService. */
-    @Mock
-    private RunModeConfigService runModeConfigService;
+  /**
+   * The RunModeConfigService.
+   */
+  @Mock
+  private RunModeConfigService runModeConfigService;
 
-    /** The ExtractPagePropertiesService. */
-    @Mock
-    private ExtractPagePropertiesService extractPagePropertiesService;
+  /**
+   * The ExtractPagePropertiesService.
+   */
+  @Mock
+  private ExtractPagePropertiesService extractPagePropertiesService;
 
-    /**
-     * Test start coveo delete successed.
-     */
-    @Test
-    void testStartCoveoDeleteSuccess() {
-        ArrayList<String> paths = new ArrayList<String>();
-        String path = "/sample/path";
-        paths.add(path);
-        String documentId = "https://www.test.link";
-        doReturn(documentId).when(runModeConfigService).getPublishInstanceDomain();
-        doReturn(HttpStatus.SC_ACCEPTED).when(coveoPushService).callDeleteSingleItemUri(any());
-        JobResult result = consumer.startCoveoDelete(paths);
-        assertEquals(JobResult.OK, result);
-    }
+  /**
+   * Test start coveo delete successed.
+   */
+  @Test
+  void testStartCoveoDeleteSuccess() {
+    ArrayList<String> paths = new ArrayList<String>();
+    String path = "/sample/path";
+    paths.add(path);
+    String documentId = "https://www.test.link";
+    doReturn(documentId).when(runModeConfigService).getPublishInstanceDomain();
+    doReturn(HttpStatus.SC_ACCEPTED).when(coveoPushService).callDeleteSingleItemUri(any());
+    JobResult result = consumer.startCoveoDelete(paths);
+    assertEquals(JobResult.OK, result);
+  }
 
-    /**
-     * Test start coveo delete failed.
-     */
-    @Test
-    void testStartCoveoDeleteFail() {
-        ArrayList<String> paths = new ArrayList<String>();
-        String path = "/sample/path";
-        paths.add(path);
-        String documentId = "https://www.test.link";
-        doReturn(documentId).when(runModeConfigService).getPublishInstanceDomain();
-        doReturn(HttpStatus.SC_REQUEST_TOO_LONG).when(coveoPushService).callDeleteSingleItemUri(any());
-        JobResult result = consumer.startCoveoDelete(paths);
-        assertEquals(JobResult.FAILED, result);
-    }
+  /**
+   * Test start coveo delete failed.
+   */
+  @Test
+  void testStartCoveoDeleteFail() {
+    ArrayList<String> paths = new ArrayList<String>();
+    String path = "/sample/path";
+    paths.add(path);
+    String documentId = "https://www.test.link";
+    doReturn(documentId).when(runModeConfigService).getPublishInstanceDomain();
+    doReturn(HttpStatus.SC_REQUEST_TOO_LONG).when(coveoPushService).callDeleteSingleItemUri(any());
+    JobResult result = consumer.startCoveoDelete(paths);
+    assertEquals(JobResult.FAILED, result);
+  }
 
 
-    /**
-     * Test start coveo index successed.
-     */
-    @Test
-    void testStartCoveoIndexSuccess() {
-        ArrayList<String> paths = new ArrayList<String>();
-        paths.add("/sample/path");
-        ArrayList<Object> payload = new ArrayList<Object>();
-        HashMap<String, Object> property = new HashMap<String, Object>();
-        property.put("pageTitle", "Sample page");
-        payload.add(property);
-        doReturn(property).when(extractPagePropertiesService).extractPageProperties(any());
-        doReturn(HttpStatus.SC_ACCEPTED).when(coveoPushService).indexItems(payload);
-        JobResult result = consumer.startCoveoIndex(paths);
-        assertEquals(JobResult.OK, result);
-    }
+  /**
+   * Test start coveo index successed.
+   */
+  @Test
+  void testStartCoveoIndexSuccess() {
+    ArrayList<String> paths = new ArrayList<String>();
+    paths.add("/sample/path");
+    ArrayList<Object> payload = new ArrayList<Object>();
+    HashMap<String, Object> property = new HashMap<String, Object>();
+    property.put("pageTitle", "Sample page");
+    payload.add(property);
+    doReturn(property).when(extractPagePropertiesService).extractPageProperties(any());
+    doReturn(HttpStatus.SC_ACCEPTED).when(coveoPushService).indexItems(payload);
+    JobResult result = consumer.startCoveoIndex(paths);
+    assertEquals(JobResult.OK, result);
+  }
 
-    /**
-     * Test start coveo index failed.
-     */
-    @Test
-    void testStartCoveoIndexFail() {
-        ArrayList<String> paths = new ArrayList<String>();
-        paths.add("/sample/path");
-        ArrayList<Object> payload = new ArrayList<Object>();
-        HashMap<String, Object> property = new HashMap<String, Object>();
-        property.put("pageTitle", "Sample page");
-        payload.add(property);
-        doReturn(property).when(extractPagePropertiesService).extractPageProperties(any());
-        doReturn(HttpStatus.SC_REQUEST_TOO_LONG).when(coveoPushService).indexItems(payload);
-        JobResult result = consumer.startCoveoIndex(paths);
-        assertEquals(JobResult.FAILED, result);
-    }
+  /**
+   * Test start coveo index failed.
+   */
+  @Test
+  void testStartCoveoIndexFail() {
+    ArrayList<String> paths = new ArrayList<String>();
+    paths.add("/sample/path");
+    ArrayList<Object> payload = new ArrayList<Object>();
+    HashMap<String, Object> property = new HashMap<String, Object>();
+    property.put("pageTitle", "Sample page");
+    payload.add(property);
+    doReturn(property).when(extractPagePropertiesService).extractPageProperties(any());
+    doReturn(HttpStatus.SC_REQUEST_TOO_LONG).when(coveoPushService).indexItems(payload);
+    JobResult result = consumer.startCoveoIndex(paths);
+    assertEquals(JobResult.FAILED, result);
+  }
 
-    /**
-     * Test process job failed.
-     */
-    @Test
-    void testProcessJobFail() throws Exception {
-        Job job = mock(Job.class);
-        doReturn(null).when(job).getProperty("op");
-        doReturn(null).when(job).getProperty("paths");
-        JobResult result = consumer.process(job);
-        assertEquals(JobResult.FAILED, result);
-    }
+  /**
+   * Test process job failed.
+   */
+  @Test
+  void testProcessJobFail() throws Exception {
+    Job job = mock(Job.class);
+    doReturn(null).when(job).getProperty("op");
+    doReturn(null).when(job).getProperty("paths");
+    JobResult result = consumer.process(job);
+    assertEquals(JobResult.FAILED, result);
+  }
 }

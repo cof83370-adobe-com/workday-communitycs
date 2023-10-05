@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package com.workday.community.aem.core.testcontext;
 
 import static com.adobe.cq.wcm.core.components.testing.mock.ContextPlugins.CORE_COMPONENTS;
@@ -28,42 +29,42 @@ import org.apache.sling.testing.mock.sling.ResourceResolverType;
  */
 public final class AppAemContext {
 
-    private AppAemContext() {
-        // static methods only
+  /**
+   * Custom set up rules required in all unit tests.
+   */
+  private static final AemContextCallback SETUP_CALLBACK = new AemContextCallback() {
+    @Override
+    public void execute(AemContext context) {
+      // custom project initialization code for every unit test
     }
+  };
 
-    /**
-     * @return {@link AemContext}
-     */
-    public static AemContext newAemContext() {
-        return newAemContextBuilder().build();
-    }
+  private AppAemContext() {
+    // static methods only
+  }
 
-    /**
-     * @return {@link AemContextBuilder}
-     */
-    public static AemContextBuilder newAemContextBuilder() {
-        return newAemContextBuilder(ResourceResolverType.RESOURCERESOLVER_MOCK);
-    }
+  /**
+   * @return {@link AemContext}
+   */
+  public static AemContext newAemContext() {
+    return newAemContextBuilder().build();
+  }
 
-    /**
-     * @return {@link AemContextBuilder}
-     */
-    public static AemContextBuilder newAemContextBuilder(ResourceResolverType resourceResolverType) {
-        return new AemContextBuilder()
-                .plugin(CACONFIG)
-                .plugin(CORE_COMPONENTS)
-                .afterSetUp(SETUP_CALLBACK);
-    }
+  /**
+   * @return {@link AemContextBuilder}
+   */
+  public static AemContextBuilder newAemContextBuilder() {
+    return newAemContextBuilder(ResourceResolverType.RESOURCERESOLVER_MOCK);
+  }
 
-    /**
-     * Custom set up rules required in all unit tests.
-     */
-    private static final AemContextCallback SETUP_CALLBACK = new AemContextCallback() {
-        @Override
-        public void execute(AemContext context) {
-            // custom project initialization code for every unit test
-        }
-    };
+  /**
+   * @return {@link AemContextBuilder}
+   */
+  public static AemContextBuilder newAemContextBuilder(ResourceResolverType resourceResolverType) {
+    return new AemContextBuilder()
+        .plugin(CACONFIG)
+        .plugin(CORE_COMPONENTS)
+        .afterSetUp(SETUP_CALLBACK);
+  }
 
 }

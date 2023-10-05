@@ -22,14 +22,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoFeedFieldsServletTest {
   private final AemContext context = new AemContext();
 
+  CoveoFeedFieldsServlet coveoFeedFieldsServlet;
+
   @Mock
   private transient ObjectMapper objectMapper;
-
-  CoveoFeedFieldsServlet coveoFeedFieldsServlet;
 
   @BeforeEach
   public void setup() {

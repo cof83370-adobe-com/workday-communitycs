@@ -36,135 +36,142 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @Component(service = Servlet.class, property = {
-        Constants.SERVICE_DESCRIPTION + "= Authenticate the page based on tags added on the page.",
-        "sling.servlet.paths=" + "/bin/workday/community/authcheck"
+    Constants.SERVICE_DESCRIPTION + "= Authenticate the page based on tags added on the page.",
+    "sling.servlet.paths=" + "/bin/workday/community/authcheck"
 })
 public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
 
-    /**
-     * The Constant logger.
-     */
-    private static final Logger logger = LoggerFactory.getLogger(RequestAuthorizationServlet.class);
+  /**
+   * The Constant logger.
+   */
+  private static final Logger logger = LoggerFactory.getLogger(RequestAuthorizationServlet.class);
 
-    @Reference
-    private transient UserGroupService userGroupService;
+  @Reference
+  private transient UserGroupService userGroupService;
 
-    @Reference
-    private transient ResourceResolverFactory resolverFactory;
+  @Reference
+  private transient ResourceResolverFactory resolverFactory;
 
-    /**
-     * The UserService.
-     */
-    @Reference
-    private transient UserService userService;
+  /**
+   * The UserService.
+   */
+  @Reference
+  private transient UserService userService;
 
-    @Override
-    public void doHead(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
+  @Override
+  public void doHead(SlingHttpServletRequest request, SlingHttpServletResponse response)
+      throws IOException {
 
-        String uri = request.getParameter("uri").replace(".html", "");
-        logger.debug("Request URL {}", uri);
-        if (StringUtils.isNotBlank(uri) && uri.contains(WORKDAY_ROOT_PAGE_PATH) &&
-                !uri.contains(WORKDAY_ERROR_PAGES_FORMAT) &&
-                !uri.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
-            logger.debug("RequestAuthenticationServlet:Time before validating the user  is {}.", new Date().getTime());
-            ResourceResolver requestResourceResolver = request.getResourceResolver();
-            Session userSession = requestResourceResolver.adaptTo(Session.class);
-            if (userSession == null) {
-                response.setStatus(SC_FORBIDDEN);
-                return;
-            }
-            Map<String, Object> serviceParams = new HashMap<>();
-            serviceParams.put(ResourceResolverFactory.SUBSERVICE, WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
-            ResourceResolver resourceResolver = null;
-            try {
-                logger.debug("Inside Try block of Auth_Checker_Servlet");
+    String uri = request.getParameter("uri").replace(".html", "");
+    logger.debug("Request URL {}", uri);
+    if (StringUtils.isNotBlank(uri) && uri.contains(WORKDAY_ROOT_PAGE_PATH) &&
+        !uri.contains(WORKDAY_ERROR_PAGES_FORMAT) &&
+        !uri.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
+      logger.debug("RequestAuthenticationServlet:Time before validating the user  is {}.",
+          new Date().getTime());
+      ResourceResolver requestResourceResolver = request.getResourceResolver();
+      Session userSession = requestResourceResolver.adaptTo(Session.class);
+      if (userSession == null) {
+        response.setStatus(SC_FORBIDDEN);
+        return;
+      }
+      Map<String, Object> serviceParams = new HashMap<>();
+      serviceParams.put(ResourceResolverFactory.SUBSERVICE,
+          WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+      ResourceResolver resourceResolver = null;
+      try {
+        logger.debug("Inside Try block of Auth_Checker_Servlet");
 
-                resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
-                boolean isValid = userGroupService.validateCurrentUser(request, uri);
-                if (!isValid) {
-                    logger.debug("user don't have access on the page {}", uri);
-                    response.setStatus(SC_FORBIDDEN);
-                    response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+        resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
+        boolean isValid = userGroupService.validateCurrentUser(request, uri);
+        if (!isValid) {
+          logger.debug("user don't have access on the page {}", uri);
+          response.setStatus(SC_FORBIDDEN);
+          response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
 
-                } else {
-                    logger.debug("user have access on the page {}", uri);
-                    response.setStatus(SC_OK);
-                }
-            } catch (LoginException e) {
-                logger.error("---> Exception occurred in RequestAuthenticationServlet: {}", e.getMessage());
-                response.setStatus(SC_INTERNAL_SERVER_ERROR);
-                response.sendRedirect(WccConstants.ERROR_PAGE_PATH);
-            } finally {
-                if (resourceResolver != null && resourceResolver.isLive()) {
-                    resourceResolver.close();
-                }
-            }
-            logger.debug("RequestAuthenticationServlet:Time after validating the user  is {}.", new Date().getTime());
         } else {
-            handlePublicPagesAndAssets(uri, request, response);
+          logger.debug("user have access on the page {}", uri);
+          response.setStatus(SC_OK);
         }
-
+      } catch (LoginException e) {
+        logger.error("---> Exception occurred in RequestAuthenticationServlet: {}", e.getMessage());
+        response.setStatus(SC_INTERNAL_SERVER_ERROR);
+        response.sendRedirect(WccConstants.ERROR_PAGE_PATH);
+      } finally {
+        if (resourceResolver != null && resourceResolver.isLive()) {
+          resourceResolver.close();
+        }
+      }
+      logger.debug("RequestAuthenticationServlet:Time after validating the user  is {}.",
+          new Date().getTime());
+    } else {
+      handlePublicPagesAndAssets(uri, request, response);
     }
 
-    /**
-     * Handles public pages and assets authentication.
-     *
-     * @param uri      URL of page/asset.
-     * @param request  The Request Object.
-     * @param response The Response Object.
-     * @throws IOException Throws IOException.
-     */
-    private void handlePublicPagesAndAssets(String uri, SlingHttpServletRequest request, SlingHttpServletResponse response)
-            throws IOException {
-        if(isPublicPath(uri)) {
-            logger.debug("Requested page/asset is public page: {}", uri);
-            response.setStatus(SC_OK);
-        } else if(isPrivatePath(uri)){
-            logger.debug("Requested Asset is Secured Asset: {}", uri);
-            User user = null;
-            try {
-                user = userService.getCurrentUser(request);
-                if (null != user && StringUtils.isNotBlank(user.getPath()) && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
-                    logger.debug("Requested user has access on the page/asset: {}", uri);
-                    response.setStatus(SC_OK);
-                } else {
-                    logger.debug("Requested user has access on the page/asset: {}", uri);
-                    logger.debug("Requested page/Asset is not in correct format: {}", uri);
-                    response.setStatus(SC_FORBIDDEN);
-                    response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
-                }
-            } catch (Exception e) {
-                logger.error("Getting the error While checking the user user authentication {}", e.getStackTrace());
-            }
+  }
+
+  /**
+   * Handles public pages and assets authentication.
+   *
+   * @param uri      URL of page/asset.
+   * @param request  The Request Object.
+   * @param response The Response Object.
+   * @throws IOException Throws IOException.
+   */
+  private void handlePublicPagesAndAssets(String uri, SlingHttpServletRequest request,
+                                          SlingHttpServletResponse response)
+      throws IOException {
+    if (isPublicPath(uri)) {
+      logger.debug("Requested page/asset is public page: {}", uri);
+      response.setStatus(SC_OK);
+    } else if (isPrivatePath(uri)) {
+      logger.debug("Requested Asset is Secured Asset: {}", uri);
+      User user = null;
+      try {
+        user = userService.getCurrentUser(request);
+        if (null != user && StringUtils.isNotBlank(user.getPath()) &&
+            user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
+          logger.debug("Requested user has access on the page/asset: {}", uri);
+          response.setStatus(SC_OK);
         } else {
-            logger.debug("Requested page/Asset is not in correct format: {}", uri);
-            response.setStatus(SC_FORBIDDEN);
-            response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+          logger.debug("Requested user has access on the page/asset: {}", uri);
+          logger.debug("Requested page/Asset is not in correct format: {}", uri);
+          response.setStatus(SC_FORBIDDEN);
+          response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
         }
+      } catch (Exception e) {
+        logger.error("Getting the error While checking the user user authentication {}",
+            e.getStackTrace());
+      }
+    } else {
+      logger.debug("Requested page/Asset is not in correct format: {}", uri);
+      response.setStatus(SC_FORBIDDEN);
+      response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
     }
+  }
 
-    /**
-     * Checks Whether the give url is Public path or not.
-     *
-     * @param uri URL of page/asset.
-     * @return boolean TRUE if it is public path. FALSE if it is not a public path.
-     */
-    private boolean isPublicPath(String uri) {
-        return StringUtils.isNotBlank(uri) && (uri.contains(WORKDAY_PUBLIC_PAGE_PATH)
-                || uri.contains(WORKDAY_PUBLIC_ASSETS_PATH)
-                || uri.contains(WORKDAY_ERROR_PAGES_FORMAT));
-    }
+  /**
+   * Checks Whether the give url is Public path or not.
+   *
+   * @param uri URL of page/asset.
+   * @return boolean TRUE if it is public path. FALSE if it is not a public path.
+   */
+  private boolean isPublicPath(String uri) {
+    return StringUtils.isNotBlank(uri) && (uri.contains(WORKDAY_PUBLIC_PAGE_PATH)
+        || uri.contains(WORKDAY_PUBLIC_ASSETS_PATH)
+        || uri.contains(WORKDAY_ERROR_PAGES_FORMAT));
+  }
 
 
-    /**
-     * Checks Whether the give url is Private path or not.
-     *
-     * @param uri URL of page/asset.
-     * @return boolean TRUE if it is private path. FALSE if it is not a private path.
-     */
-    private boolean isPrivatePath(String uri) {
-        return (StringUtils.isNotBlank(uri) && uri.contains(WORKDAY_SECURED_ASSETS_PATH)
-                || uri.contains(WORKDAY_SECURED_DOCUMENTS_PATH));
-    }
+  /**
+   * Checks Whether the give url is Private path or not.
+   *
+   * @param uri URL of page/asset.
+   * @return boolean TRUE if it is private path. FALSE if it is not a private path.
+   */
+  private boolean isPrivatePath(String uri) {
+    return (StringUtils.isNotBlank(uri) && uri.contains(WORKDAY_SECURED_ASSETS_PATH)
+        || uri.contains(WORKDAY_SECURED_DOCUMENTS_PATH));
+  }
 
 }

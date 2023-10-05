@@ -32,137 +32,140 @@ import org.slf4j.LoggerFactory;
 @Model(adaptables = Resource.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class CategoryFacetModel {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CategoryFacetModel.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(CategoryFacetModel.class);
 
-    /**
-     * Facet field.
-     */
-    String field = null;
+  /**
+   * Search config file path.
+   */
+  private static final String COVEO_FILED_MAP_CONFIG =
+      "/content/dam/workday-community/resources/coveo-field-map.json";
 
-    /**
-     * Facet sub category.
-     */
-    String subCategory = "";
+  /**
+   * Facet field.
+   */
+  String field = null;
 
-    /**
-     * Search config file path.
-     */
-    private static final String COVEO_FILED_MAP_CONFIG = "/content/dam/workday-community/resources/coveo-field-map.json";
+  /**
+   * Facet sub category.
+   */
+  String subCategory = "";
 
-    /**
-     * Search config json object
-     */
-    private JsonObject fieldMapConfig;
+  @Inject
+  ResourceResolverFactory resourceResolverFactory;
 
-    /**
-     * Category string value from jcr.
-     */
-    @ValueMapValue
-    private String category;
+  /**
+   * The cache manager
+   */
+  @Inject
+  CacheManagerService cacheManager;
 
-    @ValueMapValue
-    private String searchHelpText;
+  /**
+   * Search config json object
+   */
+  private JsonObject fieldMapConfig;
 
-    @Inject
-    ResourceResolverFactory resourceResolverFactory;
+  /**
+   * Category string value from jcr.
+   */
+  @ValueMapValue
+  private String category;
 
-    /** The cache manager */
-    @Inject
-    CacheManagerService cacheManager;
+  @ValueMapValue
+  private String searchHelpText;
 
-    /**
-     * Post construct to build facet object.
-     */
-    @PostConstruct
-    private void init() throws DamException {
+  /**
+   * Post construct to build facet object.
+   */
+  @PostConstruct
+  private void init() throws DamException {
 
-        try (ResourceResolver resolver = cacheManager == null?
-            ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER) :
-            cacheManager.getServiceResolver(READ_SERVICE_USER)) {
-            TagManager tagManager = resolver != null ?  resolver.adaptTo(TagManager.class): null;
-            Tag tag = tagManager != null ? tagManager.resolve(category): null;
-            if (tag == null) {
-                return;
-            }
-            String nameSpace = tag.getNamespace().getName();
-            if (searchHelpText == null) {
-                searchHelpText = tag.getNamespace().getTitle();
-            }
-            if (nameSpace == null) {
-                return;
-            }
+    try (ResourceResolver resolver = cacheManager == null ?
+        ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER) :
+        cacheManager.getServiceResolver(READ_SERVICE_USER)) {
+      TagManager tagManager = resolver != null ? resolver.adaptTo(TagManager.class) : null;
+      Tag tag = tagManager != null ? tagManager.resolve(category) : null;
+      if (tag == null) {
+        return;
+      }
+      String nameSpace = tag.getNamespace().getName();
+      if (searchHelpText == null) {
+        searchHelpText = tag.getNamespace().getTitle();
+      }
+      if (nameSpace == null) {
+        return;
+      }
 
-            JsonElement facetField = this.getFieldMapConfig(resolver).get(nameSpace);
-            if (facetField != null) {
-                field = facetField.getAsString();
-                StringBuilder sb = new StringBuilder();
-                List<String> tags = new ArrayList<>();
-                while (!tag.isNamespace()) {
-                    if (sb.length() > 0) {
-                        sb.insert(0, ", ");
-                    }
-                    sb.insert(0, "\"" + tag.getTitle() + "\"");
+      JsonElement facetField = this.getFieldMapConfig(resolver).get(nameSpace);
+      if (facetField != null) {
+        field = facetField.getAsString();
+        StringBuilder sb = new StringBuilder();
+        List<String> tags = new ArrayList<>();
+        while (!tag.isNamespace()) {
+          if (sb.length() > 0) {
+            sb.insert(0, ", ");
+          }
+          sb.insert(0, "\"" + tag.getTitle() + "\"");
 
-                    tags.add(tag.getTitle());
-                    tag = tag.getParent();
+          tags.add(tag.getTitle());
+          tag = tag.getParent();
 
-                }
-                if (!tags.isEmpty()) {
-                    Collections.reverse(tags);
-                    subCategory = "\"" + String.join("\", \"", tags) + "\"";
-                }
-            }
-        } catch (CacheException | LoginException e) {
-            LOGGER.error("Initialization of CategoryFacetModel fails");
         }
-    }
-
-    /**
-     * Returns selected category value.
-     *
-     * @return category.
-     */
-    public String getCategory() {
-        return category;
-    }
-
-    /**
-     * Returns filed mapping object
-     *
-     * @param resourceResolver Resource resolver object
-     * @return field map config.
-     */
-    private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) throws DamException {
-        if (fieldMapConfig == null) {
-            fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
+        if (!tags.isEmpty()) {
+          Collections.reverse(tags);
+          subCategory = "\"" + String.join("\", \"", tags) + "\"";
         }
-        return fieldMapConfig.getAsJsonObject("tagIdToCoveoField");
+      }
+    } catch (CacheException | LoginException e) {
+      LOGGER.error("Initialization of CategoryFacetModel fails");
     }
+  }
 
-    /**
-     * Returns coveo field name.
-     *
-     * @return field name
-     */
-    public String getField() {
-        return field;
-    }
+  /**
+   * Returns selected category value.
+   *
+   * @return category.
+   */
+  public String getCategory() {
+    return category;
+  }
 
-    /**
-     * Returns sub category.
-     *
-     * @return Sub category
-     */
-    public String getSubCategory() {
-        return subCategory;
+  /**
+   * Returns filed mapping object
+   *
+   * @param resourceResolver Resource resolver object
+   * @return field map config.
+   */
+  private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) throws DamException {
+    if (fieldMapConfig == null) {
+      fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
     }
+    return fieldMapConfig.getAsJsonObject("tagIdToCoveoField");
+  }
 
-    /**
-     * Returns search help text.
-     *
-     * @return search help text
-     */
-    public String getSearchHelpText() {
-        return searchHelpText;
-    }
+  /**
+   * Returns coveo field name.
+   *
+   * @return field name
+   */
+  public String getField() {
+    return field;
+  }
+
+  /**
+   * Returns sub category.
+   *
+   * @return Sub category
+   */
+  public String getSubCategory() {
+    return subCategory;
+  }
+
+  /**
+   * Returns search help text.
+   *
+   * @return search help text
+   */
+  public String getSearchHelpText() {
+    return searchHelpText;
+  }
 }

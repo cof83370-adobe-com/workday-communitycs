@@ -13,29 +13,35 @@ import org.slf4j.LoggerFactory;
  *
  * @author uttej.vardineni
  */
-@Model(adaptables = { SlingHttpServletRequest.class }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(adaptables = {
+    SlingHttpServletRequest.class}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class RootPathModel {
 
-    /** The logger. */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  /**
+   * The rootPath.
+   */
+  protected static final String rootPath =
+      String.format("%s%s", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH, "/");
 
-    /** The rootPath. */
-    protected static final String rootPath = String.format("%s%s", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH, "/");
+  /**
+   * The logger.
+   */
+  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /**
-     * Inits the RootPathModel.
-     */
-    @PostConstruct
-    protected void init() {
-        logger.debug("Initializing RootPathModel ....");
-    }
+  /**
+   * Inits the RootPathModel.
+   */
+  @PostConstruct
+  protected void init() {
+    logger.debug("Initializing RootPathModel ....");
+  }
 
-    /**
-     * Gets the root path
-     *
-     * @return the String
-     */
-    public String getRootPath() {
-        return rootPath;
-    }
+  /**
+   * Gets the root path
+   *
+   * @return the String
+   */
+  public String getRootPath() {
+    return rootPath;
+  }
 }

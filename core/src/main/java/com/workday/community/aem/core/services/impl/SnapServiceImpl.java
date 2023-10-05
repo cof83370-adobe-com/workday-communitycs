@@ -56,8 +56,15 @@ import org.slf4j.LoggerFactory;
 @Designate(ocd = SnapConfig.class)
 public class SnapServiceImpl implements SnapService {
 
-  /** The logger. */
+  /**
+   * The logger.
+   */
   private static final Logger logger = LoggerFactory.getLogger(SnapServiceImpl.class);
+
+  /**
+   * The gson service.
+   */
+  private final Gson gson = new Gson();
 
   /**
    * The Run-mode configuration service.
@@ -68,15 +75,16 @@ public class SnapServiceImpl implements SnapService {
   @Reference
   CacheManagerService serviceCacheMgr;
 
-  /** The resource resolver factory. */
+  /**
+   * The resource resolver factory.
+   */
   @Reference
   ResourceResolverFactory resResolverFactory;
 
-  /** The snap Config. */
+  /**
+   * The snap Config.
+   */
   private SnapConfig config;
-
-  /** The gson service. */
-  private final Gson gson = new Gson();
 
   @Activate
   @Modified
@@ -108,61 +116,62 @@ public class SnapServiceImpl implements SnapService {
     if (!enableCache()) {
       serviceCacheMgr.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
     }
-    String retValue = serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
-      String snapUrl = config.snapUrl(), navApi = config.navApi(),
-          apiToken = config.navApiToken(), apiKey = config.navApiKey();
+    String retValue =
+        serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
+          String snapUrl = config.snapUrl(), navApi = config.navApi(),
+              apiToken = config.navApiToken(), apiKey = config.navApiKey();
 
-      if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi) ||
-          StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
-        // No Snap configuration provided, just return the default one.
-        logger.debug(String.format("there is no value " +
-            "for one or multiple configuration parameter: " +
-            "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
-            snapUrl, navApi, apiToken, apiKey));
-        return gson.toJson(this.getDefaultHeaderMenu());
-      }
+          if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi) ||
+              StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
+            // No Snap configuration provided, just return the default one.
+            logger.debug(String.format("there is no value " +
+                    "for one or multiple configuration parameter: " +
+                    "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
+                snapUrl, navApi, apiToken, apiKey));
+            return gson.toJson(this.getDefaultHeaderMenu());
+          }
 
-      try {
-        String url = CommunityUtils.formUrl(snapUrl, navApi);
-        url = String.format(url, sfId);
+          try {
+            String url = CommunityUtils.formUrl(snapUrl, navApi);
+            url = String.format(url, sfId);
 
-        String traceId = "Community AEM-" + new Date().getTime();
-        // Execute the request.
-        APIResponse snapRes = RestApiUtil.doMenuGet(url, apiToken, apiKey, traceId);
-        JsonObject defaultMenu = this.getDefaultHeaderMenu();
-        if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody()) ||
-            snapRes.getResponseCode() != HttpStatus.SC_OK) {
-          logger.error("Sfdc menu fetch is empty, fallback to use local default");
-          return gson.toJson(defaultMenu);
-        }
+            String traceId = "Community AEM-" + new Date().getTime();
+            // Execute the request.
+            APIResponse snapRes = RestApiUtil.doMenuGet(url, apiToken, apiKey, traceId);
+            JsonObject defaultMenu = this.getDefaultHeaderMenu();
+            if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody()) ||
+                snapRes.getResponseCode() != HttpStatus.SC_OK) {
+              logger.error("Sfdc menu fetch is empty, fallback to use local default");
+              return gson.toJson(defaultMenu);
+            }
 
-        // Gson object for json handling.
-        JsonObject sfMenu = gson.fromJson(snapRes.getResponseBody(), JsonObject.class);
+            // Gson object for json handling.
+            JsonObject sfMenu = gson.fromJson(snapRes.getResponseBody(), JsonObject.class);
 
-        // If SFID returned from okta is not present in Salesforce, it returns response
-        // but with null values. Check for profile value, since that is always going to
-        // be present in case of correct salesforce response.
-        if (sfMenu.get("profile") == null || sfMenu.get("profile").isJsonNull()) {
-          logger.error("Nav profile is empty, fallback to use local default");
-          return gson.toJson(defaultMenu);
-        }
+            // If SFID returned from okta is not present in Salesforce, it returns response
+            // but with null values. Check for profile value, since that is always going to
+            // be present in case of correct salesforce response.
+            if (sfMenu.get("profile") == null || sfMenu.get("profile").isJsonNull()) {
+              logger.error("Nav profile is empty, fallback to use local default");
+              return gson.toJson(defaultMenu);
+            }
 
-        // Update the user profile data from contactInformation field to userInfo field.
-        updateProfileInfoWithNameAndAvatar(sfMenu, sfId);
-        // Need to make merge sfMenu with local cache with beta experience.
-        if (config.beta()) {
-          return this.getMergedHeaderMenu(sfMenu, defaultMenu);
-        }
+            // Update the user profile data from contactInformation field to userInfo field.
+            updateProfileInfoWithNameAndAvatar(sfMenu, sfId);
+            // Need to make merge sfMenu with local cache with beta experience.
+            if (config.beta()) {
+              return this.getMergedHeaderMenu(sfMenu, defaultMenu);
+            }
 
-        // Non-Beta will directly return the sf menu
-        return gson.toJson(sfMenu);
+            // Non-Beta will directly return the sf menu
+            return gson.toJson(sfMenu);
 
-      } catch (SnapException | JsonSyntaxException | JsonProcessingException e) {
-        logger.error("Error in getNavUserData method call :: {}", e.getMessage());
-      }
+          } catch (SnapException | JsonSyntaxException | JsonProcessingException e) {
+            logger.error("Error in getNavUserData method call :: {}", e.getMessage());
+          }
 
-      return gson.toJson(this.getDefaultHeaderMenu());
-    });
+          return gson.toJson(this.getDefaultHeaderMenu());
+        });
 
     if (OurmUtils.isMenuEmpty(gson, retValue)) {
       serviceCacheMgr.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
@@ -186,13 +195,15 @@ public class SnapServiceImpl implements SnapService {
         }
 
         url = String.format(url, sfId);
-        String jsonResponse = RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
+        String jsonResponse =
+            RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
         return gson.fromJson(jsonResponse, JsonObject.class);
       } catch (SnapException | JsonSyntaxException e) {
         logger.error("Error in getUserContext method :: {}", e.getMessage());
       }
 
-      logger.error("User context is not fetched from the snap context API call without error, please contact admin.");
+      logger.error(
+          "User context is not fetched from the snap context API call without error, please contact admin.");
       return new JsonObject();
     });
 
@@ -243,12 +254,15 @@ public class SnapServiceImpl implements SnapService {
     }
     JsonObject ret = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
-        ResourceResolver resourceResolver = this.serviceCacheMgr.getServiceResolver(READ_SERVICE_USER);
+        ResourceResolver resourceResolver =
+            this.serviceCacheMgr.getServiceResolver(READ_SERVICE_USER);
         // Reading the JSON File from DAM.
         return DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
       } catch (CacheException | DamException e) {
         logger
-            .error(String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s", e.getMessage()));
+            .error(
+                String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s",
+                    e.getMessage()));
         return new JsonObject();
       }
     });
@@ -265,24 +279,27 @@ public class SnapServiceImpl implements SnapService {
     if (!enableCache()) {
       serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
-    Object userProfile = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
-      try {
-        String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
-        if (StringUtils.isNotBlank(url)) {
-          url = String.format(url, sfId);
-          return RestApiUtil.doSnapGet(url, config.snapProfileApiToken(), config.snapProfileApiKey());
-        }
-      } catch (SnapException | JsonSyntaxException e) {
-        logger.error("Error in getUserProfile method :: {}", e.getMessage());
-      }
-      logger
-          .error(
-              "User profile data is not fetched from the snap profile API call without error, please contact admin.");
-      return null;
-    });
+    Object userProfile =
+        serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
+          try {
+            String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
+            if (StringUtils.isNotBlank(url)) {
+              url = String.format(url, sfId);
+              return RestApiUtil.doSnapGet(url, config.snapProfileApiToken(),
+                  config.snapProfileApiKey());
+            }
+          } catch (SnapException | JsonSyntaxException e) {
+            logger.error("Error in getUserProfile method :: {}", e.getMessage());
+          }
+          logger
+              .error(
+                  "User profile data is not fetched from the snap profile API call without error, please contact admin.");
+          return null;
+        });
 
-    if (userProfile == null)
+    if (userProfile == null) {
       return null;
+    }
     return (userProfile instanceof JsonObject) ? gson.toJson(userProfile) : userProfile.toString();
   }
 
@@ -356,15 +373,18 @@ public class SnapServiceImpl implements SnapService {
         JsonElement wrcOrgId = profileObject.get("wrcOrgId");
         accountID = (wrcOrgId == null || wrcOrgId.isJsonNull()) ? "" : wrcOrgId.getAsString();
         JsonElement organizationName = profileObject.get("organizationName");
-        accountName = (organizationName == null || organizationName.isJsonNull()) ? "" : organizationName.getAsString();
+        accountName = (organizationName == null || organizationName.isJsonNull()) ? "" :
+            organizationName.getAsString();
         JsonElement isWorkmateElement = profileObject.get("isWorkmate");
         boolean isWorkdayMate = isWorkmateElement != null && !isWorkmateElement.isJsonNull() &&
             isWorkmateElement.getAsBoolean();
         JsonElement typeElement = profileObject.get("type");
         accountType = isWorkdayMate ? "workday"
-            : (typeElement == null || typeElement.isJsonNull() ? "" : typeElement.getAsString().toLowerCase());
+            : (typeElement == null || typeElement.isJsonNull() ? "" :
+            typeElement.getAsString().toLowerCase());
         JsonElement timeZoneElement = profileObject.get("timeZone");
-        timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" : timeZoneElement.getAsString();
+        timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" :
+            timeZoneElement.getAsString();
       } catch (JsonSyntaxException e) {
         logger.error("Error in generateAdobeDigitalData method :: {}",
             e.getMessage());
@@ -406,10 +426,13 @@ public class SnapServiceImpl implements SnapService {
 
         JsonObject userInfoObject = new JsonObject();
         userInfoObject.addProperty(SnapConstants.LAST_NAME_KEY,
-            (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() : StringUtils.EMPTY);
+            (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() :
+                StringUtils.EMPTY);
         userInfoObject.addProperty(SnapConstants.FIRST_NAME_KEY,
-            (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() : StringUtils.EMPTY);
-        userInfoObject.addProperty(SnapConstants.VIEW_PROFILE_LABEL_KEY, SnapConstants.PROFILE_BUTTON_VALUE);
+            (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() :
+                StringUtils.EMPTY);
+        userInfoObject.addProperty(SnapConstants.VIEW_PROFILE_LABEL_KEY,
+            SnapConstants.PROFILE_BUTTON_VALUE);
         userInfoObject.addProperty(SnapConstants.HREF_KEY, config.userProfileUrl());
         profileObject.add(SnapConstants.USER_INFO_KEY, userInfoObject);
 
@@ -435,7 +458,8 @@ public class SnapServiceImpl implements SnapService {
       encodedPhoto = content.getBase64content();
       extension = content.getFileNameWithExtension();
       try {
-        String[] extensionSplit = StringUtils.isNotBlank(extension) ? extension.split("\\.") : new String[] {};
+        String[] extensionSplit =
+            StringUtils.isNotBlank(extension) ? extension.split("\\.") : new String[] {};
         if (extensionSplit.length > 0) {
           extension = extensionSplit[extensionSplit.length - 1];
         } else {

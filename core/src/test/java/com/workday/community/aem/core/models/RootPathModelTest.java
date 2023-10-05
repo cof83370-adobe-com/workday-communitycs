@@ -14,47 +14,57 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * The Class BookModelTest.
- *  @author uttej.vardineni
+ *
+ * @author uttej.vardineni
  */
 @ExtendWith(AemContextExtension.class)
 public class RootPathModelTest {
 
-    /** The context. */
-    private final AemContext context = new AemContext();
+  /**
+   * The context.
+   */
+  private final AemContext context = new AemContext();
 
-    /** The request. */
-    private MockSlingHttpServletRequest request;
+  /**
+   * The request.
+   */
+  private MockSlingHttpServletRequest request;
 
-    /** The rootpathinfo path model test. */
-    private RootPathModel rootPathModelTest;
+  /**
+   * The rootpathinfo path model test.
+   */
+  private RootPathModel rootPathModelTest;
 
-        /** The current page. */
-        private Page currentPage;
+  /**
+   * The current page.
+   */
+  private Page currentPage;
 
-    /**
-     * Sets the RootPathModelTest.
-     *
-     * @throws Exception the exception
-     */
-    @BeforeEach
-    public void setUp() throws Exception {
-        context.addModelsForPackage("com.workday.community.aem.core.models");
-        Map<String, Object> pageProperties = new HashMap<>();
-        pageProperties.put("jcr:title", "Accordion image test");
-        currentPage = context.create().page("/content/workday-community/en-us/thomas-sandbox/accordion-image-test",
-                "/conf/workday-community/settings/wcm/templates/faq", pageProperties);
-        request = context.request();
-        context.registerService(Page.class, currentPage);
-    }
+  /**
+   * Sets the RootPathModelTest.
+   *
+   * @throws Exception the exception
+   */
+  @BeforeEach
+  public void setUp() throws Exception {
+    context.addModelsForPackage("com.workday.community.aem.core.models");
+    Map<String, Object> pageProperties = new HashMap<>();
+    pageProperties.put("jcr:title", "Accordion image test");
+    currentPage = context.create()
+        .page("/content/workday-community/en-us/thomas-sandbox/accordion-image-test",
+            "/conf/workday-community/settings/wcm/templates/faq", pageProperties);
+    request = context.request();
+    context.registerService(Page.class, currentPage);
+  }
 
-    /**
-     * Test Root Path.
-     */
-    @Test
-    public void testRootPath() {
-        rootPathModelTest = request.adaptTo(RootPathModel.class);
-        String actualRootPath = rootPathModelTest.getRootPath();
-        String expectedRootPath = "/content/workday-community/";
-        assertEquals(expectedRootPath, actualRootPath);
-    }
+  /**
+   * Test Root Path.
+   */
+  @Test
+  public void testRootPath() {
+    rootPathModelTest = request.adaptTo(RootPathModel.class);
+    String actualRootPath = rootPathModelTest.getRootPath();
+    String expectedRootPath = "/content/workday-community/";
+    assertEquals(expectedRootPath, actualRootPath);
+  }
 }

@@ -59,235 +59,260 @@ import org.slf4j.LoggerFactory;
 @Component(service = UserGroupService.class, immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
 public class UserGroupServiceImpl implements UserGroupService {
 
-    /**
-     * The logger.
-     */
-    private static final Logger LOGGER = LoggerFactory.getLogger(UserGroupServiceImpl.class);
+  /**
+   * The logger.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserGroupServiceImpl.class);
 
-    /**
-     * The snap service.
-     */
-    @Reference
-    SnapService snapService;
+  /**
+   * The snap service.
+   */
+  @Reference
+  SnapService snapService;
 
-    /** The cache manager */
-    @Reference
-    CacheManagerService cacheManager;
+  /**
+   * The cache manager
+   */
+  @Reference
+  CacheManagerService cacheManager;
 
-    @Reference
-    UserService userService;
+  @Reference
+  UserService userService;
 
-    /**
-     * The customer_role_mapping.
-     */
-    private HashMap<String, String> customerRoleMapping = new HashMap<>();
+  /**
+   * The customer_role_mapping.
+   */
+  private HashMap<String, String> customerRoleMapping = new HashMap<>();
 
-    /**
-     * The customer_of_mapping.
-     */
-    private HashMap<String, String> customerOfMapping = new HashMap<>();
+  /**
+   * The customer_of_mapping.
+   */
+  private HashMap<String, String> customerOfMapping = new HashMap<>();
 
-    /**
-     * The wsp_mapping.
-     */
-    private HashMap<String, String> wspMapping = new HashMap<>();
+  /**
+   * The wsp_mapping.
+   */
+  private HashMap<String, String> wspMapping = new HashMap<>();
 
-    /**
-     * The partner_track_mapping.
-     */
-    private HashMap<String, String> partnerTrackMapping = new HashMap<>();
+  /**
+   * The partner_track_mapping.
+   */
+  private HashMap<String, String> partnerTrackMapping = new HashMap<>();
 
-    @Activate
-    @Modified
-    protected void activate(SnapConfig config) throws CacheException, DamException {
-        ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER);
+  @Activate
+  @Modified
+  protected void activate(SnapConfig config) throws CacheException, DamException {
+    ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER);
         /*
           SFDC Role mapping json object.
          */
-        JsonObject sfdcRoleMap = DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
-        if (sfdcRoleMap != null) {
-            Gson g = new Gson();
-            customerRoleMapping = g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
-            customerOfMapping = g.fromJson(sfdcRoleMap.get("customerOfMapping").toString(), HashMap.class);
-            wspMapping = g.fromJson(sfdcRoleMap.get("wspMapping").toString(), HashMap.class);
-            partnerTrackMapping = g.fromJson(sfdcRoleMap.get("partnerTrackMapping").toString(), HashMap.class);
+    JsonObject sfdcRoleMap =
+        DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
+    if (sfdcRoleMap != null) {
+      Gson g = new Gson();
+      customerRoleMapping =
+          g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
+      customerOfMapping =
+          g.fromJson(sfdcRoleMap.get("customerOfMapping").toString(), HashMap.class);
+      wspMapping = g.fromJson(sfdcRoleMap.get("wspMapping").toString(), HashMap.class);
+      partnerTrackMapping =
+          g.fromJson(sfdcRoleMap.get("partnerTrackMapping").toString(), HashMap.class);
+    }
+  }
+
+  @Override
+  public boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath) {
+    LOGGER.debug(" inside validateTheUser method. -->");
+
+    boolean isValid = false;
+    try {
+      LOGGER.debug("---> UserGroupServiceImpl: Before Access control tag List");
+      List<String> accessControlTagsList =
+          PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
+              ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
+      LOGGER.debug("---> UserGroupServiceImpl: After Access control tag List");
+      if (!accessControlTagsList.isEmpty()) {
+        LOGGER.debug("---> UserGroupServiceImpl:Access control tag List.. {}.",
+            accessControlTagsList);
+        if (accessControlTagsList.contains(AUTHENTICATED)) {
+          isValid = true;
+        } else {
+          List<String> groupsList = getCurrentUserGroups(request);
+          LOGGER.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
+          isValid = !Collections.disjoint(accessControlTagsList, groupsList);
         }
+      }
+    } catch (RepositoryException e) {
+      LOGGER.error("---> Exception in validateTheUser function: {}.", e.getMessage());
     }
+    return isValid;
+  }
 
-    @Override
-    public boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath) {
-        LOGGER.debug(" inside validateTheUser method. -->");
+  @Override
+  public boolean validateCurrentUser(SlingHttpServletRequest request,
+                                     List<String> accessControlTags) {
+    LOGGER.debug("Inside checkLoggedInUserHasAccessControlValues method. -->");
 
-        boolean isValid = false;
-        try {
-            LOGGER.debug("---> UserGroupServiceImpl: Before Access control tag List");
-            List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
-                    ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
-            LOGGER.debug("---> UserGroupServiceImpl: After Access control tag List");
-            if (!accessControlTagsList.isEmpty()) {
-                LOGGER.debug("---> UserGroupServiceImpl:Access control tag List.. {}.", accessControlTagsList);
-                if (accessControlTagsList.contains(AUTHENTICATED)) {
-                    isValid = true;
-                } else {
-                    List<String> groupsList = getCurrentUserGroups(request);
-                    LOGGER.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
-                    isValid = !Collections.disjoint(accessControlTagsList, groupsList);
-                }
-            }
-        } catch (RepositoryException e) {
-            LOGGER.error("---> Exception in validateTheUser function: {}.", e.getMessage());
+    if (accessControlTags == null || accessControlTags.isEmpty()) {
+      return false;
+    }
+    if (accessControlTags.contains(AUTHENTICATED)) {
+      return true;
+    }
+    List<String> groupsList = getCurrentUserGroups(request);
+
+    LOGGER.debug("---> UserGroupServiceImpl: validateCurrentUser - Groups List..{}.", groupsList);
+    return !Collections.disjoint(accessControlTags, groupsList);
+  }
+
+  /**
+   * Returns current logged-in users groups.
+   * Check whether user node has property roles. If it is there then return from
+   * node property. If not, call API for roles.
+   *
+   * @param request: current Sling request object.
+   * @return User group list.
+   */
+  @Override
+  public List<String> getCurrentUserGroups(SlingHttpServletRequest request) {
+    LOGGER.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
+    String userRole;
+    List<String> groupIds = new ArrayList<>();
+    try {
+      User user = userService.getCurrentUser(request);
+      String sfId = OurmUtils.getSalesForceId(request, userService);
+      if (sfId != null) {
+        LOGGER.debug("user  sfid {} ", sfId);
+        ResourceResolver jcrResolver =
+            cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+        Node userNode =
+            Objects.requireNonNull(jcrResolver.getResource(user.getPath())).adaptTo(Node.class);
+        if (Objects.requireNonNull(userNode).hasProperty(ROLES) &&
+            StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
+            userNode.getProperty(ROLES).getString().split(";").length > 0) {
+          LOGGER.debug(
+              "---> UserGroupServiceImpl: getCurrentUserGroups - User has Groups in CRX...{}",
+              userNode.getProperty(ROLES).getString());
+          userRole = userNode.getProperty(ROLES).getString();
+          groupIds = List.of(userRole.split(";"));
+        } else {
+          LOGGER.debug(
+              "---> UserGroupServiceImpl: getCurrentUserGroups - Trying to get Groups from SNAP");
+          Session jcrSession = jcrResolver.adaptTo(Session.class);
+          groupIds = getUserGroupsFromSnap(sfId);
+          userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
+          Objects.requireNonNull(jcrSession).save();
+          if (null != groupIds && !groupIds.isEmpty()) {
+            LOGGER.debug(
+                "---> UserGroupServiceImpl: getCurrentUserGroups - Groups from SNAP ... {} ",
+                StringUtils.join(groupIds, ";"));
+          }
         }
-        return isValid;
+        LOGGER.info("Salesforce roles {}", groupIds);
+      }
+
+    } catch (RepositoryException | CacheException e) {
+      LOGGER.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
     }
+    return groupIds;
+  }
 
-    @Override
-    public boolean validateCurrentUser(SlingHttpServletRequest request, List<String> accessControlTags) {
-        LOGGER.debug("Inside checkLoggedInUserHasAccessControlValues method. -->");
+  /**
+   * This is used in testing.
+   *
+   * @param cacheManager the pass-in Cache manager object.
+   */
+  protected void setCacheManager(CacheManagerService cacheManager) {
+    this.cacheManager = cacheManager;
+  }
 
-        if (accessControlTags == null || accessControlTags.isEmpty()) return false;
-        if (accessControlTags.contains(AUTHENTICATED)) return true;
-        List<String> groupsList = getCurrentUserGroups(request);
-
-        LOGGER.debug("---> UserGroupServiceImpl: validateCurrentUser - Groups List..{}.", groupsList);
-        return !Collections.disjoint(accessControlTags, groupsList);
+  /**
+   * Get user groups from API.
+   *
+   * @param sfId User's Salesforce id.
+   * @return List of user groups from snap.
+   */
+  protected List<String> getUserGroupsFromSnap(String sfId) {
+    List<String> groups = new ArrayList<>();
+    if (StringUtils.isBlank(sfId)) {
+      return groups;
     }
+    String cacheKey = String.format("sf-user-groups-%s", sfId);
+    List<String> ret = cacheManager.get(CacheBucketName.SF_USER_GROUP.name(), cacheKey, (key) -> {
+      JsonObject context = snapService.getUserContext(sfId);
 
-    /**
-     * Returns current logged-in users groups.
-     * Check whether user node has property roles. If it is there then return from
-     * node property. If not, call API for roles.
-     *
-     * @param request: current Sling request object.
-     * @return User group list.
-     */
-    @Override
-    public List<String> getCurrentUserGroups(SlingHttpServletRequest request) {
-        LOGGER.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
-        String userRole;
-        List<String> groupIds = new ArrayList<>();
-        try {
-            User user = userService.getCurrentUser(request);
-            String sfId = OurmUtils.getSalesForceId(request, userService);
-            if (sfId != null) {
-                LOGGER.debug("user  sfid {} ", sfId);
-                ResourceResolver jcrResolver = cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
-                Node userNode = Objects.requireNonNull(jcrResolver.getResource(user.getPath())).adaptTo(Node.class);
-                if (Objects.requireNonNull(userNode).hasProperty(ROLES) &&
-                    StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
-                    userNode.getProperty(ROLES).getString().split(";").length > 0) {
-                    LOGGER.debug("---> UserGroupServiceImpl: getCurrentUserGroups - User has Groups in CRX...{}",
-                            userNode.getProperty(ROLES).getString());
-                    userRole = userNode.getProperty(ROLES).getString();
-                    groupIds = List.of(userRole.split(";"));
-                } else {
-                    LOGGER.debug("---> UserGroupServiceImpl: getCurrentUserGroups - Trying to get Groups from SNAP");
-                    Session jcrSession = jcrResolver.adaptTo(Session.class);
-                    groupIds = getUserGroupsFromSnap(sfId);
-                    userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
-                    Objects.requireNonNull(jcrSession).save();
-                    if(null != groupIds && !groupIds.isEmpty()) {
-                         LOGGER.debug("---> UserGroupServiceImpl: getCurrentUserGroups - Groups from SNAP ... {} ",
-                                StringUtils.join(groupIds, ";"));
-                    }
-                }
-                LOGGER.info("Salesforce roles {}", groupIds);
+      if (null == context || context.isJsonNull() || context.size() == 0) {
+        return groups;
+      }
+
+      JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
+
+      JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
+      boolean hasCommunityAccess = false;
+      if (!propertyAccess.isJsonNull() &&
+          propertyAccess.getAsString().contains(PROPERTY_ACCESS_COMMUNITY)) {
+        groups.add(AUTHENTICATED);
+        hasCommunityAccess = true;
+      }
+      addGroups(groups, contactInformation, WSP_KEY, wspMapping);
+
+      JsonObject contextInfo = context.get(USER_CONTEXT_INFO_KEY).getAsJsonObject();
+      addGroups(groups, contextInfo, USER_CONTACT_ROLE_KEY, customerRoleMapping);
+
+      JsonElement type = contextInfo.get(USER_TYPE_KEY);
+      JsonElement customerOf = contactInformation.get(CUSTOMER_OF_KEY);
+      JsonElement partnerTrack = contactInformation.get(PARTNER_TRACK_KEY);
+      JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
+      boolean isWorkmateUser = false;
+      if (!isWorkmate.isJsonNull()) {
+        isWorkmateUser = isWorkmate.getAsBoolean();
+      }
+      if (!type.isJsonNull()) {
+        String typeString = type.getAsString();
+        if (typeString.equals("customer") && !isWorkmateUser && !customerOf.isJsonNull()) {
+          String customerOfString = customerOf.getAsString();
+          for (Map.Entry<String, String> entry : customerOfMapping.entrySet()) {
+            if (customerOfString.contains(entry.getKey())) {
+              groups.add(entry.getValue());
             }
-
-        } catch ( RepositoryException | CacheException e) {
-            LOGGER.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
+          }
         }
-        return groupIds;
-    }
-
-    /**
-     * This is used in testing.
-     * @param cacheManager the pass-in Cache manager object.
-     */
-    protected void setCacheManager(CacheManagerService cacheManager) {
-        this.cacheManager = cacheManager;
-    }
-
-    /**
-     * Get user groups from API.
-     *
-     * @param sfId User's Salesforce id.
-     * @return List of user groups from snap.
-     */
-    protected List<String> getUserGroupsFromSnap(String sfId) {
-        List<String> groups = new ArrayList<>();
-        if (StringUtils.isBlank(sfId)) return groups;
-        String cacheKey = String.format("sf-user-groups-%s", sfId);
-        List<String> ret = cacheManager.get(CacheBucketName.SF_USER_GROUP.name(), cacheKey, (key) -> {
-            JsonObject context = snapService.getUserContext(sfId);
-
-            if(null == context || context.isJsonNull() || context.size() == 0 ) return groups;
-
-            JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
-
-            JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
-            boolean hasCommunityAccess = false;
-            if (!propertyAccess.isJsonNull() && propertyAccess.getAsString().contains(PROPERTY_ACCESS_COMMUNITY)) {
-                groups.add(AUTHENTICATED);
-                hasCommunityAccess = true;
+        if (typeString.equals("partner") && !partnerTrack.isJsonNull()) {
+          String partnerTrackString = partnerTrack.getAsString();
+          for (Map.Entry<String, String> entry : partnerTrackMapping.entrySet()) {
+            if (partnerTrackString.contains(entry.getKey())) {
+              groups.add(entry.getValue());
             }
-            addGroups(groups, contactInformation, WSP_KEY, wspMapping);
-
-            JsonObject contextInfo = context.get(USER_CONTEXT_INFO_KEY).getAsJsonObject();
-            addGroups(groups, contextInfo, USER_CONTACT_ROLE_KEY, customerRoleMapping);
-
-            JsonElement type = contextInfo.get(USER_TYPE_KEY);
-            JsonElement customerOf = contactInformation.get(CUSTOMER_OF_KEY);
-            JsonElement partnerTrack = contactInformation.get(PARTNER_TRACK_KEY);
-            JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
-            boolean isWorkmateUser = false;
-            if (!isWorkmate.isJsonNull()) {
-                isWorkmateUser = isWorkmate.getAsBoolean();
-            }
-            if (!type.isJsonNull()) {
-                String typeString = type.getAsString();
-                if (typeString.equals("customer") && !isWorkmateUser && !customerOf.isJsonNull()) {
-                    String customerOfString = customerOf.getAsString();
-                    for (Map.Entry<String, String> entry : customerOfMapping.entrySet()) {
-                        if (customerOfString.contains(entry.getKey())) {
-                            groups.add(entry.getValue());
-                        }
-                    }
-                }
-                if (typeString.equals("partner") && !partnerTrack.isJsonNull()) {
-                    String partnerTrackString = partnerTrack.getAsString();
-                    for (Map.Entry<String, String> entry : partnerTrackMapping.entrySet()) {
-                        if (partnerTrackString.contains(entry.getKey())) {
-                            groups.add(entry.getValue());
-                        }
-                    }
-                }
-            }
-            if (isWorkmateUser) {
-                groups.add(INTERNAL_WORKMATES);
-            } else {
-                if (hasCommunityAccess && !type.isJsonNull()) {
-                    groups.add(type.getAsString() + "_all");
-                }
-            }
-            return groups;
-        });
-
-        if (ret != null && ret.isEmpty()) {
-            cacheManager.invalidateCache(CacheBucketName.SF_USER_GROUP.name(), cacheKey);
+          }
         }
-
-        return ret;
-    }
-
-    private void addGroups(List<String> groups, JsonObject contactInformation, String key, HashMap<String, String> valueMap) {
-        JsonElement wsp = contactInformation.get(key);
-        if (!wsp.isJsonNull()) {
-            String wspString = wsp.getAsString();
-            for (Map.Entry<String, String> entry : valueMap.entrySet()) {
-                if (wspString.contains(entry.getKey())) {
-                    groups.add(entry.getValue());
-                }
-            }
+      }
+      if (isWorkmateUser) {
+        groups.add(INTERNAL_WORKMATES);
+      } else {
+        if (hasCommunityAccess && !type.isJsonNull()) {
+          groups.add(type.getAsString() + "_all");
         }
+      }
+      return groups;
+    });
+
+    if (ret != null && ret.isEmpty()) {
+      cacheManager.invalidateCache(CacheBucketName.SF_USER_GROUP.name(), cacheKey);
     }
+
+    return ret;
+  }
+
+  private void addGroups(List<String> groups, JsonObject contactInformation, String key,
+                         HashMap<String, String> valueMap) {
+    JsonElement wsp = contactInformation.get(key);
+    if (!wsp.isJsonNull()) {
+      String wspString = wsp.getAsString();
+      for (Map.Entry<String, String> entry : valueMap.entrySet()) {
+        if (wspString.contains(entry.getKey())) {
+          groups.add(entry.getValue());
+        }
+      }
+    }
+  }
 }

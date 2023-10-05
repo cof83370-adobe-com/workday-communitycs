@@ -20,42 +20,52 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class BookOperationsServletTest {
 
-    /** The aem context. */
-    private final AemContext aemContext = new AemContext();
+  /**
+   * The aem context.
+   */
+  private final AemContext aemContext = new AemContext();
 
-    /** The book operations service. */
-    @Mock
-    BookOperationsService bookOperationsService;
+  /**
+   * The book operations service.
+   */
+  @Mock
+  BookOperationsService bookOperationsService;
 
-    /** The book operations servlet. */
-    @InjectMocks
-    BookOperationsServlet bookOperationsServlet;
+  /**
+   * The book operations servlet.
+   */
+  @InjectMocks
+  BookOperationsServlet bookOperationsServlet;
 
-    /** The mock sling request. */
-    MockSlingHttpServletRequest mockSlingRequest;
+  /**
+   * The mock sling request.
+   */
+  MockSlingHttpServletRequest mockSlingRequest;
 
-    /** The mock sling response. */
-    MockSlingHttpServletResponse mockSlingResponse;
+  /**
+   * The mock sling response.
+   */
+  MockSlingHttpServletResponse mockSlingResponse;
 
-    /**
-     * Setup for the test
-     *
-     * @throws Exception the exception
-     */
-    @BeforeEach
-    void setUp() throws Exception {
-        mockSlingRequest = aemContext.request();
-        mockSlingResponse = aemContext.response();
-    }
+  /**
+   * Setup for the test
+   *
+   * @throws Exception the exception
+   */
+  @BeforeEach
+  void setUp() throws Exception {
+    mockSlingRequest = aemContext.request();
+    mockSlingResponse = aemContext.response();
+  }
 
-    /**
-     * Test book operation servlet do get.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    public void testBookOperationServletDoGet() throws Exception {
-        bookOperationsServlet.doPost(mockSlingRequest, mockSlingResponse);
-        assertNotNull(mockSlingResponse);
-    }
+  /**
+   * Test book operation servlet do get.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  public void testBookOperationServletDoGet() throws Exception {
+    bookOperationsServlet.doPost(mockSlingRequest, mockSlingResponse);
+    assertNotNull(mockSlingResponse);
+  }
 }

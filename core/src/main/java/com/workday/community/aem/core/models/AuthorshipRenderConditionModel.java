@@ -23,57 +23,70 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class AuthorshipRenderConditionModel.
  */
-@Model(adaptables = { SlingHttpServletRequest.class }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(adaptables = {
+    SlingHttpServletRequest.class}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class AuthorshipRenderConditionModel {
 
-    /** The request. */
-    @Self
-    private SlingHttpServletRequest request;
-    /** The logger. */
-    private static final Logger logger = LoggerFactory.getLogger(AuthorshipRenderConditionModel.class);
+  /**
+   * The logger.
+   */
+  private static final Logger logger =
+      LoggerFactory.getLogger(AuthorshipRenderConditionModel.class);
 
-    /** The edit groups. */
-    @ValueMapValue
-    private List<String> editGroups;
+  /**
+   * The rendered condition check.
+   */
+  Boolean check = false;
 
-    /** The rendered condition check. */
-    Boolean check = false;
+  /**
+   * The allowed group condition check.
+   */
+  Boolean allowed = false;
 
-    /** The allowed group condition check. */
-    Boolean allowed = false;
+  /**
+   * The request.
+   */
+  @Self
+  private SlingHttpServletRequest request;
 
-    /**
-     * Inits the Model
-     */
-    @PostConstruct
-    public void init() {
-        String suffix = request.getRequestPathInfo().getResourcePath();
+  /**
+   * The edit groups.
+   */
+  @ValueMapValue
+  private List<String> editGroups;
 
-        UserManager userManager = request.getResourceResolver().adaptTo(UserManager.class);
-        Session userSession = request.getResourceResolver().adaptTo(Session.class);
-        String userId = requireNonNull(userSession).getUserID();
-        Authorizable auth;
-        try {
-            auth = requireNonNull(userManager).getAuthorizable(userId);
-            Iterator<Group> groups = requireNonNull(auth).memberOf();
-            while (groups.hasNext() && !allowed) {
-                Group g = groups.next();
-                for (String groupStr : editGroups) {
-                    if (g.getID().startsWith(groupStr)) {
-                        allowed = true;
-                        break;
-                    }
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error("User not found");
+  /**
+   * Inits the Model
+   */
+  @PostConstruct
+  public void init() {
+    String suffix = request.getRequestPathInfo().getResourcePath();
+
+    UserManager userManager = request.getResourceResolver().adaptTo(UserManager.class);
+    Session userSession = request.getResourceResolver().adaptTo(Session.class);
+    String userId = requireNonNull(userSession).getUserID();
+    Authorizable auth;
+    try {
+      auth = requireNonNull(userManager).getAuthorizable(userId);
+      Iterator<Group> groups = requireNonNull(auth).memberOf();
+      while (groups.hasNext() && !allowed) {
+        Group g = groups.next();
+        for (String groupStr : editGroups) {
+          if (g.getID().startsWith(groupStr)) {
+            allowed = true;
+            break;
+          }
         }
-        if (allowed) {
-            check = !suffix.endsWith("ReadOnly/granite:rendercondition");
-        } else {
-            check = suffix.endsWith("ReadOnly/granite:rendercondition");
-        }
-
-        request.setAttribute(RenderCondition.class.getName(), new SimpleRenderCondition(check));
+      }
+    } catch (RepositoryException e) {
+      logger.error("User not found");
     }
+    if (allowed) {
+      check = !suffix.endsWith("ReadOnly/granite:rendercondition");
+    } else {
+      check = suffix.endsWith("ReadOnly/granite:rendercondition");
+    }
+
+    request.setAttribute(RenderCondition.class.getName(), new SimpleRenderCondition(check));
+  }
 }

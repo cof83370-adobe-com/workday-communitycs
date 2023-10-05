@@ -9,10 +9,10 @@ public @interface OktaConfig {
   @AttributeDefinition(name = "Custom Okta domain name", description = "Custom domain")
   String customDomain();
 
-  @AttributeDefinition (
-          name = "Okta Integration Enabled",
-          description = "Is OURM enabled",
-          type = AttributeType.BOOLEAN
+  @AttributeDefinition(
+      name = "Okta Integration Enabled",
+      description = "Is OURM enabled",
+      type = AttributeType.BOOLEAN
   )
   boolean isOktaIntegrationEnabled() default false;
 }

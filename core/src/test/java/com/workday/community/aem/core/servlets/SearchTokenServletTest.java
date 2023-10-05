@@ -40,9 +40,11 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SearchTokenServletTest {
+
+  private final Gson gson = new Gson();
 
   @Mock
   SearchApiConfigService searchApiConfigService;
@@ -56,13 +58,11 @@ public class SearchTokenServletTest {
   @InjectMocks
   SearchTokenServlet searchTokenServlet;
 
-  private final Gson gson = new Gson();
-
   @Test
   public void testDoGetWithExistingCookieInRequest() throws Exception {
 
     Cookie[] testCookies = new Cookie[] {
-      new Cookie("test", "testValue"), new Cookie(COVEO_COOKIE_NAME, "coveo_cookie_value")
+        new Cookie("test", "testValue"), new Cookie(COVEO_COOKIE_NAME, "coveo_cookie_value")
     };
 
     MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
@@ -73,7 +73,8 @@ public class SearchTokenServletTest {
 
     // Invoke your servlet
     try (MockedStatic<HttpUtils> mockHttpUtils = mockStatic(HttpUtils.class)) {
-      mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME)).thenReturn(testCookies[1]);
+      mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME))
+          .thenReturn(testCookies[1]);
       SearchTokenServlet servlet = new SearchTokenServlet();
       servlet.doGet(request, response);
       verify(response).setStatus(200);
@@ -138,8 +139,10 @@ public class SearchTokenServletTest {
          MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class);
          MockedStatic<HttpClients> mockHttpClients = mockStatic(HttpClients.class)) {
       mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME)).thenReturn(null);
-      mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any(), any())).thenReturn(DEFAULT_SFID_MASTER);
-      mockOurmUtils.when(() -> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("foo@workday.com");
+      mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any(), any()))
+          .thenReturn(DEFAULT_SFID_MASTER);
+      mockOurmUtils.when(() -> OurmUtils.getUserEmail(anyString(), any(), any()))
+          .thenReturn("foo@workday.com");
 
       mockHttpClients.when(HttpClients::createDefault).thenReturn(httpClient);
       when(httpClient.execute(any())).thenReturn(httpResponse);

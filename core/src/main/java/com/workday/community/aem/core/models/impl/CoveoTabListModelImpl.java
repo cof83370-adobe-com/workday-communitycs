@@ -28,14 +28,17 @@ import org.slf4j.LoggerFactory;
         Resource.class,
         SlingHttpServletRequest.class
     },
-    adapters = { CoveoTabListModel.class },
-    resourceType = { CoveoTabListModelImpl.RESOURCE_TYPE },
+    adapters = {CoveoTabListModel.class},
+    resourceType = {CoveoTabListModelImpl.RESOURCE_TYPE},
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoTabListModelImpl implements CoveoTabListModel {
-  private static final Logger logger = LoggerFactory.getLogger(CoveoTabListModelImpl.class);
   protected static final String RESOURCE_TYPE = "workday-community/components/common/coveotablist";
-  private static final String MODEL_CONFIG_FILE = "/content/dam/workday-community/resources/tab-list-criteria-data.json";
+
+  private static final Logger logger = LoggerFactory.getLogger(CoveoTabListModelImpl.class);
+
+  private static final String MODEL_CONFIG_FILE =
+      "/content/dam/workday-community/resources/tab-list-criteria-data.json";
 
   @ValueMapValue
   String[] productTags;
@@ -75,7 +78,8 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   @Override
   public JsonObject getSearchConfig() {
     if (this.searchConfig == null) {
-      this.searchConfig = CoveoUtils.getSearchConfig(searchConfigService, request, snapService, userService);
+      this.searchConfig =
+          CoveoUtils.getSearchConfig(searchConfigService, request, snapService, userService);
     }
     return this.searchConfig;
   }
@@ -90,20 +94,19 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
   public JsonArray getSelectedFields() throws DamException {
     JsonArray allFields = this.getModelConfig().getAsJsonArray("fields");
     JsonArray selectedFields = new JsonArray();
-    if (feeds != null && feeds.length > 0 ) {
-       for (int i=0; i<allFields.size(); i++) {
-         for (String feed : feeds) {
-           JsonObject item = allFields.get(i).getAsJsonObject();
-           if (item.get("name").getAsString().equals(feed)) {
-             selectedFields.add(item);
-           }
-         }
-       }
+    if (feeds != null && feeds.length > 0) {
+      for (int i = 0; i < allFields.size(); i++) {
+        for (String feed : feeds) {
+          JsonObject item = allFields.get(i).getAsJsonObject();
+          if (item.get("name").getAsString().equals(feed)) {
+            selectedFields.add(item);
+          }
+        }
+      }
     }
 
     return selectedFields;
   }
-
 
 
   @Override
@@ -123,7 +126,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
       sb.append("\"").append(this.getTitle(tag)).append("\",");
     });
 
-    sb.deleteCharAt(sb.length()-1);
+    sb.deleteCharAt(sb.length() - 1);
     sb.append("))");
     return sb.toString();
   }
@@ -154,7 +157,8 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
 
   private JsonObject getModelConfig() throws DamException {
     if (this.modelConfig == null) {
-      this.modelConfig = DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
+      this.modelConfig =
+          DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
     }
     return this.modelConfig;
   }

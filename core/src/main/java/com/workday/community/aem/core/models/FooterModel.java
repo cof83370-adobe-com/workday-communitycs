@@ -8,5 +8,5 @@ public interface FooterModel {
    * @return The adobe analytics script uri.
    */
   String getAdobeAnalyticsUri();
-    
+
 }

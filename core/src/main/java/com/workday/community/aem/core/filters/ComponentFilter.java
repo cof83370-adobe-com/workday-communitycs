@@ -1,4 +1,3 @@
-
 package com.workday.community.aem.core.filters;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
@@ -37,107 +36,120 @@ import org.slf4j.LoggerFactory;
  * The Class ComponentFilter.
  */
 @Component(service = Filter.class, configurationPolicy = ConfigurationPolicy.OPTIONAL, property = {
-        EngineConstants.SLING_FILTER_SCOPE + "=" + EngineConstants.FILTER_SCOPE_INCLUDE,
-        EngineConstants.SLING_FILTER_METHODS + "=GET",
-        EngineConstants.SLING_FILTER_PATTERN + "=/content/workday-community/(.*)",
+    EngineConstants.SLING_FILTER_SCOPE + "=" + EngineConstants.FILTER_SCOPE_INCLUDE,
+    EngineConstants.SLING_FILTER_METHODS + "=GET",
+    EngineConstants.SLING_FILTER_PATTERN + "=/content/workday-community/(.*)",
 
 })
 
 public class ComponentFilter implements Filter {
 
-    /** The Constant whiteList. */
-    static final String DYNAMIC_RESOURCE_TYPE_PATH = "workday-community/components/dynamic/";
+  /**
+   * The Constant whiteList.
+   */
+  static final String DYNAMIC_RESOURCE_TYPE_PATH = "workday-community/components/dynamic/";
 
-    /** The Constant logger. */
-    private static final Logger logger = LoggerFactory.getLogger(ComponentFilter.class);
+  /**
+   * The Constant logger.
+   */
+  private static final Logger logger = LoggerFactory.getLogger(ComponentFilter.class);
 
-    /** The resolver factory. */
-    @Reference
-    private ResourceResolverFactory resolverFactory;
+  /**
+   * The run mode config service.
+   */
+  @Reference
+  RunModeConfigService runModeConfigService;
 
-    /** The user group service. */
-    @Reference
-    private UserGroupService userGroupService;
+  /**
+   * The resolver factory.
+   */
+  @Reference
+  private ResourceResolverFactory resolverFactory;
 
-    /** The run mode config service. */
-    @Reference
-    RunModeConfigService runModeConfigService;
+  /**
+   * The user group service.
+   */
+  @Reference
+  private UserGroupService userGroupService;
 
-    /**
-     * Inits the.
-     *
-     * @param filterConfig the filter config
-     * @throws ServletException the servlet exception
-     */
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        logger.info("Initialize the component hide filter");
-    }
+  /**
+   * Inits the.
+   *
+   * @param filterConfig the filter config
+   * @throws ServletException the servlet exception
+   */
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
+    logger.info("Initialize the component hide filter");
+  }
 
-    /**
-     * Do filter.
-     *
-     * @param servletRequest  the servlet request
-     * @param servletResponse the servlet response
-     * @param filterChain     the filter chain
-     * @throws IOException      Signals that an I/O exception has occurred.
-     * @throws ServletException the servlet exception
-     */
-    @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-            throws IOException, ServletException {
+  /**
+   * Do filter.
+   *
+   * @param servletRequest  the servlet request
+   * @param servletResponse the servlet response
+   * @param filterChain     the filter chain
+   * @throws IOException      Signals that an I/O exception has occurred.
+   * @throws ServletException the servlet exception
+   */
+  @Override
+  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+                       FilterChain filterChain)
+      throws IOException, ServletException {
 
-        if (servletRequest instanceof SlingHttpServletRequest) {
-            Instant start = Instant.now();
-            SlingHttpServletRequest request = (SlingHttpServletRequest) servletRequest;
-            String instance = runModeConfigService.getInstance();
-            String resourceType = request.getResource().getResourceType();
-            if (instance != null && instance.equals(PUBLISH)
-                    && resourceType.contains(DYNAMIC_RESOURCE_TYPE_PATH)) {
-                try (ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory,
-                        READ_SERVICE_USER)) {
-                    List<String> userGroupsList = userGroupService.getCurrentUserGroups(request);
-                    logger.debug("ComponentFilter::ACL Tags of user {}", userGroupsList);
-                    ValueMap properties = request.getResource().getValueMap();
-                    List<String> componentACLTags = Arrays
-                            .asList(properties.get("componentACLTags", new String[0]));
-                    List<String> accessControlList = new ArrayList<>();
-                    componentACLTags
-                            .forEach(tag -> accessControlList.add(tag.replace(ACCESS_CONTROL_TAG.concat(":"), "")));
-                    logger.debug("ComponentFilter::ACL Tags of component {}", accessControlList);
-                    if (CollectionUtils.isNotEmpty(accessControlList) && CollectionUtils.isNotEmpty(userGroupsList)
-                            && CollectionUtils.intersection(accessControlList, userGroupsList).isEmpty()) {
-                        logger.debug("ComponentFilter::Permission not matching.. not rendeing component.");
-                        logger.debug(
-                                "......................Execution time of filter method for resource {} {}...............",
-                                resourceType, Duration.between(start, Instant.now()));
-                        return;
-                    } else if (CollectionUtils.isNotEmpty(accessControlList)
-                            && CollectionUtils.isEmpty(userGroupsList)) {
-                        logger.debug("ComponentFilter::User permissions are empty.. not rendeing component.");
-                        logger.debug(
-                                "......................Execution time of filter method for resource {} {}...............",
-                                resourceType, Duration.between(start, Instant.now()));
-                        return;
-                    }
-                } catch (LoginException e) {
-                    logger.error("Exception retrieving Resource Resolver for path {}",
-                            request.getResource().getPath());
-                }
-            }
+    if (servletRequest instanceof SlingHttpServletRequest) {
+      Instant start = Instant.now();
+      SlingHttpServletRequest request = (SlingHttpServletRequest) servletRequest;
+      String instance = runModeConfigService.getInstance();
+      String resourceType = request.getResource().getResourceType();
+      if (instance != null && instance.equals(PUBLISH)
+          && resourceType.contains(DYNAMIC_RESOURCE_TYPE_PATH)) {
+        try (ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory,
+            READ_SERVICE_USER)) {
+          List<String> userGroupsList = userGroupService.getCurrentUserGroups(request);
+          logger.debug("ComponentFilter::ACL Tags of user {}", userGroupsList);
+          ValueMap properties = request.getResource().getValueMap();
+          List<String> componentACLTags = Arrays
+              .asList(properties.get("componentACLTags", new String[0]));
+          List<String> accessControlList = new ArrayList<>();
+          componentACLTags
+              .forEach(
+                  tag -> accessControlList.add(tag.replace(ACCESS_CONTROL_TAG.concat(":"), "")));
+          logger.debug("ComponentFilter::ACL Tags of component {}", accessControlList);
+          if (CollectionUtils.isNotEmpty(accessControlList) &&
+              CollectionUtils.isNotEmpty(userGroupsList)
+              && CollectionUtils.intersection(accessControlList, userGroupsList).isEmpty()) {
+            logger.debug("ComponentFilter::Permission not matching.. not rendeing component.");
             logger.debug(
-                    "......................Component Filter Execution time for resource {} {}...............",
-                    resourceType, Duration.between(start, Instant.now()));
+                "......................Execution time of filter method for resource {} {}...............",
+                resourceType, Duration.between(start, Instant.now()));
+            return;
+          } else if (CollectionUtils.isNotEmpty(accessControlList)
+              && CollectionUtils.isEmpty(userGroupsList)) {
+            logger.debug("ComponentFilter::User permissions are empty.. not rendeing component.");
+            logger.debug(
+                "......................Execution time of filter method for resource {} {}...............",
+                resourceType, Duration.between(start, Instant.now()));
+            return;
+          }
+        } catch (LoginException e) {
+          logger.error("Exception retrieving Resource Resolver for path {}",
+              request.getResource().getPath());
         }
-
-        filterChain.doFilter(servletRequest, servletResponse);
+      }
+      logger.debug(
+          "......................Component Filter Execution time for resource {} {}...............",
+          resourceType, Duration.between(start, Instant.now()));
     }
 
-    /**
-     * Destroy.
-     */
-    @Override
-    public void destroy() {
-        logger.info("Exiting the component hide filter");
-    }
+    filterChain.doFilter(servletRequest, servletResponse);
+  }
+
+  /**
+   * Destroy.
+   */
+  @Override
+  public void destroy() {
+    logger.info("Exiting the component hide filter");
+  }
 }

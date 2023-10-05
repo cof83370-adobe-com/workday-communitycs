@@ -17,76 +17,78 @@ import org.osgi.service.metatype.annotations.Designate;
 @Designate(ocd = CoveoIndexApiConfig.class)
 public class CoveoIndexApiConfigService {
 
-    /** The CoveoIndexApiConfig config. */
-    private CoveoIndexApiConfig config;
+  /**
+   * The CoveoIndexApiConfig config.
+   */
+  private CoveoIndexApiConfig config;
 
-    @Activate
-    @Modified
-    protected void activate(CoveoIndexApiConfig coveoIndexApiConfig){
-        this.config = coveoIndexApiConfig;
-    }
+  @Activate
+  @Modified
+  protected void activate(CoveoIndexApiConfig coveoIndexApiConfig) {
+    this.config = coveoIndexApiConfig;
+  }
 
-    /**
-     * Get push api url.
-     *
-     * @return Push api url
-     */
-    public String getPushApiUri() {
-        return config.pushApiUri();
-    }
+  /**
+   * Get push api url.
+   *
+   * @return Push api url
+   */
+  public String getPushApiUri() {
+    return config.pushApiUri();
+  }
 
-    /**
-     * Get source api url.
-     *
-     * @return Source api url
-     */
-    public String getSourceApiUri() {
-        return config.sourceApiUri();
-    }
+  /**
+   * Get source api url.
+   *
+   * @return Source api url
+   */
+  public String getSourceApiUri() {
+    return config.sourceApiUri();
+  }
 
-    /**
-     * Get coveo api key.
-     *
-     * @return Coveo api key
-     */
-    public String getCoveoApiKey() {
-        return config.coveoApiKey();
-    }
+  /**
+   * Get coveo api key.
+   *
+   * @return Coveo api key
+   */
+  public String getCoveoApiKey() {
+    return config.coveoApiKey();
+  }
 
-    /**
-     * Get organization Id.
-     *
-     * @return Organization id
-     */
-    public String getOrganizationId () {
-        return config.organizationId();
-    }
+  /**
+   * Get organization Id.
+   *
+   * @return Organization id
+   */
+  public String getOrganizationId() {
+    return config.organizationId();
+  }
 
-    /**
-     * Get source id.
-     *
-     * @return Source id
-     */
-    public String getSourceId () {
-        return config.sourceId();
-    }
+  /**
+   * Get source id.
+   *
+   * @return Source id
+   */
+  public String getSourceId() {
+    return config.sourceId();
+  }
 
-    /**
-     * Get coveo index is enabled.
-     *
-     * @return Coveo index is enabled or not
-     */
-    public Boolean isCoveoIndexEnabled() {
-        return config.isCoveoIndexingEnabled();
-    }
+  /**
+   * Get coveo index is enabled.
+   *
+   * @return Coveo index is enabled or not
+   */
+  public Boolean isCoveoIndexEnabled() {
+    return config.isCoveoIndexingEnabled();
+  }
 
-    /**
-     * Get batch size.
-     *
-     * @return Batch size
-     */
-    public Integer getBatchSize() {
-        return config.batchSize();
-    }
+  /**
+   * Get batch size.
+   *
+   * @return Batch size
+   */
+  public Integer getBatchSize() {
+    return config.batchSize();
+  }
 
 }

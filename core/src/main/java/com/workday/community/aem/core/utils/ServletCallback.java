@@ -8,5 +8,6 @@ import org.apache.sling.api.SlingHttpServletResponse;
  * The functional interface for servlet callback.
  */
 public interface ServletCallback {
-  String execute(SlingHttpServletRequest request, SlingHttpServletResponse response, String body) throws IOException;
+  String execute(SlingHttpServletRequest request, SlingHttpServletResponse response, String body)
+      throws IOException;
 }

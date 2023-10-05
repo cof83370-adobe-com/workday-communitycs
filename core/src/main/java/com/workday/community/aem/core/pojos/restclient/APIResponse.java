@@ -23,19 +23,19 @@ public class APIResponse {
   }
 
   /**
-   * Getter for response code.
-   */
-  public int getResponseCode() {
-    return responseCode;
-  }
-
-  /**
    * Setter for response body.
    *
    * @param responseBody response body.
    */
   public void setResponseBody(String responseBody) {
     this.responseBody = responseBody;
+  }
+
+  /**
+   * Getter for response code.
+   */
+  public int getResponseCode() {
+    return responseCode;
   }
 
   /**

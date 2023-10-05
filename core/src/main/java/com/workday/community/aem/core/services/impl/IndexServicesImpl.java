@@ -22,40 +22,44 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class IndexServicesImpl implements IndexServices {
 
-    /** The jobManager service. */
-    @Reference
-    JobManager jobManager;
+  /**
+   * The jobManager service.
+   */
+  @Reference
+  JobManager jobManager;
 
-    /** The CoveoIndexApiConfigService. */
-    @Reference
-    private CoveoIndexApiConfigService coveoIndexApiConfigService;
+  /**
+   * The CoveoIndexApiConfigService.
+   */
+  @Reference
+  private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
-    @Override
-    public void indexPages(List<String> paths) {
-        ArrayList<String> pagePaths = new ArrayList<>();
-        Integer batchSize = coveoIndexApiConfigService.getBatchSize();
-        for (int i = 0; i < paths.size(); i++) {
-            pagePaths.add(paths.get(i));
-            if (i + 1 % batchSize == 0 && createJobs(pagePaths) != null) {
-                pagePaths.clear();
-            }
-        }
-
-        if (!pagePaths.isEmpty()) {
-            createJobs(pagePaths);
-        }
+  @Override
+  public void indexPages(List<String> paths) {
+    ArrayList<String> pagePaths = new ArrayList<>();
+    Integer batchSize = coveoIndexApiConfigService.getBatchSize();
+    for (int i = 0; i < paths.size(); i++) {
+      pagePaths.add(paths.get(i));
+      if (i + 1 % batchSize == 0 && createJobs(pagePaths) != null) {
+        pagePaths.clear();
+      }
     }
 
-    /**
-     * Create job with given list.
-     *
-     * @param pagePaths the page paths
-     * @return created Job
-     */
-    protected Job createJobs(ArrayList<String> pagePaths) {
-        Map<String, Object> jobProperties = new HashMap<>();
-        jobProperties.put("op", "index");
-        jobProperties.put("paths", pagePaths);
-        return jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
+    if (!pagePaths.isEmpty()) {
+      createJobs(pagePaths);
     }
+  }
+
+  /**
+   * Create job with given list.
+   *
+   * @param pagePaths the page paths
+   * @return created Job
+   */
+  protected Job createJobs(ArrayList<String> pagePaths) {
+    Map<String, Object> jobProperties = new HashMap<>();
+    jobProperties.put("op", "index");
+    jobProperties.put("paths", pagePaths);
+    return jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
+  }
 }

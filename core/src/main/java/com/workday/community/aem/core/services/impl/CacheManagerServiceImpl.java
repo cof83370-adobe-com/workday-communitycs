@@ -45,15 +45,21 @@ import org.slf4j.LoggerFactory;
 public class CacheManagerServiceImpl implements CacheManagerService {
   private final static Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
 
-  private final LRUCacheWithTimeout<String, ResourceResolver> resolverCache = new LRUCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
+  private final LRUCacheWithTimeout<String, ResourceResolver> resolverCache =
+      new LRUCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
+
   private final Map<String, LoadingCache> caches;
-  private ScheduledFuture<?> cleanCacheHandle;
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-  /** The resource resolver factory. */
+  private ScheduledFuture<?> cleanCacheHandle;
+
+  /**
+   * The resource resolver factory.
+   */
   @Reference
   private ResourceResolverFactory resourceResolverFactory;
+
   private CacheConfig config;
 
   public CacheManagerServiceImpl() {
@@ -63,9 +69,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   /**
    * Set resource resolver factory.
    *
-   * @param resourceResolverFactory
-   *
-   * Please note that this method is used for testing purpose only.
+   * @param resourceResolverFactory Please note that this method is used for testing purpose only.
    */
   public void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory) {
     this.resourceResolverFactory = resourceResolverFactory;
@@ -80,7 +84,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       closeAndClearCachedResolvers();
     }
     setUpRegularCacheClean();
-    LOGGER.debug("config: enabled:{}, expire:{}, user expire:{}, uuid:{}, user max:{}, refresh:{}, menu size {}",
+    LOGGER.debug(
+        "config: enabled:{}, expire:{}, user expire:{}, uuid:{}, user max:{}, refresh:{}, menu size {}",
         config.enabled(), config.expireDuration(), config.jcrUserExpireDuration(),
         config.maxUUID(), config.maxJcrUser(), config.refreshDuration(), config.maxMenuSize());
   }
@@ -109,7 +114,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   @Override
   public <V> V get(String cacheBucketName, String key, ValueCallback<V> callback) {
     if (!this.config.enabled()) {
-      return callback == null? null : callback.getValue(key);
+      return callback == null ? null : callback.getValue(key);
     }
     try {
       CacheBucketName innerName = getInnerCacheName(cacheBucketName);
@@ -137,18 +142,20 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       LOGGER.error(String.format(
           "Can't get cache for cache key: %s in cache name: %s, error: %s",
           key, cacheBucketName, e.getMessage()));
-       return false;
+      return false;
     }
   }
 
   @Override
-  public void invalidateCache(String cacheBucketName, String key)  {
+  public void invalidateCache(String cacheBucketName, String key) {
     if (!this.config.enabled()) {
       return;
     }
     if (cacheBucketName == null) {
       // clear all
-      if (caches.isEmpty()) return;
+      if (caches.isEmpty()) {
+        return;
+      }
       for (String cacheKey : caches.keySet()) {
         LoadingCache cache = caches.get(cacheKey);
         cache.invalidateAll();
@@ -186,8 +193,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   // ====== Convenient Utility APIs ====== //
   @Override
   public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
-    ResourceResolver resolver = config.enabled()? resolverCache.get(serviceUser) : null;
-    if (resolver == null || !resolver.isLive() ) {
+    ResourceResolver resolver = config.enabled() ? resolverCache.get(serviceUser) : null;
+    if (resolver == null || !resolver.isLive()) {
       try {
         resolver = ResolverUtil.newResolver(this.resourceResolverFactory, serviceUser);
       } catch (LoginException e) {
@@ -203,11 +210,15 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   // ================== Private methods ===============//
   private <V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
-                                               ValueCallback<V> callback) throws CacheException  {
+                                               ValueCallback<V> callback) throws CacheException {
     try {
       LoadingCache<String, V> cache = caches.get(innerCacheName.name());
-      if (cache != null) return cache;
-      if (key == null) return null;
+      if (cache != null) {
+        return cache;
+      }
+      if (key == null) {
+        return null;
+      }
 
       CacheBuilder builder = CacheBuilder.newBuilder();
       if (innerCacheName == CacheBucketName.UUID_VALUE) {
@@ -229,7 +240,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
             .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
             .refreshAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
       }
-      cache = builder.build( new CacheLoader<String, V>() {
+      cache = builder.build(new CacheLoader<String, V>() {
         public V load(String key) throws CacheException {
           V ret = null;
           if (callback != null) {
@@ -278,8 +289,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   }
 
   private void closeAndClearCachedResolvers() {
-    for (String key :resolverCache.keySet()) {
-       ResourceResolver resolver = resolverCache.get(key);
+    for (String key : resolverCache.keySet()) {
+      ResourceResolver resolver = resolverCache.get(key);
       if (resolver.isLive()) {
         resolver.close();
       }

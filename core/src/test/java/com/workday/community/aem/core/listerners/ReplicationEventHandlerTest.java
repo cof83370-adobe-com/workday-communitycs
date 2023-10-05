@@ -28,63 +28,69 @@ import org.osgi.service.event.Event;
 @ExtendWith(MockitoExtension.class)
 public class ReplicationEventHandlerTest {
 
-    /** The ReplicationEventHandler. */
-    @InjectMocks
-    ReplicationEventHandler eventHandler;
+  /**
+   * The ReplicationEventHandler.
+   */
+  @InjectMocks
+  ReplicationEventHandler eventHandler;
 
-    /** The JobManager. */
-    @Mock
-    JobManager jobManager;
+  /**
+   * The JobManager.
+   */
+  @Mock
+  JobManager jobManager;
 
-    /** The CoveoIndexApiConfigService. */
-    @Mock
-    CoveoIndexApiConfigService service;
+  /**
+   * The CoveoIndexApiConfigService.
+   */
+  @Mock
+  CoveoIndexApiConfigService service;
 
-    /**
-     * Test handler events passed.
-     */
-    @Test
-    void testHandleEventsPass() {
-        Event event = mock(Event.class);
-        ReplicationAction action = mock(ReplicationAction.class);
-        when(service.isCoveoIndexEnabled()).thenReturn(true);
-        try (MockedStatic<ReplicationAction>  mock = mockStatic(ReplicationAction.class)) {
-            when(ReplicationAction.fromEvent(event)).thenReturn(action);
-            when(action.getType()).thenReturn(ReplicationActionType.DELETE);
-            when(action.getPath()).thenReturn(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
-            eventHandler.handleEvent(event);
-        }
-        verify(jobManager).addJob(anyString(), anyMap());
+  /**
+   * Test handler events passed.
+   */
+  @Test
+  void testHandleEventsPass() {
+    Event event = mock(Event.class);
+    ReplicationAction action = mock(ReplicationAction.class);
+    when(service.isCoveoIndexEnabled()).thenReturn(true);
+    try (MockedStatic<ReplicationAction> mock = mockStatic(ReplicationAction.class)) {
+      when(ReplicationAction.fromEvent(event)).thenReturn(action);
+      when(action.getType()).thenReturn(ReplicationActionType.DELETE);
+      when(action.getPath()).thenReturn(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
+      eventHandler.handleEvent(event);
     }
+    verify(jobManager).addJob(anyString(), anyMap());
+  }
 
-    /**
-     * Test handler events failed.
-     */
-    @Test
-    void testHandleEventsFailed() {
-        Event event = mock(Event.class);
-        ReplicationAction action = mock(ReplicationAction.class);
-        when(service.isCoveoIndexEnabled()).thenReturn(true);
-        try (MockedStatic<ReplicationAction>  mock = mockStatic(ReplicationAction.class)) {
-            when(ReplicationAction.fromEvent(event)).thenReturn(action);
-            when(action.getPath()).thenReturn("other");
-            eventHandler.handleEvent(event);
-        }
-        verify(jobManager, times(0)).addJob(anyString(), anyMap());
+  /**
+   * Test handler events failed.
+   */
+  @Test
+  void testHandleEventsFailed() {
+    Event event = mock(Event.class);
+    ReplicationAction action = mock(ReplicationAction.class);
+    when(service.isCoveoIndexEnabled()).thenReturn(true);
+    try (MockedStatic<ReplicationAction> mock = mockStatic(ReplicationAction.class)) {
+      when(ReplicationAction.fromEvent(event)).thenReturn(action);
+      when(action.getPath()).thenReturn("other");
+      eventHandler.handleEvent(event);
     }
+    verify(jobManager, times(0)).addJob(anyString(), anyMap());
+  }
 
-    /**
-     * Test coveo is not enabled.
-     */
-    @Test
-    void testHandleEventsNotRun() {
-        Event event = mock(Event.class);
-        ReplicationAction action = mock(ReplicationAction.class);
-        when(service.isCoveoIndexEnabled()).thenReturn(false);
-        try (MockedStatic<ReplicationAction>  mock = mockStatic(ReplicationAction.class)) {
-            when(ReplicationAction.fromEvent(event)).thenReturn(action);
-            eventHandler.handleEvent(event);
-          }
-        verify(jobManager, times(0)).addJob(anyString(), anyMap());
+  /**
+   * Test coveo is not enabled.
+   */
+  @Test
+  void testHandleEventsNotRun() {
+    Event event = mock(Event.class);
+    ReplicationAction action = mock(ReplicationAction.class);
+    when(service.isCoveoIndexEnabled()).thenReturn(false);
+    try (MockedStatic<ReplicationAction> mock = mockStatic(ReplicationAction.class)) {
+      when(ReplicationAction.fromEvent(event)).thenReturn(action);
+      eventHandler.handleEvent(event);
     }
+    verify(jobManager, times(0)).addJob(anyString(), anyMap());
+  }
 }

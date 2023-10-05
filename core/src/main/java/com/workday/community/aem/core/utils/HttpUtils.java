@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
 /**
  * Utility class for Http request/response related code.
  */
@@ -20,9 +19,8 @@ public class HttpUtils {
   /**
    * Get cookie from the http servlet request object given the cookie name.
    *
-   * @param request The http servlet request object.
+   * @param request    The http servlet request object.
    * @param cookieName The cookie name.
-   *
    * @return The Cookie object with the given cookie name
    */
   public static Cookie getCookie(final HttpServletRequest request, final String cookieName) {
@@ -44,14 +42,15 @@ public class HttpUtils {
   /**
    * Set Cookie.
    *
-   * @param cookie The Cookie object.
-   * @param response The http servlet response object.
+   * @param cookie     The Cookie object.
+   * @param response   The http servlet response object.
    * @param isHttpOnly If request is httpOnly request.
    * @param expiryTime The token required expiry time.
-   * @param path  The current request path.
-   * @param secure If the cooke should be secured boolean.
+   * @param path       The current request path.
+   * @param secure     If the cooke should be secured boolean.
    */
-  public static void setCookie(final Cookie cookie, final HttpServletResponse response, boolean isHttpOnly,
+  public static void setCookie(final Cookie cookie, final HttpServletResponse response,
+                               boolean isHttpOnly,
                                int expiryTime, String path, boolean secure) {
     cookie.setMaxAge(expiryTime);
     cookie.setHttpOnly(isHttpOnly);
@@ -60,31 +59,31 @@ public class HttpUtils {
     addCookie(cookie, response);
   }
 
-    /**
-     * Add the provided HTTP Cookie to the Response
-     *
-     * @param cookie   Cookie to add
-     * @param response Response to add Cookie to
-     */
-    public static void addCookie(final Cookie cookie, final HttpServletResponse response) {
-      if (cookie == null || response == null) {
-          return;
-      }
+  /**
+   * Add the provided HTTP Cookie to the Response
+   *
+   * @param cookie   Cookie to add
+   * @param response Response to add Cookie to
+   */
+  public static void addCookie(final Cookie cookie, final HttpServletResponse response) {
+    if (cookie == null || response == null) {
+      return;
+    }
 
-      response.addCookie(cookie);
+    response.addCookie(cookie);
   }
 
   /**
    * Clear all cookies.
    *
-   * @param request The HttpServletRequest object.
-   * @param response The HttpServletResponse object.
+   * @param request    The HttpServletRequest object.
+   * @param response   The HttpServletResponse object.
    * @param cookiePath The Cookie path.
    * @param deleteList the list of cookie names to be deleted.
-   *
    * @return the number of cookies being dropped.
    */
-  public static int dropCookies(final HttpServletRequest request, final HttpServletResponse response,
+  public static int dropCookies(final HttpServletRequest request,
+                                final HttpServletResponse response,
                                 final String cookiePath, String[] deleteList) {
     final Cookie[] cookies = request.getCookies();
     if (cookies == null) {

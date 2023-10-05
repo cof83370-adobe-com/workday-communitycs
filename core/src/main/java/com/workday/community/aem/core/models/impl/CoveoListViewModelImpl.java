@@ -20,12 +20,12 @@ import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 
 @Model(
-        adaptables = {
-            Resource.class,
-            SlingHttpServletRequest.class
-        },
-        adapters = { CoveoListViewModel.class },
-        defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+    adaptables = {
+        Resource.class,
+        SlingHttpServletRequest.class
+    },
+    adapters = {CoveoListViewModel.class},
+    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoListViewModelImpl implements CoveoListViewModel {
   @Self

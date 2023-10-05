@@ -31,59 +31,69 @@ import org.slf4j.LoggerFactory;
  * @author pepalla
  */
 @Component(immediate = true, service = Servlet.class, property = {
-        "sling.servlet.resourceTypes=/bin/workday/templateslist/datasource", "sling.servlet.methods=GET" })
+    "sling.servlet.resourceTypes=/bin/workday/templateslist/datasource",
+    "sling.servlet.methods=GET"})
 public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
-    /** The log. */
-    private final static Logger LOGGER = LoggerFactory.getLogger(TemplatesListProviderServlet.class);
+  /**
+   * The Constant TEMPLATES_PATH.
+   */
+  static final String TEMPLATES_PATH = "/conf/workday-community/settings/wcm/templates";
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 1L;
+  /**
+   * The log.
+   */
+  private final static Logger LOGGER = LoggerFactory.getLogger(TemplatesListProviderServlet.class);
 
-    /** The Constant TEMPLATES_PATH. */
-    static final String TEMPLATES_PATH = "/conf/workday-community/settings/wcm/templates";
+  /**
+   * The Constant serialVersionUID.
+   */
+  private static final long serialVersionUID = 1L;
 
-    /** The CoveoIndexApiConfigService service. */
-    @Reference
-    private transient CoveoIndexApiConfigService coveoIndexApiConfigService;
+  /**
+   * The CoveoIndexApiConfigService service.
+   */
+  @Reference
+  private transient CoveoIndexApiConfigService coveoIndexApiConfigService;
 
-    /**
-     * Do get.
-     *
-     * @param request  the request
-     * @param response the response
-     */
-    @Override
-    protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
-        if (Boolean.FALSE.equals(coveoIndexApiConfigService.isCoveoIndexEnabled())) {
-            return;
-        }
-
-        try {
-            ResourceResolver resourceResolver = request.getResourceResolver();
-            Resource resource = resourceResolver.getResource(TEMPLATES_PATH);
-            Iterator<Resource> iterator;
-            List<Resource>  resourceList = new ArrayList<>();
-
-            if (resource != null) {
-                iterator = resource.listChildren();
-                while (iterator.hasNext()) {
-                    Resource res = iterator.next();
-                    String title = res.getName();
-
-                    if (StringUtils.isNotBlank(title) && !title.equalsIgnoreCase("rep:policy")) {
-                        ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
-
-                        valueMap.put("value", res.getPath());
-                        valueMap.put("text", title);
-                        resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, valueMap));
-                    }
-                }
-            }
-
-            DataSource ds = new SimpleDataSource(resourceList.iterator());
-            request.setAttribute(DataSource.class.getName(), ds);
-        } catch (SlingException e) {
-            LOGGER.error("Error in Get Drop Down Values {}", e.getMessage());
-        }
+  /**
+   * Do get.
+   *
+   * @param request  the request
+   * @param response the response
+   */
+  @Override
+  protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
+    if (Boolean.FALSE.equals(coveoIndexApiConfigService.isCoveoIndexEnabled())) {
+      return;
     }
+
+    try {
+      ResourceResolver resourceResolver = request.getResourceResolver();
+      Resource resource = resourceResolver.getResource(TEMPLATES_PATH);
+      Iterator<Resource> iterator;
+      List<Resource> resourceList = new ArrayList<>();
+
+      if (resource != null) {
+        iterator = resource.listChildren();
+        while (iterator.hasNext()) {
+          Resource res = iterator.next();
+          String title = res.getName();
+
+          if (StringUtils.isNotBlank(title) && !title.equalsIgnoreCase("rep:policy")) {
+            ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
+
+            valueMap.put("value", res.getPath());
+            valueMap.put("text", title);
+            resourceList.add(new ValueMapResource(resourceResolver, new ResourceMetadata(),
+                JcrConstants.NT_UNSTRUCTURED, valueMap));
+          }
+        }
+      }
+
+      DataSource ds = new SimpleDataSource(resourceList.iterator());
+      request.setAttribute(DataSource.class.getName(), ds);
+    } catch (SlingException e) {
+      LOGGER.error("Error in Get Drop Down Values {}", e.getMessage());
+    }
+  }
 }

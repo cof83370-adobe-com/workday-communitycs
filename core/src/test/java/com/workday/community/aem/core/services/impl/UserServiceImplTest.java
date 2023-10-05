@@ -32,97 +32,108 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class UserServiceImplTest {
-    private final AemContext context = new AemContext();
+  private final AemContext context = new AemContext();
 
-    /** The userService. */
-    @InjectMocks
-    UserServiceImpl userService;
+  /**
+   * The userService.
+   */
+  @InjectMocks
+  UserServiceImpl userService;
 
-    /** The ResourceResolver class. */
-    @Mock
-    ResourceResolver resourceResolver;
+  /**
+   * The ResourceResolver class.
+   */
+  @Mock
+  ResourceResolver resourceResolver;
 
-    @Mock
-    SearchApiConfigService searchConfigService;
+  @Mock
+  SearchApiConfigService searchConfigService;
 
-    @Mock
-    SnapService snapService;
+  @Mock
+  SnapService snapService;
 
-    @Mock
-    ResourceResolverFactory resResolverFactory;
+  @Mock
+  ResourceResolverFactory resResolverFactory;
 
-    CacheManagerServiceImpl cacheManager;
+  CacheManagerServiceImpl cacheManager;
 
-    /** The UserManager class. */
-    @Mock
-    UserManager userManager;
+  /**
+   * The UserManager class.
+   */
+  @Mock
+  UserManager userManager;
 
-    /** The Session class. */
-    @Mock
-    Session session;
+  /**
+   * The Session class.
+   */
+  @Mock
+  Session session;
 
-    /** The mocked user. */
-    @Mock
-    User user;
+  /**
+   * The mocked user.
+   */
+  @Mock
+  User user;
 
-    @Mock
-    RunModeConfigService runModeConfigService;
+  @Mock
+  RunModeConfigService runModeConfigService;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        cacheManager = new CacheManagerServiceImpl();
-        CacheConfig cacheConfig = TestUtil.getCacheConfig();
-        cacheManager.activate(cacheConfig);
-        cacheManager.setResourceResolverFactory(resResolverFactory);
-        context.registerService(CacheManagerServiceImpl.class, cacheManager);
+  @BeforeEach
+  public void setUp() throws Exception {
+    cacheManager = new CacheManagerServiceImpl();
+    CacheConfig cacheConfig = TestUtil.getCacheConfig();
+    cacheManager.activate(cacheConfig);
+    cacheManager.setResourceResolverFactory(resResolverFactory);
+    context.registerService(CacheManagerServiceImpl.class, cacheManager);
 
-        userService.setCacheManager(cacheManager);
-        lenient().when(runModeConfigService.getInstance()).thenReturn(GlobalConstants.PUBLISH);
-        session = mock(Session.class);
-        userManager = mock(UserManager.class);
-        user = mock(User.class);
-        lenient().when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(resourceResolver);
-        lenient().when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        lenient().when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
-        lenient().when(userManager.getAuthorizable(anyString())).thenReturn(user);
-    }
+    userService.setCacheManager(cacheManager);
+    lenient().when(runModeConfigService.getInstance()).thenReturn(GlobalConstants.PUBLISH);
+    session = mock(Session.class);
+    userManager = mock(UserManager.class);
+    user = mock(User.class);
+    lenient().when(resResolverFactory.getServiceResourceResolver(any()))
+        .thenReturn(resourceResolver);
+    lenient().when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    lenient().when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+    lenient().when(userManager.getAuthorizable(anyString())).thenReturn(user);
+  }
 
-    /**
-     * Test deleteUser method.
-     *
-     * @throws RepositoryException RepositoryException object.
-     */
-    @Test
-    public void testDeleteUser() throws RepositoryException, CacheException {
-        String userId = "testUser";
-        SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
-        lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);
-        lenient().when(session.getUserID()).thenReturn(userId);
-        lenient().when(user.getPath()).thenReturn("/workdaycommunity/okta");
+  /**
+   * Test deleteUser method.
+   *
+   * @throws RepositoryException RepositoryException object.
+   */
+  @Test
+  public void testDeleteUser() throws RepositoryException, CacheException {
+    String userId = "testUser";
+    SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
+    lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);
+    lenient().when(session.getUserID()).thenReturn(userId);
+    lenient().when(user.getPath()).thenReturn("/workdaycommunity/okta");
 
-        userService.invalidCurrentUser(request, false);
-        verify(user).remove();
-        verify(session).logout();
-    }
+    userService.invalidCurrentUser(request, false);
+    verify(user).remove();
+    verify(session).logout();
+  }
 
-    /**
-     * Test getUser method.
-     *
-     * @throws RepositoryException RepositoryException object.
-     */
-    @Test
-    public void testGetUserWithResourceResolver() throws RepositoryException, CacheException {
-        // Success case.
-        String userId = "testUser";
-        lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
-        User test = userService.getUser(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE, userId);
-        assertEquals(test, user);
-    }
+  /**
+   * Test getUser method.
+   *
+   * @throws RepositoryException RepositoryException object.
+   */
+  @Test
+  public void testGetUserWithResourceResolver() throws RepositoryException, CacheException {
+    // Success case.
+    String userId = "testUser";
+    lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+    User test = userService.getUser(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE, userId);
+    assertEquals(test, user);
+  }
 
-    @AfterEach
-    public void tearDown() {
-    }
+  @AfterEach
+  public void tearDown() {
+  }
 
 }

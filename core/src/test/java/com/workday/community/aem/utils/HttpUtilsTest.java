@@ -19,10 +19,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith({MockitoExtension.class})
 public class HttpUtilsTest {
-  private HttpServletRequest request;
-  private HttpServletResponse response;
-
   private final Cookie testCookie = new Cookie("test", "test");
+
+  private HttpServletRequest request;
+
+  private HttpServletResponse response;
 
   @BeforeEach
   public void setup() {
@@ -30,7 +31,7 @@ public class HttpUtilsTest {
     this.response = mock(HttpServletResponse.class);
 
     Cookie[] cookies = new Cookie[] {new Cookie("test", "testValue"),
-    new Cookie("testName", "testValue1"), new Cookie(EMAIL_NAME, "community@workday.com")};
+        new Cookie("testName", "testValue1"), new Cookie(EMAIL_NAME, "community@workday.com")};
     lenient().when(request.getCookies()).thenReturn(cookies);
   }
 
@@ -49,7 +50,7 @@ public class HttpUtilsTest {
 
   @Test
   public void testDropCookies() {
-    int count = HttpUtils.dropCookies(request, response, "/", new String[]{"test", "testName"});
+    int count = HttpUtils.dropCookies(request, response, "/", new String[] {"test", "testName"});
     assertEquals(2, count);
   }
 }

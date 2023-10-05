@@ -69,6 +69,7 @@ public class TestUtil {
       }
     };
   }
+
   public static CoveoSearchConfig getCoveoSearchConfig() {
     return new CoveoSearchConfig() {
 
@@ -143,11 +144,12 @@ public class TestUtil {
       }
     };
   }
+
   public static User getMockUser() throws RepositoryException {
     User user = mock(User.class);
     Value val1 = mock(Value.class);
     Value val2 = mock(Value.class);
-    Value[] val = new Value[]{val1, val2};
+    Value[] val = new Value[] {val1, val2};
     lenient().when(user.getProperty(anyString())).thenReturn(val);
     lenient().when(val[0].getString()).thenReturn("testSfId");
     return user;

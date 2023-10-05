@@ -58,8 +58,10 @@ public class CoveoRelatedInformationModelTest {
 
   @Mock
   SlingHttpServletRequest request;
+
   @Mock
   SearchApiConfigService searchApiConfigService;
+
   @Mock
   SnapService snapService;
 
@@ -79,12 +81,15 @@ public class CoveoRelatedInformationModelTest {
   CoveoRelatedInformationModelImpl coveoRelatedInformationModel;
 
   MockedStatic<DamUtils> mockDamUtils;
+
   MockedStatic<ResolverUtil> resolverUtil;
 
   @BeforeEach
   public void setUp() throws CacheException {
     context.addModelsForClasses(CoveoRelatedInformationModel.class);
-    context.load().json("/com/workday/community/aem/core/models/impl/CoveoRelatedInformationModel.json", "/component");
+    context.load()
+        .json("/com/workday/community/aem/core/models/impl/CoveoRelatedInformationModel.json",
+            "/component");
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
     context.registerService(SnapService.class, snapService);
     context.registerService(SlingHttpServletRequest.class, request);
@@ -112,13 +117,15 @@ public class CoveoRelatedInformationModelTest {
     lenient().when(tagManager.resolve("product:")).thenReturn(tag1);
     lenient().when(tagManager.resolve("using-workday:")).thenReturn(tag2);
 
-    String fieldMapConfig = "{\"tagIdToCoveoField\": {\"product\" : \"coveo_product\", \"using-workday\": \"coveo_using-workday\"}}";
+    String fieldMapConfig =
+        "{\"tagIdToCoveoField\": {\"product\" : \"coveo_product\", \"using-workday\": \"coveo_using-workday\"}}";
     Gson gson = new Gson();
     JsonObject fieldMapConfigObj = gson.fromJson(fieldMapConfig, JsonObject.class);
 
     mockDamUtils = mockStatic(DamUtils.class);
 
-    mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver), eq("/content/dam/workday-community/resources/coveo-field-map.json")))
+    mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver),
+            eq("/content/dam/workday-community/resources/coveo-field-map.json")))
         .thenReturn(fieldMapConfigObj);
 
     resolverUtil = mockStatic(ResolverUtil.class);
@@ -167,7 +174,7 @@ public class CoveoRelatedInformationModelTest {
       }
 
       @Override
-      public BigDecimal getDecimal(){
+      public BigDecimal getDecimal() {
         return null;
       }
 
@@ -192,15 +199,18 @@ public class CoveoRelatedInformationModelTest {
     lenient().when(mockResourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
     lenient().when(userManager.getAuthorizable(eq("userId"))).thenReturn(user);
     lenient().when(user.getProperty(eq(SnapConstants.PROFILE_SOURCE_ID))).thenReturn(profileSId);
-    String testData = "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
-    lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
+    String testData =
+        "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
+    lenient().when(userService.getUserUUID(anyString()))
+        .thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
     JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");
     lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
 
     JsonObject searchConfig = coveoRelatedInformationModel.getSearchConfig();
     assertEquals(5, searchConfig.size());
-    Assert.assertEquals(searchConfig.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");
+    Assert.assertEquals(searchConfig.get("clientId").getAsString(),
+        "eb6f7b59-e3d5-5199-8019-394c8982412b");
   }
 
   @AfterEach

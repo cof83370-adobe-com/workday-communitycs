@@ -24,7 +24,9 @@ import org.slf4j.LoggerFactory;
 
 public class CommonUtils {
 
-  /** The logger. */
+  /**
+   * The logger.
+   */
   private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtils.class);
 
   /**
@@ -38,8 +40,10 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     String sfId = null;
     try {
-      User user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
-      sfId = requireNonNull(user).getProperty(WccConstants.PROFILE_SOURCE_ID) != null ? requireNonNull(user.getProperty(WccConstants.PROFILE_SOURCE_ID))[0].getString() : null;
+      User user =
+          (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      sfId = requireNonNull(user).getProperty(WccConstants.PROFILE_SOURCE_ID) != null ?
+          requireNonNull(user.getProperty(WccConstants.PROFILE_SOURCE_ID))[0].getString() : null;
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUserSourceId method {}", e.getMessage());
     }
@@ -57,8 +61,10 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     String userId = null;
     try {
-      User user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
-      userId = requireNonNull(user).getProperty(WccConstants.PROFILE_OKTA_ID) != null ? requireNonNull(user.getProperty(WccConstants.PROFILE_OKTA_ID))[0].getString() : null;
+      User user =
+          (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      userId = requireNonNull(user).getProperty(WccConstants.PROFILE_OKTA_ID) != null ?
+          requireNonNull(user.getProperty(WccConstants.PROFILE_OKTA_ID))[0].getString() : null;
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
     }
@@ -77,8 +83,10 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     String ccType = null;
     try {
-      User user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
-      ccType = requireNonNull(user).getProperty(WccConstants.CC_TYPE) != null ? requireNonNull(user.getProperty(WccConstants.CC_TYPE))[0].getString() : null;
+      User user =
+          (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      ccType = requireNonNull(user).getProperty(WccConstants.CC_TYPE) != null ?
+          requireNonNull(user.getProperty(WccConstants.CC_TYPE))[0].getString() : null;
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
     }
@@ -97,7 +105,8 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     User user = null;
     try {
-      user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      user =
+          (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());
     }
@@ -134,10 +143,11 @@ public class CommonUtils {
    *
    * @param source The source Json object.
    * @param target The target Json object.
-   * @param attr The attribute.
-   * @param env The target environment.
+   * @param attr   The attribute.
+   * @param env    The target environment.
    */
-  public static void updateSourceFromTarget(JsonObject source, JsonObject target, String attr, String env) {
+  public static void updateSourceFromTarget(JsonObject source, JsonObject target, String attr,
+                                            String env) {
     for (String key : target.keySet()) {
       if (source.has(key)) {
         JsonElement valSource = source.get(key);
@@ -147,19 +157,22 @@ public class CommonUtils {
           updateSourceFromTarget((JsonObject) valSource, (JsonObject) valTarget, attr, env);
         } else if (valSource instanceof JsonArray && valTarget instanceof JsonArray) {
           updateSourceFromTarget((JsonArray) valSource, (JsonArray) valTarget, attr, env);
-        } else if (valTarget != null && !valTarget.isJsonNull() && (valSource == null || !valSource.equals(valTarget))) {
+        } else if (valTarget != null && !valTarget.isJsonNull() &&
+            (valSource == null || !valSource.equals(valTarget))) {
           JsonElement sourceAttr = source.get(attr);
           JsonElement targetAttr = target.get(attr);
           if ((sourceAttr == null) || (targetAttr == null)
-              || sourceAttr.isJsonNull() || targetAttr.isJsonNull() || !sourceAttr.equals(targetAttr)) {
-             return;
+              || sourceAttr.isJsonNull() || targetAttr.isJsonNull() ||
+              !sourceAttr.equals(targetAttr)) {
+            return;
           } else {
             // Only update link in beta
             if (key.equals("href")) {
               String valString = valTarget.getAsString();
               if (valString.contains("beta-content.workday.com")) {
                 if (env != null && !env.equalsIgnoreCase("prod")) {
-                  valString = valString.replace("beta-content.workday.com", env + "-content.workday.com");
+                  valString =
+                      valString.replace("beta-content.workday.com", env + "-content.workday.com");
                 }
                 valTarget = new JsonPrimitive(valString);
                 source.add(key, valTarget);
@@ -177,9 +190,10 @@ public class CommonUtils {
    *
    * @param source The source Json array.
    * @param target The target Json array.
-   * @param attr The attribute.
+   * @param attr   The attribute.
    */
-  public static void updateSourceFromTarget(JsonArray source, JsonArray target, String attr, String env) {
+  public static void updateSourceFromTarget(JsonArray source, JsonArray target, String attr,
+                                            String env) {
     for (int i = 0; i < source.size(); i++) {
       JsonElement valSource = source.get(i);
 

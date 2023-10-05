@@ -50,181 +50,207 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class PageRetireProcessStepTest {
 
-    /** The context. */
-    private final AemContext context = new AemContext(ResourceResolverType.JCR_MOCK);
+  /**
+   * The context.
+   */
+  private final AemContext context = new AemContext(ResourceResolverType.JCR_MOCK);
 
-    /** The session. */
-    private final Session session = context.resourceResolver().adaptTo(Session.class);
+  /**
+   * The session.
+   */
+  private final Session session = context.resourceResolver().adaptTo(Session.class);
 
-    /** The retire process step. */
-    @InjectMocks
-    PageRetireProcessStep retireProcessStep;
+  /**
+   * The meta data.
+   */
+  private final MetaDataMap metaData = new SimpleMetaDataMap();
 
-    /** The workflow session. */
-    @Mock
-    private WorkflowSession workflowSession;
+  /**
+   * The retire process step.
+   */
+  @InjectMocks
+  PageRetireProcessStep retireProcessStep;
 
-    /** The workflow. */
-    @Mock
-    private Workflow workflow;
+  /**
+   * The cache manager.
+   */
+  @Mock
+  CacheManagerService cacheManager;
 
-    /** The workflow data. */
-    @Mock
-    private WorkflowData workflowData;
+  /**
+   * The replicator.
+   */
+  @Mock
+  Replicator replicator;
 
-    /** The query service. */
-    @Mock
-    private QueryService queryService;
+  /**
+   * The workflow session.
+   */
+  @Mock
+  private WorkflowSession workflowSession;
 
-    /** The cache manager. */
-    @Mock
-    CacheManagerService cacheManager;
+  /**
+   * The workflow.
+   */
+  @Mock
+  private Workflow workflow;
 
-    /** The replicator. */
-    @Mock
-    Replicator replicator;
+  /**
+   * The workflow data.
+   */
+  @Mock
+  private WorkflowData workflowData;
 
-    /** The resolver. */
-    @Mock
-    private ResourceResolver resolver;
+  /**
+   * The query service.
+   */
+  @Mock
+  private QueryService queryService;
 
-    /** The work item. */
-    @Mock
-    private WorkItem workItem;
+  /**
+   * The resolver.
+   */
+  @Mock
+  private ResourceResolver resolver;
 
-    /** The meta data. */
-    private final MetaDataMap metaData = new SimpleMetaDataMap();
+  /**
+   * The work item.
+   */
+  @Mock
+  private WorkItem workItem;
 
-    /**
-     * Setup.
-     *
-     * @throws LoginException the login exception
-     */
-    @BeforeEach
-    void setup() throws LoginException {
-        lenient().when(workflowSession.adaptTo(Session.class)).thenReturn(session);
-        lenient().when(workflow.getMetaDataMap()).thenReturn(metaData);
-        lenient().when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-        lenient().when(workItem.getWorkflow()).thenReturn(workflow);
-        lenient().when(workItem.getWorkflowData()).thenReturn(workflowData);
+  /**
+   * Setup.
+   *
+   * @throws LoginException the login exception
+   */
+  @BeforeEach
+  void setup() throws LoginException {
+    lenient().when(workflowSession.adaptTo(Session.class)).thenReturn(session);
+    lenient().when(workflow.getMetaDataMap()).thenReturn(metaData);
+    lenient().when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
+    lenient().when(workItem.getWorkflow()).thenReturn(workflow);
+    lenient().when(workItem.getWorkflowData()).thenReturn(workflowData);
 
-        assertNotNull(session);
+    assertNotNull(session);
 
-        context.registerAdapter(WorkflowSession.class, Session.class, session);
-        context.load().json(
-                "/com/workday/community/aem/core/models/impl/PageRetireProcessStepTestData.json",
-                "/content");
-        context.registerService(ResourceResolver.class, resolver);
-        context.registerService(QueryService.class, queryService);
-        context.registerService(Replicator.class, replicator);
-        Page currentPage = context.currentResource("/content/page-no-retired-badge").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        lenient().when(workflowSession.adaptTo(ResourceResolver.class)).thenReturn(resolver);
-    }
+    context.registerAdapter(WorkflowSession.class, Session.class, session);
+    context.load().json(
+        "/com/workday/community/aem/core/models/impl/PageRetireProcessStepTestData.json",
+        "/content");
+    context.registerService(ResourceResolver.class, resolver);
+    context.registerService(QueryService.class, queryService);
+    context.registerService(Replicator.class, replicator);
+    Page currentPage =
+        context.currentResource("/content/page-no-retired-badge").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    lenient().when(workflowSession.adaptTo(ResourceResolver.class)).thenReturn(resolver);
+  }
 
-    /**
-     * My workflow with retired page tag true.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    public void testExecuteMethod() throws Exception {
-        lenient().when(workflowData.getPayload()).thenReturn("/content/page-with-retired-badge");
-        Node node = session.getNode("/content/page-with-retired-badge/jcr:content");
-        assertNotNull(node);
-        Boolean actualResult = node.hasProperty(RETIREMENT_STATUS_PROP);
-        String propVal = node.getProperty(RETIREMENT_STATUS_PROP).getString();
-        assertTrue(actualResult);
-        assertEquals(RETIREMENT_STATUS_VAL, propVal);
-        retireProcessStep.execute(workItem, workflowSession, metaData);
-        assertNotNull(session);
+  /**
+   * My workflow with retired page tag true.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  public void testExecuteMethod() throws Exception {
+    lenient().when(workflowData.getPayload()).thenReturn("/content/page-with-retired-badge");
+    Node node = session.getNode("/content/page-with-retired-badge/jcr:content");
+    assertNotNull(node);
+    Boolean actualResult = node.hasProperty(RETIREMENT_STATUS_PROP);
+    String propVal = node.getProperty(RETIREMENT_STATUS_PROP).getString();
+    assertTrue(actualResult);
+    assertEquals(RETIREMENT_STATUS_VAL, propVal);
+    retireProcessStep.execute(workItem, workflowSession, metaData);
+    assertNotNull(session);
 
-    }
+  }
 
-    /**
-     * Test remove book nodes.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testRemoveBookNodes() throws Exception {
-        List<String> pathList = new ArrayList<>();
-        pathList.add("/content/book-1/jcr:content/root/container/container/book");
-        lenient().when(queryService.getBookNodesByPath("/content/page-with-retired-badge", null)).thenReturn(pathList);
-        lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
-        Resource resource = mock(Resource.class);
-        lenient().when(resolver.getResource(anyString())).thenReturn(resource);
-        Node node = mock(Node.class);
-        lenient().when(resource.adaptTo(Node.class)).thenReturn(node);
-        Node parentNode = mock(Node.class);
-        lenient().when(node.getParent()).thenReturn(parentNode);
-        lenient().when(parentNode.getPath()).thenReturn("/content/sample/node/path");
-        retireProcessStep.removeBookNodes("/content/page-with-retired-badge", session);
-        verify(resolver).close();
-    }
+  /**
+   * Test remove book nodes.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testRemoveBookNodes() throws Exception {
+    List<String> pathList = new ArrayList<>();
+    pathList.add("/content/book-1/jcr:content/root/container/container/book");
+    lenient().when(queryService.getBookNodesByPath("/content/page-with-retired-badge", null))
+        .thenReturn(pathList);
+    lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
+    Resource resource = mock(Resource.class);
+    lenient().when(resolver.getResource(anyString())).thenReturn(resource);
+    Node node = mock(Node.class);
+    lenient().when(resource.adaptTo(Node.class)).thenReturn(node);
+    Node parentNode = mock(Node.class);
+    lenient().when(node.getParent()).thenReturn(parentNode);
+    lenient().when(parentNode.getPath()).thenReturn("/content/sample/node/path");
+    retireProcessStep.removeBookNodes("/content/page-with-retired-badge", session);
+    verify(resolver).close();
+  }
 
-    /**
-     * Test add retirement badge true.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testAddRetirementBadgeFor30DaysWorkflowModel() throws Exception {
-        lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
-        Resource mockedResource = mock(Resource.class);
-        lenient().when(resolver.getResource(anyString())).thenReturn(mockedResource);
+  /**
+   * Test add retirement badge true.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testAddRetirementBadgeFor30DaysWorkflowModel() throws Exception {
+    lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
+    Resource mockedResource = mock(Resource.class);
+    lenient().when(resolver.getResource(anyString())).thenReturn(mockedResource);
 
-        ModifiableValueMap modiMap = mock(ModifiableValueMap.class);
-        lenient().when(mockedResource.adaptTo(ModifiableValueMap.class)).thenReturn(modiMap);
+    ModifiableValueMap modiMap = mock(ModifiableValueMap.class);
+    lenient().when(mockedResource.adaptTo(ModifiableValueMap.class)).thenReturn(modiMap);
 
-        Workflow workflowMock = mock(Workflow.class);
-        lenient().when(workItem.getWorkflow()).thenReturn(workflowMock);
+    Workflow workflowMock = mock(Workflow.class);
+    lenient().when(workItem.getWorkflow()).thenReturn(workflowMock);
 
-        WorkflowModel workflowModelMock = mock(WorkflowModel.class);
-        lenient().when(workflowMock.getWorkflowModel()).thenReturn(workflowModelMock);
+    WorkflowModel workflowModelMock = mock(WorkflowModel.class);
+    lenient().when(workflowMock.getWorkflowModel()).thenReturn(workflowModelMock);
 
-        lenient().when(workflowModelMock.getId())
-                .thenReturn("/var/workflow/models/workday-community/retirement_workflow_30_days");
+    lenient().when(workflowModelMock.getId())
+        .thenReturn("/var/workflow/models/workday-community/retirement_workflow_30_days");
 
-        retireProcessStep.addRetirementBadge("/content/page-no-retired-badge", workItem);
-        verify(modiMap, times(1)).put(LAST_RETIREMENT_ACTION, SCHEDULED_RETIREMENT);
-    }
+    retireProcessStep.addRetirementBadge("/content/page-no-retired-badge", workItem);
+    verify(modiMap, times(1)).put(LAST_RETIREMENT_ACTION, SCHEDULED_RETIREMENT);
+  }
 
-    /**
-     * Test add retirement badge for immediate workflow model.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testAddRetirementBadgeForImmediateWorkflowModel() throws Exception {
-        lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
-        Resource mockedResource = mock(Resource.class);
-        lenient().when(resolver.getResource(anyString())).thenReturn(mockedResource);
+  /**
+   * Test add retirement badge for immediate workflow model.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testAddRetirementBadgeForImmediateWorkflowModel() throws Exception {
+    lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
+    Resource mockedResource = mock(Resource.class);
+    lenient().when(resolver.getResource(anyString())).thenReturn(mockedResource);
 
-        ModifiableValueMap modiMap = mock(ModifiableValueMap.class);
-        lenient().when(mockedResource.adaptTo(ModifiableValueMap.class)).thenReturn(modiMap);
+    ModifiableValueMap modiMap = mock(ModifiableValueMap.class);
+    lenient().when(mockedResource.adaptTo(ModifiableValueMap.class)).thenReturn(modiMap);
 
-        Workflow workflowMock = mock(Workflow.class);
-        lenient().when(workItem.getWorkflow()).thenReturn(workflowMock);
+    Workflow workflowMock = mock(Workflow.class);
+    lenient().when(workItem.getWorkflow()).thenReturn(workflowMock);
 
-        WorkflowModel workflowModelMock = mock(WorkflowModel.class);
-        lenient().when(workflowMock.getWorkflowModel()).thenReturn(workflowModelMock);
+    WorkflowModel workflowModelMock = mock(WorkflowModel.class);
+    lenient().when(workflowMock.getWorkflowModel()).thenReturn(workflowModelMock);
 
-        lenient().when(workflowModelMock.getId())
-                .thenReturn("/var/workflow/models/workday-community/retirement_workflow_immediate");
+    lenient().when(workflowModelMock.getId())
+        .thenReturn("/var/workflow/models/workday-community/retirement_workflow_immediate");
 
-        retireProcessStep.addRetirementBadge("/content/page-no-retired-badge", workItem);
-        verify(modiMap, times(1)).put(LAST_RETIREMENT_ACTION, IMMEDIATE_RETIREMENT);
-    }
+    retireProcessStep.addRetirementBadge("/content/page-no-retired-badge", workItem);
+    verify(modiMap, times(1)).put(LAST_RETIREMENT_ACTION, IMMEDIATE_RETIREMENT);
+  }
 
-    /**
-     * Test replicate page.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testReplicatePage() throws Exception {
-        retireProcessStep.replicatePage(session, "/content/page-with-retired-badge");
-        assertNotNull(session);
-    }
+  /**
+   * Test replicate page.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testReplicatePage() throws Exception {
+    retireProcessStep.replicatePage(session, "/content/page-with-retired-badge");
+    assertNotNull(session);
+  }
 }

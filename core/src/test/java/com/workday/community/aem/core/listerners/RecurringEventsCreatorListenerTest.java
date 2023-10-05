@@ -36,6 +36,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class RecurringEventsCreatorListenerTest {
 
   /**
+   * The context.
+   */
+  private final AemContext context = new AemContext(ResourceResolverType.RESOURCERESOLVER_MOCK);
+
+  /**
    * The PageResourceListener.
    */
   @InjectMocks
@@ -43,6 +48,16 @@ public class RecurringEventsCreatorListenerTest {
 
   @Mock
   CacheManagerService cacheManager;
+
+  /**
+   * The expected event node.
+   */
+  Node expectedEventNode;
+
+  /**
+   * The expected event map.
+   */
+  ValueMap expectedEventMap;
 
   /**
    * The page manager.
@@ -57,25 +72,10 @@ public class RecurringEventsCreatorListenerTest {
   private Session session;
 
   /**
-   * The expected event node.
-   */
-  Node expectedEventNode;
-
-  /**
-   * The expected event map.
-   */
-  ValueMap expectedEventMap;
-
-  /**
    * The resolver.
    */
   @Mock
   private ResourceResolver resolver;
-
-  /**
-   * The context.
-   */
-  private final AemContext context = new AemContext(ResourceResolverType.RESOURCERESOLVER_MOCK);
 
   /**
    * Sets the up.
@@ -87,14 +87,17 @@ public class RecurringEventsCreatorListenerTest {
     context.load().json(
         "/com/workday/community/aem/core/models/impl/RecurringEventsCreatorTestData.json",
         "/content");
-    Page currentPage = Objects.requireNonNull(context.currentResource("/content/sample-recurring-events-page")).adaptTo(Page.class);
+    Page currentPage =
+        Objects.requireNonNull(context.currentResource("/content/sample-recurring-events-page"))
+            .adaptTo(Page.class);
     context.registerService(Page.class, Objects.requireNonNull(currentPage));
     context.registerService(ResourceResolver.class, resolver);
     lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
     Resource resource = mock(Resource.class);
     expectedEventNode = mock(Node.class);
     expectedEventMap = mock(ValueMap.class);
-    lenient().when(resolver.getResource(Objects.requireNonNull(context.currentPage()).getContentResource().getPath()))
+    lenient().when(resolver.getResource(
+            Objects.requireNonNull(context.currentPage()).getContentResource().getPath()))
         .thenReturn(resource);
     lenient().when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
     lenient().when(resource.adaptTo(Node.class)).thenReturn(expectedEventNode);
@@ -127,7 +130,8 @@ public class RecurringEventsCreatorListenerTest {
     lenient().when(prop4.getDate()).thenReturn(Calendar.getInstance());
 
     Page newPage = mock(Page.class);
-    lenient().when(pageManager.create(anyString(), anyString(), anyString(), anyString(), anyBoolean()))
+    lenient().when(
+            pageManager.create(anyString(), anyString(), anyString(), anyString(), anyBoolean()))
         .thenReturn(newPage);
     String newlyCreatedPagePath = "/content/wd-coomunity/en-us/events/test-11-10-2023";
     lenient().when(newPage.getPath()).thenReturn(newlyCreatedPagePath);
@@ -138,12 +142,15 @@ public class RecurringEventsCreatorListenerTest {
     String[] eventFormatTags = {"event:event-format/webinar"};
     Calendar eventStartDateCalInstance = mock(Calendar.class);
     Calendar eventEndDateCalInstance = mock(Calendar.class);
-    lenient().when(expectedEventMap.get("eventStartDate", Calendar.class)).thenReturn(eventStartDateCalInstance);
-    lenient().when(expectedEventMap.get("eventEndDate", Calendar.class)).thenReturn(eventEndDateCalInstance);
+    lenient().when(expectedEventMap.get("eventStartDate", Calendar.class))
+        .thenReturn(eventStartDateCalInstance);
+    lenient().when(expectedEventMap.get("eventEndDate", Calendar.class))
+        .thenReturn(eventEndDateCalInstance);
     lenient().when(expectedEventMap.get("eventFormat", String[].class)).thenReturn(eventFormatTags);
     lenient().when(expectedNewEventNode.getSession()).thenReturn(session);
     recurringEventsCreatorListener
-        .generateRecurringEventPages(Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
+        .generateRecurringEventPages(
+            Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
     verify(resolver).close();
   }
 
@@ -158,7 +165,8 @@ public class RecurringEventsCreatorListenerTest {
     lenient().when(expectedEventNode.hasProperty("recurringEvents")).thenReturn(false);
 
     recurringEventsCreatorListener
-        .generateRecurringEventPages(Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
+        .generateRecurringEventPages(
+            Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
     verify(resolver).close();
   }
 
@@ -174,20 +182,21 @@ public class RecurringEventsCreatorListenerTest {
     lenient().when(expectedEventNode.getProperty("recurringEvents")).thenReturn(prop);
     lenient().when(prop.getString()).thenReturn("no");
     recurringEventsCreatorListener
-        .generateRecurringEventPages(Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
+        .generateRecurringEventPages(
+            Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
     verify(resolver).close();
   }
 
   /**
    * Test generate recurring event pages when issue with original page creation.
-   *
    */
   @Test
   void testGenerateRecurringEventPagesWhenIssueWithOriginalPageCreation() {
     expectedEventNode = null;
 
     recurringEventsCreatorListener
-        .generateRecurringEventPages(Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
+        .generateRecurringEventPages(
+            Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
     verify(resolver).close();
   }
 
@@ -201,7 +210,8 @@ public class RecurringEventsCreatorListenerTest {
     mockPageProps(expectedEventNode, expectedEventMap);
     mockPagePropTags(expectedEventMap);
     Page newPage = mock(Page.class);
-    lenient().when(pageManager.create(anyString(), anyString(), anyString(), anyString(), anyBoolean()))
+    lenient().when(
+            pageManager.create(anyString(), anyString(), anyString(), anyString(), anyBoolean()))
         .thenReturn(newPage);
     String newlyCreatedPagePath = "/content/wd-coomunity/en-us/events/test-11-10-2023";
     lenient().when(newPage.getPath()).thenReturn(newlyCreatedPagePath);
@@ -214,7 +224,8 @@ public class RecurringEventsCreatorListenerTest {
     lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
     lenient().when(expectedNewEventNode.getSession()).thenReturn(session);
     recurringEventsCreatorListener
-        .generateRecurringEventPages(Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
+        .generateRecurringEventPages(
+            Objects.requireNonNull(context.currentPage()).getContentResource().getPath());
     verify(resolver).close();
   }
 
@@ -226,27 +237,27 @@ public class RecurringEventsCreatorListenerTest {
   void mockPagePropTags(ValueMap expectedEventMap) {
 
     lenient().when(expectedEventMap.get("regionCountryTags", String[].class))
-        .thenReturn(new String[]{"region-and-country:emea"});
+        .thenReturn(new String[] {"region-and-country:emea"});
     lenient().when(expectedEventMap.get("userTags", String[].class))
-        .thenReturn(new String[]{"user:persona"});
+        .thenReturn(new String[] {"user:persona"});
     lenient().when(expectedEventMap.get("programsToolsTags", String[].class))
-        .thenReturn(new String[]{"product:"});
+        .thenReturn(new String[] {"product:"});
     lenient().when(expectedEventMap.get("industryTags", String[].class))
-        .thenReturn(new String[]{"industry:construction"});
+        .thenReturn(new String[] {"industry:construction"});
     lenient().when(expectedEventMap.get("usingWorkdayTags", String[].class))
-        .thenReturn(new String[]{"using-workday:7029"});
+        .thenReturn(new String[] {"using-workday:7029"});
     lenient().when(expectedEventMap.get("productTags", String[].class))
-        .thenReturn(new String[]{"product:107"});
+        .thenReturn(new String[] {"product:107"});
     lenient().when(expectedEventMap.get("releaseTags", String[].class))
-        .thenReturn(new String[]{"release:148", "release:149"});
+        .thenReturn(new String[] {"release:148", "release:149"});
     lenient().when(expectedEventMap.get("accessControlTags", String[].class))
-        .thenReturn(new String[]{"access-control:customer_peakon_only",
+        .thenReturn(new String[] {"access-control:customer_peakon_only",
             "access-control:partner_all"});
     // Return element was empty intentionally
     lenient().when(expectedEventMap.get("eventAudience", String[].class))
-        .thenReturn(new String[]{});
+        .thenReturn(new String[] {});
     lenient().when(expectedEventMap.get("eventFormat", String[].class))
-        .thenReturn(new String[]{"event:event-format/webinar/overview-demo"});
+        .thenReturn(new String[] {"event:event-format/webinar/overview-demo"});
 
   }
 
@@ -281,7 +292,8 @@ public class RecurringEventsCreatorListenerTest {
 
     lenient().when(expectedEventMap.get("alternateTimezone", String.class)).thenReturn("9 AM PDT");
 
-    lenient().when(expectedEventMap.get("updatedDate", Calendar.class)).thenReturn(Calendar.getInstance());
+    lenient().when(expectedEventMap.get("updatedDate", Calendar.class))
+        .thenReturn(Calendar.getInstance());
 
     // Intentionally returned null
     lenient().when(expectedEventMap.get("retirementDate", Calendar.class)).thenReturn(null);
@@ -289,12 +301,13 @@ public class RecurringEventsCreatorListenerTest {
     lenient().when(expectedEventMap.get("author", String.class)).thenReturn("testuser");
 
     lenient().when(expectedEventMap.get("contentType", String[].class))
-        .thenReturn(new String[]{"content-types:event"});
+        .thenReturn(new String[] {"content-types:event"});
 
     lenient().when(expectedEventMap.get("eventStartDate", Calendar.class))
         .thenReturn(Calendar.getInstance());
 
-    lenient().when(expectedEventMap.get("eventEndDate", Calendar.class)).thenReturn(Calendar.getInstance());
+    lenient().when(expectedEventMap.get("eventEndDate", Calendar.class))
+        .thenReturn(Calendar.getInstance());
   }
 
 }

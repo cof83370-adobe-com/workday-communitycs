@@ -28,7 +28,7 @@ public class OurmUtils {
   /**
    * Get the current user's Salesforce id.
    *
-   * @param request The current Request object.
+   * @param request     The current Request object.
    * @param userService The pass-in user service object.
    * @return The Salesforce id for current logged-in user.
    */
@@ -49,8 +49,9 @@ public class OurmUtils {
 
       sfId = sfIdObj[0].getString();
     } catch (RepositoryException re) {
-      LOGGER.error(String.format("getSalesForceId call fails with Repository Exception: %s.", re.getMessage()));
-    } catch (CacheException  ce) {
+      LOGGER.error(String.format("getSalesForceId call fails with Repository Exception: %s.",
+          re.getMessage()));
+    } catch (CacheException ce) {
       LOGGER.error("userService.getCurrentUser call fails");
     } catch (RuntimeException re) {
       LOGGER.error(String.format("Runtime exception: %s.", re.getMessage()));
@@ -83,7 +84,8 @@ public class OurmUtils {
   }
 
   public static boolean isMenuEmpty(Gson gson, String menuString) {
-    JsonObject retAsJsonObject = gson.fromJson(menuString, JsonObject.class).getAsJsonObject("primary");
+    JsonObject retAsJsonObject =
+        gson.fromJson(menuString, JsonObject.class).getAsJsonObject("primary");
     boolean menuEmpty = retAsJsonObject == null || retAsJsonObject.isJsonNull();
     if (!menuEmpty) {
       JsonElement primary = retAsJsonObject.get("menu");

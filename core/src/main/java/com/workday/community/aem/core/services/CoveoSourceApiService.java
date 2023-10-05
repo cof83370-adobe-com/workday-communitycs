@@ -7,24 +7,24 @@ import java.util.HashMap;
  */
 public interface CoveoSourceApiService {
 
-	/**
-	 * Generate api uri.
-	 *
-	 * @return The api uri
-	 */
-    String generateSourceApiUri();
+  /**
+   * Generate api uri.
+   *
+   * @return The api uri
+   */
+  String generateSourceApiUri();
 
-	/**
-	 * Call Api.
-	 *
-	 * @return The api response
-	 */
-    HashMap<String, Object> callApi();
+  /**
+   * Call Api.
+   *
+   * @return The api response
+   */
+  HashMap<String, Object> callApi();
 
-    /**
-	 * Get total indexed number.
-	 *
-	 * @return The number of indexed pages
-	 */
-    long getTotalIndexedNumber();
+  /**
+   * Get total indexed number.
+   *
+   * @return The number of indexed pages
+   */
+  long getTotalIndexedNumber();
 }

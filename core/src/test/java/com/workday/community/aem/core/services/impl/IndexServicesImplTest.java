@@ -24,40 +24,46 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 class IndexServicesImplTest {
 
-    /** The JobManager service. */
-    @Mock
-    JobManager jobManager;
+  /**
+   * The JobManager service.
+   */
+  @Mock
+  JobManager jobManager;
 
-    /** The IndexServicesImpl service. */
-    @InjectMocks
-    IndexServicesImpl indexServices;
+  /**
+   * The IndexServicesImpl service.
+   */
+  @InjectMocks
+  IndexServicesImpl indexServices;
 
-    /** The CoveoIndexApiConfigService service. */
-    @Mock
-    CoveoIndexApiConfigService coveoIndexApiConfigService;
+  /**
+   * The CoveoIndexApiConfigService service.
+   */
+  @Mock
+  CoveoIndexApiConfigService coveoIndexApiConfigService;
 
-    /**
-     * Test indexPages with data.
-     */
-    @Test
-    void indexPagesTest() {
-        List<String> paths = new ArrayList<String>();
-        ArrayList<String> processed = new ArrayList<String>();
-        paths.add("/page/path");
-        processed.add("/page/path");
-        when(coveoIndexApiConfigService.getBatchSize()).thenReturn(50);
-        indexServices.indexPages(paths);
-        verify(jobManager).addJob(eq(GlobalConstants.COMMUNITY_COVEO_JOB), anyMap());
-    }
+  /**
+   * Test indexPages with data.
+   */
+  @Test
+  void indexPagesTest() {
+    List<String> paths = new ArrayList<String>();
+    ArrayList<String> processed = new ArrayList<String>();
+    paths.add("/page/path");
+    processed.add("/page/path");
+    when(coveoIndexApiConfigService.getBatchSize()).thenReturn(50);
+    indexServices.indexPages(paths);
+    verify(jobManager).addJob(eq(GlobalConstants.COMMUNITY_COVEO_JOB), anyMap());
+  }
 
-    /**
-     * Test indexPages without data.
-     */
-    @Test
-    void indexPagesEmptyTest() {
-        List<String> paths = new ArrayList<String>();
-        when(coveoIndexApiConfigService.getBatchSize()).thenReturn(50);
-        indexServices.indexPages(paths);
-        verify(jobManager, never()).addJob(eq(GlobalConstants.COMMUNITY_COVEO_JOB), anyMap());
-    }
+  /**
+   * Test indexPages without data.
+   */
+  @Test
+  void indexPagesEmptyTest() {
+    List<String> paths = new ArrayList<String>();
+    when(coveoIndexApiConfigService.getBatchSize()).thenReturn(50);
+    indexServices.indexPages(paths);
+    verify(jobManager, never()).addJob(eq(GlobalConstants.COMMUNITY_COVEO_JOB), anyMap());
+  }
 }

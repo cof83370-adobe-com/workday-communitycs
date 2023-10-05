@@ -11,10 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class SearchApiConfigServiceImplTest {
 
   private final SearchApiConfigService searchApiConfigService = new SearchApiConfigServiceImpl();
+
   private final CoveoSearchConfig testConfig = TestUtil.getCoveoSearchConfig();
 
   @BeforeEach
@@ -25,7 +26,8 @@ public class SearchApiConfigServiceImplTest {
   @Test
   public void testAllApis() {
     assertEquals(searchApiConfigService.getSearchTokenAPI(), testConfig.tokenApi());
-    assertEquals(searchApiConfigService.getRecommendationAPIKey(), testConfig.recommendationApiKey());
+    assertEquals(searchApiConfigService.getRecommendationAPIKey(),
+        testConfig.recommendationApiKey());
     assertEquals(searchApiConfigService.getTokenValidTime(), testConfig.tokenValidTime());
     assertEquals(searchApiConfigService.getSearchTokenAPIKey(), testConfig.tokenApiKey());
     assertEquals(searchApiConfigService.getUpcomingEventAPIKey(), testConfig.upcomingEventApiKey());

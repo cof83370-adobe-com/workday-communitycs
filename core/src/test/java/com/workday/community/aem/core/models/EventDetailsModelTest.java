@@ -36,175 +36,195 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class EventDetailsModelTest {
 
-    /** The context. */
-    private final AemContext context = new AemContext();
+  /**
+   * The context.
+   */
+  private final AemContext context = new AemContext();
 
-    /** The event details model. */
-    private EventDetailsModel eventDetailsModel;
+  /**
+   * The event details model.
+   */
+  private EventDetailsModel eventDetailsModel;
 
-    /** The current page. */
-    private Page currentPage;
+  /**
+   * The current page.
+   */
+  private Page currentPage;
 
-    /** The resource. */
-    private Resource resource;
+  /**
+   * The resource.
+   */
+  private Resource resource;
 
-    /** The tm. */
-    private TagManager tm;
+  /**
+   * The tm.
+   */
+  private TagManager tm;
 
-    /** The tag. */
-    private Tag tag;
+  /**
+   * The tag.
+   */
+  private Tag tag;
 
-    /** The resolver. */
-    private ResourceResolver resolver;
+  /**
+   * The resolver.
+   */
+  private ResourceResolver resolver;
 
-    /** The Snap Service */
-    @Mock
-    private SnapService snapService;
+  /**
+   * The Snap Service
+   */
+  @Mock
+  private SnapService snapService;
 
-    /**
-     * Setup.
-     *
-     * @throws Exception the exception
-     */
-    @BeforeEach
-    public void setup() throws Exception {
-        context.addModelsForClasses(EventDetailsModel.class);
-        Map<String, Object> pageProperties = new HashMap<>();
-        pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
-        pageProperties.put("eventEndDate", "2022-11-24T00:54:02.000+05:30");
-        pageProperties.put("eventLocation", "California");
-        pageProperties.put("eventHost", "workday");
-        pageProperties.put("eventFormat", new String[] { "event:event-format/webinar" });
-        currentPage = context.create().page("/content/workday-community/event",
-                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
-        resource = context.create().resource(currentPage, "eventspage",
-                "sling:resourceType", "workday-community/components/structure/eventspage");
-        currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        context.registerService(SnapService.class, snapService);
-        String profileResponse = "{\"timeZone\":\"America/New_York\"}";
-        lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse);
-    }
+  /**
+   * Setup.
+   *
+   * @throws Exception the exception
+   */
+  @BeforeEach
+  public void setup() throws Exception {
+    context.addModelsForClasses(EventDetailsModel.class);
+    Map<String, Object> pageProperties = new HashMap<>();
+    pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
+    pageProperties.put("eventEndDate", "2022-11-24T00:54:02.000+05:30");
+    pageProperties.put("eventLocation", "California");
+    pageProperties.put("eventHost", "workday");
+    pageProperties.put("eventFormat", new String[] {"event:event-format/webinar"});
+    currentPage = context.create().page("/content/workday-community/event",
+        "/conf/workday-community/settings/wcm/templates/events", pageProperties);
+    resource = context.create().resource(currentPage, "eventspage",
+        "sling:resourceType", "workday-community/components/structure/eventspage");
+    currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(SnapService.class, snapService);
+    String profileResponse = "{\"timeZone\":\"America/New_York\"}";
+    lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse);
+  }
 
-    /**
-     * Test get time format.
-     *
-     * @throws Exception the exception
-     */
-   // @Test
-    void testGetTimeFormat() throws Exception {
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-		Date formattedStartDate = formatter.parse(currentPage.getProperties().get("eventStartDate", String.class));
-		ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
-        ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
-        assertEquals("00:44", DateTimeFormatter.ofPattern("HH:mm").format(originDatetime));
-    }
+  /**
+   * Test get time format.
+   *
+   * @throws Exception the exception
+   */
+  // @Test
+  void testGetTimeFormat() throws Exception {
+    eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+    assertNotNull(eventDetailsModel);
+    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    Date formattedStartDate =
+        formatter.parse(currentPage.getProperties().get("eventStartDate", String.class));
+    ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
+    ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
+    assertEquals("00:44", DateTimeFormatter.ofPattern("HH:mm").format(originDatetime));
+  }
 
-    /**
-     * Test get length.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testGetLength() throws Exception {
-        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        assertEquals(3, eventDetailsModel.getEventLengthDays());
-    }
+  /**
+   * Test get length.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testGetLength() throws Exception {
+    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+    assertNotNull(eventDetailsModel);
+    assertEquals(3, eventDetailsModel.getEventLengthDays());
+  }
 
-    /**
-     * Test get date format.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testGetDateFormat() throws Exception {
-        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        DateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy");
-        Date formattedStartDate = formatter.parse(eventDetailsModel.getDateFormat());
-        ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
-        localDateTime = localDateTime.withHour(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[0]));
-        localDateTime = localDateTime.withMinute(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[1]));
-        ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
-        assertEquals("Tuesday, Nov 22, 2022", DateTimeFormatter.ofPattern("EEEE, MMM dd, yyyy").format(originDatetime));
-    }
+  /**
+   * Test get date format.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testGetDateFormat() throws Exception {
+    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+    assertNotNull(eventDetailsModel);
+    DateFormat formatter = new SimpleDateFormat("EEEE, MMM dd, yyyy");
+    Date formattedStartDate = formatter.parse(eventDetailsModel.getDateFormat());
+    ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
+    localDateTime =
+        localDateTime.withHour(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[0]));
+    localDateTime =
+        localDateTime.withMinute(Integer.valueOf(eventDetailsModel.getTimeFormat().split(":")[1]));
+    ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
+    assertEquals("Tuesday, Nov 22, 2022",
+        DateTimeFormatter.ofPattern("EEEE, MMM dd, yyyy").format(originDatetime));
+  }
 
-    /**
-     * Test get event location.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testGetEventLocation() throws Exception {
-        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        assertEquals("California", eventDetailsModel.getEventLocation());
-    }
+  /**
+   * Test get event location.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testGetEventLocation() throws Exception {
+    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+    assertNotNull(eventDetailsModel);
+    assertEquals("California", eventDetailsModel.getEventLocation());
+  }
 
-    /**
-     * Test get event host.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testGetEventHost() throws Exception {
-        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        assertEquals("workday", eventDetailsModel.getEventHost());
-    }
+  /**
+   * Test get event host.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testGetEventHost() throws Exception {
+    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+    assertNotNull(eventDetailsModel);
+    assertEquals("workday", eventDetailsModel.getEventHost());
+  }
 
-    /**
-     * Test is configured.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testIsConfigured() throws Exception {
-        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        assertTrue(eventDetailsModel.isConfigured());
-    }
+  /**
+   * Test is configured.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testIsConfigured() throws Exception {
+    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+    assertNotNull(eventDetailsModel);
+    assertTrue(eventDetailsModel.isConfigured());
+  }
 
-    /**
-     * Test get days label.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testGetDaysLabel() throws Exception {
-        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        assertEquals("Days", eventDetailsModel.getDaysLabel());
-    }
+  /**
+   * Test get days label.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testGetDaysLabel() throws Exception {
+    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+    assertNotNull(eventDetailsModel);
+    assertEquals("Days", eventDetailsModel.getDaysLabel());
+  }
 
-    /**
-     * Test get event format without tags.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testGetEventFormatWithoutTags() throws Exception {
-        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        assertEquals(new ArrayList<String>(), eventDetailsModel.getEventFormat());
-    }
+  /**
+   * Test get event format without tags.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testGetEventFormatWithoutTags() throws Exception {
+    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+    assertNotNull(eventDetailsModel);
+    assertEquals(new ArrayList<String>(), eventDetailsModel.getEventFormat());
+  }
 
-    /**
-     * Test get event format with tags.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    void testGetEventFormatWithTags() throws Exception {
-        resolver = Mockito.mock(ResourceResolver.class);
-        tm = Mockito.mock(TagManager.class);
-        tag = Mockito.mock(Tag.class);
+  /**
+   * Test get event format with tags.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testGetEventFormatWithTags() throws Exception {
+    resolver = Mockito.mock(ResourceResolver.class);
+    tm = Mockito.mock(TagManager.class);
+    tag = Mockito.mock(Tag.class);
 
-        eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        eventDetailsModel.getEventFormat();
-    }
+    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+    assertNotNull(eventDetailsModel);
+    eventDetailsModel.getEventFormat();
+  }
 }

@@ -36,6 +36,8 @@ import org.slf4j.LoggerFactory;
 public class SearchTokenServlet extends SlingAllMethodsServlet {
   private static final Logger LOGGER = LoggerFactory.getLogger(SearchTokenServlet.class);
 
+  private final transient Gson gson = new Gson();
+
   @Reference
   private transient SearchApiConfigService searchApiConfigService;
 
@@ -47,10 +49,9 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
 
   private transient ObjectMapper objectMapper = new ObjectMapper();
 
-  private final transient Gson gson = new Gson();
-
   /**
    * Pass in ObjectMapper for the search service.
+   *
    * @param objectMapper the pass-in ObjectMapper object.
    */
   public void setObjectMapper(ObjectMapper objectMapper) {
@@ -66,7 +67,8 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
 
   /**
    * Implementation of the servlet GET method
-   * @param request The HttpServletRequest object.
+   *
+   * @param request  The HttpServletRequest object.
    * @param response The HttpServletResponse object.
    * @throws ServletException if the method call fails with ServletException.
    */
@@ -75,7 +77,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
                        SlingHttpServletResponse response) {
     LOGGER.debug("Get search token call, method {}", request.getMethod());
     ServletCallback servletCallback = (SlingHttpServletRequest req,
-        SlingHttpServletResponse res, String body) -> {
+                                       SlingHttpServletResponse res, String body) -> {
       LOGGER.debug("inside getToken API callback with response; {}", body);
       response.setStatus(HttpStatus.SC_OK);
       response.setContentType("application/json");
@@ -85,7 +87,8 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
     };
 
     try {
-      CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService, userService, gson, objectMapper, servletCallback);
+      CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService,
+          userService, gson, objectMapper, servletCallback);
     } catch (IOException | ServletException e) {
       LOGGER.error("get Token fails with error: {}", e.getMessage());
     }

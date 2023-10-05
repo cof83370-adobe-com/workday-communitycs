@@ -33,150 +33,157 @@ import org.slf4j.LoggerFactory;
 @Component(service = QueryService.class, immediate = true)
 public class QueryServiceImpl implements QueryService {
 
-    /** The logger. */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  /**
+   * The logger.
+   */
+  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** The query builder. */
-    @Reference
-    QueryBuilder queryBuilder;
+  /**
+   * The query builder.
+   */
+  @Reference
+  QueryBuilder queryBuilder;
 
-    @Reference
-    CacheManagerService cacheManager;
+  @Reference
+  CacheManagerService cacheManager;
 
-    @Override
-    public long getNumOfTotalPublishedPages() {
-        long totalResults = 0;
-        Session session = null;
-        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
-            Map<String, String> queryMap = new HashMap<>();
-            queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
-            queryMap.put("type", NT_PAGE);
-            queryMap.put("1_property", "jcr:content/cq:lastReplicationAction");
-            queryMap.put("1_property.value", "Activate");
+  @Override
+  public long getNumOfTotalPublishedPages() {
+    long totalResults = 0;
+    Session session = null;
+    try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
+      Map<String, String> queryMap = new HashMap<>();
+      queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
+      queryMap.put("type", NT_PAGE);
+      queryMap.put("1_property", "jcr:content/cq:lastReplicationAction");
+      queryMap.put("1_property.value", "Activate");
 
-            session = resourceResolver.adaptTo(Session.class);
-            Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
-            SearchResult result = query.getResult();
-            totalResults = result.getTotalMatches();
-        } catch (CacheException e) {
-            logger.error("Exception occurred when running query to get total number of pages {} ", e.getMessage());
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
-        }
-        return totalResults;
+      session = resourceResolver.adaptTo(Session.class);
+      Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
+      SearchResult result = query.getResult();
+      totalResults = result.getTotalMatches();
+    } catch (CacheException e) {
+      logger.error("Exception occurred when running query to get total number of pages {} ",
+          e.getMessage());
+    } finally {
+      if (session != null) {
+        session.logout();
+      }
     }
+    return totalResults;
+  }
 
-    @Override
-    public List<String> getPagesByTemplates(String[] templates) {
-        Session session = null;
-        List<String> paths = new ArrayList<>();
-        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
-            session = resourceResolver.adaptTo(Session.class);
-            Map<String, String> queryMap = new HashMap<>();
-            queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
-            queryMap.put("type", NT_PAGE);
-            queryMap.put("group.p.or", "true");
-            for (int i = 0; i < templates.length; i++) {
-                queryMap.put(String.format("group.%d_property", i), "jcr:content/cq:template");
-                queryMap.put(String.format("group.%d_property.value", i), templates[i]);
-            }
-            queryMap.put("1_property", "jcr:content/cq:lastReplicationAction");
-            queryMap.put("1_property.value", "Activate");
-            addToQueryMap(session, paths, queryMap);
-        } catch (CacheException | RepositoryException e) {
-            logger.error("Exception occurred when running query to get pages {} ", e.getMessage());
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
-        }
-        return paths;
+  @Override
+  public List<String> getPagesByTemplates(String[] templates) {
+    Session session = null;
+    List<String> paths = new ArrayList<>();
+    try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
+      session = resourceResolver.adaptTo(Session.class);
+      Map<String, String> queryMap = new HashMap<>();
+      queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
+      queryMap.put("type", NT_PAGE);
+      queryMap.put("group.p.or", "true");
+      for (int i = 0; i < templates.length; i++) {
+        queryMap.put(String.format("group.%d_property", i), "jcr:content/cq:template");
+        queryMap.put(String.format("group.%d_property.value", i), templates[i]);
+      }
+      queryMap.put("1_property", "jcr:content/cq:lastReplicationAction");
+      queryMap.put("1_property.value", "Activate");
+      addToQueryMap(session, paths, queryMap);
+    } catch (CacheException | RepositoryException e) {
+      logger.error("Exception occurred when running query to get pages {} ", e.getMessage());
+    } finally {
+      if (session != null) {
+        session.logout();
+      }
     }
+    return paths;
+  }
 
-    @Override
-    public List<String> getInactiveUsers() {
-        Session session = null;
-        List<String> users = new ArrayList<>();
-        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
-            session = resourceResolver.adaptTo(Session.class);
+  @Override
+  public List<String> getInactiveUsers() {
+    Session session = null;
+    List<String> users = new ArrayList<>();
+    try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
+      session = resourceResolver.adaptTo(Session.class);
 
-            // Get all users.
-            Map<String, String> queryMap = new HashMap<>();
-            queryMap.put("path", USER_ROOT_PATH.concat(OKTA_USER_PATH));
-            queryMap.put("type", "rep:User");
-            addToQueryMap(session, users, queryMap);
+      // Get all users.
+      Map<String, String> queryMap = new HashMap<>();
+      queryMap.put("path", USER_ROOT_PATH.concat(OKTA_USER_PATH));
+      queryMap.put("type", "rep:User");
+      addToQueryMap(session, users, queryMap);
 
-            // Get active users.
-            Map<String, String> queryMapActive = new HashMap<>();
-            queryMapActive.put("path", USER_ROOT_PATH.concat(OKTA_USER_PATH));
-            queryMapActive.put("type", "rep:Token");
-            queryMapActive.put("relativedaterange.property", "rep:token.exp");
-            queryMapActive.put("relativedaterange.lowerBound", "-1s");
-            queryMapActive.put("p.limit", "-1");
-            Query queryActive = queryBuilder.createQuery(PredicateGroup.create(queryMapActive), session);
-            SearchResult searchResultActive = queryActive.getResult();
-            for (Hit hit : searchResultActive.getHits()) {
-                String path = hit.getPath();
-                path = path.substring(0, path.indexOf("/.tokens"));
-                // Remove active users.
-                users.remove(path);
-            }
-        } catch (CacheException | RepositoryException e) {
-            logger.error("Exception occurred when running query to get inactive users {} ", e.getMessage());
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
-        }
-        return users;
-
+      // Get active users.
+      Map<String, String> queryMapActive = new HashMap<>();
+      queryMapActive.put("path", USER_ROOT_PATH.concat(OKTA_USER_PATH));
+      queryMapActive.put("type", "rep:Token");
+      queryMapActive.put("relativedaterange.property", "rep:token.exp");
+      queryMapActive.put("relativedaterange.lowerBound", "-1s");
+      queryMapActive.put("p.limit", "-1");
+      Query queryActive = queryBuilder.createQuery(PredicateGroup.create(queryMapActive), session);
+      SearchResult searchResultActive = queryActive.getResult();
+      for (Hit hit : searchResultActive.getHits()) {
+        String path = hit.getPath();
+        path = path.substring(0, path.indexOf("/.tokens"));
+        // Remove active users.
+        users.remove(path);
+      }
+    } catch (CacheException | RepositoryException e) {
+      logger.error("Exception occurred when running query to get inactive users {} ",
+          e.getMessage());
+    } finally {
+      if (session != null) {
+        session.logout();
+      }
     }
+    return users;
 
-    /**
-     * Gets the book nodes by path.
-     *
-     * @param bookPagePath the book page path
-     * @param currentPath  the current path
-     * @return the book nodes by path
-     */
-    @Override
-    public List<String> getBookNodesByPath(String bookPagePath, String currentPath) {
-        Session session = null;
-        List<String> paths = new ArrayList<>();
-        try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
-            session = resourceResolver.adaptTo(Session.class);
-            Map<String, String> queryMap = new HashMap<>();
-            queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_BOOK_ROOT_PATH);
-            queryMap.put("fulltext", bookPagePath);
-            queryMap.put("p.limit", "-1");
-            Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
-            SearchResult searchResult = query.getResult();
-            for (Hit hit : searchResult.getHits()) {
-                String path = hit.getPath();
-                if (StringUtils.isNotEmpty(currentPath) && path.contains(currentPath)) {
-                    continue;
-                }
-                paths.add(path);
-            }
-        } catch (CacheException | RepositoryException e) {
-            logger.error("Exception occurred when running query to get book pages {} ", e.getMessage());
-        } finally {
-            if (session != null) {
-                session.logout();
-            }
-        }
-        return paths;
-    }
+  }
 
-    private void addToQueryMap(Session session, List<String> paths, Map<String, String> queryMap) throws RepositoryException {
-        queryMap.put("p.limit", "-1");
-        Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
-        SearchResult searchResult = query.getResult();
-        for (Hit hit : searchResult.getHits()) {
-            String path = hit.getPath();
-            paths.add(path);
+  /**
+   * Gets the book nodes by path.
+   *
+   * @param bookPagePath the book page path
+   * @param currentPath  the current path
+   * @return the book nodes by path
+   */
+  @Override
+  public List<String> getBookNodesByPath(String bookPagePath, String currentPath) {
+    Session session = null;
+    List<String> paths = new ArrayList<>();
+    try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
+      session = resourceResolver.adaptTo(Session.class);
+      Map<String, String> queryMap = new HashMap<>();
+      queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_BOOK_ROOT_PATH);
+      queryMap.put("fulltext", bookPagePath);
+      queryMap.put("p.limit", "-1");
+      Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
+      SearchResult searchResult = query.getResult();
+      for (Hit hit : searchResult.getHits()) {
+        String path = hit.getPath();
+        if (StringUtils.isNotEmpty(currentPath) && path.contains(currentPath)) {
+          continue;
         }
+        paths.add(path);
+      }
+    } catch (CacheException | RepositoryException e) {
+      logger.error("Exception occurred when running query to get book pages {} ", e.getMessage());
+    } finally {
+      if (session != null) {
+        session.logout();
+      }
     }
+    return paths;
+  }
+
+  private void addToQueryMap(Session session, List<String> paths, Map<String, String> queryMap)
+      throws RepositoryException {
+    queryMap.put("p.limit", "-1");
+    Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
+    SearchResult searchResult = query.getResult();
+    for (Hit hit : searchResult.getHits()) {
+      String path = hit.getPath();
+      paths.add(path);
+    }
+  }
 }

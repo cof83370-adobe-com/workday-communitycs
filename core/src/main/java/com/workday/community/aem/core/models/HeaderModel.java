@@ -9,12 +9,11 @@ public interface HeaderModel {
    * Gets the user navigation menu.
    *
    * @return The menu object as a string for common nav menus in the global header
-   *         of the page.
+   * of the page.
    */
   String getUserHeaderMenus();
 
   /**
-   *
    * @return The data layer data.
    */
   String getDataLayerData();
@@ -27,7 +26,6 @@ public interface HeaderModel {
   String getGlobalSearchURL();
 
   /**
-   *
    * @return User UUID as user client id.
    */
   String userClientId();

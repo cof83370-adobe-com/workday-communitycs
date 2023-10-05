@@ -31,85 +31,98 @@ import org.slf4j.LoggerFactory;
 )
 public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
 
-    /** The logger. */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  /**
+   * The logger.
+   */
+  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /** The source api uri. */
-    private String sourceApiUri;
+  /**
+   * The source api uri.
+   */
+  private String sourceApiUri;
 
-    /** The organization id. */
-    private String organizationId;
+  /**
+   * The organization id.
+   */
+  private String organizationId;
 
-    /** The api key. */
-    private String apiKey;
+  /**
+   * The api key.
+   */
+  private String apiKey;
 
-    /** The source id. */
-    private String sourceId;
+  /**
+   * The source id.
+   */
+  private String sourceId;
 
-    /** The HttpsURLConnectionService. */
-    @Reference
-    private HttpsURLConnectionService restApiService;
+  /**
+   * The HttpsURLConnectionService.
+   */
+  @Reference
+  private HttpsURLConnectionService restApiService;
 
-    /** The CoveoIndexApiConfigService. */
-    @Reference
-    private CoveoIndexApiConfigService coveoIndexApiConfigService;
+  /**
+   * The CoveoIndexApiConfigService.
+   */
+  @Reference
+  private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
-    @Activate
-    @Modified
-    protected void activate(){
-        this.sourceApiUri = coveoIndexApiConfigService.getSourceApiUri();
-        this.organizationId = coveoIndexApiConfigService.getOrganizationId();
-        this.apiKey = coveoIndexApiConfigService.getCoveoApiKey();
-        this.sourceId = coveoIndexApiConfigService.getSourceId();
-    }
+  @Activate
+  @Modified
+  protected void activate() {
+    this.sourceApiUri = coveoIndexApiConfigService.getSourceApiUri();
+    this.organizationId = coveoIndexApiConfigService.getOrganizationId();
+    this.apiKey = coveoIndexApiConfigService.getCoveoApiKey();
+    this.sourceId = coveoIndexApiConfigService.getSourceId();
+  }
 
 
-    @Override
-    public String generateSourceApiUri() {
-        return this.sourceApiUri + this.organizationId + "/sources/" + this.sourceId;
-    }
+  @Override
+  public String generateSourceApiUri() {
+    return this.sourceApiUri + this.organizationId + "/sources/" + this.sourceId;
+  }
 
-    /**
-	 * Generate the api header.
-	 *
-	 * @return The api header
-	 */
-    protected HashMap<String, String> generateHeader() {
-        HashMap<String, String> header = new HashMap<>();
-        header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
-        header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
-        header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
-        return header;
-    }
+  /**
+   * Generate the api header.
+   *
+   * @return The api header
+   */
+  protected HashMap<String, String> generateHeader() {
+    HashMap<String, String> header = new HashMap<>();
+    header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+    header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+    header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    return header;
+  }
 
-    @Override
-    public HashMap<String, Object> callApi() {
-        return restApiService.send(this.generateSourceApiUri(), generateHeader(), GET_API, "");
-    }
+  @Override
+  public HashMap<String, Object> callApi() {
+    return restApiService.send(this.generateSourceApiUri(), generateHeader(), GET_API, "");
+  }
 
-    @Override
-    public long getTotalIndexedNumber() {
-        // Coveo reference https://docs.coveo.com/en/65/index-content/get-detailed-information-about-a-source.
-        long totalNumberOfIndexedItems = -1;
-        HashMap<String, Object> response = this.callApi();
-        if ((Integer) response.get("statusCode") == HttpStatus.SC_OK) {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonFactory factory = mapper.getFactory();
-            try {
-                JsonParser jsonParser = factory.createParser(response.get("response").toString());
-                JsonNode node = mapper.readTree(jsonParser);
-                JsonNode innerNode = node.get("information");
-                JsonNode numberField = innerNode.get("numberOfDocuments");
-                totalNumberOfIndexedItems = numberField.asLong();
-            }
-            catch (IOException e) {
-                logger.error("Parse coveo source api call response failed: {}", e.getMessage());
-                return totalNumberOfIndexedItems;
-            }
-        }
-        else {
-            logger.error("Get number of indexed pages from coveo failed with status code {}: {}", response.get("statusCode"), response.get("response"));
-        }
+  @Override
+  public long getTotalIndexedNumber() {
+    // Coveo reference https://docs.coveo.com/en/65/index-content/get-detailed-information-about-a-source.
+    long totalNumberOfIndexedItems = -1;
+    HashMap<String, Object> response = this.callApi();
+    if ((Integer) response.get("statusCode") == HttpStatus.SC_OK) {
+      ObjectMapper mapper = new ObjectMapper();
+      JsonFactory factory = mapper.getFactory();
+      try {
+        JsonParser jsonParser = factory.createParser(response.get("response").toString());
+        JsonNode node = mapper.readTree(jsonParser);
+        JsonNode innerNode = node.get("information");
+        JsonNode numberField = innerNode.get("numberOfDocuments");
+        totalNumberOfIndexedItems = numberField.asLong();
+      } catch (IOException e) {
+        logger.error("Parse coveo source api call response failed: {}", e.getMessage());
         return totalNumberOfIndexedItems;
+      }
+    } else {
+      logger.error("Get number of indexed pages from coveo failed with status code {}: {}",
+          response.get("statusCode"), response.get("response"));
     }
+    return totalNumberOfIndexedItems;
+  }
 }

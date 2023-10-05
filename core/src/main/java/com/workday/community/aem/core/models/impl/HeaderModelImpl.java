@@ -35,15 +35,9 @@ import org.slf4j.LoggerFactory;
 @Model(adaptables = {
     Resource.class,
     SlingHttpServletRequest.class
-}, adapters = { HeaderModel.class }, resourceType = {
-    HeaderModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+}, adapters = {HeaderModel.class}, resourceType = {
+    HeaderModelImpl.RESOURCE_TYPE}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class HeaderModelImpl implements HeaderModel {
-
-  @Self
-  private SlingHttpServletRequest request;
-
-  @SlingObject
-  private SlingHttpServletResponse response;
 
   /**
    * The Constant RESOURCE_TYPE.
@@ -53,12 +47,15 @@ public class HeaderModelImpl implements HeaderModel {
   /**
    * Default search redirect URL.
    */
-  protected static final String DEFAULT_SEARCH_REDIRECT = "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
+  protected static final String DEFAULT_SEARCH_REDIRECT =
+      "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
 
   /**
    * The logger.
    */
   private final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
+
+  private final Gson gson = new Gson();
 
   /**
    * The navMenuApi service.
@@ -67,27 +64,39 @@ public class HeaderModelImpl implements HeaderModel {
   @OSGiService
   SnapService snapService;
 
-  /** The run mode config service. */
+  /**
+   * The run mode config service.
+   */
   @OSGiService
   RunModeConfigService runModeConfigService;
 
-  /** The Search API config service. */
+  /**
+   * The Search API config service.
+   */
   @OSGiService
   SearchApiConfigService searchApiConfigService;
 
   @OSGiService
   UserService userService;
 
-  @Inject
-  private Page currentPage;
-
-  /** SFID */
+  /**
+   * SFID
+   */
   String sfId;
 
-  private final Gson gson = new Gson();
-
-  /** The global search url. */
+  /**
+   * The global search url.
+   */
   String globalSearchURL;
+
+  @Self
+  private SlingHttpServletRequest request;
+
+  @SlingObject
+  private SlingHttpServletResponse response;
+
+  @Inject
+  private Page currentPage;
 
   @PostConstruct
   protected void init() {
@@ -131,7 +140,7 @@ public class HeaderModelImpl implements HeaderModel {
       finalCookie = menuCache;
     } else {
       // Create new cookie and setback.
-      finalCookie= new Cookie("cacheMenu", cookieValueCurrentUser);
+      finalCookie = new Cookie("cacheMenu", cookieValueCurrentUser);
     }
     // set the cookie at root level.
     finalCookie.setPath("/");
@@ -149,7 +158,9 @@ public class HeaderModelImpl implements HeaderModel {
       String pageTitle = currentPage.getTitle();
       String templatePath = template.getPath();
       String contentType = CONTENT_TYPE_MAPPING.get(templatePath);
-      if (contentType == null) return null;
+      if (contentType == null) {
+        return null;
+      }
       return this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
     }
     return null;
@@ -158,7 +169,8 @@ public class HeaderModelImpl implements HeaderModel {
   @Override
   public String getGlobalSearchURL() {
     String searchURLFromConfig = searchApiConfigService.getGlobalSearchURL();
-    globalSearchURL = StringUtils.isBlank(searchURLFromConfig) ? DEFAULT_SEARCH_REDIRECT : searchURLFromConfig;
+    globalSearchURL =
+        StringUtils.isBlank(searchURLFromConfig) ? DEFAULT_SEARCH_REDIRECT : searchURLFromConfig;
     return globalSearchURL;
   }
 

@@ -20,55 +20,65 @@ import org.slf4j.LoggerFactory;
  * The Class PageRetireDynamicParticipantStep.
  */
 @Component(service = ParticipantStepChooser.class, property = {
-        Constants.SERVICE_DESCRIPTION + "=Participant step to choose the assignee group based on environment/workflow",
-        Constants.SERVICE_VENDOR + "=Workday Community", "chooser.label=" + "Env Speicifc Dynamic Participant"
+    Constants.SERVICE_DESCRIPTION +
+        "=Participant step to choose the assignee group based on environment/workflow",
+    Constants.SERVICE_VENDOR + "=Workday Community",
+    "chooser.label=" + "Env Speicifc Dynamic Participant"
 })
 public class PageRetireDynamicParticipantStep implements ParticipantStepChooser {
 
-    /** The Constant log. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(PageRetireDynamicParticipantStep.class);
+  /**
+   * The Constant log.
+   */
+  private static final Logger LOGGER =
+      LoggerFactory.getLogger(PageRetireDynamicParticipantStep.class);
 
-    /** The Constant ENV_VAR. */
-    private static final String ENV_VAR = "#ENV#";
+  /**
+   * The Constant ENV_VAR.
+   */
+  private static final String ENV_VAR = "#ENV#";
 
-    /** The run mode config service. */
-    @Reference
-    private RunModeConfigService runModeConfigService;
+  /**
+   * The run mode config service.
+   */
+  @Reference
+  private RunModeConfigService runModeConfigService;
 
-    /**
-     * Gets the participant.
-     *
-     * @param workItem        the work item
-     * @param workflowSession the workflow session
-     * @param metaDataMap     the meta data map
-     * @return the participant
-     * @throws WorkflowException the workflow exception
-     */
-    @Override
-    public String getParticipant(WorkItem workItem, WorkflowSession workflowSession,
-            MetaDataMap metaDataMap) throws WorkflowException {
-        LOGGER.info("Entering PageRetireDynamicParticipantStep >>>>>> ");
-        String commonName = metaDataMap.get(PROCESS_ARGS, String.class);
-        String workflowTitle = workItem.getWorkflow().getWorkflowModel().getTitle();
-        String env = runModeConfigService.getEnv();
-        return (StringUtils.isNotBlank(env) && StringUtils.isNotBlank(commonName))
-                ? getDynamicParticipant(commonName, env, workflowTitle)
-                : DEFAULT_FALL_BACK_GROUP;
+  /**
+   * Gets the participant.
+   *
+   * @param workItem        the work item
+   * @param workflowSession the workflow session
+   * @param metaDataMap     the meta data map
+   * @return the participant
+   * @throws WorkflowException the workflow exception
+   */
+  @Override
+  public String getParticipant(WorkItem workItem, WorkflowSession workflowSession,
+                               MetaDataMap metaDataMap) throws WorkflowException {
+    LOGGER.info("Entering PageRetireDynamicParticipantStep >>>>>> ");
+    String commonName = metaDataMap.get(PROCESS_ARGS, String.class);
+    String workflowTitle = workItem.getWorkflow().getWorkflowModel().getTitle();
+    String env = runModeConfigService.getEnv();
+    return (StringUtils.isNotBlank(env) && StringUtils.isNotBlank(commonName))
+        ? getDynamicParticipant(commonName, env, workflowTitle)
+        : DEFAULT_FALL_BACK_GROUP;
 
-    }
+  }
 
-    /**
-     * Gets the dynamic participant.
-     *
-     * @param commonNameOfApprover the common name of approver
-     * @param environment          the environment
-     * @param workflowTitle        the workflow title
-     * @return the dynamic participant
-     */
-    public String getDynamicParticipant(final String commonNameOfApprover, final String environment,
-            final String workflowTitle) {
-        final String dynamicParticipant=     commonNameOfApprover.trim().replace(ENV_VAR, environment.trim());
-        LOGGER.debug("Dynamic participant for {} >>>>>> {}", workflowTitle, dynamicParticipant);
-        return dynamicParticipant;
-    }
+  /**
+   * Gets the dynamic participant.
+   *
+   * @param commonNameOfApprover the common name of approver
+   * @param environment          the environment
+   * @param workflowTitle        the workflow title
+   * @return the dynamic participant
+   */
+  public String getDynamicParticipant(final String commonNameOfApprover, final String environment,
+                                      final String workflowTitle) {
+    final String dynamicParticipant =
+        commonNameOfApprover.trim().replace(ENV_VAR, environment.trim());
+    LOGGER.debug("Dynamic participant for {} >>>>>> {}", workflowTitle, dynamicParticipant);
+    return dynamicParticipant;
+  }
 }

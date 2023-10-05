@@ -15,11 +15,14 @@ public class UUIDUtil {
 
   /**
    * Generate user's client id in default namespace with given email address.
+   *
    * @param email The pass-in user's email address as string
    * @return the user's client id as UUID.
    */
   public static UUID getUserClientId(String email) {
-    if (StringUtils.isEmpty(email)) return null;
+    if (StringUtils.isEmpty(email)) {
+      return null;
+    }
 
     byte[] name = Objects.requireNonNull(email, "name == null").getBytes(UTF8);
     MessageDigest md;
@@ -42,10 +45,12 @@ public class UUIDUtil {
     long msb = 0;
     long lsb = 0;
     assert data.length >= 16;
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 8; i++) {
       msb = (msb << 8) | (data[i] & 0xff);
-    for (int i = 8; i < 16; i++)
+    }
+    for (int i = 8; i < 16; i++) {
       lsb = (lsb << 8) | (data[i] & 0xff);
+    }
     return new UUID(msb, lsb);
   }
 
@@ -53,10 +58,12 @@ public class UUIDUtil {
     byte[] out = new byte[16];
     long msb = uuid.getMostSignificantBits();
     long lsb = uuid.getLeastSignificantBits();
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 8; i++) {
       out[i] = (byte) ((msb >> ((7 - i) * 8)) & 0xff);
-    for (int i = 8; i < 16; i++)
+    }
+    for (int i = 8; i < 16; i++) {
       out[i] = (byte) ((lsb >> ((15 - i) * 8)) & 0xff);
+    }
     return out;
   }
 }

@@ -26,29 +26,35 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class OurmUsersServletTest.
  */
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class OurmUsersServletTest {
 
-  /** The ourmUsers api service. */
+  private final Gson gson = new Gson();
+
+  /**
+   * The ourmUsers api service.
+   */
   @Mock
   OurmUserService ourmUserService;
 
-  /** The ourmUsers servlet. */
+  /**
+   * The ourmUsers servlet.
+   */
   @InjectMocks
   OurmUsersServlet ourmUsersServlet;
 
-  private final Gson gson = new Gson();
   /**
    * Setup.
    */
   @BeforeEach
-  public void setup() { }
+  public void setup() {
+  }
 
   /**
    * Test do get.
    *
    * @throws IOException      Signals that an I/O exception has occurred.
-   * @throws OurmException the ourm exception
+   * @throws OurmException    the ourm exception
    * @throws ServletException the servlet exception
    */
   @Test
@@ -58,7 +64,8 @@ public class OurmUsersServletTest {
 
     when(request.getParameter("searchText")).thenReturn("fakeText");
 
-    String testUserContext = "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
+    String testUserContext =
+        "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
     JsonObject userContext = gson.fromJson(testUserContext, JsonObject.class);
     when(ourmUserService.searchOurmUserList(anyString())).thenReturn(userContext);
     PrintWriter pr = mock(PrintWriter.class);

@@ -16,11 +16,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoIndexApiConfigServiceTest {
 
-    /** The CoveoIndexApiConfigService. */
-    private final CoveoIndexApiConfigService service = new CoveoIndexApiConfigService();
+  /**
+   * The CoveoIndexApiConfigService.
+   */
+  private final CoveoIndexApiConfigService service = new CoveoIndexApiConfigService();
 
-    /** The CoveoIndexApiConfig. */
-    private final CoveoIndexApiConfig mockConfig = new CoveoIndexApiConfig() {
+  /**
+   * The CoveoIndexApiConfig.
+   */
+  private final CoveoIndexApiConfig mockConfig = new CoveoIndexApiConfig() {
     @Override
     public Class<? extends Annotation> annotationType() {
       return null;
@@ -28,37 +32,37 @@ public class CoveoIndexApiConfigServiceTest {
 
     @Override
     public boolean isCoveoIndexingEnabled() {
-        return true;
+      return true;
     }
 
     @Override
     public String coveoApiKey() {
-        return "coveoApiKey";
+      return "coveoApiKey";
     }
 
     @Override
     public String pushApiUri() {
-        return "https://www.pushapi.com";
+      return "https://www.pushapi.com";
     }
 
     @Override
     public String sourceApiUri() {
-        return "https://www.sourceapi.com";
+      return "https://www.sourceapi.com";
     }
 
     @Override
     public String organizationId() {
-        return "organizationId";
+      return "organizationId";
     }
 
     @Override
     public String sourceId() {
-        return "sourceId";
+      return "sourceId";
     }
 
     @Override
     public int batchSize() {
-        return 50;
+      return 50;
     }
   };
 

@@ -35,10 +35,14 @@ import org.slf4j.LoggerFactory;
 )
 public class UserServiceImpl implements UserService {
 
-    /** The logger. */
+  /**
+   * The logger.
+   */
   private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    /** The cache manager */
+  /**
+   * The cache manager
+   */
   @Reference
   CacheManagerService cacheManager;
 
@@ -75,7 +79,8 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath) throws CacheException {
+  public void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath)
+      throws CacheException {
     ResourceResolver resourceResolver = request.getResourceResolver();
     Session session = resourceResolver.adaptTo(Session.class);
     // Delete user on publish instance.
@@ -113,11 +118,13 @@ public class UserServiceImpl implements UserService {
         } catch (RepositoryException e) {
           LOGGER.error("invalidate current user session failed.");
         } finally {
-          if (resourceResolver.isLive())
+          if (resourceResolver.isLive()) {
             resourceResolver.close();
+          }
 
-          if(session.isLive())
+          if (session.isLive()) {
             session.logout();
+          }
         }
       }
     }
@@ -125,6 +132,7 @@ public class UserServiceImpl implements UserService {
 
   /**
    * Used in testing only.
+   *
    * @param cacheManager the pass-in CacheManager object.
    */
   protected void setCacheManager(CacheManagerService cacheManager) {
@@ -132,7 +140,9 @@ public class UserServiceImpl implements UserService {
   }
 
   private User getUser(final ResourceResolver resourceResolver, String userSessionId) {
-    if (userSessionId == null) return null;
+    if (userSessionId == null) {
+      return null;
+    }
 
     String cacheKey = String.format("session_user_%s", userSessionId);
     User retUser = cacheManager.get(CacheBucketName.JCR_USER.name(), cacheKey, (key) -> {
@@ -155,7 +165,8 @@ public class UserServiceImpl implements UserService {
         cacheManager.invalidateCache(CacheBucketName.JCR_USER.name(), cacheKey);
       }
     } catch (RepositoryException e) {
-      LOGGER.error("Exception occurred when clear use from cache {}: {}.", userSessionId, e.getMessage());
+      LOGGER.error("Exception occurred when clear use from cache {}: {}.", userSessionId,
+          e.getMessage());
     }
 
     return retUser;

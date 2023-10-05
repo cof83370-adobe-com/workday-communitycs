@@ -12,9 +12,9 @@ import org.osgi.service.metatype.annotations.Designate;
  * The OktaService implementation class.
  */
 @Component(
-        service=OktaService.class,
-        immediate=true,
-        configurationPid = "com.workday.community.aem.core.config.OktaConfig"
+    service = OktaService.class,
+    immediate = true,
+    configurationPid = "com.workday.community.aem.core.config.OktaConfig"
 )
 @Designate(ocd = OktaConfig.class)
 public class OktaServiceImpl implements OktaService {

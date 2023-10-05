@@ -39,173 +39,186 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The Class PageRetireProcessStep.
- *
+ * <p>
  * This step inclueds three things.
  * 1. Remove the payload page from book, if already part of any book.
  * 2. Add retirement badge.
  * 3. Replicate the page to publisher.
  */
 @Component(property = {
-        Constants.SERVICE_DESCRIPTION + "=Process to retire the given page",
-        Constants.SERVICE_VENDOR + "=Workday Community",
-        "process.label" + "=Retire the page"
+    Constants.SERVICE_DESCRIPTION + "=Process to retire the given page",
+    Constants.SERVICE_VENDOR + "=Workday Community",
+    "process.label" + "=Retire the page"
 })
 public class PageRetireProcessStep implements WorkflowProcess {
 
-    /** The Constant log. */
-    private static final Logger logger = LoggerFactory.getLogger(PageRetireProcessStep.class);
+  /**
+   * The Constant log.
+   */
+  private static final Logger logger = LoggerFactory.getLogger(PageRetireProcessStep.class);
 
-    /** The cache manager. */
-    @Reference
-    CacheManagerService cacheManager;
+  /**
+   * The cache manager.
+   */
+  @Reference
+  CacheManagerService cacheManager;
 
-    /** The query service. */
-    @Reference
-    QueryService queryService;
+  /**
+   * The query service.
+   */
+  @Reference
+  QueryService queryService;
 
-    /** The replicator. */
-    @Reference
-    private Replicator replicator;
+  /**
+   * The replicator.
+   */
+  @Reference
+  private Replicator replicator;
 
-    /**
-     * Execute.
-     *
-     * @param workItem        the work item
-     * @param workflowSession the workflow session
-     * @param metaDataMap     the meta data map
-     * @throws WorkflowException the workflow exception
-     */
-    @Override
-    public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
-            throws WorkflowException {
-        final String payloadType = workItem.getWorkflowData().getPayloadType();
-        logger.info("Payload type: {}", payloadType);
-        if (StringUtils.equals(payloadType, "JCR_PATH")) {
-            // Get the JCR path from the payload
-            String path = workItem.getWorkflowData().getPayload().toString();
-            try {
-                Session jcrSession = workflowSession.adaptTo(Session.class);
-                if (null != jcrSession) {
-                    removeBookNodes(path, jcrSession);
-                    addRetirementBadge(path, workItem);
-                    replicatePage(jcrSession, path);
+  /**
+   * Execute.
+   *
+   * @param workItem        the work item
+   * @param workflowSession the workflow session
+   * @param metaDataMap     the meta data map
+   * @throws WorkflowException the workflow exception
+   */
+  @Override
+  public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
+      throws WorkflowException {
+    final String payloadType = workItem.getWorkflowData().getPayloadType();
+    logger.info("Payload type: {}", payloadType);
+    if (StringUtils.equals(payloadType, "JCR_PATH")) {
+      // Get the JCR path from the payload
+      String path = workItem.getWorkflowData().getPayload().toString();
+      try {
+        Session jcrSession = workflowSession.adaptTo(Session.class);
+        if (null != jcrSession) {
+          removeBookNodes(path, jcrSession);
+          addRetirementBadge(path, workItem);
+          replicatePage(jcrSession, path);
+        }
+      } catch (Exception e) {
+        logger.error("payload type - {} is not valid", payloadType);
+      }
+    }
+  }
+
+  /**
+   * Removes the book nodes.
+   *
+   * @param pagePath   the page path
+   * @param jcrSession the jcr session
+   */
+  public void removeBookNodes(String pagePath, Session jcrSession) {
+    try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+      if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
+        List<String> paths = queryService.getBookNodesByPath(pagePath, null);
+        paths.stream().filter(item -> rresolver.getResource(item) != null)
+            .forEach(path -> {
+              try {
+                Node root = Objects.requireNonNull(rresolver.getResource(path)).adaptTo(Node.class);
+                if (root != null) {
+                  final String pathToReplicate = root.getParent().getPath();
+                  root.remove();
+                  rresolver.commit();
+                  replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pathToReplicate);
                 }
-            } catch (Exception e) {
-                logger.error("payload type - {} is not valid", payloadType);
-            }
-        }
+              } catch (Exception e) {
+                logger.error("Exception occured while removing the node: {}", path);
+              }
+            });
+        logger.debug("Removed node for page {}", pagePath);
+      }
+    } catch (Exception exec) {
+      logger.error(
+          "Exception occured while removing the: {} page from book node. Exception was: {} :",
+          pagePath,
+          exec.getMessage());
     }
+  }
 
-    /**
-     * Removes the book nodes.
-     *
-     * @param pagePath   the page path
-     * @param jcrSession the jcr session
-     */
-    public void removeBookNodes(String pagePath, Session jcrSession) {
-        try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-            if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
-                List<String> paths = queryService.getBookNodesByPath(pagePath, null);
-                paths.stream().filter(item -> rresolver.getResource(item) != null)
-                        .forEach(path -> {
-                            try {
-                                Node root = Objects.requireNonNull(rresolver.getResource(path)).adaptTo(Node.class);
-                                if (root != null) {
-                                    final String pathToReplicate = root.getParent().getPath();
-                                    root.remove();
-                                    rresolver.commit();
-                                    replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pathToReplicate);
-                                }
-                            } catch (Exception e) {
-                                logger.error("Exception occured while removing the node: {}", path);
-                            }
-                        });
-                logger.debug("Removed node for page {}", pagePath);
-            }
-        } catch (Exception exec) {
-            logger.error("Exception occured while removing the: {} page from book node. Exception was: {} :", pagePath,
-                    exec.getMessage());
-        }
+  /**
+   * Adds the retirement badge.
+   *
+   * @param pagePath the page path
+   * @param workItem the work item
+   */
+  public void addRetirementBadge(String pagePath, WorkItem workItem) {
+    try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+      Resource resource = Objects
+          .requireNonNull(rresolver.getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH));
+      String modelPath = workItem.getWorkflow().getWorkflowModel().getId();
+      int lastIndex = modelPath.lastIndexOf('/');
+      String workflowModelName = "";
+      if (lastIndex != -1) {
+        workflowModelName = modelPath.substring(lastIndex + 1);
+      }
+      if (StringUtils.isNotBlank(workflowModelName)) {
+        addWorkflowModelSpecificProps(resource, workflowModelName);
+      }
+      rresolver.commit();
+    } catch (Exception exec) {
+      logger.error("Exception occured while addRetirementBadge: {}", exec.getMessage());
     }
+  }
 
-    /**
-     * Adds the retirement badge.
-     *
-     * @param pagePath the page path
-     * @param workItem the work item
-     */
-    public void addRetirementBadge(String pagePath, WorkItem workItem) {
-        try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-            Resource resource = Objects
-                    .requireNonNull(rresolver.getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH));
-            String modelPath = workItem.getWorkflow().getWorkflowModel().getId();
-            int lastIndex = modelPath.lastIndexOf('/');
-            String workflowModelName = "";
-            if (lastIndex != -1)
-                workflowModelName = modelPath.substring(lastIndex + 1);
-            if (StringUtils.isNotBlank(workflowModelName))
-                addWorkflowModelSpecificProps(resource, workflowModelName);
-            rresolver.commit();
-        } catch (Exception exec) {
-            logger.error("Exception occured while addRetirementBadge: {}", exec.getMessage());
-        }
+  /**
+   * Adds the workflow model specific props.
+   *
+   * @param resource  the resource
+   * @param modelName the model name
+   */
+  private void addWorkflowModelSpecificProps(Resource resource, final String modelName) {
+    // Add retirement badge.
+    ModifiableValueMap map = resource.adaptTo(ModifiableValueMap.class);
+    map.put(RETIREMENT_STATUS_PROP, RETIREMENT_STATUS_VAL);
+    map.put(ACTUAL_RETIREMENT_DATE, Objects.requireNonNull(getCurrentTimeInIso8601Format()));
+    switch (modelName) {
+      case RETIREMENT_WORKFLOW_IMMEDIATE_MODEL_NAME:
+        map.put(LAST_RETIREMENT_ACTION, IMMEDIATE_RETIREMENT);
+        break;
+      case RETIREMENT_WORKFLOW_30_DAYS_MODEL_NAME:
+        map.put(LAST_RETIREMENT_ACTION, SCHEDULED_RETIREMENT);
+        break;
+      default:
+        logger.debug("Workflow model name is: {}  which was not as expected:", modelName);
+        break;
     }
+  }
 
-    /**
-     * Adds the workflow model specific props.
-     *
-     * @param resource  the resource
-     * @param modelName the model name
-     */
-    private void addWorkflowModelSpecificProps(Resource resource, final String modelName) {
-        // Add retirement badge.
-        ModifiableValueMap map = resource.adaptTo(ModifiableValueMap.class);
-        map.put(RETIREMENT_STATUS_PROP, RETIREMENT_STATUS_VAL);
-        map.put(ACTUAL_RETIREMENT_DATE, Objects.requireNonNull(getCurrentTimeInIso8601Format()));
-        switch (modelName) {
-            case RETIREMENT_WORKFLOW_IMMEDIATE_MODEL_NAME:
-                map.put(LAST_RETIREMENT_ACTION, IMMEDIATE_RETIREMENT);
-                break;
-            case RETIREMENT_WORKFLOW_30_DAYS_MODEL_NAME:
-                map.put(LAST_RETIREMENT_ACTION, SCHEDULED_RETIREMENT);
-                break;
-            default:
-                logger.debug("Workflow model name is: {}  which was not as expected:", modelName);
-                break;
-        }
+  /**
+   * Replicate page.
+   *
+   * @param jcrSession the jcr session
+   * @param pagePath   the page path
+   */
+  public void replicatePage(Session jcrSession, String pagePath) {
+    try {
+      if (replicator != null) {
+        replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pagePath);
+      }
+    } catch (Exception exec) {
+      logger.error("Exception occured while replicatePage method: {}", exec.getMessage());
     }
+  }
 
-    /**
-     * Replicate page.
-     *
-     * @param jcrSession the jcr session
-     * @param pagePath   the page path
-     */
-    public void replicatePage(Session jcrSession, String pagePath) {
-        try {
-            if (replicator != null) {
-                replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pagePath);
-            }
-        } catch (Exception exec) {
-            logger.error("Exception occured while replicatePage method: {}", exec.getMessage());
-        }
+  /**
+   * Gets the current time in iso 8601 format.
+   *
+   * @return the current time in iso 8601 format
+   */
+  public Calendar getCurrentTimeInIso8601Format() {
+    try {
+      Calendar calendar = Calendar.getInstance();
+      SimpleDateFormat sdf = new SimpleDateFormat(ISO_8601_FORMAT);
+      String iso8601String = sdf.format(calendar.getTime());
+      calendar.setTime(sdf.parse(iso8601String));
+      return calendar;
+    } catch (Exception exec) {
+      logger.error("Exception occured in getCurrentTimeInIso8601Format method: {}",
+          exec.getMessage());
     }
-
-    /**
-     * Gets the current time in iso 8601 format.
-     *
-     * @return the current time in iso 8601 format
-     */
-    public Calendar getCurrentTimeInIso8601Format() {
-        try {
-            Calendar calendar = Calendar.getInstance();
-            SimpleDateFormat sdf = new SimpleDateFormat(ISO_8601_FORMAT);
-            String iso8601String = sdf.format(calendar.getTime());
-            calendar.setTime(sdf.parse(iso8601String));
-            return calendar;
-        } catch (Exception exec) {
-            logger.error("Exception occured in getCurrentTimeInIso8601Format method: {}", exec.getMessage());
-        }
-        return null;
-    }
+    return null;
+  }
 }

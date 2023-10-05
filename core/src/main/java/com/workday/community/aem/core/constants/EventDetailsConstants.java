@@ -4,6 +4,7 @@ package com.workday.community.aem.core.constants;
  * The Class EventDetailsConstants.
  */
 public interface EventDetailsConstants {
+
   /**
    * The Constant REQ_TIME_FORMAT.
    */
@@ -62,4 +63,5 @@ public interface EventDetailsConstants {
    * The Constant MINUTES_IN_24_HOURS.
    */
   long MINUTES_IN_24_HOURS = 1440;
+
 }

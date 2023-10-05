@@ -48,91 +48,99 @@ import org.slf4j.LoggerFactory;
  *
  * @author Thabrez
  */
-@Component(service = Servlet.class, property = {Constants.SERVICE_DESCRIPTION + "= Coveo Events type Dropdown Service",
-        "sling.servlet.paths=" + "/bin/eventTypes", "sling.servlet.methods=" + HttpConstants.METHOD_GET
+@Component(service = Servlet.class, property = {
+    Constants.SERVICE_DESCRIPTION + "= Coveo Events type Dropdown Service",
+    "sling.servlet.paths=" + "/bin/eventTypes", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
 public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
 
-    /** The Constant LOGGER. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventsTypeServlet.class);
-    private static final String EVENT_TYPE_CRITERIA = "?field=@commoneventtype";
+  /**
+   * The Constant LOGGER.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventsTypeServlet.class);
 
-    private transient ObjectMapper objectMapper = new ObjectMapper();
+  private static final String EVENT_TYPE_CRITERIA = "?field=@commoneventtype";
 
-    private final transient Gson gson = new Gson();
+  private final transient Gson gson = new Gson();
 
-    @Reference
-    private transient SearchApiConfigService searchApiConfigService;
+  private transient ObjectMapper objectMapper = new ObjectMapper();
 
-    @Reference
-    private transient SnapService snapService;
+  @Reference
+  private transient SearchApiConfigService searchApiConfigService;
 
-    @Reference
-    private transient UserService userService;
+  @Reference
+  private transient SnapService snapService;
 
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
+  @Reference
+  private transient UserService userService;
 
-    /**
-     * Do get.
-     *
-     * @param request  the request
-     * @param response the response
-     */
-    @Override
-    protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws ServletException, IOException {
+  public void setObjectMapper(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
 
-        ServletCallback callback = (SlingHttpServletRequest req, SlingHttpServletResponse res, String body) -> {
-            List<Resource>  resourceList = new ArrayList<>();
+  /**
+   * Do get.
+   *
+   * @param request  the request
+   * @param response the response
+   */
+  @Override
+  protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
+      throws ServletException, IOException {
 
-            try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-                String token = gson.fromJson(body, JsonObject.class).get("searchToken").getAsString();
-                EventTypes eventTypes = getEventTypes(httpClient, token);
+    ServletCallback callback =
+        (SlingHttpServletRequest req, SlingHttpServletResponse res, String body) -> {
+          List<Resource> resourceList = new ArrayList<>();
 
-                if (eventTypes != null && eventTypes.getValues().size() > 0) {
-                    eventTypes.getValues().forEach(value -> {
-                        ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
-                        valueMap.put("value", value.getLookupValue());
-                        valueMap.put("text", value.getValue());
-                        resourceList.add(new ValueMapResource(request.getResourceResolver(),
-                            new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, valueMap));
-                    });
-                }
+          try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            String token = gson.fromJson(body, JsonObject.class).get("searchToken").getAsString();
+            EventTypes eventTypes = getEventTypes(httpClient, token);
 
-                /*Create a DataSource that is used to populate the drop-down control*/
-                DataSource dataSource = new SimpleDataSource(resourceList.iterator());
-                request.setAttribute(DataSource.class.getName(), dataSource);
-            } catch (IOException exception) {
-                LOGGER.error("Error Occurred in DoGet Method in CoveoEventsTypeServlet : {}", exception.getMessage());
+            if (eventTypes != null && eventTypes.getValues().size() > 0) {
+              eventTypes.getValues().forEach(value -> {
+                ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
+                valueMap.put("value", value.getLookupValue());
+                valueMap.put("text", value.getValue());
+                resourceList.add(new ValueMapResource(request.getResourceResolver(),
+                    new ResourceMetadata(), JcrConstants.NT_UNSTRUCTURED, valueMap));
+              });
             }
 
             /*Create a DataSource that is used to populate the drop-down control*/
             DataSource dataSource = new SimpleDataSource(resourceList.iterator());
             request.setAttribute(DataSource.class.getName(), dataSource);
-            return null;
+          } catch (IOException exception) {
+            LOGGER.error("Error Occurred in DoGet Method in CoveoEventsTypeServlet : {}",
+                exception.getMessage());
+          }
+
+          /*Create a DataSource that is used to populate the drop-down control*/
+          DataSource dataSource = new SimpleDataSource(resourceList.iterator());
+          request.setAttribute(DataSource.class.getName(), dataSource);
+          return null;
         };
 
-        CoveoUtils.executeSearchForCallback(request,
-            response, searchApiConfigService, snapService, userService,
-            gson, objectMapper, callback);
+    CoveoUtils.executeSearchForCallback(request,
+        response, searchApiConfigService, snapService, userService,
+        gson, objectMapper, callback);
+  }
+
+  private EventTypes getEventTypes(CloseableHttpClient httpClient, String token)
+      throws IOException {
+    String endpoint = this.searchApiConfigService.getSearchFieldLookupAPI();
+    endpoint += EVENT_TYPE_CRITERIA;
+    HttpGet request = new HttpGet(endpoint);
+    request.addHeader(HttpConstants.HEADER_ACCEPT, APPLICATION_SLASH_JSON);
+    request.addHeader(CONTENT_TYPE, APPLICATION_SLASH_JSON);
+    request.addHeader(AUTHORIZATION, BEARER_TOKEN.token(token));
+    HttpResponse response = httpClient.execute(request);
+    int status = response.getStatusLine().getStatusCode();
+    if (status == HttpStatus.SC_OK) {
+      return objectMapper.readValue(response.getEntity().getContent(),
+          EventTypes.class);
     }
 
-    private EventTypes getEventTypes(CloseableHttpClient httpClient, String token)  throws IOException  {
-        String endpoint = this.searchApiConfigService.getSearchFieldLookupAPI();
-        endpoint += EVENT_TYPE_CRITERIA;
-        HttpGet request = new HttpGet(endpoint);
-        request.addHeader(HttpConstants.HEADER_ACCEPT, APPLICATION_SLASH_JSON);
-        request.addHeader(CONTENT_TYPE, APPLICATION_SLASH_JSON);
-        request.addHeader(AUTHORIZATION, BEARER_TOKEN.token(token) );
-        HttpResponse response = httpClient.execute(request);
-        int status = response.getStatusLine().getStatusCode();
-        if (status == HttpStatus.SC_OK) {
-            return objectMapper.readValue(response.getEntity().getContent(),
-                EventTypes.class);
-        }
-
-        LOGGER.error("Retrieve event type returns empty");
-        return new EventTypes();
-    }
+    LOGGER.error("Retrieve event type returns empty");
+    return new EventTypes();
+  }
 }

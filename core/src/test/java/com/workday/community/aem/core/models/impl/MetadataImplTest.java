@@ -23,274 +23,287 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class MetadataImplTest.
  */
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class MetadataImplTest {
-    /** The context. */
-    private final AemContext context = new AemContext();
+  /**
+   * The context.
+   */
+  private final AemContext context = new AemContext();
 
-    /** The resource resolver. */
-    @Mock
-    ResourceResolver resourceResolver;
+  /**
+   * The resource resolver.
+   */
+  @Mock
+  ResourceResolver resourceResolver;
 
-    /** The user manager. */
-    @Mock
-    UserManager userManager;
+  /**
+   * The user manager.
+   */
+  @Mock
+  UserManager userManager;
 
-    /** The authorizable. */
-    @Mock
-    Authorizable authorizable;
+  /**
+   * The authorizable.
+   */
+  @Mock
+  Authorizable authorizable;
 
-    /** The gn value. */
-    @Mock
-    Value gnValue;
+  /**
+   * The gn value.
+   */
+  @Mock
+  Value gnValue;
 
-    /** The fn value. */
-    @Mock
-    Value fnValue;
+  /**
+   * The fn value.
+   */
+  @Mock
+  Value fnValue;
 
-    /**
-     * Setup.
-     *
-     * @throws Exception the exception
-     */
-    @BeforeEach
-    public void setup() throws Exception {
-        context.load().json("/com/workday/community/aem/core/models/impl/MetadataImplTest.json", "/content");
-    }
+  /**
+   * Setup.
+   *
+   * @throws Exception the exception
+   */
+  @BeforeEach
+  public void setup() throws Exception {
+    context.load()
+        .json("/com/workday/community/aem/core/models/impl/MetadataImplTest.json", "/content");
+  }
 
-    /**
-     * Testget author name author prop not in jcr.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetAuthorName_authorPropNotInJcr() throws RepositoryException {
+  /**
+   * Testget author name author prop not in jcr.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void testgetAuthorName_authorPropNotInJcr() throws RepositoryException {
 
-        Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        context.registerService(ResourceResolver.class, resourceResolver);
-        context.registerService(UserManager.class, userManager);
-        context.registerService(Authorizable.class, authorizable);
+    Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(ResourceResolver.class, resourceResolver);
+    context.registerService(UserManager.class, userManager);
+    context.registerService(Authorizable.class, authorizable);
 
-        when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("admin")).thenReturn(authorizable);
-        when(authorizable.isGroup()).thenReturn(false);
-        Value[] gnValueArray = new Value[] { gnValue };
-        Value[] fnValueArray = new Value[] { fnValue };
-        when(authorizable.getProperty("./profile/givenName")).thenReturn(gnValueArray);
-        when(authorizable.getProperty("./profile/familyName")).thenReturn(fnValueArray);
-        when(gnValueArray[0].getString()).thenReturn("Demo");
-        when(fnValueArray[0].getString()).thenReturn("User");
-        Metadata metadata = context.request().adaptTo(Metadata.class);
+    when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    when(userManager.getAuthorizable("admin")).thenReturn(authorizable);
+    when(authorizable.isGroup()).thenReturn(false);
+    Value[] gnValueArray = new Value[] {gnValue};
+    Value[] fnValueArray = new Value[] {fnValue};
+    when(authorizable.getProperty("./profile/givenName")).thenReturn(gnValueArray);
+    when(authorizable.getProperty("./profile/familyName")).thenReturn(fnValueArray);
+    when(gnValueArray[0].getString()).thenReturn("Demo");
+    when(fnValueArray[0].getString()).thenReturn("User");
+    Metadata metadata = context.request().adaptTo(Metadata.class);
 
-        String authorName = metadata.getAuthorName();
-        assertEquals("Demo User", authorName);
-    }
+    String authorName = metadata.getAuthorName();
+    assertEquals("Demo User", authorName);
+  }
 
-    /**
-     * Testget author name author user not found.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetAuthorName_authorUserNotFound() throws RepositoryException {
+  /**
+   * Testget author name author user not found.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void testgetAuthorName_authorUserNotFound() throws RepositoryException {
 
-        Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        context.registerService(ResourceResolver.class, resourceResolver);
-        context.registerService(UserManager.class, userManager);
-        context.registerService(Authorizable.class, authorizable);
+    Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(ResourceResolver.class, resourceResolver);
+    context.registerService(UserManager.class, userManager);
+    context.registerService(Authorizable.class, authorizable);
 
-        when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("demo author")).thenReturn(null);
-        Metadata metadata = context.request().adaptTo(Metadata.class);
+    when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    when(userManager.getAuthorizable("demo author")).thenReturn(null);
+    Metadata metadata = context.request().adaptTo(Metadata.class);
 
-        String authorName = metadata.getAuthorName();
-        assertEquals("demo author", authorName);
-    }
+    String authorName = metadata.getAuthorName();
+    assertEquals("demo author", authorName);
+  }
 
-    /**
-     * Testget author name author name null.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetAuthorName_authorNameNull() throws RepositoryException {
+  /**
+   * Testget author name author name null.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void testgetAuthorName_authorNameNull() throws RepositoryException {
 
-        Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        context.registerService(ResourceResolver.class, resourceResolver);
-        context.registerService(UserManager.class, userManager);
-        context.registerService(Authorizable.class, authorizable);
+    Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(ResourceResolver.class, resourceResolver);
+    context.registerService(UserManager.class, userManager);
+    context.registerService(Authorizable.class, authorizable);
 
-        when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("demo author")).thenReturn(authorizable);
-        when(authorizable.isGroup()).thenReturn(false);
-        when(authorizable.getProperty("./profile/givenName")).thenReturn(null);
-        when(authorizable.getProperty("./profile/familyName")).thenReturn(null);
-        Metadata metadata = context.request().adaptTo(Metadata.class);
+    when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    when(userManager.getAuthorizable("demo author")).thenReturn(authorizable);
+    when(authorizable.isGroup()).thenReturn(false);
+    when(authorizable.getProperty("./profile/givenName")).thenReturn(null);
+    when(authorizable.getProperty("./profile/familyName")).thenReturn(null);
+    Metadata metadata = context.request().adaptTo(Metadata.class);
 
-        String authorName = metadata.getAuthorName();
-        assertEquals("demo author", authorName);
-    }
+    String authorName = metadata.getAuthorName();
+    assertEquals("demo author", authorName);
+  }
 
-    /**
-     * Testget author name only given name.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetAuthorName_onlyGivenName() throws RepositoryException {
+  /**
+   * Testget author name only given name.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void testgetAuthorName_onlyGivenName() throws RepositoryException {
 
-        Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        context.registerService(ResourceResolver.class, resourceResolver);
-        context.registerService(UserManager.class, userManager);
-        context.registerService(Authorizable.class, authorizable);
+    Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(ResourceResolver.class, resourceResolver);
+    context.registerService(UserManager.class, userManager);
+    context.registerService(Authorizable.class, authorizable);
 
-        when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("demo author")).thenReturn(authorizable);
-        when(authorizable.isGroup()).thenReturn(false);
-        Value[] gnValueArray = new Value[] { gnValue };
-        when(authorizable.getProperty("./profile/givenName")).thenReturn(gnValueArray);
-        when(authorizable.getProperty("./profile/familyName")).thenReturn(null);
-        when(gnValueArray[0].getString()).thenReturn("Demo");
+    when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    when(userManager.getAuthorizable("demo author")).thenReturn(authorizable);
+    when(authorizable.isGroup()).thenReturn(false);
+    Value[] gnValueArray = new Value[] {gnValue};
+    when(authorizable.getProperty("./profile/givenName")).thenReturn(gnValueArray);
+    when(authorizable.getProperty("./profile/familyName")).thenReturn(null);
+    when(gnValueArray[0].getString()).thenReturn("Demo");
 
-        Metadata metadata = context.request().adaptTo(Metadata.class);
+    Metadata metadata = context.request().adaptTo(Metadata.class);
 
-        String authorName = metadata.getAuthorName();
-        assertEquals("Demo", authorName);
-    }
+    String authorName = metadata.getAuthorName();
+    assertEquals("Demo", authorName);
+  }
 
-    /**
-     * Testget author name only familyname.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetAuthorName_onlyFamilyname() throws RepositoryException {
+  /**
+   * Testget author name only familyname.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void testgetAuthorName_onlyFamilyname() throws RepositoryException {
 
-        Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        context.registerService(ResourceResolver.class, resourceResolver);
-        context.registerService(UserManager.class, userManager);
-        context.registerService(Authorizable.class, authorizable);
+    Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(ResourceResolver.class, resourceResolver);
+    context.registerService(UserManager.class, userManager);
+    context.registerService(Authorizable.class, authorizable);
 
-        when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("demo author")).thenReturn(authorizable);
-        when(authorizable.isGroup()).thenReturn(false);
-        Value[] fnValueArray = new Value[] { fnValue };
-        when(authorizable.getProperty("./profile/givenName")).thenReturn(null);
-        when(authorizable.getProperty("./profile/familyName")).thenReturn(fnValueArray);
-        when(fnValueArray[0].getString()).thenReturn("Author");
+    when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    when(userManager.getAuthorizable("demo author")).thenReturn(authorizable);
+    when(authorizable.isGroup()).thenReturn(false);
+    Value[] fnValueArray = new Value[] {fnValue};
+    when(authorizable.getProperty("./profile/givenName")).thenReturn(null);
+    when(authorizable.getProperty("./profile/familyName")).thenReturn(fnValueArray);
+    when(fnValueArray[0].getString()).thenReturn("Author");
 
-        Metadata metadata = context.request().adaptTo(Metadata.class);
+    Metadata metadata = context.request().adaptTo(Metadata.class);
 
-        String authorName = metadata.getAuthorName();
-        assertEquals("Author", authorName);
-    }
+    String authorName = metadata.getAuthorName();
+    assertEquals("Author", authorName);
+  }
 
-    /**
-     * Testget author name white space.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetAuthorName_whiteSpace() throws RepositoryException {
+  /**
+   * Testget author name white space.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void testgetAuthorName_whiteSpace() throws RepositoryException {
 
-        Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        context.registerService(ResourceResolver.class, resourceResolver);
-        context.registerService(UserManager.class, userManager);
-        context.registerService(Authorizable.class, authorizable);
+    Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(ResourceResolver.class, resourceResolver);
+    context.registerService(UserManager.class, userManager);
+    context.registerService(Authorizable.class, authorizable);
 
-        when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("demo author")).thenReturn(authorizable);
-        when(authorizable.isGroup()).thenReturn(false);
-        Value[] gnValueArray = new Value[] { gnValue };
-        Value[] fnValueArray = new Value[] { fnValue };
-        when(authorizable.getProperty("./profile/givenName")).thenReturn(gnValueArray);
-        when(authorizable.getProperty("./profile/familyName")).thenReturn(fnValueArray);
-        when(gnValueArray[0].getString()).thenReturn("  Author  ");
-        when(fnValueArray[0].getString()).thenReturn("  ");
+    when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    when(userManager.getAuthorizable("demo author")).thenReturn(authorizable);
+    when(authorizable.isGroup()).thenReturn(false);
+    Value[] gnValueArray = new Value[] {gnValue};
+    Value[] fnValueArray = new Value[] {fnValue};
+    when(authorizable.getProperty("./profile/givenName")).thenReturn(gnValueArray);
+    when(authorizable.getProperty("./profile/familyName")).thenReturn(fnValueArray);
+    when(gnValueArray[0].getString()).thenReturn("  Author  ");
+    when(fnValueArray[0].getString()).thenReturn("  ");
 
-        Metadata metadata = context.request().adaptTo(Metadata.class);
+    Metadata metadata = context.request().adaptTo(Metadata.class);
 
-        String authorName = metadata.getAuthorName();
-        assertEquals("Author", authorName);
-    }
+    String authorName = metadata.getAuthorName();
+    assertEquals("Author", authorName);
+  }
 
-    /**
-     * Testget author name repository exception with author.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetAuthorName_repositoryException_withAuthor() throws RepositoryException {
+  /**
+   * Testget author name repository exception with author.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void testgetAuthorName_repositoryException_withAuthor() throws RepositoryException {
 
-        Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        context.registerService(ResourceResolver.class, resourceResolver);
-        context.registerService(UserManager.class, userManager);
-        context.registerService(Authorizable.class, authorizable);
+    Page currentPage = context.currentResource("/content/release-notes-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(ResourceResolver.class, resourceResolver);
+    context.registerService(UserManager.class, userManager);
+    context.registerService(Authorizable.class, authorizable);
 
-        when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("demo author")).thenReturn(authorizable);
-        when(authorizable.isGroup()).thenReturn(false);
-        when(authorizable.getProperty("./profile/givenName")).thenThrow(RepositoryException.class);
-        Metadata metadata = context.request().adaptTo(Metadata.class);
+    when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    when(userManager.getAuthorizable("demo author")).thenReturn(authorizable);
+    when(authorizable.isGroup()).thenReturn(false);
+    when(authorizable.getProperty("./profile/givenName")).thenThrow(RepositoryException.class);
+    Metadata metadata = context.request().adaptTo(Metadata.class);
 
-        String authorName = metadata.getAuthorName();
-        assertEquals("demo author", authorName);
-    }
+    String authorName = metadata.getAuthorName();
+    assertEquals("demo author", authorName);
+  }
 
-    /**
-     * Testget author name repository exception without author.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetAuthorName_repositoryException_withoutAuthor() throws RepositoryException {
+  /**
+   * Testget author name repository exception without author.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void testgetAuthorName_repositoryException_withoutAuthor() throws RepositoryException {
 
-        Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        context.registerService(ResourceResolver.class, resourceResolver);
-        context.registerService(UserManager.class, userManager);
-        context.registerService(Authorizable.class, authorizable);
+    Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    context.registerService(ResourceResolver.class, resourceResolver);
+    context.registerService(UserManager.class, userManager);
+    context.registerService(Authorizable.class, authorizable);
 
-        when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
-        when(userManager.getAuthorizable("admin")).thenReturn(authorizable);
-        when(authorizable.isGroup()).thenReturn(false);
-        when(authorizable.getProperty("./profile/givenName")).thenThrow(RepositoryException.class);
-        Metadata metadata = context.request().adaptTo(Metadata.class);
+    when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    when(userManager.getAuthorizable("admin")).thenReturn(authorizable);
+    when(authorizable.isGroup()).thenReturn(false);
+    when(authorizable.getProperty("./profile/givenName")).thenThrow(RepositoryException.class);
+    Metadata metadata = context.request().adaptTo(Metadata.class);
 
-        String authorName = metadata.getAuthorName();
-        assertNull(authorName);
-    }
+    String authorName = metadata.getAuthorName();
+    assertNull(authorName);
+  }
 
-    /**
-     * Testget posted date.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetPostedDate() throws RepositoryException {
-        Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        Metadata metadata = context.request().adaptTo(Metadata.class);
-        assertNotNull(metadata.getPostedDate());
-    }
+  /**
+   * Testget posted date.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void testgetPostedDate() throws RepositoryException {
+    Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    Metadata metadata = context.request().adaptTo(Metadata.class);
+    assertNotNull(metadata.getPostedDate());
+  }
 
-    /**
-     * Testget update date.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void testgetUpdateDate() throws RepositoryException {
-        Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
-        context.registerService(Page.class, currentPage);
-        Metadata metadata = context.request().adaptTo(Metadata.class);
-        assertNotNull(metadata.getUpdatedDate());
-    }
+  /**
+   * Testget update date.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void testgetUpdateDate() throws RepositoryException {
+    Page currentPage = context.currentResource("/content/event-page").adaptTo(Page.class);
+    context.registerService(Page.class, currentPage);
+    Metadata metadata = context.request().adaptTo(Metadata.class);
+    assertNotNull(metadata.getUpdatedDate());
+  }
 }

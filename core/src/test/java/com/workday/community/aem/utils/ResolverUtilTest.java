@@ -24,7 +24,8 @@ public class ResolverUtilTest {
   public void testNewResolver() throws LoginException {
     ResourceResolver mockResolver = mock(ResourceResolver.class);
     when(resourceResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
-    ResourceResolver resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
+    ResourceResolver resolver =
+        ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER);
     assertEquals(resolver, mockResolver);
   }
 

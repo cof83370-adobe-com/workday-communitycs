@@ -16,45 +16,47 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class TocModelImpl.
  */
-@Model(adaptables = { Resource.class, SlingHttpServletRequest.class }, adapters = { TocModel.class }, resourceType = {
-        TocModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(adaptables = {Resource.class, SlingHttpServletRequest.class}, adapters = {
+    TocModel.class}, resourceType = {
+    TocModelImpl.RESOURCE_TYPE}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class TocModelImpl implements TocModel {
-    /**
-     * The Constant RESOURCE_TYPE.
-     */
-    protected static final String RESOURCE_TYPE = "workday-community/components/common/toc";
+  /**
+   * The Constant RESOURCE_TYPE.
+   */
+  protected static final String RESOURCE_TYPE = "workday-community/components/common/toc";
 
-    /**
-     * The logger.
-     */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-    /**
-     * The current page.
-     */
-    @Inject
-    private Page currentPage;
+  /**
+   * The logger.
+   */
+  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
-    /**
-     * The query service.
-     */
-    @OSGiService
-    private QueryService queryService;
+  /**
+   * The current page.
+   */
+  @Inject
+  private Page currentPage;
 
-    /**
-     * Book resource path.
-     *
-     * @return the string
-     */
-    @Override
-    public String bookResourcePath() {
-        logger.debug("bookResourcePath::Entry");
-        String bookResourcePath = null;
-            if (null != currentPage) {
-                List<String> bookPathList = queryService.getBookNodesByPath(currentPage.getPath(), null);
-                if (bookPathList.size() > 0) {
-                    bookResourcePath = bookPathList.get(0).split("/firstlevel")[0];
-                }
-            }
-        return bookResourcePath;
+  /**
+   * The query service.
+   */
+  @OSGiService
+  private QueryService queryService;
+
+  /**
+   * Book resource path.
+   *
+   * @return the string
+   */
+  @Override
+  public String bookResourcePath() {
+    logger.debug("bookResourcePath::Entry");
+    String bookResourcePath = null;
+    if (null != currentPage) {
+      List<String> bookPathList = queryService.getBookNodesByPath(currentPage.getPath(), null);
+      if (bookPathList.size() > 0) {
+        bookResourcePath = bookPathList.get(0).split("/firstlevel")[0];
+      }
     }
+    return bookResourcePath;
+  }
 }

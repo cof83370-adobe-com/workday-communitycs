@@ -24,70 +24,78 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class CoveoIndexAllServletTest.
  */
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 class CoveoIndexAllServletTest {
 
-    /** Index service. */
-    @Mock
-    private IndexServices indexServices;
+  /**
+   * The servlet CoveoIndexAllServlet.
+   */
+  @InjectMocks
+  CoveoIndexAllServlet servlet;
 
-    /** Query service. */
-    @Mock
-    private QueryService queryService;
+  /**
+   * Index service.
+   */
+  @Mock
+  private IndexServices indexServices;
 
-    /** CoveoIndexApiConfigService service. */
-    @Mock
-    private CoveoIndexApiConfigService coveoIndexApiConfigService;
+  /**
+   * Query service.
+   */
+  @Mock
+  private QueryService queryService;
 
-    /** The servlet CoveoIndexAllServlet. */
-    @InjectMocks
-    CoveoIndexAllServlet servlet;
+  /**
+   * CoveoIndexApiConfigService service.
+   */
+  @Mock
+  private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
-    /**
-     * Test doPost.
-     */
-    @ParameterizedTest(name = "Test {0}")
-    @CsvSource({
-            "Template value is empty,true,false",
-            "No content found,false,true",
-            "Contents indexed,false,false"
-    })
-    public void doPostTest(String test, boolean emptyTemplate, boolean noContent) throws IOException {
-        MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
-        String[] templates;
-        if (emptyTemplate) {
-            templates = null;
-        } else {
-            templates = new String[]{"/template/path"};
-        }
-
-        when(request.getParameterValues("templates")).thenReturn(templates);
-
-        MockSlingHttpServletResponse response = mock(MockSlingHttpServletResponse.class);
-
-        when(coveoIndexApiConfigService.isCoveoIndexEnabled()).thenReturn(true);
-
-        PrintWriter printWriter = mock(PrintWriter.class);
-        when(response.getWriter()).thenReturn(printWriter);
-
-        List<String> paths = new ArrayList<>();
-        if (!noContent) {
-            paths.add("/page/path");
-        }
-
-        if (!emptyTemplate) {
-            when(queryService.getPagesByTemplates(templates)).thenReturn(paths);
-        }
-
-        servlet.doPost(request, response);
-
-        if (emptyTemplate) {
-            verify(printWriter).append("Missing template value.");
-        } else if (noContent) {
-            verify(printWriter).append("No matching items found.");
-        } else {
-            verify(printWriter).append("1 number of content(s) indexed.");
-        }
+  /**
+   * Test doPost.
+   */
+  @ParameterizedTest(name = "Test {0}")
+  @CsvSource({
+      "Template value is empty,true,false",
+      "No content found,false,true",
+      "Contents indexed,false,false"
+  })
+  public void doPostTest(String test, boolean emptyTemplate, boolean noContent) throws IOException {
+    MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
+    String[] templates;
+    if (emptyTemplate) {
+      templates = null;
+    } else {
+      templates = new String[] {"/template/path"};
     }
+
+    when(request.getParameterValues("templates")).thenReturn(templates);
+
+    MockSlingHttpServletResponse response = mock(MockSlingHttpServletResponse.class);
+
+    when(coveoIndexApiConfigService.isCoveoIndexEnabled()).thenReturn(true);
+
+    PrintWriter printWriter = mock(PrintWriter.class);
+    when(response.getWriter()).thenReturn(printWriter);
+
+    List<String> paths = new ArrayList<>();
+    if (!noContent) {
+      paths.add("/page/path");
+    }
+
+    if (!emptyTemplate) {
+      when(queryService.getPagesByTemplates(templates)).thenReturn(paths);
+    }
+
+    servlet.doPost(request, response);
+
+    if (emptyTemplate) {
+      verify(printWriter).append("Missing template value.");
+    } else if (noContent) {
+      verify(printWriter).append("No matching items found.");
+    } else {
+      verify(printWriter).append("1 number of content(s) indexed.");
+    }
+  }
 
 }

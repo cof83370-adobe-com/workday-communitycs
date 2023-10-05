@@ -21,40 +21,48 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class CoveoDeleteAllServletTest.
  */
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 class CoveoDeleteAllServletTest {
 
-    /** Index service. */
-    @Mock
-    private IndexServices indexServices;
+  /**
+   * The servlet CoveoDeleteAllServlet.
+   */
+  @InjectMocks
+  CoveoDeleteAllServlet servlet;
 
-    /** The push API service. */
-    @Mock
-    private CoveoPushApiService coveoPushApiService;
+  /**
+   * Index service.
+   */
+  @Mock
+  private IndexServices indexServices;
 
-    /** The servlet CoveoDeleteAllServlet. */
-    @InjectMocks
-    CoveoDeleteAllServlet servlet;
+  /**
+   * The push API service.
+   */
+  @Mock
+  private CoveoPushApiService coveoPushApiService;
 
-    /** The CoveoIndexApiConfigService service. */
-    @Mock
-    private CoveoIndexApiConfigService coveoIndexApiConfigService;
+  /**
+   * The CoveoIndexApiConfigService service.
+   */
+  @Mock
+  private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
-    /**
-     * Test doDelete.
-     */
-    @Test
-    public void testDoDelete() throws IOException {
-        MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
-        MockSlingHttpServletResponse response = mock(MockSlingHttpServletResponse.class);
-        PrintWriter printWriter = mock(PrintWriter.class);
-        when(response.getWriter()).thenReturn(printWriter);
+  /**
+   * Test doDelete.
+   */
+  @Test
+  public void testDoDelete() throws IOException {
+    MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
+    MockSlingHttpServletResponse response = mock(MockSlingHttpServletResponse.class);
+    PrintWriter printWriter = mock(PrintWriter.class);
+    when(response.getWriter()).thenReturn(printWriter);
 
-        when(coveoIndexApiConfigService.isCoveoIndexEnabled()).thenReturn(true);
+    when(coveoIndexApiConfigService.isCoveoIndexEnabled()).thenReturn(true);
 
-        servlet.doDelete(request, response);
-        verify(coveoPushApiService).callDeleteAllItemsUri();
-        verify(printWriter).append("Delete all request sent.");
-    }
+    servlet.doDelete(request, response);
+    verify(coveoPushApiService).callDeleteAllItemsUri();
+    verify(printWriter).append("Delete all request sent.");
+  }
 
 }

@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class OktaServiceImplTest {
   private final OktaService service = new OktaServiceImpl();
+
   private final OktaConfig testConfig = new OktaConfig() {
     @Override
     public Class<? extends Annotation> annotationType() {
@@ -35,7 +36,7 @@ public class OktaServiceImplTest {
 
   @BeforeEach
   public void setup() {
-    ((OktaServiceImpl)service).activate(testConfig);
+    ((OktaServiceImpl) service).activate(testConfig);
   }
 
   @Test

@@ -28,66 +28,73 @@ import org.slf4j.LoggerFactory;
  * The Class OurmUserServiceImpl.
  */
 @Component(service = OurmUserService.class, property = {
-        "service.pid=aem.core.services.ourmUsers"
+    "service.pid=aem.core.services.ourmUsers"
 }, configurationPid = "com.workday.community.aem.core.config.OurmDrupalConfig", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 @Designate(ocd = OurmDrupalConfig.class)
 public class OurmUserServiceImpl implements OurmUserService {
 
-    /** The Constant LOGGER. */
-    private static final Logger LOGGER = LoggerFactory.getLogger(OurmUserServiceImpl.class);
+  /**
+   * The Constant LOGGER.
+   */
+  private static final Logger LOGGER = LoggerFactory.getLogger(OurmUserServiceImpl.class);
 
-    /** The ourm drupal config. */
-    private OurmDrupalConfig ourmDrupalConfig;
+  /**
+   * The gson service.
+   */
+  private final Gson gson = new Gson();
 
-    /** The gson service. */
-    private final Gson gson = new Gson();
+  /**
+   * The ourm drupal config.
+   */
+  private OurmDrupalConfig ourmDrupalConfig;
 
-    /**
-     * Activate.
-     *
-     * @param config the config
-     */
-    @Activate
-    @Modified
-    @Override
-    public void activate(OurmDrupalConfig config) {
-        this.ourmDrupalConfig = config;
+  /**
+   * Activate.
+   *
+   * @param config the config
+   */
+  @Activate
+  @Modified
+  @Override
+  public void activate(OurmDrupalConfig config) {
+    this.ourmDrupalConfig = config;
+  }
+
+  /**
+   * Search ourm user list.
+   *
+   * @param searchText the search text
+   * @return the json object
+   * @throws OurmException the ourm exception
+   */
+  @Override
+  public JsonObject searchOurmUserList(String searchText) throws OurmException {
+
+    String endpoint = this.ourmDrupalConfig.ourmDrupalRestRoot();
+    String consumerKey = this.ourmDrupalConfig.ourmDrupalConsumerKey();
+    String consumerSecret = this.ourmDrupalConfig.ourmDrupalConsumerSecret();
+    String searchPath = this.ourmDrupalConfig.ourmDrupalUserSearchPath();
+    if (StringUtils.isNotBlank(endpoint) && StringUtils.isNotBlank(consumerKey)
+        && StringUtils.isNotBlank(consumerSecret) && StringUtils.isNotBlank(searchPath)) {
+      try {
+
+        String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath),
+            URLEncoder.encode(searchText, StandardCharsets.UTF_8));
+        String headerString =
+            OAuth1Util.getHeader(GET_API, apiUrl, consumerKey, consumerSecret, new HashMap<>());
+        LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
+
+        // Execute the request.
+        String jsonResponse = RestApiUtil.doOURMGet(apiUrl, headerString);
+        return gson.fromJson(jsonResponse, JsonObject.class);
+
+      } catch (OurmException | InvalidKeyException | NoSuchAlgorithmException e) {
+        String errorMessage = e.getMessage();
+        throw new OurmException(
+            String.format("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl : %s",
+                errorMessage));
+      }
     }
-
-    /**
-     * Search ourm user list.
-     *
-     * @param searchText the search text
-     * @return the json object
-     * @throws OurmException the ourm exception
-     */
-    @Override
-    public JsonObject searchOurmUserList(String searchText) throws OurmException {
-
-        String endpoint = this.ourmDrupalConfig.ourmDrupalRestRoot();
-        String consumerKey = this.ourmDrupalConfig.ourmDrupalConsumerKey();
-        String consumerSecret = this.ourmDrupalConfig.ourmDrupalConsumerSecret();
-        String searchPath = this.ourmDrupalConfig.ourmDrupalUserSearchPath();
-        if (StringUtils.isNotBlank(endpoint) && StringUtils.isNotBlank(consumerKey)
-                && StringUtils.isNotBlank(consumerSecret) && StringUtils.isNotBlank(searchPath)) {
-            try {
-
-                String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath),
-                        URLEncoder.encode(searchText, StandardCharsets.UTF_8));
-                String headerString = OAuth1Util.getHeader(GET_API, apiUrl, consumerKey, consumerSecret, new HashMap<>());
-                LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
-
-                // Execute the request.
-                String jsonResponse = RestApiUtil.doOURMGet(apiUrl, headerString);
-                return gson.fromJson(jsonResponse, JsonObject.class);
-
-            } catch (OurmException | InvalidKeyException | NoSuchAlgorithmException e) {
-                String errorMessage = e.getMessage();
-                throw new OurmException(
-                        String.format("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl : %s",
-                                errorMessage));
-            }
-        }
-        return new JsonObject();
-    }
+    return new JsonObject();
+  }
 }

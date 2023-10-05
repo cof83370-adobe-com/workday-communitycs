@@ -45,17 +45,23 @@ import org.slf4j.LoggerFactory;
         Resource.class,
         SlingHttpServletRequest.class
     },
-    adapters = { CoveoEventFeedModel.class },
-    resourceType = { CoveoEventFeedModelImpl.RESOURCE_TYPE },
+    adapters = {CoveoEventFeedModel.class},
+    resourceType = {CoveoEventFeedModelImpl.RESOURCE_TYPE},
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
+  protected static final String RESOURCE_TYPE =
+      "/content/workday-community/components/common/coveoeventfeed";
+
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
-  protected static final String RESOURCE_TYPE = "/content/workday-community/components/common/coveoeventfeed";
-  private static final String MODEL_CONFIG_FILE = "/content/dam/workday-community/resources/event-feed-criteria.json";
+
+  private static final String MODEL_CONFIG_FILE =
+      "/content/dam/workday-community/resources/event-feed-criteria.json";
+
   private static final String EVENT_PATH_ROOT = "/jcr:content/root/container/";
 
   private JsonObject modelConfig;
+
   private JsonObject searchConfig;
 
   @Self
@@ -111,13 +117,14 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       return new HashMap<>();
     }
 
-    GregorianCalendar startTime = (GregorianCalendar)pageObject.getProperties().get("eventStartDate");
-    GregorianCalendar endTime = (GregorianCalendar)pageObject.getProperties().get("eventEndDate");
+    GregorianCalendar startTime =
+        (GregorianCalendar) pageObject.getProperties().get("eventStartDate");
+    GregorianCalendar endTime = (GregorianCalendar) pageObject.getProperties().get("eventEndDate");
     SimpleDateFormat fmt = new SimpleDateFormat("MMM dd, yyyy");
     fmt.setCalendar(startTime);
     fmt.setCalendar(endTime);
-    String eventLocation = (String)pageObject.getProperties().get("eventLocation");
-    String eventHost = (String)pageObject.getProperties().get("eventHost");
+    String eventLocation = (String) pageObject.getProperties().get("eventLocation");
+    String eventHost = (String) pageObject.getProperties().get("eventHost");
 
     String imagePath = "";
     String registerPath = "";
@@ -129,7 +136,9 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       Resource image = resourceResolver.getResource(featureImage);
       if (image != null) {
         try {
-          imagePath = requireNonNull(image.adaptTo(Node.class)).getProperty("fileReference").getValue().getString();
+          imagePath =
+              requireNonNull(image.adaptTo(Node.class)).getProperty("fileReference").getValue()
+                  .getString();
         } catch (PathNotFoundException e) {
           LOGGER.error("There is no image for the selected feature event");
           imagePath = "";
@@ -141,11 +150,13 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       Resource registerButton = resourceResolver.getResource(registerButtonPath);
       if (registerButton != null) {
         try {
-          registerTitle = requireNonNull(registerButton.adaptTo(Node.class)).getProperty(JCR_TITLE).getString();
+          registerTitle =
+              requireNonNull(registerButton.adaptTo(Node.class)).getProperty(JCR_TITLE).getString();
           Property link = requireNonNull(registerButton.adaptTo(Node.class)).getProperty("linkURL");
           registerPath = link == null ? "" : link.getString();
         } catch (RepositoryException ex) {
-          LOGGER.error("Exception happens when try to access feature event information {}", ex.getMessage());
+          LOGGER.error("Exception happens when try to access feature event information {}",
+              ex.getMessage());
         }
       }
     }
@@ -174,12 +185,12 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   }
 
   @Override
-  public String getSortCriteria() throws DamException{
+  public String getSortCriteria() throws DamException {
     return this.getModelConfig().get("sortCriteria").getAsString();
   }
 
   @Override
-  public String getEventCriteria() throws DamException{
+  public String getEventCriteria() throws DamException {
     LocalDate localDate = LocalDate.now();
     ZonedDateTime startOfDay = localDate.atStartOfDay(ZoneId.of("Z"));
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy/MM/dd@HH:mm");
@@ -209,7 +220,8 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
 
   private JsonObject getModelConfig() throws DamException {
     if (this.modelConfig == null) {
-      this.modelConfig = DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
+      this.modelConfig =
+          DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
     }
     return this.modelConfig;
   }

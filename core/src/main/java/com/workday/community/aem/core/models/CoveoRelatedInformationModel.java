@@ -9,6 +9,7 @@ import java.util.List;
 public interface CoveoRelatedInformationModel extends CoveoCommonModel {
   /**
    * Get the search criteria for related information
+   *
    * @return the search criteria
    * @throws DamException a DamException object.
    */

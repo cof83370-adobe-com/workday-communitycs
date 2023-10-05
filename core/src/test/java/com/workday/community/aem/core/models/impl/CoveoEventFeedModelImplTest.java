@@ -57,10 +57,13 @@ public class CoveoEventFeedModelImplTest {
 
   @Mock
   SlingHttpServletRequest request;
+
   @Mock
   SearchApiConfigService searchApiConfigService;
+
   @Mock
   SnapService snapService;
+
   @Mock
   UserService userService;
 
@@ -68,7 +71,8 @@ public class CoveoEventFeedModelImplTest {
 
   @BeforeEach
   public void setup() {
-    context.load().json("/com/workday/community/aem/core/models/impl/CoveoEventFeedTestData.json", "/content");
+    context.load().json("/com/workday/community/aem/core/models/impl/CoveoEventFeedTestData.json",
+        "/content");
     Resource res = context.request().getResourceResolver().getResource("/content/event-feed-page");
     Page currentPage = res.adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
@@ -78,12 +82,13 @@ public class CoveoEventFeedModelImplTest {
     context.registerService(UserService.class, userService);
     context.addModelsForClasses(CoveoEventFeedModelImpl.class);
 
-    coveoEventFeedModel = context.getService(ModelFactory.class).createModel(res, CoveoEventFeedModel.class);
+    coveoEventFeedModel =
+        context.getService(ModelFactory.class).createModel(res, CoveoEventFeedModel.class);
   }
 
   @Test
   void testGetSearchConfig() throws RepositoryException {
-    ((CoveoEventFeedModelImpl)coveoEventFeedModel).init(request);
+    ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(request);
     ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
     Session session = mock(Session.class);
     UserManager userManager = mock(UserManager.class);
@@ -142,20 +147,23 @@ public class CoveoEventFeedModelImplTest {
     lenient().when(userManager.getAuthorizable(eq("userId"))).thenReturn(user);
     lenient().when(user.getProperty(eq(SnapConstants.PROFILE_SOURCE_ID))).thenReturn(profileSId);
 
-    String testData = "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
+    String testData =
+        "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
     JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");
 
     lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
-    lenient().when(userService.getUserUUID(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
+    lenient().when(userService.getUserUUID(anyString()))
+        .thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
     JsonObject searchConfig = coveoEventFeedModel.getSearchConfig();
     assertEquals(5, searchConfig.size());
-    assertEquals(searchConfig.get("clientId").getAsString(), "eb6f7b59-e3d5-5199-8019-394c8982412b");
+    assertEquals(searchConfig.get("clientId").getAsString(),
+        "eb6f7b59-e3d5-5199-8019-394c8982412b");
   }
 
   @Test
   void testGetFeatureEventNotResolved() throws RepositoryException {
-    ((CoveoEventFeedModelImpl)coveoEventFeedModel).init(request);
+    ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(request);
 
     ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
     PageManager pageManager = mock(PageManager.class);
@@ -172,7 +180,9 @@ public class CoveoEventFeedModelImplTest {
       ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(this.request);
       JsonObject modelConfig = new JsonObject();
       modelConfig.addProperty("eventCriteria", "foo");
-      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.request.getResourceResolver()), anyString())).thenReturn(modelConfig);
+      mocked.when(
+              () -> DamUtils.readJsonFromDam(eq(this.request.getResourceResolver()), anyString()))
+          .thenReturn(modelConfig);
 
       String res = coveoEventFeedModel.getEventCriteria();
       assertEquals("(foo)", res);
@@ -187,7 +197,9 @@ public class CoveoEventFeedModelImplTest {
       modelConfig.addProperty("sortCriteria", "foo");
       modelConfig.addProperty("allEventsUrl", "foo1");
       modelConfig.addProperty("extraCriteria", "foo2");
-      mocked.when(() -> DamUtils.readJsonFromDam(eq(this.request.getResourceResolver()), anyString())).thenReturn(modelConfig);
+      mocked.when(
+              () -> DamUtils.readJsonFromDam(eq(this.request.getResourceResolver()), anyString()))
+          .thenReturn(modelConfig);
 
       assertEquals("foo", coveoEventFeedModel.getSortCriteria());
       assertEquals("foo1", coveoEventFeedModel.getAllEventsUrl());
@@ -197,15 +209,15 @@ public class CoveoEventFeedModelImplTest {
 
   @Test
   void testGetFeatureEventResolved() throws RepositoryException {
-    ((CoveoEventFeedModelImpl)coveoEventFeedModel).init(request);
+    ((CoveoEventFeedModelImpl) coveoEventFeedModel).init(request);
 
     ResourceResolver mockResourceResolver = mock(ResourceResolver.class);
     PageManager pageManager = mock(PageManager.class);
     Page page = mock(Page.class);
 
     ValueMap testValues = new ValueMapDecorator(ImmutableMap.of(
-        "eventStartDate", new GregorianCalendar(2023, JUNE,3),
-        "eventEndDate", new GregorianCalendar(2023, OCTOBER,3),
+        "eventStartDate", new GregorianCalendar(2023, JUNE, 3),
+        "eventEndDate", new GregorianCalendar(2023, OCTOBER, 3),
         "eventLocation", "Bay area"
     ));
 

@@ -92,9 +92,9 @@ public class APIRequest {
    * @param value  the header value.
    */
   public APIRequest addHeader(String header, String value) {
-    if (this.headers != null)
+    if (this.headers != null) {
       headers.put(header, value);
-    else {
+    } else {
       headers = new HashMap<>();
       headers.put(header, value);
     }
@@ -116,9 +116,9 @@ public class APIRequest {
    * @param value the value.
    */
   public APIRequest addFormData(String key, String value) {
-    if (this.formData != null)
+    if (this.formData != null) {
       formData.put(key, value);
-    else {
+    } else {
       formData = new HashMap<>();
       formData.put(key, value);
     }

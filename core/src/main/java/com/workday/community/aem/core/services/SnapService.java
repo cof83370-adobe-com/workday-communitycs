@@ -36,7 +36,7 @@ public interface SnapService {
   /**
    * @param sfId Salesforce Id.
    * @return The menu object as a string for common nav menus in the global header
-   *         of the page.
+   * of the page.
    */
   String getUserHeaderMenu(String sfId);
 
@@ -70,7 +70,6 @@ public interface SnapService {
   String getAdobeDigitalData(String sfId, String pageTitle, String contentType);
 
   /**
-   *
    * @return true if the cache is enabled.
    */
   boolean enableCache();

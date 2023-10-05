@@ -25,22 +25,31 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class BookOperationsServiceImplTest.
  */
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class BookOperationsServiceImplTest {
 
-  /** The book operations service impl. */
-  private final BookOperationsServiceImpl bookOperationsServiceImpl = new BookOperationsServiceImpl();
+  /**
+   * The book operations service impl.
+   */
+  private final BookOperationsServiceImpl bookOperationsServiceImpl =
+      new BookOperationsServiceImpl();
 
-  /** The resource resolver. */
+  /**
+   * The context.
+   */
+  private final AemContext context = new AemContext(ResourceResolverType.RESOURCERESOLVER_MOCK);
+
+  /**
+   * The resource resolver.
+   */
   @Mock
   ResourceResolver resourceResolver;
 
-  /** Query service. */
+  /**
+   * Query service.
+   */
   @Mock
   private QueryService queryService;
-
-  /** The context. */
-  private final AemContext context = new AemContext(ResourceResolverType.RESOURCERESOLVER_MOCK);
 
   /**
    * Sets the up.
@@ -49,8 +58,9 @@ public class BookOperationsServiceImplTest {
    */
   @BeforeEach
   public void setUp() throws Exception {
-    context.load().json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
-        "/content");
+    context.load()
+        .json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
+            "/content");
 
     Page currentPage = context.currentResource("/content/book-faq-page").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
@@ -62,11 +72,15 @@ public class BookOperationsServiceImplTest {
    */
   @Test
   public void testBookPathOperations() {
-    String bookRequestJsonStr = "[\"/content/workday-community/en-us/thomas-sandbox/accordion-image-test\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341/considerations-when-translating-BIRT-output\",\"/content/workday-community/en-us/thomas-sandbox/test-2/workday-mobile-authentication-and-security-faq\",\"/content/workday-community/en-us/thomas-sandbox/test/getting-started-on-prism-analytics\",\"/content/workday-community/en-us/thomas-sandbox/test-2/cloudLoader-advanced-load-tips-and-tricks\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341\",\"/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test\"]";
-    String bookResourcePath =  "/content/book-faq-page";
+    String bookRequestJsonStr =
+        "[\"/content/workday-community/en-us/thomas-sandbox/accordion-image-test\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341/considerations-when-translating-BIRT-output\",\"/content/workday-community/en-us/thomas-sandbox/test-2/workday-mobile-authentication-and-security-faq\",\"/content/workday-community/en-us/thomas-sandbox/test/getting-started-on-prism-analytics\",\"/content/workday-community/en-us/thomas-sandbox/test-2/cloudLoader-advanced-load-tips-and-tricks\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341\",\"/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test\"]";
+    String bookResourcePath = "/content/book-faq-page";
 
-    Set<String> activatePaths = bookOperationsServiceImpl.processBookPaths(context.resourceResolver(), bookResourcePath, bookRequestJsonStr );
-    Set<String> expectedPaths = Collections.singleton("/content/workday-community/en-us/sprint-17/cmtyaem-341");
+    Set<String> activatePaths =
+        bookOperationsServiceImpl.processBookPaths(context.resourceResolver(), bookResourcePath,
+            bookRequestJsonStr);
+    Set<String> expectedPaths =
+        Collections.singleton("/content/workday-community/en-us/sprint-17/cmtyaem-341");
     assertNotEquals(expectedPaths, activatePaths);
   }
 
@@ -77,18 +91,23 @@ public class BookOperationsServiceImplTest {
   public void testBookPathOperationsNull() {
     String bookRequestJsonStr = null;
     String bookResourcePath = "/content/book-faq-page";
-    Set<String> activatePaths = bookOperationsServiceImpl.processBookPaths(resourceResolver, bookResourcePath, bookRequestJsonStr);
+    Set<String> activatePaths =
+        bookOperationsServiceImpl.processBookPaths(resourceResolver, bookResourcePath,
+            bookRequestJsonStr);
     assertEquals(0, activatePaths.size());
   }
 
-    /**
+  /**
    * Test testBookPathOperations with empty Resource path.
    */
   @Test
   public void testBookPathOperationsNullResPath() {
-    String bookRequestJsonStr = "[\"/content/workday-community/en-us/thomas-sandbox/accordion-image-test\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341/considerations-when-translating-BIRT-output\",\"/content/workday-community/en-us/thomas-sandbox/test-2/workday-mobile-authentication-and-security-faq\",\"/content/workday-community/en-us/thomas-sandbox/test/getting-started-on-prism-analytics\",\"/content/workday-community/en-us/thomas-sandbox/test-2/cloudLoader-advanced-load-tips-and-tricks\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341\",\"/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test\"]";
+    String bookRequestJsonStr =
+        "[\"/content/workday-community/en-us/thomas-sandbox/accordion-image-test\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341/considerations-when-translating-BIRT-output\",\"/content/workday-community/en-us/thomas-sandbox/test-2/workday-mobile-authentication-and-security-faq\",\"/content/workday-community/en-us/thomas-sandbox/test/getting-started-on-prism-analytics\",\"/content/workday-community/en-us/thomas-sandbox/test-2/cloudLoader-advanced-load-tips-and-tricks\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341\",\"/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test\"]";
     String bookResourcePath = null;
-    Set<String> activatePaths = bookOperationsServiceImpl.processBookPaths(resourceResolver, bookResourcePath, bookRequestJsonStr);
+    Set<String> activatePaths =
+        bookOperationsServiceImpl.processBookPaths(resourceResolver, bookResourcePath,
+            bookRequestJsonStr);
     assertEquals(0, activatePaths.size());
   }
 
@@ -97,16 +116,18 @@ public class BookOperationsServiceImplTest {
    */
   @Test
   public void testBookPathJsonData() {
-    String bookRequestJsonStr = "[\"/content/workday-community/en-us/thomas-sandbox/accordion-image-test\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341/considerations-when-translating-BIRT-output\",\"/content/workday-community/en-us/thomas-sandbox/test-2/workday-mobile-authentication-and-security-faq\",\"/content/workday-community/en-us/thomas-sandbox/test/getting-started-on-prism-analytics\",\"/content/workday-community/en-us/thomas-sandbox/test-2/cloudLoader-advanced-load-tips-and-tricks\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341\",\"/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test\"]";
+    String bookRequestJsonStr =
+        "[\"/content/workday-community/en-us/thomas-sandbox/accordion-image-test\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341/considerations-when-translating-BIRT-output\",\"/content/workday-community/en-us/thomas-sandbox/test-2/workday-mobile-authentication-and-security-faq\",\"/content/workday-community/en-us/thomas-sandbox/test/getting-started-on-prism-analytics\",\"/content/workday-community/en-us/thomas-sandbox/test-2/cloudLoader-advanced-load-tips-and-tricks\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341\",\"/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test\"]";
     List<String> actualPathList = CommonUtils.getPathListFromJsonString(bookRequestJsonStr);
-    List<String> expectedPathList = Stream.of("/content/workday-community/en-us/thomas-sandbox/accordion-image-test",
-        "/content/workday-community/en-us/sprint-17/cmtyaem-341/considerations-when-translating-BIRT-output",
-        "/content/workday-community/en-us/thomas-sandbox/test-2/workday-mobile-authentication-and-security-faq",
-        "/content/workday-community/en-us/thomas-sandbox/test/getting-started-on-prism-analytics",
-        "/content/workday-community/en-us/thomas-sandbox/test-2/cloudLoader-advanced-load-tips-and-tricks",
-        "/content/workday-community/en-us/sprint-17/cmtyaem-341",
-        "/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test")
-        .collect(Collectors.toList());
+    List<String> expectedPathList =
+        Stream.of("/content/workday-community/en-us/thomas-sandbox/accordion-image-test",
+                "/content/workday-community/en-us/sprint-17/cmtyaem-341/considerations-when-translating-BIRT-output",
+                "/content/workday-community/en-us/thomas-sandbox/test-2/workday-mobile-authentication-and-security-faq",
+                "/content/workday-community/en-us/thomas-sandbox/test/getting-started-on-prism-analytics",
+                "/content/workday-community/en-us/thomas-sandbox/test-2/cloudLoader-advanced-load-tips-and-tricks",
+                "/content/workday-community/en-us/sprint-17/cmtyaem-341",
+                "/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test")
+            .collect(Collectors.toList());
     assertEquals(expectedPathList, actualPathList);
   }
 

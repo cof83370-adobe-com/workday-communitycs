@@ -10,52 +10,52 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 )
 public @interface CoveoIndexApiConfig {
 
-    @AttributeDefinition (
-        name = "Enabled",
-        description = "Is Coveo indexing enabled",
-        type = AttributeType.BOOLEAN
-    )
-    boolean isCoveoIndexingEnabled() default false;
+  @AttributeDefinition(
+      name = "Enabled",
+      description = "Is Coveo indexing enabled",
+      type = AttributeType.BOOLEAN
+  )
+  boolean isCoveoIndexingEnabled() default false;
 
-    @AttributeDefinition (
-        name = "Api key",
-        description = "Coveo api key",
-        type = AttributeType.STRING
-    )
-    String coveoApiKey();
+  @AttributeDefinition(
+      name = "Api key",
+      description = "Coveo api key",
+      type = AttributeType.STRING
+  )
+  String coveoApiKey();
 
-    @AttributeDefinition (
-        name = "Push Api Uri",
-        description = "Coveo push api endpoint",
-        type = AttributeType.STRING
-    )
-    String pushApiUri() default "https://api.cloud.coveo.com/push/v1/organizations/";
+  @AttributeDefinition(
+      name = "Push Api Uri",
+      description = "Coveo push api endpoint",
+      type = AttributeType.STRING
+  )
+  String pushApiUri() default "https://api.cloud.coveo.com/push/v1/organizations/";
 
-    @AttributeDefinition (
-        name = "Source Api Uri",
-        description = "Coveo source api endpoint",
-        type = AttributeType.STRING
-    )
-    String sourceApiUri() default "https://platform.cloud.coveo.com/rest/organizations/";
+  @AttributeDefinition(
+      name = "Source Api Uri",
+      description = "Coveo source api endpoint",
+      type = AttributeType.STRING
+  )
+  String sourceApiUri() default "https://platform.cloud.coveo.com/rest/organizations/";
 
-    @AttributeDefinition (
-        name = "Organization Id",
-        description = "Coveo organization id",
-        type = AttributeType.STRING
-    )
-    String organizationId();
+  @AttributeDefinition(
+      name = "Organization Id",
+      description = "Coveo organization id",
+      type = AttributeType.STRING
+  )
+  String organizationId();
 
-    @AttributeDefinition (
-        name = "Source Id",
-        description = "Coveo source id",
-        type = AttributeType.STRING
-    )
-    String sourceId();
+  @AttributeDefinition(
+      name = "Source Id",
+      description = "Coveo source id",
+      type = AttributeType.STRING
+  )
+  String sourceId();
 
-    @AttributeDefinition (
-        name = "Batch size",
-        description = "Coveo job batch size",
-        type = AttributeType.INTEGER
-    )
-    int batchSize() default 50;
+  @AttributeDefinition(
+      name = "Batch size",
+      description = "Coveo job batch size",
+      type = AttributeType.INTEGER
+  )
+  int batchSize() default 50;
 }

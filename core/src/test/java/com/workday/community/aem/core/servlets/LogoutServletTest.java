@@ -28,8 +28,12 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class LogoutServletTest {
+
+  private final SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
+
+  private final SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
 
   @Mock
   OktaService oktaService;
@@ -46,9 +50,6 @@ public class LogoutServletTest {
   @InjectMocks
   LogoutServlet logoutServlet;
 
-  private final SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
-  private final SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
-
   @Test
   public void testInit() throws ServletException {
     logoutServlet.init();
@@ -60,8 +61,9 @@ public class LogoutServletTest {
 
     when(oktaService.getCustomDomain()).thenReturn("http://okta.workday.com");
 
-    try (MockedStatic<HttpUtils>  mocked = mockStatic(HttpUtils.class)) {
-      mocked.when( ()-> HttpUtils.dropCookies(eq(request), eq(response), anyString(), any())).thenReturn(0);
+    try (MockedStatic<HttpUtils> mocked = mockStatic(HttpUtils.class)) {
+      mocked.when(() -> HttpUtils.dropCookies(eq(request), eq(response), anyString(), any()))
+          .thenReturn(0);
       ResourceResolver mockResolver = mock(ResourceResolver.class);
       Session session = mock(Session.class);
       lenient().when(request.getResourceResolver()).thenReturn(mockResolver);
