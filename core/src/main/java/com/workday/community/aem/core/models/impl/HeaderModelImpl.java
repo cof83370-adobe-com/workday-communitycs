@@ -1,5 +1,8 @@
 package com.workday.community.aem.core.models.impl;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
+import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
+
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
@@ -11,6 +14,9 @@ import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.servlet.http.Cookie;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -22,13 +28,6 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.servlet.http.Cookie;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
-import static com.workday.community.aem.core.constants.GlobalConstants.CONTENT_TYPE_MAPPING;
 
 /**
  * The model implementation class for the common nav header menus.

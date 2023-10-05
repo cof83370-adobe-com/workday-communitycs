@@ -1,9 +1,15 @@
 package com.workday.community.aem.core.servlets;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoPushApiService;
 import com.workday.community.aem.core.services.IndexServices;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.io.IOException;
+import java.io.PrintWriter;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
 import org.junit.jupiter.api.Test;
@@ -11,11 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-
-import static org.mockito.Mockito.*;
 
 /**
  * The Class CoveoDeleteAllServletTest.

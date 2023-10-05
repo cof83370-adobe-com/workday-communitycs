@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.models.impl;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+
 import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
@@ -8,12 +10,15 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
-import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -24,12 +29,6 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 
 @Model(adaptables = {
     Resource.class,

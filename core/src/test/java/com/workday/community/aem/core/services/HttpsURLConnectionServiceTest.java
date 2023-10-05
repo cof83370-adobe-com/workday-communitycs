@@ -3,14 +3,13 @@ package com.workday.community.aem.core.services;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
+import com.workday.community.aem.core.constants.RestApiConstants;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-
 import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.sling.api.servlets.HttpConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.workday.community.aem.core.constants.RestApiConstants;
 
 /**
  * The Class HttpsURLConnectionServiceTest.

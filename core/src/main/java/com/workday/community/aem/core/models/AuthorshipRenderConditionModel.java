@@ -1,28 +1,24 @@
 package com.workday.community.aem.core.models;
 
+import static java.util.Objects.requireNonNull;
+
+import com.adobe.granite.ui.components.rendercondition.RenderCondition;
+import com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition;
 import java.util.Iterator;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.adobe.granite.ui.components.rendercondition.RenderCondition;
-import com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition;
-
-import org.apache.sling.models.annotations.DefaultInjectionStrategy;
-
-import static java.util.Objects.*;
 
 /**
  * The Class AuthorshipRenderConditionModel.

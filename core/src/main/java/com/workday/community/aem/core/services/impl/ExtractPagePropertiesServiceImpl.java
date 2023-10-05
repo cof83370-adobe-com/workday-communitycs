@@ -1,38 +1,44 @@
 package com.workday.community.aem.core.services.impl;
 
-import java.util.*;
-
-import javax.jcr.NodeIterator;
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.CacheManagerService;
-import org.apache.sling.api.SlingException;
-import org.apache.sling.api.resource.*;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED;
+import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
+import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
+import static com.workday.community.aem.core.constants.GlobalConstants.JCR_CONTENT_PATH;
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
+import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.services.RunModeConfigService;
-
-import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
-import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
-
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.JCR_CONTENT_PATH;
-import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
-import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED;
-import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
+import org.apache.sling.api.SlingException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceNotFoundException;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
+import org.apache.sling.api.resource.ValueMap;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class ExtractPagePropertiesServiceImpl.
@@ -52,7 +58,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     /** The cache manager **/
     @Reference
     CacheManagerService cacheManager;
-    
+
     /** The run mode config service. */
     @Reference
     private RunModeConfigService runModeConfigService;
@@ -64,7 +70,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
     /** The dateFields. */
     private final ArrayList<String> dateFields = new ArrayList<>(Arrays.asList("eventStartDate", "eventEndDate", "postedDate", "updatedDate"));
-    
+
     /** The hierarchyFields. */
     private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType"));
 
@@ -85,7 +91,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         put("event", "eventTags");
         put("content-types", "contentType");
     }};
-    
+
     /** The custom components. */
     private static final Map<String, String> customComponents =  Map.of("root/container/eventregistration/button", "registrationLink");
 

@@ -1,9 +1,8 @@
 package com.workday.community.aem.core.services;
 
+import java.util.List;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.osgi.annotation.versioning.ProviderType;
-
-import java.util.List;
 
 /**
  * The Interface UserGroupService.

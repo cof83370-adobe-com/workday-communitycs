@@ -1,9 +1,19 @@
 package com.workday.community.aem.utils;
 
+import static junit.framework.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.utils.CommonUtils;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
@@ -13,29 +23,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-
-import static junit.framework.Assert.assertNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-
 /**
  * The Class CommonUtilsTest.
  */
 @ExtendWith({MockitoExtension.class})
 public class CommonUtilsTest {
-    
+
     /** The ResourceResolver. */
     ResourceResolver resourceResolver;
 
     /** The user. */
     private User user;
-    
+
     @BeforeEach
     public void setup() throws RepositoryException {
         resourceResolver = mock(ResourceResolver.class);
@@ -76,7 +75,7 @@ public class CommonUtilsTest {
     /**
      * Test getLoggedInUserId.
      */
-    @Test 
+    @Test
     public void testGetLoggedInUserId() throws RepositoryException {
         Value value = mock(Value.class);
         String expectedUserId = "test user id";
@@ -103,7 +102,7 @@ public class CommonUtilsTest {
     /**
      * Test getLoggedInCustomerType.
      */
-    @Test 
+    @Test
     public void testGetLoggedInCustomerType() throws RepositoryException {
         Value value = mock(Value.class);
         String expectedCustomerType = "test customer type";
@@ -156,7 +155,7 @@ public class CommonUtilsTest {
     public void testGetLoggedInUserAsNode() throws RepositoryException {
         User testUser = CommonUtils.getLoggedInUser(resourceResolver);
         lenient().when(testUser.getPath()).thenReturn("user path");
-        
+
         Resource resource = mock(Resource.class);
         Node expectedUserNode = mock(Node.class);
         lenient().when(resourceResolver.getResource("user path")).thenReturn(resource);

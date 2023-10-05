@@ -1,10 +1,8 @@
 package com.workday.community.aem.core.models;
 
-import javax.jcr.RepositoryException;
-
 import com.workday.community.aem.core.exceptions.DamException;
-
 import java.util.Map;
+import javax.jcr.RepositoryException;
 
 /**
  * The Sling model for Coveo Event Feed component

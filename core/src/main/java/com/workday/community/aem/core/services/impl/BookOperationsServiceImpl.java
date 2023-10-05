@@ -4,7 +4,11 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.BookOperationsService;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.utils.CommonUtils;
-
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
@@ -14,13 +18,6 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * The Class BookOperationsServiceImpl.

@@ -1,5 +1,16 @@
 package com.workday.community.aem.core.services.impl;
 
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.IS_NSC;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.NSC;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -12,17 +23,20 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
-import com.workday.community.aem.core.services.RunModeConfigService;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.RunModeConfigService;
+import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
-import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import java.util.Date;
+import java.util.regex.PatternSyntaxException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
@@ -32,21 +46,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.http.HttpStatus;
-
-import java.util.Date;
-import java.util.regex.PatternSyntaxException;
-
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.IS_NSC;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.NSC;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 
 /**
  * The OSGi service implementation for snap logic.
@@ -329,7 +328,7 @@ public class SnapServiceImpl implements SnapService {
 
   /**
    * Generate adobe digital data.
-   * 
+   *
    * @param profileData The user profile api response as string.
    * @return The digital data.
    */
@@ -386,7 +385,7 @@ public class SnapServiceImpl implements SnapService {
 
   /**
    * Updates the user profile data from contact information.
-   * 
+   *
    * @param sfMenu The menu data.
    */
   private void updateProfileInfoWithNameAndAvatar(JsonObject sfMenu, String sfId)
@@ -424,7 +423,7 @@ public class SnapServiceImpl implements SnapService {
 
   /**
    * Gets the user avatar data
-   * 
+   *
    * @param sfId SFID
    * @return image data as string
    */

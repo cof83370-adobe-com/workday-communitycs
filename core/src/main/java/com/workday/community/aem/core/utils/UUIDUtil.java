@@ -1,13 +1,12 @@
 package com.workday.community.aem.core.utils;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import java.util.UUID;
+import org.apache.commons.lang3.StringUtils;
 
 public class UUIDUtil {
   private static final Charset UTF8 = StandardCharsets.UTF_8;

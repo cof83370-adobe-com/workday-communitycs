@@ -1,22 +1,21 @@
 package com.workday.community.aem.utils;
 
-import com.workday.community.aem.core.utils.HttpUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static junit.framework.Assert.assertNotNull;
 import static junitx.framework.Assert.assertEquals;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+
+import com.workday.community.aem.core.utils.HttpUtils;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith({MockitoExtension.class})
 public class HttpUtilsTest {

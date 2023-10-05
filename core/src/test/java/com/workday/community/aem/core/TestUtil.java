@@ -1,16 +1,15 @@
 package com.workday.community.aem.core;
 
-import com.workday.community.aem.core.config.CacheConfig;
-import com.workday.community.aem.core.config.CoveoSearchConfig;
-import org.apache.jackrabbit.api.security.user.User;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import java.lang.annotation.Annotation;
-
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
+
+import com.workday.community.aem.core.config.CacheConfig;
+import com.workday.community.aem.core.config.CoveoSearchConfig;
+import java.lang.annotation.Annotation;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import org.apache.jackrabbit.api.security.user.User;
 
 public class TestUtil {
   public static CacheConfig getCacheConfig() {

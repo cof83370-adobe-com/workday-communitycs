@@ -6,25 +6,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.workday.community.aem.core.constants.RestApiConstants;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
+import com.workday.community.aem.core.services.HttpsURLConnectionService;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.workday.community.aem.core.constants.RestApiConstants;
-import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
-import com.workday.community.aem.core.services.HttpsURLConnectionService;
-
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
  * The Class CoveoPushApiServiceImplTest.
@@ -84,11 +81,11 @@ public class CoveoPushApiServiceImplTest {
     /**
      * Test callDeleteAllItemsUri.
      */
-    @Test 
+    @Test
     public void testCallDeleteAllItemsUri() {
         HashMap<String, Object> response = new HashMap<>();
         response.put("statusCode", HttpStatus.SC_FORBIDDEN);
-        String responseString = "{\"error\": {\"message\": \"fail\"}}"; 
+        String responseString = "{\"error\": {\"message\": \"fail\"}}";
         response.put("response", responseString);
         lenient().when(service.callApi(any(), any(), any(), any())).thenReturn(response);
         assertDoesNotThrow(() -> service.callDeleteAllItemsUri());
@@ -97,11 +94,11 @@ public class CoveoPushApiServiceImplTest {
     /**
      * Test callDeleteSingleItemUri.
      */
-    @Test 
+    @Test
     public void testCallDeleteSingleItemUri() {
         HashMap<String, Object> response = new HashMap<>();
         response.put("statusCode", HttpStatus.SC_FORBIDDEN);
-        String responseString = "{\"error\": {\"message\": \"fail\"}}"; 
+        String responseString = "{\"error\": {\"message\": \"fail\"}}";
         response.put("response", responseString);
         lenient().when(service.callApi(any(), any(), any(), any())).thenReturn(response);
         assertDoesNotThrow(() -> service.callDeleteSingleItemUri("item1"));
@@ -150,11 +147,11 @@ public class CoveoPushApiServiceImplTest {
     /**
      * Test IndexItems successed.
      */
-    @Test 
+    @Test
     public void testIndexItemsSuccessed() {
         HashMap<String, Object> createContainerResponse = new HashMap<String, Object>();
         createContainerResponse.put("statusCode", HttpStatus.SC_CREATED);
-        String response = "{\"fileId\": \"fileId\",\"requiredHeaders\": {\"additionalProp1\": \"string\"},\"uploadUri\": \"uploadUri\"}"; 
+        String response = "{\"fileId\": \"fileId\",\"requiredHeaders\": {\"additionalProp1\": \"string\"},\"uploadUri\": \"uploadUri\"}";
         createContainerResponse.put("response", response);
         lenient().when(service.callCreateContainerUri()).thenReturn(createContainerResponse);
 
@@ -177,7 +174,7 @@ public class CoveoPushApiServiceImplTest {
     /**
      * Test IndexItems failed.
      */
-    @Test 
+    @Test
     public void testIndexItemsFailed() {
         List<Object> payload = new ArrayList<>();
 
@@ -191,7 +188,7 @@ public class CoveoPushApiServiceImplTest {
         // Upload file call failed with status code 413.
         HashMap<String, Object> createContainerPassResponse = new HashMap<String, Object>();
         createContainerPassResponse.put("statusCode", HttpStatus.SC_CREATED);
-        String response = "{\"fileId\": \"fileId\",\"requiredHeaders\": {\"additionalProp1\": \"string\"},\"uploadUri\": \"uploadUri\"}"; 
+        String response = "{\"fileId\": \"fileId\",\"requiredHeaders\": {\"additionalProp1\": \"string\"},\"uploadUri\": \"uploadUri\"}";
         createContainerPassResponse.put("response", response);
         lenient().when(service.callCreateContainerUri()).thenReturn(createContainerPassResponse);
 
@@ -229,9 +226,9 @@ public class CoveoPushApiServiceImplTest {
      * @throws IOException
      * @throws JsonParseException
      */
-    @Test 
+    @Test
     public void testTransformCreateContainerResponse() throws JsonParseException, IOException {
-        String response = "{\"fileId\": \"fileId\",\"requiredHeaders\": {\"additionalProp1\": \"string\"},\"uploadUri\": \"uploadUri\"}"; 
+        String response = "{\"fileId\": \"fileId\",\"requiredHeaders\": {\"additionalProp1\": \"string\"},\"uploadUri\": \"uploadUri\"}";
         HashMap<String, Object> result = service.transformCreateContainerResponse(response);
         assertEquals("fileId", result.get("fileId"));
         assertEquals("uploadUri", result.get("uploadUri"));
@@ -243,7 +240,7 @@ public class CoveoPushApiServiceImplTest {
      * Test transformPayload.
      * @throws JsonProcessingException
      */
-    @Test 
+    @Test
     public void testTransformPayload() throws JsonProcessingException {
         HashMap<String, String> map = new HashMap<String, String>();
         map.put("title", "Sample");

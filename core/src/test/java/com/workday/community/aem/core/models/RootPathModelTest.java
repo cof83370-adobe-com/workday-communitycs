@@ -1,18 +1,16 @@
 package com.workday.community.aem.core.models;
 
-import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.constants.GlobalConstants;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.day.cq.wcm.api.Page;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * The Class BookModelTest.

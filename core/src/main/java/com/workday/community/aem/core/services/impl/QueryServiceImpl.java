@@ -1,35 +1,31 @@
 package com.workday.community.aem.core.services.impl;
 
-import com.day.cq.search.result.Hit;
-import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.CacheManagerService;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.sling.api.resource.ResourceResolver;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
+import static com.day.cq.wcm.api.constants.NameConstants.NT_PAGE;
+import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+import static com.workday.community.aem.core.constants.GlobalConstants.USER_ROOT_PATH;
 
 import com.day.cq.search.PredicateGroup;
 import com.day.cq.search.Query;
 import com.day.cq.search.QueryBuilder;
+import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-
-import static com.day.cq.wcm.api.constants.NameConstants.NT_PAGE;
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
-import static com.workday.community.aem.core.constants.GlobalConstants.USER_ROOT_PATH;
-import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class QueryServiceImpl.

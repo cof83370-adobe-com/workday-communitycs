@@ -1,16 +1,21 @@
 package com.workday.community.aem.core.listeners;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
+
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
+import com.day.cq.wcm.api.WCMException;
+import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.constants.enums.EventPeriodEnum;
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.CacheManagerService;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
@@ -23,14 +28,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.day.cq.wcm.api.Page;
-import com.day.cq.wcm.api.PageManager;
-import com.day.cq.wcm.api.WCMException;
-import com.workday.community.aem.core.constants.GlobalConstants;
-import com.workday.community.aem.core.constants.enums.EventPeriodEnum;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 
 /**
  * The listener interface for receiving recurringEventsCreator events.

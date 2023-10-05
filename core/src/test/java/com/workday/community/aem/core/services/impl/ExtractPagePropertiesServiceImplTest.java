@@ -1,7 +1,8 @@
 package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.services.impl.ExtractPagePropertiesServiceImpl.TEXT_COMPONENT;
-import static java.util.Calendar.*;
+import static java.util.Calendar.JUNE;
+import static java.util.Calendar.OCTOBER;
 import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,24 +14,25 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
+import com.day.cq.tagging.Tag;
+import com.day.cq.tagging.TagManager;
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
+import com.google.common.collect.ImmutableMap;
+import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.RunModeConfigService;
+import com.workday.community.aem.core.utils.ResolverUtil;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-
-
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-
-import com.day.cq.wcm.api.Page;
-import com.day.cq.wcm.api.PageManager;
-import com.google.common.collect.ImmutableMap;
-import com.workday.community.aem.core.services.RunModeConfigService;
-import com.workday.community.aem.core.services.CacheManagerService;
-import com.workday.community.aem.core.utils.ResolverUtil;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
@@ -41,12 +43,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.day.cq.tagging.Tag;
-import com.day.cq.tagging.TagManager;
-
-import org.apache.jackrabbit.api.security.user.User;
-import org.apache.jackrabbit.api.security.user.UserManager;
 
 /**
  * The Class ExtractPagePropertiesServiceImplTest.

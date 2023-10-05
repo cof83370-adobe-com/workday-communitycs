@@ -1,16 +1,20 @@
 package com.workday.community.aem.core.listeners;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
+
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.QueryService;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-
-import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -24,13 +28,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.day.cq.wcm.api.Page;
-import com.day.cq.wcm.api.PageManager;
-import com.workday.community.aem.core.constants.GlobalConstants;
-import com.workday.community.aem.core.services.QueryService;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 
 /**
  * The Class PageResourceListener.
@@ -76,7 +73,7 @@ public class PageResourceListener implements ResourceChangeListener {
 
     /**
      * Handles New Page.
-     * 
+     *
      * @param pagePath the page path.
      */
     public void handleNewPage(String pagePath) {
@@ -95,7 +92,7 @@ public class PageResourceListener implements ResourceChangeListener {
 
     /**
      * Adds the Internal Workmates tags to page.
-     * 
+     *
      * @param pagePath the newly created page
      * @param resourceResolver the resource resolver
      */

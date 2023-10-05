@@ -1,16 +1,27 @@
 package com.workday.community.aem.core.filters;
 
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.OktaService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.services.impl.UserGroupServiceImpl;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.io.IOException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.request.RequestPathInfo;
@@ -24,15 +35,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import java.io.IOException;
-
-import static org.mockito.Mockito.*;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class AuthorizationFilterTest {

@@ -2,24 +2,21 @@ package com.workday.community.aem.core.models;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.day.cq.tagging.InvalidTagFormatException;
+import com.day.cq.tagging.TagManager;
+import com.day.cq.wcm.api.Page;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.security.AccessControlException;
 import java.util.Arrays;
 import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import com.day.cq.tagging.InvalidTagFormatException;
-import com.day.cq.tagging.TagManager;
-import com.day.cq.wcm.api.Page;
-
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-
 /**
  * The Class TaxonomyModelTest.
- * 
+ *
  * @author palla.pentayya
  */
 @ExtendWith(AemContextExtension.class)
@@ -129,5 +126,5 @@ public class TaxonomyModelTest {
         TaxonomyModel taxonomyModel = context.request().adaptTo(TaxonomyModel.class);
         assertEquals(false, taxonomyModel.getHasContent());
     }
-   
+
 }

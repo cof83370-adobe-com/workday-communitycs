@@ -1,24 +1,22 @@
 package com.workday.community.aem.core.services.impl;
 
+import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
-
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.sling.event.jobs.JobManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.mockito.ArgumentMatchers.anyMap;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * The Class IndexServicesImplTest.
@@ -35,7 +33,7 @@ class IndexServicesImplTest {
     IndexServicesImpl indexServices;
 
     /** The CoveoIndexApiConfigService service. */
-    @Mock 
+    @Mock
     CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     /**

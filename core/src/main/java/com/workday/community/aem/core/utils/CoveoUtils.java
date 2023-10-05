@@ -1,11 +1,30 @@
 package com.workday.community.aem.core.utils;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
+import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
+import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
+import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
+import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
+import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -18,26 +37,6 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import java.io.IOException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
-import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
-import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
-import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
-import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
-import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
 
 public class CoveoUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoUtils.class);

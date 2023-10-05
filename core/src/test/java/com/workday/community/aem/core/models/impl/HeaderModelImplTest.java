@@ -1,5 +1,20 @@
 package com.workday.community.aem.core.models.impl;
 
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
+import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
+import static junit.framework.Assert.assertNotNull;
+import static junitx.framework.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.osgi.framework.Constants.SERVICE_RANKING;
+
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.google.gson.Gson;
@@ -9,29 +24,13 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-
-import static junit.framework.Assert.assertNotNull;
-import static junitx.framework.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
-import static org.osgi.framework.Constants.SERVICE_RANKING;
-
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
-import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 
 /**
  * The Class HeaderModelImplTest.

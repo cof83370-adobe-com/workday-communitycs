@@ -1,17 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-
-import org.apache.commons.lang3.StringUtils;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.metatype.annotations.Designate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.workday.community.aem.core.constants.RestApiConstants.GET_API;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -21,11 +10,19 @@ import com.workday.community.aem.core.services.OurmUserService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.OAuth1Util;
 import com.workday.community.aem.core.utils.RestApiUtil;
-
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import org.apache.commons.lang3.StringUtils;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
-
-import static com.workday.community.aem.core.constants.RestApiConstants.GET_API;
+import org.osgi.service.metatype.annotations.Designate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class OurmUserServiceImpl.

@@ -1,16 +1,15 @@
 package com.workday.community.aem.core.utils;
+
+import com.day.cq.tagging.Tag;
+import com.day.cq.tagging.TagManager;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.day.cq.tagging.Tag;
-import com.day.cq.tagging.TagManager;
 
 /**
  * The Class CommunityUtils.

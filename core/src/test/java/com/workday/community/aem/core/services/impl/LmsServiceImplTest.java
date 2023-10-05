@@ -6,21 +6,18 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
 
-import java.lang.annotation.Annotation;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockedStatic;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.workday.community.aem.core.config.LmsConfig;
 import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.RestApiUtil;
-
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.lang.annotation.Annotation;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.MockedStatic;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * LmsServiceImplTest class.
@@ -91,7 +88,7 @@ public class LmsServiceImplTest {
 
     /**
      * Test method for getAPIToken method.
-     * 
+     *
      * @throws LmsException
      * @throws InterruptedException
      */
@@ -132,9 +129,9 @@ public class LmsServiceImplTest {
     }
 
     /**
-     * 
+     *
      * Test method for getCourseDetail method.
-     * 
+     *
      * @throws LmsException
      */
     @Test

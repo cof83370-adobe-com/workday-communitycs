@@ -1,8 +1,26 @@
 package com.workday.community.aem.core.servlets;
 
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_ERROR_PAGES_FORMAT;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_OKTA_USERS_ROOT_PATH;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_PUBLIC_ASSETS_PATH;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_PUBLIC_PAGE_PATH;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_ROOT_PAGE_PATH;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_SECURED_ASSETS_PATH;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_SECURED_DOCUMENTS_PATH;
+import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static org.apache.sling.api.SlingHttpServletResponse.SC_FORBIDDEN;
+import static org.apache.sling.api.SlingHttpServletResponse.SC_OK;
+
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.jcr.Session;
+import javax.servlet.Servlet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -16,18 +34,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.Session;
-import javax.servlet.Servlet;
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.workday.community.aem.core.constants.WccConstants.*;
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static org.apache.sling.api.SlingHttpServletResponse.SC_FORBIDDEN;
-import static org.apache.sling.api.SlingHttpServletResponse.SC_OK;
 
 @Component(service = Servlet.class, property = {
         Constants.SERVICE_DESCRIPTION + "= Authenticate the page based on tags added on the page.",

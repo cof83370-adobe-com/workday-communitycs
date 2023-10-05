@@ -1,8 +1,18 @@
 package com.workday.community.aem.core.services.impl;
 
+import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static com.workday.community.aem.core.constants.RestApiConstants.GET_API;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.workday.community.aem.core.constants.RestApiConstants;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
+import com.workday.community.aem.core.services.CoveoSourceApiService;
+import com.workday.community.aem.core.services.HttpsURLConnectionService;
 import java.io.IOException;
 import java.util.HashMap;
-
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
@@ -11,17 +21,6 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workday.community.aem.core.services.HttpsURLConnectionService;
-import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
-import com.workday.community.aem.core.services.CoveoSourceApiService;
-import com.workday.community.aem.core.constants.RestApiConstants;
-import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.RestApiConstants.GET_API;
 
 /**
  * The Class CoveoSourceApiServiceImpl.
@@ -37,7 +36,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
 
     /** The source api uri. */
     private String sourceApiUri;
-    
+
     /** The organization id. */
     private String organizationId;
 
@@ -52,7 +51,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
     private HttpsURLConnectionService restApiService;
 
     /** The CoveoIndexApiConfigService. */
-    @Reference 
+    @Reference
     private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     @Activate
@@ -99,7 +98,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
             try {
                 JsonParser jsonParser = factory.createParser(response.get("response").toString());
                 JsonNode node = mapper.readTree(jsonParser);
-                JsonNode innerNode = node.get("information");                
+                JsonNode innerNode = node.get("information");
                 JsonNode numberField = innerNode.get("numberOfDocuments");
                 totalNumberOfIndexedItems = numberField.asLong();
             }

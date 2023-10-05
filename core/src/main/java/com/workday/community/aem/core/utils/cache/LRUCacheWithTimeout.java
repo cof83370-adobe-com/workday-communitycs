@@ -1,10 +1,9 @@
 package com.workday.community.aem.core.utils.cache;
 
+import java.util.Map;
 import org.apache.commons.collections4.map.HashedMap;
 import org.apache.commons.collections4.map.LRUMap;
 import org.apache.sling.api.resource.ResourceResolver;
-
-import java.util.Map;
 
 /**
  * The LRUCache Map class with timeout support

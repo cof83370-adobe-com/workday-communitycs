@@ -1,14 +1,7 @@
 package com.workday.community.aem.core.workflows;
 
-import static com.workday.community.aem.core.constants.WorkflowConstants.PROCESS_ARGS;
 import static com.workday.community.aem.core.constants.WorkflowConstants.DEFAULT_FALL_BACK_GROUP;
-
-import org.apache.commons.lang3.StringUtils;
-import org.osgi.framework.Constants;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.workday.community.aem.core.constants.WorkflowConstants.PROCESS_ARGS;
 
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -16,6 +9,12 @@ import com.adobe.granite.workflow.exec.ParticipantStepChooser;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import org.apache.commons.lang3.StringUtils;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class PageRetireDynamicParticipantStep.
@@ -31,7 +30,7 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
 
     /** The Constant ENV_VAR. */
     private static final String ENV_VAR = "#ENV#";
-    
+
     /** The run mode config service. */
     @Reference
     private RunModeConfigService runModeConfigService;

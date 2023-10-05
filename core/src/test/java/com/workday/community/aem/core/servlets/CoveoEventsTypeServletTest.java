@@ -9,19 +9,20 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.pojos.EventTypes;
 import com.workday.community.aem.core.pojos.EventTypeValue;
+import com.workday.community.aem.core.pojos.EventTypes;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import javax.servlet.ServletException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -38,10 +39,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-
-import javax.servlet.ServletException;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class CoveoEventsTypeServletTest {

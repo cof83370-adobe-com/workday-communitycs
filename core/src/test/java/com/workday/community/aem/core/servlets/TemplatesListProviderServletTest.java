@@ -1,9 +1,17 @@
 package com.workday.community.aem.core.servlets;
 
+import static com.workday.community.aem.core.servlets.TemplatesListProviderServlet.TEMPLATES_PATH;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.SimpleDataSource;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.util.List;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
@@ -13,11 +21,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
-
-import static com.workday.community.aem.core.servlets.TemplatesListProviderServlet.TEMPLATES_PATH;
-import static org.mockito.Mockito.*;
 
 /**
  * The Class TemplatesListProviderServletTest.

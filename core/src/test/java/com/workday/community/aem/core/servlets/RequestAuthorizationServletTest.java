@@ -1,8 +1,16 @@
 package com.workday.community.aem.core.servlets;
 
+import static org.apache.sling.api.SlingHttpServletResponse.SC_FORBIDDEN;
+import static org.apache.sling.api.SlingHttpServletResponse.SC_OK;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.util.HashMap;
+import java.util.Map;
+import javax.jcr.Session;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -15,15 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.jcr.Session;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.apache.sling.api.SlingHttpServletResponse.SC_FORBIDDEN;
-import static org.apache.sling.api.SlingHttpServletResponse.SC_OK;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class RequestAuthorizationServletTest {

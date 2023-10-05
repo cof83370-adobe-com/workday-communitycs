@@ -6,10 +6,14 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.OurmException;
+import com.workday.community.aem.core.services.OurmUserService;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
-
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,13 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.services.OurmUserService;
-
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
  * The Class OurmUsersServletTest.

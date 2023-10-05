@@ -5,17 +5,15 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.models.CoveoStatusModel;
 import com.workday.community.aem.core.services.CoveoSourceApiService;
 import com.workday.community.aem.core.services.QueryService;
-
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /**
  * The Class CoveoStatusModelImplTest.
@@ -24,11 +22,11 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 public class CoveoStatusModelImplTest {
 
     /** The AemContext. */
-    private final AemContext context = new AemContext();  
+    private final AemContext context = new AemContext();
 
     /** The currentPage. */
     private Page currentPage;
-    
+
     /**
      * Set up before each test run.
      */

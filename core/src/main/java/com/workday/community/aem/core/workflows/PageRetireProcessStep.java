@@ -11,24 +11,6 @@ import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREM
 import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_WORKFLOW_IMMEDIATE_MODEL_NAME;
 import static com.workday.community.aem.core.constants.WorkflowConstants.SCHEDULED_RETIREMENT;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Objects;
-
-import javax.jcr.Node;
-import javax.jcr.Session;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.resource.ModifiableValueMap;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.osgi.framework.Constants;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
@@ -39,10 +21,25 @@ import com.day.cq.replication.Replicator;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
+import javax.jcr.Node;
+import javax.jcr.Session;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.resource.ModifiableValueMap;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.osgi.framework.Constants;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The Class PageRetireProcessStep.
- * 
+ *
  * This step inclueds three things.
  * 1. Remove the payload page from book, if already part of any book.
  * 2. Add retirement badge.

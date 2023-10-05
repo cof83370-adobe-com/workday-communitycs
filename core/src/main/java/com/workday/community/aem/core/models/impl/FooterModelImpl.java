@@ -1,15 +1,13 @@
 package com.workday.community.aem.core.models.impl;
 
-import javax.annotation.PostConstruct;
-
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.models.annotations.Model;
-import org.apache.sling.models.annotations.injectorspecific.OSGiService;
-import org.apache.sling.models.annotations.DefaultInjectionStrategy;
-
 import com.workday.community.aem.core.models.FooterModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import javax.annotation.PostConstruct;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.models.annotations.DefaultInjectionStrategy;
+import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 
 /**
  * The Class FooterModelImpl.
@@ -26,7 +24,7 @@ public class FooterModelImpl implements FooterModel {
     protected static final String RESOURCE_TYPE = "workday-community/components/react/footer";
 
     /** The run mode config service. */
-    @OSGiService 
+    @OSGiService
     private RunModeConfigService runModeConfigService;
 
     /** The adobe analytics uri. */
@@ -40,5 +38,5 @@ public class FooterModelImpl implements FooterModel {
     @Override
     public String getAdobeAnalyticsUri() {
         return adobeAnalyticsUri;
-    } 
+    }
 }

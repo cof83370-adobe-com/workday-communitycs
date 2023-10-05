@@ -3,17 +3,6 @@ package com.workday.community.aem.core.workflows;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import javax.jcr.Session;
-
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.testing.mock.sling.ResourceResolverType;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
@@ -24,9 +13,18 @@ import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
 import com.adobe.granite.workflow.model.WorkflowModel;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
-
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import javax.jcr.Session;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.testing.mock.sling.ResourceResolverType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * The Class TerminateRetirementWorkflowProcessTest.
@@ -73,10 +71,10 @@ public class TerminateRetirementWorkflowProcessTest {
     /** The work item. */
     @Mock
     private WorkItem workItem;
-    
+
     /** The workflow array. */
     private WorkItem[] wiArray;
-    
+
     /** The workflow session. */
     @Mock
     private WorkflowModel workflowModel;

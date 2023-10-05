@@ -1,18 +1,18 @@
 package com.workday.community.aem.core.utils;
 
+import static java.util.Objects.requireNonNull;
+
 import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import java.util.ArrayList;
+import java.util.List;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import java.util.ArrayList;
-import java.util.List;
-import static java.util.Objects.requireNonNull;
 
 /**
  * The Utility class for all Page related Utilities.

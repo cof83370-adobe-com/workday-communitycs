@@ -1,9 +1,12 @@
 package com.workday.community.aem.core.listeners;
 
+import com.day.cq.replication.ReplicationAction;
+import com.day.cq.replication.ReplicationActionType;
+import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
@@ -13,11 +16,6 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.day.cq.replication.ReplicationAction;
-import com.day.cq.replication.ReplicationActionType;
-import com.workday.community.aem.core.constants.GlobalConstants;
-import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 
 /**
  * The Class ReplicationEventHandler.
@@ -29,7 +27,7 @@ import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
         EventConstants.EVENT_TOPIC + "=" + ReplicationAction.EVENT_TOPIC,
     })
 public class ReplicationEventHandler implements EventHandler {
-    
+
     /** The logger. */
 	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
@@ -38,7 +36,7 @@ public class ReplicationEventHandler implements EventHandler {
     JobManager jobManager;
 
     /** The CoveoIndexApiConfigService. */
-    @Reference 
+    @Reference
     private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     /**
@@ -49,7 +47,7 @@ public class ReplicationEventHandler implements EventHandler {
     public boolean isCoveoEnabled() {
         return coveoIndexApiConfigService.isCoveoIndexEnabled();
     }
-    
+
     @Override
     public void handleEvent(Event event) {
         if (isCoveoEnabled()) {
@@ -63,7 +61,7 @@ public class ReplicationEventHandler implements EventHandler {
                     logger.error("\n Error occurred while Creating Coveo push job for page");
                 }
             }
-        }    
+        }
     }
 
     /**
@@ -85,9 +83,9 @@ public class ReplicationEventHandler implements EventHandler {
         String op = action.getType().equals(ReplicationActionType.ACTIVATE) ? "index" : "delete";
         jobProperties.put("op", op);
         jobProperties.put("paths", paths);
-                
+
         // Add this job to the job manager.
         return jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
     }
-    
+
 }

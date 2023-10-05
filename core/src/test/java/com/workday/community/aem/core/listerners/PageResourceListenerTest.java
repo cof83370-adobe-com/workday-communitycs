@@ -7,14 +7,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.listeners.PageResourceListener;
+import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.QueryService;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.jcr.Node;
 import javax.jcr.Property;
-
-import com.workday.community.aem.core.services.CacheManagerService;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
@@ -28,14 +33,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.day.cq.wcm.api.Page;
-import com.day.cq.wcm.api.PageManager;
-import com.workday.community.aem.core.constants.GlobalConstants;
-import com.workday.community.aem.core.listeners.PageResourceListener;
-import com.workday.community.aem.core.services.QueryService;
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
  * The Class PageResourceListenerTest.
@@ -152,7 +149,7 @@ public class PageResourceListenerTest {
 
     /**
      *  Test Add Internal Workmates Tag.
-     * 
+     *
      * @throws Exception Exception object.
      */
     @Test

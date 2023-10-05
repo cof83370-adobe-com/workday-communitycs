@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.models;
 
 import com.workday.community.aem.core.exceptions.DamException;
-
 import java.util.List;
 
 /**

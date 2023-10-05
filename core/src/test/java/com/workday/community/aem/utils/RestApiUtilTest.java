@@ -1,24 +1,21 @@
 package com.workday.community.aem.utils;
 
-import com.workday.community.aem.core.exceptions.LmsException;
-import com.workday.community.aem.core.exceptions.SnapException;
-import com.workday.community.aem.core.utils.RestApiUtil;
-
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpRequest.Builder;
-import java.net.http.HttpResponse;
-
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-
-import java.io.IOException;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.when;
+
+import com.workday.community.aem.core.exceptions.LmsException;
+import com.workday.community.aem.core.exceptions.SnapException;
+import com.workday.community.aem.core.utils.RestApiUtil;
+import java.io.IOException;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpRequest.Builder;
+import java.net.http.HttpResponse;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 /**
  * The Class RESTAPIUtilTest.

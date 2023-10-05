@@ -1,17 +1,14 @@
 package com.workday.community.aem.core.services;
 
+import com.day.cq.tagging.TagManager;
+import com.day.cq.wcm.api.Page;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.jcr.NodeIterator;
-
-import com.day.cq.wcm.api.Page;
-import org.apache.sling.api.resource.ValueMap;
-
 import org.apache.jackrabbit.api.security.user.UserManager;
-import com.day.cq.tagging.TagManager;
+import org.apache.sling.api.resource.ValueMap;
 
 /**
  * The ExtractPagePropertiesService interface.

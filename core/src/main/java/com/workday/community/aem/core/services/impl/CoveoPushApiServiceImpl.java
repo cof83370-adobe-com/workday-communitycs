@@ -1,10 +1,20 @@
 package com.workday.community.aem.core.services.impl;
 
+import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.workday.community.aem.core.constants.RestApiConstants;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
+import com.workday.community.aem.core.services.CoveoPushApiService;
+import com.workday.community.aem.core.services.HttpsURLConnectionService;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -14,17 +24,6 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
-import com.workday.community.aem.core.services.CoveoPushApiService;
-import com.workday.community.aem.core.services.HttpsURLConnectionService;
-import com.workday.community.aem.core.constants.RestApiConstants;
-import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
 
 /**
  * The Class CoveoPushApiServiceImpl.
@@ -40,7 +39,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
     /** The push api uri. */
     private String pushApiUri;
-    
+
     /** The organization id. */
     private String organizationId;
 
@@ -55,7 +54,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     private HttpsURLConnectionService restApiService;
 
     /** The CoveoIndexApiConfigService. */
-    @Reference 
+    @Reference
     private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     @Activate
@@ -90,7 +89,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
     @Override
     public HashMap<String, Object> callApi(String uri, HashMap<String, String> header, String httpMethod, String payload) {
-        return restApiService.send(uri, header, httpMethod, payload); 
+        return restApiService.send(uri, header, httpMethod, payload);
     }
 
     @Override
@@ -191,7 +190,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         String transformedPayload = "";
         try {
             transformedPayload = mapperObj.writeValueAsString(data);
-        } 
+        }
         catch (IOException e) {
             logger.error("Transform payload failed: {}.", e.getMessage());
             return transformedPayload;
@@ -224,7 +223,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             header = objectMapper.readValue(requiredHeaders, new TypeReference<>() {});
-        } 
+        }
         catch (JsonProcessingException e) {
             logger.error("Generate requiredheader array failed: {}", e.getMessage());
             return transformedResponse;
@@ -234,5 +233,5 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         transformedResponse.put("requiredHeaders", header);
         return transformedResponse;
     }
-    
+
 }

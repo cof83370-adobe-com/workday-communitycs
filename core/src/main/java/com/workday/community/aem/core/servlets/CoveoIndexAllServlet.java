@@ -1,19 +1,17 @@
 package com.workday.community.aem.core.servlets;
 
-import javax.servlet.Servlet;
-
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.IndexServices;
 import com.workday.community.aem.core.services.QueryService;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+import javax.servlet.Servlet;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.List;
 
 /**
  * The Class CoveoIndexAllServlet.

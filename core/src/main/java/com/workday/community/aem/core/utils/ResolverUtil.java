@@ -1,11 +1,10 @@
 package com.workday.community.aem.core.utils;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * ResolverUtil class.
@@ -14,7 +13,7 @@ public class ResolverUtil {
 
     /**
      * Resource resolver.
-     * 
+     *
      * @param resourceResolverFactory resourceResolverFactory.
      * @return New resource resolver for query service user.
      * @throws LoginException If there is problem.

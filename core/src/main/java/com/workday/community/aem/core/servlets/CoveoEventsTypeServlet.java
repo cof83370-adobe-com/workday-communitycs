@@ -1,13 +1,13 @@
 package com.workday.community.aem.core.servlets;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.io.IOException;
-import java.util.List;
+import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
+import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
+import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-
+import com.adobe.granite.ui.components.ds.DataSource;
+import com.adobe.granite.ui.components.ds.SimpleDataSource;
+import com.adobe.granite.ui.components.ds.ValueMapResource;
 import com.day.crx.JcrConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -18,6 +18,12 @@ import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.ServletCallback;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
@@ -37,15 +43,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.adobe.granite.ui.components.ds.DataSource;
-import com.adobe.granite.ui.components.ds.SimpleDataSource;
-import com.adobe.granite.ui.components.ds.ValueMapResource;
-
-import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
-import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
-import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
-
 /**
  * The Class CoveoEventsTypeServlet.
  *
@@ -55,7 +52,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_
         "sling.servlet.paths=" + "/bin/eventTypes", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
 public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
-    
+
     /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventsTypeServlet.class);
     private static final String EVENT_TYPE_CRITERIA = "?field=@commoneventtype";

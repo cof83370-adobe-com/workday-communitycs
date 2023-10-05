@@ -5,9 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
+import com.day.cq.tagging.Tag;
+import com.day.cq.tagging.TagManager;
+import com.day.cq.wcm.api.Page;
+import com.workday.community.aem.core.services.SnapService;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
@@ -17,8 +21,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,14 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-
-import com.day.cq.tagging.Tag;
-import com.day.cq.tagging.TagManager;
-import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.services.SnapService;
-
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -50,13 +44,13 @@ public class EventDetailsModelTest {
 
     /** The current page. */
     private Page currentPage;
-    
+
     /** The resource. */
     private Resource resource;
-    
+
     /** The tm. */
     private TagManager tm;
-    
+
     /** The tag. */
     private Tag tag;
 
@@ -87,9 +81,9 @@ public class EventDetailsModelTest {
                 "sling:resourceType", "workday-community/components/structure/eventspage");
         currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
         context.registerService(Page.class, currentPage);
-        context.registerService(SnapService.class, snapService);   
+        context.registerService(SnapService.class, snapService);
         String profileResponse = "{\"timeZone\":\"America/New_York\"}";
-        lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse); 
+        lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse);
     }
 
     /**

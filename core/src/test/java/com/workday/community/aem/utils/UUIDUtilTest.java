@@ -1,9 +1,9 @@
 package com.workday.community.aem.utils;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.workday.community.aem.core.utils.UUIDUtil;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * The UUIDUtilTest class.

@@ -5,20 +5,21 @@ import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_TAG;
 
+import com.workday.community.aem.core.services.RunModeConfigService;
+import com.workday.community.aem.core.services.UserGroupService;
+import com.workday.community.aem.core.utils.ResolverUtil;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.LoginException;
@@ -31,10 +32,6 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.workday.community.aem.core.services.RunModeConfigService;
-import com.workday.community.aem.core.services.UserGroupService;
-import com.workday.community.aem.core.utils.ResolverUtil;
 
 /**
  * The Class ComponentFilter.

@@ -1,8 +1,7 @@
 package com.workday.community.aem.core.services;
 
-import org.osgi.annotation.versioning.ProviderType;
-
 import java.util.List;
+import org.osgi.annotation.versioning.ProviderType;
 
 @ProviderType
 public interface IndexServices {

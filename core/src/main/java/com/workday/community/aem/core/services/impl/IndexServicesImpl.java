@@ -3,22 +3,21 @@ package com.workday.community.aem.core.services.impl;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.IndexServices;
-import org.apache.sling.event.jobs.Job;
-import org.apache.sling.event.jobs.JobManager;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.sling.event.jobs.Job;
+import org.apache.sling.event.jobs.JobManager;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 
 /**
  * The Class IndexServicesImpl.
  */
 @Component(
-    service = IndexServices.class, 
+    service = IndexServices.class,
     immediate = true
 )
 public class IndexServicesImpl implements IndexServices {
@@ -28,7 +27,7 @@ public class IndexServicesImpl implements IndexServices {
     JobManager jobManager;
 
     /** The CoveoIndexApiConfigService. */
-    @Reference 
+    @Reference
     private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
     @Override

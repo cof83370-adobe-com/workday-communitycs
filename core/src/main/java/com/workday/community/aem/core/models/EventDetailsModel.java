@@ -1,5 +1,14 @@
 package com.workday.community.aem.core.models;
 
+import com.day.cq.wcm.api.Page;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.workday.community.aem.core.constants.EventDetailsConstants;
+import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.utils.CommunityUtils;
+import com.workday.community.aem.core.utils.OurmUtils;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,14 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-
-import com.workday.community.aem.core.constants.EventDetailsConstants;
-import com.workday.community.aem.core.services.UserService;
-import com.workday.community.aem.core.services.SnapService;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -30,13 +33,6 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.day.cq.wcm.api.Page;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.workday.community.aem.core.utils.CommunityUtils;
-import com.workday.community.aem.core.utils.OurmUtils;
 
 /**
  * The Class EventDetailsModel.

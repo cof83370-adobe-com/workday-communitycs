@@ -1,25 +1,23 @@
 package com.workday.community.aem.core.utils;
 
+import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
+import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
-
-import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-
-import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
-import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 
 /**
  * The Utility class for all OURM related Utility APIs

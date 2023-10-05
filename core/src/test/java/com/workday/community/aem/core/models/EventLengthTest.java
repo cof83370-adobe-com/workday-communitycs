@@ -5,22 +5,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 
+import com.day.cq.wcm.api.Page;
+import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.workday.community.aem.core.services.UserService;
 import org.apache.sling.api.resource.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.services.SnapService;
-
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
  * The Class EventLengthTest.
@@ -36,7 +33,7 @@ public class EventLengthTest {
 
     /** The current page. */
     private Page currentPage;
-    
+
     /** The resource. */
     private Resource resource;
 
@@ -58,7 +55,7 @@ public class EventLengthTest {
         context.registerService(UserService.class, userService);
         context.addModelsForClasses(EventDetailsModel.class);
         String profileResponse = "{\"timeZone\":\"America/New_York\"}";
-        lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse); 
+        lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse);
     }
 
     /**

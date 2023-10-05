@@ -1,10 +1,11 @@
 package com.workday.community.aem.core.models.impl;
 
+import com.day.cq.wcm.api.Page;
+import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.models.Metadata;
 import java.util.Date;
-
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -16,10 +17,6 @@ import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.constants.GlobalConstants;
-import com.workday.community.aem.core.models.Metadata;
 
 /**
  * The Class MetadataImpl.

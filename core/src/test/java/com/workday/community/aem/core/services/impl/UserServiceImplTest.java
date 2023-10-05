@@ -8,9 +8,6 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
 import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
@@ -19,6 +16,9 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -31,7 +31,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class UserServiceImplTest {
@@ -55,11 +54,11 @@ public class UserServiceImplTest {
     ResourceResolverFactory resResolverFactory;
 
     CacheManagerServiceImpl cacheManager;
-    
+
     /** The UserManager class. */
     @Mock
     UserManager userManager;
-    
+
     /** The Session class. */
     @Mock
     Session session;
@@ -70,7 +69,7 @@ public class UserServiceImplTest {
 
     @Mock
     RunModeConfigService runModeConfigService;
-    
+
     @BeforeEach
     public void setUp() throws Exception {
         cacheManager = new CacheManagerServiceImpl();
@@ -92,7 +91,7 @@ public class UserServiceImplTest {
 
     /**
      * Test deleteUser method.
-     * 
+     *
      * @throws RepositoryException RepositoryException object.
      */
     @Test

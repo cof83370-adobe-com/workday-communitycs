@@ -1,18 +1,5 @@
 package com.workday.community.aem.core.services.impl;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-
-import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpStatus;
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
-import org.osgi.service.metatype.annotations.Designate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -23,6 +10,17 @@ import com.workday.community.aem.core.pojos.restclient.APIResponse;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
+import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.metatype.annotations.Designate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The OSGi service implementation for Lms API.

@@ -1,9 +1,8 @@
 package com.workday.community.aem.core.utils;
 
+import java.io.IOException;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-
-import java.io.IOException;
 
 /**
  * The functional interface for servlet callback.

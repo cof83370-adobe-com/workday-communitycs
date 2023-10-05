@@ -1,19 +1,33 @@
 package com.workday.community.aem.core.services.impl;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+import static com.workday.community.aem.core.constants.GlobalConstants.USER_ROOT_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.day.cq.search.PredicateGroup;
+import com.day.cq.search.Query;
+import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -21,25 +35,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.day.cq.search.QueryBuilder;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import com.day.cq.search.Query;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.USER_ROOT_PATH;
-import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 class QueryServiceImplTest {
@@ -192,7 +191,7 @@ class QueryServiceImplTest {
     hitListActive.add(hit);
     when(resultActive.getHits()).thenReturn(hitListActive);
     when(queryActive.getResult()).thenReturn(resultActive);
-    
+
     // Verify result.
     List<String> paths = queryService.getInactiveUsers();
     assertEquals(USER_ROOT_PATH.concat(OKTA_USER_PATH).concat("/B"), paths.get(0));

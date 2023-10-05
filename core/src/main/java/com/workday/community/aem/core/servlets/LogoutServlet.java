@@ -1,16 +1,24 @@
 package com.workday.community.aem.core.servlets;
 
+import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
+import static com.workday.community.aem.core.constants.HttpConstants.LOGIN_COOKIE_NAME;
+import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.OktaService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
-import org.apache.sling.api.auth.Authenticator;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.auth.Authenticator;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
@@ -19,15 +27,6 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
-import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
-import static com.workday.community.aem.core.constants.HttpConstants.LOGIN_COOKIE_NAME;
-import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
 
 /**
  * The user logout servlet class to redirect the action to okta logout.

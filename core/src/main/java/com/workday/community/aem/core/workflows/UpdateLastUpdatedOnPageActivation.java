@@ -5,16 +5,15 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import java.util.Calendar;
+import java.util.TimeZone;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.Node;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import java.util.Calendar;
-import java.util.TimeZone;
 
 /**
  * The Class UpdateLastUpdatedOnPageActivation.
@@ -24,13 +23,13 @@ public class UpdateLastUpdatedOnPageActivation implements WorkflowProcess {
 
     /** The Constant TAG. */
     private static final String TAG = UpdateLastUpdatedOnPageActivation.class.getSimpleName();
-    
+
     /** The Constant log. */
     private static final Logger log = LoggerFactory.getLogger(UpdateLastUpdatedOnPageActivation.class);
-    
+
     /** The Constant OVERRIDE_DATE. */
     private static final String OVERRIDE_DATE = "overrideDate";
-    
+
     /** The Constant UPDATED_DATE. */
     private static final String UPDATED_DATE = "updatedDate";
 

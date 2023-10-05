@@ -1,16 +1,15 @@
 package com.workday.community.aem.core.services.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.workday.community.aem.core.config.OktaConfig;
 import com.workday.community.aem.core.services.OktaService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.lang.annotation.Annotation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.lang.annotation.Annotation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class OktaServiceImplTest {

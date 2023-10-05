@@ -5,9 +5,12 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
+import com.workday.community.aem.core.listeners.CoveoIndexJobConsumer;
+import com.workday.community.aem.core.services.CoveoPushApiService;
+import com.workday.community.aem.core.services.ExtractPagePropertiesService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import org.apache.http.HttpStatus;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer.JobResult;
@@ -16,11 +19,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.workday.community.aem.core.listeners.CoveoIndexJobConsumer;
-import com.workday.community.aem.core.services.CoveoPushApiService;
-import com.workday.community.aem.core.services.ExtractPagePropertiesService;
-import com.workday.community.aem.core.services.RunModeConfigService;
 
 /**
  * The Class CoveoIndexJobConsumerTest.
@@ -54,7 +52,7 @@ public class CoveoIndexJobConsumerTest {
         paths.add(path);
         String documentId = "https://www.test.link";
         doReturn(documentId).when(runModeConfigService).getPublishInstanceDomain();
-        doReturn(HttpStatus.SC_ACCEPTED).when(coveoPushService).callDeleteSingleItemUri(any()); 
+        doReturn(HttpStatus.SC_ACCEPTED).when(coveoPushService).callDeleteSingleItemUri(any());
         JobResult result = consumer.startCoveoDelete(paths);
         assertEquals(JobResult.OK, result);
     }
@@ -69,7 +67,7 @@ public class CoveoIndexJobConsumerTest {
         paths.add(path);
         String documentId = "https://www.test.link";
         doReturn(documentId).when(runModeConfigService).getPublishInstanceDomain();
-        doReturn(HttpStatus.SC_REQUEST_TOO_LONG).when(coveoPushService).callDeleteSingleItemUri(any()); 
+        doReturn(HttpStatus.SC_REQUEST_TOO_LONG).when(coveoPushService).callDeleteSingleItemUri(any());
         JobResult result = consumer.startCoveoDelete(paths);
         assertEquals(JobResult.FAILED, result);
     }

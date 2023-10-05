@@ -1,11 +1,16 @@
 package com.workday.community.aem.core.utils;
 
+import static com.workday.community.aem.core.constants.HttpConstants.HTTP_TIMEMOUT;
+import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+
 import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.exceptions.APIException;
 import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.exceptions.SnapException;
-
+import com.workday.community.aem.core.pojos.restclient.APIRequest;
+import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -14,22 +19,13 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
-
-import java.io.IOException;
 import java.util.Base64;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.workday.community.aem.core.pojos.restclient.APIRequest;
-import com.workday.community.aem.core.pojos.restclient.APIResponse;
-
-import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.HttpConstants.HTTP_TIMEMOUT;
 
 /**
  * The Class RESTAPIUtil.
@@ -104,7 +100,7 @@ public class RestApiUtil {
 
   /**
    * Executes the get request call.
-   * 
+   *
    * @param req API request.
    * @return Response from API.
    * @throws APIException APIException object.
@@ -152,7 +148,7 @@ public class RestApiUtil {
 
   /**
    * Frames the nav menu API request object.
-   * 
+   *
    * @param url       Request URL.
    * @param authToken Auth token.
    * @param xApiKey   API key.
@@ -174,7 +170,7 @@ public class RestApiUtil {
 
   /**
    * Executes the post request using the java net Httpclient.
-   * 
+   *
    * @param request API Request object
    * @return API Response object
    * @throws APIException APIException object.
@@ -216,7 +212,7 @@ public class RestApiUtil {
 
   /**
    * Retruns the basic authentication header.
-   * 
+   *
    * @param username Username
    * @param password Password
    * @return Header string
@@ -228,7 +224,7 @@ public class RestApiUtil {
 
   /**
    * Builds the form data for post call.
-   * 
+   *
    * @param data Map with input data
    * @return Body publisher
    */
@@ -247,7 +243,7 @@ public class RestApiUtil {
 
   /**
    * Frames the Lms Token call request.
-   * 
+   *
    * @param url          Url
    * @param username     Client Id
    * @param password     Client Secret
@@ -269,7 +265,7 @@ public class RestApiUtil {
 
   /**
    * Frames the request and gets the response.
-   * 
+   *
    * @param url          Url
    * @param clientId     Client Id
    * @param clientSecret Client Secret
@@ -292,7 +288,7 @@ public class RestApiUtil {
 
   /**
    * Frames the Lms Course Detail API request.
-   * 
+   *
    * @param url         Url
    * @param bearerToken Bearer Token
    * @return API Response

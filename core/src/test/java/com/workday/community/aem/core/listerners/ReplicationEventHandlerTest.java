@@ -8,20 +8,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import com.day.cq.replication.ReplicationAction;
+import com.day.cq.replication.ReplicationActionType;
+import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.listeners.ReplicationEventHandler;
+import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import org.apache.sling.event.jobs.JobManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.osgi.service.event.Event;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.day.cq.replication.ReplicationAction;
-import com.day.cq.replication.ReplicationActionType;
-import com.workday.community.aem.core.listeners.ReplicationEventHandler;
-import com.workday.community.aem.core.constants.GlobalConstants;
-import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
+import org.osgi.service.event.Event;
 
 /**
  * The Class ReplicationEventHandlerTest.
@@ -38,7 +37,7 @@ public class ReplicationEventHandlerTest {
     JobManager jobManager;
 
     /** The CoveoIndexApiConfigService. */
-    @Mock 
+    @Mock
     CoveoIndexApiConfigService service;
 
     /**

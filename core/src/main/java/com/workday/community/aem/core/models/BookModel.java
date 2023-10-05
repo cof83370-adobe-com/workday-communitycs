@@ -3,7 +3,8 @@ package com.workday.community.aem.core.models;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.constants.GlobalConstants;
-
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
@@ -12,12 +13,9 @@ import org.apache.sling.models.annotations.injectorspecific.RequestAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 /**
  * The Class BookModel.
- * 
+ *
  * @author uttej.vardineni
  */
 @Model(adaptables = { SlingHttpServletRequest.class }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)

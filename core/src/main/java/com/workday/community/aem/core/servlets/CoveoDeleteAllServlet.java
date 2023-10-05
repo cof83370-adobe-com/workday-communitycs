@@ -3,15 +3,14 @@ package com.workday.community.aem.core.servlets;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoPushApiService;
 import com.workday.community.aem.core.services.IndexServices;
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.Servlet;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-
-import javax.servlet.Servlet;
-import java.io.IOException;
-import java.io.PrintWriter;
 
 @Component(service = {Servlet.class}, property = {"sling.servlet.paths=" + CoveoDeleteAllServlet.RESOURCE_PATH, "sling.servlet.methods=DELETE"})
 public class CoveoDeleteAllServlet extends SlingAllMethodsServlet {

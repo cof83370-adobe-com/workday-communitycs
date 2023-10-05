@@ -4,24 +4,21 @@ import static com.workday.community.aem.core.constants.WorkflowConstants.RETIRED
 import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_PROP;
 import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_VAL;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import javax.inject.Inject;
-
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.models.annotations.DefaultInjectionStrategy;
-import org.apache.sling.models.annotations.Model;
-
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.constants.PageResourceType;
 import com.workday.community.aem.core.constants.TagPropertyName;
 import com.workday.community.aem.core.models.TaxonomyBadge;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import javax.inject.Inject;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.models.annotations.DefaultInjectionStrategy;
+import org.apache.sling.models.annotations.Model;
 
 /**
  * The Class TaxonomyBadgeImpl.

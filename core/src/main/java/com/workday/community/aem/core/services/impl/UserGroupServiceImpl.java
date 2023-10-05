@@ -1,5 +1,23 @@
 package com.workday.community.aem.core.services.impl;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+import static com.workday.community.aem.core.constants.SnapConstants.CUSTOMER_OF_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.PARTNER_TRACK_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
+import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_INFORMATION_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_ROLE_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.USER_TYPE_KEY;
+import static com.workday.community.aem.core.constants.SnapConstants.WSP_KEY;
+import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
+import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_TAG;
+import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
+import static com.workday.community.aem.core.constants.WccConstants.INTERNAL_WORKMATES;
+import static com.workday.community.aem.core.constants.WccConstants.ROLES;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -7,41 +25,33 @@ import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.services.CacheBucketName;
-import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
-import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.PageUtils;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.osgi.service.component.annotations.*;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.*;
-import java.util.*;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
-import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
-import static com.workday.community.aem.core.constants.WccConstants.INTERNAL_WORKMATES;
-import static com.workday.community.aem.core.constants.WccConstants.ROLES;
-import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_ROLE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_TYPE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_INFORMATION_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.CUSTOMER_OF_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.PARTNER_TRACK_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.WSP_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
-import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
-import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_TAG;
 
 /**
  * The Class UserGroupServiceImpl.

@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services;
 
+import com.workday.community.aem.core.constants.RestApiConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,15 +8,11 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
-
 import javax.net.ssl.HttpsURLConnection;
-
 import org.apache.http.HttpStatus;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.workday.community.aem.core.constants.RestApiConstants;
 
 /**
  * The Class HttpsURLConnectionService.
@@ -66,15 +63,15 @@ public class HttpsURLConnectionService {
                 request.setDoOutput(true);
                 OutputStream os = request.getOutputStream();
                 byte[] input = payload.getBytes(StandardCharsets.UTF_8);
-                os.write(input, 0, input.length);	
-                os.flush();	
-                os.close();	
+                os.write(input, 0, input.length);
+                os.flush();
+                os.close();
             }
             apiResponse.put("statusCode", request.getResponseCode());
             BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream()));
             String inputLine;
             StringBuilder response = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {                  
+            while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);
             }
             in.close();

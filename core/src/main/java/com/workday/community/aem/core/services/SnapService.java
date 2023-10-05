@@ -3,7 +3,6 @@ package com.workday.community.aem.core.services;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
-
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.annotation.versioning.ProviderType;
 

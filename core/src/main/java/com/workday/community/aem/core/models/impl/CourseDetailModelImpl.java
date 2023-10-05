@@ -1,18 +1,8 @@
 package com.workday.community.aem.core.models.impl;
 
-import javax.annotation.PostConstruct;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.models.annotations.Model;
-import org.apache.sling.models.annotations.DefaultInjectionStrategy;
-import org.apache.sling.models.annotations.injectorspecific.OSGiService;
-import org.apache.sling.models.annotations.injectorspecific.Self;
-import org.apache.sling.models.annotations.injectorspecific.SlingObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
@@ -24,16 +14,22 @@ import com.workday.community.aem.core.models.CourseDetailModel;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.UserGroupService;
-
-import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.PostConstruct;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.models.annotations.DefaultInjectionStrategy;
+import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
+import org.apache.sling.models.annotations.injectorspecific.Self;
+import org.apache.sling.models.annotations.injectorspecific.SlingObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The model implementation class for the course detail page.
@@ -92,7 +88,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
 
     /**
      * Get the query parameter value.
-     * 
+     *
      * @param param Query parameter.
      * @return Value of the query parameter.
      */
@@ -105,7 +101,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
 
     /**
      * Gets the course detail data.
-     * 
+     *
      * @return Course detail json.
      * @throws IOException
      */
@@ -144,7 +140,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
     /**
      * Checks the access control tags in the course detail response against the
      * logged-in user's access control.
-     * 
+     *
      * @param courseDetail Course detail object.
      * @return True if user has access to view course, else false.
      */

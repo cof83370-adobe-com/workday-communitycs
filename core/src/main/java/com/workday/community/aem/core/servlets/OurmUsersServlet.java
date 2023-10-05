@@ -1,12 +1,11 @@
 package com.workday.community.aem.core.servlets;
 
-import java.io.IOException;
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.OurmUserService;
+import java.io.IOException;
+import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;

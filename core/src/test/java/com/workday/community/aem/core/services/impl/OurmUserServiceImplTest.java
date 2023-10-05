@@ -1,25 +1,22 @@
 package com.workday.community.aem.core.services.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mockStatic;
+
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.OurmDrupalConfig;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.OurmUserService;
 import com.workday.community.aem.core.utils.RestApiUtil;
-
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-
+import java.io.IOException;
+import java.lang.annotation.Annotation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mockStatic;
 
 /**
  * The Class OurmUsersApiConfigServiceImplTest.

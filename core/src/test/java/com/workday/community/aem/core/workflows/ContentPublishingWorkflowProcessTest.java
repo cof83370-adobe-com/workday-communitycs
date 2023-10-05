@@ -6,26 +6,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.NodeIterator;
-import javax.jcr.Session;
-
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.testing.mock.sling.ResourceResolverType;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.Workflow;
@@ -41,9 +21,25 @@ import com.day.cq.wcm.api.Template;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
-
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.util.ArrayList;
+import java.util.List;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.Session;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.Resource;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.testing.mock.sling.ResourceResolverType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * The Class ContentPublishingWorkflowProcessTest.
@@ -157,12 +153,12 @@ public class ContentPublishingWorkflowProcessTest {
         lenient().when(node.getProperties()).thenReturn(pIter);
         NodeIterator nIter = mock(NodeIterator.class);
         lenient().when(node.getNodes()).thenReturn(nIter);
-        
+
     	cpwProcessStep.replicatePage(session, context.currentPage().getPath(), resolver);
         assertNotNull(session);
         assertNotNull(replicator);
     }
-    
+
     /**
      * Test replicate referenced assets.
      *
@@ -181,14 +177,14 @@ public class ContentPublishingWorkflowProcessTest {
         lenient().when(node.getProperties()).thenReturn(pIter);
         NodeIterator nIter = mock(NodeIterator.class);
         lenient().when(node.getNodes()).thenReturn(nIter);
-        
+
     	cpwProcessStep.replicateReferencedAssets(session, context.currentPage().getPath(), resolver);
     	lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
-        
+
         assertNotNull(resolver);
         assertNotNull(replicator);
     }
-    
+
     /**
      * Test replicate book nodes.
      *
@@ -210,7 +206,7 @@ public class ContentPublishingWorkflowProcessTest {
         cpwProcessStep.replicateBookNodes(context.currentPage().getPath(), session, resolver);
         assertNotNull(replicator);
     }
-    
+
     /**
      * Test replicate book nodes.
      *
@@ -230,7 +226,7 @@ public class ContentPublishingWorkflowProcessTest {
         cpwProcessStep.replicateBookNodes(context.currentPage().getPath(), session, resolver);
         assertNotNull(replicator);
     }
-    
+
     /**
      * Test update page properties.
      *
@@ -253,11 +249,11 @@ public class ContentPublishingWorkflowProcessTest {
         assertTrue(actualResultRetNtDt);
         Boolean actualResultSdRtDt = node.hasProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
         assertTrue(actualResultSdRtDt);
-    	
+
     	cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver);
     	assertNotNull(page);
     }
-    
+
     /**
      * Test update page properties.
      *
@@ -286,7 +282,7 @@ public class ContentPublishingWorkflowProcessTest {
         assertTrue(actualResultSdRtDt);
         Property propertySdRtDt = node.getProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
         assertNotNull(propertySdRtDt);
-    	
+
     	cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver);
     	assertNotNull(page);
     }

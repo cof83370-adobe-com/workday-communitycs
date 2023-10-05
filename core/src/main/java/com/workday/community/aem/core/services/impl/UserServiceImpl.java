@@ -1,9 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
-import java.util.Objects;
-import java.util.UUID;
-
-import javax.jcr.*;
+import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
+import static com.workday.community.aem.core.constants.GlobalConstants.SERVICE_USER_GROUP;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
@@ -12,8 +10,13 @@ import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.UUIDUtil;
+import java.util.Objects;
+import java.util.UUID;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -22,11 +25,6 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.workday.community.aem.core.services.UserService;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
-import static com.workday.community.aem.core.constants.GlobalConstants.SERVICE_USER_GROUP;
 
 /**
  * The Class UserServiceImpl.

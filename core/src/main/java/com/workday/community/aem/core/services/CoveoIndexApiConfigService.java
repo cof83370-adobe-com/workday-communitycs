@@ -1,11 +1,10 @@
 package com.workday.community.aem.core.services;
 
+import com.workday.community.aem.core.config.CoveoIndexApiConfig;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.metatype.annotations.Designate;
-
-import com.workday.community.aem.core.config.CoveoIndexApiConfig;
 
 /**
  * The CoveoIndexApiConfigService class.
@@ -89,5 +88,5 @@ public class CoveoIndexApiConfigService {
     public Integer getBatchSize() {
         return config.batchSize();
     }
-    
+
 }

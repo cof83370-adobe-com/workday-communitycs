@@ -1,14 +1,13 @@
 package com.workday.community.aem.core.services;
 
 import java.util.Set;
-
 import org.apache.sling.api.resource.ResourceResolver;
 
 /**
  * The Interface BookOperationsService.
  */
 public interface BookOperationsService {
-    
+
     /**
      * Process book paths.
      *
