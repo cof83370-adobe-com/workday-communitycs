@@ -2,7 +2,9 @@ package com.workday.community.aem.core.servlets;
 
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.services.UserGroupService;
+import com.workday.community.aem.core.services.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.LoginException;
@@ -43,6 +45,12 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
 
     @Reference
     private transient ResourceResolverFactory resolverFactory;
+
+    /**
+     * The UserService.
+     */
+    @Reference
+    private transient UserService userService;
 
     @Override
     public void doHead(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
@@ -86,16 +94,71 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
                 }
             }
             logger.debug("RequestAuthenticationServlet:Time after validating the user  is {}.", new Date().getTime());
+        } else {
+            handlePublicPagesAndAssets(uri, request, response);
         }
-        else if(uri.contains(WORKDAY_PUBLIC_PAGE_PATH))
-        {
-            logger.debug("Requested page is public page: {}", uri);
+
+    }
+
+    /**
+     * Handles public pages and assets authentication.
+     *
+     * @param uri      URL of page/asset.
+     * @param request  The Request Object.
+     * @param response The Response Object.
+     * @throws IOException Throws IOException.
+     */
+    private void handlePublicPagesAndAssets(String uri, SlingHttpServletRequest request, SlingHttpServletResponse response)
+            throws IOException {
+        if(isPublicPath(uri)) {
+            logger.debug("Requested page/asset is public page: {}", uri);
             response.setStatus(SC_OK);
-        }
-        else {
-            logger.debug("Requested page is not in correct format: {}", uri);
+        } else if(isPrivatePath(uri)){
+            logger.debug("Requested Asset is Secured Asset: {}", uri);
+            User user = null;
+            try {
+                user = userService.getCurrentUser(request);
+                if (null != user && StringUtils.isNotBlank(user.getPath()) && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
+                    logger.debug("Requested user has access on the page/asset: {}", uri);
+                    response.setStatus(SC_OK);
+                } else {
+                    logger.debug("Requested user has access on the page/asset: {}", uri);
+                    logger.debug("Requested page/Asset is not in correct format: {}", uri);
+                    response.setStatus(SC_FORBIDDEN);
+                    response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+                }
+            } catch (Exception e) {
+                logger.error("Getting the error While checking the user user authentication {}", e.getStackTrace());
+            }
+        } else {
+            logger.debug("Requested page/Asset is not in correct format: {}", uri);
             response.setStatus(SC_FORBIDDEN);
             response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
         }
     }
+
+    /**
+     * Checks Whether the give url is Public path or not.
+     *
+     * @param uri URL of page/asset.
+     * @return boolean TRUE if it is public path. FALSE if it is not a public path.
+     */
+    private boolean isPublicPath(String uri) {
+        return StringUtils.isNotBlank(uri) && (uri.contains(WORKDAY_PUBLIC_PAGE_PATH)
+                || uri.contains(WORKDAY_PUBLIC_ASSETS_PATH)
+                || uri.contains(WORKDAY_ERROR_PAGES_FORMAT));
+    }
+
+
+    /**
+     * Checks Whether the give url is Private path or not.
+     *
+     * @param uri URL of page/asset.
+     * @return boolean TRUE if it is private path. FALSE if it is not a private path.
+     */
+    private boolean isPrivatePath(String uri) {
+        return (StringUtils.isNotBlank(uri) && uri.contains(WORKDAY_SECURED_ASSETS_PATH)
+                || uri.contains(WORKDAY_SECURED_DOCUMENTS_PATH));
+    }
+
 }

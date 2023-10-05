@@ -115,10 +115,35 @@ Include conf.d/variables/custom.vars
 	     Header set Age 0
     </LocationMatch>
 
-    # Images/Video from DAM: cache mutable resources for 24h on CDN and background refresh to avoid MISS
-    <LocationMatch "^/content/dam/workday-community/.*\.(?i:jpe?g|gif|ico|mov|png|svg)$">
-        Header set Cache-Control "max-age=7200,s-maxage=86400,stale-while-revalidate=43200,stale-if-error=43200"
+    # Images/Video from DAM: cache Secured assets only on dispatcher.
+    <LocationMatch "^/content/dam/workday-community/en-us/images/.*\.(?i:jpe?g|gif|ico|mov|png|svg)$">
+        Header unset Cache-Control
+        Header always set Cache-Control "max-age=7200" "expr=%{REQUEST_STATUS} < 400"
+        Header always set Surrogate-Control "no-store, max-age=0,stale-while-revalidate=43200,stale-if-error=43200" "expr=%{REQUEST_STATUS} < 400"
         Header set Age 0
+        Header unset Content-Disposition
+        Header set Content-Disposition inline
+    </LocationMatch>
+
+    # Documents from DAM: cache Secured assets only on dispatcher.
+    <LocationMatch "^/content/dam/workday-community/en-us/documents/">
+        Header unset Cache-Control
+        Header always set Cache-Control "max-age=7200" "expr=%{REQUEST_STATUS} < 400"
+        Header always set Surrogate-Control "no-store, max-age=0,stale-while-revalidate=43200,stale-if-error=43200" "expr=%{REQUEST_STATUS} < 400"
+        Header set Age 0
+        Header unset Content-Disposition
+        Header set Content-Disposition inline
+    </LocationMatch>
+
+    # Images/Video from DAM: Cache public assets on dispatcher and CDN as well.
+    # Images/Video from DAM: cache mutable resources for 24h on CDN and background refresh to avoid MISS
+    <LocationMatch "^/content/dam/workday-community/en-us/public/.*\.(?i:jpe?g|gif|ico|mov|png|svg)$">
+         Header unset Cache-Control
+         Header always set Cache-Control "max-age=7200" "expr=%{REQUEST_STATUS} < 400"
+         Header always set Surrogate-Control "max-age=86400,stale-while-revalidate=43200,stale-if-error=43200" "expr=%{REQUEST_STATUS} < 400"
+         Header set Age 0
+         Header unset Content-Disposition
+         Header set Content-Disposition inline
     </LocationMatch>
 
     # Content Services/Sling Model Exporter: CDN cache for 10min with background refresh to avoid MISS on CDN
