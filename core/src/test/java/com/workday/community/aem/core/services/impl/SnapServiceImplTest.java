@@ -22,7 +22,7 @@ import com.workday.community.aem.core.config.SnapConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
-import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import com.workday.community.aem.core.pojos.restclient.ApiResponse;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import com.workday.community.aem.core.utils.RestApiUtil;
@@ -254,7 +254,7 @@ public class SnapServiceImplTest {
       cacheManagerService.invalidateCache();
 
       // Case 4: With mock content for Request call.
-      APIResponse response = mock(APIResponse.class);
+      ApiResponse response = new ApiResponse();
       mocked.when(() -> RestApiUtil.doMenuGet(anyString(), anyString(),
           anyString(), anyString())).thenReturn(response);
 
@@ -282,8 +282,9 @@ public class SnapServiceImplTest {
       contactInfo.addProperty("firstName", "Justin");
       contactInfo.addProperty("lastName", "Zhang");
       sfMenu.add("contactInformation", contactInfo);
-      lenient().when(response.getResponseCode()).thenReturn(HttpStatus.SC_OK);
-      lenient().when(response.getResponseBody()).thenReturn(gson.toJson(sfMenu));
+
+      response.setResponseCode(HttpStatus.SC_OK);
+      response.setResponseBody(gson.toJson(sfMenu));
       String menuData4 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(gson.fromJson(sfMenu, JsonObject.class).size(),
           gson.fromJson(menuData4, JsonObject.class).size());

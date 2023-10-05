@@ -6,7 +6,7 @@ import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.LmsConfig;
 import com.workday.community.aem.core.constants.LmsConstants;
 import com.workday.community.aem.core.exceptions.LmsException;
-import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import com.workday.community.aem.core.pojos.restclient.ApiResponse;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
@@ -93,7 +93,7 @@ public class LmsServiceImpl implements LmsService {
       String url = CommunityUtils.formUrl(lmsUrl, tokenPath);
 
       // Execute the request.
-      APIResponse lmsResponse =
+      ApiResponse lmsResponse =
           RestApiUtil.doLmsTokenGet(url, clientId, clientSecret, refreshToken);
       if (lmsResponse == null || StringUtils.isEmpty(lmsResponse.getResponseBody())
           || lmsResponse.getResponseCode() != HttpStatus.SC_OK) {
@@ -138,7 +138,7 @@ public class LmsServiceImpl implements LmsService {
             .replace(LmsConstants.PLUS, LmsConstants.ENCODED_SPACE));
 
         // Execute the request.
-        APIResponse lmsResponse = RestApiUtil.doLmsCourseDetailGet(url, bearerToken);
+        ApiResponse lmsResponse = RestApiUtil.doLmsCourseDetailGet(url, bearerToken);
         if (lmsResponse == null || StringUtils.isEmpty(lmsResponse.getResponseBody())
             || lmsResponse.getResponseCode() != HttpStatus.SC_OK) {
           LOGGER.error("Lms API course detail response is empty.");

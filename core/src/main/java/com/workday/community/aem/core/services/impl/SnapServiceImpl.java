@@ -23,7 +23,7 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.ProfilePhoto;
-import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import com.workday.community.aem.core.pojos.restclient.ApiResponse;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.RunModeConfigService;
@@ -137,7 +137,7 @@ public class SnapServiceImpl implements SnapService {
 
             String traceId = "Community AEM-" + new Date().getTime();
             // Execute the request.
-            APIResponse snapRes = RestApiUtil.doMenuGet(url, apiToken, apiKey, traceId);
+            ApiResponse snapRes = RestApiUtil.doMenuGet(url, apiToken, apiKey, traceId);
             JsonObject defaultMenu = this.getDefaultHeaderMenu();
             if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody()) ||
                 snapRes.getResponseCode() != HttpStatus.SC_OK) {

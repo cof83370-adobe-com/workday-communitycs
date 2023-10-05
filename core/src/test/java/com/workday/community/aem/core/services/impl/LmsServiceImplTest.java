@@ -8,11 +8,12 @@ import static org.mockito.Mockito.when;
 
 import com.workday.community.aem.core.config.LmsConfig;
 import com.workday.community.aem.core.exceptions.LmsException;
-import com.workday.community.aem.core.pojos.restclient.APIResponse;
+import com.workday.community.aem.core.pojos.restclient.ApiResponse;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.lang.annotation.Annotation;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  */
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class LmsServiceImplTest {
+
   private final LmsService service = new LmsServiceImpl();
 
   /**
@@ -96,13 +98,15 @@ public class LmsServiceImplTest {
   public void testGetAPIToken() throws LmsException, InterruptedException {
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       // Case 1: with valid response
-      APIResponse response = mock(APIResponse.class);
-      mocked.when(() -> RestApiUtil.doLmsTokenGet(anyString(), anyString(),
-          anyString(), anyString())).thenReturn(response);
+      ApiResponse response = new ApiResponse();
+
       String responseBody =
           "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"refresh_token\": \"refreshToken\"}";
-      when(response.getResponseBody()).thenReturn(responseBody);
-      when(response.getResponseCode()).thenReturn(200);
+      response.setResponseBody(responseBody);
+      response.setResponseCode(HttpStatus.SC_OK);
+
+      mocked.when(() -> RestApiUtil.doLmsTokenGet(anyString(), anyString(),
+          anyString(), anyString())).thenReturn(response);
 
       String token = this.service.getApiToken();
       assertEquals("bearerToken", token);
@@ -138,21 +142,21 @@ public class LmsServiceImplTest {
   public void testGetCourseDetail() throws LmsException {
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       // Case 1: with valid response
-      APIResponse response = mock(APIResponse.class);
-      mocked.when(() -> RestApiUtil.doLmsCourseDetailGet(anyString(), anyString()))
-          .thenReturn(response);
+      ApiResponse response = new ApiResponse();
       String responseBody =
           "{\"Report_Entry\":[{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}]}";
-      String detailResponse =
-          "{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}";
-      when(response.getResponseBody()).thenReturn(responseBody);
-      when(response.getResponseCode()).thenReturn(200);
+      response.setResponseBody(responseBody);
+      response.setResponseCode(HttpStatus.SC_OK);
+      mocked.when(() -> RestApiUtil.doLmsCourseDetailGet(anyString(), anyString()))
+          .thenReturn(response);
 
       String courseDetail = this.service.getCourseDetail("groupedTitle");
       assertEquals(responseBody, courseDetail);
 
       // Case 2: with response without Report Entry element
-      when(response.getResponseBody()).thenReturn(detailResponse);
+      String detailResponse =
+          "{\"accessControl\":\"authenticated\",\"library\":\"library\",\"groupedTitle\":\"groupedTitle\",\"languages\":\"languages\",\"roles\":\"roles\",\"productLines\":\"productLines\",\"description\":\"description\",\"durationRange\":\"durationRange\",\"deliveryOptions\":\"deliveryOptions\",\"creditsRange\":\"creditsRange\"}";
+      response.setResponseBody(detailResponse);
       courseDetail = this.service.getCourseDetail("groupedTitle");
       assertEquals("", courseDetail);
 
