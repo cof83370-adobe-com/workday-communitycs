@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.constants;
 
 /**
- * The Interface WorkflowConstants.
+ * Interface for defining workflow constants.
  */
 public interface WorkflowConstants {
 
