@@ -265,7 +265,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         }
 
         HashMap<String, Object> permissionGroup = new HashMap<>();
-        if (path.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
+        if (!allowAnonymous && path.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
             allowAnonymous = true;
         }
         permissionGroup.put("allowAnonymous", allowAnonymous);
