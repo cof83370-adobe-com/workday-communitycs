@@ -32,8 +32,6 @@ import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
-import com.day.cq.dam.api.DamConstants;
-import com.day.cq.dam.commons.util.AssetReferenceSearch;
 import com.day.cq.replication.Replicator;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
@@ -150,7 +148,6 @@ public class ContentPublishingWorkflowProcessTest {
         lenient().when(resolver.getResource(anyString())).thenReturn(resource);
     	Node node = mock(Node.class);
         lenient().when(resource.adaptTo(Node.class)).thenReturn(node);
-        AssetReferenceSearch ref = new AssetReferenceSearch(node,DamConstants.MOUNTPOINT_ASSETS,resolver);
         Property pt = mock(Property.class);
         PropertyIterator pIter = mock(PropertyIterator.class);
         lenient().when(node.setProperty("test", "testing")).thenReturn(pt);
@@ -174,7 +171,6 @@ public class ContentPublishingWorkflowProcessTest {
         lenient().when(resolver.getResource(anyString())).thenReturn(resource);
     	Node node = mock(Node.class);
         lenient().when(resource.adaptTo(Node.class)).thenReturn(node);
-        AssetReferenceSearch ref = new AssetReferenceSearch(node,DamConstants.MOUNTPOINT_ASSETS,resolver);
         Property pt = mock(Property.class);
         PropertyIterator pIter = mock(PropertyIterator.class);
         lenient().when(node.setProperty("test", "testing")).thenReturn(pt);
