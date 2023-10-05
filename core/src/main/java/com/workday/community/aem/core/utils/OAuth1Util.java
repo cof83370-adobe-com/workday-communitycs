@@ -138,8 +138,7 @@ public class OAuth1Util {
    */
   private static String generateSignature(final String signatureBaseString, String consumerSecret)
       throws NoSuchAlgorithmException, InvalidKeyException {
-    final String secret = percentEncode(consumerSecret) +
-        AMPERSAND_LITERAL;
+    final String secret = percentEncode(consumerSecret) + AMPERSAND_LITERAL;
     final byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
     final SecretKey key = new SecretKeySpec(keyBytes, HMAC_SHA1_ALG);
 

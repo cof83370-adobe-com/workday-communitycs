@@ -22,6 +22,9 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility class for common operations.
+ */
 public class CommonUtils {
 
   /**
@@ -42,11 +45,12 @@ public class CommonUtils {
     try {
       User user =
           (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
-      sfId = requireNonNull(user).getProperty(WccConstants.PROFILE_SOURCE_ID) != null ?
-          requireNonNull(user.getProperty(WccConstants.PROFILE_SOURCE_ID))[0].getString() : null;
+      sfId = requireNonNull(user).getProperty(WccConstants.PROFILE_SOURCE_ID) != null
+          ? requireNonNull(user.getProperty(WccConstants.PROFILE_SOURCE_ID))[0].getString() : null;
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUserSourceId method {}", e.getMessage());
     }
+
     return sfId;
   }
 
@@ -63,13 +67,13 @@ public class CommonUtils {
     try {
       User user =
           (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
-      userId = requireNonNull(user).getProperty(WccConstants.PROFILE_OKTA_ID) != null ?
-          requireNonNull(user.getProperty(WccConstants.PROFILE_OKTA_ID))[0].getString() : null;
+      userId = requireNonNull(user).getProperty(WccConstants.PROFILE_OKTA_ID) != null
+          ? requireNonNull(user.getProperty(WccConstants.PROFILE_OKTA_ID))[0].getString() : null;
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
     }
-    return userId;
 
+    return userId;
   }
 
   /**
@@ -85,13 +89,13 @@ public class CommonUtils {
     try {
       User user =
           (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
-      ccType = requireNonNull(user).getProperty(WccConstants.CC_TYPE) != null ?
-          requireNonNull(user.getProperty(WccConstants.CC_TYPE))[0].getString() : null;
+      ccType = requireNonNull(user).getProperty(WccConstants.CC_TYPE) != null
+          ? requireNonNull(user.getProperty(WccConstants.CC_TYPE))[0].getString() : null;
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
     }
-    return ccType;
 
+    return ccType;
   }
 
   /**
@@ -110,8 +114,8 @@ public class CommonUtils {
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());
     }
-    return user;
 
+    return user;
   }
 
   /**
@@ -134,12 +138,13 @@ public class CommonUtils {
     } catch (RepositoryException e) {
       LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());
     }
+
     return userNode;
   }
 
   /**
-   * Replace all values in the source Json object from the corresponding target Json object, given them
-   * have some json structure.
+   * Replace all values in the source JSON object from the corresponding target JSON object, given
+   * they have the same structure.
    *
    * @param source The source Json object.
    * @param target The target Json object.
@@ -157,13 +162,13 @@ public class CommonUtils {
           updateSourceFromTarget((JsonObject) valSource, (JsonObject) valTarget, attr, env);
         } else if (valSource instanceof JsonArray && valTarget instanceof JsonArray) {
           updateSourceFromTarget((JsonArray) valSource, (JsonArray) valTarget, attr, env);
-        } else if (valTarget != null && !valTarget.isJsonNull() &&
-            (valSource == null || !valSource.equals(valTarget))) {
+        } else if (valTarget != null && !valTarget.isJsonNull()
+            && (valSource == null || !valSource.equals(valTarget))) {
           JsonElement sourceAttr = source.get(attr);
           JsonElement targetAttr = target.get(attr);
           if ((sourceAttr == null) || (targetAttr == null)
-              || sourceAttr.isJsonNull() || targetAttr.isJsonNull() ||
-              !sourceAttr.equals(targetAttr)) {
+              || sourceAttr.isJsonNull() || targetAttr.isJsonNull()
+              || !sourceAttr.equals(targetAttr)) {
             return;
           } else {
             // Only update link in beta
@@ -185,8 +190,8 @@ public class CommonUtils {
   }
 
   /**
-   * Replace all values in the source Json array from the corresponding target Json array, given them
-   * have some json structure.
+   * Replace all values in the source JSON array from the corresponding target JSON array, given
+   * they have the same json structure.
    *
    * @param source The source Json array.
    * @param target The target Json array.

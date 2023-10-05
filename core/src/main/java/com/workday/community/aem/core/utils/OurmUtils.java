@@ -20,10 +20,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Utility class for all OURM related Utility APIs
+ * The Utility class for all OURM related Utility APIs.
  */
 public class OurmUtils {
-  private final static Logger LOGGER = LoggerFactory.getLogger(OurmUtils.class);
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(OurmUtils.class);
 
   /**
    * Get the current user's Salesforce id.
@@ -83,14 +84,22 @@ public class OurmUtils {
         : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
   }
 
+  /**
+   * Whether the menu is empty.
+   *
+   * @param gson The Gson object.
+   * @param menuString The menu string.
+   *
+   * @return True if it's empty, otherwise false.
+   */
   public static boolean isMenuEmpty(Gson gson, String menuString) {
     JsonObject retAsJsonObject =
         gson.fromJson(menuString, JsonObject.class).getAsJsonObject("primary");
     boolean menuEmpty = retAsJsonObject == null || retAsJsonObject.isJsonNull();
     if (!menuEmpty) {
       JsonElement primary = retAsJsonObject.get("menu");
-      menuEmpty = (primary == null) || primary.isJsonNull() ||
-          (primary.isJsonArray() && primary.getAsJsonArray().size() == 0);
+      menuEmpty = (primary == null) || primary.isJsonNull()
+          || (primary.isJsonArray() && primary.getAsJsonArray().isEmpty());
     }
 
     return menuEmpty;

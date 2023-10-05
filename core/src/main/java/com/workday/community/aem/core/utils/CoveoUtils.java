@@ -2,10 +2,7 @@ package com.workday.community.aem.core.utils;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.CLOUD_CONFIG_NULL_VALUE;
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
-import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
-import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
 
@@ -26,21 +23,40 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
-import org.apache.sling.api.servlets.HttpConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility class for Coveo functionality.
+ */
 public class CoveoUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(CoveoUtils.class);
 
+  /**
+   * Executes a search.
+   *
+   * @param request The request object.
+   * @param response The response object.
+   * @param searchApiConfigService The search API config.
+   * @param snapService The Snap logic service.
+   * @param userService The user service.
+   * @param gson The Gson object.
+   * @param objectMapper The object mapper.
+   * @param servletCallback The servlet callback.
+   *
+   * @throws ServletException If the user does not have an email address or no search token.
+   * @throws IOException If the callback execution fails.
+   */
   public static void executeSearchForCallback(SlingHttpServletRequest request,
                                               SlingHttpServletResponse response,
                                               SearchApiConfigService searchApiConfigService,
@@ -51,7 +67,7 @@ public class CoveoUtils {
                                               ServletCallback servletCallback)
       throws ServletException, IOException {
     String utfName = StandardCharsets.UTF_8.name();
-    response.setContentType(APPLICATION_SLASH_JSON);
+    response.setContentType(ContentType.APPLICATION_JSON.getMimeType());
     response.setCharacterEncoding(utfName);
 
     Cookie coveoCookie = HttpUtils.getCookie(request, COVEO_COOKIE_NAME);
@@ -98,13 +114,12 @@ public class CoveoUtils {
       userContext.addProperty("validFor", searchApiConfigService.getTokenValidTime());
       userContext.remove("contactId");
       userContext.remove("email");
-      String coveoInfo = gson.toJson(userContext);
 
+      String coveoInfo = gson.toJson(userContext);
       Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/",
           searchApiConfigService.isDevMode());
 
-      //Add coveo_visitorId cookie
       Cookie visitIdCookie = new Cookie("coveo_visitorId", userService.getUserUUID(sfId));
       HttpUtils.addCookie(visitIdCookie, response);
       servletCallback.execute(request, response, coveoInfo);
@@ -113,6 +128,20 @@ public class CoveoUtils {
     }
   }
 
+  /**
+   * Retrieves a search token.
+   *
+   * @param searchApiConfigService The search API config.
+   * @param httpClient An HTTP client.
+   * @param gson The Gson object.
+   * @param objectMapper The object mapper.
+   * @param email The user's email address.
+   * @param apiKey The API key.
+   *
+   * @return The token.
+   *
+   * @throws IOException If there is an error retrieving the token.
+   */
   public static String getSearchToken(SearchApiConfigService searchApiConfigService,
                                       CloseableHttpClient httpClient,
                                       Gson gson,
@@ -127,9 +156,9 @@ public class CoveoUtils {
     StringEntity entity =
         new StringEntity(CoveoUtils.getTokenPayload(searchApiConfigService, gson, email));
 
-    request.addHeader(AUTHORIZATION, BEARER_TOKEN.token(apiKey));
-    request.addHeader(HttpConstants.HEADER_ACCEPT, "*/*");
-    request.addHeader(CONTENT_TYPE, APPLICATION_SLASH_JSON);
+    request.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(apiKey));
+    request.addHeader(HttpHeaders.ACCEPT, "*/*");
+    request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
     request.setEntity(entity);
 
     HttpResponse response = httpClient.execute(request);
@@ -148,37 +177,8 @@ public class CoveoUtils {
     return "";
   }
 
-  private static String getTokenPayload(
-      SearchApiConfigService searchApiConfigService, Gson gson, String email) {
-    HashMap<String, String> userMap = new HashMap<>();
-    HashMap<String, Object> payloadMap = new HashMap<>();
-
-    String searchHub = searchApiConfigService.getSearchHub();
-    LOGGER.debug(
-        String.format("Inside getTokenPayload method, and the configured Search hub is: %s",
-            searchHub));
-
-    userMap.put("name", email);
-    userMap.put("provider", searchApiConfigService.getUserIdProvider());
-    String userIdType = searchApiConfigService.getUserIdType();
-    if (!StringUtils.isEmpty(userIdType) && !userIdType.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
-      LOGGER.debug(String.format("UserIdType is: %s", userIdType));
-      userMap.put("type", userIdType);
-    }
-
-    String jsonString = gson.toJson(userMap);
-    ArrayList<String> userArray = new ArrayList<>();
-    userArray.add(jsonString);
-    payloadMap.put("validFor", searchApiConfigService.getTokenValidTime());
-    payloadMap.put("userIds", userArray.toString());
-    payloadMap.put("searchHub", searchHub);
-    JsonObject jsonObj = gson.fromJson(payloadMap.toString(), JsonObject.class);
-
-    return jsonObj.toString();
-  }
-
   /**
-   * Return the current user context from salesforce if it is set
+   * Return the current user context from salesforce if it is set.
    *
    * @param request     the Request object.
    * @param snapService The Snap service object.
@@ -219,4 +219,34 @@ public class CoveoUtils {
     config.addProperty("userContext", getCurrentUserContext(request, snapService, userService));
     return config;
   }
+
+  private static String getTokenPayload(
+      SearchApiConfigService searchApiConfigService, Gson gson, String email) {
+    String searchHub = searchApiConfigService.getSearchHub();
+    LOGGER.debug(
+        String.format("Inside getTokenPayload method, and the configured Search hub is: %s",
+            searchHub));
+
+    HashMap<String, String> userMap = new HashMap<>();
+    userMap.put("name", email);
+    userMap.put("provider", searchApiConfigService.getUserIdProvider());
+    String userIdType = searchApiConfigService.getUserIdType();
+    if (!StringUtils.isEmpty(userIdType) && !userIdType.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
+      LOGGER.debug(String.format("UserIdType is: %s", userIdType));
+      userMap.put("type", userIdType);
+    }
+
+    String jsonString = gson.toJson(userMap);
+    ArrayList<String> userArray = new ArrayList<>();
+    userArray.add(jsonString);
+
+    HashMap<String, Object> payloadMap = new HashMap<>();
+    payloadMap.put("validFor", searchApiConfigService.getTokenValidTime());
+    payloadMap.put("userIds", userArray.toString());
+    payloadMap.put("searchHub", searchHub);
+    JsonObject jsonObj = gson.fromJson(payloadMap.toString(), JsonObject.class);
+
+    return jsonObj.toString();
+  }
+
 }

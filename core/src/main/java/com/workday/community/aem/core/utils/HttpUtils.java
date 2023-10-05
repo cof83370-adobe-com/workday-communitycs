@@ -9,12 +9,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Utility class for Http request/response related code.
  */
 public class HttpUtils {
-  private final static Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
   /**
    * Get cookie from the http servlet request object given the cookie name.
@@ -60,7 +60,7 @@ public class HttpUtils {
   }
 
   /**
-   * Add the provided HTTP Cookie to the Response
+   * Add the provided HTTP Cookie to the Response.
    *
    * @param cookie   Cookie to add
    * @param response Response to add Cookie to

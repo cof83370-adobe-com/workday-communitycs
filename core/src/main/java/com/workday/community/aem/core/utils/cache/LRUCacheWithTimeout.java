@@ -6,12 +6,13 @@ import org.apache.commons.collections4.map.LRUMap;
 import org.apache.sling.api.resource.ResourceResolver;
 
 /**
- * The LRUCache Map class with timeout support
+ * The LRUCache Map class with timeout support.
  *
  * @param <K> The key in the map.
  * @param <V> The value in the map.
  */
 public class LRUCacheWithTimeout<K, V> extends LRUMap<K, V> {
+
   private final long timeoutMs;
 
   private final Map<String, Long> keyTimeStamps = new HashedMap<>();

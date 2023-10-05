@@ -8,7 +8,11 @@ import java.util.Objects;
 import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * UUID utility class.
+ */
 public class UUIDUtil {
+
   private static final Charset UTF8 = StandardCharsets.UTF_8;
 
   private static final UUID NAMESPACE_URL = UUID.fromString("6ba7b811-9dad-11d1-80b4-00c04fd430c8");
