@@ -3,6 +3,7 @@ package com.workday.community.aem.core.workflows;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
+import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.workday.community.aem.core.constants.WorkflowConstants;
@@ -40,18 +41,17 @@ public class TerminateRetirementWorkflowProcess implements WorkflowProcess {
     if (StringUtils.equals(payloadType, "JCR_PATH")) {
       path = workItem.getWorkflowData().getPayload().toString();
       log.info("Payload path: {}", path);
+      if (StringUtils.isBlank(path)) {
+        return;
+      }
 
       try {
-        if (StringUtils.isNotBlank(path)) {
-          WorkItem[] workitems = workflowSession.getActiveWorkItems();
-          for (int i = 0; i < workitems.length; i++) {
-            if (workitems[i].getWorkflowData().getPayload().equals(path) &&
-                workitems[i].getWorkflow().getWorkflowModel().getId()
-                    .equalsIgnoreCase(WorkflowConstants.RETIREMENT_WORKFLOW) &&
-                workitems[i].getWorkflow().getState().equals("RUNNING")) {
-
-              workflowSession.terminateWorkflow(workitems[i].getWorkflow());
-            }
+        WorkItem[] workitems = workflowSession.getActiveWorkItems();
+        for (WorkItem workitem : workitems) {
+          if (workitem.getWorkflowData().getPayload().equals(path)
+              && isRetirementWorkflow(workitem.getWorkflow())
+              && workitem.getWorkflow().getState().equals("RUNNING")) {
+            workflowSession.terminateWorkflow(workitem.getWorkflow());
           }
         }
       } catch (WorkflowException e) {
@@ -59,4 +59,10 @@ public class TerminateRetirementWorkflowProcess implements WorkflowProcess {
       }
     }
   }
+
+  private boolean isRetirementWorkflow(Workflow workflow) {
+    return workflow.getWorkflowModel().getId()
+        .equalsIgnoreCase(WorkflowConstants.RETIREMENT_WORKFLOW);
+  }
+
 }

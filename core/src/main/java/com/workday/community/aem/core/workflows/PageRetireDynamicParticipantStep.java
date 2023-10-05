@@ -20,8 +20,8 @@ import org.slf4j.LoggerFactory;
  * The Class PageRetireDynamicParticipantStep.
  */
 @Component(service = ParticipantStepChooser.class, property = {
-    Constants.SERVICE_DESCRIPTION +
-        "=Participant step to choose the assignee group based on environment/workflow",
+    Constants.SERVICE_DESCRIPTION
+        + "=Participant step to choose the assignee group based on environment/workflow",
     Constants.SERVICE_VENDOR + "=Workday Community",
     "chooser.label=" + "Env Speicifc Dynamic Participant"
 })
@@ -81,4 +81,5 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
     LOGGER.debug("Dynamic participant for {} >>>>>> {}", workflowTitle, dynamicParticipant);
     return dynamicParticipant;
   }
+
 }

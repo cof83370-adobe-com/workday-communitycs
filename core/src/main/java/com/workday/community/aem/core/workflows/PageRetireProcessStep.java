@@ -39,11 +39,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The Class PageRetireProcessStep.
- * <p>
- * This step inclueds three things.
+ *
+ * <p>This step inclueds three things.
  * 1. Remove the payload page from book, if already part of any book.
  * 2. Add retirement badge.
- * 3. Replicate the page to publisher.
+ * 3. Replicate the page to publisher.</p>
  */
 @Component(property = {
     Constants.SERVICE_DESCRIPTION + "=Process to retire the given page",
