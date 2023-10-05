@@ -10,6 +10,7 @@ import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREM
 import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_WORKFLOW_30_DAYS_MODEL_NAME;
 import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_WORKFLOW_IMMEDIATE_MODEL_NAME;
 import static com.workday.community.aem.core.constants.WorkflowConstants.SCHEDULED_RETIREMENT;
+import static com.workday.community.aem.core.constants.WorkflowConstants.JCR_PATH;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -83,7 +84,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
             throws WorkflowException {
         final String payloadType = workItem.getWorkflowData().getPayloadType();
         logger.info("Payload type: {}", payloadType);
-        if (StringUtils.equals(payloadType, "JCR_PATH")) {
+        if (StringUtils.equals(payloadType, JCR_PATH)) {
             // Get the JCR path from the payload
             String path = workItem.getWorkflowData().getPayload().toString();
             try {
