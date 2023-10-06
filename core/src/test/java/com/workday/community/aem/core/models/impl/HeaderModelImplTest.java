@@ -8,6 +8,7 @@ import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.C
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
 import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
+import static com.workday.community.aem.core.models.impl.HeaderModelImpl.UNAUTHENTICATED_MENU;
 import static junit.framework.Assert.assertNotNull;
 import static junitx.framework.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -19,6 +20,7 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
@@ -26,10 +28,18 @@ import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -70,6 +80,16 @@ public class HeaderModelImplTest {
   @Mock
   SearchApiConfigService searchApiConfigService;
 
+  @Mock
+  ResourceResolver resolver;
+
+  @Spy
+  @InjectMocks
+  MockSlingHttpServletRequest request = context.request();
+
+  @Mock
+  Session jcrSession;
+
   /**
    * Set up method for test run.
    */
@@ -87,12 +107,17 @@ public class HeaderModelImplTest {
    * Test method for getUserHeaderMenu in HeaderModel class.
    */
   @Test
-  void testGetUserHeaderMenu() {
+  void testGetUserHeaderMenu() throws CacheException, RepositoryException {
+    HeaderModel headerModel = request.adaptTo(HeaderModel.class);
+    User user = mock(User.class);
+    lenient().when(userService.getCurrentUser(request)).thenReturn(user);
     lenient().when(snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER)).thenReturn("");
     lenient().when(snapService.enableCache()).thenReturn(true);
-    HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
+    headerModel = request.adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
     assertEquals("", headerModel.getUserHeaderMenus());
+    lenient().when(user.getID()).thenReturn(UserConstants.DEFAULT_ANONYMOUS_ID);
+    assertEquals(UNAUTHENTICATED_MENU, headerModel.getUserHeaderMenus());
   }
 
   /**
@@ -101,10 +126,6 @@ public class HeaderModelImplTest {
   @Test
   void testGetDataLayerData() {
     // Case 1: return data.
-    JsonObject digitalData = new JsonObject();
-    JsonObject userProperties = new JsonObject();
-    JsonObject orgProperties = new JsonObject();
-    JsonObject pageProperties = new JsonObject();
     String contactRole = "Training Coordinator; Named Support Contact; Community Org Administrator";
     String contactNumber = "45689";
     String accountName = "McKee Foods Corporation";
@@ -112,13 +133,21 @@ public class HeaderModelImplTest {
     String accountType = "customer";
     String title = "FAQ";
     Gson gson = new Gson();
+
+    JsonObject userProperties = new JsonObject();
     userProperties.addProperty(CONTACT_ROLE, contactRole);
     userProperties.addProperty(CONTACT_NUMBER, contactNumber);
+
+    JsonObject orgProperties = new JsonObject();
     orgProperties.addProperty(ACCOUNT_ID, accountId);
     orgProperties.addProperty(ACCOUNT_NAME, accountName);
     orgProperties.addProperty(ACCOUNT_TYPE, accountType);
+
+    JsonObject pageProperties = new JsonObject();
     pageProperties.addProperty(CONTENT_TYPE, title);
     pageProperties.addProperty(PAGE_NAME, title);
+
+    JsonObject digitalData = new JsonObject();
     digitalData.add("user", userProperties);
     digitalData.add("org", orgProperties);
     digitalData.add("page", pageProperties);

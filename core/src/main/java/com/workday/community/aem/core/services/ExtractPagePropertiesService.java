@@ -34,13 +34,14 @@ public interface ExtractPagePropertiesService {
   /**
    * Process page access permission.
    *
-   * @see <a href="https://docs.coveo.com/en/107/cloud-v2-developers/simple-permission-model-definition-examples">Coveo permission example.</a>
-   *
    * @param data       The value map data
    * @param properties The extracted page properties
    * @param email      Page author's email
+   * @param path       of the current page
+   * @see <a href="https://docs.coveo.com/en/107/cloud-v2-developers/simple-permission-model-definition-examples">Coveo permission example.</a>
    */
-  void processPermission(ValueMap data, HashMap<String, Object> properties, String email);
+  void processPermission(ValueMap data, HashMap<String, Object> properties, String email,
+                         String path);
 
   /**
    * Process string fields.

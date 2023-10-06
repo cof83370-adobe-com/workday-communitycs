@@ -7,6 +7,7 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
@@ -16,8 +17,11 @@ import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.Cookie;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -50,6 +54,11 @@ public class HeaderModelImpl implements HeaderModel {
    */
   protected static final String DEFAULT_SEARCH_REDIRECT =
       "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
+
+  /**
+   * Unauthenticated user's menu data.
+   */
+  protected static final String UNAUTHENTICATED_MENU = "HIDE_MENU_UNAUTHENTICATED";
 
   /**
    * The logger.
@@ -111,6 +120,18 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
+    try {
+      User user = userService.getCurrentUser(request);
+      if (user == null || (UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())) {
+        return UNAUTHENTICATED_MENU;
+      } else {
+        logger.debug("Current logged in user " + user.getID());
+      }
+    } catch (CacheException | RepositoryException e) {
+      logger.debug("Unable to check user session.");
+      return UNAUTHENTICATED_MENU;
+    }
+
     if (!snapService.enableCache()) {
       // Get a chance to disable browser cache if needed.
       return snapService.getUserHeaderMenu(sfId);

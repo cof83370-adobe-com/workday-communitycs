@@ -6,6 +6,7 @@ import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
 import static com.workday.community.aem.core.constants.GlobalConstants.JCR_CONTENT_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_PUBLIC_PAGE_PATH;
 import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
 import com.day.cq.tagging.Tag;
@@ -180,6 +181,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
   private final ArrayList<String> stringFields =
       new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation"));
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HashMap<String, Object> extractPageProperties(String path) {
     HashMap<String, Object> properties = new HashMap<>();
@@ -233,7 +237,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
       processPageTags(page, properties);
 
-      processPermission(data, properties, email);
+      processPermission(data, properties, email, path);
 
       Resource resource = resourceResolver.getResource(path.concat(JCR_CONTENT_PATH));
       Node node = null;
@@ -259,6 +263,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     return properties;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void processDateFields(ValueMap data, HashMap<String, Object> properties) {
     for (String dateField : dateFields) {
@@ -277,9 +284,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    * {@inheritDoc}
    */
   @Override
-  public void processPermission(ValueMap data, HashMap<String, Object> properties, String email) {
+  public void processPermission(ValueMap data, HashMap<String, Object> properties, String email,
+                                String path) {
     ArrayList<Object> permissionGroupAllowedPermissions = new ArrayList<>();
     String[] accessControlValues = data.get(ACCESS_CONTROL_PROPERTY, String[].class);
+    boolean allowAnonymous = false;
     if (accessControlValues != null) {
       for (String accessControlValue : accessControlValues) {
         if (DRUPAL_ROLE_MAPPING.containsKey(accessControlValue)) {
@@ -292,6 +301,8 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
             permissionGroupAllowedPermissions.add(permissionGroup);
           }
+        } else if (accessControlValue.equals("access-control:unauthenticated")) {
+          allowAnonymous = true;
         } else {
           logger.info("Coveo indexing: Access control value {} missing in the map for the page {}",
               accessControlValue, properties.get("documentId"));
@@ -316,13 +327,20 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     }
 
     HashMap<String, Object> permissionGroup = new HashMap<>();
-    permissionGroup.put("allowAnonymous", false);
+    if (!allowAnonymous && path.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
+      allowAnonymous = true;
+    }
+    permissionGroup.put("allowAnonymous", allowAnonymous);
+
     permissionGroup.put("allowedPermissions", permissionGroupAllowedPermissions);
     ArrayList<Object> permission = new ArrayList<>();
     permission.add(permissionGroup);
     properties.put("permissions", permission);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void processStringFields(ValueMap data, HashMap<String, Object> properties) {
     for (String stringField : stringFields) {
@@ -336,6 +354,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ArrayList<String> processTaxonomyFields(TagManager tagManager, String[] taxonomyTagIds,
                                                  String taxonomyField) {
@@ -349,6 +370,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     return processedTags;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ArrayList<String> processHierarchyTaxonomyFields(TagManager tagManager,
                                                           String[] taxonomyTagIds,
@@ -375,6 +399,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     return processedTags;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void processTextComponent(NodeIterator it, ArrayList<String> textList) {
     while (it.hasNext()) {
@@ -398,6 +425,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String processUserFields(ValueMap data, UserManager userManager,
                                   HashMap<String, Object> properties) {
@@ -422,6 +452,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     return email;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void processCustomComponents(Page page, HashMap<String, Object> properties) {
     for (Map.Entry<String, String> component : customComponents.entrySet()) {
@@ -435,6 +468,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void processPageTags(Page page, Map<String, Object> properties) {
     Tag[] tags = page.getTags();

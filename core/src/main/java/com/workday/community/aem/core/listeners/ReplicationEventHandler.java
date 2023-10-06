@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.listeners;
 
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_PUBLIC_PAGE_PATH;
+
 import com.day.cq.replication.ReplicationAction;
 import com.day.cq.replication.ReplicationActionType;
 import com.workday.community.aem.core.constants.GlobalConstants;
@@ -58,7 +60,8 @@ public class ReplicationEventHandler implements EventHandler {
   public void handleEvent(Event event) {
     if (isCoveoEnabled()) {
       ReplicationAction action = getAction(event);
-      if (action.getPath().contains(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH)
+      if ((action.getPath().contains(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH)
+          || action.getPath().contains(WORKDAY_PUBLIC_PAGE_PATH))
           && (action.getType().equals(ReplicationActionType.ACTIVATE)
           || action.getType().equals(ReplicationActionType.DEACTIVATE)
           || action.getType().equals(ReplicationActionType.DELETE))
