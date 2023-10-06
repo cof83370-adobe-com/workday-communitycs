@@ -6,11 +6,11 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.day.cq.wcm.api.WCMException;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.constants.enums.EventPeriodEnum;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * The class that is interested in processing a recurringEventsCreator
  * event implements this interface, and the object created
  * with that class is registered with a component using the
- * component's <code>addRecurringEventsCreatorListener<code> method. When
+ * component's <code>addRecurringEventsCreatorListener</code> method. When
  * the recurringEventsCreator event occurs, that object's appropriate
  * method is invoked.
  */
@@ -44,11 +44,6 @@ import org.slf4j.LoggerFactory;
 })
 @ServiceDescription("RecurringEventsCreatorListener")
 public class RecurringEventsCreatorListener implements ResourceChangeListener {
-
-  /**
-   * The Constant EVENT_TEMPLATE_PATH.
-   */
-  static final String EVENT_TEMPLATE_PATH = "/conf/workday-community/settings/wcm/templates/events";
 
   /**
    * The Constant EVENT_FREQUENCY_MONTHLY.
@@ -157,7 +152,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
   private static final String PROP_EVENT_START_DATE = "eventStartDate";
 
   /**
-   * The cache manager
+   * The cache manager.
    */
   @Reference
   CacheManagerService cacheManager;
@@ -241,7 +236,8 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
       for (LocalDate date : eventDatesList) {
         fullPageName = String.format("%s-%s", pageName, date.toString());
         logger.debug("Page to be created in this iteration:{}", fullPageName);
-        Page newPage = pm.create(eventsRootPath, fullPageName, EVENT_TEMPLATE_PATH, title, true);
+        Page newPage = pm.create(eventsRootPath, fullPageName,
+            WorkflowConstants.EVENT_TEMPLATE_PATH, title, true);
         addRequiredPageProps(resourceResolver, newPage, map, date, eventLength);
       }
     } catch (WCMException exec) {
@@ -262,8 +258,8 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
       int result = eventEndDateCalInstance.compareTo(eventStartDateCalInstance);
       if (result > 0) {
         long differenceInMilliseconds = Math
-            .abs(eventEndDateCalInstance.getTimeInMillis() -
-                eventStartDateCalInstance.getTimeInMillis());
+            .abs(eventEndDateCalInstance.getTimeInMillis()
+                - eventStartDateCalInstance.getTimeInMillis());
         long differenceInDays = differenceInMilliseconds / (24 * 60 * 60 * 1000);
         return (int) differenceInDays;
       }
@@ -353,21 +349,16 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
       }
     }
 
-        /*
-          Event Start Date from Calculated Value, below valuemap reading was required
-          to
-          maintain event time from base page of recurring events.
-         */
+    // Event Start Date from Calculated Value, below valuemap reading was required to maintain event
+    // time from base page of recurring events.
     Calendar eventStartDateCalInstance = valueMap.get(PROP_EVENT_START_DATE, Calendar.class);
     eventStartDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,
         localDate.getDayOfMonth());
     node.setProperty(PROP_EVENT_START_DATE, eventStartDateCalInstance);
 
-        /*
-          Event End Date was calculated based on source page event gap(End date - Start
-          Date)
-          Same gap will be maintained across all auto created pages.
-         */
+
+    // Event End Date was calculated based on source page event gap(End date - Start Date)
+    // Same gap will be maintained across all auto created pages.
     Calendar eventEndDateCalInstance = valueMap.get(PROP_EVENT_END_DATE, Calendar.class);
     eventEndDateCalInstance.set(localDate.getYear(), localDate.getMonthValue() - 1,
         localDate.getDayOfMonth());
@@ -386,4 +377,5 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
   private boolean doNullCheckForStringArray(String[] inputArray) {
     return (ArrayUtils.isNotEmpty(inputArray) && inputArray.length > 0);
   }
+
 }

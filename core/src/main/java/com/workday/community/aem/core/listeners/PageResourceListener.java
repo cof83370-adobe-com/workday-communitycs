@@ -48,7 +48,7 @@ public class PageResourceListener implements ResourceChangeListener {
   private static final String TAG_INTERNAL_WORKMATE = "access-control:internal_workmates";
 
   /**
-   * The cache manager
+   * The cache manager.
    */
   @Reference
   CacheManagerService cacheManager;

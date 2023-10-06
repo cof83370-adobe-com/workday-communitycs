@@ -31,19 +31,19 @@ public class ReplicationEventHandler implements EventHandler {
   /**
    * The logger.
    */
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
-
-  /**
-   * The jobManager service.
-   */
-  @Reference
-  JobManager jobManager;
+  private static final Logger logger = LoggerFactory.getLogger(ReplicationEventHandler.class);
 
   /**
    * The CoveoIndexApiConfigService.
    */
   @Reference
   private CoveoIndexApiConfigService coveoIndexApiConfigService;
+
+  /**
+   * The jobManager service.
+   */
+  @Reference
+  private JobManager jobManager;
 
   /**
    * Get coveo indexing is enabled or not.
@@ -58,10 +58,10 @@ public class ReplicationEventHandler implements EventHandler {
   public void handleEvent(Event event) {
     if (isCoveoEnabled()) {
       ReplicationAction action = getAction(event);
-      if (action.getPath().contains(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH) &&
-          (action.getType().equals(ReplicationActionType.ACTIVATE) ||
-              action.getType().equals(ReplicationActionType.DEACTIVATE) ||
-              action.getType().equals(ReplicationActionType.DELETE))
+      if (action.getPath().contains(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH)
+          && (action.getType().equals(ReplicationActionType.ACTIVATE)
+          || action.getType().equals(ReplicationActionType.DEACTIVATE)
+          || action.getType().equals(ReplicationActionType.DELETE))
       ) {
         if (startCoveoJob(action) == null) {
           logger.error("\n Error occurred while Creating Coveo push job for page");

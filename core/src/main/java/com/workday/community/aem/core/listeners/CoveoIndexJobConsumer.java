@@ -63,8 +63,8 @@ public class CoveoIndexJobConsumer implements JobConsumer {
       }
     }
 
-    logger.error(
-        "Error occur in Coveo index job consumer, job does not have required properties: path and op.");
+    logger.error("Error occur in Coveo index job consumer, job does not have required properties: "
+        + "path and op.");
     return JobResult.FAILED;
   }
 
