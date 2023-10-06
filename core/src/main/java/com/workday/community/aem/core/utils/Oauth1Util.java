@@ -20,7 +20,7 @@ import javax.crypto.spec.SecretKeySpec;
  *
  * @author Gourab Sarkar
  */
-public class OAuth1Util {
+public class Oauth1Util {
 
   private static final Random RANDOM = new Random();
 

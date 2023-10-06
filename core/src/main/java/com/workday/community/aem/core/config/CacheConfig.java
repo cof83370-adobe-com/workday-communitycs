@@ -32,7 +32,7 @@ public @interface CacheConfig {
       description = "UUID maximum cache size",
       type = AttributeType.INTEGER
   )
-  int maxUUID() default 300000;
+  int maxUuid() default 300000;
 
   /**
    * The menu cache max size, defaults to 1000 (or about 16 MB.)

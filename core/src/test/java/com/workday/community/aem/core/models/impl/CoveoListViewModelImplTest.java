@@ -192,7 +192,7 @@ public class CoveoListViewModelImplTest {
     userContext.addProperty("email", "testEmailFoo@workday.com");
 
     lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
-    lenient().when(userService.getUserUUID(anyString()))
+    lenient().when(userService.getUserUuid(anyString()))
         .thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
 
     JsonObject config = listViewModel.getSearchConfig();

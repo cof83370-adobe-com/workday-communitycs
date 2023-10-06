@@ -178,14 +178,14 @@ public class HeaderModelImplTest {
   }
 
   /**
-   * Test method getGlobalSearchURL.
+   * Test method getGlobalSearchUrl.
    */
   @Test
-  void testGetGlobalSearchURL() {
+  void testGetGlobalSearchUrl() {
     String uri = "https://www.resourcecenter.workday.com";
-    lenient().when(searchApiConfigService.getGlobalSearchURL()).thenReturn(uri);
+    lenient().when(searchApiConfigService.getGlobalSearchUrl()).thenReturn(uri);
     HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
-    assertEquals(uri, headerModel.getGlobalSearchURL());
+    assertEquals(uri, headerModel.getGlobalSearchUrl());
   }
 }

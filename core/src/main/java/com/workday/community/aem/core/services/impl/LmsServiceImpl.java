@@ -10,7 +10,7 @@ import com.workday.community.aem.core.pojos.restclient.ApiResponse;
 import com.workday.community.aem.core.services.LmsService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
-import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
+import com.workday.community.aem.core.utils.cache.LruCacheWithTimeout;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import org.apache.commons.lang3.StringUtils;
@@ -49,7 +49,7 @@ public class LmsServiceImpl implements LmsService {
   /**
    * LRU Cache for storing token value.
    */
-  private LRUCacheWithTimeout<String, String> lmsCache;
+  private LruCacheWithTimeout<String, String> lmsCache;
 
   /**
    * Activates the Lms Service class.
@@ -60,7 +60,7 @@ public class LmsServiceImpl implements LmsService {
   public void activate(LmsConfig config) {
     this.config = config;
     this.lmsCache =
-        new LRUCacheWithTimeout<>(config.lmsTokenCacheMax(), config.lmsTokenCacheTimeout());
+        new LruCacheWithTimeout<>(config.lmsTokenCacheMax(), config.lmsTokenCacheTimeout());
     LOGGER.debug("LmsService is activated.");
   }
 
@@ -76,9 +76,9 @@ public class LmsServiceImpl implements LmsService {
     }
     String lmsUrl = config.lmsUrl();
     String tokenPath = config.lmsTokenPath();
-    String clientId = config.lmsAPIClientId();
-    String clientSecret = config.lmsAPIClientSecret();
-    String refreshToken = config.lmsAPIRefreshToken();
+    String clientId = config.lmsApiClientId();
+    String clientSecret = config.lmsApiClientSecret();
+    String refreshToken = config.lmsApiRefreshToken();
 
     if (StringUtils.isEmpty(lmsUrl) || StringUtils.isEmpty(tokenPath)
         || StringUtils.isEmpty(clientId)

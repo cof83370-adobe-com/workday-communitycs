@@ -24,7 +24,7 @@ public class TestUtil {
         return 10;
       }
 
-      public int maxUUID() {
+      public int maxUuid() {
         return 10;
       }
 
@@ -139,7 +139,7 @@ public class TestUtil {
       }
 
       @Override
-      public String globalSearchURL() {
+      public String globalSearchUrl() {
         return "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
       }
     };

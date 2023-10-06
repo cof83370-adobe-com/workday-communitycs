@@ -3,13 +3,13 @@ package com.workday.community.aem.core.exceptions;
 /**
  * Thrown when there is an issue making an API call.
  */
-public class APIException extends Exception {
+public class ApiException extends Exception {
 
-  public APIException() {
+  public ApiException() {
     super();
   }
 
-  public APIException(String message) {
+  public ApiException(String message) {
     super(message);
   }
 

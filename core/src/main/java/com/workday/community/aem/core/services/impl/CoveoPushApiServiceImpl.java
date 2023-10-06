@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoPushApiService;
-import com.workday.community.aem.core.services.HttpsURLConnectionService;
+import com.workday.community.aem.core.services.HttpsUrlConnectionService;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +64,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
    * The HttpsURLConnectionService.
    */
   @Reference
-  private HttpsURLConnectionService restApiService;
+  private HttpsUrlConnectionService restApiService;
 
   /**
    * The CoveoIndexApiConfigService.

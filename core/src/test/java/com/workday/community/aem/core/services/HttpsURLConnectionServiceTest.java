@@ -28,7 +28,7 @@ public class HttpsURLConnectionServiceTest {
    * The service HttpsURLConnectionService.
    */
   @Spy
-  HttpsURLConnectionService service;
+  HttpsUrlConnectionService service;
 
   /**
    * The HttpsURLConnection.
@@ -55,7 +55,7 @@ public class HttpsURLConnectionServiceTest {
   public void testSendSccessed() throws IOException {
     header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
     int expected = 200;
-    doReturn(request).when(service).getHttpsURLConnection(any());
+    doReturn(request).when(service).getHttpsUrlConnection(any());
     doReturn(expected).when(request).getResponseCode();
     String response = "response";
     InputStream stream = new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
@@ -73,7 +73,7 @@ public class HttpsURLConnectionServiceTest {
   public void testSendFailed() throws IOException {
     header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
     int expected = 403;
-    doReturn(request).when(service).getHttpsURLConnection(any());
+    doReturn(request).when(service).getHttpsUrlConnection(any());
     doReturn(expected).when(request).getResponseCode();
     String response = "";
     InputStream stream = new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));

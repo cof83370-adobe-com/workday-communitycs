@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoSourceApiService;
-import com.workday.community.aem.core.services.HttpsURLConnectionService;
+import com.workday.community.aem.core.services.HttpsUrlConnectionService;
 import java.io.IOException;
 import java.util.HashMap;
 import org.apache.http.HttpHeaders;
@@ -61,7 +61,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
    * The HttpsURLConnectionService.
    */
   @Reference
-  private HttpsURLConnectionService restApiService;
+  private HttpsUrlConnectionService restApiService;
 
   /**
    * The CoveoIndexApiConfigService.

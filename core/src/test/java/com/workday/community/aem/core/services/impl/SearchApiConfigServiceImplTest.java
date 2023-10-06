@@ -25,12 +25,12 @@ public class SearchApiConfigServiceImplTest {
 
   @Test
   public void testAllApis() {
-    assertEquals(searchApiConfigService.getSearchTokenAPI(), testConfig.tokenApi());
-    assertEquals(searchApiConfigService.getRecommendationAPIKey(),
+    assertEquals(searchApiConfigService.getSearchTokenApi(), testConfig.tokenApi());
+    assertEquals(searchApiConfigService.getRecommendationApiKey(),
         testConfig.recommendationApiKey());
     assertEquals(searchApiConfigService.getTokenValidTime(), testConfig.tokenValidTime());
-    assertEquals(searchApiConfigService.getSearchTokenAPIKey(), testConfig.tokenApiKey());
-    assertEquals(searchApiConfigService.getUpcomingEventAPIKey(), testConfig.upcomingEventApiKey());
+    assertEquals(searchApiConfigService.getSearchTokenApiKey(), testConfig.tokenApiKey());
+    assertEquals(searchApiConfigService.getUpcomingEventApiKey(), testConfig.upcomingEventApiKey());
     assertEquals(searchApiConfigService.getOrgId(), testConfig.orgId());
     assertEquals(searchApiConfigService.isDevMode(), testConfig.devMode());
 
@@ -38,8 +38,8 @@ public class SearchApiConfigServiceImplTest {
     assertEquals(searchApiConfigService.getDefaultEmail(), testConfig.defaultEmail());
     assertEquals(searchApiConfigService.getUserIdProvider(), testConfig.userIdProvider());
     assertEquals(searchApiConfigService.getUserIdType(), testConfig.userType());
-    assertEquals(searchApiConfigService.getSearchFieldLookupAPI(), "foo");
-    assertEquals(searchApiConfigService.getGlobalSearchURL(), testConfig.globalSearchURL());
+    assertEquals(searchApiConfigService.getSearchFieldLookupApi(), "foo");
+    assertEquals(searchApiConfigService.getGlobalSearchUrl(), testConfig.globalSearchUrl());
 
   }
 }

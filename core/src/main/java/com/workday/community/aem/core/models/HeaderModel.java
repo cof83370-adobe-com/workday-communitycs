@@ -25,7 +25,7 @@ public interface HeaderModel {
    *
    * @return The global search redirection url.
    */
-  String getGlobalSearchURL();
+  String getGlobalSearchUrl();
 
   /**
    * Gets the user's UUID.

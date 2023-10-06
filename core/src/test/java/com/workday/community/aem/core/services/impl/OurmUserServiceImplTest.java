@@ -81,7 +81,7 @@ public class OurmUserServiceImplTest {
       String testUserContext =
           "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
 
-      mocked.when(() -> RestApiUtil.doOURMGet(anyString(), anyString()))
+      mocked.when(() -> RestApiUtil.doOurmGet(anyString(), anyString()))
           .thenReturn(testUserContext);
 
       JsonObject ret = this.ourmUserService.searchOurmUserList(searchText);
@@ -102,7 +102,7 @@ public class OurmUserServiceImplTest {
       String testUserContext =
           "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
 
-      mocked.when(() -> RestApiUtil.doOURMGet(anyString(), anyString()))
+      mocked.when(() -> RestApiUtil.doOurmGet(anyString(), anyString()))
           .thenReturn(testUserContext);
 
       JsonObject ret = this.ourmUserService.searchOurmUserList(searchText);

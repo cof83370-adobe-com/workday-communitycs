@@ -11,7 +11,7 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.ResolverUtil;
-import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
+import com.workday.community.aem.core.utils.cache.LruCacheWithTimeout;
 import com.workday.community.aem.core.utils.cache.ValueCallback;
 import java.util.Map;
 import java.util.Objects;
@@ -46,8 +46,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
 
-  private final LRUCacheWithTimeout<String, ResourceResolver> resolverCache =
-      new LRUCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
+  private final LruCacheWithTimeout<String, ResourceResolver> resolverCache =
+      new LruCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
 
   private final Map<String, LoadingCache> caches;
 
@@ -90,7 +90,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     setUpRegularCacheClean();
     LOGGER.debug("config: enabled:{}, expire:{}, user expire:{}, uuid:{}, user max:{}, "
             + "refresh:{}, menu size {}", config.enabled(), config.expireDuration(),
-        config.jcrUserExpireDuration(), config.maxUUID(), config.maxJcrUser(),
+        config.jcrUserExpireDuration(), config.maxUuid(), config.maxJcrUser(),
         config.refreshDuration(), config.maxMenuSize());
   }
 
@@ -229,7 +229,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
       CacheBuilder builder = CacheBuilder.newBuilder();
       if (innerCacheName == CacheBucketName.UUID_VALUE) {
-        builder.maximumSize(config.maxUUID());
+        builder.maximumSize(config.maxUuid());
       } else if (innerCacheName == CacheBucketName.JCR_USER) {
         builder.maximumSize(config.maxJcrUser())
             .expireAfterAccess(config.jcrUserExpireDuration(), TimeUnit.SECONDS);

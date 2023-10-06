@@ -130,6 +130,6 @@ public @interface CoveoSearchConfig {
       name = "Search Redirection URL for global search",
       description = "Redirection URL for global search"
   )
-  String globalSearchURL();
+  String globalSearchUrl();
 
 }

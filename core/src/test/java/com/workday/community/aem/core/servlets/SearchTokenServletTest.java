@@ -92,11 +92,11 @@ public class SearchTokenServletTest {
 
     // Mock return from searchService
     when(searchApiConfigService.getTokenValidTime()).thenReturn(12000);
-    when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn("mockSearchToken");
-    when(searchApiConfigService.getUpcomingEventAPIKey()).thenReturn("mockUpcomingEventAPIKey");
-    when(searchApiConfigService.getRecommendationAPIKey()).thenReturn("mockRecommendationAPIkey");
+    when(searchApiConfigService.getSearchTokenApiKey()).thenReturn("mockSearchToken");
+    when(searchApiConfigService.getUpcomingEventApiKey()).thenReturn("mockUpcomingEventAPIKey");
+    when(searchApiConfigService.getRecommendationApiKey()).thenReturn("mockRecommendationAPIkey");
     when(searchApiConfigService.getOrgId()).thenReturn("mockOrgId");
-    when(searchApiConfigService.getSearchTokenAPI()).thenReturn("http://coveo/token/api");
+    when(searchApiConfigService.getSearchTokenApi()).thenReturn("http://coveo/token/api");
 
     JsonObject testUserContext = gson.fromJson("{\"email\":\"foo@workday.com\"}", JsonObject.class);
     when(snapService.getUserContext(anyString())).thenReturn(testUserContext);

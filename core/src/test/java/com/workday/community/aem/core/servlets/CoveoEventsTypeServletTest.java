@@ -83,7 +83,7 @@ public class CoveoEventsTypeServletTest {
 
       CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
       httpClientsMockedStatic.when(HttpClients::createDefault).thenReturn(httpClient);
-      lenient().when(searchApiConfigService.getSearchTokenAPI()).thenReturn("https://foo");
+      lenient().when(searchApiConfigService.getSearchTokenApi()).thenReturn("https://foo");
       lenient().when(snapService.getUserContext(anyString())).thenReturn(userObject);
       CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
       StatusLine statusLine = mock(StatusLine.class);
@@ -110,7 +110,7 @@ public class CoveoEventsTypeServletTest {
       }
 
       lenient().when(searchApiConfigService.isDevMode()).thenReturn(false);
-      lenient().when(searchApiConfigService.getSearchTokenAPIKey())
+      lenient().when(searchApiConfigService.getSearchTokenApiKey())
           .thenReturn(CLOUD_CONFIG_NULL_VALUE);
       try {
         coveoEventTypeServlet.doGet(request, response);
@@ -118,7 +118,7 @@ public class CoveoEventsTypeServletTest {
         // do nothing.
       }
 
-      lenient().when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn("foo");
+      lenient().when(searchApiConfigService.getSearchTokenApiKey()).thenReturn("foo");
       lenient().when(searchApiConfigService.getUserIdType()).thenReturn("test user type");
       try {
         coveoEventTypeServlet.doGet(request, response);

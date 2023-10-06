@@ -56,7 +56,7 @@ public @interface LmsConfig {
       description = "Lms API Client Secret.",
       type = AttributeType.STRING
   )
-  String lmsAPIClientId();
+  String lmsApiClientId();
 
   /**
    * Returns the LMS client secret.
@@ -68,7 +68,7 @@ public @interface LmsConfig {
       description = "Lms API Client Secret.",
       type = AttributeType.STRING
   )
-  String lmsAPIClientSecret();
+  String lmsApiClientSecret();
 
   /**
    * Returns the LMS API refresh token.
@@ -80,7 +80,7 @@ public @interface LmsConfig {
       description = "Lms API Refresh Token.",
       type = AttributeType.STRING
   )
-  String lmsAPIRefreshToken();
+  String lmsApiRefreshToken();
 
   /**
    * Returns the LMS token cache size (defaults to 10.)

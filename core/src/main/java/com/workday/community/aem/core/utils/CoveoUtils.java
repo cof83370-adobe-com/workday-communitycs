@@ -95,17 +95,17 @@ public class CoveoUtils {
 
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
       String searchToken = getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
-          email, searchApiConfigService.getSearchTokenAPIKey());
+          email, searchApiConfigService.getSearchTokenApiKey());
       if (StringUtils.isEmpty(searchToken)) {
         throw new ServletException(
             "There is no search token generated, please contact community admin.");
       }
       String recommendationToken =
           getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
-              email, searchApiConfigService.getRecommendationAPIKey());
+              email, searchApiConfigService.getRecommendationApiKey());
       String upcomingEventToken =
           getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
-              email, searchApiConfigService.getUpcomingEventAPIKey());
+              email, searchApiConfigService.getUpcomingEventApiKey());
 
       userContext.addProperty("searchToken", searchToken);
       userContext.addProperty("recommendationToken", recommendationToken);
@@ -120,7 +120,7 @@ public class CoveoUtils {
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/",
           searchApiConfigService.isDevMode());
 
-      Cookie visitIdCookie = new Cookie("coveo_visitorId", userService.getUserUUID(sfId));
+      Cookie visitIdCookie = new Cookie("coveo_visitorId", userService.getUserUuid(sfId));
       HttpUtils.addCookie(visitIdCookie, response);
       servletCallback.execute(request, response, coveoInfo);
     } catch (IOException exception) {
@@ -152,7 +152,7 @@ public class CoveoUtils {
       return "";
     }
 
-    HttpPost request = new HttpPost(searchApiConfigService.getSearchTokenAPI());
+    HttpPost request = new HttpPost(searchApiConfigService.getSearchTokenApi());
     StringEntity entity =
         new StringEntity(CoveoUtils.getTokenPayload(searchApiConfigService, gson, email));
 
@@ -215,7 +215,7 @@ public class CoveoUtils {
     config.addProperty("orgId", searchConfigService.getOrgId());
     config.addProperty("searchHub", searchConfigService.getSearchHub());
     config.addProperty("analytics", true);
-    config.addProperty("clientId", userService.getUserUUID(sfId));
+    config.addProperty("clientId", userService.getUserUuid(sfId));
     config.addProperty("userContext", getCurrentUserContext(request, snapService, userService));
     return config;
   }

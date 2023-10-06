@@ -35,7 +35,7 @@ public interface UserService {
    *
    * @return The user's UUID.
    */
-  String getUserUUID(String sfId);
+  String getUserUuid(String sfId);
 
   /**
    * Delete the current user.

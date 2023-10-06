@@ -127,7 +127,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
 
   private EventTypes getEventTypes(CloseableHttpClient httpClient, String token)
       throws IOException {
-    String endpoint = this.searchApiConfigService.getSearchFieldLookupAPI();
+    String endpoint = this.searchApiConfigService.getSearchFieldLookupApi();
     endpoint += EVENT_TYPE_CRITERIA;
     HttpGet request = new HttpGet(endpoint);
     request.addHeader(HttpConstants.HEADER_ACCEPT, APPLICATION_SLASH_JSON);

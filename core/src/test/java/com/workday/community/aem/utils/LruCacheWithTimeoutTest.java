@@ -3,13 +3,13 @@ package com.workday.community.aem.utils;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 
-import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
+import com.workday.community.aem.core.utils.cache.LruCacheWithTimeout;
 import org.junit.jupiter.api.Test;
 
-public class LRUCacheWithTimeoutTest {
+public class LruCacheWithTimeoutTest {
   @Test
   public void TestLRUMap() throws InterruptedException {
-    LRUCacheWithTimeout<String, String> map = new LRUCacheWithTimeout<>(10, 100);
+    LruCacheWithTimeout<String, String> map = new LruCacheWithTimeout<>(10, 100);
     // case 1: key/value pair expired
     map.put("test", "test1");
     Thread.sleep(200);

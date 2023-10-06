@@ -201,7 +201,7 @@ public class CoveoRelatedInformationModelTest {
     lenient().when(user.getProperty(eq(SnapConstants.PROFILE_SOURCE_ID))).thenReturn(profileSId);
     String testData =
         "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
-    lenient().when(userService.getUserUUID(anyString()))
+    lenient().when(userService.getUserUuid(anyString()))
         .thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
     JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");

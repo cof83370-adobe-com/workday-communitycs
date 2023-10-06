@@ -10,7 +10,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
-import com.workday.community.aem.core.services.HttpsURLConnectionService;
+import com.workday.community.aem.core.services.HttpsUrlConnectionService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +33,7 @@ public class CoveoPushApiServiceImplTest {
    * The service HttpsURLConnectionService.
    */
   @Mock
-  HttpsURLConnectionService restApiService;
+  HttpsUrlConnectionService restApiService;
 
   /**
    * The service CoveoIndexApiConfigService.

@@ -6,7 +6,7 @@ import static org.mockito.Mockito.doReturn;
 
 import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
-import com.workday.community.aem.core.services.HttpsURLConnectionService;
+import com.workday.community.aem.core.services.HttpsUrlConnectionService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import java.util.HashMap;
 import org.apache.http.HttpStatus;
@@ -28,7 +28,7 @@ public class CoveoSourceApiServiceImplTest {
    * The service HttpsURLConnectionService.
    */
   @Mock
-  HttpsURLConnectionService restApiService;
+  HttpsUrlConnectionService restApiService;
 
   /**
    * The service CoveoIndexApiConfigService.
@@ -103,7 +103,7 @@ public class CoveoSourceApiServiceImplTest {
     AemContext context = new AemContext();
     coveoIndexApiConfigService =
         context.registerInjectActivateService(new CoveoIndexApiConfigService());
-    restApiService = context.registerInjectActivateService(new HttpsURLConnectionService());
+    restApiService = context.registerInjectActivateService(new HttpsUrlConnectionService());
     return context.registerInjectActivateService(new CoveoSourceApiServiceImpl());
   }
 

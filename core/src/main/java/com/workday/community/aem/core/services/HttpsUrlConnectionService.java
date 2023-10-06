@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
  * The Class HttpsURLConnectionService.
  */
 @Component(
-    service = HttpsURLConnectionService.class,
+    service = HttpsUrlConnectionService.class,
     immediate = true
 )
-public class HttpsURLConnectionService {
+public class HttpsUrlConnectionService {
 
   /**
    * The logger.
@@ -34,7 +34,7 @@ public class HttpsURLConnectionService {
    * @param apiUrl The api url
    * @return The HttpsURLConnection
    */
-  protected HttpsURLConnection getHttpsURLConnection(String apiUrl) throws IOException {
+  protected HttpsURLConnection getHttpsUrlConnection(String apiUrl) throws IOException {
     URL url = new URL(apiUrl);
     return (HttpsURLConnection) url.openConnection();
   }
@@ -53,7 +53,7 @@ public class HttpsURLConnectionService {
     HashMap<String, Object> apiResponse = new HashMap<>();
 
     try {
-      HttpsURLConnection request = this.getHttpsURLConnection(url);
+      HttpsURLConnection request = this.getHttpsUrlConnection(url);
       request.setConnectTimeout(RestApiConstants.TIMEOUT);
       request.setReadTimeout(RestApiConstants.TIMEOUT);
       request.setRequestMethod(httpMethod);

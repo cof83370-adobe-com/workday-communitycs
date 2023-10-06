@@ -11,7 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * UUID utility class.
  */
-public class UUIDUtil {
+public class UuidUtil {
 
   private static final Charset UTF8 = StandardCharsets.UTF_8;
 

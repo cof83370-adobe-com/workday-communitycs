@@ -12,7 +12,7 @@ import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.OurmUtils;
-import com.workday.community.aem.core.utils.UUIDUtil;
+import com.workday.community.aem.core.utils.UuidUtil;
 import java.util.Objects;
 import java.util.UUID;
 import javax.jcr.RepositoryException;
@@ -102,11 +102,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public String getUserUUID(String sfId) {
+  public String getUserUuid(String sfId) {
     String cacheKey = String.format("user_uuid_%s", sfId);
     return cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, (key) -> {
       String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
-      UUID uuid = UUIDUtil.getUserClientId(email);
+      UUID uuid = UuidUtil.getUserClientId(email);
       return uuid == null ? null : uuid.toString();
     });
   }

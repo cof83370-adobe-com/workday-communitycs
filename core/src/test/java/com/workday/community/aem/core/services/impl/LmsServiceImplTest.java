@@ -54,17 +54,17 @@ public class LmsServiceImplTest {
     }
 
     @Override
-    public String lmsAPIClientId() {
+    public String lmsApiClientId() {
       return "lmsAPIClientId";
     }
 
     @Override
-    public String lmsAPIClientSecret() {
+    public String lmsApiClientSecret() {
       return "lmsAPIClientSecret";
     }
 
     @Override
-    public String lmsAPIRefreshToken() {
+    public String lmsApiRefreshToken() {
       return "lmsAPIRefreshToken";
     }
 

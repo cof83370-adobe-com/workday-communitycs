@@ -11,7 +11,7 @@ import org.apache.sling.api.resource.ResourceResolver;
  * @param <K> The key in the map.
  * @param <V> The value in the map.
  */
-public class LRUCacheWithTimeout<K, V> extends LRUMap<K, V> {
+public class LruCacheWithTimeout<K, V> extends LRUMap<K, V> {
 
   private final long timeoutMs;
 
@@ -23,18 +23,18 @@ public class LRUCacheWithTimeout<K, V> extends LRUMap<K, V> {
    * @param maxCapacity The cache capacity number.
    * @param timeoutMs   Cache timeout setting.
    */
-  public LRUCacheWithTimeout(int maxCapacity, long timeoutMs) {
+  public LruCacheWithTimeout(int maxCapacity, long timeoutMs) {
     super(maxCapacity);
     this.timeoutMs = timeoutMs;
   }
 
   @Override
-  public V get(Object key, boolean updateToMRU) {
+  public V get(Object key, boolean updateToMru) {
     if (key == null) {
       return null;
     }
 
-    V value = super.get(key, updateToMRU);
+    V value = super.get(key, updateToMru);
     String ks = key.toString();
     Long keyTimeStamp = this.keyTimeStamps.get(ks);
     if (value != null && keyTimeStamp != null && isExpired(keyTimeStamp)) {

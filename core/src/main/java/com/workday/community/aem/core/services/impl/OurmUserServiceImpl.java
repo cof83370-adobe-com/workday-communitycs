@@ -8,7 +8,7 @@ import com.workday.community.aem.core.config.OurmDrupalConfig;
 import com.workday.community.aem.core.exceptions.OurmException;
 import com.workday.community.aem.core.services.OurmUserService;
 import com.workday.community.aem.core.utils.CommunityUtils;
-import com.workday.community.aem.core.utils.OAuth1Util;
+import com.workday.community.aem.core.utils.Oauth1Util;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -85,11 +85,11 @@ public class OurmUserServiceImpl implements OurmUserService {
         String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath),
             URLEncoder.encode(searchText, StandardCharsets.UTF_8));
         String headerString =
-            OAuth1Util.getHeader(GET_API, apiUrl, consumerKey, consumerSecret, new HashMap<>());
+            Oauth1Util.getHeader(GET_API, apiUrl, consumerKey, consumerSecret, new HashMap<>());
         LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
 
         // Execute the request.
-        String jsonResponse = RestApiUtil.doOURMGet(apiUrl, headerString);
+        String jsonResponse = RestApiUtil.doOurmGet(apiUrl, headerString);
         return gson.fromJson(jsonResponse, JsonObject.class);
 
       } catch (OurmException | InvalidKeyException | NoSuchAlgorithmException e) {

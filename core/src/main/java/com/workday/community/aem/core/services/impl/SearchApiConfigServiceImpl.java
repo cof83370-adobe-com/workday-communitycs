@@ -56,12 +56,12 @@ public class SearchApiConfigServiceImpl implements SearchApiConfigService {
   }
 
   @Override
-  public String getSearchTokenAPI() {
+  public String getSearchTokenApi() {
     return config.tokenApi();
   }
 
   @Override
-  public String getSearchFieldLookupAPI() {
+  public String getSearchFieldLookupApi() {
     String lookupApi = config.searchFieldLookupApi();
     if (!StringUtils.isEmpty(lookupApi) && lookupApi.endsWith("/")) {
       lookupApi = lookupApi.substring(0, lookupApi.length() - 1);
@@ -71,17 +71,17 @@ public class SearchApiConfigServiceImpl implements SearchApiConfigService {
   }
 
   @Override
-  public String getSearchTokenAPIKey() {
+  public String getSearchTokenApiKey() {
     return config.tokenApiKey();
   }
 
   @Override
-  public String getRecommendationAPIKey() {
+  public String getRecommendationApiKey() {
     return config.recommendationApiKey();
   }
 
   @Override
-  public String getUpcomingEventAPIKey() {
+  public String getUpcomingEventApiKey() {
     return config.upcomingEventApiKey();
   }
 
@@ -96,7 +96,7 @@ public class SearchApiConfigServiceImpl implements SearchApiConfigService {
   }
 
   @Override
-  public String getGlobalSearchURL() {
-    return config.globalSearchURL();
+  public String getGlobalSearchUrl() {
+    return config.globalSearchUrl();
   }
 }

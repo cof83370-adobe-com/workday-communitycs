@@ -139,7 +139,7 @@ public class HeaderModelImpl implements HeaderModel {
 
     Cookie menuCache = request.getCookie("cacheMenu");
     String cookieValueFromRequest = menuCache == null ? null : menuCache.getValue();
-    String cookieValueCurrentUser = userService.getUserUUID(sfId);
+    String cookieValueCurrentUser = userService.getUserUuid(sfId);
 
     if (!StringUtils.isEmpty(cookieValueCurrentUser) && !StringUtils.isEmpty(cookieValueFromRequest)
         && cookieValueFromRequest.equals(cookieValueCurrentUser)) {
@@ -187,8 +187,8 @@ public class HeaderModelImpl implements HeaderModel {
   }
 
   @Override
-  public String getGlobalSearchURL() {
-    String searchUrlFromConfig = searchApiConfigService.getGlobalSearchURL();
+  public String getGlobalSearchUrl() {
+    String searchUrlFromConfig = searchApiConfigService.getGlobalSearchUrl();
     globalSearchUrl = StringUtils.isBlank(searchUrlFromConfig)
         ? DEFAULT_SEARCH_REDIRECT : searchUrlFromConfig;
 
@@ -197,6 +197,6 @@ public class HeaderModelImpl implements HeaderModel {
 
   @Override
   public String userClientId() {
-    return userService.getUserUUID(sfId);
+    return userService.getUserUuid(sfId);
   }
 }
