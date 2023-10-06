@@ -1,5 +1,8 @@
 package com.workday.community.aem.core.pojos;
 
+/**
+ * Class for wrapping profile photo API responses from Snap logic.
+ */
 public final class ProfilePhoto {
   /**
    * The file name with extension.

@@ -1,6 +1,10 @@
 package com.workday.community.aem.core.pojos;
 
+/**
+ * Class for wrapping a single event type.
+ */
 public class EventTypeValue {
+
   String value;
 
   String lookupValue;
