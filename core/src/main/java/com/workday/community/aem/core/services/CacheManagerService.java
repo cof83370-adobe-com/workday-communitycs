@@ -8,7 +8,6 @@ import org.osgi.annotation.versioning.ProviderType;
 /**
  * The Cache manager definition interface.
  */
-
 @ProviderType
 public interface CacheManagerService {
 
@@ -54,7 +53,7 @@ public interface CacheManagerService {
   void invalidateCache(String cacheName);
 
   /**
-   * Clear all caches
+   * Clear all caches.
    */
   void invalidateCache();
 
@@ -65,4 +64,5 @@ public interface CacheManagerService {
    * @return the Service resource resolver from Cache.
    */
   ResourceResolver getServiceResolver(String serviceUser) throws CacheException;
+
 }

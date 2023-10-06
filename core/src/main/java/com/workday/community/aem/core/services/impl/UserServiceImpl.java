@@ -38,10 +38,10 @@ public class UserServiceImpl implements UserService {
   /**
    * The logger.
    */
-  private final static Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
   /**
-   * The cache manager
+   * The cache manager.
    */
   @Reference
   CacheManagerService cacheManager;
@@ -66,6 +66,39 @@ public class UserServiceImpl implements UserService {
   public User getUser(String serviceUserId, String userSessionId) throws CacheException {
     ResourceResolver resourceResolver = cacheManager.getServiceResolver(serviceUserId);
     return getUser(resourceResolver, userSessionId);
+  }
+
+  private User getUser(final ResourceResolver resourceResolver, String userSessionId) {
+    if (userSessionId == null) {
+      return null;
+    }
+
+    String cacheKey = String.format("session_user_%s", userSessionId);
+    User retUser = cacheManager.get(CacheBucketName.JCR_USER.name(), cacheKey, (key) -> {
+      try {
+        UserManager userManager = resourceResolver.adaptTo(UserManager.class);
+        User user = (User) Objects.requireNonNull(userManager).getAuthorizable(userSessionId);
+        if (user != null) {
+          return user;
+        }
+        LOGGER.error("Cannot find user with id {}.", userSessionId);
+        return null;
+      } catch (RepositoryException e) {
+        LOGGER.error("Exception occurred when fetch user {}: {}.", userSessionId, e.getMessage());
+        return null;
+      }
+    });
+
+    try {
+      if (retUser.isDisabled()) {
+        cacheManager.invalidateCache(CacheBucketName.JCR_USER.name(), cacheKey);
+      }
+    } catch (RepositoryException e) {
+      LOGGER.error("Exception occurred when clear use from cache {}: {}.", userSessionId,
+          e.getMessage());
+    }
+
+    return retUser;
   }
 
   @Override
@@ -139,36 +172,4 @@ public class UserServiceImpl implements UserService {
     this.cacheManager = cacheManager;
   }
 
-  private User getUser(final ResourceResolver resourceResolver, String userSessionId) {
-    if (userSessionId == null) {
-      return null;
-    }
-
-    String cacheKey = String.format("session_user_%s", userSessionId);
-    User retUser = cacheManager.get(CacheBucketName.JCR_USER.name(), cacheKey, (key) -> {
-      try {
-        UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-        User user = (User) Objects.requireNonNull(userManager).getAuthorizable(userSessionId);
-        if (user != null) {
-          return user;
-        }
-        LOGGER.error("Cannot find user with id {}.", userSessionId);
-        return null;
-      } catch (RepositoryException e) {
-        LOGGER.error("Exception occurred when fetch user {}: {}.", userSessionId, e.getMessage());
-        return null;
-      }
-    });
-
-    try {
-      if (retUser.isDisabled()) {
-        cacheManager.invalidateCache(CacheBucketName.JCR_USER.name(), cacheKey);
-      }
-    } catch (RepositoryException e) {
-      LOGGER.error("Exception occurred when clear use from cache {}: {}.", userSessionId,
-          e.getMessage());
-    }
-
-    return retUser;
-  }
 }

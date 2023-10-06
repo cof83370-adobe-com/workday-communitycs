@@ -75,7 +75,10 @@ public interface CoveoPushApiService {
   /**
    * Call delete single item Api.
    *
+   * @see <a href="https://docs.coveo.com/en/171/index-content/deleting-an-item-and-optionally-its-children-in-a-push-source">Link to Coveo documentation.</a>
+   *
    * @param documentId The document id
+   *
    * @return The api status code
    */
   Integer callDeleteSingleItemUri(String documentId);

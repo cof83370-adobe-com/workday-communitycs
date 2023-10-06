@@ -43,7 +43,8 @@ import org.slf4j.LoggerFactory;
     configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 @Designate(ocd = CacheConfig.class)
 public class CacheManagerServiceImpl implements CacheManagerService {
-  private final static Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
 
   private final LRUCacheWithTimeout<String, ResourceResolver> resolverCache =
       new LRUCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
@@ -75,6 +76,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     this.resourceResolverFactory = resourceResolverFactory;
   }
 
+  /**
+   * Activates the cache manager service.
+   */
   @Activate
   @Modified
   public void activate(CacheConfig config) {
@@ -84,12 +88,15 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       closeAndClearCachedResolvers();
     }
     setUpRegularCacheClean();
-    LOGGER.debug(
-        "config: enabled:{}, expire:{}, user expire:{}, uuid:{}, user max:{}, refresh:{}, menu size {}",
-        config.enabled(), config.expireDuration(), config.jcrUserExpireDuration(),
-        config.maxUUID(), config.maxJcrUser(), config.refreshDuration(), config.maxMenuSize());
+    LOGGER.debug("config: enabled:{}, expire:{}, user expire:{}, uuid:{}, user max:{}, "
+            + "refresh:{}, menu size {}", config.enabled(), config.expireDuration(),
+        config.jcrUserExpireDuration(), config.maxUUID(), config.maxJcrUser(),
+        config.refreshDuration(), config.maxMenuSize());
   }
 
+  /**
+   * Deactivates the cache manager service.
+   */
   @Deactivate
   public void deactivate() throws CacheException {
     invalidateCache();

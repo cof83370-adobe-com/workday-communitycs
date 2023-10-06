@@ -64,7 +64,7 @@ public class BookOperationsServiceImpl implements BookOperationsService {
         if (StringUtils.isNotBlank(bookRequestJsonStr)) {
           List<String> bookPathDataList = CommonUtils.getPathListFromJsonString(bookRequestJsonStr);
 
-          if (bookPathDataList == null || bookPathDataList.size() == 0) {
+          if (bookPathDataList == null || bookPathDataList.isEmpty()) {
             return activatePaths;
           }
 

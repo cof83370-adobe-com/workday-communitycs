@@ -27,4 +27,5 @@ public interface CoveoSourceApiService {
    * @return The number of indexed pages
    */
   long getTotalIndexedNumber();
+
 }

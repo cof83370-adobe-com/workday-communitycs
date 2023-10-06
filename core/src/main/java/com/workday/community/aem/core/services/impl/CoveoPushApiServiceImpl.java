@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
@@ -82,8 +83,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
   @Override
   public String generateBatchUploadUri(String fileId) {
-    return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId +
-        "/documents/batch?fileId=" + fileId;
+    return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
+        + "/documents/batch?fileId=" + fileId;
   }
 
   @Override
@@ -94,14 +95,14 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   @Override
   public String generateDeleteAllItemsUri() {
     String time = Long.toString(System.currentTimeMillis());
-    return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId +
-        "/documents/olderthan?orderingId=" + time + "&queueDelay=15";
+    return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
+        + "/documents/olderthan?orderingId=" + time + "&queueDelay=15";
   }
 
   @Override
   public String generateDeleteSingleItemUri(String documentId) {
-    return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId +
-        "/documents?deleteChildren=false&documentId=" + documentId;
+    return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
+        + "/documents?deleteChildren=false&documentId=" + documentId;
   }
 
   @Override
@@ -114,7 +115,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   public HashMap<String, Object> callBatchUploadUri(String fileId) {
     HashMap<String, String> header = new HashMap<>();
     header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
-    header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     return callApi(generateBatchUploadUri(fileId), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, "");
   }
@@ -124,7 +125,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     HashMap<String, String> containerHeader = new HashMap<>();
     containerHeader.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
     containerHeader.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
-    containerHeader.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    containerHeader.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     return callApi(generateContainerUri(), containerHeader,
         org.apache.sling.api.servlets.HttpConstants.METHOD_POST, "");
   }
@@ -134,7 +135,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     // Coveo reference https://docs.coveo.com/en/131/index-content/deleting-old-items-in-a-push-source.
     HashMap<String, String> header = new HashMap<>();
     header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
-    header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
     if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
@@ -146,9 +147,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
   @Override
   public Integer callDeleteSingleItemUri(String documentId) {
-    // Coveo reference https://docs.coveo.com/en/171/index-content/deleting-an-item-and-optionally-its-children-in-a-push-source.
     HashMap<String, String> header = new HashMap<>();
-    header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     HashMap<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
     if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {

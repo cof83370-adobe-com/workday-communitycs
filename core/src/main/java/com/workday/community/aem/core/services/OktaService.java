@@ -2,6 +2,9 @@ package com.workday.community.aem.core.services;
 
 import org.osgi.annotation.versioning.ProviderType;
 
+/**
+ * Defines an interface for Okta functionality.
+ */
 @ProviderType
 public interface OktaService {
   /**
@@ -18,4 +21,5 @@ public interface OktaService {
    * @return boolean.
    */
   boolean isOktaIntegrationEnabled();
+
 }

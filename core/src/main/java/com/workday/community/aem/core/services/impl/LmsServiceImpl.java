@@ -47,7 +47,7 @@ public class LmsServiceImpl implements LmsService {
   private LmsConfig config;
 
   /**
-   * LRU Cache for storing token value
+   * LRU Cache for storing token value.
    */
   private LRUCacheWithTimeout<String, String> lmsCache;
 
@@ -74,17 +74,20 @@ public class LmsServiceImpl implements LmsService {
     if (StringUtils.isNotBlank(cachedResult)) {
       return cachedResult;
     }
-    String lmsUrl = config.lmsUrl(), tokenPath = config.lmsTokenPath(),
-        clientId = config.lmsAPIClientId(), clientSecret = config.lmsAPIClientSecret(),
-        refreshToken = config.lmsAPIRefreshToken();
+    String lmsUrl = config.lmsUrl();
+    String tokenPath = config.lmsTokenPath();
+    String clientId = config.lmsAPIClientId();
+    String clientSecret = config.lmsAPIClientSecret();
+    String refreshToken = config.lmsAPIRefreshToken();
 
-    if (StringUtils.isEmpty(lmsUrl) || StringUtils.isEmpty(tokenPath) ||
-        StringUtils.isEmpty(clientId) || StringUtils.isEmpty(clientSecret) ||
-        StringUtils.isEmpty(refreshToken)) {
+    if (StringUtils.isEmpty(lmsUrl) || StringUtils.isEmpty(tokenPath)
+        || StringUtils.isEmpty(clientId)
+        || StringUtils.isEmpty(clientSecret)
+        || StringUtils.isEmpty(refreshToken)) {
       // No Lms configuration provided, just return the default one.
-      LOGGER.debug(String.format("There is no value " +
-              "for one or multiple configuration parameters: " +
-              "lmsUrl=%s;tokenPath=%s;clientId=%s;clientSecret=%s;refreshToken=%s",
+      LOGGER.debug(String.format("There is no value "
+              + "for one or multiple configuration parameters: "
+              + "lmsUrl=%s;tokenPath=%s;clientId=%s;clientSecret=%s;refreshToken=%s",
           lmsUrl, tokenPath, clientId, clientSecret, refreshToken));
       return StringUtils.EMPTY;
     }
@@ -103,8 +106,8 @@ public class LmsServiceImpl implements LmsService {
 
       // Gson object for json handling of token response.
       JsonObject tokenResponse = gson.fromJson(lmsResponse.getResponseBody(), JsonObject.class);
-      if (tokenResponse.get("access_token") == null ||
-          tokenResponse.get("access_token").isJsonNull()) {
+      if (tokenResponse.get("access_token") == null
+          || tokenResponse.get("access_token").isJsonNull()) {
         LOGGER.error("Lms API token is empty.");
         return StringUtils.EMPTY;
       }
@@ -126,7 +129,8 @@ public class LmsServiceImpl implements LmsService {
   public String getCourseDetail(String courseTitle) throws LmsException {
     try {
       if (StringUtils.isNotBlank(courseTitle)) {
-        String lmsUrl = config.lmsUrl(), courseDetailPath = config.lmsCourseDetailPath();
+        String lmsUrl = config.lmsUrl();
+        String courseDetailPath = config.lmsCourseDetailPath();
         // Get the bearer token needed for course detail API call.
         String bearerToken = getApiToken();
 
@@ -161,4 +165,5 @@ public class LmsServiceImpl implements LmsService {
               e.getMessage()));
     }
   }
+
 }

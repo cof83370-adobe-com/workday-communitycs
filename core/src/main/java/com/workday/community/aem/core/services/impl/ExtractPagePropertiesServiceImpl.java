@@ -48,6 +48,7 @@ import org.slf4j.LoggerFactory;
     immediate = true
 )
 public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesService {
+
   /**
    * The TEXT_COMPONENT.
    */
@@ -72,19 +73,21 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
   /**
    * The page tags.
    */
-  private static final Map<String, String> pageTagMap = new HashMap<>() {{
-    put("product", "productTags");
-    put("using-workday", "usingWorkdayTags");
-    put("programs-and-tools", "programsToolsTags");
-    put("release", "releaseTags");
-    put("industry", "industryTags");
-    put("user", "userTags");
-    put("region-and-country", "regionCountryTags");
-    put("training", "trainingTags");
-    put("release-notes", "releaseNotesTags");
-    put("event", "eventTags");
-    put("content-types", "contentType");
-  }};
+  private static final Map<String, String> pageTagMap = new HashMap<>() {
+    {
+      put("product", "productTags");
+      put("using-workday", "usingWorkdayTags");
+      put("programs-and-tools", "programsToolsTags");
+      put("release", "releaseTags");
+      put("industry", "industryTags");
+      put("user", "userTags");
+      put("region-and-country", "regionCountryTags");
+      put("training", "trainingTags");
+      put("release-notes", "releaseNotesTags");
+      put("event", "eventTags");
+      put("content-types", "contentType");
+    }
+  };
 
   /**
    * The custom components.
@@ -104,30 +107,50 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
   /**
    * The drupal role mapping.
+   *
+   * @see <a href="https://docs.google.com/spreadsheets/d/1h0aPEBm-513U1p8taSSJD4MgaxAdZ5j7MtMGIA4IoV8/edit#gid=625583643">AEM and drupal role mapping doc</a>
    */
-  // AEM and drupal role mapping doc:
-  // https://docs.google.com/spreadsheets/d/1h0aPEBm-513U1p8taSSJD4MgaxAdZ5j7MtMGIA4IoV8/edit#gid=625583643.
-  private static final Map<String, String> DRUPAL_ROLE_MAPPING = new HashMap<>() {{
-    put("access-control:authenticated", "authenticated");
-    put("access-control:customer_all", "customer");
-    put("access-control:customer_named_support_contact", "customer_named_support_contact");
-    put("access-control:customer_training_coordinator", "customer_training_coordinator");
-    put("access-control:customer_touchpoint_pro", "customer_touchpoint_pro");
-    put("access-control:customer_workday_pro", "customer_workday_pro");
-    put("access-control:customer_adaptive", "customer_adaptive");
-    put("access-control:customer_peakon", "customer_peakon");
-    put("access-control:customer_scout", "customer_scout");
-    put("access-control:customer_vndly", "customer_vndly");
-    put("access-control:customer_wsp_accelerate", "customer_wsp_accelerate");
-    put("access-control:customer_wsp_accelerate_plus", "customer_wsp_accelerate_plus");
-    put("access-control:customer_wsp_enhanced", "customer_wsp_enhanced");
-    put("access-control:customer_wsp_guided", "customer_wsp_guided");
-    put("access-control:partner_all", "partner_all");
-    put("access-control:partner_innovation_track", "partner_innovation_track");
-    put("access-control:partner_sales_track", "partner_sales_track");
-    put("access-control:partner_services_track", "partner_services_track");
-    put("access-control:internal_workmates", "workday");
-  }};
+  private static final Map<String, String> DRUPAL_ROLE_MAPPING = new HashMap<>() {
+    {
+      put("access-control:authenticated", "authenticated");
+      put("access-control:customer_all", "customer");
+      put("access-control:customer_named_support_contact", "customer_named_support_contact");
+      put("access-control:customer_training_coordinator", "customer_training_coordinator");
+      put("access-control:customer_touchpoint_pro", "customer_touchpoint_pro");
+      put("access-control:customer_workday_pro", "customer_workday_pro");
+      put("access-control:customer_adaptive", "customer_adaptive");
+      put("access-control:customer_peakon", "customer_peakon");
+      put("access-control:customer_scout", "customer_scout");
+      put("access-control:customer_vndly", "customer_vndly");
+      put("access-control:customer_wsp_accelerate", "customer_wsp_accelerate");
+      put("access-control:customer_wsp_accelerate_plus", "customer_wsp_accelerate_plus");
+      put("access-control:customer_wsp_enhanced", "customer_wsp_enhanced");
+      put("access-control:customer_wsp_guided", "customer_wsp_guided");
+      put("access-control:partner_all", "partner_all");
+      put("access-control:partner_innovation_track", "partner_innovation_track");
+      put("access-control:partner_sales_track", "partner_sales_track");
+      put("access-control:partner_services_track", "partner_services_track");
+      put("access-control:internal_workmates", "workday");
+    }
+  };
+
+  /**
+   * The resource resolver factory.
+   */
+  @Reference
+  ResourceResolverFactory resourceResolverFactory;
+
+  /**
+   * The cache manager.
+   **/
+  @Reference
+  CacheManagerService cacheManager;
+
+  /**
+   * The run mode config service.
+   */
+  @Reference
+  private RunModeConfigService runModeConfigService;
 
   /**
    * The taxonomyFields.
@@ -157,24 +180,6 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
   private final ArrayList<String> stringFields =
       new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation"));
 
-  /**
-   * The resource resolver factory.
-   */
-  @Reference
-  ResourceResolverFactory resourceResolverFactory;
-
-  /**
-   * The cache manager
-   **/
-  @Reference
-  CacheManagerService cacheManager;
-
-  /**
-   * The run mode config service.
-   */
-  @Reference
-  private RunModeConfigService runModeConfigService;
-
   @Override
   public HashMap<String, Object> extractPageProperties(String path) {
     HashMap<String, Object> properties = new HashMap<>();
@@ -189,11 +194,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         throw new ResourceNotFoundException("Page not found");
       }
       ValueMap data = page.getProperties();
-      if (data == null || data.size() < 1) {
+      if (data == null || data.isEmpty()) {
         throw new ResourceNotFoundException("Page data not found");
       }
       TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
-      UserManager userManager = resourceResolver.adaptTo(UserManager.class);
       String documentId =
           runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
       properties.put("documentId", documentId);
@@ -201,6 +205,8 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       processDateFields(data, properties);
       processStringFields(data, properties);
       processCustomComponents(page, properties);
+
+      UserManager userManager = resourceResolver.adaptTo(UserManager.class);
       String email = processUserFields(data, userManager, properties);
       for (String taxonomyField : taxonomyFields) {
         String[] taxonomyIds = data.get(taxonomyField, String[].class);
@@ -267,9 +273,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void processPermission(ValueMap data, HashMap<String, Object> properties, String email) {
-    // Coveo permission example: https://docs.coveo.com/en/107/cloud-v2-developers/simple-permission-model-definition-examples.
     ArrayList<Object> permissionGroupAllowedPermissions = new ArrayList<>();
     String[] accessControlValues = data.get(ACCESS_CONTROL_PROPERTY, String[].class);
     if (accessControlValues != null) {
@@ -299,7 +307,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
       permissionGroupAllowedPermissions.add(permissionGroup);
     }
-    if (email != null && email.trim().length() > 0) {
+    if (email != null && !email.trim().isEmpty()) {
       HashMap<String, Object> permissionGroup = new HashMap<>();
       permissionGroup.put("identity", email);
       permissionGroup.put("identityType", IDENTITY_TYPE_USER);
@@ -399,10 +407,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       properties.put("author", userName);
       try {
         User user = (User) userManager.getAuthorizable(userName);
-        // @Todo When we do the author migration, need to pass author profile link, contact id is needed.
+        // @Todo When we do the author migration, need to pass author profile link,
+        //  contact id is needed.
         // Example link: https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115.
-        email = (user != null && user.getProperty("./profile/email") != null) ?
-            Objects.requireNonNull(user.getProperty("./profile/email"))[0].getString() : null;
+        email = (user != null && user.getProperty("./profile/email") != null)
+            ? Objects.requireNonNull(user.getProperty("./profile/email"))[0].getString() : null;
         properties.put("authorLink",
             "https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115");
       } catch (RepositoryException e) {

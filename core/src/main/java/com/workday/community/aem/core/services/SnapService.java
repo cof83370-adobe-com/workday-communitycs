@@ -11,7 +11,10 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface SnapService {
+
   /**
+   * Activates the snap service.
+   *
    * @param config Service configuration object for snap logic service. This
    *               method is used for programmatically pass
    *               a configuration to the service object during service activate
@@ -20,6 +23,8 @@ public interface SnapService {
   void activate(SnapConfig config);
 
   /**
+   * Setter for ResourceResolverFactory.
+   *
    * @param resourceResolverFactory ResourceResolverFactory object. This method is
    *                                used to explicitly pass the
    *                                Resource resolver to the snap logic service
@@ -27,6 +32,8 @@ public interface SnapService {
   void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory);
 
   /**
+   * Setter for RunModeConfigService.
+   *
    * @param runModeConfigService RunModeConfigService object. This method is used
    *                             to explicitly pass the
    *                             runModeConfigService to the snap logic service
@@ -34,27 +41,39 @@ public interface SnapService {
   void setRunModeConfigService(RunModeConfigService runModeConfigService);
 
   /**
+   * Retrieves the user header menu.
+   *
    * @param sfId Salesforce Id.
+   *
    * @return The menu object as a string for common nav menus in the global header
-   * of the page.
+   *     of the page.
    */
   String getUserHeaderMenu(String sfId);
 
   /**
+   * Gets the user context.
+   *
    * @param sfId Salesforce Id.
+   *
    * @return the user email from the snap logic api call.
    */
   JsonObject getUserContext(String sfId);
 
   /**
+   * Retrieves a profile photo.
+   *
    * @param sfId Salesforce Id.
+   *
    * @return The profile avatar icon data used for the profile in the global
-   * header of the page.
+   *     header of the page.
    */
   ProfilePhoto getProfilePhoto(String sfId);
 
   /**
+   * Retrieves a user's profile data.
+   *
    * @param sfId Salesforce Id.
+   *
    * @return the user profile data.
    */
   String getUserProfile(String sfId);
@@ -70,6 +89,8 @@ public interface SnapService {
   String getAdobeDigitalData(String sfId, String pageTitle, String contentType);
 
   /**
+   * Whether the cache is enabled.
+   *
    * @return true if the cache is enabled.
    */
   boolean enableCache();

@@ -13,6 +13,7 @@ import com.workday.community.aem.core.services.CoveoSourceApiService;
 import com.workday.community.aem.core.services.HttpsURLConnectionService;
 import java.io.IOException;
 import java.util.HashMap;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
@@ -92,7 +93,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
     HashMap<String, String> header = new HashMap<>();
     header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
     header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
-    header.put(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     return header;
   }
 

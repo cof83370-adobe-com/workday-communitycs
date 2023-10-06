@@ -56,7 +56,11 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class UserGroupServiceImpl.
  */
-@Component(service = UserGroupService.class, immediate = true, configurationPolicy = ConfigurationPolicy.OPTIONAL)
+@Component(
+    service = UserGroupService.class,
+    immediate = true,
+    configurationPolicy = ConfigurationPolicy.OPTIONAL
+)
 public class UserGroupServiceImpl implements UserGroupService {
 
   /**
@@ -71,7 +75,7 @@ public class UserGroupServiceImpl implements UserGroupService {
   SnapService snapService;
 
   /**
-   * The cache manager
+   * The cache manager.
    */
   @Reference
   CacheManagerService cacheManager;
@@ -103,9 +107,6 @@ public class UserGroupServiceImpl implements UserGroupService {
   @Modified
   protected void activate(SnapConfig config) throws CacheException, DamException {
     ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER);
-        /*
-          SFDC Role mapping json object.
-         */
     JsonObject sfdcRoleMap =
         DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
     if (sfdcRoleMap != null) {
@@ -170,7 +171,8 @@ public class UserGroupServiceImpl implements UserGroupService {
    * Check whether user node has property roles. If it is there then return from
    * node property. If not, call API for roles.
    *
-   * @param request: current Sling request object.
+   * @param request current Sling request object.
+   *
    * @return User group list.
    */
   @Override
@@ -187,9 +189,9 @@ public class UserGroupServiceImpl implements UserGroupService {
             cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
         Node userNode =
             Objects.requireNonNull(jcrResolver.getResource(user.getPath())).adaptTo(Node.class);
-        if (Objects.requireNonNull(userNode).hasProperty(ROLES) &&
-            StringUtils.isNotBlank(userNode.getProperty(ROLES).getString()) &&
-            userNode.getProperty(ROLES).getString().split(";").length > 0) {
+        if (Objects.requireNonNull(userNode).hasProperty(ROLES)
+            && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString())
+            && userNode.getProperty(ROLES).getString().split(";").length > 0) {
           LOGGER.debug(
               "---> UserGroupServiceImpl: getCurrentUserGroups - User has Groups in CRX...{}",
               userNode.getProperty(ROLES).getString());
@@ -249,8 +251,8 @@ public class UserGroupServiceImpl implements UserGroupService {
 
       JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
       boolean hasCommunityAccess = false;
-      if (!propertyAccess.isJsonNull() &&
-          propertyAccess.getAsString().contains(PROPERTY_ACCESS_COMMUNITY)) {
+      if (!propertyAccess.isJsonNull()
+          && propertyAccess.getAsString().contains(PROPERTY_ACCESS_COMMUNITY)) {
         groups.add(AUTHENTICATED);
         hasCommunityAccess = true;
       }

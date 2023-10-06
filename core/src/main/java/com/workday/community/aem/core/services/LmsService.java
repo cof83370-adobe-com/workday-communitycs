@@ -3,8 +3,14 @@ package com.workday.community.aem.core.services;
 import com.workday.community.aem.core.config.LmsConfig;
 import com.workday.community.aem.core.exceptions.LmsException;
 
+/**
+ * Defines an interface for the LMS service.
+ */
 public interface LmsService {
+
   /**
+   * Activates the LMS service.
+   *
    * @param config Service configuration object for Lms API service. This
    *               method is used for programmatically pass
    *               a configuration to the service object during service activate
@@ -13,7 +19,7 @@ public interface LmsService {
   void activate(LmsConfig config);
 
   /**
-   * Gets the Lms API Bearer token
+   * Gets the Lms API Bearer token.
    *
    * @return Bearer token.
    * @throws LmsException LmsException Object.
@@ -28,4 +34,5 @@ public interface LmsService {
    * @throws LmsException LmsException object.
    */
   String getCourseDetail(String courseTitle) throws LmsException;
+
 }

@@ -33,10 +33,8 @@ import org.slf4j.LoggerFactory;
 @Component(service = QueryService.class, immediate = true)
 public class QueryServiceImpl implements QueryService {
 
-  /**
-   * The logger.
-   */
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  @Reference
+  CacheManagerService cacheManager;
 
   /**
    * The query builder.
@@ -44,8 +42,10 @@ public class QueryServiceImpl implements QueryService {
   @Reference
   QueryBuilder queryBuilder;
 
-  @Reference
-  CacheManagerService cacheManager;
+  /**
+   * The logger.
+   */
+  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
   @Override
   public long getNumOfTotalPublishedPages() {

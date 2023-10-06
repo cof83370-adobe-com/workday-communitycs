@@ -9,6 +9,7 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface UserGroupService {
+
   /**
    * Validates the user based on Roles tagged to the page and User roles from
    * Salesforce.
@@ -33,7 +34,8 @@ public interface UserGroupService {
    * Check whether user node has property roles. If it is there then return from
    * node property. If not, call API for roles.
    *
-   * @param request: current Sling request object.
+   * @param request current Sling request object.
+   *
    * @return User group list.
    */
   List<String> getCurrentUserGroups(SlingHttpServletRequest request);

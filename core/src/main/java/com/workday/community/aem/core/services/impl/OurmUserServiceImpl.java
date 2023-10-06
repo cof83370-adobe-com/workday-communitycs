@@ -27,9 +27,13 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class OurmUserServiceImpl.
  */
-@Component(service = OurmUserService.class, property = {
-    "service.pid=aem.core.services.ourmUsers"
-}, configurationPid = "com.workday.community.aem.core.config.OurmDrupalConfig", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
+@Component(
+    service = OurmUserService.class,
+    property = {"service.pid=aem.core.services.ourmUsers"},
+    configurationPid = "com.workday.community.aem.core.config.OurmDrupalConfig",
+    configurationPolicy = ConfigurationPolicy.OPTIONAL,
+    immediate = true
+)
 @Designate(ocd = OurmDrupalConfig.class)
 public class OurmUserServiceImpl implements OurmUserService {
 

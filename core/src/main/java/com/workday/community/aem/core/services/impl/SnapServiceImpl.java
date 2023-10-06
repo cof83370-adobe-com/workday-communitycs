@@ -50,9 +50,12 @@ import org.slf4j.LoggerFactory;
 /**
  * The OSGi service implementation for snap logic.
  */
-@Component(service = SnapService.class, property = {
-    "service.pid=aem.core.services.snap"
-}, configurationPid = "com.workday.community.aem.core.config.SnapConfig", immediate = true)
+@Component(
+    service = SnapService.class,
+    property = {"service.pid=aem.core.services.snap"},
+    configurationPid = "com.workday.community.aem.core.config.SnapConfig",
+    immediate = true
+)
 @Designate(ocd = SnapConfig.class)
 public class SnapServiceImpl implements SnapService {
 
@@ -60,11 +63,6 @@ public class SnapServiceImpl implements SnapService {
    * The logger.
    */
   private static final Logger logger = LoggerFactory.getLogger(SnapServiceImpl.class);
-
-  /**
-   * The gson service.
-   */
-  private final Gson gson = new Gson();
 
   /**
    * The Run-mode configuration service.
@@ -80,6 +78,11 @@ public class SnapServiceImpl implements SnapService {
    */
   @Reference
   ResourceResolverFactory resResolverFactory;
+
+  /**
+   * The gson service.
+   */
+  private final Gson gson = new Gson();
 
   /**
    * The snap Config.
@@ -118,15 +121,17 @@ public class SnapServiceImpl implements SnapService {
     }
     String retValue =
         serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
-          String snapUrl = config.snapUrl(), navApi = config.navApi(),
-              apiToken = config.navApiToken(), apiKey = config.navApiKey();
+          String snapUrl = config.snapUrl();
+          String navApi = config.navApi();
+          String apiToken = config.navApiToken();
+          String apiKey = config.navApiKey();
 
-          if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi) ||
-              StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
+          if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi)
+              || StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
             // No Snap configuration provided, just return the default one.
-            logger.debug(String.format("there is no value " +
-                    "for one or multiple configuration parameter: " +
-                    "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
+            logger.debug(String.format("there is no value "
+                    + "for one or multiple configuration parameter: "
+                    + "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
                 snapUrl, navApi, apiToken, apiKey));
             return gson.toJson(this.getDefaultHeaderMenu());
           }
@@ -139,8 +144,8 @@ public class SnapServiceImpl implements SnapService {
             // Execute the request.
             ApiResponse snapRes = RestApiUtil.doMenuGet(url, apiToken, apiKey, traceId);
             JsonObject defaultMenu = this.getDefaultHeaderMenu();
-            if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody()) ||
-                snapRes.getResponseCode() != HttpStatus.SC_OK) {
+            if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())
+                || snapRes.getResponseCode() != HttpStatus.SC_OK) {
               logger.error("Sfdc menu fetch is empty, fallback to use local default");
               return gson.toJson(defaultMenu);
             }
@@ -203,7 +208,8 @@ public class SnapServiceImpl implements SnapService {
       }
 
       logger.error(
-          "User context is not fetched from the snap context API call without error, please contact admin.");
+          "User context is not fetched from the snap context API call without error, "
+              + "please contact admin.");
       return new JsonObject();
     });
 
@@ -223,7 +229,8 @@ public class SnapServiceImpl implements SnapService {
     }
     return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey,
         (key) -> {
-          String snapUrl = config.snapUrl(), avatarUrl = config.sfdcUserAvatarUrl();
+          String snapUrl = config.snapUrl();
+          String avatarUrl = config.sfdcUserAvatarUrl();
           String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
           url = String.format(url, userId);
 
@@ -291,9 +298,8 @@ public class SnapServiceImpl implements SnapService {
           } catch (SnapException | JsonSyntaxException e) {
             logger.error("Error in getUserProfile method :: {}", e.getMessage());
           }
-          logger
-              .error(
-                  "User profile data is not fetched from the snap profile API call without error, please contact admin.");
+          logger.error("User profile data is not fetched from the snap profile API call without "
+              + "error, please contact admin.");
           return null;
         });
 
@@ -350,38 +356,42 @@ public class SnapServiceImpl implements SnapService {
    * @return The digital data.
    */
   private JsonObject generateAdobeDigitalData(String profileData) {
-    JsonObject digitalData = new JsonObject();
-    JsonObject userProperties = new JsonObject();
-    JsonObject orgProperties = new JsonObject();
     String contactRole = "";
     String contactNumber = "";
-    String accountID = "";
+    String accountId = "";
     String accountName = "";
     String accountType = "";
-    boolean isNSC = false;
+    boolean isNsc = false;
     String timeZoneStr = "";
     if (profileData != null) {
       try {
         JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
+
         JsonElement contactRoleElement = profileObject.get(CONTACT_ROLE);
-        contactRole = (contactRoleElement == null || contactRoleElement.isJsonNull()) ? ""
-            : contactRoleElement.getAsString();
+        contactRole = (contactRoleElement == null || contactRoleElement.isJsonNull())
+            ? "" : contactRoleElement.getAsString();
+        isNsc = contactRole.contains(NSC);
         JsonElement contactNumberElement = profileObject.get(CONTACT_NUMBER);
-        contactNumber = (contactRoleElement == null || contactNumberElement.isJsonNull()) ? ""
-            : contactNumberElement.getAsString();
-        isNSC = contactRole.contains(NSC);
+        contactNumber = (contactRoleElement == null || contactNumberElement.isJsonNull())
+            ? "" : contactNumberElement.getAsString();
+
         JsonElement wrcOrgId = profileObject.get("wrcOrgId");
-        accountID = (wrcOrgId == null || wrcOrgId.isJsonNull()) ? "" : wrcOrgId.getAsString();
+        accountId = (wrcOrgId == null || wrcOrgId.isJsonNull()) ? "" : wrcOrgId.getAsString();
+
         JsonElement organizationName = profileObject.get("organizationName");
         accountName = (organizationName == null || organizationName.isJsonNull()) ? "" :
             organizationName.getAsString();
+
         JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-        boolean isWorkdayMate = isWorkmateElement != null && !isWorkmateElement.isJsonNull() &&
-            isWorkmateElement.getAsBoolean();
+        boolean isWorkdayMate = isWorkmateElement != null
+            && !isWorkmateElement.isJsonNull()
+            && isWorkmateElement.getAsBoolean();
+
         JsonElement typeElement = profileObject.get("type");
         accountType = isWorkdayMate ? "workday"
             : (typeElement == null || typeElement.isJsonNull() ? "" :
             typeElement.getAsString().toLowerCase());
+
         JsonElement timeZoneElement = profileObject.get("timeZone");
         timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" :
             timeZoneElement.getAsString();
@@ -390,13 +400,19 @@ public class SnapServiceImpl implements SnapService {
             e.getMessage());
       }
     }
+
+    JsonObject userProperties = new JsonObject();
     userProperties.addProperty(CONTACT_ROLE, contactRole);
     userProperties.addProperty(CONTACT_NUMBER, contactNumber);
-    userProperties.addProperty(IS_NSC, isNSC);
+    userProperties.addProperty(IS_NSC, isNsc);
     userProperties.addProperty("timeZone", timeZoneStr);
-    orgProperties.addProperty(ACCOUNT_ID, accountID);
+
+    JsonObject orgProperties = new JsonObject();
+    orgProperties.addProperty(ACCOUNT_ID, accountId);
     orgProperties.addProperty(ACCOUNT_NAME, accountName);
     orgProperties.addProperty(ACCOUNT_TYPE, accountType);
+
+    JsonObject digitalData = new JsonObject();
     digitalData.add("user", userProperties);
     digitalData.add("org", orgProperties);
 
@@ -445,7 +461,7 @@ public class SnapServiceImpl implements SnapService {
   }
 
   /**
-   * Gets the user avatar data
+   * Gets the user avatar data.
    *
    * @param sfId SFID
    * @return image data as string

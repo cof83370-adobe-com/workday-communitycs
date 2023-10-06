@@ -12,9 +12,13 @@ import org.osgi.service.metatype.annotations.Designate;
 /**
  * The Coveo search implementation class.
  */
-@Component(service = SearchApiConfigService.class, property = {
-    "service.pid=aem.core.services.search"
-}, configurationPid = "com.workday.community.aem.core.config.CoveoSearchConfig", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
+@Component(
+    service = SearchApiConfigService.class,
+    property = {"service.pid=aem.core.services.search"},
+    configurationPid = "com.workday.community.aem.core.config.CoveoSearchConfig",
+    configurationPolicy = ConfigurationPolicy.OPTIONAL,
+    immediate = true
+)
 @Designate(ocd = CoveoSearchConfig.class)
 public class SearchApiConfigServiceImpl implements SearchApiConfigService {
 
