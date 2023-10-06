@@ -100,7 +100,7 @@ public class ComponentFilter implements Filter {
           logger.debug("ComponentFilter::ACL Tags of user {}", userGroupsList);
           ValueMap properties = request.getResource().getValueMap();
           List<String> componentAclTags = Arrays
-              .asList(properties.get("componentAclTags", new String[0]));
+              .asList(properties.get("componentACLTags", new String[0]));
           List<String> accessControlList = new ArrayList<>();
           componentAclTags
               .forEach(
