@@ -121,8 +121,6 @@ public class RestApiUtil {
    * @throws APIException APIException object.
    */
   private static ApiResponse executeGetRequest(ApiRequest req) throws APIException {
-    ApiResponse apiresponse = new ApiResponse();
-
     LOGGER.debug("RESTAPIUtil executeGetRequest: Calling REST executeGetRequest().");
     if (StringUtils.isBlank(req.getMethod())) {
       req.setMethod(RestApiConstants.GET_API);
@@ -142,25 +140,28 @@ public class RestApiUtil {
 
     // Build the request.
     HttpRequest request = builder.GET().build();
-
     HttpResponse<String> response;
     try {
       // Send the HttpGet request using the configured HttpClient.
       response = httpclient.send(request, BodyHandlers.ofString());
-      int statusCode = response.statusCode();
-      LOGGER.debug("HTTP response code : {}", statusCode);
-      apiresponse.setResponseCode(response.statusCode());
-      LOGGER.debug("HTTP response : {}", response.body());
-      if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
-        apiresponse.setResponseBody(response.body());
-      } else {
-        apiresponse.setResponseBody("{}");
-      }
     } catch (IOException | InterruptedException e) {
       throw new APIException(
           String.format("Exception in executeGetRequest method while executing the request = %s",
               e.getMessage()));
     }
+
+    int statusCode = response.statusCode();
+    LOGGER.debug("HTTP response code : {}", statusCode);
+    LOGGER.debug("HTTP response : {}", response.body());
+
+    ApiResponse apiresponse = new ApiResponse();
+    apiresponse.setResponseCode(response.statusCode());
+    if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
+      apiresponse.setResponseBody(response.body());
+    } else {
+      apiresponse.setResponseBody("{}");
+    }
+
     return apiresponse;
   }
 
