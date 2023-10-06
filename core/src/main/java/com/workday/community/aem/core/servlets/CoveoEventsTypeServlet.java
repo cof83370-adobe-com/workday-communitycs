@@ -96,7 +96,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
             String token = gson.fromJson(body, JsonObject.class).get("searchToken").getAsString();
             EventTypes eventTypes = getEventTypes(httpClient, token);
 
-            if (eventTypes != null && eventTypes.getValues().size() > 0) {
+            if (eventTypes != null && !eventTypes.getValues().isEmpty()) {
               eventTypes.getValues().forEach(value -> {
                 ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
                 valueMap.put("value", value.getLookupValue());
@@ -106,7 +106,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
               });
             }
 
-            /*Create a DataSource that is used to populate the drop-down control*/
+            // Create a DataSource that is used to populate the drop-down control.
             DataSource dataSource = new SimpleDataSource(resourceList.iterator());
             request.setAttribute(DataSource.class.getName(), dataSource);
           } catch (IOException exception) {
@@ -114,7 +114,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
                 exception.getMessage());
           }
 
-          /*Create a DataSource that is used to populate the drop-down control*/
+          // Create a DataSource that is used to populate the drop-down control.
           DataSource dataSource = new SimpleDataSource(resourceList.iterator());
           request.setAttribute(DataSource.class.getName(), dataSource);
           return null;

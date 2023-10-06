@@ -63,7 +63,7 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
       LOGGER.error("Feed fields are not fetched from CoveoTabListModel, please fix it.");
     }
 
-    if (fields != null && fields.size() > 0) {
+    if (fields != null && !fields.isEmpty()) {
       fields.forEach(field -> {
         ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
         valueMap.put("value", ((JsonObject) field).get("name").getAsString());
