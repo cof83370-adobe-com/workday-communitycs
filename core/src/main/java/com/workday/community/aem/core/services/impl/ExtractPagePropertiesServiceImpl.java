@@ -437,8 +437,8 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       properties.put("author", userName);
       try {
         User user = (User) userManager.getAuthorizable(userName);
-        // @Todo When we do the author migration, need to pass author profile link,
-        //  contact id is needed.
+        // @Todo When we do the author migration, need to pass author profile link, contact id is
+        //  needed.
         // Example link: https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115.
         email = (user != null && user.getProperty("./profile/email") != null)
             ? Objects.requireNonNull(user.getProperty("./profile/email"))[0].getString() : null;

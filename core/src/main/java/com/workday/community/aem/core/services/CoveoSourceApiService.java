@@ -25,6 +25,7 @@ public interface CoveoSourceApiService {
    * Get total indexed number.
    *
    * @return The number of indexed pages
+   * @see <a href="https://docs.coveo.com/en/65/index-content/get-detailed-information-about-a-source">Coveo reference.</a>
    */
   long getTotalIndexedNumber();
 

@@ -104,7 +104,6 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
 
   @Override
   public long getTotalIndexedNumber() {
-    // Coveo reference https://docs.coveo.com/en/65/index-content/get-detailed-information-about-a-source.
     long totalNumberOfIndexedItems = -1;
     HashMap<String, Object> response = this.callApi();
     if ((Integer) response.get("statusCode") == HttpStatus.SC_OK) {

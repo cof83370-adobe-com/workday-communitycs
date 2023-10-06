@@ -159,10 +159,8 @@ public class LmsServiceImpl implements LmsService {
       }
       return StringUtils.EMPTY;
     } catch (LmsException | JsonSyntaxException e) {
-      throw new LmsException(
-          String.format(
-              "There is an error while fetching the course detail. Please contact Community Admin. %s",
-              e.getMessage()));
+      throw new LmsException(String.format("There is an error while fetching the course detail. "
+          + "Please contact Community Admin. %s", e.getMessage()));
     }
   }
 
