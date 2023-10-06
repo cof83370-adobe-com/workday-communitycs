@@ -18,6 +18,7 @@ import java.util.List;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.apache.http.entity.ContentType;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -114,7 +115,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   @Override
   public HashMap<String, Object> callBatchUploadUri(String fileId) {
     HashMap<String, String> header = new HashMap<>();
-    header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+    header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
     header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     return callApi(generateBatchUploadUri(fileId), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, "");
@@ -123,8 +124,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   @Override
   public HashMap<String, Object> callCreateContainerUri() {
     HashMap<String, String> containerHeader = new HashMap<>();
-    containerHeader.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
-    containerHeader.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+    containerHeader.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+    containerHeader.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
     containerHeader.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     return callApi(generateContainerUri(), containerHeader,
         org.apache.sling.api.servlets.HttpConstants.METHOD_POST, "");
@@ -134,7 +135,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   public Integer callDeleteAllItemsUri() {
     // Coveo reference https://docs.coveo.com/en/131/index-content/deleting-old-items-in-a-push-source.
     HashMap<String, String> header = new HashMap<>();
-    header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+    header.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
     header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     HashMap<String, Object> response = callApi(generateDeleteAllItemsUri(), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");

@@ -1,9 +1,6 @@
 package com.workday.community.aem.core.servlets;
 
-import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
-import static com.workday.community.aem.core.constants.RestApiConstants.AUTHORIZATION;
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.RestApiConstants.CONTENT_TYPE;
 
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.SimpleDataSource;
@@ -24,9 +21,11 @@ import java.util.HashMap;
 import java.util.List;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -130,9 +129,9 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
     String endpoint = this.searchApiConfigService.getSearchFieldLookupApi();
     endpoint += EVENT_TYPE_CRITERIA;
     HttpGet request = new HttpGet(endpoint);
-    request.addHeader(HttpConstants.HEADER_ACCEPT, APPLICATION_SLASH_JSON);
-    request.addHeader(CONTENT_TYPE, APPLICATION_SLASH_JSON);
-    request.addHeader(AUTHORIZATION, BEARER_TOKEN.token(token));
+    request.addHeader(HttpConstants.HEADER_ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
+    request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+    request.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(token));
     HttpResponse response = httpClient.execute(request);
     int status = response.getStatusLine().getStatusCode();
     if (status == HttpStatus.SC_OK) {

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.apache.http.entity.ContentType;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -91,8 +92,8 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
    */
   protected HashMap<String, String> generateHeader() {
     HashMap<String, String> header = new HashMap<>();
-    header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
-    header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+    header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+    header.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
     header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     return header;
   }

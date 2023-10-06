@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import javax.net.ssl.HttpsURLConnection;
+import org.apache.http.HttpHeaders;
+import org.apache.http.entity.ContentType;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -53,7 +55,7 @@ public class HttpsURLConnectionServiceTest {
    */
   @Test
   public void testSendSccessed() throws IOException {
-    header.put(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+    header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
     int expected = 200;
     doReturn(request).when(service).getHttpsUrlConnection(any());
     doReturn(expected).when(request).getResponseCode();
@@ -71,7 +73,7 @@ public class HttpsURLConnectionServiceTest {
    */
   @Test
   public void testSendFailed() throws IOException {
-    header.put(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON);
+    header.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
     int expected = 403;
     doReturn(request).when(service).getHttpsUrlConnection(any());
     doReturn(expected).when(request).getResponseCode();

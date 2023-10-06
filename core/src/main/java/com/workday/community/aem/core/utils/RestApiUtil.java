@@ -24,6 +24,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.apache.http.entity.ContentType;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -179,9 +180,9 @@ public class RestApiUtil {
     ApiRequest apiRequestInfo = new ApiRequest();
 
     apiRequestInfo.setUrl(url);
-    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(authToken))
-        .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
-        .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON)
+    apiRequestInfo.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(authToken))
+        .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
+        .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType())
         .addHeader(RestApiConstants.X_API_KEY, apiKey)
         .addHeader(RestApiConstants.TRACE_ID, traceId);
 
@@ -279,10 +280,10 @@ public class RestApiUtil {
     ApiRequest apiRequestInfo = new ApiRequest();
 
     apiRequestInfo.setUrl(url);
-    apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION,
+    apiRequestInfo.addHeader(HttpHeaders.AUTHORIZATION,
             getBasicAuthenticationHeader(username, password))
-        .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
-        .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON)
+        .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
+        .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType())
         .addFormData(RestApiConstants.GRANT_TYPE, RestApiConstants.REFRESH_TOKEN)
         .addFormData(RestApiConstants.REFRESH_TOKEN, refreshToken);
 
@@ -328,9 +329,9 @@ public class RestApiUtil {
       ApiRequest apiRequestInfo = new ApiRequest();
 
       apiRequestInfo.setUrl(url);
-      apiRequestInfo.addHeader(RestApiConstants.AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
-          .addHeader(HttpConstants.HEADER_ACCEPT, RestApiConstants.APPLICATION_SLASH_JSON)
-          .addHeader(RestApiConstants.CONTENT_TYPE, RestApiConstants.APPLICATION_SLASH_JSON);
+      apiRequestInfo.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
+          .addHeader(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType())
+          .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
 
       return executeGetRequest(apiRequestInfo);
     } catch (ApiException e) {

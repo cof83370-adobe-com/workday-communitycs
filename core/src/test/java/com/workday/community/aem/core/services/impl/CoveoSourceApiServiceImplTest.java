@@ -9,7 +9,9 @@ import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.HttpsUrlConnectionService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import java.util.HashMap;
+import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
+import org.apache.http.entity.ContentType;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -61,11 +63,11 @@ public class CoveoSourceApiServiceImplTest {
   public void testGenerateHeader() {
     service = this.registerService();
     HashMap<String, String> header = service.generateHeader();
-    assertEquals(RestApiConstants.APPLICATION_SLASH_JSON, header.get(HttpConstants.HEADER_ACCEPT));
-    assertEquals(RestApiConstants.APPLICATION_SLASH_JSON,
-        header.get(RestApiConstants.CONTENT_TYPE));
+    assertEquals(ContentType.APPLICATION_JSON.getMimeType(), header.get(HttpConstants.HEADER_ACCEPT));
+    assertEquals(ContentType.APPLICATION_JSON.getMimeType(),
+        header.get(HttpHeaders.CONTENT_TYPE));
     assertEquals(BEARER_TOKEN.token(coveoIndexApiConfigService.getCoveoApiKey()),
-        header.get(RestApiConstants.AUTHORIZATION));
+        header.get(HttpHeaders.AUTHORIZATION));
   }
 
   /**

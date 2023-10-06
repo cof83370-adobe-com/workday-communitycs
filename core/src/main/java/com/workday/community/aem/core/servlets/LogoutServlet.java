@@ -2,7 +2,6 @@ package com.workday.community.aem.core.servlets;
 
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.HttpConstants.LOGIN_COOKIE_NAME;
-import static com.workday.community.aem.core.constants.RestApiConstants.APPLICATION_SLASH_JSON;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.entity.ContentType;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.auth.Authenticator;
@@ -80,7 +80,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
       throws IOException {
     String utfName = StandardCharsets.UTF_8.name();
-    response.setContentType(APPLICATION_SLASH_JSON);
+    response.setContentType(ContentType.APPLICATION_JSON.getMimeType());
     response.setCharacterEncoding(utfName);
 
     String oktaDomain = oktaService.getCustomDomain();
