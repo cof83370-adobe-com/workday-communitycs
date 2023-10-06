@@ -19,15 +19,16 @@ import org.apache.sling.models.annotations.injectorspecific.ChildResource;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 
+/**
+ * Coveo list view model implementation.
+ */
 @Model(
-    adaptables = {
-        Resource.class,
-        SlingHttpServletRequest.class
-    },
+    adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {CoveoListViewModel.class},
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoListViewModelImpl implements CoveoListViewModel {
+
   @Self
   private SlingHttpServletRequest request;
 
@@ -52,17 +53,28 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
 
   private JsonObject searchConfig;
 
+  /**
+   * Initializer for the Coveo list view model class.
+   *
+   * @param request The request object.
+   */
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
       this.request = request;
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<CategoryFacetModel> getCategories() {
     return categories == null ? new ArrayList<>() : new ArrayList<>(categories);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonObject getSearchConfig() {
     if (this.searchConfig == null) {
@@ -75,6 +87,9 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
     return this.searchConfig;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getExtraCriteria() throws DamException {
     throw new DamException("ExtraCriteria is not available for list view");

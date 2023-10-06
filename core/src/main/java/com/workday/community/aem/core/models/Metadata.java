@@ -27,4 +27,5 @@ public interface Metadata {
    * @return the updated date
    */
   Date getUpdatedDate();
+
 }

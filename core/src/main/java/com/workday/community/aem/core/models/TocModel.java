@@ -11,4 +11,5 @@ public interface TocModel {
    * @return the string
    */
   String bookResourcePath();
+
 }

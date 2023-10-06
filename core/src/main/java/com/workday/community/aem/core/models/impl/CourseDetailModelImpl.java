@@ -34,12 +34,14 @@ import org.slf4j.LoggerFactory;
 /**
  * The model implementation class for the course detail page.
  */
-@Model(adaptables = {
-    Resource.class,
-    SlingHttpServletRequest.class
-}, adapters = {CourseDetailModel.class}, resourceType = {
-    CourseDetailModelImpl.RESOURCE_TYPE}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(
+    adaptables = {Resource.class, SlingHttpServletRequest.class},
+    adapters = {CourseDetailModel.class},
+    resourceType = {CourseDetailModelImpl.RESOURCE_TYPE},
+    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class CourseDetailModelImpl implements CourseDetailModel {
+
   /**
    * The Constant RESOURCE_TYPE.
    */
@@ -50,11 +52,6 @@ public class CourseDetailModelImpl implements CourseDetailModel {
    * The logger.
    */
   private static final Logger LOGGER = LoggerFactory.getLogger(CourseDetailModelImpl.class);
-
-  /**
-   * The gson service.
-   */
-  private final Gson gson = new Gson();
 
   /**
    * The Lms service.
@@ -77,9 +74,14 @@ public class CourseDetailModelImpl implements CourseDetailModel {
   RunModeConfigService runModeConfigService;
 
   /**
-   * Course Title
+   * Course Title.
    */
   String courseTitle;
+
+  /**
+   * The gson service.
+   */
+  private final Gson gson = new Gson();
 
   @Self
   private SlingHttpServletRequest request;
@@ -97,6 +99,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
    * Get the query parameter value.
    *
    * @param param Query parameter.
+   *
    * @return Value of the query parameter.
    */
   private String getQueryParamValueFromUrl(String param) {
@@ -110,7 +113,6 @@ public class CourseDetailModelImpl implements CourseDetailModel {
    * Gets the course detail data.
    *
    * @return Course detail json.
-   * @throws IOException
    */
   @Override
   public JsonObject getCourseDetailData() {
@@ -158,8 +160,9 @@ public class CourseDetailModelImpl implements CourseDetailModel {
           Arrays.asList(accessControl.getAsString().split(",")));
       return userGroupService.validateCurrentUser(request, accessControlTags);
     }
-    LOGGER.error(
-        "User can't access because access control is not set in the returned course detail object.");
+    LOGGER.error("User can't access because access control is not set in the returned course "
+        + "detail object.");
     return false;
   }
+
 }

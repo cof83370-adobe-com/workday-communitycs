@@ -39,14 +39,16 @@ import org.slf4j.LoggerFactory;
  *
  * @author pepalla
  */
-@Model(adaptables = {Resource.class,
-    SlingHttpServletRequest.class}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(
+    adaptables = {Resource.class, SlingHttpServletRequest.class},
+    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class EventDetailsModel {
 
   /**
    * The logger.
    */
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  private static final Logger logger = LoggerFactory.getLogger(EventDetailsModel.class);
 
   @Reference
   UserService userService;
@@ -107,7 +109,7 @@ public class EventDetailsModel {
   private String timeFormat;
 
   /**
-   * The User TimeZone
+   * The User TimeZone.
    */
   private String userTimeZone;
 
@@ -124,13 +126,13 @@ public class EventDetailsModel {
   private ResourceResolver resolver;
 
   /**
-   * The Snap Service
+   * The Snap Service.
    */
   @Inject
   private SnapService snapService;
 
   /**
-   * The Sling Http Servlet Request
+   * The Sling Http Servlet Request.
    */
   @Self
   private SlingHttpServletRequest request;
@@ -160,7 +162,7 @@ public class EventDetailsModel {
   }
 
   /**
-   * Populates User TimeZone
+   * Populates User TimeZone.
    *
    * @return user time zone string
    */
@@ -330,9 +332,12 @@ public class EventDetailsModel {
   }
 
   /**
-   * @return the userTimeZone
+   * Gets the user's timezone.
+   *
+   * @return The timezone.
    */
   public String getUserTimeZone() {
     return userTimeZone;
   }
+
 }

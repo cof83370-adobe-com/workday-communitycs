@@ -1,5 +1,8 @@
 package com.workday.community.aem.core.models;
 
+/**
+ * Defines the footer model.
+ */
 public interface FooterModel {
 
   /**

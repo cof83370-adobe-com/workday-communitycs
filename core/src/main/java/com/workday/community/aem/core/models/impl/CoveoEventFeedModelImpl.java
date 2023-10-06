@@ -41,15 +41,13 @@ import org.slf4j.LoggerFactory;
  * The CoveoEventFeedModel implementation Class.
  */
 @Model(
-    adaptables = {
-        Resource.class,
-        SlingHttpServletRequest.class
-    },
+    adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {CoveoEventFeedModel.class},
     resourceType = {CoveoEventFeedModelImpl.RESOURCE_TYPE},
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
+
   protected static final String RESOURCE_TYPE =
       "/content/workday-community/components/common/coveoeventfeed";
 
@@ -85,12 +83,20 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   @OSGiService
   private SnapService snapService;
 
+  /**
+   * Coveo event feed mode init.
+   *
+   * @param request The request object.
+   */
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
       this.request = request;
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonObject getSearchConfig() {
     if (searchConfig == null) {
@@ -103,6 +109,9 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
     return searchConfig;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Map<String, String> getFeatureEvent() throws RepositoryException {
     if (StringUtils.isEmpty(this.featuredEvent)) {
@@ -117,21 +126,21 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       return new HashMap<>();
     }
 
-    GregorianCalendar startTime =
-        (GregorianCalendar) pageObject.getProperties().get("eventStartDate");
-    GregorianCalendar endTime = (GregorianCalendar) pageObject.getProperties().get("eventEndDate");
+    GregorianCalendar startTime = (GregorianCalendar) pageObject
+        .getProperties()
+        .get("eventStartDate");
+    GregorianCalendar endTime = (GregorianCalendar) pageObject
+        .getProperties()
+        .get("eventEndDate");
+
     SimpleDateFormat fmt = new SimpleDateFormat("MMM dd, yyyy");
     fmt.setCalendar(startTime);
     fmt.setCalendar(endTime);
-    String eventLocation = (String) pageObject.getProperties().get("eventLocation");
-    String eventHost = (String) pageObject.getProperties().get("eventHost");
 
     String imagePath = "";
     String registerPath = "";
     String registerTitle = "";
     if (!StringUtils.isEmpty(featuredEvent)) {
-
-      // Feature image
       String featureImage = featuredEvent + EVENT_PATH_ROOT + "eventdetailscontainer/image";
       Resource image = resourceResolver.getResource(featureImage);
       if (image != null) {
@@ -145,7 +154,6 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
         }
       }
 
-      // Register button
       String registerButtonPath = featuredEvent + EVENT_PATH_ROOT + "eventregistration/button";
       Resource registerButton = resourceResolver.getResource(registerButtonPath);
       if (registerButton != null) {
@@ -170,6 +178,9 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       featurePage += ".html";
     }
 
+    String eventLocation = (String) pageObject.getProperties().get("eventLocation");
+    String eventHost = (String) pageObject.getProperties().get("eventHost");
+
     Map<String, String> ret = new HashMap<>();
     ret.put("title", pageObject.getTitle());
     ret.put("link", featurePage);
@@ -184,11 +195,17 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
     return ret;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getSortCriteria() throws DamException {
     return this.getModelConfig().get("sortCriteria").getAsString();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getEventCriteria() throws DamException {
     LocalDate localDate = LocalDate.now();
@@ -208,11 +225,17 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
     return retCriteria;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getAllEventsUrl() throws DamException {
     return this.getModelConfig().get("allEventsUrl").getAsString();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getExtraCriteria() throws DamException {
     return this.getModelConfig().get("extraCriteria").getAsString();

@@ -2,6 +2,9 @@ package com.workday.community.aem.core.models;
 
 import java.util.List;
 
+/**
+ * Defines an interface for the Coveo status model.
+ */
 public interface CoveoStatusModel {
 
   /**
@@ -46,4 +49,5 @@ public interface CoveoStatusModel {
    * @return Coveo indexing status.
    */
   boolean isCoveoEnabled();
+
 }

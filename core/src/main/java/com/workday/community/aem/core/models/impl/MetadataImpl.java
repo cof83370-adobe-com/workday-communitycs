@@ -21,9 +21,12 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class MetadataImpl.
  */
-@Model(adaptables = {Resource.class, SlingHttpServletRequest.class}, adapters = {
-    Metadata.class}, resourceType = {
-    MetadataImpl.RESOURCE_TYPE}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(
+    adaptables = {Resource.class, SlingHttpServletRequest.class},
+    adapters = {Metadata.class},
+    resourceType = {MetadataImpl.RESOURCE_TYPE},
+    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class MetadataImpl implements Metadata {
 
   /**
@@ -54,9 +57,7 @@ public class MetadataImpl implements Metadata {
   private ResourceResolver resourceResolver;
 
   /**
-   * Gets the author name.
-   *
-   * @return the author name
+   * {@inheritDoc}
    */
   @Override
   public String getAuthorName() {
@@ -65,10 +66,10 @@ public class MetadataImpl implements Metadata {
     if (null != currentPageProperties) {
       String author = currentPageProperties.get(GlobalConstants.PROP_AUTHOR, String.class);
       if (null != author) {
-        String authorFullName = getFullNameByUserID(author);
+        String authorFullName = getFullNameByUserId(author);
         fullName = StringUtils.isNotBlank(authorFullName) ? authorFullName : author;
       } else {
-        fullName = getFullNameByUserID(
+        fullName = getFullNameByUserId(
             currentPageProperties.get(GlobalConstants.PROP_JCR_CREATED_BY, String.class));
       }
     }
@@ -81,14 +82,15 @@ public class MetadataImpl implements Metadata {
   /**
    * Gets the full name by user ID.
    *
-   * @param userID the user ID
-   * @return the full name by user ID
+   * @param userId the user ID.
+   *
+   * @return the full name by user ID.
    */
-  private String getFullNameByUserID(String userID) {
+  private String getFullNameByUserId(String userId) {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     String fullName = "";
     try {
-      Authorizable authorizable = userManager.getAuthorizable(userID);
+      Authorizable authorizable = userManager.getAuthorizable(userId);
       if (null != authorizable && !authorizable.isGroup()) {
         String firstName =
             authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME) != null
@@ -113,9 +115,7 @@ public class MetadataImpl implements Metadata {
   }
 
   /**
-   * Gets the posted date.
-   *
-   * @return the posted date
+   * {@inheritDoc}
    */
   @Override
   public Date getPostedDate() {
@@ -123,9 +123,7 @@ public class MetadataImpl implements Metadata {
   }
 
   /**
-   * Gets the updated date.
-   *
-   * @return the updated date
+   * {@inheritDoc}
    */
   @Override
   public Date getUpdatedDate() {

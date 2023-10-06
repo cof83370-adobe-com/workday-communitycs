@@ -5,9 +5,10 @@ import java.util.Map;
 import javax.jcr.RepositoryException;
 
 /**
- * The Sling model for Coveo Event Feed component
+ * The Sling model for Coveo Event Feed component.
  */
 public interface CoveoEventFeedModel extends CoveoCommonModel {
+
   /**
    * Get the FeatureEvent details.
    *
@@ -15,10 +16,17 @@ public interface CoveoEventFeedModel extends CoveoCommonModel {
    */
   Map<String, String> getFeatureEvent() throws RepositoryException;
 
+  /**
+   * Gets the sort criteria.
+   *
+   * @return The sort criteria.
+   *
+   * @throws DamException If there was an error getting the config.
+   */
   String getSortCriteria() throws DamException;
 
   /**
-   * Get Event Criteria
+   * Get Event Criteria.
    *
    * @return the Event Criteria
    */
@@ -30,4 +38,5 @@ public interface CoveoEventFeedModel extends CoveoCommonModel {
    * @return all events Url.
    */
   String getAllEventsUrl() throws DamException;
+
 }

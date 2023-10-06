@@ -30,12 +30,17 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Model(adaptables = {
-    Resource.class,
-    SlingHttpServletRequest.class
-}, adapters = {CoveoRelatedInformationModel.class}, resourceType = {
-    CoveoRelatedInformationModelImpl.RESOURCE_TYPE}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+/**
+ * Coveo related information mode implementation.
+ */
+@Model(
+    adaptables = {Resource.class, SlingHttpServletRequest.class},
+    adapters = {CoveoRelatedInformationModel.class},
+    resourceType = {CoveoRelatedInformationModelImpl.RESOURCE_TYPE},
+    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformationModel {
+
   protected static final String RESOURCE_TYPE =
       "/content/workday-community/components/common/relatedinformation";
 
@@ -45,7 +50,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       "/content/dam/workday-community/resources/coveo-field-map.json";
 
   /**
-   * The cache manager
+   * The cache manager.
    */
   @Reference
   CacheManagerService cacheManager;
@@ -72,12 +77,20 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   @OSGiService
   private UserService userService;
 
+  /**
+   * Initialize the Coveo related information mode model.
+   *
+   * @param request The request object.
+   */
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
       this.request = request;
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> getFacetFields() throws DamException {
     if (facetFields != null) {
@@ -98,7 +111,8 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     Page page = pageManager.getPage(pagePath);
     if (page == null) {
       LOGGER.error(String.format(
-          "getFacetFields in CoveoRelatedInformationModelImpl failed because current Page unresolved, path: %s",
+          "getFacetFields in CoveoRelatedInformationModelImpl failed because current Page "
+              + "unresolved, path: %s",
           pagePath));
       return Collections.unmodifiableList(facetFields);
     }
@@ -139,6 +153,9 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     return Collections.unmodifiableList(facetFields);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonObject getSearchConfig() {
     if (this.searchConfig == null) {
@@ -151,8 +168,12 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     return this.searchConfig;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getExtraCriteria() throws DamException {
     throw new DamException("ExtraCriteria is not available for related information currently");
   }
+
 }

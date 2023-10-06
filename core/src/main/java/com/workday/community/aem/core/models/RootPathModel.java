@@ -37,7 +37,7 @@ public class RootPathModel {
   }
 
   /**
-   * Gets the root path
+   * Gets the root path.
    *
    * @return the String
    */

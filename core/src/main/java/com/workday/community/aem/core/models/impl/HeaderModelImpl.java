@@ -32,11 +32,12 @@ import org.slf4j.LoggerFactory;
 /**
  * The model implementation class for the common nav header menus.
  */
-@Model(adaptables = {
-    Resource.class,
-    SlingHttpServletRequest.class
-}, adapters = {HeaderModel.class}, resourceType = {
-    HeaderModelImpl.RESOURCE_TYPE}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(
+    adaptables = {Resource.class, SlingHttpServletRequest.class},
+    adapters = {HeaderModel.class},
+    resourceType = {HeaderModelImpl.RESOURCE_TYPE},
+    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class HeaderModelImpl implements HeaderModel {
 
   /**
@@ -53,9 +54,7 @@ public class HeaderModelImpl implements HeaderModel {
   /**
    * The logger.
    */
-  private final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
-
-  private final Gson gson = new Gson();
+  private static final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
 
   /**
    * The navMenuApi service.
@@ -80,14 +79,16 @@ public class HeaderModelImpl implements HeaderModel {
   UserService userService;
 
   /**
-   * SFID
+   * SFID.
    */
   String sfId;
 
   /**
    * The global search url.
    */
-  String globalSearchURL;
+  String globalSearchUrl;
+
+  private final Gson gson = new Gson();
 
   @Self
   private SlingHttpServletRequest request;
@@ -119,17 +120,15 @@ public class HeaderModelImpl implements HeaderModel {
     String cookieValueFromRequest = menuCache == null ? null : menuCache.getValue();
     String cookieValueCurrentUser = userService.getUserUUID(sfId);
 
-    if (!StringUtils.isEmpty(cookieValueCurrentUser) &&
-        !StringUtils.isEmpty(cookieValueFromRequest) &&
-        cookieValueFromRequest.equals(cookieValueCurrentUser)) {
+    if (!StringUtils.isEmpty(cookieValueCurrentUser) && !StringUtils.isEmpty(cookieValueFromRequest)
+        && cookieValueFromRequest.equals(cookieValueCurrentUser)) {
       // Same user and well cached in browser
       return "";
     }
 
     String headerMenu = this.snapService.getUserHeaderMenu(sfId);
-    if (StringUtils.isEmpty(headerMenu) ||
-        OurmUtils.isMenuEmpty(gson, headerMenu) ||
-        cookieValueCurrentUser != null) {
+    if (StringUtils.isEmpty(headerMenu) || OurmUtils.isMenuEmpty(gson, headerMenu)
+        || cookieValueCurrentUser != null) {
       cookieValueCurrentUser = "FALSE";
     }
 
@@ -168,10 +167,11 @@ public class HeaderModelImpl implements HeaderModel {
 
   @Override
   public String getGlobalSearchURL() {
-    String searchURLFromConfig = searchApiConfigService.getGlobalSearchURL();
-    globalSearchURL =
-        StringUtils.isBlank(searchURLFromConfig) ? DEFAULT_SEARCH_REDIRECT : searchURLFromConfig;
-    return globalSearchURL;
+    String searchUrlFromConfig = searchApiConfigService.getGlobalSearchURL();
+    globalSearchUrl = StringUtils.isBlank(searchUrlFromConfig)
+        ? DEFAULT_SEARCH_REDIRECT : searchUrlFromConfig;
+
+    return globalSearchUrl;
   }
 
   @Override

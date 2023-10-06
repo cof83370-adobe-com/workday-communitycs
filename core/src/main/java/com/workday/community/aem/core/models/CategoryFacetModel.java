@@ -54,13 +54,13 @@ public class CategoryFacetModel {
   ResourceResolverFactory resourceResolverFactory;
 
   /**
-   * The cache manager
+   * The cache manager.
    */
   @Inject
   CacheManagerService cacheManager;
 
   /**
-   * Search config json object
+   * Search config json object.
    */
   private JsonObject fieldMapConfig;
 
@@ -79,8 +79,8 @@ public class CategoryFacetModel {
   @PostConstruct
   private void init() throws DamException {
 
-    try (ResourceResolver resolver = cacheManager == null ?
-        ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER) :
+    try (ResourceResolver resolver = cacheManager == null
+        ? ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER) :
         cacheManager.getServiceResolver(READ_SERVICE_USER)) {
       TagManager tagManager = resolver != null ? resolver.adaptTo(TagManager.class) : null;
       Tag tag = tagManager != null ? tagManager.resolve(category) : null;
@@ -130,7 +130,7 @@ public class CategoryFacetModel {
   }
 
   /**
-   * Returns filed mapping object
+   * Returns filed mapping object.
    *
    * @param resourceResolver Resource resolver object
    * @return field map config.

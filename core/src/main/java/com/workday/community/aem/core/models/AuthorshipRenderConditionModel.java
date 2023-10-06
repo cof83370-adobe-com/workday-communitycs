@@ -23,8 +23,10 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class AuthorshipRenderConditionModel.
  */
-@Model(adaptables = {
-    SlingHttpServletRequest.class}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(
+    adaptables = {SlingHttpServletRequest.class},
+    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class AuthorshipRenderConditionModel {
 
   /**
@@ -56,7 +58,7 @@ public class AuthorshipRenderConditionModel {
   private List<String> editGroups;
 
   /**
-   * Inits the Model
+   * Inits the Model.
    */
   @PostConstruct
   public void init() {

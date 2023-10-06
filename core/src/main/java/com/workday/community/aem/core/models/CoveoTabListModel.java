@@ -7,8 +7,9 @@ import com.workday.community.aem.core.exceptions.DamException;
  * The sling model for Coveo tab list component.
  */
 public interface CoveoTabListModel extends CoveoCommonModel {
+
   /**
-   * Get field
+   * Get field.
    *
    * @return fields as JasonArray object.
    */
@@ -16,7 +17,7 @@ public interface CoveoTabListModel extends CoveoCommonModel {
 
 
   /**
-   * Get selected fields
+   * Get selected fields.
    *
    * @return Selected fields JasonArray object.
    */

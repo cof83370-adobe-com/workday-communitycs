@@ -7,11 +7,13 @@ import java.util.List;
  * The Sling model interface for Related information in dynamic mode.
  */
 public interface CoveoRelatedInformationModel extends CoveoCommonModel {
+
   /**
-   * Get the search criteria for related information
+   * Get the search criteria for related information.
    *
    * @return the search criteria
    * @throws DamException a DamException object.
    */
   List<String> getFacetFields() throws DamException;
+
 }

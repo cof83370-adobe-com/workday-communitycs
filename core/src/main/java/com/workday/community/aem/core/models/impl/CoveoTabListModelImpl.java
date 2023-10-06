@@ -23,6 +23,9 @@ import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Coveo tab list implementation.
+ */
 @Model(
     adaptables = {
         Resource.class,
@@ -33,6 +36,7 @@ import org.slf4j.LoggerFactory;
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class CoveoTabListModelImpl implements CoveoTabListModel {
+
   protected static final String RESOURCE_TYPE = "workday-community/components/common/coveotablist";
 
   private static final Logger logger = LoggerFactory.getLogger(CoveoTabListModelImpl.class);
@@ -68,6 +72,11 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
 
   private JsonObject modelConfig;
 
+  /**
+   * Initialize the CoveoTabListModelImpl object.
+   *
+   * @param request The request object.
+   */
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
       logger.debug("pass-in request object, mostly for test purpose");
@@ -75,6 +84,9 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonObject getSearchConfig() {
     if (this.searchConfig == null) {
@@ -84,12 +96,17 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     return this.searchConfig;
   }
 
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonArray getFields() throws DamException {
     return this.getModelConfig().getAsJsonArray("fields");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonArray getSelectedFields() throws DamException {
     JsonArray allFields = this.getModelConfig().getAsJsonArray("fields");
@@ -108,7 +125,9 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     return selectedFields;
   }
 
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getProductCriteria() {
     ResourceResolver resourceResolver = this.request.getResourceResolver();
@@ -131,11 +150,17 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
     return sb.toString();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getFeedUrlBase() throws DamException {
     return this.getModelConfig().getAsJsonObject("feedUrlBase").get("value").getAsString();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getExtraCriteria() throws DamException {
     return this.getModelConfig().getAsJsonObject("extraCriteria").get("value").getAsString();

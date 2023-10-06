@@ -18,8 +18,10 @@ import org.slf4j.LoggerFactory;
  *
  * @author uttej.vardineni
  */
-@Model(adaptables = {
-    SlingHttpServletRequest.class}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(
+    adaptables = {SlingHttpServletRequest.class},
+    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class BookModel {
 
   /**
@@ -31,7 +33,7 @@ public class BookModel {
   /**
    * The logger.
    */
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  private static final Logger logger = LoggerFactory.getLogger(BookModel.class);
 
   /**
    * The page path.
@@ -46,7 +48,7 @@ public class BookModel {
   private ResourceResolver resourceResolver;
 
   /**
-   * The Page Object
+   * The Page Object.
    */
   private Page bookPage;
 
@@ -69,7 +71,7 @@ public class BookModel {
   }
 
   /**
-   * Gets the root path
+   * Gets the root path.
    *
    * @return the String
    */

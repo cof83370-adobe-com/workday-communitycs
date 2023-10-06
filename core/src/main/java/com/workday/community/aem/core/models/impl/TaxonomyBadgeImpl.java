@@ -23,9 +23,12 @@ import org.apache.sling.models.annotations.Model;
 /**
  * The Class TaxonomyBadgeImpl.
  */
-@Model(adaptables = {Resource.class, SlingHttpServletRequest.class}, adapters = {
-    TaxonomyBadge.class}, resourceType = {
-    TaxonomyBadgeImpl.RESOURCE_TYPE}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(
+    adaptables = {Resource.class, SlingHttpServletRequest.class},
+    adapters = {TaxonomyBadge.class},
+    resourceType = {TaxonomyBadgeImpl.RESOURCE_TYPE},
+    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class TaxonomyBadgeImpl implements TaxonomyBadge {
 
   /**
@@ -57,49 +60,50 @@ public class TaxonomyBadgeImpl implements TaxonomyBadge {
    */
   @Override
   public List<String> getBadgeList() {
-    String[] tagIDs;
+    String[] tagIds;
     badgeList = getRetiredBadge(badgeList);
     switch (currentPage.getContentResource().getResourceType()) {
       case PageResourceType.EVENT:
-        tagIDs = currentPage.getProperties().get(TagPropertyName.EVENT_FORMAT, String[].class);
-        badgeList = getTagTitlesByTagID(tagIDs);
+        tagIds = currentPage.getProperties().get(TagPropertyName.EVENT_FORMAT, String[].class);
+        badgeList = getTagTitlesByTagId(tagIds);
         break;
 
       case PageResourceType.RELEASE_NOTES:
-        tagIDs = currentPage.getProperties().get(TagPropertyName.RELEASE_NOTES_CHNAGE_TYPE,
+        tagIds = currentPage.getProperties().get(TagPropertyName.RELEASE_NOTES_CHNAGE_TYPE,
             String[].class);
-        badgeList = getTagTitlesByTagID(tagIDs);
+        badgeList = getTagTitlesByTagId(tagIds);
         break;
 
       case PageResourceType.TRAINING_CATALOG:
-        tagIDs = currentPage.getProperties().get(TagPropertyName.TRAINING_FORMAT,
+        tagIds = currentPage.getProperties().get(TagPropertyName.TRAINING_FORMAT,
             String[].class);
-        badgeList = getTagTitlesByTagID(tagIDs);
+        badgeList = getTagTitlesByTagId(tagIds);
         break;
 
       default:
         return Collections.unmodifiableList(badgeList);
     }
-    return Collections.unmodifiableList(badgeList);
 
+    return Collections.unmodifiableList(badgeList);
   }
 
   /**
    * Gets the tag titles by tag ID.
    *
-   * @param tagIDs the tag IDs
+   * @param tagIds the tag IDs
    * @return the tag titles by tag ID
    */
-  private List<String> getTagTitlesByTagID(String[] tagIDs) {
-    if (tagIDs != null) {
+  private List<String> getTagTitlesByTagId(String[] tagIds) {
+    if (tagIds != null) {
       TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
-      for (String tagID : tagIDs) {
-        Tag tag = tagManager.resolve(tagID);
+      for (String tagId : tagIds) {
+        Tag tag = tagManager.resolve(tagId);
         if (tag != null) {
           badgeList.add(tag.getTitle());
         }
       }
     }
+
     return Collections.unmodifiableList(badgeList);
   }
 

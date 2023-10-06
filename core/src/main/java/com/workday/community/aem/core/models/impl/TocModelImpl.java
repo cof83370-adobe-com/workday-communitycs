@@ -16,10 +16,14 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class TocModelImpl.
  */
-@Model(adaptables = {Resource.class, SlingHttpServletRequest.class}, adapters = {
-    TocModel.class}, resourceType = {
-    TocModelImpl.RESOURCE_TYPE}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Model(
+    adaptables = {Resource.class, SlingHttpServletRequest.class},
+    adapters = {TocModel.class},
+    resourceType = {TocModelImpl.RESOURCE_TYPE},
+    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+)
 public class TocModelImpl implements TocModel {
+
   /**
    * The Constant RESOURCE_TYPE.
    */
@@ -28,7 +32,7 @@ public class TocModelImpl implements TocModel {
   /**
    * The logger.
    */
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  private static final Logger logger = LoggerFactory.getLogger(TocModelImpl.class);
 
   /**
    * The current page.
@@ -53,7 +57,7 @@ public class TocModelImpl implements TocModel {
     String bookResourcePath = null;
     if (null != currentPage) {
       List<String> bookPathList = queryService.getBookNodesByPath(currentPage.getPath(), null);
-      if (bookPathList.size() > 0) {
+      if (!bookPathList.isEmpty()) {
         bookResourcePath = bookPathList.get(0).split("/firstlevel")[0];
       }
     }
