@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.models.impl;
 
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.models.Metadata;
@@ -70,7 +71,7 @@ public class MetadataImpl implements Metadata {
         fullName = StringUtils.isNotBlank(authorFullName) ? authorFullName : author;
       } else {
         fullName = getFullNameByUserId(
-            currentPageProperties.get(GlobalConstants.PROP_JCR_CREATED_BY, String.class));
+            currentPageProperties.get(JcrConstants.JCR_CREATED_BY, String.class));
       }
     }
     if (StringUtils.isNotBlank(fullName)) {

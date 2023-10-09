@@ -136,7 +136,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
       Date scheduledRetDate = scheduledRetirementCalendar.getTime();
 
       // Conversion
-      DateFormat df = new SimpleDateFormat(WorkflowConstants.ISO_8601_FORMAT);
+      DateFormat df = new SimpleDateFormat(GlobalConstants.ISO_8601_FORMAT);
 
       PageManager pageManager = resResolver.adaptTo(PageManager.class);
       Page currentPage = pageManager.getPage(pagePath);

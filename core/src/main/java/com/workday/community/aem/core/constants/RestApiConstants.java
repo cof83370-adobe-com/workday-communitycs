@@ -3,47 +3,47 @@ package com.workday.community.aem.core.constants;
 import com.workday.community.aem.core.constants.lambda.BearerToken;
 
 /**
- * The Class RESTAPIConstants.
+ * Interface defining REST API constants.
  */
 public interface RestApiConstants {
 
   /**
-   * The constant BEARER_TOKEN.
+   * Returns a bearer token header value.
    */
   BearerToken BEARER_TOKEN = (token) -> String.format("Bearer %s", token);
 
   /**
-   * The constant X_API_KEY.
+   * The name of the API key header.
    */
   String X_API_KEY = "X-api-key";
 
   /**
-   * The constant TRACE_ID.
+   * The name of the Amazon trace ID header.
    */
   String TRACE_ID = "X-Amzn-Trace-Id";
 
   /**
-   * The constant GET_API.
+   * String value of GET request method.
    */
   String GET_API = org.apache.sling.api.servlets.HttpConstants.METHOD_GET;
 
   /**
-   * The constant TIMEOUT.
+   * The timeout length for REST requests.
    */
   int TIMEOUT = 10000;
 
   /**
-   * The constant Basic.
+   * Basic Authorization header.
    */
   String BASIC = "Basic";
 
   /**
-   * The constant GRANT_TYPE.
+   * Grant type Oauth parameter.
    */
   String GRANT_TYPE = "grant_type";
 
   /**
-   * The constant REFRESH_TOKEN.
+   * Refresh token Oauth parameter.
    */
   String REFRESH_TOKEN = "refresh_token";
 }

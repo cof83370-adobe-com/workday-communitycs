@@ -5,7 +5,6 @@ import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
 import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
 import static com.workday.community.aem.core.constants.GlobalConstants.JCR_CONTENT_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
-import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
 import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_PUBLIC_PAGE_PATH;
 import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
@@ -13,6 +12,7 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
@@ -287,7 +287,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
   public void processPermission(ValueMap data, HashMap<String, Object> properties, String email,
                                 String path) {
     ArrayList<Object> permissionGroupAllowedPermissions = new ArrayList<>();
-    String[] accessControlValues = data.get(ACCESS_CONTROL_PROPERTY, String[].class);
+    String[] accessControlValues = data
+        .get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class);
+
     boolean allowAnonymous = false;
     if (accessControlValues != null) {
       for (String accessControlValue : accessControlValues) {

@@ -112,11 +112,6 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
   private static final String EVENT_FORMAT = "eventFormat";
 
   /**
-   * The Constant ACCESS_CONTROL_TAGS.
-   */
-  private static final String ACCESS_CONTROL_TAGS = "accessControlTags";
-
-  /**
    * The Constant PROP_EVENT_LOCATION.
    */
   private static final String PROP_EVENT_LOCATION = "eventLocation";
@@ -328,10 +323,9 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
                                      int eventLength)
       throws RepositoryException {
     // All Tag type Props
-    String[] tags =
-        new String[] {ACCESS_CONTROL_TAGS, EVENT_FORMAT, EVENT_AUDIENCE, RELEASE_TAGS, PRODUCT_TAGS,
-            USING_WORKDAY_TAGS, INDUSTRY_TAGS, PROGRAMS_TOOLS_TAGS, USER_TAGS, REGION_COUNTRY_TAGS,
-            PROP_CONTENT_TYPE};
+    String[] tags = new String[] {GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, EVENT_FORMAT,
+        EVENT_AUDIENCE, RELEASE_TAGS, PRODUCT_TAGS, USING_WORKDAY_TAGS, INDUSTRY_TAGS,
+        PROGRAMS_TOOLS_TAGS, USER_TAGS, REGION_COUNTRY_TAGS, PROP_CONTENT_TYPE};
     for (String tag : tags) {
       String[] tagValue = valueMap.get(tag, String[].class);
       if (doNullCheckForStringArray(tagValue)) {

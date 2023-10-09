@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.constants.enums;
 
 /**
- * The Enum EventPeriodEnum.
+ * Defines an enum for Event periods.
  */
 public enum EventPeriodEnum {
 

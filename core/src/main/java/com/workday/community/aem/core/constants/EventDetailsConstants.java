@@ -1,17 +1,17 @@
 package com.workday.community.aem.core.constants;
 
 /**
- * The Class EventDetailsConstants.
+ * Constants for event details data.
  */
 public interface EventDetailsConstants {
 
   /**
-   * The Constant REQ_TIME_FORMAT.
+   * Formatted date example "13:05".
    */
   String REQ_TIME_FORMAT = "HH:mm";
 
   /**
-   * The Constant REQ_DATE_FORMAT.
+   * Formatted date example "Monday, Oct 09, 2023".
    */
   String REQ_DATE_FORMAT = "EEEE, MMM dd, YYYY";
 
@@ -21,46 +21,46 @@ public interface EventDetailsConstants {
   String DATE_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
   /**
-   * The Constant DAYS_LABEL.
+   * Label for plural days.
    */
   String DAYS_LABEL = "Days";
 
   /**
-   * The Constant DAY_LABEL.
+   * Label for a single day.
    */
   String DAY_LABEL = "Day";
 
   /**
-   * The Constant HOURS_LABEL.
+   * Label for plural hours.
    */
   String HOURS_LABEL = "Hours";
 
   /**
-   * The Constant HOUR_LABEL.
+   * Label for a single hour.
    */
   String HOUR_LABEL = "Hour";
 
   /**
-   * The Constant MINUTES_LABEL.
+   * Label for plural minutes.
    */
   String MINUTES_LABEL = "Minutes";
 
   /**
-   * The Constant MINUTE_LABEL.
+   * Label for a single minute.
    */
   String MINUTE_LABEL = "Minute";
 
   /**
-   * The Constant MINUTES_IN_1_HOUR.
+   * The number of minutes in an hour.
    */
   long MINUTES_IN_1_HOUR = 60;
 
   /**
-   * The Constant MINUTES_IN_8_HOURS.
+   * The number of minutes in 8 hours.
    */
   long MINUTES_IN_8_HOURS = 480;
   /**
-   * The Constant MINUTES_IN_24_HOURS.
+   * The number of minutes in 24 hours.
    */
   long MINUTES_IN_24_HOURS = 1440;
 

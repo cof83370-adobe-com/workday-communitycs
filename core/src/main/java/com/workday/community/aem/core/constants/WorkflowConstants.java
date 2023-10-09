@@ -51,11 +51,6 @@ public interface WorkflowConstants {
   String SCHEDULED_RETIREMENT = "Scheduled Retirement";
 
   /**
-   * The iso 8601 format.
-   */
-  String ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
-
-  /**
    * The process args.
    */
   String PROCESS_ARGS = "PROCESS_ARGS";

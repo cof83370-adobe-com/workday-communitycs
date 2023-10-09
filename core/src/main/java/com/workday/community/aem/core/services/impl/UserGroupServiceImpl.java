@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+import static com.workday.community.aem.core.constants.GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL;
 import static com.workday.community.aem.core.constants.SnapConstants.CUSTOMER_OF_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.PARTNER_TRACK_KEY;
@@ -11,7 +12,6 @@ import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTAC
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_TYPE_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.WSP_KEY;
-import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_PROPERTY;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_TAG;
 import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
 import static com.workday.community.aem.core.constants.WccConstants.INTERNAL_WORKMATES;
@@ -130,7 +130,7 @@ public class UserGroupServiceImpl implements UserGroupService {
       LOGGER.debug("---> UserGroupServiceImpl: Before Access control tag List");
       List<String> accessControlTagsList =
           PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
-              ACCESS_CONTROL_TAG, ACCESS_CONTROL_PROPERTY);
+              ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
       LOGGER.debug("---> UserGroupServiceImpl: After Access control tag List");
       if (!accessControlTagsList.isEmpty()) {
         LOGGER.debug("---> UserGroupServiceImpl:Access control tag List.. {}.",

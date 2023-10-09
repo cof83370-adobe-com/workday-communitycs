@@ -1,52 +1,52 @@
 package com.workday.community.aem.core.constants;
 
 /**
- * The Class AdobeAnalyticsConstants.
+ * Constants for Adobe analytics data.
  */
 public interface AdobeAnalyticsConstants {
 
   /**
-   * The Constant CONTACT_NUMBER.
+   * The user's contact number.
    */
   String CONTACT_NUMBER = "contactNumber";
 
   /**
-   * The Constant CONTACT_ROLE.
+   * The user's contact role.
    */
   String CONTACT_ROLE = "contactRole";
 
   /**
-   * The Constant IS_NSC.
+   * Whether the user is an NSC.
    */
   String IS_NSC = "isNSC";
 
   /**
-   * The Constant NSC.
+   * The NSC role name.
    */
   String NSC = "Named Support Contact";
 
   /**
-   * The Constant ACCOUNT_ID.
+   * The user's account ID.
    */
   String ACCOUNT_ID = "accountID";
 
   /**
-   * The Constant ACCOUNT_NAME.
+   * The user's account name.
    */
   String ACCOUNT_NAME = "accountName";
 
   /**
-   * The Constant ACCOUNT_TYPE.
+   * The user's account type.
    */
   String ACCOUNT_TYPE = "accountType";
 
   /**
-   * The Constant CONTENT_TYPE.
+   * The current page's content type.
    */
   String CONTENT_TYPE = "contentType";
 
   /**
-   * The Constant PAGE_NAME.
+   * The current page's title.
    */
   String PAGE_NAME = "pageName";
 }

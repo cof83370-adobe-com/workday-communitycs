@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.constants;
 
 /**
- * The Class TagPropertyName.
+ * Interface defining tag property constants.
  */
 public interface TagPropertyName {
 
