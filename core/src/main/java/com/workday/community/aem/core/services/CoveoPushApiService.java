@@ -94,7 +94,7 @@ public interface CoveoPushApiService {
                                             List<Object> payload);
 
   /**
-   * Index items.
+   * Indexes a list of items.
    *
    * @param payload The payload
    * @return The api response

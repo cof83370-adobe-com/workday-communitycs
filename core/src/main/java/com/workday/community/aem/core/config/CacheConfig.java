@@ -11,7 +11,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 public @interface CacheConfig {
 
   /**
-   * The cache max size, defaults to 5000.
+   * The cache max size.
    *
    * @return The max size.
    */
@@ -47,7 +47,7 @@ public @interface CacheConfig {
   int maxMenuSize() default 1000;
 
   /**
-   * The JCR user cache max size, defaults to 2000.
+   * The JCR user cache max size.
    *
    * @return The max size.
    */
@@ -59,7 +59,7 @@ public @interface CacheConfig {
   int maxJcrUser() default 2000;
 
   /**
-   * The user group cache max size, defaults to 5000.
+   * The user group cache max size.
    *
    * @return The max size.
    */
@@ -71,7 +71,7 @@ public @interface CacheConfig {
   int maxUserGroup() default 5000;
 
   /**
-   * The time in seconds before the cache is invalidated (defaults to 2 hours.)
+   * The time in seconds before the cache is invalidated.
    *
    * @return The length in seconds.
    */
@@ -83,7 +83,7 @@ public @interface CacheConfig {
   int expireDuration() default 2 * 60 * 60;
 
   /**
-   * The time in seconds before the JCR user cache is invalidated (defaults to 30 minutes.)
+   * The time in seconds before the JCR user cache is invalidated.
    *
    * @return The length in seconds.
    */
@@ -95,7 +95,7 @@ public @interface CacheConfig {
   int jcrUserExpireDuration() default 30 * 60;
 
   /**
-   * The time in seconds before the cache is refreshed (defaults to 1 hour.)
+   * The time in seconds before the cache is refreshed.
    *
    * @return The length in seconds.
    */
@@ -107,7 +107,7 @@ public @interface CacheConfig {
   int refreshDuration() default 60 * 60;
 
   /**
-   * The time in seconds before the cache cleaned (defaults to 1 day.)
+   * The time in seconds before the cache cleaned.
    *
    * @return The length in seconds.
    */
@@ -119,7 +119,7 @@ public @interface CacheConfig {
   int cacheCleanPeriod() default 24 * 60 * 60;
 
   /**
-   * Whether the cache is enabled (defaults to true.)
+   * Whether the cache is enabled.
    *
    * @return True if enabled, otherwise false.
    */

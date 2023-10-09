@@ -26,7 +26,7 @@ public @interface CoveoIndexApiConfig {
   boolean isCoveoIndexingEnabled() default false;
 
   /**
-   * Returns the Coveo API key.
+   * The Coveo API key.
    *
    * @return The Coveo API key.
    */
@@ -38,7 +38,7 @@ public @interface CoveoIndexApiConfig {
   String coveoApiKey();
 
   /**
-   * Returns the URI to the Coveo push API endpoint.
+   * The URI to the Coveo push API endpoint.
    *
    * @return The URI.
    */
@@ -50,7 +50,7 @@ public @interface CoveoIndexApiConfig {
   String pushApiUri() default "https://api.cloud.coveo.com/push/v1/organizations/";
 
   /**
-   * Returns the URI of the Coveo source API endpoint.
+   * The URI of the Coveo source API endpoint.
    *
    * @return The URI.
    */
@@ -62,7 +62,7 @@ public @interface CoveoIndexApiConfig {
   String sourceApiUri() default "https://platform.cloud.coveo.com/rest/organizations/";
 
   /**
-   * Returns the Coveo organization ID.
+   * The Coveo organization ID.
    *
    * @return The organization ID.
    */
@@ -74,7 +74,7 @@ public @interface CoveoIndexApiConfig {
   String organizationId();
 
   /**
-   * Returns the Coveo source ID.
+   * The Coveo source ID.
    *
    * @return The source ID.
    */
@@ -86,7 +86,7 @@ public @interface CoveoIndexApiConfig {
   String sourceId();
 
   /**
-   * Returns the number of documents to process in a given batch.
+   * The number of documents to process in a given batch.
    *
    * @return The batch size.
    */

@@ -49,6 +49,9 @@ public class CoveoIndexJobConsumer implements JobConsumer {
   @Reference
   private RunModeConfigService runModeConfigService;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JobResult process(Job job) {
     ArrayList<String> paths = (ArrayList<String>) job.getProperty("paths");
@@ -69,30 +72,30 @@ public class CoveoIndexJobConsumer implements JobConsumer {
   }
 
   /**
-   * Start coveo deleteing.
+   * Deletes a list of pages from Coveo.
    *
-   * @param paths Page paths
-   * @return Job result
+   * @param paths A list of path paths.
+   * @return Whether the job was successful.
    */
   public JobResult startCoveoDelete(ArrayList<String> paths) {
-    boolean hasError = false;
     for (String path : paths) {
       String documentId =
           runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
       Integer status = coveoPushApiService.callDeleteSingleItemUri(documentId);
       if (status != HttpStatus.SC_ACCEPTED) {
-        hasError = true;
         logger.error("Error occurred in coveo job consumer when deleting path: {}", path);
+        return JobResult.FAILED;
       }
     }
-    return hasError ? JobResult.FAILED : JobResult.OK;
+
+    return JobResult.OK;
   }
 
   /**
-   * Start coveo indexing.
+   * Sends a list of pages to be indexed by Coveo.
    *
-   * @param paths Page paths
-   * @return Job result
+   * @param paths A list of path paths.
+   * @return Whether the job was successful.
    */
   public JobResult startCoveoIndex(ArrayList<String> paths) {
     List<Object> payload = new ArrayList<>();
@@ -104,6 +107,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
       logger.error("Error occurred in coveo job consumer when indexing paths: {}", paths.toArray());
       return JobResult.FAILED;
     }
+
     return JobResult.OK;
   }
 

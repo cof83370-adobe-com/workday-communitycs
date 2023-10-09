@@ -105,7 +105,6 @@ public class AuthorizationFilter implements Filter {
     filterChain.doFilter(request, response);
   }
 
-
   @Override
   public void destroy() {
     LOGGER.debug("Destroy AuthorizationFilter.");
