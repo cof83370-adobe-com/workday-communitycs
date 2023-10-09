@@ -4,7 +4,6 @@ import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_T
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doReturn;
 
-import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.HttpsUrlConnectionService;
 import io.wcm.testing.mock.aem.junit5.AemContext;

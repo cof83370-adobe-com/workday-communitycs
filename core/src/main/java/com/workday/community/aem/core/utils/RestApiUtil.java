@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
-import org.apache.sling.api.servlets.HttpConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

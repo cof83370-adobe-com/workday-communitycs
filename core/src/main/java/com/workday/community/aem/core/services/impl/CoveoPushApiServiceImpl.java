@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.CoveoPushApiService;
 import com.workday.community.aem.core.services.HttpsUrlConnectionService;
@@ -19,7 +18,6 @@ import org.apache.commons.collections4.ListUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
-import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -30,10 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class CoveoPushApiServiceImpl.
  */
-@Component(
-    service = CoveoPushApiService.class,
-    immediate = false
-)
+@Component(service = CoveoPushApiService.class)
 public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
   /**
