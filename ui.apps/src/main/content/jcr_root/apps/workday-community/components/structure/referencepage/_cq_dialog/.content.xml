@@ -129,8 +129,7 @@
                                         fieldLabel="Product Tags"
                                         multiple="{Boolean}true"
                                         name="./productTags"
-                                        rootPath="/content/cq:tags/product"
-                                        validation="tag-limit"/>
+                                        rootPath="/content/cq:tags/product"/>
                                     <release
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -140,8 +139,7 @@
                                         fieldLabel="Release Tags"
                                         multiple="{Boolean}true"
                                         name="./releaseTags"
-                                        rootPath="/content/cq:tags/release"
-                                        validation="tag-limit"/>
+                                        rootPath="/content/cq:tags/release"/>
                                     <usingworkday
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -151,8 +149,7 @@
                                         fieldLabel="Using Workday Tags"
                                         multiple="{Boolean}true"
                                         name="./usingWorkdayTags"
-                                        rootPath="/content/cq:tags/using-workday"
-                                        validation="tag-limit"/>
+                                        rootPath="/content/cq:tags/using-workday"/>
                                     <programstools
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -162,8 +159,7 @@
                                         fieldLabel="Programs &amp; Tools Tags"
                                         multiple="{Boolean}true"
                                         name="./programsToolsTags"
-                                        rootPath="/content/cq:tags/programs-and-tools"
-                                        validation="tag-limit"/>
+                                        rootPath="/content/cq:tags/programs-and-tools"/>
                                     <usertags
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -183,8 +179,7 @@
                                         fieldLabel="Region &amp; Country Tags"
                                         multiple="{Boolean}true"
                                         name="./regionCountry"
-                                        rootPath="/content/cq:tags/region-and-country"
-                                        validation="tag-limit"/>
+                                        rootPath="/content/cq:tags/region-and-country"/>    
                                     <industry
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
@@ -194,8 +189,7 @@
                                         fieldLabel="Industry Tags"
                                         multiple="{Boolean}true"
                                         name="./industryTags"
-                                        rootPath="/content/cq:tags/industry"
-                                        validation="tag-limit"/>
+                                        rootPath="/content/cq:tags/industry"/>
                                 </items>
                             </column>
                         </items>

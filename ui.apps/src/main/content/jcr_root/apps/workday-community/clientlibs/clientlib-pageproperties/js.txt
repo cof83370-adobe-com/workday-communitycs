@@ -1,3 +1,2 @@
 required-validation.js
 checkbox-validation.js
-tags-validation.js
