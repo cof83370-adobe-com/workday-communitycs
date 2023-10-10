@@ -44,20 +44,20 @@ public class RecurringEventsCreatorListenerTest {
    * The PageResourceListener.
    */
   @InjectMocks
-  RecurringEventsCreatorListener recurringEventsCreatorListener;
+  private RecurringEventsCreatorListener recurringEventsCreatorListener;
 
   @Mock
-  CacheManagerService cacheManager;
+  private CacheManagerService cacheManager;
 
   /**
    * The expected event node.
    */
-  Node expectedEventNode;
+  private Node expectedEventNode;
 
   /**
    * The expected event map.
    */
-  ValueMap expectedEventMap;
+  private ValueMap expectedEventMap;
 
   /**
    * The page manager.

@@ -27,17 +27,12 @@ public class CoveoStatusModelImplTest {
   private final AemContext context = new AemContext();
 
   /**
-   * The currentPage.
-   */
-  private Page currentPage;
-
-  /**
    * Set up before each test run.
    */
   @BeforeEach
   public void setup() throws Exception {
     context.addModelsForClasses(CoveoStatusModelImpl.class);
-    currentPage = context.create().page("/content/workday-community/coveostatus",
+    Page currentPage = context.create().page("/content/workday-community/coveostatus",
         "/conf/workday-community/settings/wcm/templates/page-content");
     currentPage =
         context.currentResource("/content/workday-community/coveostatus").adaptTo(Page.class);

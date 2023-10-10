@@ -69,19 +69,19 @@ public class PageRetireProcessStepTest {
    * The retire process step.
    */
   @InjectMocks
-  PageRetireProcessStep retireProcessStep;
+  private PageRetireProcessStep retireProcessStep;
 
   /**
    * The cache manager.
    */
   @Mock
-  CacheManagerService cacheManager;
+  private CacheManagerService cacheManager;
 
   /**
    * The replicator.
    */
   @Mock
-  Replicator replicator;
+  private Replicator replicator;
 
   /**
    * The workflow session.
@@ -157,13 +157,12 @@ public class PageRetireProcessStepTest {
     lenient().when(workflowData.getPayload()).thenReturn("/content/page-with-retired-badge");
     Node node = session.getNode("/content/page-with-retired-badge/jcr:content");
     assertNotNull(node);
-    Boolean actualResult = node.hasProperty(RETIREMENT_STATUS_PROP);
+    boolean actualResult = node.hasProperty(RETIREMENT_STATUS_PROP);
     String propVal = node.getProperty(RETIREMENT_STATUS_PROP).getString();
     assertTrue(actualResult);
     assertEquals(RETIREMENT_STATUS_VAL, propVal);
     retireProcessStep.execute(workItem, workflowSession, metaData);
     assertNotNull(session);
-
   }
 
   /**
