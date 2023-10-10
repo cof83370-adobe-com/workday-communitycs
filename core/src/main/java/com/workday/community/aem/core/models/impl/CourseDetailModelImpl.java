@@ -58,25 +58,25 @@ public class CourseDetailModelImpl implements CourseDetailModel {
    */
   @NotNull
   @OSGiService
-  LmsService lmsService;
+  private LmsService lmsService;
 
   /**
    * The UserGroup service.
    */
   @NotNull
   @OSGiService
-  UserGroupService userGroupService;
+  private UserGroupService userGroupService;
 
   /**
    * The run mode config service.
    */
   @OSGiService
-  RunModeConfigService runModeConfigService;
+  private RunModeConfigService runModeConfigService;
 
   /**
    * Course Title.
    */
-  String courseTitle;
+  private String courseTitle;
 
   /**
    * The gson service.

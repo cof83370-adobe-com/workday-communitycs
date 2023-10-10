@@ -208,7 +208,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
    *
    * @return the current time in iso 8601 format
    */
-  public Calendar getCurrentTimeInIso8601Format() {
+  private Calendar getCurrentTimeInIso8601Format() {
     try {
       Calendar calendar = Calendar.getInstance();
       SimpleDateFormat sdf = new SimpleDateFormat(ISO_8601_FORMAT);

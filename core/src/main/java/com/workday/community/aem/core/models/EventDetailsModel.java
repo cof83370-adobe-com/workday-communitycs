@@ -17,11 +17,11 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -51,66 +51,78 @@ public class EventDetailsModel {
   private static final Logger logger = LoggerFactory.getLogger(EventDetailsModel.class);
 
   @Reference
-  UserService userService;
+  private UserService userService;
 
   /**
    * The event format.
    */
+  @Getter
   private List<String> eventFormat = new ArrayList<>();
 
   /**
    * The location.
    */
+  @Getter
   private String eventLocation;
 
   /**
    * The host.
    */
+  @Getter
   private String eventHost;
 
   /**
    * The length.
    */
+  @Getter
   private long eventLengthDays;
 
   /**
    * The event length hours.
    */
+  @Getter
   private long eventLengthHours;
 
   /**
    * The event length minutes.
    */
+  @Getter
   private long eventLengthMinutes;
 
   /**
    * The days label.
    */
+  @Getter
   private String daysLabel;
 
   /**
    * The hours label.
    */
+  @Getter
   private String hoursLabel;
 
   /**
    * The minutes label.
    */
+  @Getter
   private String minutesLabel;
 
   /**
    * The date format.
    */
+  @Getter
   private String dateFormat;
 
   /**
    * The time format.
    */
+  @Getter
   private String timeFormat;
 
   /**
    * The User TimeZone.
    */
+  @Getter
   private String userTimeZone;
 
   /**
@@ -138,15 +150,24 @@ public class EventDetailsModel {
   private SlingHttpServletRequest request;
 
   /**
+   * Checks if is configured.
+   *
+   * @return true, if is configured
+   */
+  public boolean isConfigured() {
+    return eventFormat != null && eventLocation != null && eventHost != null;
+  }
+
+  /**
    * Inits the model.
    */
   @PostConstruct
   protected void init() {
     if (null != currentPage) {
+      final ValueMap map = currentPage.getProperties();
+      String startDateStr = map.get("eventStartDate", String.class);
+      String endDateStr = map.get("eventEndDate", String.class);
       try {
-        final ValueMap map = currentPage.getProperties();
-        String startDateStr = map.get("eventStartDate", String.class);
-        String endDateStr = map.get("eventEndDate", String.class);
         if (StringUtils.isNotBlank(startDateStr) && StringUtils.isNotBlank(endDateStr)) {
           calculateRequired(startDateStr, endDateStr);
         }
@@ -202,15 +223,18 @@ public class EventDetailsModel {
         .format(startDateAndTime);
 
     Date formattedEndDate = formatter.parse(eventEndDate);
-    LocalDateTime endDateAndTime =
-        formattedEndDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+    LocalDateTime endDateAndTime = formattedEndDate
+        .toInstant()
+        .atZone(ZoneId.systemDefault())
+        .toLocalDateTime();
     long lengthInMinutes = ChronoUnit.MINUTES.between(startDateAndTime, endDateAndTime);
+
     if (lengthInMinutes > 0 && lengthInMinutes <= EventDetailsConstants.MINUTES_IN_8_HOURS) {
       eventLengthHours = lengthInMinutes / EventDetailsConstants.MINUTES_IN_1_HOUR;
-      eventLengthMinutes = lengthInMinutes % EventDetailsConstants.MINUTES_IN_1_HOUR;
-      hoursLabel = (eventLengthHours <= 1) ? EventDetailsConstants.HOUR_LABEL
-          : EventDetailsConstants.HOURS_LABEL;
+      hoursLabel = (eventLengthHours <= 1)
+          ? EventDetailsConstants.HOUR_LABEL : EventDetailsConstants.HOURS_LABEL;
 
+      eventLengthMinutes = lengthInMinutes % EventDetailsConstants.MINUTES_IN_1_HOUR;
       minutesLabel = (eventLengthMinutes <= 1) ? EventDetailsConstants.MINUTE_LABEL
           : EventDetailsConstants.MINUTES_LABEL;
     } else {
@@ -218,126 +242,9 @@ public class EventDetailsModel {
       if (lengthInMinutes % EventDetailsConstants.MINUTES_IN_24_HOURS > 0) {
         eventLengthDays++;
       }
-      daysLabel = (eventLengthDays <= 1) ? EventDetailsConstants.DAY_LABEL
-          : EventDetailsConstants.DAYS_LABEL;
+      daysLabel = (eventLengthDays <= 1)
+          ? EventDetailsConstants.DAY_LABEL : EventDetailsConstants.DAYS_LABEL;
     }
-  }
-
-  /**
-   * Gets the days label.
-   *
-   * @return the days label
-   */
-  public String getDaysLabel() {
-    return daysLabel;
-  }
-
-  /**
-   * Gets the minutes label.
-   *
-   * @return the minutesLabel
-   */
-  public String getMinutesLabel() {
-    return minutesLabel;
-  }
-
-  /**
-   * Gets the hours label.
-   *
-   * @return the hoursLabel
-   */
-  public String getHoursLabel() {
-    return hoursLabel;
-  }
-
-  /**
-   * Gets the event length days.
-   *
-   * @return the eventLengthInDays
-   */
-  public long getEventLengthDays() {
-    return eventLengthDays;
-  }
-
-  /**
-   * Gets the event length hours.
-   *
-   * @return the eventLengthInHours
-   */
-  public long getEventLengthHours() {
-    return eventLengthHours;
-  }
-
-  /**
-   * Gets the event length minutes.
-   *
-   * @return the eventLengthInMinutes
-   */
-  public long getEventLengthMinutes() {
-    return eventLengthMinutes;
-  }
-
-  /**
-   * Checks if is configured.
-   *
-   * @return true, if is configured
-   */
-  public boolean isConfigured() {
-    return eventFormat != null && eventLocation != null && eventHost != null;
-  }
-
-  /**
-   * Gets the date format.
-   *
-   * @return the date format
-   */
-  public String getDateFormat() {
-    return dateFormat;
-  }
-
-  /**
-   * Gets the time format.
-   *
-   * @return the time format
-   */
-  public String getTimeFormat() {
-    return timeFormat;
-  }
-
-  /**
-   * Gets the event format.
-   *
-   * @return the event format
-   */
-  public List<String> getEventFormat() {
-    return Collections.unmodifiableList(eventFormat);
-  }
-
-  /**
-   * Gets the event location.
-   *
-   * @return the event location
-   */
-  public String getEventLocation() {
-    return eventLocation;
-  }
-
-  /**
-   * Gets the event host.
-   *
-   * @return the event host
-   */
-  public String getEventHost() {
-    return eventHost;
-  }
-
-  /**
-   * Gets the user's timezone.
-   *
-   * @return The timezone.
-   */
-  public String getUserTimeZone() {
-    return userTimeZone;
   }
 
 }

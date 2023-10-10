@@ -59,6 +59,11 @@ public class EventDetailsModelTest {
   private SnapService snapService;
 
   /**
+   * The user's timezone to be returned by the mocked snap service.
+   */
+  private final String timeZone = "America/New_York";
+
+  /**
    * Setup.
    *
    * @throws Exception the exception
@@ -79,8 +84,18 @@ public class EventDetailsModelTest {
     currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
     context.registerService(SnapService.class, snapService);
-    String profileResponse = "{\"timeZone\":\"America/New_York\"}";
+
+    String profileResponse = String.format("{\"timeZone\":\"%s\"}", this.timeZone);
     lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse);
+  }
+
+  /**
+   * Tests the user's timezone getter.
+   */
+  @Test
+  void testGetUserTimeZone() {
+    eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+    assertEquals(this.timeZone, eventDetailsModel.getUserTimeZone());
   }
 
   /**

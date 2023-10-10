@@ -2,6 +2,7 @@ package com.workday.community.aem.core.listeners;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 
+import com.day.cq.commons.jcr.JcrConstants;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.day.cq.wcm.api.WCMException;
@@ -48,17 +49,17 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
   /**
    * The Constant EVENT_FREQUENCY_MONTHLY.
    */
-  static final String EVENT_FREQUENCY_MONTHLY = "monthly";
+  private static final String EVENT_FREQUENCY_MONTHLY = "monthly";
 
   /**
    * The Constant PROP_RECURRING_EVENTS.
    */
-  static final String PROP_RECURRING_EVENTS = "recurringEvents";
+  private static final String PROP_RECURRING_EVENTS = "recurringEvents";
 
   /**
    * The Constant PROP_EVENT_FREQUENCY.
    */
-  static final String PROP_EVENT_FREQUENCY = "eventFrequency";
+  private static final String PROP_EVENT_FREQUENCY = "eventFrequency";
 
   /**
    * The Constant logger.
@@ -127,11 +128,6 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
   private static final String PROP_ALTERNATE_TIMEZONE = "alternateTimezone";
 
   /**
-   * The Constant PROP_AUTHOR.
-   */
-  private static final String PROP_AUTHOR = "author";
-
-  /**
    * The Constant PROP_CONTENT_TYPE.
    */
   private static final String PROP_CONTENT_TYPE = "contentType";
@@ -150,18 +146,16 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
    * The cache manager.
    */
   @Reference
-  CacheManagerService cacheManager;
+  private CacheManagerService cacheManager;
 
   /**
-   * On change.
-   *
-   * @param changes the changes
+   * {@inheritDoc}
    */
   @Override
   public void onChange(List<ResourceChange> changes) {
     logger.info("Entered into RecurringEventPageListener");
     changes.stream()
-        .filter(item -> "ADDED".equals(item.getType().toString())
+        .filter(item -> item.getType().equals(ResourceChange.ChangeType.ADDED)
             && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
         .forEach(change -> generateRecurringEventPages(change.getPath()));
   }
@@ -182,21 +176,19 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
         if (eventNode != null && eventNode.hasProperty(PROP_RECURRING_EVENTS)
             && eventNode.getProperty(PROP_RECURRING_EVENTS).getString()
             .equalsIgnoreCase("true")) {
-          String title =
-              eventNode.getProperty(com.day.cq.commons.jcr.JcrConstants.JCR_TITLE).getString();
-          ValueMap map = resourceResolver.getResource(resourcePath).adaptTo(ValueMap.class);
-          String eventFrequency = eventNode.getProperty(PROP_EVENT_FREQUENCY).getString();
           logger.debug("Creation of recurring events selected and frequency:{}", resourcePath);
           Calendar startDate = eventNode.getProperty(PROP_EVENT_START_DATE).getDate();
+          String eventFrequency = eventNode.getProperty(PROP_EVENT_FREQUENCY).getString();
           EventPeriodEnum period = eventFrequency.equalsIgnoreCase(EVENT_FREQUENCY_MONTHLY)
               ? EventPeriodEnum.MONTHLY
               : EventPeriodEnum.BI_WEEKLY;
           List<LocalDate> eventDatesList = sequentialEventsCalculator(period, startDate);
           logger.debug("Sequentials event dates list:{}", eventDatesList);
           if (null != eventDatesList && eventDatesList.size() > 1) {
-            createEventPage(resourceResolver, eventDatesList,
-                resourcePath.replace(GlobalConstants.JCR_CONTENT_PATH, ""), title,
-                map);
+            String title = eventNode.getProperty(JcrConstants.JCR_TITLE).getString();
+            ValueMap map = addedResource.adaptTo(ValueMap.class);
+            String eventsRoot = resourcePath.replace(GlobalConstants.JCR_CONTENT_PATH, "");
+            createEventPage(resourceResolver, eventDatesList, eventsRoot, title, map);
           }
         }
       }
@@ -335,7 +327,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
 
     // All String type Props
     String[] props =
-        new String[] {PROP_AUTHOR, PROP_ALTERNATE_TIMEZONE, PROP_EVENT_HOST, PROP_EVENT_LOCATION};
+        new String[] {GlobalConstants.PROP_AUTHOR, PROP_ALTERNATE_TIMEZONE, PROP_EVENT_HOST, PROP_EVENT_LOCATION};
     for (String prop : props) {
       String propVal = valueMap.get(prop, String.class);
       if (StringUtils.isNotBlank(propVal)) {

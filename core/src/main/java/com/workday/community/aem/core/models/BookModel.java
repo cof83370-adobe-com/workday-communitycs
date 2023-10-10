@@ -48,11 +48,6 @@ public class BookModel {
   private ResourceResolver resourceResolver;
 
   /**
-   * The Page Object.
-   */
-  private Page bookPage;
-
-  /**
    * Inits the BookModel.
    */
   @PostConstruct

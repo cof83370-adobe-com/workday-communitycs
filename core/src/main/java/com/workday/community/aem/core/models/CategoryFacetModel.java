@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import lombok.Getter;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -43,21 +44,23 @@ public class CategoryFacetModel {
   /**
    * Facet field.
    */
-  String field = null;
+  @Getter
+  private String field = null;
 
   /**
    * Facet sub category.
    */
-  String subCategory = "";
+  @Getter
+  private String subCategory = "";
 
   @Inject
-  ResourceResolverFactory resourceResolverFactory;
+  private ResourceResolverFactory resourceResolverFactory;
 
   /**
    * The cache manager.
    */
   @Inject
-  CacheManagerService cacheManager;
+  private CacheManagerService cacheManager;
 
   /**
    * Search config json object.
@@ -67,9 +70,11 @@ public class CategoryFacetModel {
   /**
    * Category string value from jcr.
    */
+  @Getter
   @ValueMapValue
   private String category;
 
+  @Getter
   @ValueMapValue
   private String searchHelpText;
 
@@ -78,7 +83,6 @@ public class CategoryFacetModel {
    */
   @PostConstruct
   private void init() throws DamException {
-
     try (ResourceResolver resolver = cacheManager == null
         ? ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER) :
         cacheManager.getServiceResolver(READ_SERVICE_USER)) {
@@ -98,14 +102,8 @@ public class CategoryFacetModel {
       JsonElement facetField = this.getFieldMapConfig(resolver).get(nameSpace);
       if (facetField != null) {
         field = facetField.getAsString();
-        StringBuilder sb = new StringBuilder();
         List<String> tags = new ArrayList<>();
         while (!tag.isNamespace()) {
-          if (sb.length() > 0) {
-            sb.insert(0, ", ");
-          }
-          sb.insert(0, "\"" + tag.getTitle() + "\"");
-
           tags.add(tag.getTitle());
           tag = tag.getParent();
 
@@ -121,15 +119,6 @@ public class CategoryFacetModel {
   }
 
   /**
-   * Returns selected category value.
-   *
-   * @return category.
-   */
-  public String getCategory() {
-    return category;
-  }
-
-  /**
    * Returns filed mapping object.
    *
    * @param resourceResolver Resource resolver object
@@ -142,30 +131,4 @@ public class CategoryFacetModel {
     return fieldMapConfig.getAsJsonObject("tagIdToCoveoField");
   }
 
-  /**
-   * Returns coveo field name.
-   *
-   * @return field name
-   */
-  public String getField() {
-    return field;
-  }
-
-  /**
-   * Returns sub category.
-   *
-   * @return Sub category
-   */
-  public String getSubCategory() {
-    return subCategory;
-  }
-
-  /**
-   * Returns search help text.
-   *
-   * @return search help text
-   */
-  public String getSearchHelpText() {
-    return searchHelpText;
-  }
 }
