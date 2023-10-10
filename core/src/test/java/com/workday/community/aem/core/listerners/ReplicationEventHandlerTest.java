@@ -16,6 +16,8 @@ import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import org.apache.sling.event.jobs.JobManager;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
@@ -32,32 +34,37 @@ public class ReplicationEventHandlerTest {
    * The ReplicationEventHandler.
    */
   @InjectMocks
-  ReplicationEventHandler eventHandler;
+  private ReplicationEventHandler eventHandler;
 
   /**
    * The JobManager.
    */
   @Mock
-  JobManager jobManager;
+  private JobManager jobManager;
 
   /**
    * The CoveoIndexApiConfigService.
    */
   @Mock
-  CoveoIndexApiConfigService service;
+  private CoveoIndexApiConfigService service;
+
+  /**
+   * A mocked event object.
+   */
+  @Mock
+  private Event event;
 
   /**
    * Test handler events passed.
    */
-  @Test
-  void testHandleEventsPass() {
-    Event event = mock(Event.class);
-    ReplicationAction action = mock(ReplicationAction.class);
+  @ParameterizedTest
+  @EnumSource(value = ReplicationActionType.class, names = {"ACTIVATE", "DEACTIVATE", "DELETE"})
+  void testHandleEventsPass(ReplicationActionType actionType) {
+    ReplicationAction action = new ReplicationAction(actionType,
+        GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
     when(service.isCoveoIndexEnabled()).thenReturn(true);
     try (MockedStatic<ReplicationAction> mock = mockStatic(ReplicationAction.class)) {
       when(ReplicationAction.fromEvent(event)).thenReturn(action);
-      when(action.getType()).thenReturn(ReplicationActionType.DELETE);
-      when(action.getPath()).thenReturn(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
       eventHandler.handleEvent(event);
     }
     verify(jobManager).addJob(anyString(), anyMap());
@@ -68,12 +75,10 @@ public class ReplicationEventHandlerTest {
    */
   @Test
   void testHandleEventsFailed() {
-    Event event = mock(Event.class);
-    ReplicationAction action = mock(ReplicationAction.class);
+    ReplicationAction action = new ReplicationAction(ReplicationActionType.ACTIVATE, "other");
     when(service.isCoveoIndexEnabled()).thenReturn(true);
     try (MockedStatic<ReplicationAction> mock = mockStatic(ReplicationAction.class)) {
       when(ReplicationAction.fromEvent(event)).thenReturn(action);
-      when(action.getPath()).thenReturn("other");
       eventHandler.handleEvent(event);
     }
     verify(jobManager, times(0)).addJob(anyString(), anyMap());
@@ -84,7 +89,6 @@ public class ReplicationEventHandlerTest {
    */
   @Test
   void testHandleEventsNotRun() {
-    Event event = mock(Event.class);
     ReplicationAction action = mock(ReplicationAction.class);
     when(service.isCoveoIndexEnabled()).thenReturn(false);
     try (MockedStatic<ReplicationAction> mock = mockStatic(ReplicationAction.class)) {

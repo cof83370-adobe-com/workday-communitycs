@@ -81,14 +81,17 @@ public class ReplicationEventHandler implements EventHandler {
    *
    * @return The ReplicationAction.
    */
-  public ReplicationAction getAction(Event event) {
+  private ReplicationAction getAction(Event event) {
     return ReplicationAction.fromEvent(event);
   }
 
   /**
-   * Start coveo job for indexing or deleteing.
+   * Start coveo job for indexing or deleting.
+   *
+   * @param action The ReplicationAction object.
+   * @return The new Job, or null if there was an error.
    */
-  public Job startCoveoJob(ReplicationAction action) {
+  private Job startCoveoJob(ReplicationAction action) {
     Map<String, Object> jobProperties = new HashMap<>();
     ArrayList<String> paths = new ArrayList<>();
     paths.add(action.getPath());
@@ -96,7 +99,6 @@ public class ReplicationEventHandler implements EventHandler {
     jobProperties.put("op", op);
     jobProperties.put("paths", paths);
 
-    // Add this job to the job manager.
     return jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
   }
 
