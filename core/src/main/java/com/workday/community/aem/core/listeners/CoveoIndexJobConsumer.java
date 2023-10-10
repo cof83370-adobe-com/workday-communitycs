@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class CoveoIndexJobConsumer.
+ * Listens for content updates/deletes and pushes those changes to Coveo.
  */
 @Component(
     service = JobConsumer.class,
@@ -54,7 +54,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
    */
   @Override
   public JobResult process(Job job) {
-    ArrayList<String> paths = (ArrayList<String>) job.getProperty("paths");
+    List<String> paths = (ArrayList<String>) job.getProperty("paths");
     String op = (String) job.getProperty("op");
     if (paths != null) {
       if (op.equals("delete")) {
@@ -77,7 +77,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
    * @param paths A list of path paths.
    * @return Whether the job was successful.
    */
-  public JobResult startCoveoDelete(ArrayList<String> paths) {
+  private JobResult startCoveoDelete(List<String> paths) {
     for (String path : paths) {
       String documentId =
           runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
@@ -97,7 +97,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
    * @param paths A list of path paths.
    * @return Whether the job was successful.
    */
-  public JobResult startCoveoIndex(ArrayList<String> paths) {
+  private JobResult startCoveoIndex(List<String> paths) {
     List<Object> payload = new ArrayList<>();
     for (String path : paths) {
       payload.add(extractPagePropertiesService.extractPageProperties(path));
