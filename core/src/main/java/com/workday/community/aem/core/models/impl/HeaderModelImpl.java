@@ -45,14 +45,14 @@ import org.slf4j.LoggerFactory;
 public class HeaderModelImpl implements HeaderModel {
 
   /**
-   * The Constant RESOURCE_TYPE.
+   * The react header resource.
    */
   protected static final String RESOURCE_TYPE = "workday-community/components/react/header";
 
   /**
    * Default search redirect URL.
    */
-  protected static final String DEFAULT_SEARCH_REDIRECT =
+  private static final String DEFAULT_SEARCH_REDIRECT =
       "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
 
   /**

@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
 public class BookModel {
 
   /**
-   * The rootPath.
+   * The path to the Community content root.
    */
   protected static final String rootPath =
       String.format("%s%s", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH, "/");

@@ -56,6 +56,9 @@ public class ReplicationEventHandler implements EventHandler {
     return coveoIndexApiConfigService.isCoveoIndexEnabled();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void handleEvent(Event event) {
     if (isCoveoEnabled()) {

@@ -58,11 +58,17 @@ public class AuthorizationFilter implements Filter {
   @Reference
   private transient UserService userService;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
     LOGGER.debug("AuthorizationFilter is initialized.");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void doFilter(final ServletRequest request, final ServletResponse response,
                        final FilterChain filterChain) throws IOException, ServletException {
@@ -105,6 +111,9 @@ public class AuthorizationFilter implements Filter {
     filterChain.doFilter(request, response);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void destroy() {
     LOGGER.debug("Destroy AuthorizationFilter.");

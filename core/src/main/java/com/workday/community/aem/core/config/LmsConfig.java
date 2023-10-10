@@ -83,7 +83,7 @@ public @interface LmsConfig {
   String lmsApiRefreshToken();
 
   /**
-   * Returns the LMS token cache size (defaults to 10.)
+   * Returns the LMS token cache size.
    *
    * @return The client ID.
    */
@@ -104,6 +104,6 @@ public @interface LmsConfig {
       description = "Lms Token Cache Timeout Duration (mills)",
       type = AttributeType.LONG
   )
-  long lmsTokenCacheTimeout() default 3540000L; // Default to 59 minutes.
+  long lmsTokenCacheTimeout() default 3540000L;
 
 }

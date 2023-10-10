@@ -44,9 +44,9 @@ import org.slf4j.LoggerFactory;
 public class ComponentFilter implements Filter {
 
   /**
-   * The Constant whiteList.
+   * Path to dynamic resources.
    */
-  static final String DYNAMIC_RESOURCE_TYPE_PATH = "workday-community/components/dynamic/";
+  private static final String DYNAMIC_RESOURCE_TYPE_PATH = "workday-community/components/dynamic/";
 
   /**
    * The Constant logger.
@@ -57,7 +57,7 @@ public class ComponentFilter implements Filter {
    * The run mode config service.
    */
   @Reference
-  RunModeConfigService runModeConfigService;
+  private RunModeConfigService runModeConfigService;
 
   /**
    * The resolver factory.

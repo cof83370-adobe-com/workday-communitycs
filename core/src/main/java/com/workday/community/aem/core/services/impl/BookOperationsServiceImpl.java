@@ -45,12 +45,7 @@ public class BookOperationsServiceImpl implements BookOperationsService {
   QueryService queryService;
 
   /**
-   * Process book paths.
-   *
-   * @param resolver           the resolver
-   * @param bookResourcePath   the book resource path
-   * @param bookRequestJsonStr the book request json str
-   * @return the sets the
+   * {@inheritDoc}
    */
   @Override
   public Set<String> processBookPaths(ResourceResolver resolver, String bookResourcePath,

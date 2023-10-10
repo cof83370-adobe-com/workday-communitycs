@@ -54,9 +54,7 @@ public class TaxonomyBadgeImpl implements TaxonomyBadge {
   private ResourceResolver resourceResolver;
 
   /**
-   * Gets the badge list.
-   *
-   * @return the badge list
+   * {@inheritDoc}
    */
   @Override
   public List<String> getBadgeList() {

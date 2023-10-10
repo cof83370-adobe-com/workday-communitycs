@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 public class CourseDetailModelImpl implements CourseDetailModel {
 
   /**
-   * The Constant RESOURCE_TYPE.
+   * The training catalog resource type.
    */
   protected static final String RESOURCE_TYPE =
       "workday-community/components/content/training-catalog/handlebar-content";
@@ -110,9 +110,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
   }
 
   /**
-   * Gets the course detail data.
-   *
-   * @return Course detail json.
+   * {@inheritDoc}
    */
   @Override
   public JsonObject getCourseDetailData() {
@@ -132,7 +130,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
           response.sendRedirect(WccConstants.PAGE_NOT_FOUND_PATH);
           return null;
         }
-        // Redirect to 403 page when logged in user doesn't have access to course.
+        // Redirect to 403 page when logged-in user doesn't have access to course.
         if (checkAccessControlTags(courseDetail)) {
           response.setStatus(SC_FORBIDDEN);
           response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);

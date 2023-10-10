@@ -40,24 +40,28 @@ import org.slf4j.LoggerFactory;
 
 @ServiceDescription("PageResourceListener")
 public class PageResourceListener implements ResourceChangeListener {
+
   /**
    * The Constant logger.
    */
   private static final Logger logger = LoggerFactory.getLogger(PageResourceListener.class);
 
+  /**
+   * Access control ID for Workday users.
+   */
   private static final String TAG_INTERNAL_WORKMATE = "access-control:internal_workmates";
 
   /**
    * The cache manager.
    */
   @Reference
-  CacheManagerService cacheManager;
+  private CacheManagerService cacheManager;
 
   /**
    * The query service.
    */
   @Reference
-  QueryService queryService;
+  private QueryService queryService;
 
   /**
    * On change.
