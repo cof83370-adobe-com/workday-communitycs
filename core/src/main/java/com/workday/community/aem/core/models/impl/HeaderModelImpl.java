@@ -50,15 +50,15 @@ public class HeaderModelImpl implements HeaderModel {
   protected static final String RESOURCE_TYPE = "workday-community/components/react/header";
 
   /**
+   * Unauthenticated user's menu data.
+   */
+  protected static final String UNAUTHENTICATED_MENU = "HIDE_MENU_UNAUTHENTICATED";
+
+  /**
    * Default search redirect URL.
    */
   private static final String DEFAULT_SEARCH_REDIRECT =
       "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
-
-  /**
-   * Unauthenticated user's menu data.
-   */
-  protected static final String UNAUTHENTICATED_MENU = "HIDE_MENU_UNAUTHENTICATED";
 
   /**
    * The logger.

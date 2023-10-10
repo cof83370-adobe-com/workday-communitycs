@@ -7,6 +7,7 @@ import com.workday.community.aem.core.services.QueryService;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import lombok.Getter;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
@@ -50,13 +51,18 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
   /**
    * The total pages.
    */
+  @Getter
   private long totalPages;
 
   /**
    * The total indexed pages.
    */
+  @Getter
   private long indexedPages;
 
+  /**
+   * A list of templates.
+   */
   @ValueMapValue
   private List<String> templates;
 
@@ -65,6 +71,9 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
    */
   private boolean serverHasError;
 
+  /**
+   * Initializes the CoveoStatusModelImpl class.
+   */
   @PostConstruct
   private void init() {
     totalPages = queryService.getNumOfTotalPublishedPages();
@@ -73,16 +82,9 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     indexedPages = number == -1 ? 0 : number;
   }
 
-  @Override
-  public long getTotalPages() {
-    return totalPages;
-  }
-
-  @Override
-  public long getIndexedPages() {
-    return indexedPages;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public float getPercentage() {
     if (totalPages == 0) {
@@ -91,16 +93,25 @@ public class CoveoStatusModelImpl implements CoveoStatusModel {
     return (float) indexedPages / totalPages;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> getTemplates() {
     return new ArrayList<>(templates);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean getServerHasError() {
     return serverHasError;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isCoveoEnabled() {
     return coveoIndexApiConfigService.isCoveoIndexEnabled();
