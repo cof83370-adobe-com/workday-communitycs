@@ -30,14 +30,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Class PageResourceListener.
+ * Listens for content changes in the Community content root.
  */
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
     ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
     ResourceChangeListener.CHANGES + "=" + "REMOVED",
     ResourceChangeListener.CHANGES + "=" + "ADDED",
 })
-
 @ServiceDescription("PageResourceListener")
 public class PageResourceListener implements ResourceChangeListener {
 
@@ -64,18 +63,16 @@ public class PageResourceListener implements ResourceChangeListener {
   private QueryService queryService;
 
   /**
-   * On change.
-   *
-   * @param changes the changes
+   * {@inheritDoc}
    */
   @Override
   public void onChange(List<ResourceChange> changes) {
-    if (changes.size() == 1 && changes.get(0).getType().toString().equals("REMOVED")) {
+    if (changes.size() == 1 && changes.get(0).getType().equals(ResourceChange.ChangeType.REMOVED)) {
       removeBookNodes(changes.get(0).getPath());
     }
 
     changes.stream()
-        .filter(item -> "ADDED".equals(item.getType().toString())
+        .filter(item -> item.getType().equals(ResourceChange.ChangeType.ADDED)
             && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
         .forEach(change -> handleNewPage(change.getPath()));
   }
@@ -83,9 +80,9 @@ public class PageResourceListener implements ResourceChangeListener {
   /**
    * Handles New Page.
    *
-   * @param pagePath the page path.
+   * @param pagePath The path to the resource.
    */
-  public void handleNewPage(String pagePath) {
+  private void handleNewPage(String pagePath) {
     try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
       if (resourceResolver.getResource(pagePath) != null) {
         addInternalWorkmatesTag(pagePath, resourceResolver);
@@ -102,8 +99,8 @@ public class PageResourceListener implements ResourceChangeListener {
   /**
    * Adds the Internal Workmates tags to page.
    *
-   * @param pagePath         the newly created page
-   * @param resourceResolver the resource resolver
+   * @param pagePath The path to the resource.
+   * @param resourceResolver A resource resolver object.
    */
   public void addInternalWorkmatesTag(String pagePath, ResourceResolver resourceResolver) {
     try {
@@ -133,9 +130,10 @@ public class PageResourceListener implements ResourceChangeListener {
   }
 
   /**
-   * Adds the author property to content node.
+   * Adds the author property to a content node.
    *
-   * @param path the path
+   * @param path The path to the resource.
+   * @param resourceResolver A resource resolver object.
    */
   public void addAuthorPropertyToContentNode(String path, ResourceResolver resourceResolver) {
     try {
@@ -177,9 +175,9 @@ public class PageResourceListener implements ResourceChangeListener {
   /**
    * Removes the book nodes.
    *
-   * @param pagePath the page path
+   * @param pagePath The path to the resource.
    */
-  public void removeBookNodes(String pagePath) {
+  private void removeBookNodes(String pagePath) {
     try (ResourceResolver resolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
       if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
         List<String> paths = queryService.getBookNodesByPath(pagePath, null);
@@ -193,8 +191,8 @@ public class PageResourceListener implements ResourceChangeListener {
         }
         if (resolver.hasChanges()) {
           resolver.commit();
+          logger.info("Removed node for page {}", pagePath);
         }
-        logger.info("Removed node for page {}", pagePath);
       }
     } catch (PersistenceException | RepositoryException | CacheException e) {
       logger.error("Can't remove found nodes for page {}", pagePath);

@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.listeners.PageResourceListener;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
@@ -24,8 +25,8 @@ import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
+import org.apache.sling.api.resource.observation.ResourceChange;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
  */
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class PageResourceListenerTest {
+
   /**
    * The context.
    */
@@ -48,65 +50,52 @@ public class PageResourceListenerTest {
    * The PageResourceListener.
    */
   @InjectMocks
-  PageResourceListener pageResourceListener;
-
-  @Mock
-  CacheManagerService cacheManager;
+  private PageResourceListener pageResourceListener;
 
   /**
-   * The query service.
+   * A mocked CacheManagerService object.
    */
   @Mock
-  QueryService queryService;
+  private CacheManagerService cacheManager;
 
   /**
-   * The Node
+   * A mocked QueryService object.
    */
   @Mock
-  Node node;
+  private QueryService queryService;
 
   /**
-   * The resolver factory.
+   * A mocked Node object.
    */
   @Mock
-  private ResourceResolverFactory resolverFactory;
+  private Node node;
 
   /**
-   * The resolver.
+   * A mocked ResourceResolver object.
    */
   @Mock
   private ResourceResolver resolver;
 
   /**
-   * The user.
-   */
-  private User user;
-
-  /**
-   * The service UserManager.
-   */
-  private UserManager userManager;
-
-  /**
-   * The service PageManager.
+   * A mocked PageManager object.
    */
   @Mock
   private PageManager pageManager;
 
   /**
-   * The ValueMap
+   * A mocked ValueMap object.
    */
   @Mock
   private ValueMap valueMap;
 
   /**
-   * The Page
+   * A mocked Page object.
    */
   @Mock
   private Page page;
 
   /**
-   * The Resource
+   * A mocked Resource object.
    */
   @Mock
   private Resource resource;
@@ -121,7 +110,8 @@ public class PageResourceListenerTest {
     context.load()
         .json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
             "/content");
-    Page currentPage = context.currentResource("/content/book-faq-page").adaptTo(Page.class);
+    Page currentPage = context.currentResource("/content/book-faq-page")
+        .adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
     context.registerService(ResourceResolver.class, resolver);
   }
@@ -129,16 +119,23 @@ public class PageResourceListenerTest {
   /**
    * Test Remove Book Nodes.
    *
-   * @throws Exception the exception
+   * @throws CacheException If there's an error getting a ResourceResolver from the cache manager.
    */
   @Test
-  void testRemoveBookNodes() throws Exception {
+  void testRemoveBookNodes() throws CacheException {
+    List<ResourceChange> changes = new ArrayList<>();
+    ResourceChange resourceChange = this.createResourceChange(ResourceChange.ChangeType.REMOVED,
+        context.currentPage().getPath());
+    changes.add(resourceChange);
+
     List<String> pathList = new ArrayList<>();
     pathList.add("/content/book-1/jcr:content/root/container/container/book");
     lenient().when(queryService.getBookNodesByPath(context.currentPage().getPath(), null))
         .thenReturn(pathList);
     lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
-    pageResourceListener.removeBookNodes(context.currentPage().getPath());
+
+    when(resolver.getResource(anyString())).thenReturn(resource);
+    pageResourceListener.onChange(changes);
     verify(resolver).close();
   }
 
@@ -147,14 +144,12 @@ public class PageResourceListenerTest {
    *
    * @throws Exception the exception
    */
-
   @Test
-  void tesAddAuthorPropertyToContentNode() throws Exception {
-    Resource resource = mock(Resource.class);
+  void testAddAuthorPropertyToContentNode() throws Exception {
     Node expectedUserNode = mock(Node.class);
-    userManager = mock(UserManager.class);
+    UserManager userManager = mock(UserManager.class);
     Property prop1 = mock(Property.class);
-    user = mock(User.class);
+    User user = mock(User.class);
     lenient().when(resolver.getResource(context.currentPage().getContentResource().getPath()))
         .thenReturn(resource);
     lenient().when(resource.adaptTo(Node.class)).thenReturn(expectedUserNode);
@@ -190,4 +185,9 @@ public class PageResourceListenerTest {
     verify(node, times(1)).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL,
         updatedACLTags.toArray(String[]::new));
   }
+
+  private ResourceChange createResourceChange(ResourceChange.ChangeType changeType, String path) {
+    return new ResourceChange(changeType, path, false);
+  }
+
 }
