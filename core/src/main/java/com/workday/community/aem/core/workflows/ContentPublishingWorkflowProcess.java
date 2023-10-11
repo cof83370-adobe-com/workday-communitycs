@@ -85,13 +85,13 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
       path = workItem.getWorkflowData().getPayload().toString();
       log.info("Payload path: {}", path);
 
-      try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+      try (ResourceResolver resolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
         Session jcrSession = workflowSession.adaptTo(Session.class);
 
         if (null != jcrSession) {
-          updatePageProperties(path, jcrSession, resourceResolver);
-          replicatePage(jcrSession, path, resourceResolver);
-          replicateBookNodes(path, jcrSession, resourceResolver);
+          updatePageProperties(path, jcrSession, resolver);
+          replicatePage(jcrSession, path, resolver);
+          replicateBookNodes(path, jcrSession, resolver);
         }
       } catch (Exception e) {
         log.error("payload type - {} is not valid", payloadType);
