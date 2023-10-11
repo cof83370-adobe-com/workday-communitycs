@@ -26,7 +26,7 @@ public class TerminateRetirementWorkflowProcess implements WorkflowProcess {
       LoggerFactory.getLogger(TerminateRetirementWorkflowProcess.class);
 
   /**
-   * Execute.
+   * {@inheritDoc}
    *
    * @param workItem        the work item
    * @param workflowSession the workflow session
@@ -35,7 +35,7 @@ public class TerminateRetirementWorkflowProcess implements WorkflowProcess {
   @Override
   public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap) {
     String payloadType = workItem.getWorkflowData().getPayloadType();
-    String path = "";
+    String path;
 
     log.debug("Payload type: {}", payloadType);
     if (StringUtils.equals(payloadType, "JCR_PATH")) {

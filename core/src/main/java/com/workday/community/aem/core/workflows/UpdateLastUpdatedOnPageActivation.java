@@ -44,7 +44,7 @@ public class UpdateLastUpdatedOnPageActivation implements WorkflowProcess {
   private static final String UPDATED_DATE = "updatedDate";
 
   /**
-   * Execute.
+   * {@inheritDoc}
    *
    * @param workItem        the work item
    * @param workflowSession the workflow session

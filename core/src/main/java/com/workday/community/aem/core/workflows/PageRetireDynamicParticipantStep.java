@@ -63,7 +63,6 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
     return (StringUtils.isNotBlank(env) && StringUtils.isNotBlank(commonName))
         ? getDynamicParticipant(commonName, env, workflowTitle)
         : DEFAULT_FALL_BACK_GROUP;
-
   }
 
   /**
@@ -76,8 +75,9 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
    */
   public String getDynamicParticipant(final String commonNameOfApprover, final String environment,
                                       final String workflowTitle) {
-    final String dynamicParticipant =
-        commonNameOfApprover.trim().replace(ENV_VAR, environment.trim());
+    final String dynamicParticipant = commonNameOfApprover
+        .trim()
+        .replace(ENV_VAR, environment.trim());
     LOGGER.debug("Dynamic participant for {} >>>>>> {}", workflowTitle, dynamicParticipant);
     return dynamicParticipant;
   }

@@ -61,13 +61,13 @@ public class PageRetireProcessStep implements WorkflowProcess {
    * The cache manager.
    */
   @Reference
-  CacheManagerService cacheManager;
+  private CacheManagerService cacheManager;
 
   /**
    * The query service.
    */
   @Reference
-  QueryService queryService;
+  private QueryService queryService;
 
   /**
    * The replicator.
@@ -76,7 +76,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
   private Replicator replicator;
 
   /**
-   * Execute.
+   * {@inheritDoc}
    *
    * @param workItem        the work item
    * @param workflowSession the workflow session
@@ -111,30 +111,31 @@ public class PageRetireProcessStep implements WorkflowProcess {
    * @param jcrSession the jcr session
    */
   public void removeBookNodes(String pagePath, Session jcrSession) {
-    try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-      if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
-        List<String> paths = queryService.getBookNodesByPath(pagePath, null);
-        paths.stream().filter(item -> rresolver.getResource(item) != null)
+    if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
+      List<String> paths = queryService.getBookNodesByPath(pagePath, null);
+      try (ResourceResolver resolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+        paths.stream().filter(item -> resolver.getResource(item) != null)
             .forEach(path -> {
               try {
-                Node root = Objects.requireNonNull(rresolver.getResource(path)).adaptTo(Node.class);
+                Node root = Objects.requireNonNull(resolver.getResource(path)).adaptTo(Node.class);
                 if (root != null) {
                   final String pathToReplicate = root.getParent().getPath();
                   root.remove();
-                  rresolver.commit();
-                  replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pathToReplicate);
+                  resolver.commit();
+                  replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE,
+                      pathToReplicate);
                 }
               } catch (Exception e) {
                 logger.error("Exception occured while removing the node: {}", path);
               }
             });
         logger.debug("Removed node for page {}", pagePath);
+      } catch (Exception exec) {
+        logger.error(
+            "Exception occured while removing the: {} page from book node. Exception was: {} :",
+            pagePath,
+            exec.getMessage());
       }
-    } catch (Exception exec) {
-      logger.error(
-          "Exception occured while removing the: {} page from book node. Exception was: {} :",
-          pagePath,
-          exec.getMessage());
     }
   }
 
@@ -146,8 +147,8 @@ public class PageRetireProcessStep implements WorkflowProcess {
    */
   public void addRetirementBadge(String pagePath, WorkItem workItem) {
     try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-      Resource resource = Objects
-          .requireNonNull(rresolver.getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH));
+      Resource resource = Objects.requireNonNull(rresolver
+          .getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH));
       String modelPath = workItem.getWorkflow().getWorkflowModel().getId();
       int lastIndex = modelPath.lastIndexOf('/');
       String workflowModelName = "";
