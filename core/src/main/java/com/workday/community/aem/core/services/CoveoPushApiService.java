@@ -98,6 +98,7 @@ public interface CoveoPushApiService {
    *
    * @param payload The payload
    * @return The api response
+   * @see <a href="https://docs.coveo.com/en/90/index-content/manage-batches-of-items-in-a-push-source">Coveo reference.</a>
    */
   Integer indexItems(List<Object> payload);
 

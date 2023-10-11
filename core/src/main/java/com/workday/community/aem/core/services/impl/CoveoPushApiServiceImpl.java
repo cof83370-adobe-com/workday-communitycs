@@ -197,7 +197,6 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
    */
   @Override
   public Integer indexItems(List<Object> payload) {
-    // Coveo reference https://docs.coveo.com/en/90/index-content/manage-batches-of-items-in-a-push-source.
     Integer apiStatusCode = 0;
     Map<String, Object> createContainerResponse = callCreateContainerUri();
     if ((Integer) createContainerResponse.get("statusCode") == HttpStatus.SC_CREATED) {
