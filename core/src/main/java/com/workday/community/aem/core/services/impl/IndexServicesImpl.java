@@ -12,21 +12,17 @@ import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
-
 /**
  * The Class IndexServicesImpl.
  */
-@Component(
-    service = IndexServices.class,
-    immediate = true
-)
+@Component(service = IndexServices.class, immediate = true)
 public class IndexServicesImpl implements IndexServices {
 
   /**
    * The jobManager service.
    */
   @Reference
-  JobManager jobManager;
+  private JobManager jobManager;
 
   /**
    * The CoveoIndexApiConfigService.

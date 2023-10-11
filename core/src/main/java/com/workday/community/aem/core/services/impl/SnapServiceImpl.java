@@ -39,7 +39,6 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -72,16 +71,12 @@ public class SnapServiceImpl implements SnapService {
   @Setter
   private RunModeConfigService runModeConfigService;
 
-  @Reference
-  @Setter
-  private CacheManagerService cacheManagerService;
-
   /**
-   * The resource resolver factory.
+   * The cache manager service.
    */
   @Reference
   @Setter
-  private ResourceResolverFactory resourceResolverFactory;
+  private CacheManagerService cacheManagerService;
 
   /**
    * The gson service.

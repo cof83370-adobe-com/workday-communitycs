@@ -34,7 +34,6 @@ import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceNotFoundException;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -44,26 +43,23 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class ExtractPagePropertiesServiceImpl.
  */
-@Component(
-    service = ExtractPagePropertiesService.class,
-    immediate = true
-)
+@Component(service = ExtractPagePropertiesService.class, immediate = true)
 public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesService {
 
   /**
    * The TEXT_COMPONENT.
    */
-  public static final String TEXT_COMPONENT = "workday-community/components/core/text";
+  protected static final String TEXT_COMPONENT = "workday-community/components/core/text";
 
   /**
    * The IDENTITY_TYPE_GROUP.
    */
-  public static final String IDENTITY_TYPE_GROUP = "GROUP";
+  private static final String IDENTITY_TYPE_GROUP = "GROUP";
 
   /**
    * The IDENTITY_TYPE_USER.
    */
-  public static final String IDENTITY_TYPE_USER = "USER";
+  private static final String IDENTITY_TYPE_USER = "USER";
 
   /**
    * The logger.
@@ -136,24 +132,6 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
   };
 
   /**
-   * The resource resolver factory.
-   */
-  @Reference
-  ResourceResolverFactory resourceResolverFactory;
-
-  /**
-   * The cache manager.
-   **/
-  @Reference
-  CacheManagerService cacheManager;
-
-  /**
-   * The run mode config service.
-   */
-  @Reference
-  private RunModeConfigService runModeConfigService;
-
-  /**
    * The taxonomyFields.
    */
   private final List<String> taxonomyFields = new ArrayList<>(
@@ -180,6 +158,18 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    */
   private final List<String> stringFields =
       new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation"));
+
+  /**
+   * The cache manager.
+   **/
+  @Reference
+  private CacheManagerService cacheManager;
+
+  /**
+   * The run mode config service.
+   */
+  @Reference
+  private RunModeConfigService runModeConfigService;
 
   /**
    * {@inheritDoc}

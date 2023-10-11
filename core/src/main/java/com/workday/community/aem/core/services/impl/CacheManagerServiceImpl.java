@@ -22,6 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import lombok.Setter;
+import org.apache.commons.collections4.map.LRUMap;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -47,8 +48,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
 
-  private final LruCacheWithTimeout<String, ResourceResolver> resolverCache =
-      new LruCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
+  private final LRUMap<String, ResourceResolver> resolverCache;
 
   private final Map<String, LoadingCache> caches;
 
@@ -67,6 +67,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
 
   public CacheManagerServiceImpl() {
     caches = new ConcurrentHashMap<>();
+    resolverCache = new LruCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
   }
 
   /**

@@ -80,6 +80,9 @@ public class UserGroupServiceImpl implements UserGroupService {
   @Reference
   private CacheManagerService cacheManager;
 
+  /**
+   * The user service.
+   */
   @Reference
   private UserService userService;
 

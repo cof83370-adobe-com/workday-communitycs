@@ -44,17 +44,20 @@ public class UserServiceImpl implements UserService {
    * The cache manager.
    */
   @Reference
-  CacheManagerService cacheManager;
+  private CacheManagerService cacheManager;
 
   @Reference
-  SearchApiConfigService searchConfigService;
+  private SearchApiConfigService searchConfigService;
 
   @Reference
-  RunModeConfigService runModeConfigService;
+  private RunModeConfigService runModeConfigService;
 
   @Reference
-  SnapService snapService;
+  private SnapService snapService;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public User getCurrentUser(SlingHttpServletRequest request) throws CacheException {
     Session session = Objects.requireNonNull(request.getResourceResolver()).adaptTo(Session.class);
@@ -62,22 +65,28 @@ public class UserServiceImpl implements UserService {
     return getUser(serviceResolver, Objects.requireNonNull(session).getUserID());
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public User getUser(String serviceUserId, String userSessionId) throws CacheException {
     ResourceResolver resourceResolver = cacheManager.getServiceResolver(serviceUserId);
     return getUser(resourceResolver, userSessionId);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   private User getUser(final ResourceResolver resourceResolver, String userSessionId) {
     if (userSessionId == null) {
       return null;
     }
 
     String cacheKey = String.format("session_user_%s", userSessionId);
+    UserManager userManager = Objects.requireNonNull(resourceResolver.adaptTo(UserManager.class));
     User retUser = cacheManager.get(CacheBucketName.JCR_USER.name(), cacheKey, (key) -> {
       try {
-        UserManager userManager = resourceResolver.adaptTo(UserManager.class);
-        User user = (User) Objects.requireNonNull(userManager).getAuthorizable(userSessionId);
+        User user = (User) userManager.getAuthorizable(userSessionId);
         if (user != null) {
           return user;
         }
@@ -101,6 +110,9 @@ public class UserServiceImpl implements UserService {
     return retUser;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getUserUuid(String sfId) {
     String cacheKey = String.format("user_uuid_%s", sfId);
@@ -111,53 +123,54 @@ public class UserServiceImpl implements UserService {
     });
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath)
       throws CacheException {
     ResourceResolver resourceResolver = request.getResourceResolver();
     Session session = resourceResolver.adaptTo(Session.class);
+    if (session == null) {
+      return;
+    }
+
     // Delete user on publish instance.
-    if (session != null) {
-      String ins = runModeConfigService.getInstance();
+    String ins = runModeConfigService.getInstance();
 
-      if (ins != null && ins.equals(GlobalConstants.PUBLISH)) {
-        String userId = session.getUserID();
+    if (ins != null && ins.equals(GlobalConstants.PUBLISH)) {
+      String userId = session.getUserID();
+      ResourceResolver serviceResolver = cacheManager.getServiceResolver(SERVICE_USER_GROUP);
 
-        ResourceResolver serviceResolver =
-            cacheManager.getServiceResolver(SERVICE_USER_GROUP);
+      LOGGER.info("Start to delete user with param {}.", userId);
+      UserManager userManager = Objects.requireNonNull(serviceResolver.adaptTo(UserManager.class));
+      User user;
+      try {
+        user = isPath
+            ? (User) userManager.getAuthorizableByPath(userId)
+            : (User) userManager.getAuthorizable(userId);
 
-        LOGGER.info("Start to delete user with param {}.", userId);
-        UserManager userManager = serviceResolver.adaptTo(UserManager.class);
-        User user;
-        try {
-          if (isPath) {
-            user = (User) Objects.requireNonNull(userManager).getAuthorizableByPath(userId);
-          } else {
-            user = (User) Objects.requireNonNull(userManager).getAuthorizable(userId);
-          }
-
-          if (user != null) {
-            String path = user.getPath();
-            if (path.contains(OKTA_USER_PATH)) {
-              user.remove();
-              session.logout();
-            } else {
-              LOGGER.error("User with userID {} cannot be deleted.", userId);
-            }
-          } else {
-            LOGGER.error("Cannot find user with userID {}.", userId);
-          }
-          Objects.requireNonNull(session).save();
-        } catch (RepositoryException e) {
-          LOGGER.error("invalidate current user session failed.");
-        } finally {
-          if (resourceResolver.isLive()) {
-            resourceResolver.close();
-          }
-
-          if (session.isLive()) {
+        if (user != null) {
+          String path = user.getPath();
+          if (path.contains(OKTA_USER_PATH)) {
+            user.remove();
             session.logout();
+          } else {
+            LOGGER.error("User with userID {} cannot be deleted.", userId);
           }
+        } else {
+          LOGGER.error("Cannot find user with userID {}.", userId);
+        }
+        session.save();
+      } catch (RepositoryException e) {
+        LOGGER.error("invalidate current user session failed.");
+      } finally {
+        if (resourceResolver.isLive()) {
+          resourceResolver.close();
+        }
+
+        if (session.isLive()) {
+          session.logout();
         }
       }
     }
