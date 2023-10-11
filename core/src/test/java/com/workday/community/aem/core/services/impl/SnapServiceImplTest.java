@@ -83,7 +83,6 @@ public class SnapServiceImplTest {
       snapService = new SnapServiceImpl();
       snapService.setCacheManagerService(cacheManagerService);
       snapService.setRunModeConfigService(runModeConfigService);
-      snapService.setResourceResolverFactory(resResolverFactory);
     }
 
     context.registerService(ResourceResolverFactory.class, resResolverFactory);
