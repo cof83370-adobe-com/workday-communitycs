@@ -184,27 +184,30 @@ public class SnapServiceImpl implements SnapService {
     if (!enableCache()) {
       cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
-    JsonObject ret = cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
-      try {
-        logger.debug("SnapImpl: Calling snap api getUserContext()...");
-        String url = CommunityUtils.formUrl(config.snapUrl(), config.snapContextPath());
-        if (url == null) {
+
+    JsonObject ret = cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey,
+        (key) -> {
+          try {
+            logger.debug("SnapImpl: Calling snap api getUserContext()...");
+            String url = CommunityUtils.formUrl(config.snapUrl(), config.snapContextPath());
+            if (url == null) {
+              return new JsonObject();
+            }
+
+            url = String.format(url, sfId);
+            String jsonResponse =
+                RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
+            return gson.fromJson(jsonResponse, JsonObject.class);
+          } catch (SnapException | JsonSyntaxException e) {
+            logger.error("Error in getUserContext method :: {}", e.getMessage());
+          }
+
+          logger.error(
+              "User context is not fetched from the snap context API call without error, "
+                  + "please contact admin.");
           return new JsonObject();
         }
-
-        url = String.format(url, sfId);
-        String jsonResponse =
-            RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
-        return gson.fromJson(jsonResponse, JsonObject.class);
-      } catch (SnapException | JsonSyntaxException e) {
-        logger.error("Error in getUserContext method :: {}", e.getMessage());
-      }
-
-      logger.error(
-          "User context is not fetched from the snap context API call without error, "
-              + "please contact admin.");
-      return new JsonObject();
-    });
+    );
 
     if (ret.isJsonNull() || (ret.isJsonObject() && ret.size() == 0)) {
       cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
@@ -255,20 +258,21 @@ public class SnapServiceImpl implements SnapService {
     if (!enableCache()) {
       cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
-    JsonObject ret = cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
-      try {
-        ResourceResolver resourceResolver =
-            this.cacheManagerService.getServiceResolver(READ_SERVICE_USER);
-        // Reading the JSON File from DAM.
-        return DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
-      } catch (CacheException | DamException e) {
-        logger
-            .error(
-                String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s",
-                    e.getMessage()));
-        return new JsonObject();
-      }
-    });
+    JsonObject ret = cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey,
+        (key) -> {
+          try {
+            ResourceResolver resourceResolver =
+                this.cacheManagerService.getServiceResolver(READ_SERVICE_USER);
+            // Reading the JSON File from DAM.
+            return DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
+          } catch (CacheException | DamException e) {
+            logger
+                .error(
+                    String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s",
+                        e.getMessage()));
+            return new JsonObject();
+          }
+        });
 
     if (ret.isJsonNull() || (ret.isJsonObject() && ret.size() == 0)) {
       cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
@@ -368,42 +372,40 @@ public class SnapServiceImpl implements SnapService {
     String accountType = "";
     boolean isNsc = false;
     String timeZoneStr = "";
+    JsonObject profileObject;
     if (profileData != null) {
       try {
-        JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
-
-        JsonElement contactRoleElement = profileObject.get(CONTACT_ROLE);
-        contactRole = (contactRoleElement == null || contactRoleElement.isJsonNull())
-            ? "" : contactRoleElement.getAsString();
-        isNsc = contactRole.contains(NSC);
-        JsonElement contactNumberElement = profileObject.get(CONTACT_NUMBER);
-        contactNumber = (contactRoleElement == null || contactNumberElement.isJsonNull())
-            ? "" : contactNumberElement.getAsString();
-
-        JsonElement wrcOrgId = profileObject.get("wrcOrgId");
-        accountId = (wrcOrgId == null || wrcOrgId.isJsonNull()) ? "" : wrcOrgId.getAsString();
-
-        JsonElement organizationName = profileObject.get("organizationName");
-        accountName = (organizationName == null || organizationName.isJsonNull()) ? "" :
-            organizationName.getAsString();
-
-        JsonElement isWorkmateElement = profileObject.get("isWorkmate");
-        boolean isWorkdayMate = isWorkmateElement != null
-            && !isWorkmateElement.isJsonNull()
-            && isWorkmateElement.getAsBoolean();
-
-        JsonElement typeElement = profileObject.get("type");
-        accountType = isWorkdayMate ? "workday"
-            : (typeElement == null || typeElement.isJsonNull() ? "" :
-            typeElement.getAsString().toLowerCase());
-
-        JsonElement timeZoneElement = profileObject.get("timeZone");
-        timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" :
-            timeZoneElement.getAsString();
+        profileObject = gson.fromJson(profileData, JsonObject.class);
       } catch (JsonSyntaxException e) {
+        profileObject = new JsonObject();
         logger.error("Error in generateAdobeDigitalData method :: {}",
             e.getMessage());
       }
+
+      JsonElement contactRoleElement = profileObject.get(CONTACT_ROLE);
+      contactRole = getJsonElementAsString(contactRoleElement);
+      isNsc = contactRole.contains(NSC);
+
+      JsonElement contactNumberElement = profileObject.get(CONTACT_NUMBER);
+      contactNumber = getJsonElementAsString(contactNumberElement);
+
+      JsonElement wrcOrgId = profileObject.get("wrcOrgId");
+      accountId = getJsonElementAsString(wrcOrgId);
+
+      JsonElement organizationName = profileObject.get("organizationName");
+      accountName = getJsonElementAsString(organizationName);
+
+      JsonElement isWorkmateElement = profileObject.get("isWorkmate");
+      boolean isWorkdayMate = isJsonElementNonNull(isWorkmateElement)
+          && isWorkmateElement.getAsBoolean();
+
+      JsonElement typeElement = profileObject.get("type");
+      accountType = isWorkdayMate
+          ? "workday"
+          : getJsonElementAsString(typeElement).toLowerCase();
+
+      JsonElement timeZoneElement = profileObject.get("timeZone");
+      timeZoneStr = getJsonElementAsString(timeZoneElement);
     }
 
     JsonObject userProperties = new JsonObject();
@@ -433,25 +435,19 @@ public class SnapServiceImpl implements SnapService {
       throws JsonProcessingException {
     JsonElement profileElement = sfMenu.get(SnapConstants.PROFILE_KEY);
 
-    if (profileElement != null && !profileElement.isJsonNull()) {
+    if (isJsonElementNonNull(profileElement)) {
       JsonObject profileObject = profileElement.getAsJsonObject();
       // Populate user information.
       JsonElement contactObject = sfMenu.get(SnapConstants.USER_CONTACT_INFORMATION_KEY);
-      JsonObject contactRoleElement = (contactObject != null && !contactObject.isJsonNull())
-          ? contactObject.getAsJsonObject()
-          : null;
 
-      if (contactRoleElement != null && !contactRoleElement.isJsonNull()) {
+      if (isJsonElementNonNull(contactObject)) {
+        JsonObject contactRoleElement = contactObject.getAsJsonObject();
         JsonElement lastName = contactRoleElement.get(SnapConstants.LAST_NAME_KEY);
         JsonElement firstName = contactRoleElement.get(SnapConstants.FIRST_NAME_KEY);
 
         JsonObject userInfoObject = new JsonObject();
-        userInfoObject.addProperty(SnapConstants.LAST_NAME_KEY,
-            (lastName != null && !lastName.isJsonNull()) ? lastName.getAsString() :
-                StringUtils.EMPTY);
-        userInfoObject.addProperty(SnapConstants.FIRST_NAME_KEY,
-            (firstName != null && !firstName.isJsonNull()) ? firstName.getAsString() :
-                StringUtils.EMPTY);
+        userInfoObject.addProperty(SnapConstants.FIRST_NAME_KEY, getJsonElementAsString(firstName));
+        userInfoObject.addProperty(SnapConstants.LAST_NAME_KEY, getJsonElementAsString(lastName));
         userInfoObject.addProperty(SnapConstants.VIEW_PROFILE_LABEL_KEY,
             SnapConstants.PROFILE_BUTTON_VALUE);
         userInfoObject.addProperty(SnapConstants.HREF_KEY, config.userProfileUrl());
@@ -473,35 +469,58 @@ public class SnapServiceImpl implements SnapService {
    */
   private String getUserAvatar(String sfId) {
     ProfilePhoto content = getProfilePhoto(sfId);
-    String encodedPhoto = StringUtils.EMPTY;
-    String extension = StringUtils.EMPTY;
-    if (content != null) {
-      encodedPhoto = content.getBase64content();
-      extension = content.getFileNameWithExtension();
-      try {
-        String[] extensionSplit =
-            StringUtils.isNotBlank(extension) ? extension.split("\\.") : new String[] {};
-        if (extensionSplit.length > 0) {
-          extension = extensionSplit[extensionSplit.length - 1];
-        } else {
-          logger.error("No extension found in the data");
-        }
-      } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
-        logger.error("An exception occurred" + e.getMessage());
-      }
-      if (StringUtils.isNotBlank(extension) && StringUtils.isNotBlank(encodedPhoto)) {
-        return "data:image/" + extension + ";base64," + encodedPhoto;
-      } else {
-        logger.error("getUserAvatar method returns null.");
-        return StringUtils.EMPTY;
-      }
+    if (content == null) {
+      return StringUtils.EMPTY;
     }
-    return StringUtils.EMPTY;
+
+    String encodedPhoto = content.getBase64content();
+    String extension = content.getFileNameWithExtension();
+    try {
+      String[] extensionSplit =
+          StringUtils.isNotBlank(extension) ? extension.split("\\.") : new String[] {};
+      if (extensionSplit.length > 0) {
+        extension = extensionSplit[extensionSplit.length - 1];
+      } else {
+        logger.error("No extension found in the data");
+      }
+    } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
+      logger.error("An exception occurred" + e.getMessage());
+    }
+    if (StringUtils.isNotBlank(extension) && StringUtils.isNotBlank(encodedPhoto)) {
+      return "data:image/" + extension + ";base64," + encodedPhoto;
+    } else {
+      logger.error("getUserAvatar method returns null.");
+      return StringUtils.EMPTY;
+    }
   }
 
   private String getEnv() {
     String env = this.runModeConfigService.getEnv();
     return (env == null) ? "local" : env;
+  }
+
+  /**
+   * Helper for retrieving the String value of a given JsonElement.
+   *
+   * @param jsonElement The JsonElement object.
+   * @return The string value, or an empy string if null.
+   */
+  private String getJsonElementAsString(JsonElement jsonElement) {
+    if (isJsonElementNonNull(jsonElement)) {
+      return jsonElement.getAsString();
+    }
+
+    return StringUtils.EMPTY;
+  }
+
+  /**
+   * Helper for determining whether a given JsonElement is null.
+   *
+   * @param jsonElement The JsonElement object.
+   * @return True if the object is non-null, and not of type JsonNull.
+   */
+  private boolean isJsonElementNonNull(JsonElement jsonElement) {
+    return jsonElement != null && !jsonElement.isJsonNull();
   }
 
 }
