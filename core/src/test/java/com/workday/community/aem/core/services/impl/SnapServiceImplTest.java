@@ -81,7 +81,7 @@ public class SnapServiceImplTest {
 
     if (snapService == null) {
       snapService = new SnapServiceImpl();
-      snapService.setServiceCacheMgr(cacheManagerService);
+      snapService.setCacheManagerService(cacheManagerService);
       snapService.setRunModeConfigService(runModeConfigService);
       snapService.setResourceResolverFactory(resResolverFactory);
     }

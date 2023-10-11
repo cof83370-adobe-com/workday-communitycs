@@ -35,6 +35,7 @@ import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import java.util.Date;
 import java.util.regex.PatternSyntaxException;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -68,16 +69,19 @@ public class SnapServiceImpl implements SnapService {
    * The Run-mode configuration service.
    */
   @Reference
-  RunModeConfigService runModeConfigService;
+  @Setter
+  private RunModeConfigService runModeConfigService;
 
   @Reference
-  CacheManagerService serviceCacheMgr;
+  @Setter
+  private CacheManagerService cacheManagerService;
 
   /**
    * The resource resolver factory.
    */
   @Reference
-  ResourceResolverFactory resResolverFactory;
+  @Setter
+  private ResourceResolverFactory resourceResolverFactory;
 
   /**
    * The gson service.
@@ -89,6 +93,9 @@ public class SnapServiceImpl implements SnapService {
    */
   private SnapConfig config;
 
+  /**
+   * {@inheritDoc}
+   */
   @Activate
   @Modified
   @Override
@@ -98,29 +105,17 @@ public class SnapServiceImpl implements SnapService {
         config.enableCache(), config.beta());
   }
 
-  @Override
-  public void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory) {
-    this.resResolverFactory = resourceResolverFactory;
-  }
-
-  @Override
-  public void setRunModeConfigService(RunModeConfigService runModeConfigService) {
-    this.runModeConfigService = runModeConfigService;
-  }
-
-  // Following methods is for testing purpose
-  public void setServiceCacheMgr(CacheManagerService serviceCacheMgr) {
-    this.serviceCacheMgr = serviceCacheMgr;
-  }
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getUserHeaderMenu(String sfId) {
     String menuCacheKey = String.format("header_menu_%s_%s", getEnv(), sfId);
     if (!enableCache()) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
+      cacheManagerService.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
     }
     String retValue =
-        serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
+        cacheManagerService.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
           String snapUrl = config.snapUrl();
           String navApi = config.navApi();
           String apiToken = config.navApiToken();
@@ -179,19 +174,22 @@ public class SnapServiceImpl implements SnapService {
         });
 
     if (OurmUtils.isMenuEmpty(gson, retValue)) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
+      cacheManagerService.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
     }
 
     return retValue;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public JsonObject getUserContext(String sfId) {
     String cacheKey = String.format("user_context_%s_%s", getEnv(), sfId);
     if (!enableCache()) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+      cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
-    JsonObject ret = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
+    JsonObject ret = cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
         logger.debug("SnapImpl: Calling snap api getUserContext()...");
         String url = CommunityUtils.formUrl(config.snapUrl(), config.snapContextPath());
@@ -214,20 +212,23 @@ public class SnapServiceImpl implements SnapService {
     });
 
     if (ret.isJsonNull() || (ret.isJsonObject() && ret.size() == 0)) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+      cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
 
     return ret;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ProfilePhoto getProfilePhoto(String userId) {
     String cacheKey = String.format("profile_photo_%s_%s", getEnv(), userId);
     if (!enableCache()) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(),
+      cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(),
           cacheKey);
     }
-    return serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey,
+    return cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey,
         (key) -> {
           String snapUrl = config.snapUrl();
           String avatarUrl = config.sfdcUserAvatarUrl();
@@ -257,12 +258,12 @@ public class SnapServiceImpl implements SnapService {
   private JsonObject getDefaultHeaderMenu() {
     String cacheKey = "default_menu_" + getEnv();
     if (!enableCache()) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+      cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
-    JsonObject ret = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
+    JsonObject ret = cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
       try {
         ResourceResolver resourceResolver =
-            this.serviceCacheMgr.getServiceResolver(READ_SERVICE_USER);
+            this.cacheManagerService.getServiceResolver(READ_SERVICE_USER);
         // Reading the JSON File from DAM.
         return DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
       } catch (CacheException | DamException e) {
@@ -275,19 +276,22 @@ public class SnapServiceImpl implements SnapService {
     });
 
     if (ret.isJsonNull() || (ret.isJsonObject() && ret.size() == 0)) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+      cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
     return ret;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getUserProfile(String sfId) {
     String cacheKey = String.format("user_profile_%s_%s", getEnv(), sfId);
     if (!enableCache()) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
+      cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
     Object userProfile =
-        serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
+        cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
           try {
             String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
             if (StringUtils.isNotBlank(url)) {
@@ -309,13 +313,16 @@ public class SnapServiceImpl implements SnapService {
     return (userProfile instanceof JsonObject) ? gson.toJson(userProfile) : userProfile.toString();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
     String cacheKey = String.format("%s_%s.%s.%s", getEnv(), sfId, pageTitle, contentType);
     if (!enableCache()) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.STRING_VALUE.name(), cacheKey);
+      cacheManagerService.invalidateCache(CacheBucketName.STRING_VALUE.name(), cacheKey);
     }
-    return serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), cacheKey, (key) -> {
+    return cacheManagerService.get(CacheBucketName.STRING_VALUE.name(), cacheKey, (key) -> {
       String profileData = getUserProfile(sfId);
       JsonObject digitalData = generateAdobeDigitalData(profileData);
 
@@ -328,6 +335,9 @@ public class SnapServiceImpl implements SnapService {
     });
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean enableCache() {
     return this.config.enableCache();
