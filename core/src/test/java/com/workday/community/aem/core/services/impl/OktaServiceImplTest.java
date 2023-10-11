@@ -30,8 +30,6 @@ public class OktaServiceImplTest {
     public boolean isOktaIntegrationEnabled() {
       return false;
     }
-
-
   };
 
   @BeforeEach
@@ -42,5 +40,6 @@ public class OktaServiceImplTest {
   @Test
   public void testConfigs() {
     assertEquals(service.getCustomDomain(), testConfig.customDomain());
+    assertEquals(service.isOktaIntegrationEnabled(), testConfig.isOktaIntegrationEnabled());
   }
 }
