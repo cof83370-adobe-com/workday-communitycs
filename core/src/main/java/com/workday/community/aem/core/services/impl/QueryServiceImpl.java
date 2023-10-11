@@ -33,20 +33,26 @@ import org.slf4j.LoggerFactory;
 @Component(service = QueryService.class, immediate = true)
 public class QueryServiceImpl implements QueryService {
 
+  /**
+   * The cache manager service.
+   */
   @Reference
-  CacheManagerService cacheManager;
+  private CacheManagerService cacheManager;
 
   /**
    * The query builder.
    */
   @Reference
-  QueryBuilder queryBuilder;
+  private QueryBuilder queryBuilder;
 
   /**
    * The logger.
    */
   private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getNumOfTotalPublishedPages() {
     long totalResults = 0;
@@ -73,6 +79,9 @@ public class QueryServiceImpl implements QueryService {
     return totalResults;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> getPagesByTemplates(String[] templates) {
     Session session = null;
@@ -100,6 +109,9 @@ public class QueryServiceImpl implements QueryService {
     return paths;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public List<String> getInactiveUsers() {
     Session session = null;
@@ -141,7 +153,7 @@ public class QueryServiceImpl implements QueryService {
   }
 
   /**
-   * Gets the book nodes by path.
+   * {@inheritDoc}
    *
    * @param bookPagePath the book page path
    * @param currentPath  the current path

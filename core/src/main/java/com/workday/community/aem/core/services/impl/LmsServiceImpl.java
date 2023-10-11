@@ -52,7 +52,7 @@ public class LmsServiceImpl implements LmsService {
   private LruCacheWithTimeout<String, String> lmsCache;
 
   /**
-   * Activates the Lms Service class.
+   * {@inheritDoc}
    */
   @Activate
   @Modified
@@ -65,8 +65,7 @@ public class LmsServiceImpl implements LmsService {
   }
 
   /**
-   * Gets the Lms API Bearer Token required for course list and course detail
-   * APIs.
+   * {@inheritDoc}
    */
   @Override
   public String getApiToken() throws LmsException {
@@ -123,7 +122,7 @@ public class LmsServiceImpl implements LmsService {
   }
 
   /**
-   * Makes Lms API call and fetches the course detail data of the given course.
+   * {@inheritDoc}
    */
   @Override
   public String getCourseDetail(String courseTitle) throws LmsException {

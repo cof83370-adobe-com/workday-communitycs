@@ -53,9 +53,7 @@ public class OurmUserServiceImpl implements OurmUserService {
   private OurmDrupalConfig ourmDrupalConfig;
 
   /**
-   * Activate.
-   *
-   * @param config the config
+   * {@inheritDoc}
    */
   @Activate
   @Modified
@@ -65,11 +63,7 @@ public class OurmUserServiceImpl implements OurmUserService {
   }
 
   /**
-   * Search ourm user list.
-   *
-   * @param searchText the search text
-   * @return the json object
-   * @throws OurmException the ourm exception
+   * {@inheritDoc}
    */
   @Override
   public JsonObject searchOurmUserList(String searchText) throws OurmException {
@@ -81,7 +75,6 @@ public class OurmUserServiceImpl implements OurmUserService {
     if (StringUtils.isNotBlank(endpoint) && StringUtils.isNotBlank(consumerKey)
         && StringUtils.isNotBlank(consumerSecret) && StringUtils.isNotBlank(searchPath)) {
       try {
-
         String apiUrl = String.format("%s/%s", CommunityUtils.formUrl(endpoint, searchPath),
             URLEncoder.encode(searchText, StandardCharsets.UTF_8));
         String headerString =
@@ -91,7 +84,6 @@ public class OurmUserServiceImpl implements OurmUserService {
         // Execute the request.
         String jsonResponse = RestApiUtil.doOurmGet(apiUrl, headerString);
         return gson.fromJson(jsonResponse, JsonObject.class);
-
       } catch (OurmException | InvalidKeyException | NoSuchAlgorithmException e) {
         String errorMessage = e.getMessage();
         throw new OurmException(
@@ -99,6 +91,7 @@ public class OurmUserServiceImpl implements OurmUserService {
                 errorMessage));
       }
     }
+
     return new JsonObject();
   }
 }

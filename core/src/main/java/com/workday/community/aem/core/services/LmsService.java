@@ -19,7 +19,8 @@ public interface LmsService {
   void activate(LmsConfig config);
 
   /**
-   * Gets the Lms API Bearer token.
+   * Gets the Lms API Bearer Token required for course list and course detail
+   * APIs.
    *
    * @return Bearer token.
    * @throws LmsException LmsException Object.
@@ -27,7 +28,7 @@ public interface LmsService {
   String getApiToken() throws LmsException;
 
   /**
-   * Gets the course detail data of the given course.
+   * Makes LMS API call and fetches the course detail data of the given course.
    *
    * @param courseTitle Course title.
    * @return Course detail json as string.

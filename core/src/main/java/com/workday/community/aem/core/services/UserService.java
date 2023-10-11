@@ -13,7 +13,6 @@ public interface UserService {
    * Returns the current user.
    *
    * @param request The sling request object.
-   *
    * @return the current logged-in user.
    */
   User getCurrentUser(SlingHttpServletRequest request) throws CacheException;
@@ -23,7 +22,6 @@ public interface UserService {
    *
    * @param serviceUserId The service user id
    * @param userId        The user id
-   *
    * @return The user
    */
   User getUser(String serviceUserId, String userId) throws CacheException;
@@ -32,7 +30,6 @@ public interface UserService {
    * Gets a user's UUID.
    *
    * @param sfId the user's sf id.
-   *
    * @return The user's UUID.
    */
   String getUserUuid(String sfId);

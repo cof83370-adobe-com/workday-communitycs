@@ -77,7 +77,9 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
     this.sourceId = coveoIndexApiConfigService.getSourceId();
   }
 
-
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String generateSourceApiUri() {
     return this.sourceApiUri + this.organizationId + "/sources/" + this.sourceId;
@@ -96,11 +98,17 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
     return header;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HashMap<String, Object> callApi() {
     return restApiService.send(this.generateSourceApiUri(), generateHeader(), GET_API, "");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public long getTotalIndexedNumber() {
     long totalNumberOfIndexedItems = -1;
@@ -122,6 +130,8 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
       logger.error("Get number of indexed pages from coveo failed with status code {}: {}",
           response.get("statusCode"), response.get("response"));
     }
+
     return totalNumberOfIndexedItems;
   }
+
 }

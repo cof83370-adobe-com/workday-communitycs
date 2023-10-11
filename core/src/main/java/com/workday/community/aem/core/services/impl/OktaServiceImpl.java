@@ -29,15 +29,20 @@ public class OktaServiceImpl implements OktaService {
     this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getCustomDomain() {
     return config.customDomain();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isOktaIntegrationEnabled() {
     return config.isOktaIntegrationEnabled();
   }
-
 
 }

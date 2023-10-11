@@ -77,17 +77,26 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     this.sourceId = coveoIndexApiConfigService.getSourceId();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String generateBatchUploadUri(String fileId) {
     return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
         + "/documents/batch?fileId=" + fileId;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String generateContainerUri() {
     return this.pushApiUri + this.organizationId + "/files";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String generateDeleteAllItemsUri() {
     String time = Long.toString(System.currentTimeMillis());
@@ -95,18 +104,27 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         + "/documents/olderthan?orderingId=" + time + "&queueDelay=15";
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String generateDeleteSingleItemUri(String documentId) {
     return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
         + "/documents?deleteChildren=false&documentId=" + documentId;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HashMap<String, Object> callApi(String uri, HashMap<String, String> header,
                                          String httpMethod, String payload) {
     return restApiService.send(uri, header, httpMethod, payload);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HashMap<String, Object> callBatchUploadUri(String fileId) {
     HashMap<String, String> header = new HashMap<>();
@@ -116,6 +134,9 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, "");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HashMap<String, Object> callCreateContainerUri() {
     HashMap<String, String> containerHeader = new HashMap<>();
@@ -126,6 +147,9 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         org.apache.sling.api.servlets.HttpConstants.METHOD_POST, "");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Integer callDeleteAllItemsUri() {
     // Coveo reference https://docs.coveo.com/en/131/index-content/deleting-old-items-in-a-push-source.
@@ -141,6 +165,9 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     return (Integer) response.get("statusCode");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Integer callDeleteSingleItemUri(String documentId) {
     HashMap<String, String> header = new HashMap<>();
@@ -154,6 +181,9 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     return (Integer) response.get("statusCode");
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HashMap<String, Object> callUploadFileUri(String uploadUri,
                                                    HashMap<String, String> uploadFileHeader,
@@ -162,6 +192,9 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, transformPayload(payload));
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Integer indexItems(List<Object> payload) {
     // Coveo reference https://docs.coveo.com/en/90/index-content/manage-batches-of-items-in-a-push-source.
@@ -207,6 +240,9 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     return apiStatusCode;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String transformPayload(List<Object> payload) {
     HashMap<String, Object> data = new HashMap<>();
@@ -222,6 +258,9 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     return transformedPayload;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public HashMap<String, Object> transformCreateContainerResponse(String response) {
     HashMap<String, Object> transformedResponse = new HashMap<>();
