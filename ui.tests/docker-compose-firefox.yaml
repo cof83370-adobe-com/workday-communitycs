@@ -1,4 +1,4 @@
-# Copyright 2020 Adobe Systems Incorporated
+# Copyright 2022 Adobe Systems Incorporated
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,24 +20,24 @@ version: '3'
 services:
   tests:
     environment:
-      - SELENIUM_BASE_URL=http://selenium-chrome:4444
-      - SELENIUM_BROWSER=chrome
+      - SELENIUM_BASE_URL=http://selenium-firefox:4444
+      - SELENIUM_BROWSER=firefox
       - AEM_AUTHOR_URL
       - AEM_AUTHOR_USERNAME
       - AEM_AUTHOR_PASSWORD
       - AEM_PUBLISH_URL
       - AEM_PUBLISH_USERNAME
       - AEM_PUBLISH_PASSWORD
-      - REPORTS_PATH=/tmp/reports/wdio-chrome
+      - REPORTS_PATH=/tmp/reports/wdio-firefox
       - SHARED_FOLDER=/tmp/shared
       - HEADLESS_BROWSER
     volumes:
       - ./target/reports:/tmp/reports
       - 'shared:/tmp/shared'
       - 'shared:/usr/src/app/assets'
-    image: 'com.workday.community.aem-workday-community.ui.tests/ui.tests:latest'
-  selenium-chrome:
-    image: 'selenium/standalone-chrome-debug:latest'
+    image: 'com.adobe.cq.cloud-com.adobe.cq.cloud.testing.ui.java.ui.tests/ui.tests:latest'
+  selenium-firefox:
+    image: 'selenium/standalone-firefox-debug'
     ports:
       - 4444:4444
     volumes:
