@@ -115,7 +115,9 @@
           for (const node of mutation.addedNodes) {
             if (node.tagName === 'VIDEO' && !observedVideos.has(node)) {
               observedVideos.add(node);
-              addPlayVideoOption(node);
+              if(node.closest('.brightcoveplayer').querySelector('.play-video') == null) {
+                addPlayVideoOption(node);
+              }
             }
           }
         }
