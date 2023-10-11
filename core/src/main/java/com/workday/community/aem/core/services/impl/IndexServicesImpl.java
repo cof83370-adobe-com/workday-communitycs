@@ -34,9 +34,12 @@ public class IndexServicesImpl implements IndexServices {
   @Reference
   private CoveoIndexApiConfigService coveoIndexApiConfigService;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void indexPages(List<String> paths) {
-    ArrayList<String> pagePaths = new ArrayList<>();
+    List<String> pagePaths = new ArrayList<>();
     Integer batchSize = coveoIndexApiConfigService.getBatchSize();
     for (int i = 0; i < paths.size(); i++) {
       pagePaths.add(paths.get(i));
@@ -56,10 +59,11 @@ public class IndexServicesImpl implements IndexServices {
    * @param pagePaths the page paths
    * @return created Job
    */
-  protected Job createJobs(ArrayList<String> pagePaths) {
+  protected Job createJobs(List<String> pagePaths) {
     Map<String, Object> jobProperties = new HashMap<>();
     jobProperties.put("op", "index");
     jobProperties.put("paths", pagePaths);
     return jobManager.addJob(GlobalConstants.COMMUNITY_COVEO_JOB, jobProperties);
   }
+
 }

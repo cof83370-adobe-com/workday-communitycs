@@ -8,6 +8,7 @@ import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import com.workday.community.aem.core.services.HttpsUrlConnectionService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import java.util.HashMap;
+import java.util.Map;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
@@ -61,7 +62,7 @@ public class CoveoSourceApiServiceImplTest {
   @Test
   public void testGenerateHeader() {
     service = this.registerService();
-    HashMap<String, String> header = service.generateHeader();
+    Map<String, String> header = service.generateHeader();
     assertEquals(ContentType.APPLICATION_JSON.getMimeType(), header.get(HttpConstants.HEADER_ACCEPT));
     assertEquals(ContentType.APPLICATION_JSON.getMimeType(),
         header.get(HttpHeaders.CONTENT_TYPE));
@@ -74,7 +75,7 @@ public class CoveoSourceApiServiceImplTest {
    */
   @Test
   void testGetTotalIndexedNumbeFailed() {
-    HashMap<String, Object> response = new HashMap<>();
+    Map<String, Object> response = new HashMap<>();
     response.put("statusCode", 403);
     String responseString = "{\"error\": {\"message\": \"failed\"}}";
     response.put("response", responseString);
@@ -87,7 +88,7 @@ public class CoveoSourceApiServiceImplTest {
    */
   @Test
   void testGetTotalIndexedNumber() {
-    HashMap<String, Object> response = new HashMap<>();
+    Map<String, Object> response = new HashMap<>();
     response.put("statusCode", HttpStatus.SC_OK);
     String responseString = "{\"information\": {\"numberOfDocuments\": \"20\"}}";
     response.put("response", responseString);

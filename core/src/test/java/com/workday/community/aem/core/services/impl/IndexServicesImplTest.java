@@ -47,10 +47,8 @@ class IndexServicesImplTest {
    */
   @Test
   void indexPagesTest() {
-    List<String> paths = new ArrayList<String>();
-    ArrayList<String> processed = new ArrayList<String>();
+    List<String> paths = new ArrayList<>();
     paths.add("/page/path");
-    processed.add("/page/path");
     when(coveoIndexApiConfigService.getBatchSize()).thenReturn(50);
     indexServices.indexPages(paths);
     verify(jobManager).addJob(eq(GlobalConstants.COMMUNITY_COVEO_JOB), anyMap());
@@ -61,7 +59,7 @@ class IndexServicesImplTest {
    */
   @Test
   void indexPagesEmptyTest() {
-    List<String> paths = new ArrayList<String>();
+    List<String> paths = new ArrayList<>();
     when(coveoIndexApiConfigService.getBatchSize()).thenReturn(50);
     indexServices.indexPages(paths);
     verify(jobManager, never()).addJob(eq(GlobalConstants.COMMUNITY_COVEO_JOB), anyMap());

@@ -72,36 +72,36 @@ public class UserGroupServiceImpl implements UserGroupService {
    * The snap service.
    */
   @Reference
-  SnapService snapService;
+  private SnapService snapService;
 
   /**
    * The cache manager.
    */
   @Reference
-  CacheManagerService cacheManager;
+  private CacheManagerService cacheManager;
 
   @Reference
-  UserService userService;
+  private UserService userService;
 
   /**
    * The customer_role_mapping.
    */
-  private HashMap<String, String> customerRoleMapping = new HashMap<>();
+  private Map<String, String> customerRoleMapping = new HashMap<>();
 
   /**
    * The customer_of_mapping.
    */
-  private HashMap<String, String> customerOfMapping = new HashMap<>();
+  private Map<String, String> customerOfMapping = new HashMap<>();
 
   /**
    * The wsp_mapping.
    */
-  private HashMap<String, String> wspMapping = new HashMap<>();
+  private Map<String, String> wspMapping = new HashMap<>();
 
   /**
    * The partner_track_mapping.
    */
-  private HashMap<String, String> partnerTrackMapping = new HashMap<>();
+  private Map<String, String> partnerTrackMapping = new HashMap<>();
 
   @Activate
   @Modified
@@ -306,7 +306,7 @@ public class UserGroupServiceImpl implements UserGroupService {
   }
 
   private void addGroups(List<String> groups, JsonObject contactInformation, String key,
-                         HashMap<String, String> valueMap) {
+                         Map<String, String> valueMap) {
     JsonElement wsp = contactInformation.get(key);
     if (!wsp.isJsonNull()) {
       String wspString = wsp.getAsString();

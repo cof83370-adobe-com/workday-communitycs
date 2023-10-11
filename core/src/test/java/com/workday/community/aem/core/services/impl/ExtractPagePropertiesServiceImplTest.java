@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
@@ -87,7 +88,7 @@ public class ExtractPagePropertiesServiceImplTest {
     doReturn("Product 1.2").when(tagTwo).getTitle();
     doReturn("Product 2").when(tagThree).getTitle();
 
-    ArrayList<String> values =
+    List<String> values =
         extract.processHierarchyTaxonomyFields(tagManager, taxonomyTagIds, "productTags");
     assertTrue(values.contains("Product 1"));
     assertTrue(values.contains("Product 2"));
@@ -115,7 +116,7 @@ public class ExtractPagePropertiesServiceImplTest {
     doReturn("Release 1").when(tagOne).getTitle();
     doReturn("Release 1.2").when(tagTwo).getTitle();
 
-    ArrayList<String> values =
+    List<String> values =
         extract.processTaxonomyFields(tagManager, taxonomyTagIds, "releaseTags");
     assertTrue(values.contains("Release 1"));
     assertTrue(values.contains("Release 1.2"));
@@ -132,7 +133,7 @@ public class ExtractPagePropertiesServiceImplTest {
         {"access-control:customer_all", "access-control:customer_named_support_contact"};
     doReturn(accessControlValues).when(data).get("accessControlTags", String[].class);
 
-    HashMap<String, Object> properties = new HashMap<>();
+    Map<String, Object> properties = new HashMap<>();
     extract.processPermission(data, properties, "test@gmail.com", "test/path");
     String permissions = properties.toString();
     assertTrue(permissions.contains("customer"));
@@ -140,7 +141,7 @@ public class ExtractPagePropertiesServiceImplTest {
     assertTrue(permissions.contains("test@gmail.com"));
 
     doReturn(new String[0]).when(data).get("accessControlTags", String[].class);
-    HashMap<String, Object> emptyAccessProperties = new HashMap<>();
+    Map<String, Object> emptyAccessProperties = new HashMap<>();
     extract.processPermission(data, emptyAccessProperties, "test@gmail.com", "test/path");
     String emptyAccessPermissions = emptyAccessProperties.toString();
     assertTrue(emptyAccessPermissions.contains("exclude"));
@@ -170,7 +171,7 @@ public class ExtractPagePropertiesServiceImplTest {
   @Test
   public void testProcessStringFields() {
     ValueMap data = mock(ValueMap.class);
-    HashMap<String, Object> properties = new HashMap<>();
+    Map<String, Object> properties = new HashMap<>();
     doReturn("Page title").when(data).get("jcr:title", String.class);
     doReturn(null).when(data).get("pageTitle", String.class);
     extract.processStringFields(data, properties);
@@ -183,7 +184,7 @@ public class ExtractPagePropertiesServiceImplTest {
   @Test
   public void testPorcessDateFields() {
     ValueMap data = mock(ValueMap.class);
-    HashMap<String, Object> properties = new HashMap<>();
+    Map<String, Object> properties = new HashMap<>();
     GregorianCalendar value = new GregorianCalendar();
     doReturn(value).when(data).get("eventStartDate", GregorianCalendar.class);
     extract.processDateFields(data, properties);
@@ -198,7 +199,7 @@ public class ExtractPagePropertiesServiceImplTest {
   @Test
   public void testPorcessUserFields() throws RepositoryException {
     ValueMap data = mock(ValueMap.class);
-    HashMap<String, Object> properties = new HashMap<>();
+    Map<String, Object> properties = new HashMap<>();
     UserManager userManager = mock(UserManager.class);
     User user = mock(User.class);
     String userName = "admin";

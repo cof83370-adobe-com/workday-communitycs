@@ -22,6 +22,7 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
@@ -148,14 +149,14 @@ class UserGroupServiceImplTest {
 
   @Test
   void testCustomerRoles() throws NoSuchFieldException, IllegalAccessException {
-    HashMap<String, String> customerRoleMap = new HashMap<>();
+    Map<String, String> customerRoleMap = new HashMap<>();
     customerRoleMap.put("Named Support Contact", "customer_name_support_contact");
     customerRoleMap.put("Training Coordinator", "customer_training_coordinator");
     Field customerRoleField = userGroupService.getClass().getDeclaredField("customerRoleMapping");
     customerRoleField.setAccessible(true);
     customerRoleField.set(userGroupService, customerRoleMap);
 
-    HashMap<String, String> nscMap = new HashMap<>();
+    Map<String, String> nscMap = new HashMap<>();
     nscMap.put("Adaptive Planning", "customer_adaptive");
     nscMap.put("Scout", "customer_scount");
     nscMap.put("Peakon", "customer_peakon");
@@ -164,7 +165,7 @@ class UserGroupServiceImplTest {
     nscField.setAccessible(true);
     nscField.set(userGroupService, nscMap);
 
-    HashMap<String, String> wspMap = new HashMap<>();
+    Map<String, String> wspMap = new HashMap<>();
     wspMap.put("Customer - WSP Enhanced", "customer_wsp_enhanced");
     Field wspField = userGroupService.getClass().getDeclaredField("wspMapping");
     wspField.setAccessible(true);
@@ -195,7 +196,7 @@ class UserGroupServiceImplTest {
 
   @Test
   void testPartnerRoles() throws NoSuchFieldException, IllegalAccessException {
-    HashMap<String, String> partnerRoleMap = new HashMap<>();
+    Map<String, String> partnerRoleMap = new HashMap<>();
     partnerRoleMap.put("Innovation", "partner_innovation_track");
     partnerRoleMap.put("Sales", "partner_sales_track");
     partnerRoleMap.put("Services", "partner_services_track");

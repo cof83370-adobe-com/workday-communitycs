@@ -12,6 +12,7 @@ import com.workday.community.aem.core.services.CoveoSourceApiService;
 import com.workday.community.aem.core.services.HttpsUrlConnectionService;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
@@ -90,8 +91,8 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
    *
    * @return The api header
    */
-  protected HashMap<String, String> generateHeader() {
-    HashMap<String, String> header = new HashMap<>();
+  protected Map<String, String> generateHeader() {
+    Map<String, String> header = new HashMap<>();
     header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
     header.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
     header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
@@ -102,7 +103,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
    * {@inheritDoc}
    */
   @Override
-  public HashMap<String, Object> callApi() {
+  public Map<String, Object> callApi() {
     return restApiService.send(this.generateSourceApiUri(), generateHeader(), GET_API, "");
   }
 
@@ -112,7 +113,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
   @Override
   public long getTotalIndexedNumber() {
     long totalNumberOfIndexedItems = -1;
-    HashMap<String, Object> response = this.callApi();
+    Map<String, Object> response = this.callApi();
     if ((Integer) response.get("statusCode") == HttpStatus.SC_OK) {
       ObjectMapper mapper = new ObjectMapper();
       JsonFactory factory = mapper.getFactory();

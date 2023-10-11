@@ -12,6 +12,7 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.apache.http.HttpStatus;
 import org.apache.sling.event.jobs.Job;
@@ -94,9 +95,9 @@ public class CoveoIndexJobConsumerTest {
   @MethodSource("provideParameters")
   void testSuccessfulIndexing(int httpStatus, JobResult jobResult) {
     List<String> paths = new ArrayList<>(List.of("/sample/path"));
-
     List<Object> payload = new ArrayList<>();
-    HashMap<String, Object> property = new HashMap<>();
+    Map<String, Object> property = new HashMap<>();
+
     property.put("pageTitle", "Sample page");
     payload.add(property);
 

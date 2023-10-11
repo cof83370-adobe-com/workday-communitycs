@@ -156,7 +156,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
   /**
    * The taxonomyFields.
    */
-  private final ArrayList<String> taxonomyFields = new ArrayList<>(
+  private final List<String> taxonomyFields = new ArrayList<>(
       Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags",
           "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType",
           "eventAudience", "eventFormat")
@@ -165,28 +165,28 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
   /**
    * The dateFields.
    */
-  private final ArrayList<String> dateFields =
+  private final List<String> dateFields =
       new ArrayList<>(Arrays.asList("eventStartDate", "eventEndDate", "postedDate", "updatedDate"));
 
   /**
    * The hierarchyFields.
    */
-  private final ArrayList<String> hierarchyFields = new ArrayList<>(
+  private final List<String> hierarchyFields = new ArrayList<>(
       Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags",
           "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType"));
 
   /**
    * The stringFields.
    */
-  private final ArrayList<String> stringFields =
+  private final List<String> stringFields =
       new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation"));
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public HashMap<String, Object> extractPageProperties(String path) {
-    HashMap<String, Object> properties = new HashMap<>();
+  public Map<String, Object> extractPageProperties(String path) {
+    Map<String, Object> properties = new HashMap<>();
 
     try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
       PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
@@ -215,7 +215,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       for (String taxonomyField : taxonomyFields) {
         String[] taxonomyIds = data.get(taxonomyField, String[].class);
         if (taxonomyIds != null && taxonomyIds.length > 0) {
-          ArrayList<String> value = processTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
+          List<String> value = processTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
           properties.put(taxonomyField, value);
           if (hierarchyFields.contains(taxonomyField)) {
             value = processHierarchyTaxonomyFields(tagManager, taxonomyIds, taxonomyField);
@@ -245,7 +245,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         node = resource.adaptTo(Node.class);
       }
 
-      ArrayList<String> textList = new ArrayList<>();
+      List<String> textList = new ArrayList<>();
       if (node != null) {
         NodeIterator it = node.getNodes();
         processTextComponent(it, textList);
@@ -267,7 +267,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    * {@inheritDoc}
    */
   @Override
-  public void processDateFields(ValueMap data, HashMap<String, Object> properties) {
+  public void processDateFields(ValueMap data, Map<String, Object> properties) {
     for (String dateField : dateFields) {
       GregorianCalendar value = data.get(dateField, GregorianCalendar.class);
       if (value == null && dateField.equals("postedDate")) {
@@ -284,7 +284,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    * {@inheritDoc}
    */
   @Override
-  public void processPermission(ValueMap data, HashMap<String, Object> properties, String email,
+  public void processPermission(ValueMap data, Map<String, Object> properties, String email,
                                 String path) {
     ArrayList<Object> permissionGroupAllowedPermissions = new ArrayList<>();
     String[] accessControlValues = data
@@ -297,7 +297,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
           String[] drupalRoles = DRUPAL_ROLE_MAPPING.get(accessControlValue).split(";");
 
           for (String drupalRole : drupalRoles) {
-            HashMap<String, Object> permissionGroup = new HashMap<>();
+            Map<String, Object> permissionGroup = new HashMap<>();
             permissionGroup.put("identity", drupalRole);
             permissionGroup.put("identityType", IDENTITY_TYPE_GROUP);
             permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
@@ -314,21 +314,21 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     if (permissionGroupAllowedPermissions.isEmpty()) {
       // If access control field is empty, we need to pass a value, or else it will
       // get permission error during coveo indexing.
-      HashMap<String, Object> permissionGroup = new HashMap<>();
+      Map<String, Object> permissionGroup = new HashMap<>();
       permissionGroup.put("identity", EXCLUDE);
       permissionGroup.put("identityType", IDENTITY_TYPE_GROUP);
       permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
       permissionGroupAllowedPermissions.add(permissionGroup);
     }
     if (email != null && !email.trim().isEmpty()) {
-      HashMap<String, Object> permissionGroup = new HashMap<>();
+      Map<String, Object> permissionGroup = new HashMap<>();
       permissionGroup.put("identity", email);
       permissionGroup.put("identityType", IDENTITY_TYPE_USER);
       permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
       permissionGroupAllowedPermissions.add(permissionGroup);
     }
 
-    HashMap<String, Object> permissionGroup = new HashMap<>();
+    Map<String, Object> permissionGroup = new HashMap<>();
     if (!allowAnonymous && path.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
       allowAnonymous = true;
     }
@@ -344,7 +344,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    * {@inheritDoc}
    */
   @Override
-  public void processStringFields(ValueMap data, HashMap<String, Object> properties) {
+  public void processStringFields(ValueMap data, Map<String, Object> properties) {
     for (String stringField : stringFields) {
       String value = data.get(stringField, String.class);
       if (stringField.equals("pageTitle") && value == null) {
@@ -360,9 +360,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    * {@inheritDoc}
    */
   @Override
-  public ArrayList<String> processTaxonomyFields(TagManager tagManager, String[] taxonomyTagIds,
+  public List<String> processTaxonomyFields(TagManager tagManager, String[] taxonomyTagIds,
                                                  String taxonomyField) {
-    ArrayList<String> processedTags = new ArrayList<>();
+    List<String> processedTags = new ArrayList<>();
     for (String tagIdString : taxonomyTagIds) {
       Tag tag = tagManager.resolve(tagIdString);
       if (tag != null) {
@@ -376,19 +376,19 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    * {@inheritDoc}
    */
   @Override
-  public ArrayList<String> processHierarchyTaxonomyFields(TagManager tagManager,
+  public List<String> processHierarchyTaxonomyFields(TagManager tagManager,
                                                           String[] taxonomyTagIds,
                                                           String taxonomyField) {
-    ArrayList<String> processedTags = new ArrayList<>();
+    List<String> processedTags = new ArrayList<>();
     for (String tagIdString : taxonomyTagIds) {
       int index = tagIdString.indexOf("/");
-      ArrayList<String> tagIdsList = new ArrayList<>();
+      List<String> tagIdsList = new ArrayList<>();
       while (index >= 0) {
         tagIdsList.add(tagIdString.substring(0, index));
         index = tagIdString.indexOf("/", index + 1);
       }
       tagIdsList.add(tagIdString);
-      ArrayList<String> tagString = new ArrayList<>();
+      List<String> tagString = new ArrayList<>();
       for (String tagId : tagIdsList) {
         Tag tag = tagManager.resolve(tagId);
         if (tag != null) {
@@ -405,7 +405,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    * {@inheritDoc}
    */
   @Override
-  public void processTextComponent(NodeIterator it, ArrayList<String> textList) {
+  public void processTextComponent(NodeIterator it, List<String> textList) {
     while (it.hasNext()) {
       Node childNode = it.nextNode();
       try {
@@ -432,7 +432,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    */
   @Override
   public String processUserFields(ValueMap data, UserManager userManager,
-                                  HashMap<String, Object> properties) {
+                                  Map<String, Object> properties) {
     String userName = data.get(PN_PAGE_LAST_MOD_BY, String.class);
     String email = "";
     if (userName != null) {
@@ -458,7 +458,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    * {@inheritDoc}
    */
   @Override
-  public void processCustomComponents(Page page, HashMap<String, Object> properties) {
+  public void processCustomComponents(Page page, Map<String, Object> properties) {
     for (Map.Entry<String, String> component : customComponents.entrySet()) {
       Resource res = page.getContentResource(component.getKey());
       if (res != null) {

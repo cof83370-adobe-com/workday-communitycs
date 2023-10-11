@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -227,7 +228,7 @@ public class CoveoUtils {
         String.format("Inside getTokenPayload method, and the configured Search hub is: %s",
             searchHub));
 
-    HashMap<String, String> userMap = new HashMap<>();
+    Map<String, String> userMap = new HashMap<>();
     userMap.put("name", email);
     userMap.put("provider", searchApiConfigService.getUserIdProvider());
     String userIdType = searchApiConfigService.getUserIdType();
@@ -237,10 +238,10 @@ public class CoveoUtils {
     }
 
     String jsonString = gson.toJson(userMap);
-    ArrayList<String> userArray = new ArrayList<>();
+    List<String> userArray = new ArrayList<>();
     userArray.add(jsonString);
 
-    HashMap<String, Object> payloadMap = new HashMap<>();
+    Map<String, Object> payloadMap = new HashMap<>();
     payloadMap.put("validFor", searchApiConfigService.getTokenValidTime());
     payloadMap.put("userIds", userArray.toString());
     payloadMap.put("searchHub", searchHub);

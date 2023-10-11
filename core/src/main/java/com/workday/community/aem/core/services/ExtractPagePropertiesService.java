@@ -2,8 +2,6 @@ package com.workday.community.aem.core.services;
 
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.jcr.NodeIterator;
@@ -21,7 +19,7 @@ public interface ExtractPagePropertiesService {
    * @param path The page path
    * @return The page properties
    */
-  HashMap<String, Object> extractPageProperties(String path);
+  Map<String, Object> extractPageProperties(String path);
 
   /**
    * Process date fields.
@@ -29,7 +27,7 @@ public interface ExtractPagePropertiesService {
    * @param data       The value map data
    * @param properties The extracted page properties
    */
-  void processDateFields(ValueMap data, HashMap<String, Object> properties);
+  void processDateFields(ValueMap data, Map<String, Object> properties);
 
   /**
    * Process page access permission.
@@ -40,7 +38,7 @@ public interface ExtractPagePropertiesService {
    * @param path       of the current page
    * @see <a href="https://docs.coveo.com/en/107/cloud-v2-developers/simple-permission-model-definition-examples">Coveo permission example.</a>
    */
-  void processPermission(ValueMap data, HashMap<String, Object> properties, String email,
+  void processPermission(ValueMap data, Map<String, Object> properties, String email,
                          String path);
 
   /**
@@ -49,7 +47,7 @@ public interface ExtractPagePropertiesService {
    * @param data       The value map data
    * @param properties The extracted page properties
    */
-  void processStringFields(ValueMap data, HashMap<String, Object> properties);
+  void processStringFields(ValueMap data, Map<String, Object> properties);
 
   /**
    * Process taxonomy field.
@@ -59,7 +57,7 @@ public interface ExtractPagePropertiesService {
    * @param taxonomyField  Taxonomy field name
    * @return The processed taxonomy values
    */
-  ArrayList<String> processTaxonomyFields(TagManager tagManager, String[] taxonomyTagIds,
+  List<String> processTaxonomyFields(TagManager tagManager, String[] taxonomyTagIds,
                                           String taxonomyField);
 
   /**
@@ -79,7 +77,7 @@ public interface ExtractPagePropertiesService {
    * @param it       The node iterator
    * @param textlist List of text value
    */
-  void processTextComponent(NodeIterator it, ArrayList<String> textlist);
+  void processTextComponent(NodeIterator it, List<String> textlist);
 
   /**
    * Process user fields.
@@ -90,7 +88,7 @@ public interface ExtractPagePropertiesService {
    * @return The user's email
    */
   String processUserFields(ValueMap data, UserManager userManager,
-                           HashMap<String, Object> properties);
+                           Map<String, Object> properties);
 
   /**
    * Process custom components and extract values.
@@ -98,7 +96,7 @@ public interface ExtractPagePropertiesService {
    * @param page       page we are indexing.
    * @param properties Collected values.
    */
-  void processCustomComponents(Page page, HashMap<String, Object> properties);
+  void processCustomComponents(Page page, Map<String, Object> properties);
 
   /**
    * Process the page tags.

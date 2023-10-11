@@ -8,6 +8,7 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.CoveoIndexApiConfigService;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.JobManager;
@@ -93,7 +94,7 @@ public class ReplicationEventHandler implements EventHandler {
    */
   private Job startCoveoJob(ReplicationAction action) {
     Map<String, Object> jobProperties = new HashMap<>();
-    ArrayList<String> paths = new ArrayList<>();
+    List<String> paths = new ArrayList<>();
     paths.add(action.getPath());
     String op = action.getType().equals(ReplicationActionType.ACTIVATE) ? "index" : "delete";
     jobProperties.put("op", op);

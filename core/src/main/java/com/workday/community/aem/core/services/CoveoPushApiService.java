@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.services;
 
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The CoveoPushApiService interface.
@@ -47,8 +47,7 @@ public interface CoveoPushApiService {
    * @param payload    The api call payload
    * @return The api response
    */
-  HashMap<String, Object> callApi(String uri, HashMap<String, String> header, String httpMethod,
-                                  String payload);
+  Map<String, Object> callApi(String uri, Map<String, String> header, String httpMethod, String payload);
 
   /**
    * Call batch upload item Api.
@@ -56,19 +55,20 @@ public interface CoveoPushApiService {
    * @param fileId The file id
    * @return The api response
    */
-  HashMap<String, Object> callBatchUploadUri(String fileId);
+  Map<String, Object> callBatchUploadUri(String fileId);
 
   /**
    * Call create container Api.
    *
    * @return The api response
    */
-  HashMap<String, Object> callCreateContainerUri();
+  Map<String, Object> callCreateContainerUri();
 
   /**
    * Call delete all items Api.
    *
    * @return The api status code
+   * @see <a href="https://docs.coveo.com/en/131/index-content/deleting-old-items-in-a-push-source">See reference.</a>
    */
   Integer callDeleteAllItemsUri();
 
@@ -89,8 +89,8 @@ public interface CoveoPushApiService {
    * @param payload          The api call payload
    * @return The api response
    */
-  HashMap<String, Object> callUploadFileUri(String uploadUri,
-                                            HashMap<String, String> uploadFileHeader,
+  Map<String, Object> callUploadFileUri(String uploadUri,
+                                            Map<String, String> uploadFileHeader,
                                             List<Object> payload);
 
   /**
@@ -107,7 +107,7 @@ public interface CoveoPushApiService {
    * @param response The response
    * @return The transformed response
    */
-  HashMap<String, Object> transformCreateContainerResponse(String response);
+  Map<String, Object> transformCreateContainerResponse(String response);
 
   /**
    * Transform payload list to string.
@@ -116,4 +116,5 @@ public interface CoveoPushApiService {
    * @return The transformed response
    */
   String transformPayload(List<Object> payload);
+
 }

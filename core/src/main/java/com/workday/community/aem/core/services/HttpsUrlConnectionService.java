@@ -8,6 +8,7 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.http.HttpStatus;
 import org.osgi.service.component.annotations.Component;
@@ -48,9 +49,9 @@ public class HttpsUrlConnectionService {
    * @param payload    The api call payload
    * @return The api response
    */
-  public HashMap<String, Object> send(String url, HashMap<String, String> header, String httpMethod,
-                                      String payload) {
-    HashMap<String, Object> apiResponse = new HashMap<>();
+  public Map<String, Object> send(String url, Map<String, String> header, String httpMethod,
+                                  String payload) {
+    Map<String, Object> apiResponse = new HashMap<>();
 
     try {
       HttpsURLConnection request = this.getHttpsUrlConnection(url);
@@ -58,7 +59,7 @@ public class HttpsUrlConnectionService {
       request.setReadTimeout(RestApiConstants.TIMEOUT);
       request.setRequestMethod(httpMethod);
       if (!header.isEmpty()) {
-        for (HashMap.Entry<String, String> entry : header.entrySet()) {
+        for (Map.Entry<String, String> entry : header.entrySet()) {
           request.setRequestProperty(entry.getKey(), entry.getValue());
         }
       }

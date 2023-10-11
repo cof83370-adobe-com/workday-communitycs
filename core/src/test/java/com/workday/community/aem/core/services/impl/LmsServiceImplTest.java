@@ -2,9 +2,7 @@ package com.workday.community.aem.core.services.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
 import com.workday.community.aem.core.config.LmsConfig;
 import com.workday.community.aem.core.exceptions.LmsException;

@@ -215,7 +215,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
 
         AssetReferenceSearch ref =
             new AssetReferenceSearch(node, DamConstants.MOUNTPOINT_ASSETS, resResolver);
-        Map<String, Asset> allref = new HashMap<String, Asset>();
+        Map<String, Asset> allref = new HashMap<>();
         allref.putAll(ref.search());
         for (Map.Entry<String, Asset> entry : allref.entrySet()) {
           String assetPath = entry.getKey();

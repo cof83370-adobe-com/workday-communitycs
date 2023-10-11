@@ -3,16 +3,16 @@ package com.workday.community.aem.core.services;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
-import com.workday.community.aem.core.constants.RestApiConstants;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
+import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
 import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
-import org.apache.sling.api.servlets.HttpConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +41,7 @@ public class HttpsURLConnectionServiceTest {
   /**
    * The header.
    */
-  HashMap<String, String> header = new HashMap<String, String>();
+  Map<String, String> header = new HashMap<>();
 
   /**
    * The api uri.
@@ -62,7 +62,7 @@ public class HttpsURLConnectionServiceTest {
     String response = "response";
     InputStream stream = new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
     doReturn(stream).when(request).getInputStream();
-    HashMap<String, Object> apiResponse = service.send(url, header, "GET", "");
+    Map<String, Object> apiResponse = service.send(url, header, "GET", "");
     Assertions.assertEquals(response, apiResponse.get("response").toString());
   }
 
@@ -74,13 +74,13 @@ public class HttpsURLConnectionServiceTest {
   @Test
   public void testSendFailed() throws IOException {
     header.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-    int expected = 403;
+    int expected = HttpStatus.SC_FORBIDDEN;
     doReturn(request).when(service).getHttpsUrlConnection(any());
     doReturn(expected).when(request).getResponseCode();
     String response = "";
     InputStream stream = new ByteArrayInputStream(response.getBytes(StandardCharsets.UTF_8));
     doReturn(stream).when(request).getInputStream();
-    HashMap<String, Object> apiResponse = service.send(url, header, "GET", "");
+    Map<String, Object> apiResponse = service.send(url, header, "GET", "");
     Assertions.assertEquals("", apiResponse.get("response"));
   }
 }

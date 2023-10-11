@@ -2,6 +2,7 @@ package com.workday.community.aem.core.pojos.restclient;
 
 import java.net.URI;
 import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,30 +11,34 @@ import lombok.Setter;
  */
 @Getter
 public class ApiRequest {
+
   /**
    * The request body.
    */
-  @Setter private String body;
+  @Setter
+  private String body;
 
   /**
    * The method used in request.
    */
-  @Setter private String method;
+  @Setter
+  private String method;
 
   /**
    * The url of request.
    */
-  @Setter private String url;
+  @Setter
+  private String url;
 
   /**
    * The request headers.
    */
-  private final HashMap<String, String> headers;
+  private final Map<String, String> headers;
 
   /**
    * The request form data.
    */
-  private final HashMap<String, String> formData;
+  private final Map<String, String> formData;
 
   public ApiRequest() {
     this.headers = new HashMap<>();

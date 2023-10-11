@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.services;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The CoveoSourceApiService interface.
@@ -19,7 +19,7 @@ public interface CoveoSourceApiService {
    *
    * @return The api response
    */
-  HashMap<String, Object> callApi();
+  Map<String, Object> callApi();
 
   /**
    * Get total indexed number.
