@@ -169,8 +169,10 @@ public class ExtractPagePropertiesServiceImplTest {
         HashMap<String, Object> properties = new HashMap<>();
         doReturn("Page title").when(data).get("jcr:title", String.class);
         doReturn(null).when(data).get("pageTitle", String.class);
+        doReturn("retired").when(data).get("retirementStatus", String.class);
         extract.processStringFields(data, properties);
         assertEquals(properties.get("pageTitle"), "Page title");
+        assertEquals(properties.get("workflowStatus"), "retired");
     }
 
     /**

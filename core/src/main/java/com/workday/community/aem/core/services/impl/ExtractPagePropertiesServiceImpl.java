@@ -70,7 +70,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType"));
 
     /** The stringFields. */
-    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation"));
+    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation", "retirementStatus"));
 
     /** The page tags. */
     private static final Map<String, String> pageTagMap = new HashMap<>() {{
@@ -282,6 +282,14 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             String value = data.get(stringField, String.class);
             if (stringField.equals("pageTitle") && value == null) {
                 value = data.get(JCR_TITLE, String.class);
+            }
+            if (stringField.equals("retirementStatus")) {
+                if (value == "retired") {
+                    properties.put("workflowStatus", value);
+                }
+                else {
+                    properties.put("workflowStatus", "published");
+                }
             }
             if (value != null) {
                 properties.put(stringField, value);
