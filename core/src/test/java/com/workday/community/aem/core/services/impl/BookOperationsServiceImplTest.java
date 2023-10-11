@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import com.day.cq.wcm.api.Page;
+import com.workday.community.aem.core.services.BookOperationsService;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -31,8 +32,7 @@ public class BookOperationsServiceImplTest {
   /**
    * The book operations service impl.
    */
-  private final BookOperationsServiceImpl bookOperationsServiceImpl =
-      new BookOperationsServiceImpl();
+  private BookOperationsService bookOperationsServiceImpl;
 
   /**
    * The context.
@@ -65,6 +65,8 @@ public class BookOperationsServiceImplTest {
     Page currentPage = context.currentResource("/content/book-faq-page").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
     context.registerService(ResourceResolver.class, resourceResolver);
+    context.registerService(QueryService.class, queryService);
+    bookOperationsServiceImpl = context.registerInjectActivateService(new BookOperationsServiceImpl());
   }
 
   /**
