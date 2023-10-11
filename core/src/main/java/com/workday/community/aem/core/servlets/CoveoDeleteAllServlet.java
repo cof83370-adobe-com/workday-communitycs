@@ -6,6 +6,7 @@ import com.workday.community.aem.core.services.IndexServices;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.Servlet;
+import org.apache.http.entity.ContentType;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
@@ -43,10 +44,10 @@ public class CoveoDeleteAllServlet extends SlingAllMethodsServlet {
   private transient CoveoIndexApiConfigService coveoIndexApiConfigService;
 
   /**
-   * Delete all contents from coveo.
+   * Deletes all content from Coveo.
    *
-   * @param request  The HTTP request
-   * @param response The HTTP response
+   * @param request  The Sling HTTP request object.
+   * @param response The Sling HTTP response object.
    * @throws IOException An IOException object.
    */
   @Override
@@ -56,7 +57,8 @@ public class CoveoDeleteAllServlet extends SlingAllMethodsServlet {
       return;
     }
     PrintWriter printOut = response.getWriter();
-    response.setContentType("text/html");
+
+    response.setContentType(ContentType.TEXT_HTML.getMimeType());
     coveoPushApiService.callDeleteAllItemsUri();
     printOut.append("Delete all request sent.");
   }
