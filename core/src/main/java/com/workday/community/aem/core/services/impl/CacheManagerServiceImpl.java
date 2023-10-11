@@ -21,6 +21,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import lombok.Setter;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -59,21 +60,13 @@ public class CacheManagerServiceImpl implements CacheManagerService {
    * The resource resolver factory.
    */
   @Reference
+  @Setter
   private ResourceResolverFactory resourceResolverFactory;
 
   private CacheConfig config;
 
   public CacheManagerServiceImpl() {
     caches = new ConcurrentHashMap<>();
-  }
-
-  /**
-   * Set resource resolver factory.
-   *
-   * @param resourceResolverFactory Please note that this method is used for testing purpose only.
-   */
-  public void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory) {
-    this.resourceResolverFactory = resourceResolverFactory;
   }
 
   /**
@@ -118,6 +111,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public <V> V get(String cacheBucketName, String key, ValueCallback<V> callback) {
     if (!this.config.enabled()) {
@@ -139,6 +135,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     return null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public <V> boolean isPresent(String cacheBucketName, String key) {
     try {
@@ -153,6 +152,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void invalidateCache(String cacheBucketName, String key) {
     if (!this.config.enabled()) {
@@ -187,17 +189,25 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void invalidateCache(String cacheBucketName) {
     invalidateCache(cacheBucketName, null);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void invalidateCache() {
     invalidateCache(null, null);
   }
 
-  // ====== Convenient Utility APIs ====== //
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
     ResourceResolver resolver = config.enabled() ? resolverCache.get(serviceUser) : null;
@@ -215,7 +225,6 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     return resolver;
   }
 
-  // ================== Private methods ===============//
   private <V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
                                                ValueCallback<V> callback) throws CacheException {
     try {

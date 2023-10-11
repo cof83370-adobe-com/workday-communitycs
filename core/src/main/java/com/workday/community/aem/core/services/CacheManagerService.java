@@ -60,7 +60,7 @@ public interface CacheManagerService {
   /**
    * Convenient method to get a service Resource resolver from Cache (create if not existing).
    *
-   * @param serviceUser The service username
+   * @param serviceUser The service username.
    * @return the Service resource resolver from Cache.
    */
   ResourceResolver getServiceResolver(String serviceUser) throws CacheException;
