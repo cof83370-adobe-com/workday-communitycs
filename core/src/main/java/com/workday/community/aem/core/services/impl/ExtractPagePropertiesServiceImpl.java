@@ -283,12 +283,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             if (stringField.equals("pageTitle") && value == null) {
                 value = data.get(JCR_TITLE, String.class);
             }
-            if (stringField.equals("retirementStatus")) {
-                if (value == "retired") {
-                    properties.put("workflowStatus", value);
-                }
-                else {
-                    properties.put("workflowStatus", "published");
+            else if (stringField.equals("retirementStatus")) {
+                if (value != "retired") {
+                    value = "published";
                 }
             }
             if (value != null) {

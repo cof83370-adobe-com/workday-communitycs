@@ -170,9 +170,13 @@ public class ExtractPagePropertiesServiceImplTest {
         doReturn("Page title").when(data).get("jcr:title", String.class);
         doReturn(null).when(data).get("pageTitle", String.class);
         doReturn("retired").when(data).get("retirementStatus", String.class);
+        doReturn("host").when(data).get("eventHost", String.class);
+        doReturn("location").when(data).get("eventLocation", String.class);
         extract.processStringFields(data, properties);
         assertEquals(properties.get("pageTitle"), "Page title");
-        assertEquals(properties.get("workflowStatus"), "retired");
+        assertEquals(properties.get("eventHost"), "host");
+        assertEquals(properties.get("eventLocation"), "location");
+        assertEquals(properties.get("retirementStatus"), "retired");
     }
 
     /**
