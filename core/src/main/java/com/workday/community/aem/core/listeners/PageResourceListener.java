@@ -98,29 +98,28 @@ public class PageResourceListener implements ResourceChangeListener {
    * @param resourceResolver A resource resolver object.
    */
   public void addInternalWorkmatesTag(String pagePath, ResourceResolver resourceResolver) {
-    try {
-      PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-      Page page = Objects.requireNonNull(pageManager).getContainingPage(pagePath);
-      if (null != page) {
-        String[] aclTags = Optional
-            .ofNullable(
-                page.getProperties()
-                    .get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class))
-            .orElse(new String[0]);
-        if (aclTags.length > 0) {
-          List<String> aclTagList = new ArrayList<>(Arrays.asList(aclTags));
-          if (!aclTagList.contains(TAG_INTERNAL_WORKMATE)) {
-            aclTagList.add(TAG_INTERNAL_WORKMATE);
-            Node pageNode = page.getContentResource().adaptTo(Node.class);
-            pageNode.setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL,
-                aclTagList.toArray(String[]::new));
-          }
-        }
+    PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
+    Page page = Objects.requireNonNull(pageManager).getContainingPage(pagePath);
+    if (page == null) {
+      return;
+    }
 
+    Node pageNode = page.getContentResource().adaptTo(Node.class);
+
+    String[] aclTags = Optional.ofNullable(page.getProperties()
+            .get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class))
+        .orElse(new String[0]);
+    List<String> aclTagList = new ArrayList<>(Arrays.asList(aclTags));
+
+    if (pageNode != null && !aclTagList.contains(TAG_INTERNAL_WORKMATE)) {
+      aclTagList.add(TAG_INTERNAL_WORKMATE);
+      try {
+        pageNode.setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL,
+            aclTagList.toArray(String[]::new));
+      } catch (RepositoryException exception) {
+        log.error("Exception occurred when adding Internal Workmates Tag property to page {} ",
+            exception.getMessage());
       }
-    } catch (RepositoryException exception) {
-      log.error("Exception occurred when adding Internal Workmates Tag property to page {} ",
-          exception.getMessage());
     }
   }
 
@@ -131,8 +130,8 @@ public class PageResourceListener implements ResourceChangeListener {
    * @param resourceResolver A resource resolver object.
    */
   public void addAuthorPropertyToContentNode(String path, ResourceResolver resourceResolver) {
-    try {
-      if (resourceResolver.getResource(path) != null) {
+    if (resourceResolver.getResource(path) != null) {
+      try {
         Node root = Objects.requireNonNull(resourceResolver.getResource(path)).adaptTo(Node.class);
         String createdUserId =
             Objects.requireNonNull(root).getProperty(JcrConstants.JCR_CREATED_BY).getString();
@@ -161,9 +160,9 @@ public class PageResourceListener implements ResourceChangeListener {
             root.setProperty("author", fullName);
           }
         }
+      } catch (RepositoryException ex) {
+        log.error("Exception occurred when adding author property to page {} ", ex.getMessage());
       }
-    } catch (RepositoryException ex) {
-      log.error("Exception occurred when adding author property to page {} ", ex.getMessage());
     }
   }
 
