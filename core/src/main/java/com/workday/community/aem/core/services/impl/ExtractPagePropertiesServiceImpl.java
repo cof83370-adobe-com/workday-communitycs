@@ -29,6 +29,7 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingException;
@@ -151,7 +152,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    * The stringFields.
    */
   private final List<String> stringFields =
-      new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation"));
+      new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation", "retirementStatus"));
 
   /**
    * The cache manager.
@@ -333,6 +334,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       String value = data.get(stringField, String.class);
       if (stringField.equals("pageTitle") && value == null) {
         value = data.get(JCR_TITLE, String.class);
+      } else if (stringField.equals("retirementStatus")) {
+        if (StringUtils.isNotBlank(value) && !value.equals("retired")) {
+          value = "published";
+        }
       }
       if (value != null) {
         properties.put(stringField, value);

@@ -14,6 +14,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
@@ -172,17 +173,23 @@ public class ExtractPagePropertiesServiceImplTest {
   public void testProcessStringFields() {
     ValueMap data = mock(ValueMap.class);
     Map<String, Object> properties = new HashMap<>();
-    doReturn("Page title").when(data).get("jcr:title", String.class);
-    doReturn(null).when(data).get("pageTitle", String.class);
+    when(data.get("jcr:title", String.class)).thenReturn("Page title");
+    when(data.get("pageTitle", String.class)).thenReturn(null);
+    when(data.get("retirementStatus", String.class)).thenReturn("retired");
+    when(data.get("eventHost", String.class)).thenReturn("host");
+    when(data.get("eventLocation", String.class)).thenReturn("location");
     extract.processStringFields(data, properties);
     assertEquals(properties.get("pageTitle"), "Page title");
+    assertEquals(properties.get("eventHost"), "host");
+    assertEquals(properties.get("eventLocation"), "location");
+    assertEquals(properties.get("retirementStatus"), "retired");
   }
 
   /**
    * Test process date fields.
    */
   @Test
-  public void testPorcessDateFields() {
+  public void testProcessDateFields() {
     ValueMap data = mock(ValueMap.class);
     Map<String, Object> properties = new HashMap<>();
     GregorianCalendar value = new GregorianCalendar();
