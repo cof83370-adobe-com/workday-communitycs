@@ -1,9 +1,10 @@
 package com.workday.community.aem.core.workflows;
 
+import static com.workday.community.aem.core.constants.WorkflowConstants.JCR_PATH;
+
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
-import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.workday.community.aem.core.constants.WorkflowConstants;
@@ -35,7 +36,7 @@ public class TerminateRetirementWorkflowProcess implements WorkflowProcess {
         String path = "";
         
         log.debug("Payload type: {}", payloadType);
-        if (StringUtils.equals(payloadType, "JCR_PATH")) {
+        if (StringUtils.equals(payloadType, JCR_PATH)) {
             path = workItem.getWorkflowData().getPayload().toString();
             log.info("Payload path: {}", path);
             

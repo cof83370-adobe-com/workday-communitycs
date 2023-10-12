@@ -25,7 +25,7 @@ import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFI
  * The Utility class for all OURM related Utility APIs
  */
 public class OurmUtils {
-  private final static Logger LOGGER = LoggerFactory.getLogger(OurmUtils.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(OurmUtils.class);
 
   /**
    * Get the current user's Salesforce id.
