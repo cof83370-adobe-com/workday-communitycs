@@ -1,8 +1,8 @@
 package com.workday.community.aem.core.models.impl;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.RETIRED_BADGE_TITLE;
-import static com.workday.community.aem.core.constants.GlobalConstants.RETIREMENT_STATUS_PROP;
-import static com.workday.community.aem.core.constants.GlobalConstants.RETIREMENT_STATUS_VAL;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIRED_BADGE_TITLE;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_PROP;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_VAL;
 
 import java.util.ArrayList;
 import java.util.Collections;
