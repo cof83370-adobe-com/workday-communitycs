@@ -1,22 +1,7 @@
-/*
- *  Copyright 2022 Adobe Systems Incorporated
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
-package com.workday.community.aem.testing.ui.java.ui.tests;
+package com.workday.community.aem.testing.ui.java.ui.tests.base;
 
 import com.workday.community.aem.testing.ui.java.ui.tests.lib.Commands;
-import com.workday.community.aem.testing.ui.java.ui.tests.lib.Config;
+import com.workday.community.aem.testing.ui.java.ui.tests.Config;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.openqa.selenium.Platform;
@@ -25,7 +10,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.slf4j.Logger;
@@ -34,21 +18,22 @@ import org.slf4j.LoggerFactory;
 import java.net.URL;
 import java.util.logging.Level;
 
+import static com.workday.community.aem.testing.ui.java.ui.tests.Config.SELENIUM_BROWSER;
+
 
 /**
  * This base class will initialize the web driver instance used within the tests.
  */
 public abstract class AEMTestBase {
     protected static WebDriver driver;
-
     protected static Commands commands;
 
-    public static Logger logger = LoggerFactory.getLogger(AEMTestBase.class);
+    public static Logger LOGGER = LoggerFactory.getLogger(AEMTestBase.class);
 
     @BeforeClass
     public static void init() throws Exception {
         // Initialize remote web driver session
-        String browser = System.getProperty("SELENIUM_BROWSER", "chrome");
+        String browser = SELENIUM_BROWSER;
         DesiredCapabilities dc = new DesiredCapabilities();
         // Enable browser logs
         LoggingPreferences logPrefs = new LoggingPreferences();
@@ -61,7 +46,7 @@ public abstract class AEMTestBase {
             case "chrome":
                 ChromeOptions options = new ChromeOptions();
                 options.setHeadless(true);
-                options.addArguments("--verbose", "--headless", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage");
+                options.addArguments("--verbose", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage");
                 dc.setCapability(ChromeOptions.CAPABILITY, options);
                 dc.setCapability("goog:loggingPrefs", logPrefs);
                 break;
@@ -69,15 +54,13 @@ public abstract class AEMTestBase {
                 FirefoxOptions ffOptions = new FirefoxOptions();
                 ffOptions.addArguments("-headless");
                 dc.setCapability(ChromeOptions.CAPABILITY, ffOptions);
-                dc.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
+                dc.setCapability("loggingPrefs", logPrefs);
                 break;
         }
         URL webDriverUrl = new URL(Config.SELENIUM_BASE_URL + "/wd/hub");
         driver = new RemoteWebDriver(webDriverUrl, dc);
         commands = new Commands(driver);
     }
-
-
 
     @AfterClass
     public static void cleanup() {

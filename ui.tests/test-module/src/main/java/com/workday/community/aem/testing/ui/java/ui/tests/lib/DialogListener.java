@@ -24,11 +24,9 @@ import java.lang.reflect.Method;
 
 // deals with dialogs that might appear during tests
 public class DialogListener implements WebDriverListener {
-
-    public static Logger logger = LoggerFactory.getLogger(DialogListener.class);
+    public static Logger LOGGER = LoggerFactory.getLogger(DialogListener.class);
 
     public DialogListener() {
-
     }
 
     @Override
@@ -42,9 +40,7 @@ public class DialogListener implements WebDriverListener {
             WebElement overlay = driver.findElement(By.cssSelector("coral-overlay[class*='onboarding']"));
             overlay.sendKeys(Keys.ESCAPE);
         } catch (org.openqa.selenium.NoSuchElementException e) {
-            logger.debug("No onboarding dialog present");
+            LOGGER.debug("No onboarding dialog present");
         }
     }
-
-
 }

@@ -13,15 +13,16 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.workday.community.aem.testing.ui.java.ui.tests;
+package com.workday.community.aem.testing.ui.java.ui.tests.cases;
 
 import com.workday.community.aem.testing.ui.java.ui.tests.lib.BrowserLogsDumpRule;
-import com.workday.community.aem.testing.ui.java.ui.tests.lib.Config;
+import com.workday.community.aem.testing.ui.java.ui.tests.Config;
 import com.workday.community.aem.testing.ui.java.ui.tests.lib.FailureScreenShotRule;
+import com.workday.community.aem.testing.ui.java.ui.tests.base.AEMTestBase;
 import org.junit.*;
 import org.openqa.selenium.By;
 
-public class LoginTestUI extends AEMTestBase {
+public class LoginTest extends AEMTestBase {
     /**
      * Using the following rule will create a screenshot in case of tests failure
      */
@@ -42,16 +43,16 @@ public class LoginTestUI extends AEMTestBase {
 
     @Test
     public void checkLoginForm() {
-        logger.info("Navigating to root");
+        LOGGER.info("Navigating to root");
         driver.navigate().to(Config.AEM_AUTHOR_URL + "/");
-        logger.info("Finding elements in login form");
+        LOGGER.info("Finding elements in login form");
         driver.findElement(By.cssSelector("#username"));
         driver.findElement(By.cssSelector("#password"));
         driver.findElement(By.cssSelector("form [type=\"submit\"]"));
     }
 
     @Test
-    public void checkSuccessfulLogin() throws Exception {
+    public void checkSuccessfulLogin() {
         driver.navigate().to(Config.AEM_AUTHOR_URL + "/");
 
         commands.aemLogin(Config.AEM_AUTHOR_USERNAME, Config.AEM_AUTHOR_PASSWORD);

@@ -26,35 +26,30 @@
     <groupId>com.workday.community.aem</groupId>
     <version>0.0.1-SNAPSHOT</version>
     <artifactId>com.workday.community.aem.ui.tests.java</artifactId>
-    <name>com.adobe.cq.cloud.testing.ui.java - UI Tests</name>
-    <description></description>
+    <name>com.workday.community.aem.testing.ui.java - UI Tests</name>
+    <description>This is commmunity smog test suite.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
-
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <HEADLESS_BROWSER>false</HEADLESS_BROWSER>
+        <HEADLESS_BROWSER>true</HEADLESS_BROWSER>
         <REPORTS_PATH>${project.basedir}/target/reports</REPORTS_PATH>
 
         <!-- AEMaaCS UI testing convention properties -->
         <SELENIUM_BASE_URL>http://localhost:4444</SELENIUM_BASE_URL>
         <SELENIUM_BROWSER>chrome</SELENIUM_BROWSER>
-
         <AEM_AUTHOR_URL>http://localhost:4502</AEM_AUTHOR_URL>
         <AEM_AUTHOR_USERNAME>admin</AEM_AUTHOR_USERNAME>
         <AEM_AUTHOR_PASSWORD>admin</AEM_AUTHOR_PASSWORD>
-
         <AEM_PUBLISH_URL/>
         <AEM_PUBLISH_USERNAME>admin</AEM_PUBLISH_USERNAME>
         <AEM_PUBLISH_PASSWORD>admin</AEM_PUBLISH_PASSWORD>
-
         <REPORTS_PATH>target/reports/</REPORTS_PATH>
         <SCREENSHOTS_PATH>target/screenshots</SCREENSHOTS_PATH>
         <SHARED_FOLDER>/tmp/shared</SHARED_FOLDER>
-        <UPLOAD_URL></UPLOAD_URL>
+        <UPLOAD_URL/>
     </properties>
 
     <build>
@@ -112,7 +107,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.21.0</version>
+                        <version>2.22.1</version>
                         <configuration>
                             <skip>true</skip>
                         </configuration>
@@ -165,7 +160,7 @@
                          after integration/failsafe tests are executed-->
                     <plugin>
                         <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.3.0</version>
+                        <version>3.0.2</version>
                         <executions>
                             <execution>
                                 <id>copy-resources</id>
@@ -189,7 +184,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-report-plugin</artifactId>
-                        <version>3.0.0-M8</version>
+                        <version>3.0.0-M7</version>
                         <configuration>
                             <outputDirectory>${REPORTS_PATH}/html_report</outputDirectory>
                             <reportsDirectory>${REPORTS_PATH}</reportsDirectory>
@@ -223,7 +218,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.21.0</version>
+                        <version>2.22.1</version>
                         <configuration>
                             <skip>true</skip>
                         </configuration>
@@ -277,7 +272,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-report-plugin</artifactId>
-                        <version>3.0.0-M8</version>
+                        <version>3.0.0-M7</version>
                         <configuration>
                             <outputDirectory>${env.REPORTS_PATH}/html_report</outputDirectory>
                             <reportsDirectory>${env.REPORTS_PATH}</reportsDirectory>
@@ -301,7 +296,7 @@
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
-            <version>4.6.0</version>
+            <version>4.8.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

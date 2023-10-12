@@ -15,6 +15,7 @@
  */
 package com.workday.community.aem.testing.ui.java.ui.tests.lib;
 
+import com.workday.community.aem.testing.ui.java.ui.tests.Config;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -26,8 +27,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
+import java.util.Objects;
 
-import static com.adobe.cq.cloud.testing.ui.java.ui.tests.AEMTestBase.logger;
+import static com.workday.community.aem.testing.ui.java.ui.tests.base.AEMTestBase.LOGGER;
 
 /**
  * Helper class containing a pre-defined set of functions for UI testing with Adobe Experience Manager.
@@ -36,14 +38,14 @@ public class Commands {
     protected static WebDriver driver;
 
     public Commands(WebDriver driver) {
-        this.driver = driver;
+        Commands.driver = driver;
     }
 
     public void forceLogout() {
         driver.navigate().to(Config.AEM_AUTHOR_URL + "/");
 
-        if (driver.getTitle() != "AEM Sign In") {
-            logger.info("Need to log out");
+        if (!Objects.equals(driver.getTitle(), "AEM Sign In")) {
+            LOGGER.info("Need to log out");
             driver.navigate().to(Config.AEM_AUTHOR_URL + "/system/sling/logout.html");
         }
 
@@ -53,7 +55,7 @@ public class Commands {
         wait.withTimeout(Duration.ofSeconds(10));
         wait.pollingEvery(Duration.ofMillis(250));
         wait.ignoring(NoSuchElementException.class);
-        logger.info("Waiting for login dialog");
+        LOGGER.info("Waiting for login dialog");
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("form[name=\"login\"]")));
         driver.findElement(By.cssSelector("form[name=\"login\"]"));
     }
@@ -73,6 +75,7 @@ public class Commands {
                 try {
                     Thread.sleep(500);
                 } catch (InterruptedException ex) {
+                   LOGGER.error("AEM login thread fails");
                 }
             }
         }
@@ -87,18 +90,14 @@ public class Commands {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("coral-shell-content")));
     }
 
-
     public void snapshot(String fileName) throws IOException {
         File capture = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss.SSS");
         String timestamp = dateFormat.format(new Date());
 
         fileName = Config.SCREENSHOTS_PATH + "/" +  fileName + "-" + timestamp + ".png";
-        logger.debug("copying to " + fileName);
+        LOGGER.debug("copying to " + fileName);
         File targetFile = new File(fileName);
         FileUtils.copyFile(capture, targetFile);
     }
-
-
-
 }
