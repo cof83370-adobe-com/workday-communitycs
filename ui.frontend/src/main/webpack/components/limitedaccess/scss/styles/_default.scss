@@ -1,6 +1,5 @@
 .wd-limited-access {
-    &__container::before, &__text::before, &__image::before, &__download::before, &__brightcoveplayer::before, &__relatedinformation::before {
-        content: 'LIMITED ACCESS ' url('../resources/images/limited-access-icon.svg');
+    &__badge {
         position: absolute;
         color: $wdc-color-cinnamon-500;
         font-size: $font-size-xsmall;
@@ -9,6 +8,12 @@
         line-height: 18px;
         letter-spacing: 0.20px;
         word-wrap: break-word;
+
+        &::after {
+            content: url('../resources/images/limited-access-icon.svg');
+            vertical-align: top;
+            margin-left: 5px;
+        }
     }
 
     &__container {
@@ -23,14 +28,27 @@
         }
     }
 
-    &__image::before {
-        background-color: rgba(255, 255, 255, 0.5);
+    &__image {
+        position: relative;
+        .wd-limited-access__badge {
+            background-color: rgba(255, 255, 255, 0.5);
+            top: 0;
+            left: 0;
+        }
     }
 
     &__download {
         .cmp-download {
             height: 50px;
             align-items: end;
+        }
+    }
+
+    &__relatedinformation {
+        position: relative;
+        .wd-limited-access__badge {
+            top: 0;
+            left: 0;
         }
     }
 }
