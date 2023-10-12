@@ -38,6 +38,7 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.day.cq.wcm.api.Template;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
@@ -74,15 +75,14 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap) {
         String payloadType = workItem.getWorkflowData().getPayloadType();
         String path = "";
-        Session jcrSession = null;
 
         LOGGER.debug("Payload type: {}", payloadType);
         if (StringUtils.equals(payloadType, JCR_PATH)) {
             path = workItem.getWorkflowData().getPayload().toString();
-            LOGGER.info("Payload path: {}", path);
+            LOGGER.debug("Payload path: {}", path);
 
             try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-                jcrSession = workflowSession.adaptTo(Session.class);
+                Session jcrSession = workflowSession.adaptTo(Session.class);
 
                 if (null != jcrSession) {
                     updatePageProperties(path, jcrSession, resourceResolver);
@@ -132,7 +132,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
 
             PageManager pageManager = resResolver.adaptTo(PageManager.class);
             Page currentPage = pageManager.getPage(pagePath);
-            if (null != currentPage) {
+            if (null != currentPage && !pagePath.contains(WccConstants.WORKDAY_PUBLIC_PAGE_PATH)) {
                 Template template = currentPage.getTemplate();
                 Node node = (Node) jcrSession.getItem(pagePath + GlobalConstants.JCR_CONTENT_PATH);
 
