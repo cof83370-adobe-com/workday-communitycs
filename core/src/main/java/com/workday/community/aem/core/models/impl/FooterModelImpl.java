@@ -3,6 +3,7 @@ package com.workday.community.aem.core.models.impl;
 import com.workday.community.aem.core.models.FooterModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import javax.annotation.PostConstruct;
+import lombok.Getter;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
@@ -28,6 +29,7 @@ public class FooterModelImpl implements FooterModel {
   /**
    * The adobe analytics uri.
    */
+  @Getter
   String adobeAnalyticsUri;
 
   /**
@@ -41,8 +43,4 @@ public class FooterModelImpl implements FooterModel {
     adobeAnalyticsUri = runModeConfigService.getAdobeAnalyticsUri();
   }
 
-  @Override
-  public String getAdobeAnalyticsUri() {
-    return adobeAnalyticsUri;
-  }
 }

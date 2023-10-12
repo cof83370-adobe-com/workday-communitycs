@@ -5,6 +5,7 @@ import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -27,6 +28,7 @@ public class BookModel {
   /**
    * The path to the Community content root.
    */
+  @Getter
   protected static final String rootPath =
       String.format("%s%s", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH, "/");
 
@@ -60,12 +62,4 @@ public class BookModel {
     return pm.getPage(pagePath);
   }
 
-  /**
-   * Gets the root path.
-   *
-   * @return the String
-   */
-  public String getRootPath() {
-    return rootPath;
-  }
 }

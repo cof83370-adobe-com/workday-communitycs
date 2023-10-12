@@ -3,6 +3,7 @@ package com.workday.community.aem.core.pojos.restclient;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,29 +11,28 @@ import lombok.Setter;
  * Class for wrapping API requests.
  */
 @Getter
+@Setter
 public class ApiRequest {
 
   /**
    * The request body.
    */
-  @Setter
   private String body;
 
   /**
    * The method used in request.
    */
-  @Setter
   private String method;
 
   /**
    * The url of request.
    */
-  @Setter
   private String url;
 
   /**
    * The request headers.
    */
+  @Setter(AccessLevel.NONE)
   private final Map<String, String> headers;
 
   /**

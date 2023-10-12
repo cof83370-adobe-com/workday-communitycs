@@ -10,11 +10,11 @@ import lombok.Setter;
 @Setter
 public class EventTypeValue {
 
-  String value;
+  private String value;
 
-  String lookupValue;
+  private String lookupValue;
 
-  int numberOfResults;
+  private int numberOfResults;
 
   public EventTypeValue() {
   }

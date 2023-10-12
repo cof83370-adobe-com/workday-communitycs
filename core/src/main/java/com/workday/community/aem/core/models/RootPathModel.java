@@ -2,6 +2,7 @@ package com.workday.community.aem.core.models;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
 import javax.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
@@ -20,6 +21,7 @@ public class RootPathModel {
   /**
    * The rootPath.
    */
+  @Getter
   protected static final String rootPath =
       String.format("%s%s", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH, "/");
 
@@ -31,12 +33,4 @@ public class RootPathModel {
     log.debug("Initializing RootPathModel ....");
   }
 
-  /**
-   * Gets the root path.
-   *
-   * @return the String
-   */
-  public String getRootPath() {
-    return rootPath;
-  }
 }
