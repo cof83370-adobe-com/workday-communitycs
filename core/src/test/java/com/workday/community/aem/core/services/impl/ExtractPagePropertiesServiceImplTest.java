@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_PUBLIC_PAGE_PATH;
 import static com.workday.community.aem.core.services.impl.ExtractPagePropertiesServiceImpl.TEXT_COMPONENT;
 import static java.util.Calendar.*;
 import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
@@ -129,7 +130,7 @@ public class ExtractPagePropertiesServiceImplTest {
         doReturn(accessControlValues).when(data).get("accessControlTags", String[].class);
 
         HashMap<String, Object> properties = new HashMap<>();
-        extract.processPermission(data, properties, "test@gmail.com");
+        extract.processPermission(data, properties, "test@gmail.com", "test/path");
         String permissions = properties.toString();
         assertTrue(permissions.contains("customer"));
         assertTrue(permissions.contains("customer_named_support_contact"));
@@ -137,7 +138,7 @@ public class ExtractPagePropertiesServiceImplTest {
 
         doReturn(new String[0]).when(data).get("accessControlTags", String[].class);
         HashMap<String, Object> emptyAccessProperties = new HashMap<>();
-        extract.processPermission(data, emptyAccessProperties, "test@gmail.com");
+        extract.processPermission(data, emptyAccessProperties, "test@gmail.com", "test/path");
         String emptyAccessPermissions = emptyAccessProperties.toString();
         assertTrue(emptyAccessPermissions.contains("exclude"));
         assertTrue(emptyAccessPermissions.contains("test@gmail.com"));
@@ -145,29 +146,37 @@ public class ExtractPagePropertiesServiceImplTest {
         accessControlValues[0] = "access-control:test_role";
         doReturn(accessControlValues).when(data).get("accessControlTags", String[].class);
         properties = new HashMap<>();
-        extract.processPermission(data, properties, "test@gmail.com");
+        extract.processPermission(data, properties, "test@gmail.com", "test/path");
         permissions = properties.toString();
         assertTrue(permissions.contains("customer_named_support_contact"));
+        assertTrue(emptyAccessPermissions.contains("allowAnonymous=false"));
 
         accessControlValues[1] = "access-control:test_role2";
         doReturn(accessControlValues).when(data).get("accessControlTags", String[].class);
         emptyAccessProperties = new HashMap<>();
-        extract.processPermission(data, emptyAccessProperties, "test@gmail.com");
+        extract.processPermission(data, emptyAccessProperties, "test@gmail.com", WORKDAY_PUBLIC_PAGE_PATH.concat("/test/path"));
         emptyAccessPermissions = emptyAccessProperties.toString();
         assertTrue(emptyAccessPermissions.contains("exclude"));
+        assertTrue(emptyAccessPermissions.contains("allowAnonymous=true"));
     }
 
     /**
      * Test process string fields.
      */
     @Test
-    public void testPorcessStringFields() {
+    public void testProcessStringFields() {
         ValueMap data = mock(ValueMap.class);
         HashMap<String, Object> properties = new HashMap<>();
         doReturn("Page title").when(data).get("jcr:title", String.class);
         doReturn(null).when(data).get("pageTitle", String.class);
+        doReturn("retired").when(data).get("retirementStatus", String.class);
+        doReturn("host").when(data).get("eventHost", String.class);
+        doReturn("location").when(data).get("eventLocation", String.class);
         extract.processStringFields(data, properties);
         assertEquals(properties.get("pageTitle"), "Page title");
+        assertEquals(properties.get("eventHost"), "host");
+        assertEquals(properties.get("eventLocation"), "location");
+        assertEquals(properties.get("retirementStatus"), "retired");
     }
 
     /**
