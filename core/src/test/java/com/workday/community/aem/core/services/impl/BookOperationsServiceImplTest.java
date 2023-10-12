@@ -58,15 +58,16 @@ public class BookOperationsServiceImplTest {
    */
   @BeforeEach
   public void setUp() throws Exception {
-    context.load()
-        .json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
-            "/content");
+    context.load().json(
+        "/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
+        "/content");
 
     Page currentPage = context.currentResource("/content/book-faq-page").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
     context.registerService(ResourceResolver.class, resourceResolver);
     context.registerService(QueryService.class, queryService);
-    bookOperationsServiceImpl = context.registerInjectActivateService(new BookOperationsServiceImpl());
+    bookOperationsServiceImpl =
+        context.registerInjectActivateService(new BookOperationsServiceImpl());
   }
 
   /**
@@ -78,9 +79,8 @@ public class BookOperationsServiceImplTest {
         "[\"/content/workday-community/en-us/thomas-sandbox/accordion-image-test\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341/considerations-when-translating-BIRT-output\",\"/content/workday-community/en-us/thomas-sandbox/test-2/workday-mobile-authentication-and-security-faq\",\"/content/workday-community/en-us/thomas-sandbox/test/getting-started-on-prism-analytics\",\"/content/workday-community/en-us/thomas-sandbox/test-2/cloudLoader-advanced-load-tips-and-tricks\",\"/content/workday-community/en-us/sprint-17/cmtyaem-341\",\"/content/workday-community/en-us/thomas-sandbox/related-information-bug/kits---tools-test\"]";
     String bookResourcePath = "/content/book-faq-page";
 
-    Set<String> activatePaths =
-        bookOperationsServiceImpl.processBookPaths(context.resourceResolver(), bookResourcePath,
-            bookRequestJsonStr);
+    Set<String> activatePaths = bookOperationsServiceImpl
+        .processBookPaths(context.resourceResolver(), bookResourcePath, bookRequestJsonStr);
     Set<String> expectedPaths =
         Collections.singleton("/content/workday-community/en-us/sprint-17/cmtyaem-341");
     assertNotEquals(expectedPaths, activatePaths);
