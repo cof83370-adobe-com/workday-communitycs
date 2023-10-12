@@ -6,17 +6,17 @@ import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Listens for content updates/deletes and pushes those changes to Coveo.
  */
+@Slf4j
 @Component(
     service = JobConsumer.class,
     immediate = true,
@@ -25,11 +25,6 @@ import org.slf4j.LoggerFactory;
     }
 )
 public class CoveoIndexJobConsumer implements JobConsumer {
-
-  /**
-   * The logger.
-   */
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
   /**
    * The query service.
@@ -66,7 +61,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
       }
     }
 
-    logger.error("Error occur in Coveo index job consumer, job does not have required properties: "
+    log.error("Error occur in Coveo index job consumer, job does not have required properties: "
         + "path and op.");
     return JobResult.FAILED;
   }
@@ -83,7 +78,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
           runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
       Integer status = coveoPushApiService.callDeleteSingleItemUri(documentId);
       if (status != HttpStatus.SC_ACCEPTED) {
-        logger.error("Error occurred in coveo job consumer when deleting path: {}", path);
+        log.error("Error occurred in coveo job consumer when deleting path: {}", path);
         return JobResult.FAILED;
       }
     }
@@ -104,7 +99,7 @@ public class CoveoIndexJobConsumer implements JobConsumer {
     }
     Integer status = coveoPushApiService.indexItems(payload);
     if (status != HttpStatus.SC_ACCEPTED) {
-      logger.error("Error occurred in coveo job consumer when indexing paths: {}", paths.toArray());
+      log.error("Error occurred in coveo job consumer when indexing paths: {}", paths.toArray());
       return JobResult.FAILED;
     }
 

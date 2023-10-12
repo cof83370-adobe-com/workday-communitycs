@@ -28,6 +28,7 @@ import java.util.Objects;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingException;
@@ -37,12 +38,11 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class ExtractPagePropertiesServiceImpl.
  */
+@Slf4j
 @Component(service = ExtractPagePropertiesService.class, immediate = true)
 public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesService {
 
@@ -60,12 +60,6 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    * The IDENTITY_TYPE_USER.
    */
   private static final String IDENTITY_TYPE_USER = "USER";
-
-  /**
-   * The logger.
-   */
-  private static final Logger logger =
-      LoggerFactory.getLogger(ExtractPagePropertiesServiceImpl.class);
 
   /**
    * The page tags.
@@ -247,7 +241,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             description);
       }
     } catch (CacheException | RepositoryException | SlingException e) {
-      logger.error("Extract page properties {} failed: {}", path, e.getMessage());
+      log.error("Extract page properties {} failed: {}", path, e.getMessage());
       return properties;
     }
     return properties;
@@ -296,7 +290,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         } else if (accessControlValue.equals("access-control:unauthenticated")) {
           allowAnonymous = true;
         } else {
-          logger.info("Coveo indexing: Access control value {} missing in the map for the page {}",
+          log.info("Coveo indexing: Access control value {} missing in the map for the page {}",
               accessControlValue, properties.get("documentId"));
         }
       }
@@ -412,7 +406,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
           processTextComponent(childIt, textList);
         }
       } catch (RepositoryException e) {
-        logger.error("Iterator page jcr:content failed: {}", e.getMessage());
+        log.error("Iterator page jcr:content failed: {}", e.getMessage());
       }
     }
   }
@@ -437,7 +431,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         properties.put("authorLink",
             "https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115");
       } catch (RepositoryException e) {
-        logger.error("Extract user email and contact number failed: {}", e.getMessage());
+        log.error("Extract user email and contact number failed: {}", e.getMessage());
         return email;
       }
     }

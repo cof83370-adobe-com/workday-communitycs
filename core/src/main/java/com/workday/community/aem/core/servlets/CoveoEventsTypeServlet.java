@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -39,24 +40,18 @@ import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class CoveoEventsTypeServlet.
  *
  * @author Thabrez
  */
+@Slf4j
 @Component(service = Servlet.class, property = {
     Constants.SERVICE_DESCRIPTION + "= Coveo Events type Dropdown Service",
     "sling.servlet.paths=" + "/bin/eventTypes", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
 public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
-
-  /**
-   * The Constant LOGGER.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventsTypeServlet.class);
 
   private static final String EVENT_TYPE_CRITERIA = "?field=@commoneventtype";
 
@@ -109,7 +104,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
             DataSource dataSource = new SimpleDataSource(resourceList.iterator());
             request.setAttribute(DataSource.class.getName(), dataSource);
           } catch (IOException exception) {
-            LOGGER.error("Error Occurred in DoGet Method in CoveoEventsTypeServlet : {}",
+            log.error("Error Occurred in DoGet Method in CoveoEventsTypeServlet : {}",
                 exception.getMessage());
           }
 
@@ -139,7 +134,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
           EventTypes.class);
     }
 
-    LOGGER.error("Retrieve event type returns empty");
+    log.error("Retrieve event type returns empty");
     return new EventTypes();
   }
 }

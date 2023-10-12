@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.entity.ContentType;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -25,12 +26,11 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The user logout servlet class to redirect the action to okta logout.
  */
+@Slf4j
 @Component(
     service = Servlet.class,
     property = {
@@ -40,11 +40,6 @@ import org.slf4j.LoggerFactory;
     }
 )
 public class LogoutServlet extends SlingAllMethodsServlet {
-
-  /**
-   * The logger.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(LogoutServlet.class);
 
   private final transient ObjectMapper objectMapper = new ObjectMapper();
 
@@ -72,7 +67,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    LOGGER.debug("initialize Logout service");
+    log.debug("initialize Logout service");
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
@@ -87,7 +82,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     boolean isOktaEnabled = oktaService.isOktaIntegrationEnabled();
 
     if (isOktaEnabled && StringUtils.isEmpty(oktaDomain)) {
-      LOGGER.error("Okta domain and logout redirect Url are not configured, please contact admin.");
+      log.error("Okta domain and logout redirect Url are not configured, please contact admin.");
       return;
     }
 
@@ -97,14 +92,14 @@ public class LogoutServlet extends SlingAllMethodsServlet {
     String[] deleteList = new String[] {LOGIN_COOKIE_NAME, COVEO_COOKIE_NAME};
     int count = HttpUtils.dropCookies(request, response, "/", deleteList);
     if (count == 0) {
-      LOGGER.debug("no custom cookie to be dropped");
+      log.debug("no custom cookie to be dropped");
     }
 
     // 2: Invalid current AEM session
     try {
       userService.invalidCurrentUser(request, false);
     } catch (CacheException e) {
-      LOGGER.error("delete user from JCR cache failed during logout");
+      log.error("delete user from JCR cache failed during logout");
     }
     if (isOktaEnabled) {
       // case 3: Redirect to okta logout directly in case session expired.

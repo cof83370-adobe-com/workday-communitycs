@@ -36,6 +36,7 @@ import com.workday.community.aem.core.utils.RestApiUtil;
 import java.util.Date;
 import java.util.regex.PatternSyntaxException;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -44,12 +45,11 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The OSGi service implementation for snap logic.
  */
+@Slf4j
 @Component(
     service = SnapService.class,
     property = {"service.pid=aem.core.services.snap"},
@@ -58,11 +58,6 @@ import org.slf4j.LoggerFactory;
 )
 @Designate(ocd = SnapConfig.class)
 public class SnapServiceImpl implements SnapService {
-
-  /**
-   * The logger.
-   */
-  private static final Logger logger = LoggerFactory.getLogger(SnapServiceImpl.class);
 
   /**
    * The Run-mode configuration service.
@@ -96,7 +91,7 @@ public class SnapServiceImpl implements SnapService {
   @Override
   public void activate(SnapConfig config) {
     this.config = config;
-    logger.debug("SnapService is activated. enable Cache: {}, beta: {}",
+    log.debug("SnapService is activated. enable Cache: {}, beta: {}",
         config.enableCache(), config.beta());
   }
 
@@ -119,10 +114,9 @@ public class SnapServiceImpl implements SnapService {
           if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi)
               || StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
             // No Snap configuration provided, just return the default one.
-            logger.debug(String.format("there is no value "
-                    + "for one or multiple configuration parameter: "
-                    + "snapUrl=%s;navApi=%s;apiToken=%s;apiKey=%s;",
-                snapUrl, navApi, apiToken, apiKey));
+            log.debug("there is no value for one or multiple configuration parameter: "
+                    + "snapUrl={};navApi={};apiToken={};apiKey={};",
+                snapUrl, navApi, apiToken, apiKey);
             return gson.toJson(this.getDefaultHeaderMenu());
           }
 
@@ -136,7 +130,7 @@ public class SnapServiceImpl implements SnapService {
             JsonObject defaultMenu = this.getDefaultHeaderMenu();
             if (snapRes == null || StringUtils.isEmpty(snapRes.getResponseBody())
                 || snapRes.getResponseCode() != HttpStatus.SC_OK) {
-              logger.error("Sfdc menu fetch is empty, fallback to use local default");
+              log.error("Sfdc menu fetch is empty, fallback to use local default");
               return gson.toJson(defaultMenu);
             }
 
@@ -147,7 +141,7 @@ public class SnapServiceImpl implements SnapService {
             // but with null values. Check for profile value, since that is always going to
             // be present in case of correct salesforce response.
             if (sfMenu.get("profile") == null || sfMenu.get("profile").isJsonNull()) {
-              logger.error("Nav profile is empty, fallback to use local default");
+              log.error("Nav profile is empty, fallback to use local default");
               return gson.toJson(defaultMenu);
             }
 
@@ -162,7 +156,7 @@ public class SnapServiceImpl implements SnapService {
             return gson.toJson(sfMenu);
 
           } catch (SnapException | JsonSyntaxException | JsonProcessingException e) {
-            logger.error("Error in getNavUserData method call :: {}", e.getMessage());
+            log.error("Error in getNavUserData method call :: {}", e.getMessage());
           }
 
           return gson.toJson(this.getDefaultHeaderMenu());
@@ -188,7 +182,7 @@ public class SnapServiceImpl implements SnapService {
     JsonObject ret = cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey,
         (key) -> {
           try {
-            logger.debug("SnapImpl: Calling snap api getUserContext()...");
+            log.debug("SnapImpl: Calling snap api getUserContext()...");
             String url = CommunityUtils.formUrl(config.snapUrl(), config.snapContextPath());
             if (url == null) {
               return new JsonObject();
@@ -199,12 +193,11 @@ public class SnapServiceImpl implements SnapService {
                 RestApiUtil.doSnapGet(url, config.snapContextApiToken(), config.snapContextApiKey());
             return gson.fromJson(jsonResponse, JsonObject.class);
           } catch (SnapException | JsonSyntaxException e) {
-            logger.error("Error in getUserContext method :: {}", e.getMessage());
+            log.error("Error in getUserContext method :: {}", e.getMessage());
           }
 
-          logger.error(
-              "User context is not fetched from the snap context API call without error, "
-                  + "please contact admin.");
+          log.error("User context is not fetched from the snap context API call without error, "
+              + "please contact admin.");
           return new JsonObject();
         }
     );
@@ -234,7 +227,7 @@ public class SnapServiceImpl implements SnapService {
           url = String.format(url, userId);
 
           try {
-            logger.info("SnapImpl: Calling SNAP getProfilePhoto(), url is {}", url);
+            log.info("SnapImpl: Calling SNAP getProfilePhoto(), url is {}", url);
             String jsonResponse = RestApiUtil.doSnapGet(url, config.sfdcUserAvatarToken(),
                 config.sfdcUserAvatarApiKey());
             if (StringUtils.isNotBlank(jsonResponse)) {
@@ -242,7 +235,7 @@ public class SnapServiceImpl implements SnapService {
               return objectMapper.readValue(jsonResponse, ProfilePhoto.class);
             }
           } catch (SnapException | JsonProcessingException e) {
-            logger.error("Error in getProfilePhoto method, {} ", e.getMessage());
+            log.error("Error in getProfilePhoto method, {} ", e.getMessage());
           }
           return null;
         });
@@ -266,7 +259,7 @@ public class SnapServiceImpl implements SnapService {
             // Reading the JSON File from DAM.
             return DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
           } catch (CacheException | DamException e) {
-            logger
+            log
                 .error(
                     String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s",
                         e.getMessage()));
@@ -299,9 +292,9 @@ public class SnapServiceImpl implements SnapService {
                   config.snapProfileApiKey());
             }
           } catch (SnapException | JsonSyntaxException e) {
-            logger.error("Error in getUserProfile method :: {}", e.getMessage());
+            log.error("Error in getUserProfile method :: {}", e.getMessage());
           }
-          logger.error("User profile data is not fetched from the snap profile API call without "
+          log.error("User profile data is not fetched from the snap profile API call without "
               + "error, please contact admin.");
           return null;
         });
@@ -378,7 +371,7 @@ public class SnapServiceImpl implements SnapService {
         profileObject = gson.fromJson(profileData, JsonObject.class);
       } catch (JsonSyntaxException e) {
         profileObject = new JsonObject();
-        logger.error("Error in generateAdobeDigitalData method :: {}",
+        log.error("Error in generateAdobeDigitalData method :: {}",
             e.getMessage());
       }
 
@@ -481,15 +474,15 @@ public class SnapServiceImpl implements SnapService {
       if (extensionSplit.length > 0) {
         extension = extensionSplit[extensionSplit.length - 1];
       } else {
-        logger.error("No extension found in the data");
+        log.error("No extension found in the data");
       }
     } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
-      logger.error("An exception occurred" + e.getMessage());
+      log.error("An exception occurred" + e.getMessage());
     }
     if (StringUtils.isNotBlank(extension) && StringUtils.isNotBlank(encodedPhoto)) {
       return "data:image/" + extension + ";base64," + encodedPhoto;
     } else {
-      logger.error("getUserAvatar method returns null.");
+      log.error("getUserAvatar method returns null.");
       return StringUtils.EMPTY;
     }
   }

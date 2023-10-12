@@ -11,21 +11,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for read files from DAM.
  */
+@Slf4j
 public class DamUtils {
-
-  /**
-   * The logger.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(DamUtils.class);
 
   /**
    * Get file content as json object.
@@ -43,7 +38,7 @@ public class DamUtils {
       Resource original = requireNonNull(asset).getOriginal();
       InputStream content = original.adaptTo(InputStream.class);
       if (content == null) {
-        LOGGER.error("Empty json file.");
+        log.error("Empty json file.");
         return new JsonObject();
       }
 

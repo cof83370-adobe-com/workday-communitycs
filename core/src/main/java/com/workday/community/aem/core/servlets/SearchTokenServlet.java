@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -19,12 +20,11 @@ import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The search Token servlet class.
  */
+@Slf4j
 @Component(
     service = Servlet.class,
     property = {
@@ -34,8 +34,6 @@ import org.slf4j.LoggerFactory;
     }
 )
 public class SearchTokenServlet extends SlingAllMethodsServlet {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(SearchTokenServlet.class);
 
   private final transient Gson gson = new Gson();
 
@@ -65,7 +63,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    LOGGER.debug("initialize Search token service");
+    log.debug("initialize Search token service");
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
@@ -74,10 +72,10 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
    */
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
-    LOGGER.debug("Get search token call, method {}", request.getMethod());
+    log.debug("Get search token call, method {}", request.getMethod());
     ServletCallback servletCallback = (SlingHttpServletRequest req,
                                        SlingHttpServletResponse res, String body) -> {
-      LOGGER.debug("inside getToken API callback with response; {}", body);
+      log.debug("inside getToken API callback with response; {}", body);
       response.setStatus(HttpStatus.SC_OK);
       response.setContentType("application/json");
       response.setCharacterEncoding(StandardCharsets.UTF_8.name());
@@ -89,7 +87,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
       CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService,
           userService, gson, objectMapper, servletCallback);
     } catch (IOException | ServletException e) {
-      LOGGER.error("get Token fails with error: {}", e.getMessage());
+      log.error("get Token fails with error: {}", e.getMessage());
     }
   }
 

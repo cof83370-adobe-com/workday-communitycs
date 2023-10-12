@@ -15,18 +15,18 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.metatype.annotations.Designate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class OurmUserServiceImpl.
  */
+@Slf4j
 @Component(
     service = OurmUserService.class,
     property = {"service.pid=aem.core.services.ourmUsers"},
@@ -36,11 +36,6 @@ import org.slf4j.LoggerFactory;
 )
 @Designate(ocd = OurmDrupalConfig.class)
 public class OurmUserServiceImpl implements OurmUserService {
-
-  /**
-   * The Constant LOGGER.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(OurmUserServiceImpl.class);
 
   /**
    * The gson service.
@@ -79,7 +74,7 @@ public class OurmUserServiceImpl implements OurmUserService {
             URLEncoder.encode(searchText, StandardCharsets.UTF_8));
         String headerString =
             Oauth1Util.getHeader(GET_API, apiUrl, consumerKey, consumerSecret, new HashMap<>());
-        LOGGER.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
+        log.info("OurmUserServiceImpl::searchOurmUserList - apiUrl {}", apiUrl);
 
         // Execute the request.
         String jsonResponse = RestApiUtil.doOurmGet(apiUrl, headerString);

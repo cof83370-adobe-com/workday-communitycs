@@ -22,6 +22,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -31,24 +32,18 @@ import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class EventDetailsModel.
  *
  * @author pepalla
  */
+@Slf4j
 @Model(
     adaptables = {Resource.class, SlingHttpServletRequest.class},
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class EventDetailsModel {
-
-  /**
-   * The logger.
-   */
-  private static final Logger logger = LoggerFactory.getLogger(EventDetailsModel.class);
 
   @Reference
   private UserService userService;
@@ -176,7 +171,7 @@ public class EventDetailsModel {
         eventFormat = CommunityUtils.getPageTagsList(map, "eventFormat", resolver);
         userTimeZone = populateUserTimeZone();
       } catch (ParseException exec) {
-        logger.error("Exception occurred at init method of EventDetailsModel:{} ",
+        log.error("Exception occurred at init method of EventDetailsModel:{} ",
             exec.getMessage());
       }
     }

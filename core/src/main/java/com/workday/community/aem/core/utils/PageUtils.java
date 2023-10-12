@@ -9,17 +9,15 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Utility class for all Page related Utilities.
  */
+@Slf4j
 public class PageUtils {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(PageUtils.class);
 
   /**
    * Get the Tags Title list attached to the page.
@@ -42,7 +40,7 @@ public class PageUtils {
         }
       }
     } else {
-      LOGGER.debug("Page doesn't exist under the path {}", pagePath);
+      log.debug("Page doesn't exist under the path {}", pagePath);
     }
     return pageTagsTitlesList;
   }
@@ -75,7 +73,7 @@ public class PageUtils {
         }
       }
     } else {
-      LOGGER.debug("Page doesn't exist under the path {}.", pagePath);
+      log.debug("Page doesn't exist under the path {}.", pagePath);
     }
     return accessControlList;
   }

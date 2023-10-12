@@ -23,6 +23,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -31,12 +32,11 @@ import org.apache.sling.engine.EngineConstants;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Authorization servlet filter component that checks the authorization for incoming requests.
  */
+@Slf4j
 @Component(service = Filter.class,
     property = {
         Constants.SERVICE_DESCRIPTION + "= Workday Authorization filter incoming requests",
@@ -47,7 +47,6 @@ import org.slf4j.LoggerFactory;
         EngineConstants.SLING_FILTER_EXTENSIONS + "=html"
     })
 public class AuthorizationFilter implements Filter {
-  private static final Logger LOGGER = LoggerFactory.getLogger(AuthorizationFilter.class);
 
   @Reference
   private transient OktaService oktaService;
@@ -63,7 +62,7 @@ public class AuthorizationFilter implements Filter {
    */
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
-    LOGGER.debug("AuthorizationFilter is initialized.");
+    log.debug("AuthorizationFilter is initialized.");
   }
 
   /**
@@ -74,9 +73,9 @@ public class AuthorizationFilter implements Filter {
                        final FilterChain filterChain) throws IOException, ServletException {
     final SlingHttpServletRequest slingRequest = (SlingHttpServletRequest) request;
     String pagePath = slingRequest.getRequestPathInfo().getResourcePath();
-    LOGGER.debug("Request for {}, with selector {}.", pagePath,
+    log.debug("Request for {}, with selector {}.", pagePath,
         slingRequest.getRequestPathInfo().getSelectorString());
-    LOGGER.debug("AuthorizationFilter: Time before validating the user is {}.",
+    log.debug("AuthorizationFilter: Time before validating the user is {}.",
         new Date().getTime());
     if (oktaService.isOktaIntegrationEnabled()
         && pagePath.contains(WORKDAY_ROOT_PAGE_PATH)
@@ -89,7 +88,7 @@ public class AuthorizationFilter implements Filter {
         return;
       }
       String userId = userSession.getUserID();
-      LOGGER.debug("Current user is {}.", userId);
+      log.debug("Current user is {}.", userId);
       boolean isValid = false;
       try {
         User user = userService.getCurrentUser(slingRequest);
@@ -101,12 +100,12 @@ public class AuthorizationFilter implements Filter {
           ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
         }
       } catch (CacheException | RepositoryException e) {
-        LOGGER.error("---> Exception occurred in AuthorizationFilter: {}.", e.getMessage());
+        log.error("---> Exception occurred in AuthorizationFilter: {}.", e.getMessage());
         ((SlingHttpServletResponse) response).setStatus(SC_INTERNAL_SERVER_ERROR);
         ((SlingHttpServletResponse) response).sendRedirect(WccConstants.ERROR_PAGE_PATH);
       }
     }
-    LOGGER.debug("AuthorizationFilter:Time after validating the user  is {}.",
+    log.debug("AuthorizationFilter:Time after validating the user  is {}.",
         new Date().getTime());
     filterChain.doFilter(request, response);
   }
@@ -116,7 +115,7 @@ public class AuthorizationFilter implements Filter {
    */
   @Override
   public void destroy() {
-    LOGGER.debug("Destroy AuthorizationFilter.");
+    log.debug("Destroy AuthorizationFilter.");
   }
 
 }

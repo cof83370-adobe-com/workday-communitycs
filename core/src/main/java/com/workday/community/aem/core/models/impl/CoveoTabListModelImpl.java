@@ -12,6 +12,7 @@ import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import java.util.Arrays;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -20,12 +21,11 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Coveo tab list implementation.
  */
+@Slf4j
 @Model(
     adaptables = {
         Resource.class,
@@ -38,8 +38,6 @@ import org.slf4j.LoggerFactory;
 public class CoveoTabListModelImpl implements CoveoTabListModel {
 
   protected static final String RESOURCE_TYPE = "workday-community/components/common/coveotablist";
-
-  private static final Logger logger = LoggerFactory.getLogger(CoveoTabListModelImpl.class);
 
   private static final String MODEL_CONFIG_FILE =
       "/content/dam/workday-community/resources/tab-list-criteria-data.json";
@@ -79,7 +77,7 @@ public class CoveoTabListModelImpl implements CoveoTabListModel {
    */
   public void init(SlingHttpServletRequest request) {
     if (request != null) {
-      logger.debug("pass-in request object, mostly for test purpose");
+      log.debug("pass-in request object, mostly for test purpose");
       this.request = request;
     }
   }

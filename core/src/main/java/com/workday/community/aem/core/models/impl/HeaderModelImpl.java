@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.Cookie;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
@@ -30,12 +31,11 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The model implementation class for the common nav header menus.
  */
+@Slf4j
 @Model(
     adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {HeaderModel.class},
@@ -59,11 +59,6 @@ public class HeaderModelImpl implements HeaderModel {
    */
   private static final String DEFAULT_SEARCH_REDIRECT =
       "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
-
-  /**
-   * The logger.
-   */
-  private static final Logger logger = LoggerFactory.getLogger(HeaderModelImpl.class);
 
   /**
    * The navMenuApi service.
@@ -110,7 +105,7 @@ public class HeaderModelImpl implements HeaderModel {
 
   @PostConstruct
   protected void init() {
-    logger.debug("Initializing HeaderModel ....");
+    log.debug("Initializing HeaderModel ....");
     sfId = OurmUtils.getSalesForceId(request, userService);
   }
 
@@ -125,10 +120,10 @@ public class HeaderModelImpl implements HeaderModel {
       if (user == null || (UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())) {
         return UNAUTHENTICATED_MENU;
       } else {
-        logger.debug("Current logged in user " + user.getID());
+        log.debug("Current logged in user {}", user.getID());
       }
     } catch (CacheException | RepositoryException e) {
-      logger.debug("Unable to check user session.");
+      log.debug("Unable to check user session.");
       return UNAUTHENTICATED_MENU;
     }
 

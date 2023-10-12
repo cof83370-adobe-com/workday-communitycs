@@ -7,23 +7,17 @@ import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.workday.community.aem.core.constants.WorkflowConstants;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class TerminateRetirementWorkflowProcess.
  */
+@Slf4j
 @Component(service = WorkflowProcess.class, property = {
     "process.label = Terminate Active Retirement Workflows of Current Page"})
 public class TerminateRetirementWorkflowProcess implements WorkflowProcess {
-
-  /**
-   * The Constant log.
-   */
-  private static final Logger log =
-      LoggerFactory.getLogger(TerminateRetirementWorkflowProcess.class);
 
   /**
    * {@inheritDoc}

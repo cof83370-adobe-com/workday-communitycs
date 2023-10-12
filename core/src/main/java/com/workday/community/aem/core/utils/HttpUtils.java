@@ -5,16 +5,14 @@ import java.util.List;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for Http request/response related code.
  */
+@Slf4j
 public class HttpUtils {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(HttpUtils.class);
 
   /**
    * Get cookie from the http servlet request object given the cookie name.
@@ -35,7 +33,7 @@ public class HttpUtils {
       }
     }
 
-    LOGGER.debug(String.format("There is no value for %s", cookieName));
+    log.debug(String.format("There is no value for %s", cookieName));
     return null;
   }
 

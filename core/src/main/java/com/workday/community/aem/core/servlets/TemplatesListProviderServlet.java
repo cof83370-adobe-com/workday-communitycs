@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import javax.servlet.Servlet;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingException;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -22,14 +23,13 @@ import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class TemplatesListProviderServlet.
  *
  * @author pepalla
  */
+@Slf4j
 @Component(immediate = true, service = Servlet.class, property = {
     "sling.servlet.resourceTypes=/bin/workday/templateslist/datasource",
     "sling.servlet.methods=GET"})
@@ -38,11 +38,6 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
    * The Constant TEMPLATES_PATH.
    */
   static final String TEMPLATES_PATH = "/conf/workday-community/settings/wcm/templates";
-
-  /**
-   * The log.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(TemplatesListProviderServlet.class);
 
   /**
    * The Constant serialVersionUID.
@@ -90,7 +85,7 @@ public class TemplatesListProviderServlet extends SlingSafeMethodsServlet {
       DataSource ds = new SimpleDataSource(resourceList.iterator());
       request.setAttribute(DataSource.class.getName(), ds);
     } catch (SlingException e) {
-      LOGGER.error("Error in Get Drop Down Values {}", e.getMessage());
+      log.error("Error in Get Drop Down Values {}", e.getMessage());
     }
   }
 

@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -26,12 +27,11 @@ import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Listens for content changes in the Community content root.
  */
+@Slf4j
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
     ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
     ResourceChangeListener.CHANGES + "=" + "REMOVED",
@@ -39,11 +39,6 @@ import org.slf4j.LoggerFactory;
 })
 @ServiceDescription("PageResourceListener")
 public class PageResourceListener implements ResourceChangeListener {
-
-  /**
-   * The Constant logger.
-   */
-  private static final Logger logger = LoggerFactory.getLogger(PageResourceListener.class);
 
   /**
    * Access control ID for Workday users.
@@ -92,7 +87,7 @@ public class PageResourceListener implements ResourceChangeListener {
         resourceResolver.commit();
       }
     } catch (PersistenceException | CacheException e) {
-      logger.error("Exception occurred when adding author property to page {} ", e.getMessage());
+      log.error("Exception occurred when adding author property to page {} ", e.getMessage());
     }
   }
 
@@ -124,7 +119,7 @@ public class PageResourceListener implements ResourceChangeListener {
 
       }
     } catch (RepositoryException exception) {
-      logger.error("Exception occurred when adding Internal Workmates Tag property to page {} ",
+      log.error("Exception occurred when adding Internal Workmates Tag property to page {} ",
           exception.getMessage());
     }
   }
@@ -148,7 +143,7 @@ public class PageResourceListener implements ResourceChangeListener {
             Objects.requireNonNull(userManager).getAuthorizable(createdUserId);
 
         if (authorizable == null) {
-          logger.warn("No such user: ${userId}");
+          log.warn("No such user: ${userId}");
         } else if (!authorizable.isGroup()) {
           String firstName =
               authorizable.getProperty(GlobalConstants.PROP_USER_PROFILE_GIVENNAME) != null
@@ -168,7 +163,7 @@ public class PageResourceListener implements ResourceChangeListener {
         }
       }
     } catch (RepositoryException ex) {
-      logger.error("Exception occurred when adding author property to page {} ", ex.getMessage());
+      log.error("Exception occurred when adding author property to page {} ", ex.getMessage());
     }
   }
 
@@ -191,11 +186,11 @@ public class PageResourceListener implements ResourceChangeListener {
         }
         if (resolver.hasChanges()) {
           resolver.commit();
-          logger.info("Removed node for page {}", pagePath);
+          log.info("Removed node for page {}", pagePath);
         }
       }
     } catch (PersistenceException | RepositoryException | CacheException e) {
-      logger.error("Can't remove found nodes for page {}", pagePath);
+      log.error("Can't remove found nodes for page {}", pagePath);
     }
   }
 }

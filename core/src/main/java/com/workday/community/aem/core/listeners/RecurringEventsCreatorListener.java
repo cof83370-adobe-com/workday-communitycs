@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.Resource;
@@ -27,8 +28,6 @@ import org.apache.sling.api.resource.observation.ResourceChangeListener;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.propertytypes.ServiceDescription;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The listener interface for receiving recurringEventsCreator events.
@@ -39,6 +38,7 @@ import org.slf4j.LoggerFactory;
  * the recurringEventsCreator event occurs, that object's appropriate
  * method is invoked.
  */
+@Slf4j
 @Component(service = ResourceChangeListener.class, immediate = true, property = {
     ResourceChangeListener.PATHS + "=" + GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH,
     ResourceChangeListener.CHANGES + "=" + "ADDED",
@@ -60,12 +60,6 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
    * The Constant PROP_EVENT_FREQUENCY.
    */
   private static final String PROP_EVENT_FREQUENCY = "eventFrequency";
-
-  /**
-   * The Constant logger.
-   */
-  private static final Logger logger =
-      LoggerFactory.getLogger(RecurringEventsCreatorListener.class);
 
   /**
    * The Constant REGION_COUNTRY_TAGS.
@@ -153,7 +147,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
    */
   @Override
   public void onChange(List<ResourceChange> changes) {
-    logger.info("Entered into RecurringEventPageListener");
+    log.info("Entered into RecurringEventPageListener");
     changes.stream()
         .filter(item -> item.getType().equals(ResourceChange.ChangeType.ADDED)
             && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
@@ -166,7 +160,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
    * @param resourcePath the event page path
    */
   public void generateRecurringEventPages(String resourcePath) {
-    logger.info(
+    log.info(
         "Entered into generateRecurringEventPages method of RecurringEventsCreatorListener:{}",
         resourcePath);
     try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
@@ -176,14 +170,14 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
         if (eventNode != null && eventNode.hasProperty(PROP_RECURRING_EVENTS)
             && eventNode.getProperty(PROP_RECURRING_EVENTS).getString()
             .equalsIgnoreCase("true")) {
-          logger.debug("Creation of recurring events selected and frequency:{}", resourcePath);
+          log.debug("Creation of recurring events selected and frequency:{}", resourcePath);
           Calendar startDate = eventNode.getProperty(PROP_EVENT_START_DATE).getDate();
           String eventFrequency = eventNode.getProperty(PROP_EVENT_FREQUENCY).getString();
           EventPeriodEnum period = eventFrequency.equalsIgnoreCase(EVENT_FREQUENCY_MONTHLY)
               ? EventPeriodEnum.MONTHLY
               : EventPeriodEnum.BI_WEEKLY;
           List<LocalDate> eventDatesList = sequentialEventsCalculator(period, startDate);
-          logger.debug("Sequentials event dates list:{}", eventDatesList);
+          log.debug("Sequentials event dates list:{}", eventDatesList);
           if (null != eventDatesList && eventDatesList.size() > 1) {
             String title = eventNode.getProperty(JcrConstants.JCR_TITLE).getString();
             ValueMap map = addedResource.adaptTo(ValueMap.class);
@@ -193,7 +187,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
         }
       }
     } catch (CacheException | RepositoryException exec) {
-      logger.error("Exception occurred when generateRecurringEventPages method {} ",
+      log.error("Exception occurred when generateRecurringEventPages method {} ",
           exec.getMessage());
     }
   }
@@ -216,19 +210,19 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
       int lastIndex = eventsRootPath.lastIndexOf("/");
       if (lastIndex != -1) {
         eventsRootPath = eventsRootPath.substring(0, lastIndex);
-        logger.debug("Pages to be created under:{}", eventsRootPath);
+        log.debug("Pages to be created under:{}", eventsRootPath);
       }
       String fullPageName;
       int eventLength = getEventLength(map);
       for (LocalDate date : eventDatesList) {
         fullPageName = String.format("%s-%s", pageName, date.toString());
-        logger.debug("Page to be created in this iteration:{}", fullPageName);
+        log.debug("Page to be created in this iteration:{}", fullPageName);
         Page newPage = pm.create(eventsRootPath, fullPageName,
             WorkflowConstants.EVENT_TEMPLATE_PATH, title, true);
         addRequiredPageProps(resourceResolver, newPage, map, date, eventLength);
       }
     } catch (WCMException exec) {
-      logger.error("Exception occurred when createEventPage method {} ", exec.getMessage());
+      log.error("Exception occurred when createEventPage method {} ", exec.getMessage());
     }
   }
 
@@ -298,7 +292,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
       addAllTagsAndMetaData(node, valueMap, date, eventLength);
       node.getSession().save();
     } catch (RepositoryException exec) {
-      logger.error("Exception occurred in addRequiredPageProps method {} ", exec.getMessage());
+      log.error("Exception occurred in addRequiredPageProps method {} ", exec.getMessage());
     }
   }
 

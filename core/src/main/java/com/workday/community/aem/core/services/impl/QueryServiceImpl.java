@@ -20,16 +20,16 @@ import java.util.List;
 import java.util.Map;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class QueryServiceImpl.
  */
+@Slf4j
 @Component(service = QueryService.class, immediate = true)
 public class QueryServiceImpl implements QueryService {
 
@@ -44,11 +44,6 @@ public class QueryServiceImpl implements QueryService {
    */
   @Reference
   private QueryBuilder queryBuilder;
-
-  /**
-   * The logger.
-   */
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
   /**
    * {@inheritDoc}
@@ -69,7 +64,7 @@ public class QueryServiceImpl implements QueryService {
       SearchResult result = query.getResult();
       totalResults = result.getTotalMatches();
     } catch (CacheException e) {
-      logger.error("Exception occurred when running query to get total number of pages {} ",
+      log.error("Exception occurred when running query to get total number of pages {} ",
           e.getMessage());
     } finally {
       if (session != null) {
@@ -100,7 +95,7 @@ public class QueryServiceImpl implements QueryService {
       queryMap.put("1_property.value", "Activate");
       addToQueryMap(session, paths, queryMap);
     } catch (CacheException | RepositoryException e) {
-      logger.error("Exception occurred when running query to get pages {} ", e.getMessage());
+      log.error("Exception occurred when running query to get pages {} ", e.getMessage());
     } finally {
       if (session != null) {
         session.logout();
@@ -141,7 +136,7 @@ public class QueryServiceImpl implements QueryService {
         users.remove(path);
       }
     } catch (CacheException | RepositoryException e) {
-      logger.error("Exception occurred when running query to get inactive users {} ",
+      log.error("Exception occurred when running query to get inactive users {} ",
           e.getMessage());
     } finally {
       if (session != null) {
@@ -179,7 +174,7 @@ public class QueryServiceImpl implements QueryService {
         paths.add(path);
       }
     } catch (CacheException | RepositoryException e) {
-      logger.error("Exception occurred when running query to get book pages {} ", e.getMessage());
+      log.error("Exception occurred when running query to get book pages {} ", e.getMessage());
     } finally {
       if (session != null) {
         session.logout();

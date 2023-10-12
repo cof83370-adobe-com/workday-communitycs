@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.PersistenceException;
 import org.apache.sling.api.resource.Resource;
@@ -16,22 +17,16 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class BookOperationsServiceImpl.
  */
+@Slf4j
 @Component(
     service = {BookOperationsService.class},
     configurationPolicy = ConfigurationPolicy.OPTIONAL
 )
 public class BookOperationsServiceImpl implements BookOperationsService {
-
-  /**
-   * The Constant logger.
-   */
-  private static final Logger logger = LoggerFactory.getLogger(BookOperationsServiceImpl.class);
 
   /**
    * The query service.
@@ -74,9 +69,9 @@ public class BookOperationsServiceImpl implements BookOperationsService {
       if (resolver.hasChanges()) {
         resolver.commit();
       }
-      logger.trace("processBook...completeBookData {}", bookPathDataList);
+      log.trace("processBook...completeBookData {}", bookPathDataList);
     } catch (RepositoryException | PersistenceException e) {
-      logger.error("Exception occurred when update book: {} ", e.getMessage());
+      log.error("Exception occurred when update book: {} ", e.getMessage());
     }
     return activatePaths;
   }

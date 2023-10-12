@@ -5,17 +5,17 @@ import com.workday.community.aem.core.models.TocModel;
 import com.workday.community.aem.core.services.QueryService;
 import java.util.List;
 import javax.inject.Inject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class TocModelImpl.
  */
+@Slf4j
 @Model(
     adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {TocModel.class},
@@ -28,11 +28,6 @@ public class TocModelImpl implements TocModel {
    * The Constant RESOURCE_TYPE.
    */
   protected static final String RESOURCE_TYPE = "workday-community/components/common/toc";
-
-  /**
-   * The logger.
-   */
-  private static final Logger logger = LoggerFactory.getLogger(TocModelImpl.class);
 
   /**
    * The current page.
@@ -53,7 +48,7 @@ public class TocModelImpl implements TocModel {
    */
   @Override
   public String bookResourcePath() {
-    logger.debug("bookResourcePath::Entry");
+    log.debug("bookResourcePath::Entry");
     String bookResourcePath = null;
     if (null != currentPage) {
       List<String> bookPathList = queryService.getBookNodesByPath(currentPage.getPath(), null);

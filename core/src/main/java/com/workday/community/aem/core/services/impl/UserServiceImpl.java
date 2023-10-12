@@ -17,28 +17,23 @@ import java.util.Objects;
 import java.util.UUID;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class UserServiceImpl.
  */
+@Slf4j
 @Component(
     service = UserService.class,
     immediate = true
 )
 public class UserServiceImpl implements UserService {
-
-  /**
-   * The logger.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceImpl.class);
 
   /**
    * The cache manager.
@@ -90,10 +85,10 @@ public class UserServiceImpl implements UserService {
         if (user != null) {
           return user;
         }
-        LOGGER.error("Cannot find user with id {}.", userSessionId);
+        log.error("Cannot find user with id {}.", userSessionId);
         return null;
       } catch (RepositoryException e) {
-        LOGGER.error("Exception occurred when fetch user {}: {}.", userSessionId, e.getMessage());
+        log.error("Exception occurred when fetch user {}: {}.", userSessionId, e.getMessage());
         return null;
       }
     });
@@ -103,7 +98,7 @@ public class UserServiceImpl implements UserService {
         cacheManager.invalidateCache(CacheBucketName.JCR_USER.name(), cacheKey);
       }
     } catch (RepositoryException e) {
-      LOGGER.error("Exception occurred when clear use from cache {}: {}.", userSessionId,
+      log.error("Exception occurred when clear use from cache {}: {}.", userSessionId,
           e.getMessage());
     }
 
@@ -142,7 +137,7 @@ public class UserServiceImpl implements UserService {
       String userId = session.getUserID();
       ResourceResolver serviceResolver = cacheManager.getServiceResolver(SERVICE_USER_GROUP);
 
-      LOGGER.info("Start to delete user with param {}.", userId);
+      log.info("Start to delete user with param {}.", userId);
       UserManager userManager = Objects.requireNonNull(serviceResolver.adaptTo(UserManager.class));
       User user;
       try {
@@ -156,14 +151,14 @@ public class UserServiceImpl implements UserService {
             user.remove();
             session.logout();
           } else {
-            LOGGER.error("User with userID {} cannot be deleted.", userId);
+            log.error("User with userID {} cannot be deleted.", userId);
           }
         } else {
-          LOGGER.error("Cannot find user with userID {}.", userId);
+          log.error("Cannot find user with userID {}.", userId);
         }
         session.save();
       } catch (RepositoryException e) {
-        LOGGER.error("invalidate current user session failed.");
+        log.error("invalidate current user session failed.");
       } finally {
         if (resourceResolver.isLive()) {
           resourceResolver.close();

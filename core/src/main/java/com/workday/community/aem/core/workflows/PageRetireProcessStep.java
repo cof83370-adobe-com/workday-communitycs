@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.jcr.Node;
 import javax.jcr.Session;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ModifiableValueMap;
 import org.apache.sling.api.resource.Resource;
@@ -34,8 +35,6 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class PageRetireProcessStep.
@@ -45,17 +44,13 @@ import org.slf4j.LoggerFactory;
  * 2. Add retirement badge.
  * 3. Replicate the page to publisher.</p>
  */
+@Slf4j
 @Component(property = {
     Constants.SERVICE_DESCRIPTION + "=Process to retire the given page",
     Constants.SERVICE_VENDOR + "=Workday Community",
     "process.label" + "=Retire the page"
 })
 public class PageRetireProcessStep implements WorkflowProcess {
-
-  /**
-   * The Constant log.
-   */
-  private static final Logger logger = LoggerFactory.getLogger(PageRetireProcessStep.class);
 
   /**
    * The cache manager.
@@ -87,7 +82,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
   public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap)
       throws WorkflowException {
     final String payloadType = workItem.getWorkflowData().getPayloadType();
-    logger.info("Payload type: {}", payloadType);
+    log.info("Payload type: {}", payloadType);
     if (StringUtils.equals(payloadType, "JCR_PATH")) {
       // Get the JCR path from the payload
       String path = workItem.getWorkflowData().getPayload().toString();
@@ -99,7 +94,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
           replicatePage(jcrSession, path);
         }
       } catch (Exception e) {
-        logger.error("payload type - {} is not valid", payloadType);
+        log.error("payload type - {} is not valid", payloadType);
       }
     }
   }
@@ -126,12 +121,12 @@ public class PageRetireProcessStep implements WorkflowProcess {
                       pathToReplicate);
                 }
               } catch (Exception e) {
-                logger.error("Exception occured while removing the node: {}", path);
+                log.error("Exception occured while removing the node: {}", path);
               }
             });
-        logger.debug("Removed node for page {}", pagePath);
+        log.debug("Removed node for page {}", pagePath);
       } catch (Exception exec) {
-        logger.error(
+        log.error(
             "Exception occured while removing the: {} page from book node. Exception was: {} :",
             pagePath,
             exec.getMessage());
@@ -160,7 +155,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
       }
       rresolver.commit();
     } catch (Exception exec) {
-      logger.error("Exception occured while addRetirementBadge: {}", exec.getMessage());
+      log.error("Exception occured while addRetirementBadge: {}", exec.getMessage());
     }
   }
 
@@ -183,7 +178,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
         map.put(LAST_RETIREMENT_ACTION, SCHEDULED_RETIREMENT);
         break;
       default:
-        logger.debug("Workflow model name is: {}  which was not as expected:", modelName);
+        log.debug("Workflow model name is: {}  which was not as expected:", modelName);
         break;
     }
   }
@@ -200,7 +195,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
         replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pagePath);
       }
     } catch (Exception exec) {
-      logger.error("Exception occured while replicatePage method: {}", exec.getMessage());
+      log.error("Exception occured while replicatePage method: {}", exec.getMessage());
     }
   }
 
@@ -217,7 +212,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
       calendar.setTime(sdf.parse(iso8601String));
       return calendar;
     } catch (Exception exec) {
-      logger.error("Exception occured in getCurrentTimeInIso8601Format method: {}",
+      log.error("Exception occured in getCurrentTimeInIso8601Format method: {}",
           exec.getMessage());
     }
     return null;

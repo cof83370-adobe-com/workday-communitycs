@@ -21,22 +21,17 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class RESTAPIUtil.
  */
+@Slf4j
 public class RestApiUtil {
-
-  /**
-   * The Constant logger.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(RestApiUtil.class);
 
   /**
    * Request of Common nav menu.
@@ -52,7 +47,7 @@ public class RestApiUtil {
       throws SnapException {
     try {
       // Construct the request header.
-      LOGGER.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
+      log.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
       ApiRequest req = getMenuApiRequest(url, apiToken, apiKey, traceId);
       return executeGetRequest(req);
     } catch (ApiException e) {
@@ -74,7 +69,7 @@ public class RestApiUtil {
   public static String doSnapGet(String url, String authToken, String apiKey)
       throws SnapException {
     try {
-      LOGGER.debug("RestAPIUtil: Calling REST requestSnapJsonResponse()...= {}", url);
+      log.debug("RestAPIUtil: Calling REST requestSnapJsonResponse()...= {}", url);
       ApiRequest apiRequestInfo = new ApiRequest();
 
       apiRequestInfo.setUrl(url);
@@ -100,7 +95,7 @@ public class RestApiUtil {
    */
   public static String doOurmGet(String url, String header) throws OurmException {
     try {
-      LOGGER.debug("RestAPIUtil: Calling REST requestOurmJsonResponse()...= {}", url);
+      log.debug("RestAPIUtil: Calling REST requestOurmJsonResponse()...= {}", url);
       ApiRequest apiRequestInfo = new ApiRequest();
 
       apiRequestInfo.setUrl(url);
@@ -121,14 +116,14 @@ public class RestApiUtil {
    * @throws ApiException APIException object.
    */
   private static ApiResponse executeGetRequest(ApiRequest req) throws ApiException {
-    LOGGER.debug("RESTAPIUtil executeGetRequest: Calling REST executeGetRequest().");
+    log.debug("RESTAPIUtil executeGetRequest: Calling REST executeGetRequest().");
     if (StringUtils.isBlank(req.getMethod())) {
       req.setMethod(RestApiConstants.GET_API);
     }
 
     HttpClient httpclient =
         HttpClient.newBuilder().connectTimeout(Duration.ofMillis(HTTP_TIMEMOUT)).build();
-    LOGGER.debug("RestAPIUtil executeGetRequest: req.getMethod():{}, {}", req.getMethod(),
+    log.debug("RestAPIUtil executeGetRequest: req.getMethod():{}, {}", req.getMethod(),
         req.getUri().toString());
 
     Builder builder = HttpRequest.newBuilder().uri(req.getUri());
@@ -151,8 +146,8 @@ public class RestApiUtil {
     }
 
     int statusCode = response.statusCode();
-    LOGGER.debug("HTTP response code : {}", statusCode);
-    LOGGER.debug("HTTP response : {}", response.body());
+    log.debug("HTTP response code : {}", statusCode);
+    log.debug("HTTP response : {}", response.body());
 
     ApiResponse apiresponse = new ApiResponse();
     apiresponse.setResponseCode(response.statusCode());
@@ -198,7 +193,7 @@ public class RestApiUtil {
   private static ApiResponse executePostRequest(ApiRequest request) throws ApiException {
     ApiResponse apiresponse = new ApiResponse();
 
-    LOGGER.debug("RESTAPIUtil executePostRequest: Calling REST executePostRequest().");
+    log.debug("RESTAPIUtil executePostRequest: Calling REST executePostRequest().");
 
     HttpClient httpClient =
         HttpClient.newBuilder().connectTimeout(Duration.ofMillis(HTTP_TIMEMOUT)).build();
@@ -219,8 +214,8 @@ public class RestApiUtil {
       int resCode = response.statusCode();
       String resBody = response.body();
       if (resCode != HttpStatus.SC_OK && resCode != HttpStatus.SC_CREATED) {
-        LOGGER.debug("HTTP response code : {}", resCode);
-        LOGGER.debug("HTTP response : {}", resBody);
+        log.debug("HTTP response code : {}", resCode);
+        log.debug("HTTP response : {}", resBody);
       }
       apiresponse.setResponseCode(resCode);
       apiresponse.setResponseBody(resBody);
@@ -302,7 +297,7 @@ public class RestApiUtil {
   public static ApiResponse doLmsTokenGet(String url, String clientId, String clientSecret,
                                           String refreshToken) throws LmsException {
     // Construct the request header.
-    LOGGER.debug("RestAPIUtil: Calling REST doLmsTokenGet()...= {}", url);
+    log.debug("RestAPIUtil: Calling REST doLmsTokenGet()...= {}", url);
     ApiRequest req = getLmsTokenRequest(url, clientId, clientSecret, refreshToken);
 
     try {

@@ -17,6 +17,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -24,16 +25,13 @@ import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class CategoryFacetModel.
  */
+@Slf4j
 @Model(adaptables = Resource.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class CategoryFacetModel {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(CategoryFacetModel.class);
 
   /**
    * Search config file path.
@@ -114,7 +112,7 @@ public class CategoryFacetModel {
         }
       }
     } catch (CacheException | LoginException e) {
-      LOGGER.error("Initialization of CategoryFacetModel fails");
+      log.error("Initialization of CategoryFacetModel fails");
     }
   }
 

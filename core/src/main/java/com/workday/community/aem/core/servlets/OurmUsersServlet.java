@@ -6,6 +6,7 @@ import com.workday.community.aem.core.services.OurmUserService;
 import java.io.IOException;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -14,24 +15,18 @@ import org.apache.sling.servlets.post.JSONResponse;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class OurmUsersServlet.
  *
  * @author Uttej
  */
+@Slf4j
 @Component(service = Servlet.class, property = {
     Constants.SERVICE_DESCRIPTION + "= OurmUsers Autocomplete Dropdown Service",
     "sling.servlet.paths=" + "/bin/ourmUsers", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
 public class OurmUsersServlet extends SlingSafeMethodsServlet {
-
-  /**
-   * The Constant LOGGER.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(OurmUsersServlet.class);
 
   /**
    * The OurmUsers api service.
@@ -56,7 +51,7 @@ public class OurmUsersServlet extends SlingSafeMethodsServlet {
       response.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
       response.getWriter().write(jsonObject.toString());
     } catch (IOException | OurmException e) {
-      LOGGER.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
+      log.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
     }
   }
 }

@@ -41,6 +41,7 @@ import java.util.Objects;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -50,23 +51,17 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class UserGroupServiceImpl.
  */
+@Slf4j
 @Component(
     service = UserGroupService.class,
     immediate = true,
     configurationPolicy = ConfigurationPolicy.OPTIONAL
 )
 public class UserGroupServiceImpl implements UserGroupService {
-
-  /**
-   * The logger.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(UserGroupServiceImpl.class);
 
   /**
    * The snap service.
@@ -126,28 +121,28 @@ public class UserGroupServiceImpl implements UserGroupService {
 
   @Override
   public boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath) {
-    LOGGER.debug(" inside validateTheUser method. -->");
+    log.debug(" inside validateTheUser method. -->");
 
     boolean isValid = false;
     try {
-      LOGGER.debug("---> UserGroupServiceImpl: Before Access control tag List");
+      log.debug("---> UserGroupServiceImpl: Before Access control tag List");
       List<String> accessControlTagsList =
           PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
               ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
-      LOGGER.debug("---> UserGroupServiceImpl: After Access control tag List");
+      log.debug("---> UserGroupServiceImpl: After Access control tag List");
       if (!accessControlTagsList.isEmpty()) {
-        LOGGER.debug("---> UserGroupServiceImpl:Access control tag List.. {}.",
+        log.debug("---> UserGroupServiceImpl:Access control tag List.. {}.",
             accessControlTagsList);
         if (accessControlTagsList.contains(AUTHENTICATED)) {
           isValid = true;
         } else {
           List<String> groupsList = getCurrentUserGroups(request);
-          LOGGER.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
+          log.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
           isValid = !Collections.disjoint(accessControlTagsList, groupsList);
         }
       }
     } catch (RepositoryException e) {
-      LOGGER.error("---> Exception in validateTheUser function: {}.", e.getMessage());
+      log.error("---> Exception in validateTheUser function: {}.", e.getMessage());
     }
     return isValid;
   }
@@ -155,7 +150,7 @@ public class UserGroupServiceImpl implements UserGroupService {
   @Override
   public boolean validateCurrentUser(SlingHttpServletRequest request,
                                      List<String> accessControlTags) {
-    LOGGER.debug("Inside checkLoggedInUserHasAccessControlValues method. -->");
+    log.debug("Inside checkLoggedInUserHasAccessControlValues method. -->");
 
     if (accessControlTags == null || accessControlTags.isEmpty()) {
       return false;
@@ -165,7 +160,7 @@ public class UserGroupServiceImpl implements UserGroupService {
     }
     List<String> groupsList = getCurrentUserGroups(request);
 
-    LOGGER.debug("---> UserGroupServiceImpl: validateCurrentUser - Groups List..{}.", groupsList);
+    log.debug("---> UserGroupServiceImpl: validateCurrentUser - Groups List..{}.", groupsList);
     return !Collections.disjoint(accessControlTags, groupsList);
   }
 
@@ -180,14 +175,14 @@ public class UserGroupServiceImpl implements UserGroupService {
    */
   @Override
   public List<String> getCurrentUserGroups(SlingHttpServletRequest request) {
-    LOGGER.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
+    log.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
     String userRole;
     List<String> groupIds = new ArrayList<>();
     try {
       User user = userService.getCurrentUser(request);
       String sfId = OurmUtils.getSalesForceId(request, userService);
       if (sfId != null) {
-        LOGGER.debug("user  sfid {} ", sfId);
+        log.debug("user  sfid {} ", sfId);
         ResourceResolver jcrResolver =
             cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
         Node userNode =
@@ -195,29 +190,29 @@ public class UserGroupServiceImpl implements UserGroupService {
         if (Objects.requireNonNull(userNode).hasProperty(ROLES)
             && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString())
             && userNode.getProperty(ROLES).getString().split(";").length > 0) {
-          LOGGER.debug(
+          log.debug(
               "---> UserGroupServiceImpl: getCurrentUserGroups - User has Groups in CRX...{}",
               userNode.getProperty(ROLES).getString());
           userRole = userNode.getProperty(ROLES).getString();
           groupIds = List.of(userRole.split(";"));
         } else {
-          LOGGER.debug(
+          log.debug(
               "---> UserGroupServiceImpl: getCurrentUserGroups - Trying to get Groups from SNAP");
           Session jcrSession = jcrResolver.adaptTo(Session.class);
           groupIds = getUserGroupsFromSnap(sfId);
           userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
           Objects.requireNonNull(jcrSession).save();
           if (null != groupIds && !groupIds.isEmpty()) {
-            LOGGER.debug(
+            log.debug(
                 "---> UserGroupServiceImpl: getCurrentUserGroups - Groups from SNAP ... {} ",
                 StringUtils.join(groupIds, ";"));
           }
         }
-        LOGGER.info("Salesforce roles {}", groupIds);
+        log.info("Salesforce roles {}", groupIds);
       }
 
     } catch (RepositoryException | CacheException e) {
-      LOGGER.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
+      log.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
     }
     return groupIds;
   }

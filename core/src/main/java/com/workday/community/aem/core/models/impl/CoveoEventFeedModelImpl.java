@@ -26,6 +26,7 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -34,12 +35,11 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The CoveoEventFeedModel implementation Class.
  */
+@Slf4j
 @Model(
     adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {CoveoEventFeedModel.class},
@@ -50,8 +50,6 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
 
   protected static final String RESOURCE_TYPE =
       "/content/workday-community/components/common/coveoeventfeed";
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
 
   private static final String MODEL_CONFIG_FILE =
       "/content/dam/workday-community/resources/event-feed-criteria.json";
@@ -122,7 +120,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
     PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
     Page pageObject = requireNonNull(pageManager).getPage(this.featuredEvent);
     if (pageObject == null) {
-      LOGGER.error("Feature Event Page is not found");
+      log.error("Feature Event Page is not found");
       return new HashMap<>();
     }
 
@@ -149,7 +147,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
               requireNonNull(image.adaptTo(Node.class)).getProperty("fileReference").getValue()
                   .getString();
         } catch (PathNotFoundException e) {
-          LOGGER.error("There is no image for the selected feature event");
+          log.error("There is no image for the selected feature event");
           imagePath = "";
         }
       }
@@ -163,7 +161,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
           Property link = requireNonNull(registerButton.adaptTo(Node.class)).getProperty("linkURL");
           registerPath = link == null ? "" : link.getString();
         } catch (RepositoryException ex) {
-          LOGGER.error("Exception happens when try to access feature event information {}",
+          log.error("Exception happens when try to access feature event information {}",
               ex.getMessage());
         }
       }

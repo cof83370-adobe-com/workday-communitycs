@@ -13,6 +13,7 @@ import com.workday.community.aem.core.services.HttpsUrlConnectionService;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.entity.ContentType;
@@ -20,22 +21,16 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class CoveoSourceApiServiceImpl.
  */
+@Slf4j
 @Component(
     service = CoveoSourceApiService.class,
     immediate = true
 )
 public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
-
-  /**
-   * The logger.
-   */
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
   /**
    * The source api uri.
@@ -124,11 +119,11 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
         JsonNode numberField = innerNode.get("numberOfDocuments");
         totalNumberOfIndexedItems = numberField.asLong();
       } catch (IOException e) {
-        logger.error("Parse coveo source api call response failed: {}", e.getMessage());
+        log.error("Parse coveo source api call response failed: {}", e.getMessage());
         return totalNumberOfIndexedItems;
       }
     } else {
-      logger.error("Get number of indexed pages from coveo failed with status code {}: {}",
+      log.error("Get number of indexed pages from coveo failed with status code {}: {}",
           response.get("statusCode"), response.get("response"));
     }
 

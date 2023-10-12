@@ -9,16 +9,16 @@ import com.adobe.granite.workflow.exec.ParticipantStepChooser;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class PageRetireDynamicParticipantStep.
  */
+@Slf4j
 @Component(service = ParticipantStepChooser.class, property = {
     Constants.SERVICE_DESCRIPTION
         + "=Participant step to choose the assignee group based on environment/workflow",
@@ -26,12 +26,6 @@ import org.slf4j.LoggerFactory;
     "chooser.label=" + "Env Speicifc Dynamic Participant"
 })
 public class PageRetireDynamicParticipantStep implements ParticipantStepChooser {
-
-  /**
-   * The Constant log.
-   */
-  private static final Logger LOGGER =
-      LoggerFactory.getLogger(PageRetireDynamicParticipantStep.class);
 
   /**
    * The Constant ENV_VAR.
@@ -56,7 +50,7 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
   @Override
   public String getParticipant(WorkItem workItem, WorkflowSession workflowSession,
                                MetaDataMap metaDataMap) throws WorkflowException {
-    LOGGER.info("Entering PageRetireDynamicParticipantStep >>>>>> ");
+    log.info("Entering PageRetireDynamicParticipantStep >>>>>> ");
     String commonName = metaDataMap.get(PROCESS_ARGS, String.class);
     String workflowTitle = workItem.getWorkflow().getWorkflowModel().getTitle();
     String env = runModeConfigService.getEnv();
@@ -78,7 +72,7 @@ public class PageRetireDynamicParticipantStep implements ParticipantStepChooser 
     final String dynamicParticipant = commonNameOfApprover
         .trim()
         .replace(ENV_VAR, environment.trim());
-    LOGGER.debug("Dynamic participant for {} >>>>>> {}", workflowTitle, dynamicParticipant);
+    log.debug("Dynamic participant for {} >>>>>> {}", workflowTitle, dynamicParticipant);
     return dynamicParticipant;
   }
 

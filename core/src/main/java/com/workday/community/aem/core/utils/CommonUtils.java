@@ -16,21 +16,16 @@ import java.util.Optional;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for common operations.
  */
+@Slf4j
 public class CommonUtils {
-
-  /**
-   * The logger.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtils.class);
 
   /**
    * Get the Salesforce id of logged-in user.
@@ -48,7 +43,7 @@ public class CommonUtils {
       sfId = requireNonNull(user).getProperty(WccConstants.PROFILE_SOURCE_ID) != null
           ? requireNonNull(user.getProperty(WccConstants.PROFILE_SOURCE_ID))[0].getString() : null;
     } catch (RepositoryException e) {
-      LOGGER.error("Exception in getLoggedInUserSourceId method {}", e.getMessage());
+      log.error("Exception in getLoggedInUserSourceId method {}", e.getMessage());
     }
 
     return sfId;
@@ -70,7 +65,7 @@ public class CommonUtils {
       userId = requireNonNull(user).getProperty(WccConstants.PROFILE_OKTA_ID) != null
           ? requireNonNull(user.getProperty(WccConstants.PROFILE_OKTA_ID))[0].getString() : null;
     } catch (RepositoryException e) {
-      LOGGER.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
+      log.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
     }
 
     return userId;
@@ -92,7 +87,7 @@ public class CommonUtils {
       ccType = requireNonNull(user).getProperty(WccConstants.CC_TYPE) != null
           ? requireNonNull(user.getProperty(WccConstants.CC_TYPE))[0].getString() : null;
     } catch (RepositoryException e) {
-      LOGGER.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
+      log.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
     }
 
     return ccType;
@@ -112,7 +107,7 @@ public class CommonUtils {
       user =
           (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
     } catch (RepositoryException e) {
-      LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());
+      log.error("Exception in getLoggedInUser method = {}", e.getMessage());
     }
 
     return user;
@@ -132,11 +127,11 @@ public class CommonUtils {
       user = getLoggedInUser(resourceResolver);
       if (user != null) {
         String userPath = user.getPath();
-        LOGGER.debug("getLoggedInUserAsNode userPath--{}", userPath);
+        log.debug("getLoggedInUserAsNode userPath--{}", userPath);
         userNode = requireNonNull(resourceResolver.getResource(userPath)).adaptTo(Node.class);
       }
     } catch (RepositoryException e) {
-      LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());
+      log.error("Exception in getLoggedInUser method = {}", e.getMessage());
     }
 
     return userNode;

@@ -19,6 +19,7 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.LoginException;
@@ -29,12 +30,11 @@ import org.apache.sling.engine.EngineConstants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class ComponentFilter.
  */
+@Slf4j
 @Component(service = Filter.class, configurationPolicy = ConfigurationPolicy.OPTIONAL, property = {
     EngineConstants.SLING_FILTER_SCOPE + "=" + EngineConstants.FILTER_SCOPE_INCLUDE,
     EngineConstants.SLING_FILTER_METHODS + "=GET",
@@ -47,11 +47,6 @@ public class ComponentFilter implements Filter {
    * Path to dynamic resources.
    */
   private static final String DYNAMIC_RESOURCE_TYPE_PATH = "workday-community/components/dynamic/";
-
-  /**
-   * The Constant logger.
-   */
-  private static final Logger logger = LoggerFactory.getLogger(ComponentFilter.class);
 
   /**
    * The run mode config service.
@@ -76,7 +71,7 @@ public class ComponentFilter implements Filter {
    */
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
-    logger.info("Initialize the component hide filter");
+    log.info("Initialize the component hide filter");
   }
 
   /**
@@ -97,7 +92,7 @@ public class ComponentFilter implements Filter {
         try (ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory,
             READ_SERVICE_USER)) {
           List<String> userGroupsList = userGroupService.getCurrentUserGroups(request);
-          logger.debug("ComponentFilter::ACL Tags of user {}", userGroupsList);
+          log.debug("ComponentFilter::ACL Tags of user {}", userGroupsList);
           ValueMap properties = request.getResource().getValueMap();
           List<String> componentAclTags = Arrays
               .asList(properties.get("componentACLTags", new String[0]));
@@ -105,29 +100,29 @@ public class ComponentFilter implements Filter {
           componentAclTags
               .forEach(
                   tag -> accessControlList.add(tag.replace(ACCESS_CONTROL_TAG.concat(":"), "")));
-          logger.debug("ComponentFilter::ACL Tags of component {}", accessControlList);
+          log.debug("ComponentFilter::ACL Tags of component {}", accessControlList);
           if (CollectionUtils.isNotEmpty(accessControlList)
               && CollectionUtils.isNotEmpty(userGroupsList)
               && CollectionUtils.intersection(accessControlList, userGroupsList).isEmpty()) {
-            logger.debug("ComponentFilter::Permission not matching.. not rendeing component.");
-            logger.debug(
+            log.debug("ComponentFilter::Permission not matching.. not rendeing component.");
+            log.debug(
                 "...............Execution time of filter method for resource {} {}...............",
                 resourceType, Duration.between(start, Instant.now()));
             return;
           } else if (CollectionUtils.isNotEmpty(accessControlList)
               && CollectionUtils.isEmpty(userGroupsList)) {
-            logger.debug("ComponentFilter::User permissions are empty.. not rendeing component.");
-            logger.debug(
+            log.debug("ComponentFilter::User permissions are empty.. not rendeing component.");
+            log.debug(
                 "...............Execution time of filter method for resource {} {}...............",
                 resourceType, Duration.between(start, Instant.now()));
             return;
           }
         } catch (LoginException e) {
-          logger.error("Exception retrieving Resource Resolver for path {}",
+          log.error("Exception retrieving Resource Resolver for path {}",
               request.getResource().getPath());
         }
       }
-      logger.debug(
+      log.debug(
           "...............Component Filter Execution time for resource {} {}...............",
           resourceType, Duration.between(start, Instant.now()));
     }
@@ -140,6 +135,6 @@ public class ComponentFilter implements Filter {
    */
   @Override
   public void destroy() {
-    logger.info("Exiting the component hide filter");
+    log.info("Exiting the component hide filter");
   }
 }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
@@ -23,19 +24,13 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class CoveoPushApiServiceImpl.
  */
+@Slf4j
 @Component(service = CoveoPushApiService.class)
 public class CoveoPushApiServiceImpl implements CoveoPushApiService {
-
-  /**
-   * The logger.
-   */
-  private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 
   /**
    * The push api uri.
@@ -159,7 +154,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     Map<String, Object> response = callApi(generateDeleteAllItemsUri(), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
     if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
-      logger.error("Deleting all items from coveo failed with status code {}: {}.",
+      log.error("Deleting all items from coveo failed with status code {}: {}.",
           response.get("statusCode"), response.get("response"));
     }
     return (Integer) response.get("statusCode");
@@ -175,7 +170,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     Map<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
     if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
-      logger.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId,
+      log.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId,
           response.get("statusCode"), response.get("response"));
     }
     return (Integer) response.get("statusCode");
@@ -213,7 +208,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         if ((Integer) batchUploadResponse.get("statusCode") == HttpStatus.SC_ACCEPTED) {
           return HttpStatus.SC_ACCEPTED;
         } else {
-          logger.error("Triggering batch ingestion failed with status code {}: {}.",
+          log.error("Triggering batch ingestion failed with status code {}: {}.",
               batchUploadResponse.get("statusCode"), batchUploadResponse.get("response"));
         }
       } else if ((Integer) uploadFileResponse.get("statusCode") == HttpStatus.SC_REQUEST_TOO_LONG) {
@@ -228,11 +223,11 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
         }
         return chunckStatusCode;
       } else {
-        logger.error("Uploading batch file to file container failed with status code {}: {}.",
+        log.error("Uploading batch file to file container failed with status code {}: {}.",
             uploadFileResponse.get("statusCode"), uploadFileResponse.get("response"));
       }
     } else {
-      logger.error("Creating push container failed with status code {}: {}.",
+      log.error("Creating push container failed with status code {}: {}.",
           createContainerResponse.get("statusCode"), createContainerResponse.get("response"));
     }
 
@@ -251,7 +246,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     try {
       transformedPayload = mapperObj.writeValueAsString(data);
     } catch (IOException e) {
-      logger.error("Transform payload failed: {}.", e.getMessage());
+      log.error("Transform payload failed: {}.", e.getMessage());
       return transformedPayload;
     }
     return transformedPayload;
@@ -276,7 +271,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
       uploadUri = node.get("uploadUri").asText();
       requiredHeaders = node.get("requiredHeaders").toPrettyString();
     } catch (IOException e) {
-      logger.error("Parse create container response failed: {}", e.getMessage());
+      log.error("Parse create container response failed: {}", e.getMessage());
       return transformedResponse;
     }
 
@@ -286,7 +281,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
       header = objectMapper.readValue(requiredHeaders, new TypeReference<>() {
       });
     } catch (JsonProcessingException e) {
-      logger.error("Generate requiredheader array failed: {}", e.getMessage());
+      log.error("Generate requiredheader array failed: {}", e.getMessage());
       return transformedResponse;
     }
     transformedResponse.put("fileId", fileId);

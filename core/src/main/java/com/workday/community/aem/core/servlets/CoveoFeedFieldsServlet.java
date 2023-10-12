@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import javax.servlet.Servlet;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -25,24 +26,18 @@ import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class CoveoFeedFieldsServlet.
  *
  * @author wangchun zhang
  */
+@Slf4j
 @Component(service = Servlet.class, property = {
     Constants.SERVICE_DESCRIPTION + "= Coveo Feed Fields Servlet",
     "sling.servlet.paths=" + "/bin/feedFields", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
 public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
-
-  /**
-   * The Constant LOGGER.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(CoveoFeedFieldsServlet.class);
 
   /**
    * Do get.
@@ -52,7 +47,7 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
    */
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
-    LOGGER.debug("start to fetch feed fields");
+    log.debug("start to fetch feed fields");
     ResourceResolver resourceResolver = request.getResourceResolver();
     List<Resource> resourceList = new ArrayList<>();
     CoveoTabListModel model = request.adaptTo(CoveoTabListModel.class);
@@ -60,7 +55,7 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
     try {
       fields = Objects.requireNonNull(model).getFields();
     } catch (DamException e) {
-      LOGGER.error("Feed fields are not fetched from CoveoTabListModel, please fix it.");
+      log.error("Feed fields are not fetched from CoveoTabListModel, please fix it.");
     }
 
     if (fields != null && !fields.isEmpty()) {
@@ -73,7 +68,7 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
                 valueMap));
       });
     } else {
-      LOGGER.debug("Feed fields are not fetched from CoveoTabListModel, please fix it.");
+      log.debug("Feed fields are not fetched from CoveoTabListModel, please fix it.");
     }
 
     /*Create a DataSource that is used to populate the drop-down control*/

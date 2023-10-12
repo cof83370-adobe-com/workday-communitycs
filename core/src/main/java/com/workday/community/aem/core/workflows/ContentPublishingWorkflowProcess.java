@@ -34,24 +34,19 @@ import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class ContentPublishingWorkflowProcess.
  */
+@Slf4j
 @Component(service = WorkflowProcess.class, property = {
     "process.label = Process to Activate Page, Referenced Assets and Book"})
 public class ContentPublishingWorkflowProcess implements WorkflowProcess {
-
-  /**
-   * The Constant log.
-   */
-  private static final Logger log = LoggerFactory.getLogger(ContentPublishingWorkflowProcess.class);
 
   @Reference
   private Replicator replicator;

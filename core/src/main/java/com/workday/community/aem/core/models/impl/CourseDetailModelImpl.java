@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -28,12 +29,11 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.SlingObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The model implementation class for the course detail page.
  */
+@Slf4j
 @Model(
     adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {CourseDetailModel.class},
@@ -47,11 +47,6 @@ public class CourseDetailModelImpl implements CourseDetailModel {
    */
   protected static final String RESOURCE_TYPE =
       "workday-community/components/content/training-catalog/handlebar-content";
-
-  /**
-   * The logger.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(CourseDetailModelImpl.class);
 
   /**
    * The Lms service.
@@ -91,7 +86,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
 
   @PostConstruct
   protected void init() {
-    LOGGER.debug("Initializing CourseDetailModel.");
+    log.debug("Initializing CourseDetailModel.");
     courseTitle = getQueryParamValueFromUrl("title");
   }
 
@@ -139,7 +134,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
       }
       return courseDetail;
     } catch (LmsException | IOException ex) {
-      LOGGER.error("Exception occurred in getCourseDetailData: {}.", ex.getMessage());
+      log.error("Exception occurred in getCourseDetailData: {}.", ex.getMessage());
     }
     return null;
   }
@@ -158,7 +153,7 @@ public class CourseDetailModelImpl implements CourseDetailModel {
           Arrays.asList(accessControl.getAsString().split(",")));
       return userGroupService.validateCurrentUser(request, accessControlTags);
     }
-    LOGGER.error("User can't access because access control is not set in the returned course "
+    log.error("User can't access because access control is not set in the returned course "
         + "detail object.");
     return false;
   }

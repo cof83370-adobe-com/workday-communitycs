@@ -13,28 +13,23 @@ import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.cache.LruCacheWithTimeout;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.metatype.annotations.Designate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The OSGi service implementation for Lms API.
  */
+@Slf4j
 @Component(service = LmsService.class, property = {
     "service.pid=aem.core.services.lms"
 }, configurationPid = "com.workday.community.aem.core.config.LmsConfig", immediate = true)
 @Designate(ocd = LmsConfig.class)
 public class LmsServiceImpl implements LmsService {
-
-  /**
-   * The logger.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(LmsServiceImpl.class);
 
   /**
    * The gson service.
@@ -61,7 +56,7 @@ public class LmsServiceImpl implements LmsService {
     this.config = config;
     this.lmsCache =
         new LruCacheWithTimeout<>(config.lmsTokenCacheMax(), config.lmsTokenCacheTimeout());
-    LOGGER.debug("LmsService is activated.");
+    log.debug("LmsService is activated.");
   }
 
   /**
@@ -84,10 +79,9 @@ public class LmsServiceImpl implements LmsService {
         || StringUtils.isEmpty(clientSecret)
         || StringUtils.isEmpty(refreshToken)) {
       // No Lms configuration provided, just return the default one.
-      LOGGER.debug(String.format("There is no value "
-              + "for one or multiple configuration parameters: "
-              + "lmsUrl=%s;tokenPath=%s;clientId=%s;clientSecret=%s;refreshToken=%s",
-          lmsUrl, tokenPath, clientId, clientSecret, refreshToken));
+      log.debug("There is no value for one or multiple configuration parameters: "
+              + "lmsUrl={};tokenPath={};clientId={};clientSecret={};refreshToken={}",
+          lmsUrl, tokenPath, clientId, clientSecret, refreshToken);
       return StringUtils.EMPTY;
     }
 
@@ -99,7 +93,7 @@ public class LmsServiceImpl implements LmsService {
           RestApiUtil.doLmsTokenGet(url, clientId, clientSecret, refreshToken);
       if (lmsResponse == null || StringUtils.isEmpty(lmsResponse.getResponseBody())
           || lmsResponse.getResponseCode() != HttpStatus.SC_OK) {
-        LOGGER.error("Lms API token response is empty.");
+        log.error("Lms API token response is empty.");
         return StringUtils.EMPTY;
       }
 
@@ -107,7 +101,7 @@ public class LmsServiceImpl implements LmsService {
       JsonObject tokenResponse = gson.fromJson(lmsResponse.getResponseBody(), JsonObject.class);
       if (tokenResponse.get("access_token") == null
           || tokenResponse.get("access_token").isJsonNull()) {
-        LOGGER.error("Lms API token is empty.");
+        log.error("Lms API token is empty.");
         return StringUtils.EMPTY;
       }
 
@@ -144,7 +138,7 @@ public class LmsServiceImpl implements LmsService {
         ApiResponse lmsResponse = RestApiUtil.doLmsCourseDetailGet(url, bearerToken);
         if (lmsResponse == null || StringUtils.isEmpty(lmsResponse.getResponseBody())
             || lmsResponse.getResponseCode() != HttpStatus.SC_OK) {
-          LOGGER.error("Lms API course detail response is empty.");
+          log.error("Lms API course detail response is empty.");
           return StringUtils.EMPTY;
         }
 

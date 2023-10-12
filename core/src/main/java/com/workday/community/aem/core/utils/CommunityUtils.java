@@ -6,26 +6,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class CommunityUtils.
  */
+@Slf4j
 public class CommunityUtils {
-
-  /**
-   * The Constant logger.
-   */
-  private static final Logger LOGGER = LoggerFactory.getLogger(CommunityUtils.class);
 
   /**
    * Instantiates a new community utils.
    */
   private CommunityUtils() {
-    LOGGER.info("Initialized");
+    log.info("Initialized");
   }
 
   /**
@@ -49,7 +44,7 @@ public class CommunityUtils {
         }
       }
     }
-    LOGGER.debug("Tags for given input: {} is {}", propName, tagType);
+    log.debug("Tags for given input: {} is {}", propName, tagType);
     return Collections.unmodifiableList(tagType);
   }
 

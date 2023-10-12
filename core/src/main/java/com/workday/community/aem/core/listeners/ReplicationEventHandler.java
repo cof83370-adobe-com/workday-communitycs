@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.JobManager;
 import org.osgi.service.component.annotations.Component;
@@ -17,12 +18,11 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class ReplicationEventHandler.
  */
+@Slf4j
 @Component(
     service = EventHandler.class,
     immediate = true,
@@ -30,11 +30,6 @@ import org.slf4j.LoggerFactory;
         EventConstants.EVENT_TOPIC + "=" + ReplicationAction.EVENT_TOPIC,
     })
 public class ReplicationEventHandler implements EventHandler {
-
-  /**
-   * The logger.
-   */
-  private static final Logger logger = LoggerFactory.getLogger(ReplicationEventHandler.class);
 
   /**
    * The CoveoIndexApiConfigService.
@@ -71,7 +66,7 @@ public class ReplicationEventHandler implements EventHandler {
           || action.getType().equals(ReplicationActionType.DELETE))
       ) {
         if (startCoveoJob(action) == null) {
-          logger.error("\n Error occurred while Creating Coveo push job for page");
+          log.error("\n Error occurred while Creating Coveo push job for page");
         }
       }
     }

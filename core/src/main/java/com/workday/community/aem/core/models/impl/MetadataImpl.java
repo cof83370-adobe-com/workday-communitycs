@@ -7,6 +7,7 @@ import com.workday.community.aem.core.models.Metadata;
 import java.util.Date;
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -16,12 +17,11 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class MetadataImpl.
  */
+@Slf4j
 @Model(
     adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {Metadata.class},
@@ -34,11 +34,6 @@ public class MetadataImpl implements Metadata {
    * The Constant RESOURCE_TYPE.
    */
   protected static final String RESOURCE_TYPE = "workday-community/components/common/metadata";
-
-  /**
-   * The Constant LOG.
-   */
-  private static final Logger LOG = LoggerFactory.getLogger(MetadataImpl.class);
 
   /**
    * The author name.
@@ -109,8 +104,7 @@ public class MetadataImpl implements Metadata {
         }
       }
     } catch (RepositoryException e) {
-      LOG.error(String.format("RepositoryException in MetadataImpl::getFullNameByUserID: %s",
-          e.getMessage()));
+      log.error("RepositoryException in MetadataImpl::getFullNameByUserID: {}", e.getMessage());
     }
     return fullName;
   }

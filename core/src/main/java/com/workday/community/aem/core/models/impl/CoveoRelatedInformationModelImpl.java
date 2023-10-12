@@ -19,6 +19,7 @@ import com.workday.community.aem.core.utils.DamUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -27,12 +28,11 @@ import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.osgi.service.component.annotations.Reference;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Coveo related information mode implementation.
  */
+@Slf4j
 @Model(
     adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {CoveoRelatedInformationModel.class},
@@ -43,8 +43,6 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
 
   protected static final String RESOURCE_TYPE =
       "/content/workday-community/components/common/relatedinformation";
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(CoveoEventFeedModelImpl.class);
 
   private static final String COVEO_FILED_MAP_CONFIG =
       "/content/dam/workday-community/resources/coveo-field-map.json";
@@ -110,10 +108,8 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     pagePath = pagePath.substring(0, pagePath.indexOf("."));
     Page page = pageManager.getPage(pagePath);
     if (page == null) {
-      LOGGER.error(String.format(
-          "getFacetFields in CoveoRelatedInformationModelImpl failed because current Page "
-              + "unresolved, path: %s",
-          pagePath));
+      log.error("getFacetFields in CoveoRelatedInformationModelImpl failed because current Page "
+              + "unresolved, path: {}", pagePath);
       return Collections.unmodifiableList(facetFields);
     }
 

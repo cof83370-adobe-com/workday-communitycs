@@ -10,14 +10,14 @@ import java.util.TimeZone;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class UpdateLastUpdatedOnPageActivation.
  */
+@Slf4j
 @Component(service = WorkflowProcess.class, property = {
     "process.label = Update Last Updated Page Activation"})
 public class UpdateLastUpdatedOnPageActivation implements WorkflowProcess {
@@ -26,12 +26,6 @@ public class UpdateLastUpdatedOnPageActivation implements WorkflowProcess {
    * The Constant TAG.
    */
   private static final String TAG = UpdateLastUpdatedOnPageActivation.class.getSimpleName();
-
-  /**
-   * The Constant log.
-   */
-  private static final Logger log =
-      LoggerFactory.getLogger(UpdateLastUpdatedOnPageActivation.class);
 
   /**
    * The Constant OVERRIDE_DATE.

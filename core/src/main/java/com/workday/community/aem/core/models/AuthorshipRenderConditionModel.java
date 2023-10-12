@@ -9,6 +9,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.UserManager;
@@ -17,23 +18,16 @@ import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class AuthorshipRenderConditionModel.
  */
+@Slf4j
 @Model(
     adaptables = {SlingHttpServletRequest.class},
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class AuthorshipRenderConditionModel {
-
-  /**
-   * The logger.
-   */
-  private static final Logger logger =
-      LoggerFactory.getLogger(AuthorshipRenderConditionModel.class);
 
   /**
    * The rendered condition check.
@@ -81,7 +75,7 @@ public class AuthorshipRenderConditionModel {
         }
       }
     } catch (RepositoryException e) {
-      logger.error("User not found");
+      log.error("User not found");
     }
     if (allowed) {
       check = !suffix.endsWith("ReadOnly/granite:rendercondition");

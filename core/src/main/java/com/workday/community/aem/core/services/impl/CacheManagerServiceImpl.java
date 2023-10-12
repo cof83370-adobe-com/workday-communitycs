@@ -22,6 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.map.LRUMap;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -33,20 +34,17 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The CacheManagerService implementation class.
  */
+@Slf4j
 @Component(service = CacheManagerService.class, property = {
     "service.pid=aem.core.services.cache.serviceCache"
 }, configurationPid = "com.workday.community.aem.core.config.CacheConfig",
     configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 @Designate(ocd = CacheConfig.class)
 public class CacheManagerServiceImpl implements CacheManagerService {
-
-  private static final Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
 
   private final LRUMap<String, ResourceResolver> resolverCache;
 
@@ -82,8 +80,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       closeAndClearCachedResolvers();
     }
     setUpRegularCacheClean();
-    LOGGER.debug("config: enabled:{}, expire:{}, user expire:{}, uuid:{}, user max:{}, "
-            + "refresh:{}, menu size {}", config.enabled(), config.expireDuration(),
+    log.debug("config: enabled: {}, expire: {}, user expire: {}, uuid: {}, user max: {}, "
+            + "refresh: {}, menu size: {}", config.enabled(), config.expireDuration(),
         config.jcrUserExpireDuration(), config.maxUuid(), config.maxJcrUser(),
         config.refreshDuration(), config.maxMenuSize());
   }
@@ -104,7 +102,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       scheduler.shutdown();
       try {
         if (scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
-          LOGGER.info("Cache clean scheduler is correctly closed.");
+          log.info("Cache clean scheduler is correctly closed.");
         }
       } catch (InterruptedException e) {
         throw new CacheException(e.getMessage());
@@ -127,10 +125,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         return cache.get(key);
       }
     } catch (CacheException | ExecutionException e) {
-      LOGGER.error(String.format(
-          "Can't get value from cache for cache key: %s in cache name: %s, error: %s",
-          key, cacheBucketName, e.getMessage()
-      ));
+      log.error("Can't get value from cache for cache key: {} in cache name: {}, error: {}",
+          key, cacheBucketName, e.getMessage());
     }
 
     return null;
@@ -146,9 +142,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       LoadingCache<String, V> cache = getCache(innerName, key, null);
       return Objects.requireNonNull(cache).asMap().containsKey(key);
     } catch (CacheException e) {
-      LOGGER.error(String.format(
-          "Can't get cache for cache key: %s in cache name: %s, error: %s",
-          key, cacheBucketName, e.getMessage()));
+      log.error("Can't get cache for cache key: {} in cache name: {}, error: {}",
+          key, cacheBucketName, e.getMessage());
       return false;
     }
   }
@@ -175,7 +170,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     } else if (!StringUtils.isEmpty(cacheBucketName)) {
       LoadingCache cache = caches.get(getInnerCacheName(cacheBucketName).name());
       if (cache == null) {
-        LOGGER.debug("There are some problems if this get hit, contact community admin.");
+        log.debug("There are some problems if this get hit, contact community admin.");
         return;
       }
       if (StringUtils.isEmpty(key)) {
@@ -261,28 +256,28 @@ public class CacheManagerServiceImpl implements CacheManagerService {
         public V load(String key) throws CacheException {
           V ret = null;
           if (callback != null) {
-            LOGGER.debug("Enter callback method to call API to get value for: " + key);
+            log.debug("Enter callback method to call API to get value for: " + key);
             ret = callback.getValue(key);
           }
           if (ret == null) {
             throw new CacheException("The returned value is null");
           }
-          LOGGER.debug("Return value from load(..) method for cache key: " + key);
+          log.debug("Return value from load(..) method for cache key: " + key);
           return ret;
         }
 
         public ListenableFuture<V> reload(final String key, V preVal) throws CacheException {
-          LOGGER.debug(java.lang.String.format("reload value for key %s happens", key));
+          log.debug("reload value for key {} happens", key);
           ListenableFuture<V> ret = null;
           if (callback != null) {
-            LOGGER.debug("Enter callback method to call API to reload value again for: " + key);
+            log.debug("Enter callback method to call API to reload value again for: " + key);
             ret = Futures.immediateFuture(callback.getValue(key));
           }
 
           if (ret == null) {
             throw new CacheException("The reload value is null");
           }
-          LOGGER.debug("Return value from reload(..) method for key: " + key);
+          log.debug("Return value from reload(..) method for key: " + key);
           return ret;
         }
       });
