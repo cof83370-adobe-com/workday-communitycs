@@ -82,8 +82,8 @@ public class CategoryFacetModel {
   @PostConstruct
   private void init() throws DamException {
     try (ResourceResolver resolver = cacheManager == null
-        ? ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER) :
-        cacheManager.getServiceResolver(READ_SERVICE_USER)) {
+        ? ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)
+        : cacheManager.getServiceResolver(READ_SERVICE_USER)) {
       TagManager tagManager = resolver != null ? resolver.adaptTo(TagManager.class) : null;
       Tag tag = tagManager != null ? tagManager.resolve(category) : null;
       if (tag == null) {
