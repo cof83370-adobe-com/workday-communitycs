@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.models;
 
+import com.google.gson.JsonObject;
+
 /**
  * The HeaderModel interface.
  */
@@ -33,16 +35,9 @@ public interface HeaderModel {
   String userClientId();
 
   /**
-   * Gets coveo organization id.
+   * Get search configuration.
    *
-   * @return Coveo org id.
+   * @return search configuration as a Json object.
    */
-  String getCoveoOrgId();
-
-  /**
-   * Gets coveo search hub.
-   *
-   * @return Coveo search hub.
-   */
-  String getCoveoSearchHub();
+  JsonObject getSearchConfig();
 }

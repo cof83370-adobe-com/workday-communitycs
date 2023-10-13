@@ -4,12 +4,14 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -98,6 +100,8 @@ public class HeaderModelImpl implements HeaderModel {
 
   /** The global search url. */
   String globalSearchURL;
+
+  private JsonObject searchConfig;
 
   @PostConstruct
   protected void init() {
@@ -190,12 +194,14 @@ public class HeaderModelImpl implements HeaderModel {
   }
 
   @Override
-  public String getCoveoOrgId() {
-    return searchApiConfigService.getOrgId();
-  }
-
-  @Override
-  public String getCoveoSearchHub() {
-    return searchApiConfigService.getSearchHub();
+  public JsonObject getSearchConfig() {
+    if (this.searchConfig == null) {
+      this.searchConfig = CoveoUtils.getSearchConfig(
+              searchApiConfigService,
+              request,
+              snapService,
+              userService);
+    }
+    return this.searchConfig;
   }
 }

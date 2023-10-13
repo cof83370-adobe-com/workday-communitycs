@@ -11,7 +11,7 @@ const signOutObject = {
     children: [],
 };
 
-let searchToken;
+let searchToken, searchConfig;
 
 const getSearchToken = async () => {
     const tokenUrl = '/bin/search/token';
@@ -24,6 +24,13 @@ const getSearchToken = async () => {
     }
 };
 
+const analyticsClientMiddleware = (eventName, payload) => {
+    if (searchConfig["userContext"]) {
+        payload.customData = {...payload.customData, ...JSON.parse(searchConfig["userContext"])};
+    }
+    return payload;
+};
+
 function renderNavHeader() {
     const headerDiv = document.getElementById('community-header-div');
     if (headerDiv !== undefined && headerDiv !== null) {
@@ -32,8 +39,7 @@ function renderNavHeader() {
         let previousId = headerDataJson ? headerDataJson['previousId'] : null;
         let currentId = headerDiv.getAttribute('data-cache-property');
         let searchUrl = headerDiv.getAttribute('data-search-url');
-        let coveoOrgId = headerDiv.getAttribute('data-org-id');
-        let coveoSearchHub = headerDiv.getAttribute('data-search-hub');
+        searchConfig = JSON.parse(headerDiv.getAttribute('data-search-config'));
         let changed = currentId !== previousId;
 
         if (!headerData || headerData && changed) {
@@ -51,9 +57,9 @@ function renderNavHeader() {
         headerDataJson.coveoProps = {
             engine: Cmty.CoveoEngineService.CoveoSearchEngine(
                 {
-                    organizationId: coveoOrgId,
+                    organizationId: searchConfig['orgId'],
                     search: {
-                        searchHub: coveoSearchHub
+                        searchHub: searchConfig['searchHub']
                     },
                     accessToken: searchToken,
                     renewAccessToken: getSearchToken
@@ -66,6 +72,9 @@ function renderNavHeader() {
                 redirectPath: searchUrl,
                 querySeparator: '#',
                 queryParameterName: 'q'
+            },
+            analytics: {
+                analyticsClientMiddleware,
             }
         };
 
