@@ -189,4 +189,14 @@ public class HeaderModelImpl implements HeaderModel {
   public String userClientId() {
     return userService.getUserUUID(sfId);
   }
+
+  @Override
+  public String getCoveoOrgId() {
+    return searchApiConfigService.getOrgId();
+  }
+
+  @Override
+  public String getCoveoSearchHub() {
+    return searchApiConfigService.getSearchHub();
+  }
 }

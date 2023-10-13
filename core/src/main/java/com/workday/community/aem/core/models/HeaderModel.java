@@ -31,4 +31,18 @@ public interface HeaderModel {
    * @return User UUID as user client id.
    */
   String userClientId();
+
+  /**
+   * Gets coveo organization id.
+   *
+   * @return Coveo org id.
+   */
+  String getCoveoOrgId();
+
+  /**
+   * Gets coveo search hub.
+   *
+   * @return Coveo search hub.
+   */
+  String getCoveoSearchHub();
 }
