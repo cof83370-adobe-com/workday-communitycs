@@ -4,6 +4,7 @@ import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SER
 import static com.workday.community.aem.core.constants.GlobalConstants.ISO_8601_FORMAT;
 import static com.workday.community.aem.core.constants.WorkflowConstants.ACTUAL_RETIREMENT_DATE;
 import static com.workday.community.aem.core.constants.WorkflowConstants.IMMEDIATE_RETIREMENT;
+import static com.workday.community.aem.core.constants.WorkflowConstants.JCR_PATH;
 import static com.workday.community.aem.core.constants.WorkflowConstants.LAST_RETIREMENT_ACTION;
 import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_PROP;
 import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_VAL;
@@ -21,6 +22,7 @@ import com.day.cq.replication.Replicator;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -83,7 +85,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
       throws WorkflowException {
     final String payloadType = workItem.getWorkflowData().getPayloadType();
     log.info("Payload type: {}", payloadType);
-    if (StringUtils.equals(payloadType, "JCR_PATH")) {
+    if (StringUtils.equals(payloadType, JCR_PATH)) {
       // Get the JCR path from the payload
       String path = workItem.getWorkflowData().getPayload().toString();
       try {
@@ -106,31 +108,29 @@ public class PageRetireProcessStep implements WorkflowProcess {
    * @param jcrSession the jcr session
    */
   public void removeBookNodes(String pagePath, Session jcrSession) {
-    if (!pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
+    if (pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
+      return;
+    }
+
+    try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
       List<String> paths = queryService.getBookNodesByPath(pagePath, null);
-      try (ResourceResolver resolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-        paths.stream().filter(item -> resolver.getResource(item) != null)
-            .forEach(path -> {
-              try {
-                Node root = Objects.requireNonNull(resolver.getResource(path)).adaptTo(Node.class);
-                if (root != null) {
-                  final String pathToReplicate = root.getParent().getPath();
-                  root.remove();
-                  resolver.commit();
-                  replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE,
-                      pathToReplicate);
-                }
-              } catch (Exception e) {
-                log.error("Exception occured while removing the node: {}", path);
-              }
-            });
-        log.debug("Removed node for page {}", pagePath);
-      } catch (Exception exec) {
-        log.error(
-            "Exception occured while removing the: {} page from book node. Exception was: {} :",
-            pagePath,
-            exec.getMessage());
-      }
+      paths.stream().filter(item -> rresolver.getResource(item) != null).forEach(path -> {
+        try {
+          Node root = Objects.requireNonNull(rresolver.getResource(path)).adaptTo(Node.class);
+          final String pathToReplicate = root.getParent().getPath();
+          root.remove();
+          rresolver.commit();
+          replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pathToReplicate);
+        } catch (Exception e) {
+          log.error("Exception occured while removing the node: {}", path);
+        }
+      });
+      log.debug("Removed node for page {}", pagePath);
+    } catch (Exception exec) {
+      log.error(
+          "Exception occured while removing the: {} page from book node. Exception was: {} :",
+          pagePath,
+          exec.getMessage());
     }
   }
 
@@ -142,8 +142,8 @@ public class PageRetireProcessStep implements WorkflowProcess {
    */
   public void addRetirementBadge(String pagePath, WorkItem workItem) {
     try (ResourceResolver rresolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-      Resource resource = Objects.requireNonNull(rresolver
-          .getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH));
+      Resource resource = Objects
+          .requireNonNull(rresolver.getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH));
       String modelPath = workItem.getWorkflow().getWorkflowModel().getId();
       int lastIndex = modelPath.lastIndexOf('/');
       String workflowModelName = "";
@@ -190,10 +190,12 @@ public class PageRetireProcessStep implements WorkflowProcess {
    * @param pagePath   the page path
    */
   public void replicatePage(Session jcrSession, String pagePath) {
+    if (replicator == null) {
+      return;
+    }
+
     try {
-      if (replicator != null) {
-        replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pagePath);
-      }
+      replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pagePath);
     } catch (Exception exec) {
       log.error("Exception occured while replicatePage method: {}", exec.getMessage());
     }
@@ -205,16 +207,18 @@ public class PageRetireProcessStep implements WorkflowProcess {
    * @return the current time in iso 8601 format
    */
   private Calendar getCurrentTimeInIso8601Format() {
+    Calendar calendar = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat(ISO_8601_FORMAT);
+    String iso8601String = sdf.format(calendar.getTime());
+
     try {
-      Calendar calendar = Calendar.getInstance();
-      SimpleDateFormat sdf = new SimpleDateFormat(ISO_8601_FORMAT);
-      String iso8601String = sdf.format(calendar.getTime());
       calendar.setTime(sdf.parse(iso8601String));
       return calendar;
-    } catch (Exception exec) {
+    } catch (ParseException exec) {
       log.error("Exception occured in getCurrentTimeInIso8601Format method: {}",
           exec.getMessage());
     }
+
     return null;
   }
 }

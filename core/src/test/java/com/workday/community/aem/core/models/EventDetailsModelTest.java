@@ -103,7 +103,7 @@ public class EventDetailsModelTest {
    *
    * @throws Exception the exception
    */
-   @Test
+  @Test
   void testGetTimeFormat() throws Exception {
     eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
     assertNotNull(eventDetailsModel);
@@ -117,9 +117,11 @@ public class EventDetailsModelTest {
 
   /**
    * Test get length.
+   *
+   * @throws Exception the exception
    */
   @Test
-  void testGetLength() {
+  void testGetLength() throws Exception {
     eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
     assertNotNull(eventDetailsModel);
     assertEquals(3, eventDetailsModel.getEventLengthDays());
@@ -148,9 +150,11 @@ public class EventDetailsModelTest {
 
   /**
    * Test get event location.
+   *
+   * @throws Exception the exception
    */
   @Test
-  void testGetEventLocation() {
+  void testGetEventLocation() throws Exception {
     eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
     assertNotNull(eventDetailsModel);
     assertEquals("California", eventDetailsModel.getEventLocation());
@@ -158,9 +162,11 @@ public class EventDetailsModelTest {
 
   /**
    * Test get event host.
+   *
+   * @throws Exception the exception
    */
   @Test
-  void testGetEventHost() {
+  void testGetEventHost() throws Exception {
     eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
     assertNotNull(eventDetailsModel);
     assertEquals("workday", eventDetailsModel.getEventHost());
@@ -168,9 +174,11 @@ public class EventDetailsModelTest {
 
   /**
    * Test is configured.
+   *
+   * @throws Exception the exception
    */
   @Test
-  void testIsConfigured() {
+  void testIsConfigured() throws Exception {
     eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
     assertNotNull(eventDetailsModel);
     assertTrue(eventDetailsModel.isConfigured());
@@ -178,9 +186,11 @@ public class EventDetailsModelTest {
 
   /**
    * Test get days label.
+   *
+   * @throws Exception the exception
    */
   @Test
-  void testGetDaysLabel() {
+  void testGetDaysLabel() throws Exception {
     eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
     assertNotNull(eventDetailsModel);
     assertEquals("Days", eventDetailsModel.getDaysLabel());
@@ -188,9 +198,11 @@ public class EventDetailsModelTest {
 
   /**
    * Test get event format without tags.
+   *
+   * @throws Exception the exception
    */
   @Test
-  void testGetEventFormatWithoutTags() {
+  void testGetEventFormatWithoutTags() throws Exception {
     eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
     assertNotNull(eventDetailsModel);
     assertEquals(new ArrayList<String>(), eventDetailsModel.getEventFormat());
@@ -198,9 +210,11 @@ public class EventDetailsModelTest {
 
   /**
    * Test get event format with tags.
+   *
+   * @throws Exception the exception
    */
   @Test
-  void testGetEventFormatWithTags() {
+  void testGetEventFormatWithTags() throws Exception {
     eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
     assertNotNull(eventDetailsModel);
     eventDetailsModel.getEventFormat();

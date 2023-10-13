@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.workflows;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
+import static com.workday.community.aem.core.constants.WorkflowConstants.JCR_PATH;
 
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
@@ -29,8 +30,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -76,17 +75,18 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     String path;
 
     log.debug("Payload type: {}", payloadType);
-    if (StringUtils.equals(payloadType, "JCR_PATH")) {
+    if (StringUtils.equals(payloadType, JCR_PATH)) {
       path = workItem.getWorkflowData().getPayload().toString();
-      log.info("Payload path: {}", path);
+      log.debug("Payload path: {}", path);
 
-      try (ResourceResolver resolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+      try (
+          ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
         Session jcrSession = workflowSession.adaptTo(Session.class);
 
         if (null != jcrSession) {
-          updatePageProperties(path, jcrSession, resolver);
-          replicatePage(jcrSession, path, resolver);
-          replicateBookNodes(path, jcrSession, resolver);
+          updatePageProperties(path, jcrSession, resourceResolver);
+          replicatePage(jcrSession, path, resourceResolver);
+          replicateBookNodes(path, jcrSession, resourceResolver);
         }
       } catch (Exception e) {
         log.error("payload type - {} is not valid", payloadType);
@@ -97,15 +97,15 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
   /**
    * Replicate the book nodes.
    *
-   * @param pagePath   the page path
-   * @param jcrSession the jcr session
-   * @param resolver   the ResourceResolver
+   * @param pagePath    the page path
+   * @param jcrSession  the jcr session
+   * @param resResolver the ResourceResolver
    */
-  public void updatePageProperties(String pagePath, Session jcrSession, ResourceResolver resolver) {
+  public void updatePageProperties(String pagePath, Session jcrSession,
+                                   ResourceResolver resResolver) {
     LocalDate date = LocalDate.now();
     log.debug("Current Date: {}", date);
 
-    // Add 10 month to the date
     LocalDate reviewReminderDate = date.plusMonths(10);
     LocalDate retirementNotificationDate = date.plusMonths(11);
     LocalDate scheduledRetirementDate = date.plusMonths(12);
@@ -115,7 +115,8 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     Calendar scheduledRetirementCalendar = Calendar.getInstance();
 
     reviewReminderCalendar.set(reviewReminderDate.getYear(),
-        reviewReminderDate.getMonthValue() - 1, reviewReminderDate.getDayOfMonth());
+        reviewReminderDate.getMonthValue() - 1,
+        reviewReminderDate.getDayOfMonth());
     retirementNotificationCalendar.set(retirementNotificationDate.getYear(),
         retirementNotificationDate.getMonthValue() - 1,
         retirementNotificationDate.getDayOfMonth());
@@ -128,7 +129,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
 
     DateFormat df = new SimpleDateFormat(GlobalConstants.ISO_8601_FORMAT);
 
-    PageManager pageManager = resolver.adaptTo(PageManager.class);
+    PageManager pageManager = resResolver.adaptTo(PageManager.class);
     Page currentPage = pageManager.getPage(pagePath);
 
     try {
@@ -158,7 +159,6 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
         node.setProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE,
             df.format(scheduledRetDate));
       }
-
       jcrSession.save();
     } catch (RepositoryException e) {
       log.error("RepositoryException occurred in updatePageProperties {}:", e.getMessage());
@@ -176,6 +176,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     if (replicator == null) {
       return;
     }
+
     replicateReferencedAssets(jcrSession, pagePath, resResolver);
 
     log.debug("PAGE ACTIVATION STARTED");
@@ -184,7 +185,6 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     } catch (ReplicationException e) {
       log.error("Exception occured while replicatePage method: {}", e.getMessage());
     }
-    log.debug("ACTIVATION ENDED");
   }
 
   /**
@@ -199,23 +199,21 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     if (replicator == null) {
       return;
     }
-    Node node = Objects.requireNonNull(
-        resResolver.getResource(pagePath + "/jcr:content")).adaptTo(Node.class);
 
+    Node node = Objects.requireNonNull(resResolver.getResource(pagePath + "/jcr:content"))
+        .adaptTo(Node.class);
     AssetReferenceSearch ref =
         new AssetReferenceSearch(node, DamConstants.MOUNTPOINT_ASSETS, resResolver);
     Map<String, Asset> allref = new HashMap<>(ref.search());
 
-    for (Map.Entry<String, Asset> entry : allref.entrySet()) {
-      String assetPath = entry.getKey();
-      log.debug("\n {}", assetPath); // Path of all Asset ref in page
-      log.debug("Asset activation started for {}", assetPath);
-      try {
+    try {
+      for (Map.Entry<String, Asset> entry : allref.entrySet()) {
+        String assetPath = entry.getKey();
+        log.debug("Asset activation started for {}", assetPath);
         replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, assetPath);
-      } catch (ReplicationException e) {
-        log.error("Exception occurred while replicateAssets method: {}", e.getMessage());
       }
-      log.debug("Asset Activation ended for {}", assetPath);
+    } catch (ReplicationException e) {
+      log.error("Exception occured while replicateAssets method: {}", e.getMessage());
     }
   }
 
@@ -236,25 +234,15 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
       List<String> paths = queryService.getBookNodesByPath(pagePath, null);
       paths.stream().filter(item -> resResolver.getResource(item) != null)
           .forEach(path -> {
-            Node root = Objects.requireNonNull(resResolver.getResource(path)).adaptTo(Node.class);
-            if (root != null) {
-              try {
-                final String pathToReplicate = root.getParent().getPath();
-                replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pathToReplicate);
-              } catch (ReplicationException e) {
-                log.error("Exception occured while replicating the node: {}", e.getMessage());
-              } catch (AccessDeniedException e) {
-                log.error("AccessDeniedException occured in replicateBookNodes: {}",
-                    e.getMessage());
-              } catch (ItemNotFoundException e) {
-                log.error("ItemNotFoundException occured in replicateBookNodes: {}",
-                    e.getMessage());
-              } catch (RepositoryException e) {
-                log.error("RepositoryException occured in replicateBookNodes: {}",
-                    e.getMessage());
-              }
+            try {
+              Node root =
+                  Objects.requireNonNull(resResolver.getResource(path)).adaptTo(Node.class);
+              final String pathToReplicate = root.getParent().getPath();
+              replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pathToReplicate);
+            } catch (Exception exec) {
+              log.error("Exception occured while replicating the book node and cause was: {}",
+                  exec.getMessage());
             }
-
           });
       log.debug("Replicate node for page {}", pagePath);
     } catch (Exception exec) {

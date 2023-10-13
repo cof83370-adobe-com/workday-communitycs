@@ -12,8 +12,6 @@ import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
-import com.day.cq.dam.api.DamConstants;
-import com.day.cq.dam.commons.util.AssetReferenceSearch;
 import com.day.cq.replication.Replicator;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
@@ -59,27 +57,10 @@ public class ContentPublishingWorkflowProcessTest {
   private final Session session = context.resourceResolver().adaptTo(Session.class);
 
   /**
-   * The meta data.
-   */
-  private final MetaDataMap metaData = new SimpleMetaDataMap();
-
-  /**
    * The retire process step.
    */
   @InjectMocks
-  ContentPublishingWorkflowProcess cpwProcessStep;
-
-  /**
-   * The cache manager.
-   */
-  @Mock
-  CacheManagerService cacheManager;
-
-  /**
-   * The replicator.
-   */
-  @Mock
-  Replicator replicator;
+  private ContentPublishingWorkflowProcess cpwProcessStep;
 
   /**
    * The workflow session.
@@ -106,6 +87,18 @@ public class ContentPublishingWorkflowProcessTest {
   private QueryService queryService;
 
   /**
+   * The cache manager.
+   */
+  @Mock
+  private CacheManagerService cacheManager;
+
+  /**
+   * The replicator.
+   */
+  @Mock
+  private Replicator replicator;
+
+  /**
    * The resolver.
    */
   @Mock
@@ -116,6 +109,11 @@ public class ContentPublishingWorkflowProcessTest {
    */
   @Mock
   private WorkItem workItem;
+
+  /**
+   * The meta data.
+   */
+  private final MetaDataMap metaData = new SimpleMetaDataMap();
 
   /**
    * Setup.
@@ -171,8 +169,6 @@ public class ContentPublishingWorkflowProcessTest {
     lenient().when(resolver.getResource(anyString())).thenReturn(resource);
     Node node = mock(Node.class);
     lenient().when(resource.adaptTo(Node.class)).thenReturn(node);
-    AssetReferenceSearch ref =
-        new AssetReferenceSearch(node, DamConstants.MOUNTPOINT_ASSETS, resolver);
     Property pt = mock(Property.class);
     PropertyIterator pIter = mock(PropertyIterator.class);
     lenient().when(node.setProperty("test", "testing")).thenReturn(pt);
@@ -196,8 +192,6 @@ public class ContentPublishingWorkflowProcessTest {
     lenient().when(resolver.getResource(anyString())).thenReturn(resource);
     Node node = mock(Node.class);
     lenient().when(resource.adaptTo(Node.class)).thenReturn(node);
-    AssetReferenceSearch ref =
-        new AssetReferenceSearch(node, DamConstants.MOUNTPOINT_ASSETS, resolver);
     Property pt = mock(Property.class);
     PropertyIterator pIter = mock(PropertyIterator.class);
     lenient().when(node.setProperty("test", "testing")).thenReturn(pt);
@@ -272,11 +266,11 @@ public class ContentPublishingWorkflowProcessTest {
     Node node = session.getNode("/content/process-publish-content/jcr:content");
     assertNotNull(node);
     lenient().when(tp.getPath()).thenReturn(WorkflowConstants.EVENT_TEMPLATE_PATH);
-    Boolean actualResultRevRemDt = node.hasProperty(WorkflowConstants.REVIEW_REMINDER_DATE);
+    boolean actualResultRevRemDt = node.hasProperty(WorkflowConstants.REVIEW_REMINDER_DATE);
     assertTrue(actualResultRevRemDt);
-    Boolean actualResultRetNtDt = node.hasProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE);
+    boolean actualResultRetNtDt = node.hasProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE);
     assertTrue(actualResultRetNtDt);
-    Boolean actualResultSdRtDt = node.hasProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
+    boolean actualResultSdRtDt = node.hasProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
     assertTrue(actualResultSdRtDt);
 
     cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver);
@@ -299,15 +293,15 @@ public class ContentPublishingWorkflowProcessTest {
     Node node = session.getNode("/content/process-publish-content/jcr:content");
     assertNotNull(node);
     lenient().when(tp.getPath()).thenReturn("");
-    Boolean actualResultRevRemDt = node.hasProperty(WorkflowConstants.REVIEW_REMINDER_DATE);
+    boolean actualResultRevRemDt = node.hasProperty(WorkflowConstants.REVIEW_REMINDER_DATE);
     assertTrue(actualResultRevRemDt);
     Property propertyRevRemDt = node.getProperty(WorkflowConstants.REVIEW_REMINDER_DATE);
     assertNotNull(propertyRevRemDt);
-    Boolean actualResultRetNtDt = node.hasProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE);
+    boolean actualResultRetNtDt = node.hasProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE);
     assertTrue(actualResultRetNtDt);
     Property propertyRetNtDt = node.getProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE);
     assertNotNull(propertyRetNtDt);
-    Boolean actualResultSdRtDt = node.hasProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
+    boolean actualResultSdRtDt = node.hasProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
     assertTrue(actualResultSdRtDt);
     Property propertySdRtDt = node.getProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
     assertNotNull(propertySdRtDt);

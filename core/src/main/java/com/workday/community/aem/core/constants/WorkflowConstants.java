@@ -81,12 +81,13 @@ public interface WorkflowConstants {
   String EVENT_TEMPLATE_PATH = "/conf/workday-community/settings/wcm/templates/events";
 
   /**
-   * The time zone.
-   */
-  String TIME_ZONE = "GMT";
-
-  /**
    * The retirement workflow.
    */
   String RETIREMENT_WORKFLOW = "/var/workflow/models/workday-community/retirement_workflow_30_days";
+
+  /**
+   * The jcr path.
+   */
+  String JCR_PATH = "JCR_PATH";
+
 }

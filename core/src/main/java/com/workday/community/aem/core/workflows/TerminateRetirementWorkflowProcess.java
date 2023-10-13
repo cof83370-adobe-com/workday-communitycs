@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.workflows;
 
+import static com.workday.community.aem.core.constants.WorkflowConstants.JCR_PATH;
+
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
@@ -29,28 +31,24 @@ public class TerminateRetirementWorkflowProcess implements WorkflowProcess {
   @Override
   public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap) {
     String payloadType = workItem.getWorkflowData().getPayloadType();
-    String path;
+    String path = workItem.getWorkflowData().getPayload().toString();
+    if (!StringUtils.equals(payloadType, JCR_PATH) || StringUtils.isBlank(path)) {
+      return;
+    }
 
     log.debug("Payload type: {}", payloadType);
-    if (StringUtils.equals(payloadType, "JCR_PATH")) {
-      path = workItem.getWorkflowData().getPayload().toString();
-      log.info("Payload path: {}", path);
-      if (StringUtils.isBlank(path)) {
-        return;
-      }
-
-      try {
-        WorkItem[] workitems = workflowSession.getActiveWorkItems();
-        for (WorkItem workitem : workitems) {
-          if (workitem.getWorkflowData().getPayload().equals(path)
-              && isRetirementWorkflow(workitem.getWorkflow())
-              && workitem.getWorkflow().getState().equals("RUNNING")) {
-            workflowSession.terminateWorkflow(workitem.getWorkflow());
-          }
+    log.info("Payload path: {}", path);
+    try {
+      WorkItem[] workitems = workflowSession.getActiveWorkItems();
+      for (WorkItem workitem : workitems) {
+        if (workitem.getWorkflowData().getPayload().equals(path)
+            && isRetirementWorkflow(workitem.getWorkflow())
+            && workitem.getWorkflow().getState().equals("RUNNING")) {
+          workflowSession.terminateWorkflow(workitem.getWorkflow());
         }
-      } catch (WorkflowException e) {
-        log.error("WorkflowException in TerminateRetirementWorkflowProcess: {}", e.getMessage());
       }
+    } catch (WorkflowException e) {
+      log.error("WorkflowException in TerminateRetirementWorkflowProcess: {}", e.getMessage());
     }
   }
 
