@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.workflows;
 
+import static com.workday.community.aem.core.constants.WorkflowConstants.JCR_PATH;
+
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
@@ -45,7 +47,7 @@ public class UpdateLastUpdatedOnPageActivation implements WorkflowProcess {
     public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap metaDataMap) {
         String payloadType = workItem.getWorkflowData().getPayloadType();
         log.info("{}: Payload type: {}", TAG, payloadType);
-        if (StringUtils.equals(payloadType, "JCR_PATH")) {
+        if (StringUtils.equals(payloadType, JCR_PATH)) {
             // Get the JCR path from the payload
             String path = workItem.getWorkflowData().getPayload().toString();
             try {

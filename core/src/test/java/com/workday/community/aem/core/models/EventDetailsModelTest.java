@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -18,17 +16,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
-import com.day.cq.tagging.Tag;
-import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.services.SnapService;
 
@@ -53,15 +46,6 @@ public class EventDetailsModelTest {
     
     /** The resource. */
     private Resource resource;
-    
-    /** The tm. */
-    private TagManager tm;
-    
-    /** The tag. */
-    private Tag tag;
-
-    /** The resolver. */
-    private ResourceResolver resolver;
 
     /** The Snap Service */
     @Mock
@@ -205,10 +189,6 @@ public class EventDetailsModelTest {
      */
     @Test
     void testGetEventFormatWithTags() throws Exception {
-        resolver = Mockito.mock(ResourceResolver.class);
-        tm = Mockito.mock(TagManager.class);
-        tag = Mockito.mock(Tag.class);
-
         eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
         assertNotNull(eventDetailsModel);
         eventDetailsModel.getEventFormat();

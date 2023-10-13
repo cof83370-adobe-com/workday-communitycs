@@ -24,6 +24,7 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 
 import static com.day.cq.wcm.api.constants.NameConstants.PN_PAGE_LAST_MOD_BY;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_PUBLIC_PAGE_PATH;
 import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
 import org.apache.jackrabbit.api.security.user.User;
@@ -69,7 +70,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     private final ArrayList<String> hierarchyFields = new ArrayList<>(Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags", "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType"));
 
     /** The stringFields. */
-    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation"));
+    private final ArrayList<String> stringFields = new ArrayList<>(Arrays.asList("pageTitle", "eventHost", "eventLocation", "retirementStatus"));
 
     /** The page tags. */
     private static final Map<String, String> pageTagMap = new HashMap<>() {{
@@ -179,7 +180,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
 
             processPageTags(page, properties);
 
-            processPermission(data, properties, email);
+            processPermission(data, properties, email, path);
 
             Resource resource = resourceResolver.getResource(path.concat(JCR_CONTENT_PATH));
             Node node = null;
@@ -220,10 +221,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
     }
 
     @Override
-    public void processPermission(ValueMap data, HashMap<String, Object> properties, String email) {
+    public void processPermission(ValueMap data, HashMap<String, Object> properties, String email, String path) {
         // Coveo permission example: https://docs.coveo.com/en/107/cloud-v2-developers/simple-permission-model-definition-examples.
         ArrayList<Object> permissionGroupAllowedPermissions = new ArrayList<>();
         String[] accessControlValues = data.get(ACCESS_CONTROL_PROPERTY, String[].class);
+        boolean allowAnonymous = false;
         if (accessControlValues != null && accessControlValues.length > 0) {
             for (String accessControlValue: accessControlValues) {
                 if (DRUPAL_ROLE_MAPPING.containsKey(accessControlValue)) {
@@ -236,6 +238,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
                         permissionGroup.put("securityProvider", SECURITY_IDENTITY_PROVIDER);
                         permissionGroupAllowedPermissions.add(permissionGroup);
                     }
+                }
+                else if (accessControlValue.equals("access-control:unauthenticated")) {
+                    allowAnonymous = true;
                 }
                 else {
                     logger.info("Coveo indexing: Access control value {} missing in the map for the page {}", accessControlValue, properties.get("documentId"));
@@ -260,7 +265,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         }
 
         HashMap<String, Object> permissionGroup = new HashMap<>();
-        permissionGroup.put("allowAnonymous", false);
+        if (!allowAnonymous && path.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
+            allowAnonymous = true;
+        }
+        permissionGroup.put("allowAnonymous", allowAnonymous);
+
         permissionGroup.put("allowedPermissions", permissionGroupAllowedPermissions);
         ArrayList<Object> permission = new ArrayList<>();
         permission.add(permissionGroup);
@@ -273,6 +282,11 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             String value = data.get(stringField, String.class);
             if (stringField.equals("pageTitle") && value == null) {
                 value = data.get(JCR_TITLE, String.class);
+            }
+            else if (stringField.equals("retirementStatus")) {
+                if (value != "retired") {
+                    value = "published";
+                }
             }
             if (value != null) {
                 properties.put(stringField, value);
