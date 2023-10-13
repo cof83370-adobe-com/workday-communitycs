@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.servlet.http.Cookie;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
