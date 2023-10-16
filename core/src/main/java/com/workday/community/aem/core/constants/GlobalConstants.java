@@ -1,48 +1,63 @@
 package com.workday.community.aem.core.constants;
 
-import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED_BY;
-
 import java.util.Collections;
 import java.util.Map;
 
 /**
- * The Class GlobalConstants.
+ * Defines global constants.
  *
  * @author pepalla
  */
 public final class GlobalConstants {
 
-  /** The Constant COMMUNITY_CONTENT_ROOT_PATH. */
+  /**
+   * The path to the Community content root.
+   */
   public static final String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
-  /** The Constant COMMUNITY_COVEO_JOB. */
+  /**
+   * The Community Coveo job path.
+   */
   public static final String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";
 
-  /** The Constant PROP_USER_PROFILE_GIVENNAME. */
+  /**
+   * The given name property.
+   */
   public static final String PROP_USER_PROFILE_GIVENNAME = "./profile/givenName";
 
-  /** The Constant PROP_USER_PROFILE_FAMILYNAME. */
+  /**
+   * The family name property.
+   */
   public static final String PROP_USER_PROFILE_FAMILYNAME = "./profile/familyName";
 
-  /** The Constant PROP_AUTHOR. */
+  /**
+   * The author property.
+   */
   public static final String PROP_AUTHOR = "author";
 
-  /** The Constant PROP_JCR_CREATED_BY. */
-  public static final String PROP_JCR_CREATED_BY = JCR_CREATED_BY;
-
-  /** The Constant PROP_UPDATED_DATE. */
+  /**
+   * The updated date property.
+   */
   public static final String PROP_UPDATED_DATE = "updatedDate";
 
-  /** The Constant PROP_POSTED_DATE. */
+  /**
+   * The posted date property.
+   */
   public static final String PROP_POSTED_DATE = "postedDate";
 
-  /** The Constant PUBLISH. */
+  /**
+   * The ID of the publish instance.
+   */
   public static final String PUBLISH = "publish";
 
-  /** The Constant JCR CONTENT NODE. */
+  /**
+   * The JCR content path.
+   */
   public static final String JCR_CONTENT_PATH = "/jcr:content";
 
-  /** The Constant CONTENT_TYPE_MAPPING. */
+  /**
+   * Map of content type templates and their labels.
+   */
   public static final Map<String, String> CONTENT_TYPE_MAPPING = Collections.unmodifiableMap(Map.of(
       "/conf/workday-community/settings/wcm/templates/events", "Calendar Event",
       "/conf/workday-community/settings/wcm/templates/faq", "FAQ",
@@ -53,20 +68,51 @@ public final class GlobalConstants {
       "/conf/workday-community/settings/wcm/templates/page-content", "Content Page",
       "/conf/workday-community/settings/wcm/templates/book", "Book"));
 
-  /** The Constant OKTA_USER_PATH. */
+  /**
+   * Path to Okta.
+   */
   public static final String OKTA_USER_PATH = "/workdaycommunity/okta";
 
-  /** The Constant USER_ROOT_PATH. */
+  /**
+   * Path to users.
+   */
   public static final String USER_ROOT_PATH = "/home/users/";
 
-  /** The Constant COMMUNITY_BOOK_ROOT_PATH. */
-  public static final String COMMUNITY_CONTENT_BOOK_ROOT_PATH = "/content/workday-community/en-us/admin-tools/books";
+  /**
+   * Path to the book root.
+   */
+  public static final String COMMUNITY_CONTENT_BOOK_ROOT_PATH =
+      "/content/workday-community/en-us/admin-tools/books";
 
-  /** The Constant CLOUD_CONFIG_NULL_VALUE. */
+  /**
+   * Value of unset configs.
+   */
   public static final String CLOUD_CONFIG_NULL_VALUE = "null";
 
-  /** The Constant TAG_PROPERTY_ACCESS_CONTROL. */
+  /**
+   * The access control tags property.
+   */
   public static final String TAG_PROPERTY_ACCESS_CONTROL = "accessControlTags";
+
+  /**
+   * The user service user.
+   */
+  public static final String READ_SERVICE_USER = "readserviceuser";
+
+  /**
+   * Admin service user.
+   */
+  public static final String ADMIN_SERVICE_USER = "workday-community-administrative-service";
+
+  /**
+   * The name of the user group service.
+   */
+  public static final String SERVICE_USER_GROUP = "adminusergroup";
+
+  /**
+   * The IDO 8601 date format.
+   */
+  public static final String ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
   /**
    * Instantiates a new global constants.
@@ -75,17 +121,4 @@ public final class GlobalConstants {
     throw new IllegalStateException("Utility class");
   }
 
-  /**
-   * The user service user.
-   */
-  public static final String READ_SERVICE_USER = "readserviceuser";
-
-  /** Admin service user. */
-  public static final String ADMIN_SERVICE_USER = "workday-community-administrative-service";
-
-  /** The Constant SERVICE_USER_GROUP. */
-  public static final String SERVICE_USER_GROUP = "adminusergroup";
-
-  /** The iso 8601 format. */
-  public static final String ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 }

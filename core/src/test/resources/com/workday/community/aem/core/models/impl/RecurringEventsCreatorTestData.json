@@ -1,171 +1,171 @@
 {
   "sample-recurring-events-page": {
-      "jcr:primaryType": "cq:Page",
+    "jcr:primaryType": "cq:Page",
+    "jcr:createdBy": "admin",
+    "jcr:created": "Thu Jul 20 2023 14:19:24 GMT+0530",
+    "jcr:content": {
+      "jcr:primaryType": "cq:PageContent",
       "jcr:createdBy": "admin",
+      "jcr:title": "test",
+      "author": " Administrator",
+      "cq:template": "/conf/workday-community/settings/wcm/templates/events",
+      "eventStartDate": "Thu Jul 20 2023 14:18:00 GMT+0530",
+      "eventEndDate": "Thu Jul 27 2023 14:18:00 GMT+0530",
+      "contentType": [
+        "content-types:event"
+      ],
       "jcr:created": "Thu Jul 20 2023 14:19:24 GMT+0530",
-      "jcr:content": {
-          "jcr:primaryType": "cq:PageContent",
-          "jcr:createdBy": "admin",
-          "jcr:title": "test",
-          "author": " Administrator",
-          "cq:template": "/conf/workday-community/settings/wcm/templates/events",
-          "eventStartDate": "Thu Jul 20 2023 14:18:00 GMT+0530",
-          "eventEndDate": "Thu Jul 27 2023 14:18:00 GMT+0530",
-          "contentType": [
-            "content-types:event"
-          ],
-          "jcr:created": "Thu Jul 20 2023 14:19:24 GMT+0530",
-          "eventFormat": [
-            "event:event-format/webinar"
-          ],
-          "cq:lastModified": "Thu Jul 20 2023 14:19:24 GMT+0530",
-          "recurringEvents": "yes",
-          "eventFrequency": "monthly",
-          "accessControlTags": [
-            "access-control:customer_all"
-          ],
-          "sling:resourceType": "workday-community/components/structure/eventspage",
-          "cq:lastModifiedBy": "admin",
-          "root": {
+      "eventFormat": [
+        "event:event-format/webinar"
+      ],
+      "cq:lastModified": "Thu Jul 20 2023 14:19:24 GMT+0530",
+      "recurringEvents": "yes",
+      "eventFrequency": "monthly",
+      "accessControlTags": [
+        "access-control:customer_all"
+      ],
+      "sling:resourceType": "workday-community/components/structure/eventspage",
+      "cq:lastModifiedBy": "admin",
+      "root": {
+        "jcr:primaryType": "nt:unstructured",
+        "layout": "responsiveGrid",
+        "sling:resourceType": "workday-community/components/core/container",
+        "container": {
+          "jcr:primaryType": "nt:unstructured",
+          "layout": "responsiveGrid",
+          "sling:resourceType": "workday-community/components/core/container",
+          "eventregistration": {
             "jcr:primaryType": "nt:unstructured",
-            "layout": "responsiveGrid",
             "sling:resourceType": "workday-community/components/core/container",
-            "container": {
+            "button": {
               "jcr:primaryType": "nt:unstructured",
-              "layout": "responsiveGrid",
+              "jcr:title": "Register for Event",
+              "linkTarget": "_self",
+              "sling:resourceType": "workday-community/components/core/button"
+            }
+          },
+          "eventdetailscontainer": {
+            "jcr:primaryType": "nt:unstructured",
+            "sling:resourceType": "workday-community/components/core/container",
+            "image": {
+              "jcr:primaryType": "nt:unstructured",
+              "sling:resourceType": "workday-community/components/core/image"
+            },
+            "eventdetails": {
+              "jcr:primaryType": "nt:unstructured",
+              "sling:resourceType": "workday-community/components/content/events/eventdetails"
+            }
+          },
+          "centercontainer": {
+            "jcr:primaryType": "nt:unstructured",
+            "sling:resourceType": "workday-community/components/core/container",
+            "eventdescription": {
+              "jcr:primaryType": "nt:unstructured",
               "sling:resourceType": "workday-community/components/core/container",
-              "eventregistration": {
+              "cq:styleIds": [
+                "1683930780963"
+              ],
+              "title": {
+                "jcr:primaryType": "nt:unstructured",
+                "jcr:title": "Event Description",
+                "type": "h2",
+                "linkTarget": "_blank",
+                "sling:resourceType": "workday-community/components/core/title"
+              },
+              "text": {
+                "jcr:primaryType": "nt:unstructured",
+                "sling:resourceType": "workday-community/components/core/text"
+              }
+            },
+            "preparation": {
+              "jcr:primaryType": "nt:unstructured",
+              "sling:resourceType": "workday-community/components/core/container",
+              "cq:styleIds": [
+                "1683930889156"
+              ],
+              "title": {
+                "jcr:primaryType": "nt:unstructured",
+                "jcr:title": "Preparation",
+                "type": "h2",
+                "linkTarget": "_self",
+                "sling:resourceType": "workday-community/components/core/title"
+              },
+              "text": {
+                "jcr:primaryType": "nt:unstructured",
+                "sling:resourceType": "workday-community/components/core/text"
+              }
+            },
+            "agenda": {
+              "jcr:primaryType": "nt:unstructured",
+              "sling:resourceType": "workday-community/components/core/container",
+              "cq:styleIds": [
+                "1683930920623"
+              ],
+              "title": {
+                "jcr:primaryType": "nt:unstructured",
+                "jcr:title": "Agenda",
+                "type": "h2",
+                "linkTarget": "_self",
+                "sling:resourceType": "workday-community/components/core/title"
+              },
+              "text": {
+                "jcr:primaryType": "nt:unstructured",
+                "sling:resourceType": "workday-community/components/core/text"
+              }
+            }
+          },
+          "bottomcontainer": {
+            "jcr:primaryType": "nt:unstructured",
+            "bottomrightcontainer": {
+              "jcr:primaryType": "nt:unstructured",
+              "sling:resourceType": "workday-community/components/core/container",
+              "speakers": {
                 "jcr:primaryType": "nt:unstructured",
                 "sling:resourceType": "workday-community/components/core/container",
-                "button": {
+                "cq:styleIds": [
+                  "1672945911947"
+                ],
+                "userlist": {
                   "jcr:primaryType": "nt:unstructured",
-                  "jcr:title": "Register for Event",
-                  "linkTarget": "_self",
-                  "sling:resourceType": "workday-community/components/core/button"
+                  "sling:resourceType": "workday-community/components/common/userlist"
                 }
               },
-              "eventdetailscontainer": {
+              "sponsors": {
                 "jcr:primaryType": "nt:unstructured",
                 "sling:resourceType": "workday-community/components/core/container",
+                "cq:styleIds": [
+                  "1672942053585"
+                ],
+                "title": {
+                  "jcr:primaryType": "nt:unstructured",
+                  "jcr:title": "Sponsors",
+                  "type": "h3",
+                  "linkTarget": "_blank",
+                  "sling:resourceType": "workday-community/components/core/title"
+                },
                 "image": {
                   "jcr:primaryType": "nt:unstructured",
                   "sling:resourceType": "workday-community/components/core/image"
-                },
-                "eventdetails": {
-                  "jcr:primaryType": "nt:unstructured",
-                  "sling:resourceType": "workday-community/components/content/events/eventdetails"
                 }
               },
-              "centercontainer": {
+              "relatedinfo": {
                 "jcr:primaryType": "nt:unstructured",
                 "sling:resourceType": "workday-community/components/core/container",
-                "eventdescription": {
+                "cq:styleIds": [
+                  "1672945987785"
+                ],
+                "relatedinformation": {
                   "jcr:primaryType": "nt:unstructured",
-                  "sling:resourceType": "workday-community/components/core/container",
-                  "cq:styleIds": [
-                    "1683930780963"
-                  ],
-                  "title": {
-                    "jcr:primaryType": "nt:unstructured",
-                    "jcr:title": "Event Description",
-                    "type": "h2",
-                    "linkTarget": "_blank",
-                    "sling:resourceType": "workday-community/components/core/title"
-                  },
-                  "text": {
-                    "jcr:primaryType": "nt:unstructured",
-                    "sling:resourceType": "workday-community/components/core/text"
-                  }
-                },
-                "preparation": {
-                  "jcr:primaryType": "nt:unstructured",
-                  "sling:resourceType": "workday-community/components/core/container",
-                  "cq:styleIds": [
-                    "1683930889156"
-                  ],
-                  "title": {
-                    "jcr:primaryType": "nt:unstructured",
-                    "jcr:title": "Preparation",
-                    "type": "h2",
-                    "linkTarget": "_self",
-                    "sling:resourceType": "workday-community/components/core/title"
-                  },
-                  "text": {
-                    "jcr:primaryType": "nt:unstructured",
-                    "sling:resourceType": "workday-community/components/core/text"
-                  }
-                },
-                "agenda": {
-                  "jcr:primaryType": "nt:unstructured",
-                  "sling:resourceType": "workday-community/components/core/container",
-                  "cq:styleIds": [
-                    "1683930920623"
-                  ],
-                  "title": {
-                    "jcr:primaryType": "nt:unstructured",
-                    "jcr:title": "Agenda",
-                    "type": "h2",
-                    "linkTarget": "_self",
-                    "sling:resourceType": "workday-community/components/core/title"
-                  },
-                  "text": {
-                    "jcr:primaryType": "nt:unstructured",
-                    "sling:resourceType": "workday-community/components/core/text"
-                  }
-                }
-              },
-              "bottomcontainer": {
-                "jcr:primaryType": "nt:unstructured",
-                "bottomrightcontainer": {
-                  "jcr:primaryType": "nt:unstructured",
-                  "sling:resourceType": "workday-community/components/core/container",
-                  "speakers": {
-                    "jcr:primaryType": "nt:unstructured",
-                    "sling:resourceType": "workday-community/components/core/container",
-                    "cq:styleIds": [
-                      "1672945911947"
-                    ],
-                    "userlist": {
-                      "jcr:primaryType": "nt:unstructured",
-                      "sling:resourceType": "workday-community/components/common/userlist"
-                    }
-                  },
-                  "sponsors": {
-                    "jcr:primaryType": "nt:unstructured",
-                    "sling:resourceType": "workday-community/components/core/container",
-                    "cq:styleIds": [
-                      "1672942053585"
-                    ],
-                    "title": {
-                      "jcr:primaryType": "nt:unstructured",
-                      "jcr:title": "Sponsors",
-                      "type": "h3",
-                      "linkTarget": "_blank",
-                      "sling:resourceType": "workday-community/components/core/title"
-                    },
-                    "image": {
-                      "jcr:primaryType": "nt:unstructured",
-                      "sling:resourceType": "workday-community/components/core/image"
-                    }
-                  },
-                  "relatedinfo": {
-                    "jcr:primaryType": "nt:unstructured",
-                    "sling:resourceType": "workday-community/components/core/container",
-                    "cq:styleIds": [
-                      "1672945987785"
-                    ],
-                    "relatedinformation": {
-                      "jcr:primaryType": "nt:unstructured",
-                      "type": "static",
-                      "title": "Related Information",
-                      "footernewTab": "_blank",
-                      "sling:resourceType": "workday-community/components/common/relatedinformation"
-                    }
-                  }
+                  "type": "static",
+                  "title": "Related Information",
+                  "footernewTab": "_blank",
+                  "sling:resourceType": "workday-community/components/common/relatedinformation"
                 }
               }
             }
           }
         }
+      }
+    }
   }
 }

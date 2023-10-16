@@ -1,26 +1,28 @@
 package com.workday.community.aem.core.constants;
 
 /**
- * Lms Constants
+ * Interface defining LMS constants.
  */
 public interface LmsConstants {
-    /**
-     * Report entry
-     */
-    String REPORT_ENTRY_KEY = "Report_Entry";
 
-    /*
-     * Plus
-     */
-    String PLUS = "+";
+  /**
+   * Report entry.
+   */
+  String REPORT_ENTRY_KEY = "Report_Entry";
 
-    /*
-     * Encoded space string
-     */
-    String ENCODED_SPACE = "%20";
+  /**
+   * Plus symbol.
+   */
+  String PLUS = "+";
 
-    /*
-     * Token cache key
-     */
-    String TOKEN_CACHE_KEY = "lmsCourseDetailBearerToken";
+  /**
+   * Encoded space string.
+   */
+  String ENCODED_SPACE = "%20";
+
+  /**
+   * Token cache key.
+   */
+  String TOKEN_CACHE_KEY = "lmsCourseDetailBearerToken";
+
 }
