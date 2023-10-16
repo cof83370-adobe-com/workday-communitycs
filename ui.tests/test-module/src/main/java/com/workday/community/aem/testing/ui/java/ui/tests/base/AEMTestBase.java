@@ -45,7 +45,7 @@ public abstract class AEMTestBase {
         switch (browser) {
             case "chrome":
                 ChromeOptions options = new ChromeOptions();
-                options.setHeadless(true);
+//                options.setHeadless(true);
                 options.addArguments("--verbose", "--disable-gpu", "--no-sandbox", "--disable-dev-shm-usage");
                 dc.setCapability(ChromeOptions.CAPABILITY, options);
                 dc.setCapability("goog:loggingPrefs", logPrefs);
@@ -58,14 +58,17 @@ public abstract class AEMTestBase {
                 break;
         }
         URL webDriverUrl = new URL(Config.SELENIUM_BASE_URL + "/wd/hub");
-        driver = new RemoteWebDriver(webDriverUrl, dc);
-        commands = new Commands(driver);
+        if (driver == null) {
+            driver = new RemoteWebDriver(webDriverUrl, dc);
+            commands = new Commands(driver);
+        }
     }
 
     @AfterClass
     public static void cleanup() {
         if (driver != null) {
             driver.quit();
+            driver = null;
         }
     }
 }

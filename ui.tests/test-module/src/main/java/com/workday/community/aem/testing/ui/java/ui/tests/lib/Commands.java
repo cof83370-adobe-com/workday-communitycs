@@ -1,25 +1,9 @@
-/*
- *  Copyright 2022 Adobe Systems Incorporated
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
 package com.workday.community.aem.testing.ui.java.ui.tests.lib;
 
 import com.workday.community.aem.testing.ui.java.ui.tests.Config;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
@@ -27,7 +11,6 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.util.Date;
-import java.util.Objects;
 
 import static com.workday.community.aem.testing.ui.java.ui.tests.base.AEMTestBase.LOGGER;
 
@@ -41,23 +24,16 @@ public class Commands {
         Commands.driver = driver;
     }
 
-    public void forceLogout() {
-        driver.navigate().to(Config.AEM_AUTHOR_URL + "/");
-
-        if (!Objects.equals(driver.getTitle(), "AEM Sign In")) {
+    public void forceLogout(String url) {
+        driver.navigate().to(url + "/");
+        String signTitle = Config.getPublishEnvLoginTitle(url);
+        if (signTitle != null && !signTitle.equals(driver.getTitle())) {
             LOGGER.info("Need to log out");
-            driver.navigate().to(Config.AEM_AUTHOR_URL + "/system/sling/logout.html");
-        }
+            driver.navigate().to(url + "/bin/user/logout");
 
-        //Declare and initialise a fluent wait
-        FluentWait<WebDriver> wait = new FluentWait<>(driver);
-        // Specify the timeout of the wait
-        wait.withTimeout(Duration.ofSeconds(10));
-        wait.pollingEvery(Duration.ofMillis(250));
-        wait.ignoring(NoSuchElementException.class);
-        LOGGER.info("Waiting for login dialog");
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("form[name=\"login\"]")));
-        driver.findElement(By.cssSelector("form[name=\"login\"]"));
+            //Re-visit the home.
+            driver.navigate().to(url + "/");
+        }
     }
 
     public void aemLogin(String username, String password) {
