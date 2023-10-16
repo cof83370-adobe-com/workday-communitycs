@@ -1,41 +1,41 @@
-<sly data-sly-use.model="com.workday.community.aem.core.models.CoveoTabListModel">
-    <div class="multi-tab-container">
-        <span id="tabListTitleId"  data-comp-props-data="${properties.title}"></span>
-        <span id="tabListRowsId" data-comp-props-data="${properties.rows}"></span>
-        <span id="tabListFeedUrlBaseId" data-comp-props-data="${model.feedUrlBase}"></span>
-        <span id="tabListSearchConfigId" data-model-search-config="${model.getSearchConfig}"></span>
-        <span id="tabListProductCriteriaId" data-product-criteria="${model.getProductCriteria}"></span>
-        <span id="tabListSelectedFieldsId" data-field-criteria="${model.getSelectedFields}"></span>
-        <span id="tabListExtraCriteriaDataId" data-extra-criteria="${model.getExtraCriteria}"></span>
-        <h2 class="multi-tab-title">${model.compConfig.title}</h2>
+<sly data-sly-use.model='com.workday.community.aem.core.models.CoveoTabListModel'>
+    <div class='multi-tab-container'>
+        <span id='tabListTitleId'  data-comp-props-data='${properties.title}'></span>
+        <span id='tabListRowsId' data-comp-props-data='${properties.rows}'></span>
+        <span id='tabListFeedUrlBaseId' data-comp-props-data='${model.feedUrlBase}'></span>
+        <span id='tabListSearchConfigId' data-model-search-config='${model.getSearchConfig}'></span>
+        <span id='tabListProductCriteriaId' data-product-criteria='${model.getProductCriteria}'></span>
+        <span id='tabListSelectedFieldsId' data-field-criteria='${model.getSelectedFields}'></span>
+        <span id='tabListExtraCriteriaDataId' data-extra-criteria='${model.getExtraCriteria}'></span>
+        <h2 class='multi-tab-title'>${model.compConfig.title}</h2>
         <!-- start of the tab -->
-        <nav class="multi-tab-navbar" id="multiTabListContainerId" aria-label="Multi-tab navigation">
-            <ul class="multi-tab-list" id="multiTabsCompId"></ul>
+        <nav class='multi-tab-navbar' id='multiTabListContainerId' aria-label='Multi-tab navigation'>
+            <ul class='multi-tab-list' id='multiTabsCompId'></ul>
         </nav>
         <!-- start of the list -->
-        <atomic-search-interface id="multiTabSearchId">
+        <atomic-search-interface id='multiTabSearchId'>
             <atomic-search-layout>
                 <!--Atomic facets section-->
-                <atomic-layout-section section="main">
-                    <atomic-layout-section class="multi-tab-actionbar">
-                        <atomic-layout-section section="search" class="multi-tab-search">
-                            <atomic-search-box class="search-box"></atomic-search-box>
+                <atomic-layout-section section='main'>
+                    <atomic-layout-section class='multi-tab-actionbar'>
+                        <atomic-layout-section section='search' class='multi-tab-search'>
+                            <atomic-search-box class='search-box'></atomic-search-box>
                         </atomic-layout-section>
                         <!--Status section-->
-                        <atomic-layout-section section="sort" class="multi-tab-sort">
+                        <atomic-layout-section section='sort' class='multi-tab-sort'>
                             <atomic-sort-dropdown>
-                                <atomic-sort-expression label="Relevance" expression="relevancy">
+                                <atomic-sort-expression label='Relevance' expression='relevancy'>
                                 </atomic-sort-expression>
-                                <atomic-sort-expression label="Newest" expression="date descending">
+                                <atomic-sort-expression label='Newest' expression='date descending'>
                                 </atomic-sort-expression>
                             </atomic-sort-dropdown>
                         </atomic-layout-section>
                     </atomic-layout-section>
 
-                    <hr class="separator" />
+                    <hr class='separator' />
                     <!--Results section-->
-                    <atomic-layout-section section="results">
-                        <atomic-result-list display="list" image-size="icon" density="normal">
+                    <atomic-layout-section section='results'>
+                        <atomic-result-list display='list' image-size='icon' density='normal'>
                             <atomic-result-template>
                                 <template>
                                     <style>
@@ -46,11 +46,11 @@
                                         .field-label {
                                             font-weight: bold;
                                             margin-right: 0.25rem;
-                                            font-family: "WorkdayAdelleSans-bold" !important;
+                                            font-family: 'WorkdayAdelleSans-bold' !important;
                                             font-weight: 400 !important;
                                         }
                                         .result-link a {
-                                            font-family: "WorkdayAdelleSans-Regular";
+                                            font-family: 'WorkdayAdelleSans-Regular';
                                             color: #0875e1 !important;
                                             font-size: 20px !important;
                                             font-weight: 400;
@@ -82,37 +82,37 @@
                                         }
                                     </style>
                                     <atomic-result-section-title>
-                                        <atomic-result-link target="_blank" class="result-link"></atomic-result-link>
+                                        <atomic-result-link target='_blank' class='result-link'></atomic-result-link>
                                     </atomic-result-section-title>
                                     <atomic-result-section-excerpt>
-                                        <atomic-result-text field="excerpt"></atomic-result-text>
+                                        <atomic-result-text field='excerpt'></atomic-result-text>
                                     </atomic-result-section-excerpt>
-                                    <atomic-result-section-bottom-metadata class="bottom-line">
-                                        <atomic-result-fields-list class="metadata">
-                                            <!--this value is conditionally generated based on druauthororgid's value as "581" which is Workday org id -->
-                                            <atomic-field-condition class="field" if-defined="druauthororgid" must-match-commonsource="Community" must-match-druauthororgid="581">
+                                    <atomic-result-section-bottom-metadata class='bottom-line'>
+                                        <atomic-result-fields-list class='metadata'>
+                                            <!--this value is conditionally generated based on druauthororgid's value as '581' which is Workday org id -->
+                                            <atomic-field-condition class='field' if-defined='druauthororgid' must-match-commonsource='Community' must-match-druauthororgid='581'>
                                                 <span>Workday &nbsp;</span>
                                             </atomic-field-condition>
 
-                                            <atomic-field-condition class="field" if-defined="commoncontenttype">
-                                                <span class="field-label"><atomic-text value="Content Type"></atomic-text>: &nbsp;</span>
-                                                <atomic-result-text field="commoncontenttype"/>
+                                            <atomic-field-condition class='field' if-defined='commoncontenttype'>
+                                                <span class='field-label'><atomic-text value='Content Type'></atomic-text>: &nbsp;</span>
+                                                <atomic-result-text field='commoncontenttype'/>
                                             </atomic-field-condition>
 
-                                            <atomic-field-condition class="field" if-defined="commoncreateddate">
-                                                <span class="field-label"><atomic-text value="Created On"></atomic-text>: &nbsp;</span>
-                                                <atomic-result-date field="commoncreateddate" format="ddd MMM, D YYYY"/>
+                                            <atomic-field-condition class='field' if-defined='commoncreateddate'>
+                                                <span class='field-label'><atomic-text value='Created On'></atomic-text>: &nbsp;</span>
+                                                <atomic-result-date field='commoncreateddate' format='ddd MMM, D YYYY'/>
                                             </atomic-field-condition>
 
-                                            <atomic-field-condition class="field" if-defined="commonmodifieddate">
-                                                <span class="field-label">&nbsp;<atomic-text value="Updated On"></atomic-text>:</span>
-                                                <atomic-result-date field="commonmodifieddate" format="ddd MMM, D YYYY"/>
+                                            <atomic-field-condition class='field' if-defined='commonmodifieddate'>
+                                                <span class='field-label'>&nbsp;<atomic-text value='Updated On'></atomic-text>:</span>
+                                                <atomic-result-date field='commonmodifieddate' format='ddd MMM, D YYYY'/>
                                             </atomic-field-condition>
                                         </atomic-result-fields-list>
-                                        <atomic-result-fields-list class="products">
-                                            <atomic-field-condition class="field hydrated hide-divider" if-defined="commonproducttags"><!---->
-                                                <span class="field-products">
-                                                    <atomic-result-multi-value-text  class="field hydrated" field="commonproducttags" data-atomic-rendered="true" data-atomic-loaded="true" max-values-to-display="5" should-highlight="true" delimiter="&nbsp;">
+                                        <atomic-result-fields-list class='products'>
+                                            <atomic-field-condition class='field hydrated hide-divider' if-defined='commonproducttags'><!---->
+                                                <span class='field-products'>
+                                                    <atomic-result-multi-value-text  class='field hydrated' field='commonproducttags' data-atomic-rendered='true' data-atomic-loaded='true' max-values-to-display='5' should-highlight='true' delimiter='&nbsp;'>
                                                     </atomic-result-multi-value-text>
                                                 </span>
                                             </atomic-field-condition>
@@ -128,12 +128,12 @@
                 </atomic-layout-section>
             </atomic-search-layout>
         </atomic-search-interface>
-        <hr class="separator" />
-        <div class="all-feeds">
-            <span class="all-feeds-text"></span>
+        <hr class='separator' />
+        <div class='all-feeds'>
+            <span class='all-feeds-text'></span>
         </div>
 
-        <script type="module">
+        <script type='module'>
             import {
                 loadContextActions,
                 loadFieldActions,
@@ -142,46 +142,46 @@
             } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
 
             //1 This should come from component editor dialog.
-            const compTitle = document.getElementById("tabListTitleId").getAttribute("data-comp-props-data");
-            let listRows = document.getElementById("tabListRowsId").getAttribute("data-comp-props-data");
-            const productCriteria = document.getElementById("tabListProductCriteriaId").getAttribute("data-product-criteria");
-            const extraCriteria = document.getElementById("tabListExtraCriteriaDataId").getAttribute("data-extra-criteria");
+            const compTitle = document.getElementById('tabListTitleId').getAttribute('data-comp-props-data');
+            let listRows = document.getElementById('tabListRowsId').getAttribute('data-comp-props-data');
+            const productCriteria = document.getElementById('tabListProductCriteriaId').getAttribute('data-product-criteria');
+            const extraCriteria = document.getElementById('tabListExtraCriteriaDataId').getAttribute('data-extra-criteria');
             const compWidth = '100%';
             listRows = listRows ? listRows : 5;
 
             // 2 Field definition is from Coveo, (predefined in model/service?)
-            let search_fields = JSON.parse("[".concat(document.getElementById("tabListSelectedFieldsId").getAttribute("data-field-criteria")).concat("]"));
+            let search_fields = JSON.parse('['.concat(document.getElementById('tabListSelectedFieldsId').getAttribute('data-field-criteria')).concat(']'));
             if (search_fields.length === 1 && search_fields[0] === null) {
                 search_fields = [];
             }
             search_fields.forEach( field => field['dataExpression'] = field['dataExpression'] + productCriteria + extraCriteria);
             // 3 From the service
-            const search_config = JSON.parse(document.getElementById("tabListSearchConfigId").getAttribute("data-model-search-config"));
+            const search_config = JSON.parse(document.getElementById('tabListSearchConfigId').getAttribute('data-model-search-config'));
 
             function setActive(currentTab) {
-                if (!currentTab.className.includes("item-button-active")) {
-                    currentTab.classList.add("item-button-active");
+                if (!currentTab.className.includes('item-button-active')) {
+                    currentTab.classList.add('item-button-active');
                 }
 
-                let tabs = document.getElementsByClassName("item-button");
+                let tabs = document.getElementsByClassName('item-button');
                 for (let i = 0; i < tabs.length; i++) {
                     const tab = tabs[i];
                     if (currentTab.name !== tab.name) {
-                        tab.classList.remove("item-button-active");
+                        tab.classList.remove('item-button-active');
                     }
                 }
 
                 // set active update all event
                 const allEventContainer = document.getElementsByClassName('all-feeds-text')[0];
-                const urlBase = document.getElementById("tabListFeedUrlBaseId").getAttribute("data-comp-props-data");
-                const innerHtml = "<a href=\"" + urlBase  + currentTab.textContent + "\">All " + currentTab.textContent + "</a>";
+                const urlBase = document.getElementById('tabListFeedUrlBaseId').getAttribute('data-comp-props-data');
+                const innerHtml = '<a href=\'' + urlBase  + currentTab.textContent + '\'>All ' + currentTab.textContent + '</a>';
                 allEventContainer.innerHTML = innerHtml;
             }
             function getActive() {
-                let tabs = document.getElementsByClassName("item-button");
+                let tabs = document.getElementsByClassName('item-button');
                 for (let i = 0; i < tabs.length; i++) {
                     const tab = tabs[i];
-                    if (tab.className.includes("item-button-active")) {
+                    if (tab.className.includes('item-button-active')) {
                         return tab;
                     }
                 }
@@ -192,25 +192,28 @@
                 const controller = buildTab(engine, buildTabProps);
                 const clickHandler = function (event) {
                     controller.select();
-                    setActive(event.target);
-
                     // if the tab is in dropdown, dismiss it.
                     const parent = event.target.parentNode;
                     if (parent.className === 'popup-item') {
+                        const tab = document.getElementById('multiTabsCompId');
+                        tab.setAttribute('item-first', event.target.name)
+                        buildTabs(buildTab, engine);
                         const moreButton = parent.parentNode.parentNode.parentNode;
                         moreButton.removeChild(moreButton.children[1]);
+                    } else {
+                        setActive(event.target);
                     }
                 };
                 return clickHandler;
             }
             function getTabProps(tabButton) {
                 const active = tabButton.getAttribute('data-is-active');
-                const id = tabButton.getAttribute("name");
-                const expression = tabButton.getAttribute("data-expression");
+                const id = tabButton.getAttribute('name');
+                const expression = tabButton.getAttribute('data-expression');
 
                 const btProps = {
                     initialState: {
-                        isActive: active === "true" ? true : false
+                        isActive: 'true' === active
                     },
                     options: {
                         id,
@@ -221,10 +224,10 @@
             }
             function getVisibleTabs(tabContainer, tab) {
                 let totalWidth = tabContainer.clientWidth;
-                const ml = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("margin-left");
-                const mr = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("margin-right");
-                const pl = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("padding-left");
-                const pr = document.defaultView.getComputedStyle(tabContainer).getPropertyValue("padding-right");
+                const ml = document.defaultView.getComputedStyle(tabContainer).getPropertyValue('margin-left');
+                const mr = document.defaultView.getComputedStyle(tabContainer).getPropertyValue('margin-right');
+                const pl = document.defaultView.getComputedStyle(tabContainer).getPropertyValue('padding-left');
+                const pr = document.defaultView.getComputedStyle(tabContainer).getPropertyValue('padding-right');
                 if (ml) { totalWidth += parseFloat(ml); }
                 if (mr) { totalWidth += parseFloat(mr); }
                 if (pl) { totalWidth += parseFloat(pl); }
@@ -238,16 +241,16 @@
                     const curElem = tab.childNodes[index];
                     if (curElem.tagName === 'LI' && index < tab.childNodes.length - 1) {
                         const tabWidth = curElem.getBoundingClientRect().width;
-                        let marginLeft = document.defaultView.getComputedStyle(curElem).getPropertyValue("margin-left");
+                        let marginLeft = document.defaultView.getComputedStyle(curElem).getPropertyValue('margin-left');
                         marginLeft = marginLeft ? parseFloat(marginLeft) : 0;
 
-                        let marginRight = document.defaultView.getComputedStyle(curElem).getPropertyValue("margin-right");
+                        let marginRight = document.defaultView.getComputedStyle(curElem).getPropertyValue('margin-right');
                         marginRight = marginRight ? parseFloat(marginRight) : 0;
 
-                        let paddingLeft = document.defaultView.getComputedStyle(curElem).getPropertyValue("padding-left");
+                        let paddingLeft = document.defaultView.getComputedStyle(curElem).getPropertyValue('padding-left');
                         paddingLeft = paddingLeft ? parseFloat(paddingLeft) : 0;
 
-                        let paddingRight = document.defaultView.getComputedStyle(curElem).getPropertyValue("padding-right");
+                        let paddingRight = document.defaultView.getComputedStyle(curElem).getPropertyValue('padding-right');
                         paddingRight = paddingRight ? parseFloat(paddingRight) : 0;
 
                         accuWidth += tabWidth + marginRight + marginLeft + paddingLeft + paddingRight;
@@ -266,62 +269,69 @@
 
                 return fields;
             }
-            function getMoreTab(hiddenElements) {
-                const moreTab = document.createElement("li");
-                moreTab.setAttribute("id", "navTabMoreId");
-                moreTab.setAttribute("class", "nav-tab-item");
-                const button = document.createElement("button");
-                button.setAttribute("name", "moreButton");
-                button.setAttribute("class", "item-button");
-                button.textContent = "More>>";
+            function getMoreTab() {
+                const moreTab = document.createElement('li');
+                moreTab.setAttribute('id', 'navTabMoreId');
+                moreTab.setAttribute('class', 'nav-tab-item');
+                const button = document.createElement('button');
+                button.setAttribute('name', 'moreButton');
+                button.setAttribute('class', 'item-button');
+                button.textContent = 'More>>';
                 moreTab.append(button);
                 return moreTab;
             }
             // Render tab bar
             async function buildTabs(buildTab, engine) {
-                const tab = document.getElementById("multiTabsCompId");
+                const tab = document.getElementById('multiTabsCompId');
                 // Delete tab children as it may be different every time when you resize the view.
                 while (tab.firstChild) {
                     tab.removeChild(tab.firstChild);
                 }
 
                 search_fields.forEach((field) => {
-                    const li = document.createElement("li");
-                    li.setAttribute("class", "nav-tab-item");
-                    const button = document.createElement("button");
-                    button.setAttribute("name", field["name"]);
-                    button.setAttribute("id", field["name"]);
-                    button.setAttribute("data-expression", field["dataExpression"]);
+                    const li = document.createElement('li');
+                    li.setAttribute('class', 'nav-tab-item');
+                    const button = document.createElement('button');
+                    button.setAttribute('name', field['name']);
+                    button.setAttribute('id', field['name']);
+                    button.setAttribute('data-expression', field['dataExpression']);
 
                     const buildTabProps = getTabProps(button);
                     customFunctions[button.name] = tabHandler(buildTab, engine, buildTabProps);
 
-                    if (field["selected"]) {
-                        button.setAttribute("class", "item-button active");
-                        button.setAttribute("data-is-active", "true");
+                    if (field['selected']) {
+                        button.setAttribute('class', 'item-button active');
+                        button.setAttribute('data-is-active', 'true');
                     } else {
-                        button.setAttribute("class", "item-button");
-                        button.setAttribute("data-is-active", "false");
+                        button.setAttribute('class', 'item-button');
+                        button.setAttribute('data-is-active', 'false');
                     }
-                    button.addEventListener("click", ($event) => {
-                        customFunctions[field["name"]]($event);
+                    button.addEventListener('click', ($event) => {
+                        customFunctions[field['name']]($event);
                     });
-                    button.textContent = field["desc"];
+                    button.textContent = field['desc'];
                     li.append(button);
-                    tab.append(li);
+
+                    const first = tab.getAttribute('item-first');
+                    if (first === field['name']) {
+                        tab.prepend(li);
+                        setActive(button);
+                    } else {
+                        tab.append(li);
+                    }
                 })
 
                 // append more tab at the end
                 const hiddenElements = [];
-                const moreTab = getMoreTab([]);
+                const moreTab = getMoreTab();
                 tab.append(moreTab);
 
-                const tabContainer = document.getElementsByClassName("coveotablist")[0];
+                const tabContainer = document.getElementsByClassName('coveotablist')[0];
                 waitForElementToDisplay('atomic-search-layout', (elem) => {
                      if (!elem.classList.contains('grid-30')) elem.classList.add('grid-30');
                 })
 
-                const title = tabContainer.getElementsByClassName("multi-tab-title")[0];
+                const title = tabContainer.getElementsByClassName('multi-tab-title')[0];
                 title.innerText = compTitle;
                 const visibleTabs = getVisibleTabs(tabContainer, tab);
 
@@ -339,7 +349,7 @@
                 tab.removeChild(moreTab);
 
                 if (hiddenElements.length > 0) {
-                    moreTab.firstChild.addEventListener("click", ()=> {
+                    moreTab.firstChild.addEventListener('click', ()=> {
                         toggleDropDown(moreTab, hiddenElements);
                     });
                     tab.appendChild(moreTab);
@@ -352,15 +362,15 @@
                     return;
                 }
 
-                const dropDownContent = document.createElement("div");
-                dropDownContent.setAttribute("class", "more-drop-down");
-                dropDownContent.setAttribute("id", "navMoreDropDownId");
+                const dropDownContent = document.createElement('div');
+                dropDownContent.setAttribute('class', 'more-drop-down');
+                dropDownContent.setAttribute('id', 'navMoreDropDownId');
 
                 if (hiddenElements && hiddenElements.length > 0) {
                     const ul = document.createElement('ul');
-                    ul.setAttribute("class", "popup-items");
+                    ul.setAttribute('class', 'popup-items');
                     for (let i=0; i<hiddenElements.length; i++) {
-                        hiddenElements[i].setAttribute("class", "popup-item");
+                        hiddenElements[i].setAttribute('class', 'popup-item');
                         ul.append(hiddenElements[i]);
                     }
                     dropDownContent.append(ul);
@@ -413,8 +423,8 @@
             }
 
             const analyticsClientMiddleware = (eventName, payload) => {
-                if (search_config["userContext"]) {
-                    payload.customData = {...payload.customData, ...JSON.parse(search_config["userContext"])};
+                if (search_config['userContext']) {
+                    payload.customData = {...payload.customData, ...JSON.parse(search_config['userContext'])};
                 }
                 return payload;
             };
@@ -430,8 +440,8 @@
                     const searchInterface = document.getElementById('multiTabSearchId');
                     await searchInterface.initialize({
                         accessToken: token,
-                        searchHub: search_config["searchHub"],
-                        organizationId: search_config["orgId"],
+                        searchHub: search_config['searchHub'],
+                        organizationId: search_config['orgId'],
                         renewAccessToken: getToken,
                         preprocessRequest: (request, clientOrigin) => {
                             if (clientOrigin === 'searchApiFetch') {
@@ -473,7 +483,7 @@
 
                     await buildTabs(buildTab, engine);
 
-                    const tab = document.getElementById("multiTabsCompId");
+                    const tab = document.getElementById('multiTabsCompId');
                     // Click the first button
                     if (search_fields.length > 2) {
                         tab.firstChild.firstChild.click();
