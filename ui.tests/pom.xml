@@ -84,6 +84,7 @@
                     <descriptors>
                         <descriptor>assembly-ui-test-docker-context.xml</descriptor>
                     </descriptors>
+                    <tarLongFileMode>posix</tarLongFileMode>
                 </configuration>
                 <executions>
                     <execution>
