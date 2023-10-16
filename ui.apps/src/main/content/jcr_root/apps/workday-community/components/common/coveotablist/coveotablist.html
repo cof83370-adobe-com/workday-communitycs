@@ -24,9 +24,11 @@
                         <!--Status section-->
                         <atomic-layout-section section='sort' class='multi-tab-sort'>
                             <atomic-sort-dropdown>
-                                <atomic-sort-expression label='Relevance' expression='relevancy'>
+                                <atomic-sort-expression label='Most Recent Activity' expression='commonrecentactivitydate descending'>
                                 </atomic-sort-expression>
-                                <atomic-sort-expression label='Newest' expression='date descending'>
+                                <atomic-sort-expression label='Most Recent Posted' expression='date descending'>
+                                </atomic-sort-expression>
+                                <atomic-sort-expression label='Most Commented' expression='druanswercount descending'>
                                 </atomic-sort-expression>
                             </atomic-sort-dropdown>
                         </atomic-layout-section>
@@ -297,7 +299,7 @@
                     button.setAttribute('data-expression', field['dataExpression']);
 
                     const buildTabProps = getTabProps(button);
-                    customFunctions[button.name] = tabHandler(buildTab, engine, buildTabProps);
+                    customFunctions['tabList' + button.name] = tabHandler(buildTab, engine, buildTabProps);
 
                     if (field['selected']) {
                         button.setAttribute('class', 'item-button active');
@@ -307,7 +309,7 @@
                         button.setAttribute('data-is-active', 'false');
                     }
                     button.addEventListener('click', ($event) => {
-                        customFunctions[field['name']]($event);
+                        customFunctions['tabList' + field['name']]($event);
                     });
                     button.textContent = field['desc'];
                     li.append(button);
@@ -506,7 +508,7 @@
           window.addEventListener('resize', () => {
     		if (window.innerWidth <= 1023) {
         		const main = async () => {
-            		const searchInterface = document.querySelector('atomic-search-interface');
+                    const searchInterface = document.getElementById('multiTabSearchId');
            		 	const engine = searchInterface.engine;
             		await buildTabs(buildTab, engine);
         		};
