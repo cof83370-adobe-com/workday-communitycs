@@ -7,24 +7,25 @@ import java.util.Date;
  */
 public interface Metadata {
 
-    /**
-     * Gets the author name.
-     *
-     * @return the author name
-     */
-    String getAuthorName();
+  /**
+   * Gets the author name.
+   *
+   * @return the author name
+   */
+  String getAuthorName();
 
-    /**
-     * Gets the posted date.
-     *
-     * @return the posted date
-     */
-    Date getPostedDate();
+  /**
+   * Gets the posted date.
+   *
+   * @return the posted date
+   */
+  Date getPostedDate();
 
-    /**
-     * Gets the updated date.
-     *
-     * @return the updated date
-     */
-    Date getUpdatedDate();
+  /**
+   * Gets the updated date.
+   *
+   * @return the updated date
+   */
+  Date getUpdatedDate();
+
 }

@@ -9,19 +9,20 @@ import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.pojos.EventTypes;
 import com.workday.community.aem.core.pojos.EventTypeValue;
+import com.workday.community.aem.core.pojos.EventTypes;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import javax.servlet.ServletException;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -39,11 +40,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-
-import javax.servlet.ServletException;
-
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoEventsTypeServletTest {
   private final AemContext context = new AemContext();
 
@@ -53,14 +50,14 @@ public class CoveoEventsTypeServletTest {
   @Mock
   SnapService snapService;
 
+  @InjectMocks
+  CoveoEventsTypeServlet coveoEventTypeServlet;
+
   @Mock
   private ObjectMapper objectMapper;
 
   @Mock
   private UserService userService;
-
-  @InjectMocks
-  CoveoEventsTypeServlet coveoEventTypeServlet;
 
   @BeforeEach
   public void setup() {
@@ -78,13 +75,15 @@ public class CoveoEventsTypeServletTest {
     userObject.addProperty(EMAIL_NAME, "test@workday.com");
 
     try (MockedStatic<OurmUtils> ourmUtilsMock = mockStatic(OurmUtils.class);
-    MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class)){
-      ourmUtilsMock.when(()-> OurmUtils.getSalesForceId(any(), any())).thenReturn(DEFAULT_SFID_MASTER);
-      ourmUtilsMock.when(()-> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("test@workday.com");
+         MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class)) {
+      ourmUtilsMock.when(() -> OurmUtils.getSalesForceId(any(), any()))
+          .thenReturn(DEFAULT_SFID_MASTER);
+      ourmUtilsMock.when(() -> OurmUtils.getUserEmail(anyString(), any(), any()))
+          .thenReturn("test@workday.com");
 
       CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
       httpClientsMockedStatic.when(HttpClients::createDefault).thenReturn(httpClient);
-      lenient().when(searchApiConfigService.getSearchTokenAPI()).thenReturn("https://foo");
+      lenient().when(searchApiConfigService.getSearchTokenApi()).thenReturn("https://foo");
       lenient().when(snapService.getUserContext(anyString())).thenReturn(userObject);
       CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
       StatusLine statusLine = mock(StatusLine.class);
@@ -106,23 +105,24 @@ public class CoveoEventsTypeServletTest {
       coveoEventTypeServlet.setObjectMapper(this.objectMapper);
       try {
         coveoEventTypeServlet.doGet(request, response);
-      } catch (ServletException | IOException exception){
+      } catch (ServletException | IOException exception) {
         // do nothing.
       }
 
       lenient().when(searchApiConfigService.isDevMode()).thenReturn(false);
-      lenient().when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn(CLOUD_CONFIG_NULL_VALUE);
+      lenient().when(searchApiConfigService.getSearchTokenApiKey())
+          .thenReturn(CLOUD_CONFIG_NULL_VALUE);
       try {
         coveoEventTypeServlet.doGet(request, response);
-      } catch (ServletException | IOException exception){
+      } catch (ServletException | IOException exception) {
         // do nothing.
       }
 
-      lenient().when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn("foo");
+      lenient().when(searchApiConfigService.getSearchTokenApiKey()).thenReturn("foo");
       lenient().when(searchApiConfigService.getUserIdType()).thenReturn("test user type");
       try {
         coveoEventTypeServlet.doGet(request, response);
-      } catch (ServletException | IOException exception){
+      } catch (ServletException | IOException exception) {
         // do nothing.
       }
     }
