@@ -50,6 +50,10 @@
         <SCREENSHOTS_PATH>target/screenshots</SCREENSHOTS_PATH>
         <SHARED_FOLDER>/tmp/shared</SHARED_FOLDER>
         <UPLOAD_URL/>
+        <SLF4J_SIMPLE_VERSION>1.7.25</SLF4J_SIMPLE_VERSION>
+        <AEM_CLOUD_TEST_CLIENT_VERSION>1.2.0</AEM_CLOUD_TEST_CLIENT_VERSION>
+        <COMMONS_IO_VERSION>2.11.0</COMMONS_IO_VERSION>
+        <JUNIT_VERSION>4.13.2</JUNIT_VERSION>
     </properties>
 
     <build>
@@ -256,7 +260,7 @@
                                 </goals>
                                 <configuration>
                                     <includes>
-                                        <include>**/*UI.java</include>
+                                        <include>**/*Test.java</include>
                                     </includes>
                                 </configuration>
                             </execution>
@@ -301,23 +305,23 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.13.2</version>
+            <version>${JUNIT_VERSION}</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
+            <version>${COMMONS_IO_VERSION}</version>
         </dependency>
         <dependency>
             <groupId>com.adobe.cq</groupId>
             <artifactId>aem-cloud-testing-clients</artifactId>
-            <version>1.2.0</version>
+            <version>${AEM_CLOUD_TEST_CLIENT_VERSION}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>1.7.25</version>
+            <version>${SLF4J_SIMPLE_VERSION}</version>
         </dependency>
     </dependencies>
 
