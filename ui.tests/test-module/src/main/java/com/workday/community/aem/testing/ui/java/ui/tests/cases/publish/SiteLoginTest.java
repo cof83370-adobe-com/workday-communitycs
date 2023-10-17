@@ -1,13 +1,18 @@
 package com.workday.community.aem.testing.ui.java.ui.tests.cases.publish;
 
+import com.workday.community.aem.testing.ui.java.ui.tests.Config;
 import com.workday.community.aem.testing.ui.java.ui.tests.base.AEMTestBase;
 import com.workday.community.aem.testing.ui.java.ui.tests.lib.BrowserLogsDumpRule;
 import com.workday.community.aem.testing.ui.java.ui.tests.lib.FailureScreenShotRule;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class SiteLoginTestUI extends AEMTestBase {
+public class SiteLoginTest extends AEMTestBase {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SiteLoginTest.class);
+
     /**
      * Using the following rule will create a screenshot in case of tests failure
      */
@@ -22,12 +27,14 @@ public class SiteLoginTestUI extends AEMTestBase {
 
     @Before
     public void forceLogout() {
+        LOGGER.info("The Author URL: {}", Config.AEM_PUBLISH_URL);
         // End any existing user session
 //        commands.forceLogout(Config.AEM_PUBLISH_URL);
     }
 
     @Test
     public void checkLoginForm() {
+        LOGGER.info("checkLoginForm test");
 //        LOGGER.info("Navigating to AEM publish site root");
 //        driver.navigate().to(Config.AEM_PUBLISH_URL + "/");
 //        LOGGER.info("Finding elements in login form");
@@ -38,6 +45,7 @@ public class SiteLoginTestUI extends AEMTestBase {
 
     @Test
     public void checkSuccessfulLogin() {
+        LOGGER.info("checkSuccessfulLogin test");
 //        driver.navigate().to(Config.AEM_PUBLISH_URL + "/");
 //
 //        commands.aemLogin(Config.AEM_AUTHOR_USERNAME, Config.AEM_AUTHOR_PASSWORD);
