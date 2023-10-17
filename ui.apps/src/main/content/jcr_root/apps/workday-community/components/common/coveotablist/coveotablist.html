@@ -179,17 +179,6 @@
                 const innerHtml = '<a href=\'' + urlBase  + currentTab.textContent + '\'>All ' + currentTab.textContent + '</a>';
                 allEventContainer.innerHTML = innerHtml;
             }
-            function getActive() {
-                let tabs = document.getElementsByClassName('item-button');
-                for (let i = 0; i < tabs.length; i++) {
-                    const tab = tabs[i];
-                    if (tab.className.includes('item-button-active')) {
-                        return tab;
-                    }
-                }
-
-                return tabs[0];
-            }
             function tabHandler(buildTab, engine, buildTabProps) {
                 const controller = buildTab(engine, buildTabProps);
                 const clickHandler = function (event) {
@@ -198,7 +187,11 @@
                     const parent = event.target.parentNode;
                     if (parent.className === 'popup-item') {
                         const tab = document.getElementById('multiTabsCompId');
-                        tab.setAttribute('item-first', event.target.name)
+                        tab.setAttribute('item-first', event.target.name);
+                        const elem = search_fields.find( field => field['name'] == event.target.name);
+                        if (elem) {
+                            tab.setAttribute('item-index', search_fields.indexOf(elem));
+                        }
                         buildTabs(buildTab, engine);
                         const moreButton = parent.parentNode.parentNode.parentNode;
                         moreButton.removeChild(moreButton.children[1]);
@@ -290,37 +283,54 @@
                     tab.removeChild(tab.firstChild);
                 }
 
-                search_fields.forEach((field) => {
+                // Adjust the search_fields
+                const first = tab.getAttribute('item-first');
+                if (first) {
+                    const field = search_fields.find( field => field['name'] === first);
+                    if (field) {
+                        const index = search_fields.indexOf(field);
+                        [search_fields[0], search_fields[index]] = [search_fields[index], search_fields[0]];
+                        search_fields[0]['selected'] = true;
+                        search_fields.forEach( (field, index) => {
+                            if(index > 0) {
+                                search_fields[index]['selected'] = false;
+                            }
+                        })
+                    }
+                }
+
+                search_fields.forEach((field, idx) => {
                     const li = document.createElement('li');
                     li.setAttribute('class', 'nav-tab-item');
                     const button = document.createElement('button');
-                    button.setAttribute('name', field['name']);
-                    button.setAttribute('id', field['name']);
+                    let fieldName = field['name'];
+
+                    const index = +tab.getAttribute("item-index");
+                    if (index > 0 && index === idx) {
+
+                    }
+                    button.setAttribute('name', fieldName);
+                    button.setAttribute('id', fieldName);
                     button.setAttribute('data-expression', field['dataExpression']);
+                    button.textContent = field['desc'];
 
                     const buildTabProps = getTabProps(button);
                     customFunctions['tabList' + button.name] = tabHandler(buildTab, engine, buildTabProps);
 
-                    if (field['selected']) {
+                    if (field['selected'] === true || field['selected'] === 'true') {
                         button.setAttribute('class', 'item-button active');
                         button.setAttribute('data-is-active', 'true');
+                        setActive(button);
                     } else {
                         button.setAttribute('class', 'item-button');
                         button.setAttribute('data-is-active', 'false');
+                        button.classList.remove('item-button-active');
                     }
                     button.addEventListener('click', ($event) => {
                         customFunctions['tabList' + field['name']]($event);
                     });
-                    button.textContent = field['desc'];
                     li.append(button);
-
-                    const first = tab.getAttribute('item-first');
-                    if (first === field['name']) {
-                        tab.prepend(li);
-                        setActive(button);
-                    } else {
-                        tab.append(li);
-                    }
+                    tab.append(li);
                 })
 
                 // append more tab at the end
@@ -430,7 +440,6 @@
                 }
                 return payload;
             };
-
             document.addEventListener('DOMContentLoaded', () => {
                 if (search_fields.length === 0) {
                     return;
@@ -505,7 +514,7 @@
                 main().then(() => {
                 });
             });
-          window.addEventListener('resize', () => {
+            window.addEventListener('resize', () => {
     		if (window.innerWidth <= 1023) {
         		const main = async () => {
                     const searchInterface = document.getElementById('multiTabSearchId');
