@@ -44,10 +44,8 @@
 
     <module name="LineLength">
         <property name="fileExtensions" value="java"/>
-        <property name="max" value="100"/>
+        <property name="max" value="120"/>
         <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
-        <property name="ignorePattern" value="^ \* \{@[link|see] .*$"/>
-        <property name="ignorePattern" value="^protected|private|public.*\{$"/>
     </module>
 
     <module name="TreeWalker">
@@ -383,8 +381,5 @@
             <!-- The check is suppressed in the next line of code after the comment -->
             <property name="influenceFormat" value="1"/>
         </module>
-    </module>
-    <module name="LineLength">
-        <property name="max" value="120"/>
     </module>
 </module>

@@ -82,7 +82,6 @@
       }
     }
   },
-
   "page-override-flag": {
     "jcr:primaryType": "cq:Page",
     "jcr:createdBy": "admin",
@@ -95,7 +94,7 @@
       "jcr:created": "Fri Mar 31 2023 11:59:17 GMT+0530",
       "cq:lastModified": "Fri Apr 14 2023 11:33:24 GMT-0400",
       "sling:resourceType": "workday-community/components/structure/page",
-      "overrideDate" : true,
+      "overrideDate": true,
       "cq:lastModifiedBy": "admin",
       "root": {
         "jcr:primaryType": "nt:unstructured",

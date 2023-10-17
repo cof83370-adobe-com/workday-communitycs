@@ -1,5 +1,21 @@
 package com.workday.community.aem.core.models.impl;
 
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
+import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
+import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
+import static com.workday.community.aem.core.models.impl.HeaderModelImpl.UNAUTHENTICATED_MENU;
+import static junit.framework.Assert.assertNotNull;
+import static junitx.framework.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.osgi.framework.Constants.SERVICE_RANKING;
+
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.google.gson.Gson;
@@ -10,6 +26,10 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -19,35 +39,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static com.workday.community.aem.core.models.impl.HeaderModelImpl.UNAUTHENTICATED_MENU;
-import static junit.framework.Assert.assertNotNull;
-import static junitx.framework.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
-import static org.osgi.framework.Constants.SERVICE_RANKING;
-
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTENT_TYPE;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.PAGE_NAME;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_NUMBER;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.CONTACT_ROLE;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_ID;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_NAME;
-import static com.workday.community.aem.core.constants.AdobeAnalyticsConstants.ACCOUNT_TYPE;
-import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 
 /**
  * The Class HeaderModelImplTest.
  */
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class HeaderModelImplTest {
 
   /**
@@ -128,10 +126,6 @@ public class HeaderModelImplTest {
   @Test
   void testGetDataLayerData() {
     // Case 1: return data.
-    JsonObject digitalData = new JsonObject();
-    JsonObject userProperties = new JsonObject();
-    JsonObject orgProperties = new JsonObject();
-    JsonObject pageProperties = new JsonObject();
     String contactRole = "Training Coordinator; Named Support Contact; Community Org Administrator";
     String contactNumber = "45689";
     String accountName = "McKee Foods Corporation";
@@ -139,25 +133,36 @@ public class HeaderModelImplTest {
     String accountType = "customer";
     String title = "FAQ";
     Gson gson = new Gson();
+
+    JsonObject userProperties = new JsonObject();
     userProperties.addProperty(CONTACT_ROLE, contactRole);
     userProperties.addProperty(CONTACT_NUMBER, contactNumber);
+
+    JsonObject orgProperties = new JsonObject();
     orgProperties.addProperty(ACCOUNT_ID, accountId);
     orgProperties.addProperty(ACCOUNT_NAME, accountName);
     orgProperties.addProperty(ACCOUNT_TYPE, accountType);
+
+    JsonObject pageProperties = new JsonObject();
     pageProperties.addProperty(CONTENT_TYPE, title);
     pageProperties.addProperty(PAGE_NAME, title);
+
+    JsonObject digitalData = new JsonObject();
     digitalData.add("user", userProperties);
     digitalData.add("org", orgProperties);
     digitalData.add("page", pageProperties);
-    String digitalDataString = String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
+    String digitalDataString =
+        String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));
 
     HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
     Template template = mock(Template.class);
-    lenient().when(template.getPath()).thenReturn("/conf/workday-community/settings/wcm/templates/faq");
+    lenient().when(template.getPath())
+        .thenReturn("/conf/workday-community/settings/wcm/templates/faq");
     lenient().when(currentPage.getTemplate()).thenReturn(template);
     lenient().when(currentPage.getTitle()).thenReturn(title);
-    lenient().when(snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER, title, title)).thenReturn(digitalDataString);
+    lenient().when(snapService.getAdobeDigitalData(DEFAULT_SFID_MASTER, title, title))
+        .thenReturn(digitalDataString);
     lenient().when(runModeConfigService.getInstance()).thenReturn("publish");
     String data = headerModel.getDataLayerData();
     assertTrue(data.contains(contactNumber));
@@ -173,14 +178,14 @@ public class HeaderModelImplTest {
   }
 
   /**
-   * Test method getGlobalSearchURL.
+   * Test method getGlobalSearchUrl.
    */
   @Test
-  void testGetGlobalSearchURL() {
+  void testGetGlobalSearchUrl() {
     String uri = "https://www.resourcecenter.workday.com";
-    lenient().when(searchApiConfigService.getGlobalSearchURL()).thenReturn(uri);
+    lenient().when(searchApiConfigService.getGlobalSearchUrl()).thenReturn(uri);
     HeaderModel headerModel = context.request().adaptTo(HeaderModel.class);
     assertNotNull(headerModel);
-    assertEquals(uri, headerModel.getGlobalSearchURL());
+    assertEquals(uri, headerModel.getGlobalSearchUrl());
   }
 }

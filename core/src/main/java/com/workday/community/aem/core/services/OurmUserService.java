@@ -16,7 +16,6 @@ public interface OurmUserService {
    */
   void activate(OurmDrupalConfig config);
 
-
   /**
    * Search ourm user list.
    *

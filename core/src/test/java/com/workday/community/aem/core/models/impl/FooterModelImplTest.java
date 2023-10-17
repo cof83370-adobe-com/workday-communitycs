@@ -4,17 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.lenient;
 
+import com.workday.community.aem.core.models.FooterModel;
+import com.workday.community.aem.core.services.RunModeConfigService;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.workday.community.aem.core.models.FooterModel;
-import com.workday.community.aem.core.services.RunModeConfigService;
-
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
  * The Class FooterModelImplTest.
@@ -53,5 +51,5 @@ public class FooterModelImplTest {
     assertNotNull(footerModel);
     assertEquals(uri, footerModel.getAdobeAnalyticsUri());
   }
-    
+
 }
