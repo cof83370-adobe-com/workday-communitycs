@@ -7,10 +7,10 @@ import java.util.List;
  */
 public interface TaxonomyBadge {
 
-    /**
-     * Gets the badge list.
-     *
-     * @return the badge list
-     */
-    List<String> getBadgeList();
+  /**
+   * Gets the badge list.
+   *
+   * @return the badge list
+   */
+  List<String> getBadgeList();
 }

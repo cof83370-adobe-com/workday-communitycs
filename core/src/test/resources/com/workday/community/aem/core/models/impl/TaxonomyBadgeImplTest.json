@@ -1,81 +1,81 @@
 {
-    "event-page": {
-        "jcr:primaryType": "cq:Page",
-        "jcr:content": {
-            "jcr:primaryType": "cq:PageContent",
-            "eventStartDate": "Tue Nov 22 2022 00:44:02 GMT-0600",
-            "jcr:createdBy": "admin",
-            "jcr:title": "Test AEM content Demo 13",
-            "eventEndDate": "Wed Nov 23 2022 00:44:48 GMT-0600",
-            "productTags": [
-                "product:engage"
-            ],
-            "pwaOrientation": "any",
-            "cq:template": "/conf/workday-community/settings/wcm/templates/events",
-            "readCount": 1,
-            "updatedDate": "Mon Nov 21 2022 23:00:00 GMT-0600",
-            "jcr:created": "Sat Jan 21 2023 07:14:52 GMT-0600",
-            "pwaDisplay": "standalone",
-            "eventFormat": [
-                "event:event-format/conference/altitude",
-                "event:event-format/conference/rising",
-                "event:event-format/conference/elevate",
-                "event:event-format/webinar/training"
-            ],
-            "cq:lastModified": "Tue Jan 31 2023 18:46:06 GMT-0600",
-            "eventLocation": "Virtual",
-            "eventHost": "Community",
-            "pwaCachestrategy": "staleWhileRevalidate",
-            "sling:resourceType": "workday-community/components/structure/eventspage",
-            "retirementDate": "Wed May 22 2024 23:00:00 GMT-0500",
-            "cq:lastModifiedBy": "admin"
-        }
-    },
-    "release-notes-page": {
-        "jcr:primaryType": "cq:Page",
-        "jcr:content": {
-            "jcr:primaryType": "nt:unstructured",
-            "sling:resourceType": "workday-community/components/core/releasenotespage",
-            "releasNotesChangeType": [
-                "release-notes:change-type/enhancement",
-                "release-notes:change-type/fix",
-                "release-notes:change-type/what-s-coming-next",
-                "release-notes:change-type/unresolvable-tag"
-            ]
-        }
-    },
-    "training-catalog-page": {
-        "jcr:primaryType": "cq:Page",
-        "jcr:content": {
-            "jcr:primaryType": "nt:unstructured",
-            "sling:resourceType": "workday-community/components/core/trainingcatalogpage",
-            "trainingFormat": [
-                "training:/training-format/learn-on-demand",
-                "training:/training-format/learn-virtual",
-                "training:/training-format/workday-pro",
-                "training:/training-format/refresher-training"
-            ]
-        }
-    },
-    "kits-and-tools-page": {
-        "jcr:primaryType": "cq:Page",
-        "jcr:content": {
-            "jcr:primaryType": "nt:unstructured",
-            "sling:resourceType": "workday-community/components/structure/kitsandtoolspage",
-            "productTags": [
-                "product:engage"
-            ]
-        }
-    },
-    "untaged-event-page": {
-        "jcr:primaryType": "cq:Page",
-        "jcr:content": {
-            "jcr:primaryType": "cq:PageContent",
-            "sling:resourceType": "workday-community/components/structure/eventspage",
-            "eventAudience": [
-                "event:event-audience/executives",
-                "event:event-audience/partners"
-            ]
-        }
+  "event-page": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:content": {
+      "jcr:primaryType": "cq:PageContent",
+      "eventStartDate": "Tue Nov 22 2022 00:44:02 GMT-0600",
+      "jcr:createdBy": "admin",
+      "jcr:title": "Test AEM content Demo 13",
+      "eventEndDate": "Wed Nov 23 2022 00:44:48 GMT-0600",
+      "productTags": [
+        "product:engage"
+      ],
+      "pwaOrientation": "any",
+      "cq:template": "/conf/workday-community/settings/wcm/templates/events",
+      "readCount": 1,
+      "updatedDate": "Mon Nov 21 2022 23:00:00 GMT-0600",
+      "jcr:created": "Sat Jan 21 2023 07:14:52 GMT-0600",
+      "pwaDisplay": "standalone",
+      "eventFormat": [
+        "event:event-format/conference/altitude",
+        "event:event-format/conference/rising",
+        "event:event-format/conference/elevate",
+        "event:event-format/webinar/training"
+      ],
+      "cq:lastModified": "Tue Jan 31 2023 18:46:06 GMT-0600",
+      "eventLocation": "Virtual",
+      "eventHost": "Community",
+      "pwaCachestrategy": "staleWhileRevalidate",
+      "sling:resourceType": "workday-community/components/structure/eventspage",
+      "retirementDate": "Wed May 22 2024 23:00:00 GMT-0500",
+      "cq:lastModifiedBy": "admin"
     }
+  },
+  "release-notes-page": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:content": {
+      "jcr:primaryType": "nt:unstructured",
+      "sling:resourceType": "workday-community/components/core/releasenotespage",
+      "releasNotesChangeType": [
+        "release-notes:change-type/enhancement",
+        "release-notes:change-type/fix",
+        "release-notes:change-type/what-s-coming-next",
+        "release-notes:change-type/unresolvable-tag"
+      ]
+    }
+  },
+  "training-catalog-page": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:content": {
+      "jcr:primaryType": "nt:unstructured",
+      "sling:resourceType": "workday-community/components/core/trainingcatalogpage",
+      "trainingFormat": [
+        "training:/training-format/learn-on-demand",
+        "training:/training-format/learn-virtual",
+        "training:/training-format/workday-pro",
+        "training:/training-format/refresher-training"
+      ]
+    }
+  },
+  "kits-and-tools-page": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:content": {
+      "jcr:primaryType": "nt:unstructured",
+      "sling:resourceType": "workday-community/components/structure/kitsandtoolspage",
+      "productTags": [
+        "product:engage"
+      ]
+    }
+  },
+  "untaged-event-page": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:content": {
+      "jcr:primaryType": "cq:PageContent",
+      "sling:resourceType": "workday-community/components/structure/eventspage",
+      "eventAudience": [
+        "event:event-audience/executives",
+        "event:event-audience/partners"
+      ]
+    }
+  }
 }

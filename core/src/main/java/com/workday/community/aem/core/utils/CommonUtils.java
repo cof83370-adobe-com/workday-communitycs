@@ -1,33 +1,31 @@
 package com.workday.community.aem.core.utils;
 
+import static java.util.Objects.requireNonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import com.google.gson.reflect.TypeToken;
 import com.workday.community.aem.core.constants.WccConstants;
-import org.apache.jackrabbit.api.security.user.User;
-import org.apache.jackrabbit.api.security.user.UserManager;
-import org.apache.sling.api.resource.ResourceResolver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import com.google.gson.reflect.TypeToken;
-import java.lang.reflect.Type;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.sling.api.resource.ResourceResolver;
 
-import static java.util.Objects.*;
-
+/**
+ * Utility class for common operations.
+ */
+@Slf4j
 public class CommonUtils {
-
-  /** The logger. */
-  private static final Logger LOGGER = LoggerFactory.getLogger(CommonUtils.class);
 
   /**
    * Get the Salesforce id of logged-in user.
@@ -40,11 +38,14 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     String sfId = null;
     try {
-      User user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
-      sfId = requireNonNull(user).getProperty(WccConstants.PROFILE_SOURCE_ID) != null ? requireNonNull(user.getProperty(WccConstants.PROFILE_SOURCE_ID))[0].getString() : null;
+      User user =
+          (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      sfId = requireNonNull(user).getProperty(WccConstants.PROFILE_SOURCE_ID) != null
+          ? requireNonNull(user.getProperty(WccConstants.PROFILE_SOURCE_ID))[0].getString() : null;
     } catch (RepositoryException e) {
-      LOGGER.error("Exception in getLoggedInUserSourceId method {}", e.getMessage());
+      log.error("Exception in getLoggedInUserSourceId method {}", e.getMessage());
     }
+
     return sfId;
   }
 
@@ -59,13 +60,15 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     String userId = null;
     try {
-      User user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
-      userId = requireNonNull(user).getProperty(WccConstants.PROFILE_OKTA_ID) != null ? requireNonNull(user.getProperty(WccConstants.PROFILE_OKTA_ID))[0].getString() : null;
+      User user =
+          (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      userId = requireNonNull(user).getProperty(WccConstants.PROFILE_OKTA_ID) != null
+          ? requireNonNull(user.getProperty(WccConstants.PROFILE_OKTA_ID))[0].getString() : null;
     } catch (RepositoryException e) {
-      LOGGER.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
+      log.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
     }
-    return userId;
 
+    return userId;
   }
 
   /**
@@ -79,13 +82,15 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     String ccType = null;
     try {
-      User user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
-      ccType = requireNonNull(user).getProperty(WccConstants.CC_TYPE) != null ? requireNonNull(user.getProperty(WccConstants.CC_TYPE))[0].getString() : null;
+      User user =
+          (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      ccType = requireNonNull(user).getProperty(WccConstants.CC_TYPE) != null
+          ? requireNonNull(user.getProperty(WccConstants.CC_TYPE))[0].getString() : null;
     } catch (RepositoryException e) {
-      LOGGER.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
+      log.error("Exception in getLoggedInUserSourceId method = {}", e.getMessage());
     }
-    return ccType;
 
+    return ccType;
   }
 
   /**
@@ -99,12 +104,13 @@ public class CommonUtils {
     UserManager userManager = resourceResolver.adaptTo(UserManager.class);
     User user = null;
     try {
-      user = (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
+      user =
+          (User) requireNonNull(userManager).getAuthorizable(requireNonNull(session).getUserID());
     } catch (RepositoryException e) {
-      LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());
+      log.error("Exception in getLoggedInUser method = {}", e.getMessage());
     }
-    return user;
 
+    return user;
   }
 
   /**
@@ -121,25 +127,27 @@ public class CommonUtils {
       user = getLoggedInUser(resourceResolver);
       if (user != null) {
         String userPath = user.getPath();
-        LOGGER.debug("getLoggedInUserAsNode userPath--{}", userPath);
+        log.debug("getLoggedInUserAsNode userPath--{}", userPath);
         userNode = requireNonNull(resourceResolver.getResource(userPath)).adaptTo(Node.class);
       }
     } catch (RepositoryException e) {
-      LOGGER.error("Exception in getLoggedInUser method = {}", e.getMessage());
+      log.error("Exception in getLoggedInUser method = {}", e.getMessage());
     }
+
     return userNode;
   }
 
   /**
-   * Replace all values in the source Json object from the corresponding target Json object, given them
-   * have some json structure.
+   * Replace all values in the source JSON object from the corresponding target JSON object, given
+   * they have the same structure.
    *
    * @param source The source Json object.
    * @param target The target Json object.
-   * @param attr The attribute.
-   * @param env The target environment.
+   * @param attr   The attribute.
+   * @param env    The target environment.
    */
-  public static void updateSourceFromTarget(JsonObject source, JsonObject target, String attr, String env) {
+  public static void updateSourceFromTarget(JsonObject source, JsonObject target, String attr,
+                                            String env) {
     for (String key : target.keySet()) {
       if (source.has(key)) {
         JsonElement valSource = source.get(key);
@@ -149,19 +157,22 @@ public class CommonUtils {
           updateSourceFromTarget((JsonObject) valSource, (JsonObject) valTarget, attr, env);
         } else if (valSource instanceof JsonArray && valTarget instanceof JsonArray) {
           updateSourceFromTarget((JsonArray) valSource, (JsonArray) valTarget, attr, env);
-        } else if (valTarget != null && !valTarget.isJsonNull() && (valSource == null || !valSource.equals(valTarget))) {
+        } else if (valTarget != null && !valTarget.isJsonNull()
+            && (valSource == null || !valSource.equals(valTarget))) {
           JsonElement sourceAttr = source.get(attr);
           JsonElement targetAttr = target.get(attr);
           if ((sourceAttr == null) || (targetAttr == null)
-              || sourceAttr.isJsonNull() || targetAttr.isJsonNull() || !sourceAttr.equals(targetAttr)) {
-             return;
+              || sourceAttr.isJsonNull() || targetAttr.isJsonNull()
+              || !sourceAttr.equals(targetAttr)) {
+            return;
           } else {
             // Only update link in beta
             if (key.equals("href")) {
               String valString = valTarget.getAsString();
               if (valString.contains("beta-content.workday.com")) {
                 if (env != null && !env.equalsIgnoreCase("prod")) {
-                  valString = valString.replace("beta-content.workday.com", env + "-content.workday.com");
+                  valString =
+                      valString.replace("beta-content.workday.com", env + "-content.workday.com");
                 }
                 valTarget = new JsonPrimitive(valString);
                 source.add(key, valTarget);
@@ -174,14 +185,15 @@ public class CommonUtils {
   }
 
   /**
-   * Replace all values in the source Json array from the corresponding target Json array, given them
-   * have some json structure.
+   * Replace all values in the source JSON array from the corresponding target JSON array, given
+   * they have the same json structure.
    *
    * @param source The source Json array.
    * @param target The target Json array.
-   * @param attr The attribute.
+   * @param attr   The attribute.
    */
-  public static void updateSourceFromTarget(JsonArray source, JsonArray target, String attr, String env) {
+  public static void updateSourceFromTarget(JsonArray source, JsonArray target, String attr,
+                                            String env) {
     for (int i = 0; i < source.size(); i++) {
       JsonElement valSource = source.get(i);
 

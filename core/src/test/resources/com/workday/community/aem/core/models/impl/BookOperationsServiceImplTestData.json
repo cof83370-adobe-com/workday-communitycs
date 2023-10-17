@@ -82,7 +82,6 @@
       }
     }
   },
-
   "book-download-page": {
     "jcr:primaryType": "cq:Page",
     "jcr:createdBy": "admin",

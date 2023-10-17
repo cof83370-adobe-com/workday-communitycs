@@ -1,5 +1,10 @@
 package com.workday.community.aem.core.workflows;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.lenient;
+
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.Workflow;
@@ -8,6 +13,10 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
@@ -17,14 +26,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.lenient;
-
 /**
  * The Class UpdateLastUpdatedOnPageActivationTest.
  */
@@ -32,117 +33,135 @@ import static org.mockito.Mockito.lenient;
 @ExtendWith(MockitoExtension.class)
 class UpdateLastUpdatedOnPageActivationTest {
 
-    /** The context. */
-    private final AemContext context = new AemContext(ResourceResolverType.JCR_MOCK);
+  /**
+   * The context.
+   */
+  private final AemContext context = new AemContext(ResourceResolverType.JCR_MOCK);
 
-    /** The session. */
-    private final Session session = context.resourceResolver().adaptTo(Session.class);
+  /**
+   * The session.
+   */
+  private final Session session = context.resourceResolver().adaptTo(Session.class);
 
-    /** The workflow session. */
-    @Mock
-    private WorkflowSession workflowSession;
+  /**
+   * The meta data.
+   */
+  private final MetaDataMap metaData = new SimpleMetaDataMap();
 
-    /** The workflow. */
-    @Mock
-    private Workflow workflow;
+  /**
+   * The arg.
+   */
+  private final String ARG = "test";
 
-    /** The workflow data. */
-    @Mock
-    private WorkflowData workflowData;
+  /**
+   * The workflow session.
+   */
+  @Mock
+  private WorkflowSession workflowSession;
 
-    /**
-     * The resolver.
-     */
-    @Mock
-    private ResourceResolver resolver;
+  /**
+   * The workflow.
+   */
+  @Mock
+  private Workflow workflow;
 
-    /** The work item. */
-    @Mock
-    private WorkItem workItem;
+  /**
+   * The workflow data.
+   */
+  @Mock
+  private WorkflowData workflowData;
 
-    /** The my workflow. */
-    private UpdateLastUpdatedOnPageActivation myWorkflow = new UpdateLastUpdatedOnPageActivation();
+  /**
+   * The resolver.
+   */
+  @Mock
+  private ResourceResolver resolver;
 
-    /** The meta data. */
-    private final MetaDataMap metaData = new SimpleMetaDataMap();
+  /**
+   * The work item.
+   */
+  @Mock
+  private WorkItem workItem;
 
-    /** The arg. */
-    private final String ARG = "test";
+  /**
+   * The my workflow.
+   */
+  private final UpdateLastUpdatedOnPageActivation myWorkflow = new UpdateLastUpdatedOnPageActivation();
 
-    /**
-     * Setup.
-     *
-     * @throws LoginException the login exception
-     */
-    @BeforeEach
-    void setup() throws LoginException {
-        lenient().when(workflowSession.adaptTo(Session.class)).thenReturn(session);
-        lenient().when(workflow.getMetaDataMap()).thenReturn(metaData);
-        lenient().when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
-        lenient().when(workItem.getWorkflow()).thenReturn(workflow);
-        lenient().when(workItem.getWorkflowData()).thenReturn(workflowData);
+  /**
+   * Setup.
+   *
+   * @throws LoginException the login exception
+   */
+  @BeforeEach
+  void setup() throws LoginException {
+    lenient().when(workflowSession.adaptTo(Session.class)).thenReturn(session);
+    lenient().when(workflow.getMetaDataMap()).thenReturn(metaData);
+    lenient().when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
+    lenient().when(workItem.getWorkflow()).thenReturn(workflow);
+    lenient().when(workItem.getWorkflowData()).thenReturn(workflowData);
 
-        assertNotNull(session);
+    assertNotNull(session);
 
-        context.registerAdapter(WorkflowSession.class, Session.class, session);
-        context.load().json(
-                "/com/workday/community/aem/core/models/impl/UpdateLastUpdatedOnPageActivationTestData.json",
-                "/content");
-        context.registerService(ResourceResolver.class, resolver);
-        lenient().when(workflowSession.adaptTo(ResourceResolver.class)).thenReturn(resolver);
-    }
+    context.registerAdapter(WorkflowSession.class, Session.class, session);
+    context.load().json(
+        "/com/workday/community/aem/core/models/impl/UpdateLastUpdatedOnPageActivationTestData.json",
+        "/content");
+    context.registerService(ResourceResolver.class, resolver);
+    lenient().when(workflowSession.adaptTo(ResourceResolver.class)).thenReturn(resolver);
+  }
 
-    /**
-     * My workflow with args.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    public void myWorkflowWithArgs() throws Exception {
-        metaData.put("PROCESS_ARGS", ARG);
-        lenient().when(workflowData.getPayload()).thenReturn("/content/page-override-no-flag");
-        myWorkflow.execute(workItem, workflowSession, metaData);
+  /**
+   * My workflow with args.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  public void myWorkflowWithArgs() throws Exception {
+    metaData.put("PROCESS_ARGS", ARG);
+    lenient().when(workflowData.getPayload()).thenReturn("/content/page-override-no-flag");
+    myWorkflow.execute(workItem, workflowSession, metaData);
 
-        String arg = metaData.get("PROCESS_ARGS", String.class);
-        assertNotNull(arg);
-        assertEquals(ARG, arg);
+    String arg = metaData.get("PROCESS_ARGS", String.class);
+    assertNotNull(arg);
+    assertEquals(ARG, arg);
 
-        assertNotNull(session);
-        Node node = session.getNode("/content/page-override-no-flag/jcr:content");
-        assertNotNull(node);
+    assertNotNull(session);
+    Node node = session.getNode("/content/page-override-no-flag/jcr:content");
+    assertNotNull(node);
 
-        Property property = node.getProperty("updatedDate");
-        assertNotNull(property);
-    }
+    Property property = node.getProperty("updatedDate");
+    assertNotNull(property);
+  }
 
-    /**
-     * My workflow with override date.
-     *
-     * @throws Exception the exception
-     */
-    @Test
-    public void myWorkflowWithOverrideDate() throws Exception {
-        lenient().when(workflowData.getPayload()).thenReturn("/content/page-override-flag");
-        myWorkflow.execute(workItem, workflowSession, metaData);
+  /**
+   * My workflow with override date.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  public void myWorkflowWithOverrideDate() throws Exception {
+    lenient().when(workflowData.getPayload()).thenReturn("/content/page-override-flag");
+    myWorkflow.execute(workItem, workflowSession, metaData);
 
-        assertNotNull(session);
-        Node node = session.getNode("/content/page-override-flag/jcr:content");
-        assertNotNull(node);
+    assertNotNull(session);
+    Node node = session.getNode("/content/page-override-flag/jcr:content");
+    assertNotNull(node);
 
-        Boolean actualResult = node.hasProperty("overrideDate");
-        assertFalse(actualResult);
-    }
+    Boolean actualResult = node.hasProperty("overrideDate");
+    assertFalse(actualResult);
+  }
 
-    /**
-     * My workflow successful session save.
-     *
-     * @throws RepositoryException the repository exception
-     */
-    @Test
-    public void myWorkflowSuccessfulSessionSave() throws RepositoryException {
-        assertNotNull(session);
-        session.save();
-        session.logout();
-    }
+  /**
+   * My workflow successful session save.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  public void myWorkflowSuccessfulSessionSave() throws RepositoryException {
+    assertNotNull(session);
+    session.save();
+    session.logout();
+  }
 
 }

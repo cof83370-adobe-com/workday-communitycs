@@ -1,21 +1,23 @@
 package com.workday.community.aem.core.constants;
 
 /**
- * The Class PageResourceType.
+ * Interface defining page resource type constants.
  */
 public interface PageResourceType {
+
   /**
-   * The Constant EVENT.
+   * The events page.
    */
   String EVENT = "workday-community/components/structure/eventspage";
 
   /**
-   * The Constant RELEASE_NOTES.
+   * The release notes page.
    */
   String RELEASE_NOTES = "workday-community/components/core/releasenotespage";
 
   /**
-   * The Constant TRAINING_CATALOG.
+   * The training catalog page.
    */
   String TRAINING_CATALOG = "workday-community/components/core/trainingcatalogpage";
+
 }
