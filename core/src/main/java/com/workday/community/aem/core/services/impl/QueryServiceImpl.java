@@ -14,7 +14,11 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,8 +68,7 @@ public class QueryServiceImpl implements QueryService {
       SearchResult result = query.getResult();
       totalResults = result.getTotalMatches();
     } catch (CacheException e) {
-      log.error("Exception occurred when running query to get total number of pages {} ",
-          e.getMessage());
+      log.error("Exception occurred when running query to get total number of pages {} ", e.getMessage());
     } finally {
       if (session != null) {
         session.logout();
@@ -136,8 +139,7 @@ public class QueryServiceImpl implements QueryService {
         users.remove(path);
       }
     } catch (CacheException | RepositoryException e) {
-      log.error("Exception occurred when running query to get inactive users {} ",
-          e.getMessage());
+      log.error("Exception occurred when running query to get inactive users {} ", e.getMessage());
     } finally {
       if (session != null) {
         session.logout();
@@ -192,5 +194,41 @@ public class QueryServiceImpl implements QueryService {
       String path = hit.getPath();
       paths.add(path);
     }
+  }
+
+  /**
+   * Gets the review reminder pages.
+   */
+  @Override
+  public List<String> getReviewReminderPages() {
+    Session session = null;
+    List<String> paths = new ArrayList<>();
+    Calendar calendar = Calendar.getInstance();
+    Date currentDate = calendar.getTime();
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
+      session = resourceResolver.adaptTo(Session.class);
+      Map<String, String> queryMap = new HashMap<>();
+      queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
+      queryMap.put("type", NT_PAGE);
+      queryMap.put("1_property", "jcr:content/reviewReminderDate");
+      queryMap.put("1_property.value", df.format(currentDate) + "%");
+      queryMap.put("1_property.operation", "like");
+      queryMap.put("p.limit", "-1");
+
+      Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
+      SearchResult searchResult = query.getResult();
+      for (Hit hit : searchResult.getHits()) {
+        String path = hit.getPath();
+        paths.add(path);
+      }
+    } catch (CacheException | RepositoryException e) {
+      log.error("Exception occurred when running query to get review reminder pages {} ", e.getMessage());
+    } finally {
+      if (session != null) {
+        session.logout();
+      }
+    }
+    return paths;
   }
 }

@@ -1,0 +1,5 @@
+{
+    "workflowNotificationCron" : "$[env:workflowNotificationCron]",
+    "workflowNotificationReview10Months" : "$[env:workflowNotificationReview10Months]",
+    "authorDomain" : "$[env:authorDomain]"
+}

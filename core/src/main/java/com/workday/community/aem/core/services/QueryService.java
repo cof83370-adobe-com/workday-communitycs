@@ -36,4 +36,11 @@ public interface QueryService {
    * @return the book nodes by path
    */
   List<String> getBookNodesByPath(String bookPath, String currentPath);
+  
+  /**
+   * Gets the review reminder pages.
+   *
+   * @return List of page paths.
+   */
+  List<String> getReviewReminderPages();
 }

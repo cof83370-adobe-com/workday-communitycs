@@ -200,6 +200,34 @@ class QueryServiceImplTest {
     assertEquals(USER_ROOT_PATH.concat(OKTA_USER_PATH).concat("/B"), paths.get(0));
     verify(session).logout();
   }
+  
+  @Test
+  void testGetReviewReminderPages() throws RepositoryException, CacheException {
+		ResourceResolver resourceResolver = mock(ResourceResolver.class);
+		String hitResultPath = "/content/workday-community";
+
+		when(cacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
+		Session session = mock(Session.class);
+		when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+
+		Query query = mock(Query.class);
+		when(queryBuilder.createQuery(any(), eq(session))).thenReturn(query);
+
+		Hit hit = mock(Hit.class);
+		when(hit.getPath()).thenReturn(hitResultPath);
+
+		SearchResult result = mock(SearchResult.class);
+		List<Hit> hitList = new ArrayList<>();
+		hitList.add(hit);
+
+		when(result.getHits()).thenReturn(hitList);
+
+		when(query.getResult()).thenReturn(result);
+
+		List<String> paths = queryService.getReviewReminderPages();
+		assertEquals(hitResultPath, paths.get(0));
+		verify(session).logout();
+  }
 
   @AfterEach
   public void after() {
