@@ -106,4 +106,13 @@
 
     document.addEventListener('DOMContentLoaded', onDocumentReady);
 
+    window.addEventListener('load', function() {
+        const expandElements = document.querySelectorAll(imageSelectors.expandOption);
+        expandElements.forEach(function(expandElement) {
+            expandElement.addEventListener('click', function(e) {
+                expandImage({ expandElement });
+            });
+        });
+    });
+
 }());

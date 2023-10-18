@@ -62,7 +62,7 @@ Handlebars.registerHelper("relatedCourse", function (text, url) {
 
 Handlebars.registerHelper("image", function (url) {
   var url = Handlebars.escapeExpression(url)
-  return new Handlebars.SafeString("<img src='" + url + "' class=\"cmp-image__image\" loading=\"lazy\" alt=\"Course detail image\">" + "</img>");
+  return new Handlebars.SafeString("<img src='" + url + "' class=\"cmp-image__image\" loading=\"lazy\" alt=\"Course detail image\">" + "</img>" + "\n" + "<a class=\"expand-media\" aria-label=\"expand image of wd to full size\" href=\"#\">Expand Image" + "</a>");
 });
 
 Handlebars.registerHelper('isNotEmptyOrNull', function (value, options) {
