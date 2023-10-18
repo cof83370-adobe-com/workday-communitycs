@@ -31,6 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 @Slf4j
 @Component(
     service = UserService.class,
+    property = {"service.pid=aem.core.services.user"},
     immediate = true
 )
 public class UserServiceImpl implements UserService {

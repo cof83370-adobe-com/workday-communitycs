@@ -115,6 +115,10 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
+    if (userService == null) {
+      return "";
+    }
+
     try {
       User user = userService.getCurrentUser(request);
       if (user == null || (UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())) {
@@ -167,6 +171,10 @@ public class HeaderModelImpl implements HeaderModel {
 
   @Override
   public String getDataLayerData() {
+    if (runModeConfigService == null || snapService == null || currentPage == null) {
+      return null;
+    }
+
     String instance = runModeConfigService.getInstance();
     if (instance != null && instance.equals(PUBLISH)) {
       Template template = currentPage.getTemplate();
@@ -183,20 +191,21 @@ public class HeaderModelImpl implements HeaderModel {
 
   @Override
   public String getGlobalSearchUrl() {
-    String searchUrlFromConfig = searchApiConfigService.getGlobalSearchUrl();
-    globalSearchUrl = StringUtils.isBlank(searchUrlFromConfig)
-        ? DEFAULT_SEARCH_REDIRECT : searchUrlFromConfig;
+    if (searchApiConfigService == null) {
+      return DEFAULT_SEARCH_REDIRECT;
+    }
 
-    return globalSearchUrl;
+    String searchUrlFromConfig = searchApiConfigService.getGlobalSearchUrl();
+    return StringUtils.isBlank(searchUrlFromConfig) ? DEFAULT_SEARCH_REDIRECT : searchUrlFromConfig;
   }
 
   @Override
   public String userClientId() {
-    return userService.getUserUuid(sfId);
+    return userService != null ? userService.getUserUuid(sfId) : "";
   }
 
   @Override
   public String enableClientCache() {
-    return snapService.enableCache() ? "true" : "false";
+    return (snapService != null && snapService.enableCache()) ? "true" : "false";
   }
 }
