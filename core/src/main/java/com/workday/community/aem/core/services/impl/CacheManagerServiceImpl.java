@@ -42,7 +42,7 @@ import org.osgi.service.metatype.annotations.Designate;
 @Component(service = CacheManagerService.class, property = {
     "service.pid=aem.core.services.cache.serviceCache"
 }, configurationPid = "com.workday.community.aem.core.config.CacheConfig",
-    configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
+    configurationPolicy = ConfigurationPolicy.OPTIONAL)
 @Designate(ocd = CacheConfig.class)
 public class CacheManagerServiceImpl implements CacheManagerService {
 

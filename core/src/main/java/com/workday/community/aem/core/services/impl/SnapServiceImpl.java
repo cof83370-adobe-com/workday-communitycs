@@ -42,6 +42,7 @@ import org.apache.http.HttpStatus;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
@@ -54,7 +55,7 @@ import org.osgi.service.metatype.annotations.Designate;
     service = SnapService.class,
     property = {"service.pid=aem.core.services.snap"},
     configurationPid = "com.workday.community.aem.core.config.SnapConfig",
-    immediate = true
+    configurationPolicy = ConfigurationPolicy.OPTIONAL
 )
 @Designate(ocd = SnapConfig.class)
 public class SnapServiceImpl implements SnapService {
