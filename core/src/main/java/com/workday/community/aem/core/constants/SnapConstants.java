@@ -1,6 +1,10 @@
 package com.workday.community.aem.core.constants;
 
+/**
+ * Interface for defining Snap Logic constants.
+ */
 public interface SnapConstants {
+
   /**
    * The profile source id.
    */

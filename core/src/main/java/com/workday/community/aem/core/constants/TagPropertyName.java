@@ -1,9 +1,10 @@
 package com.workday.community.aem.core.constants;
 
 /**
- * The Class TagPropertyName.
+ * Interface defining tag property constants.
  */
 public interface TagPropertyName {
+
   /**
    * The Constant EVENT_FORMAT.
    */
@@ -18,4 +19,5 @@ public interface TagPropertyName {
    * The Constant RELEASE_NOTES_CHNAGE_TYPE.
    */
   String RELEASE_NOTES_CHNAGE_TYPE = "releasNotesChangeType";
+
 }

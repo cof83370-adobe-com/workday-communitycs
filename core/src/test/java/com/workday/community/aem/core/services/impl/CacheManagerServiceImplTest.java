@@ -20,15 +20,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CacheManagerServiceImplTest {
   private static final String TEST_CACHE_BUCKET = "test-cache-bucket";
+
   private static final String TEST_KEY = "test-key";
+
   private static final String NON_EXISTING_KEY = "not-existing-key";
+
   private static final String TEST_VALUE = "test-value";
 
   CacheConfig cacheConfig;
 
   @BeforeEach
   public void setup() {
-     cacheConfig = TestUtil.getCacheConfig();
+    cacheConfig = TestUtil.getCacheConfig();
   }
 
   @Test
@@ -51,6 +54,7 @@ public class CacheManagerServiceImplTest {
     cacheManager.activate(cacheConfig);
     ValueCallback<String> callback = new ValueCallback() {
       int count = 0;
+
       @Override
       public Object getValue(String key) {
         count++;
@@ -71,6 +75,7 @@ public class CacheManagerServiceImplTest {
     cacheManager.activate(cacheConfig);
     ValueCallback<String> callback = new ValueCallback() {
       int count = 0;
+
       @Override
       public Object getValue(String key) {
         count++;

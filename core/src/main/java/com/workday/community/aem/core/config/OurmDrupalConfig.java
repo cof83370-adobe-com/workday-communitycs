@@ -4,20 +4,34 @@ import org.osgi.service.metatype.annotations.AttributeDefinition;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 /**
- * The Interface OurmDrupalConfig.
+ * The OURM configuration interface.
  */
-@ObjectClassDefinition(name = "Ourm Drupal Search Config", description = "Ourm Drupal Search OSGi Config Vaues")
+@ObjectClassDefinition(
+    name = "Ourm Drupal Search Config",
+    description = "Ourm Drupal Search OSGi Config Vaues"
+)
 public @interface OurmDrupalConfig {
 
   /**
-   * Ourm drupal lookup api endpoint.
+   * Ourm drupal lookup API endpoint.
    *
-   * @return the string
+   * @return The endpoint URL.
    */
-  @AttributeDefinition(name = "Ourm Drupal Rest Root End", description = "Ourm Drupal Rest Root endpoint")
+  @AttributeDefinition(
+      name = "Ourm Drupal Rest Root End",
+      description = "Ourm Drupal Rest Root endpoint"
+  )
   String ourmDrupalRestRoot();
 
-  @AttributeDefinition(name = "Ourm Drupal User Search Path", description = "Ourm Drupal User Search Path")
+  /**
+   * Ourm drupal user search API endpoint.
+   *
+   * @return The endpoint URL.
+   */
+  @AttributeDefinition(
+      name = "Ourm Drupal User Search Path",
+      description = "Ourm Drupal User Search Path"
+  )
   String ourmDrupalUserSearchPath();
 
   /**
@@ -25,7 +39,10 @@ public @interface OurmDrupalConfig {
    *
    * @return the string
    */
-  @AttributeDefinition(name = "Ourm Drupal look up Api Consumer Key", description = "Ourm Drupal look up Api Consumer Key")
+  @AttributeDefinition(
+      name = "Ourm Drupal look up Api Consumer Key",
+      description = "Ourm Drupal look up Api Consumer Key"
+  )
   String ourmDrupalConsumerKey();
 
   /**
@@ -33,7 +50,10 @@ public @interface OurmDrupalConfig {
    *
    * @return the string
    */
-  @AttributeDefinition(name = "Ourm Drupal look up Api Consumer Secret", description = "Ourm Drupal look up Api Consumer Secret")
+  @AttributeDefinition(
+      name = "Ourm Drupal look up Api Consumer Secret",
+      description = "Ourm Drupal look up Api Consumer Secret"
+  )
   String ourmDrupalConsumerSecret();
 
 }

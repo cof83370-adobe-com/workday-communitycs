@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CoveoSearchConfig;
 import com.workday.community.aem.core.services.SearchApiConfigService;
@@ -9,12 +11,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class SearchApiConfigServiceImplTest {
 
   private final SearchApiConfigService searchApiConfigService = new SearchApiConfigServiceImpl();
+
   private final CoveoSearchConfig testConfig = TestUtil.getCoveoSearchConfig();
 
   @BeforeEach
@@ -24,11 +25,12 @@ public class SearchApiConfigServiceImplTest {
 
   @Test
   public void testAllApis() {
-    assertEquals(searchApiConfigService.getSearchTokenAPI(), testConfig.tokenApi());
-    assertEquals(searchApiConfigService.getRecommendationAPIKey(), testConfig.recommendationApiKey());
+    assertEquals(searchApiConfigService.getSearchTokenApi(), testConfig.tokenApi());
+    assertEquals(searchApiConfigService.getRecommendationApiKey(),
+        testConfig.recommendationApiKey());
     assertEquals(searchApiConfigService.getTokenValidTime(), testConfig.tokenValidTime());
-    assertEquals(searchApiConfigService.getSearchTokenAPIKey(), testConfig.tokenApiKey());
-    assertEquals(searchApiConfigService.getUpcomingEventAPIKey(), testConfig.upcomingEventApiKey());
+    assertEquals(searchApiConfigService.getSearchTokenApiKey(), testConfig.tokenApiKey());
+    assertEquals(searchApiConfigService.getUpcomingEventApiKey(), testConfig.upcomingEventApiKey());
     assertEquals(searchApiConfigService.getOrgId(), testConfig.orgId());
     assertEquals(searchApiConfigService.isDevMode(), testConfig.devMode());
 
@@ -36,8 +38,8 @@ public class SearchApiConfigServiceImplTest {
     assertEquals(searchApiConfigService.getDefaultEmail(), testConfig.defaultEmail());
     assertEquals(searchApiConfigService.getUserIdProvider(), testConfig.userIdProvider());
     assertEquals(searchApiConfigService.getUserIdType(), testConfig.userType());
-    assertEquals(searchApiConfigService.getSearchFieldLookupAPI(), "foo");
-    assertEquals(searchApiConfigService.getGlobalSearchURL(), testConfig.globalSearchURL());
+    assertEquals(searchApiConfigService.getSearchFieldLookupApi(), "foo");
+    assertEquals(searchApiConfigService.getGlobalSearchUrl(), testConfig.globalSearchUrl());
 
   }
 }

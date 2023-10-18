@@ -4,6 +4,7 @@ package com.workday.community.aem.core.services;
  * The Coveo search service definition class.
  */
 public interface SearchApiConfigService {
+
   /**
    * Get the Organization id.
    *
@@ -12,29 +13,29 @@ public interface SearchApiConfigService {
   String getOrgId();
 
   /**
-   * Get the search hub
-   * 
+   * Get the search hub.
+   *
    * @return the search hub name.
    */
   String getSearchHub();
 
   /**
-   * Get user id provider
-   * 
+   * Get user id provider.
+   *
    * @return the user id provider.
    */
   String getUserIdProvider();
 
   /**
-   * Get user id type
-   * 
+   * Get user id type.
+   *
    * @return the user id type.
    */
   String getUserIdType();
 
   /**
-   * Get the default email
-   * 
+   * Get the default email.
+   *
    * @return the default email
    */
   String getDefaultEmail();
@@ -44,35 +45,35 @@ public interface SearchApiConfigService {
    *
    * @return the Coveo search API endpoint.
    */
-  String getSearchTokenAPI();
+  String getSearchTokenApi();
 
   /**
    * Get the Coveo search event type API endpoint from the configuration.
    *
    * @return the Coveo search event type API endpoint
    */
-  String getSearchFieldLookupAPI();
+  String getSearchFieldLookupApi();
 
   /**
    * Get the Coveo search token API key from the configuration.
    *
    * @return the Coveo search API key.
    */
-  String getSearchTokenAPIKey();
+  String getSearchTokenApiKey();
 
   /**
    * Get the Coveo search recommendation API key from the configuration.
    *
    * @return the Coveo search recommendation API key.
    */
-  String getRecommendationAPIKey();
+  String getRecommendationApiKey();
 
   /**
    * Get the Coveo search upcoming event API key from the configuration.
    *
    * @return the Coveo search upcoming event API key.
    */
-  String getUpcomingEventAPIKey();
+  String getUpcomingEventApiKey();
 
   /**
    * Get the valid time (ms) that the Coveo search token need to keep valid from
@@ -83,16 +84,17 @@ public interface SearchApiConfigService {
   int getTokenValidTime();
 
   /**
-   * Get the dev mode configuration from the configuration
-   * 
+   * Get the dev mode configuration from the configuration.
+   *
    * @return true if it is dev mode (like local test), false if not.
    */
   boolean isDevMode();
 
   /**
-   * Gets the global search redirection URL
-   * 
+   * Gets the global search redirection URL.
+   *
    * @return the global search redirection URL.
    */
-  String getGlobalSearchURL();
+  String getGlobalSearchUrl();
+
 }

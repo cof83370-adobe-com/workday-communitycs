@@ -52,8 +52,10 @@
 		<aem.sdk.api>2023.2.11289.20230224T170559Z-230100</aem.sdk.api>
 		<aemanalyser.version>1.5.8</aemanalyser.version>
 		<componentGroupName>Workday Community Site</componentGroupName>
+		<lombok.version>1.18.30</lombok.version>
 		<checkstyle.version>10.12.3</checkstyle.version>
 		<maven-checkstyle-plugin.version>3.3.0</maven-checkstyle-plugin.version>
+		<maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
 	</properties>
 	<build>
 		<plugins>
@@ -397,6 +399,9 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>${maven-checkstyle-plugin.version}</version>
+					<configuration>
+						<violationSeverity>warning</violationSeverity>
+					</configuration>
 					<dependencies>
 						<dependency>
 							<groupId>com.puppycrawl.tools</groupId>
@@ -408,15 +413,17 @@
 						<execution>
 							<id>validate</id>
 							<phase>validate</phase>
-							<configuration>
-								<violationSeverity>warning</violationSeverity>
-								<failOnViolation>false</failOnViolation>
-							</configuration>
 							<goals>
 								<goal>check</goal>
 							</goals>
 						</execution>
 					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven-javadoc-plugin.version}</version>
 				</plugin>
 			</plugins>
 		</pluginManagement>
@@ -719,6 +726,13 @@
 				<groupId>com.puppycrawl.tools</groupId>
 				<artifactId>checkstyle</artifactId>
 				<version>${checkstyle.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok</artifactId>
+				<version>${lombok.version}</version>
+				<scope>provided</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
