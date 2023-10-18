@@ -37,6 +37,10 @@
     "set ACL for \"CMTY CC Admin {STAGE}\"\r\nallow jcr:read on /content/cq:tags/khoros\r\n end",
     "set ACL for \"CMTY CC Admin {STAGE}\"\r\nallow jcr:read on /content/cq:tags/customer-center\r\n end",
     "set ACL for \"everyone\"\r\ndeny jcr:read on /content/cq:tags/khoros\r\n end",
-    "set ACL for \"everyone\"\r\ndeny jcr:read on /content/cq:tags/customer-center\r\n end"
+    "set ACL for \"everyone\"\r\ndeny jcr:read on /content/cq:tags/customer-center\r\n end",
+
+    "set ACL for \"CMTY Public Author {STAGE}\"\r\n allow jcr:versionManagement, jcr:modifyProperties, jcr:read, jcr:lockManagement on /content/workday-community/en-us/public\r\n deny jcr:removeChildNodes, jcr:removeNode, jcr:addChildNodes, crx:replicate, jcr:nodeTypeManagement on /content/workday-community/en-us/public\r\n allow jcr:removeChildNodes, jcr:removeNode, jcr:addChildNodes, jcr:nodeTypeManagement on /content/workday-community/en-us/public restriction(rep:glob,*/jcr:content*)\r\nend",
+    "set ACL for \"CMTY Public Assets {STAGE}\"\r\n allow jcr:versionManagement, jcr:modifyProperties, jcr:read, jcr:addChildNodes, jcr:lockManagement, jcr:nodeTypeManagement on /content/dam/workday-community/en-us/public\r\nend",
+    "set ACL for \"CMTY Support {STAGE}\",\"CMTY Author {STAGE}\",\"CMTY Services Author {STAGE}\",\"CMTY Education Author {STAGE}\"\r\ndeny rep:write on /content/dam/workday-community/en-us/public\r\nend"
   ]
 }
