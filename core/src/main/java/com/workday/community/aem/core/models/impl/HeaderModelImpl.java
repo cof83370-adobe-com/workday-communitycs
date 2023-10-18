@@ -45,7 +45,7 @@ import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 public class HeaderModelImpl implements HeaderModel {
 
   /**
-   * The react header resource.
+   * The React header resource.
    */
   protected static final String RESOURCE_TYPE = "workday-community/components/react/header";
 
@@ -193,5 +193,10 @@ public class HeaderModelImpl implements HeaderModel {
   @Override
   public String userClientId() {
     return userService.getUserUuid(sfId);
+  }
+
+  @Override
+  public String enableClientCache() {
+    return snapService.enableCache() ? "true" : "false";
   }
 }

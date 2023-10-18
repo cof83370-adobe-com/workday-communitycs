@@ -34,4 +34,10 @@ public interface HeaderModel {
    */
   String userClientId();
 
+  /**
+   * Indicate if client cache is enabled or not.
+   *
+   * @return "true" if enabled, "false" not.
+   */
+  String enableClientCache();
 }

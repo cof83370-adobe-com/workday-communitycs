@@ -221,7 +221,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     return resolver;
   }
 
-  private <V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
+  private synchronized <V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
                                                ValueCallback<V> callback) throws CacheException {
     try {
       LoadingCache<String, V> cache = caches.get(innerCacheName.name());

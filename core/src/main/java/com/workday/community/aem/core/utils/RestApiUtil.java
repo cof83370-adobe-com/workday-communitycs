@@ -146,15 +146,17 @@ public class RestApiUtil {
     }
 
     int statusCode = response.statusCode();
+    String body = response.body();
     log.debug("HTTP response code : {}", statusCode);
-    log.debug("HTTP response : {}", response.body());
+    log.debug("HTTP response : {}", body);
 
     ApiResponse apiresponse = new ApiResponse();
     apiresponse.setResponseCode(response.statusCode());
     if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
       apiresponse.setResponseBody(response.body());
     } else {
-      apiresponse.setResponseBody(null);
+      throw new ApiException(
+          String.format("Error return from Get request call: status: %s, response body; %s ", statusCode, body));
     }
 
     return apiresponse;

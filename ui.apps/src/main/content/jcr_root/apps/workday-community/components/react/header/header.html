@@ -3,7 +3,7 @@
     </div>
     <sly data-sly-use.model="com.workday.community.aem.core.models.HeaderModel">
         <div id="community-header-div" class="cmp-react__header" data-model-property="${model.userHeaderMenus}"
-             data-cache-property="${model.userClientId}"
+             data-cache-property="${model.userClientId}" data-enable-cache="${model.enableClientCache}"
              data-cmp-data-layer="${model.dataLayerData}" data-model-avatar="${model.userAvatarUrl}"
              data-prop-home="${properties.homepageUrl}" data-search-url="${model.globalSearchURL}">
         </div>
