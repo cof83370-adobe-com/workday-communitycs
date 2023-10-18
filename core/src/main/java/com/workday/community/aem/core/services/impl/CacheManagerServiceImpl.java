@@ -221,8 +221,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     return resolver;
   }
 
-  private synchronized <V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
-                                               ValueCallback<V> callback) throws CacheException {
+  private <V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
+                                               final ValueCallback<V> callback) throws CacheException {
     try {
       LoadingCache<String, V> cache = caches.get(innerCacheName.name());
       if (cache != null) {
@@ -252,38 +252,41 @@ public class CacheManagerServiceImpl implements CacheManagerService {
             .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
             .refreshAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
       }
-      cache = builder.build(new CacheLoader<String, V>() {
-        public V load(String key) throws CacheException {
-          V ret = null;
-          if (callback != null) {
-            log.debug("Enter callback method to call API to get value for: " + key);
-            ret = callback.getValue(key);
-          }
-          if (ret == null) {
-            throw new CacheException("The returned value is null");
-          }
-          log.debug("Return value from load(..) method for cache key: " + key);
-          return ret;
-        }
 
-        public ListenableFuture<V> reload(final String key, V preVal) throws CacheException {
-          log.debug("reload value for key {} happens", key);
-          ListenableFuture<V> ret = null;
-          if (callback != null) {
-            log.debug("Enter callback method to call API to reload value again for: " + key);
-            ret = Futures.immediateFuture(callback.getValue(key));
+      synchronized (this) {
+        cache = builder.build(new CacheLoader<String, V>() {
+          public V load(String key) throws CacheException {
+            V ret = null;
+            if (callback != null) {
+              log.debug("Enter callback method to call API to get value for: " + key);
+              ret = callback.getValue(key);
+            }
+            if (ret == null) {
+              throw new CacheException("The returned value is null");
+            }
+            log.debug("Return value from load(..) method for cache key: " + key);
+            return ret;
           }
 
-          if (ret == null) {
-            throw new CacheException("The reload value is null");
-          }
-          log.debug("Return value from reload(..) method for key: " + key);
-          return ret;
-        }
-      });
+          public ListenableFuture<V> reload(final String key, V preVal) throws CacheException {
+            log.debug("reload value for key {} happens", key);
+            ListenableFuture<V> ret = null;
+            if (callback != null) {
+              log.debug("Enter callback method to call API to reload value again for: " + key);
+              ret = Futures.immediateFuture(callback.getValue(key));
+            }
 
-      caches.put(innerCacheName.name(), cache);
-      return cache;
+            if (ret == null) {
+              throw new CacheException("The reload value is null");
+            }
+            log.debug("Return value from reload(..) method for key: " + key);
+            return ret;
+          }
+        });
+
+        caches.put(innerCacheName.name(), cache);
+        return cache;
+      }
     } catch (IllegalArgumentException e) {
       throw new CacheException("Can't create or retrieve cache from the cache store");
     }
