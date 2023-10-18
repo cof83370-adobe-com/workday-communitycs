@@ -25,6 +25,10 @@ function renderCourse() {
     }
   }
 
+  if(course && course.Report_Entry && course.Report_Entry.length > 0 && course.Report_Entry[0].videoId !== 'NULL') {
+    renderVideo(course.Report_Entry[0].videoId);
+  }
+
   // Update active breadcrumb item
   const activeBreadcrumbElement = document.querySelector('.cmp-breadcrumb__item.cmp-breadcrumb__item--active [itemprop="name"]');
   const courseDetailTitleText = document.querySelector('#courseDetailData .cmp-title__text');
@@ -58,7 +62,7 @@ Handlebars.registerHelper("relatedCourse", function (text, url) {
 
 Handlebars.registerHelper("image", function (url) {
   var url = Handlebars.escapeExpression(url)
-  return new Handlebars.SafeString("<img src='" + url + "' class=\"cmp-image__image\" loading=\"lazy\" alt=\"Course detail image\">" + "</img>");
+  return new Handlebars.SafeString("<img src='" + url + "' class=\"cmp-image__image\" loading=\"lazy\" alt=\"Course detail image\">" + "</img>" + "\n" + "<a class=\"expand-media\" aria-label=\"expand image of wd to full size\">Expand Image" + "</a>");
 });
 
 Handlebars.registerHelper('isNotEmptyOrNull', function (value, options) {
@@ -88,4 +92,35 @@ function cleanHandlebars(str) {
 
 function stringValid(str) {
   return (str !== undefined && str !== null && str.trim() !== '');
+}
+
+let newPlayer;
+const playerData = {
+  accountId: "6415684319001",
+  playerId: "default"
+};
+
+// Build the player and place it in the HTML DOM
+function renderVideo(videoId) {
+  const playerHTML = `<video-js id="bc-video"
+      data-video-id="${videoId}"
+      data-account="${playerData.accountId}"
+      data-player="${playerData.playerId}"
+      data-embed="default" controls>
+    </video-js>`;
+
+  document.getElementById("brightcoveVideoId").innerHTML = playerHTML;
+
+  const playerScript = document.createElement("script");
+  playerScript.src = `https://players.brightcove.net/${playerData.accountId}/${playerData.playerId}_default/index.min.js`;
+  document.body.appendChild(playerScript);
+  playerScript.onload = callback;
+}
+
+// Initialize the player and start the video
+function callback() {
+  newPlayer = bc("bc-video");
+  newPlayer.on("loadedmetadata", function() {
+    newPlayer.pause();
+  });
 }
