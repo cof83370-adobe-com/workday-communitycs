@@ -124,7 +124,8 @@ public final class GlobalConstants {
   /** 
    * Path to the notifications root. 
    */
-  public static final String COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH = "/content/workday-community/en-us/admin-tools/notifications";
+  public static final String COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH = 
+      "/content/workday-community/en-us/admin-tools/notifications";
   
   /** 
    * Path of text component. 

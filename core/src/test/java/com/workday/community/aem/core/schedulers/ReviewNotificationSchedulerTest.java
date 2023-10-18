@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.schedulers;
 
-import static com.workday.community.aem.core.services.impl.ExtractPagePropertiesServiceImpl.TEXT_COMPONENT;
 import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -226,9 +225,9 @@ public class ReviewNotificationSchedulerTest {
 				lenient().when(node.getProperty(eq(SLING_RESOURCE_TYPE_PROPERTY))).thenReturn(property);
 				lenient().when(node.getProperty(eq("text"))).thenReturn(propertyText);
 				lenient().when(property.getValue()).thenReturn(value);
-				lenient().when(value.getString()).thenReturn(TEXT_COMPONENT);
+				lenient().when(value.getString()).thenReturn(GlobalConstants.TEXT_COMPONENT);
 				lenient().when(propertyText.getValue()).thenReturn(value1);
-				lenient().when(value1.getString()).thenReturn(TEXT_COMPONENT);
+				lenient().when(value1.getString()).thenReturn(GlobalConstants.TEXT_COMPONENT);
 			} catch (RepositoryException e) {
 				throw new RuntimeException(e);
 			}
