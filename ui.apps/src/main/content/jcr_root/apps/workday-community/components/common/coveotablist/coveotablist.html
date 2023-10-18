@@ -1,4 +1,4 @@
-<sly data-sly-use.model="com.workday.community.aem.core.models.CoveoTabListModel">
+<sly data-sly-use.model="com.workday.community.aem.core.models.TabularListViewModel">
     <div class="multi-tab-container">
         <span id="tabListTitleId"  data-comp-props-data="${properties.title}"></span>
         <span id="tabListRowsId" data-comp-props-data="${properties.rows}"></span>
@@ -6,6 +6,7 @@
         <span id="tabListSearchConfigId" data-model-search-config="${model.getSearchConfig}"></span>
         <span id="tabListProductCriteriaId" data-product-criteria="${model.getProductCriteria}"></span>
         <span id="tabListSelectedFieldsId" data-field-criteria="${model.getSelectedFields}"></span>
+        <span id="tabListFeedTabsId" data-field-criteria="${model.getSearches}"></span>
         <span id="tabListExtraCriteriaDataId" data-extra-criteria="${model.getExtraCriteria}"></span>
         <h2 class="multi-tab-title">${model.compConfig.title}</h2>
         <!-- start of the tab -->
@@ -154,7 +155,7 @@
             if (search_fields.length === 1 && search_fields[0] === null) {
                 search_fields = [];
             }
-            search_fields.forEach( field => field['dataExpression'] = field['dataExpression'] + productCriteria + extraCriteria);
+
             // 3 From the service
             const search_config = JSON.parse(document.getElementById("tabListSearchConfigId").getAttribute("data-model-search-config"));
 
@@ -475,7 +476,7 @@
 
                     const tab = document.getElementById("multiTabsCompId");
                     // Click the first button
-                    if (search_fields.length > 2) {
+                    if (search_fields.length > 0) {
                         tab.firstChild.firstChild.click();
                     }
 
