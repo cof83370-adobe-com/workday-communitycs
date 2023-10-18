@@ -276,11 +276,6 @@ public class ReviewNotificationSchedulerTest {
     }
     
     @Test
-    public boolean isAuthorInstance() {
-        return true;
-    }
-    
-    @Test
     public final void testSendEmail() throws RepositoryException, EmailException {
     	Node nodeObj = mock(Node.class);
 		Property prop1 = mock(Property.class);

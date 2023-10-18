@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
@@ -31,37 +32,33 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The Class ReviewNotificationScheduler.
  */
+@Slf4j
 @Component(service = ReviewNotificationScheduler.class, immediate = true)
 @Designate(ocd = ReviewNotificationSchedulerConfig.class)
 public class ReviewNotificationScheduler implements Runnable {
 
-  /** The Constant LOGGER. */
-  private static final Logger LOGGER = LoggerFactory.getLogger(ReviewNotificationScheduler.class);
-
   /** The cache manager. */
   @Reference
-  CacheManagerService cacheManager;
+  private CacheManagerService cacheManager;
 
   /** The query service. */
   @Reference
-  QueryService queryService;
+  private QueryService queryService;
 
   /** The author domain. */
-  String authorDomain = "";
+  private String authorDomain = "";
 
   /** The message gateway service. */
   @Reference
-  MessageGatewayService messageGatewayService;
+  private MessageGatewayService messageGatewayService;
 
   /** The run mode config service. */
   @Reference
-  RunModeConfigService runModeConfigService;
+  private RunModeConfigService runModeConfigService;
 
   /** The scheduler. */
   @Reference
@@ -80,7 +77,7 @@ public class ReviewNotificationScheduler implements Runnable {
   protected void activate(final ReviewNotificationSchedulerConfig config) {
     if (isAuthorInstance()) {
       authorDomain = config.authorDomain();
-      LOGGER.debug(" ReviewNotificationScheduler activate method called and authorInstUrl : {}", authorDomain);
+      log.debug(" ReviewNotificationScheduler activate method called and authorInstUrl : {}", authorDomain);
 
       // Execute this method to add scheduler.
       addScheduler(config);
@@ -93,16 +90,16 @@ public class ReviewNotificationScheduler implements Runnable {
    * @param config the config
    */
   public void addScheduler(ReviewNotificationSchedulerConfig config) {
-    LOGGER.debug("Scheduler added successfully >>>>>>>   ");
+    log.debug("Scheduler added successfully >>>>>>>   ");
     if (config.workflowNotificationReview10Months()) {
       ScheduleOptions options = scheduler.EXPR(config.workflowNotificationCron());
       options.name(config.schedulerName());
 
       // Add scheduler to call depending on option passed.
       scheduler.schedule(this, options);
-      LOGGER.debug("Scheduler added successfully name='{}'", config.schedulerName());
+      log.debug("Scheduler added successfully name='{}'", config.schedulerName());
     } else {
-      LOGGER.debug("ReviewNotificationScheduler disabled");
+      log.debug("ReviewNotificationScheduler disabled");
     }
   }
 
@@ -147,7 +144,7 @@ public class ReviewNotificationScheduler implements Runnable {
    */
   @Override
   public void run() {
-    LOGGER.debug("ReviewNotificationScheduler run >>>>>>>>>>>");
+    log.debug("ReviewNotificationScheduler run >>>>>>>>>>>");
     try (ResourceResolver resResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
       List<String> paths = queryService.getReviewReminderPages();
       paths.stream().filter(item -> resResolver.getResource(item) != null).forEach(path -> {
@@ -159,7 +156,7 @@ public class ReviewNotificationScheduler implements Runnable {
             if (node.hasProperty(GlobalConstants.PROP_JCR_CREATED_BY)) {
               // logic to send mail to author
               String author = node.getProperty(GlobalConstants.PROP_JCR_CREATED_BY).getString();
-              LOGGER.debug("author is: {}", author);
+              log.debug("author is: {}", author);
 
               // Regular Expression
               String regex = "^(.+)@(.+)$";
@@ -186,7 +183,7 @@ public class ReviewNotificationScheduler implements Runnable {
                   msg = processTextComponentFromEmailTemplate(emailTemplateTextNode, node, path);
 
                   // send email once Day CQ Mail Configuration is ready
-                  LOGGER.debug("Sending email to author: {}", author);
+                  log.debug("Sending email to author: {}", author);
                   // sendEmail(author, msg, node);
                 } else if (emailTemplateParentNode != null) {
                   NodeIterator nodeItr = emailTemplateParentNode.getNodes();
@@ -197,20 +194,20 @@ public class ReviewNotificationScheduler implements Runnable {
                   }
 
                   // send email once Day CQ Mail Configuration is ready
-                  LOGGER.debug("Sending email to author: {}", author);
+                  log.debug("Sending email to author: {}", author);
                   // sendEmail(author, msg, node);
                 }
-                LOGGER.debug("Mail content is: {}", msg);
+                log.debug("Mail content is: {}", msg);
               }
             }
           }
 
         } catch (Exception e) {
-          LOGGER.error("Exception occured while sending the mail: {}", e.getMessage());
+          log.error("Exception occured while sending the mail: {}", e.getMessage());
         }
       });
     } catch (Exception e) {
-      LOGGER.error("Exception in run >>>>>>> {}", e.getMessage());
+      log.error("Exception in run >>>>>>> {}", e.getMessage());
     }
   }
 
@@ -223,7 +220,7 @@ public class ReviewNotificationScheduler implements Runnable {
    * @return the string
    */
   public String processTextComponentFromEmailTemplate(Node textNode, Node node, String path) {
-    LOGGER.debug("processTextComponentFromEmailTemplate >>>>>>>   ");
+    log.debug("processTextComponentFromEmailTemplate >>>>>>>   ");
     String text = "";
 
     try {
@@ -240,7 +237,7 @@ public class ReviewNotificationScheduler implements Runnable {
         }
       }
     } catch (RepositoryException e) {
-      LOGGER.error("Iterator page jcr:content failed: {}", e.getMessage());
+      log.error("Iterator page jcr:content failed: {}", e.getMessage());
     }
 
     return text;
