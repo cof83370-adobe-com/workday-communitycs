@@ -93,15 +93,6 @@
                 addExpandImageOption({ element: elements[i] });
             }
         }
-
-        const expandElements = document.querySelectorAll(imageSelectors.expandOption);
-        expandElements.forEach(function(expandElement) {
-            expandElement.addEventListener('click', function(e) {
-                expandImage({ expandElement });
-            });
-
-            expandElement.setAttribute('href', '#');
-        });
     }
 
     document.addEventListener('DOMContentLoaded', onDocumentReady);
@@ -112,6 +103,7 @@
             expandElement.addEventListener('click', function(e) {
                 expandImage({ expandElement });
             });
+            expandElement.setAttribute('href', '#');
         });
     });
 
