@@ -154,7 +154,7 @@ public class RestApiUtil {
     if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
       apiresponse.setResponseBody(response.body());
     } else {
-      apiresponse.setResponseBody("{}");
+      apiresponse.setResponseBody(null);
     }
 
     return apiresponse;

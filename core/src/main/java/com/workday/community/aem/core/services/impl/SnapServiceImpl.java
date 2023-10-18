@@ -310,7 +310,9 @@ public class SnapServiceImpl implements SnapService {
    */
   @Override
   public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
-    String cacheKey = String.format("%s_%s.%s.%s", getEnv(), sfId, pageTitle, contentType);
+    String pTitle = pageTitle == null ? "dpt" : pageTitle.replaceAll("[^\\w\\s]", "");
+    String cntType = contentType == null ? "dct" : contentType.replaceAll("[^\\w\\s]", "");
+    String cacheKey = String.format("adobe_data_%s_%s.%s.%s", getEnv(), sfId, pageTitle, contentType);
     if (!enableCache()) {
       cacheManagerService.invalidateCache(CacheBucketName.STRING_VALUE.name(), cacheKey);
     }
@@ -319,8 +321,8 @@ public class SnapServiceImpl implements SnapService {
       JsonObject digitalData = generateAdobeDigitalData(profileData);
 
       JsonObject pageProperties = new JsonObject();
-      pageProperties.addProperty(CONTENT_TYPE, contentType);
-      pageProperties.addProperty(PAGE_NAME, pageTitle);
+      pageProperties.addProperty(CONTENT_TYPE, cntType);
+      pageProperties.addProperty(PAGE_NAME, pTitle);
 
       digitalData.add("page", pageProperties);
       return String.format("{\"%s\":%s}", "digitalData", gson.toJson(digitalData));

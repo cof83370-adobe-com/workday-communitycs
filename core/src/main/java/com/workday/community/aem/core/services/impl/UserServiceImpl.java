@@ -54,19 +54,10 @@ public class UserServiceImpl implements UserService {
    * {@inheritDoc}
    */
   @Override
-  public User getCurrentUser(SlingHttpServletRequest request) throws CacheException {
+  public synchronized User getCurrentUser(SlingHttpServletRequest request) throws CacheException {
     Session session = Objects.requireNonNull(request.getResourceResolver()).adaptTo(Session.class);
     ResourceResolver serviceResolver = cacheManager.getServiceResolver(SERVICE_USER_GROUP);
     return getUser(serviceResolver, Objects.requireNonNull(session).getUserID());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public User getUser(String serviceUserId, String userSessionId) throws CacheException {
-    ResourceResolver resourceResolver = cacheManager.getServiceResolver(serviceUserId);
-    return getUser(resourceResolver, userSessionId);
   }
 
   /**
@@ -77,32 +68,18 @@ public class UserServiceImpl implements UserService {
       return null;
     }
 
-    String cacheKey = String.format("session_user_%s", userSessionId);
     UserManager userManager = Objects.requireNonNull(resourceResolver.adaptTo(UserManager.class));
-    User retUser = cacheManager.get(CacheBucketName.JCR_USER.name(), cacheKey, (key) -> {
-      try {
-        User user = (User) userManager.getAuthorizable(userSessionId);
-        if (user != null) {
-          return user;
-        }
-        log.error("Cannot find user with id {}.", userSessionId);
-        return null;
-      } catch (RepositoryException e) {
-        log.error("Exception occurred when fetch user {}: {}.", userSessionId, e.getMessage());
-        return null;
-      }
-    });
-
     try {
-      if (retUser.isDisabled()) {
-        cacheManager.invalidateCache(CacheBucketName.JCR_USER.name(), cacheKey);
+      User user = (User) userManager.getAuthorizable(userSessionId);
+      if (user != null) {
+        return user;
       }
+      log.error("Cannot find user with id {}.", userSessionId);
+      return null;
     } catch (RepositoryException e) {
-      log.error("Exception occurred when clear use from cache {}: {}.", userSessionId,
-          e.getMessage());
+      log.error("Exception occurred when fetch user {}: {}.", userSessionId, e.getMessage());
+      return null;
     }
-
-    return retUser;
   }
 
   /**
@@ -111,11 +88,13 @@ public class UserServiceImpl implements UserService {
   @Override
   public String getUserUuid(String sfId) {
     String cacheKey = String.format("user_uuid_%s", sfId);
-    return cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, (key) -> {
+    String ret = cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, (key) -> {
       String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
       UUID uuid = UuidUtil.getUserClientId(email);
       return uuid == null ? null : uuid.toString();
     });
+
+    return (ret == null) ? "" : ret;
   }
 
   /**
@@ -126,7 +105,7 @@ public class UserServiceImpl implements UserService {
       throws CacheException {
     ResourceResolver resourceResolver = request.getResourceResolver();
     Session session = resourceResolver.adaptTo(Session.class);
-    if (session == null) {
+    if (session == null || !session.isLive()) {
       return;
     }
 
