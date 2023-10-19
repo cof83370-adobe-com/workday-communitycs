@@ -1,6 +1,6 @@
 {
     "maxSize":"$[env:CacheMaxSize;default=5000]",
-    "maxUUID": "$[env:CacheMaxUUID;default=300000]",
+    "maxUuid": "$[env:CacheMaxUUID;default=300000]",
     "maxJcrUser": "$[env:CacheMaxJcrUser;default=2000]",
     "maxMenuSize": "$[env:CacheMaxMenu;default=1000]",
     "expireDuration":"$[env:CacheExpireDuration;default=7200]",
