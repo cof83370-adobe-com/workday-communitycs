@@ -10,6 +10,6 @@ import lombok.Getter;
 @Getter
 public class EventTypes {
 
-  private final List<EventTypeValue> values = new ArrayList<>();
+  private List<EventTypeValue> values = new ArrayList<>();
 
 }
