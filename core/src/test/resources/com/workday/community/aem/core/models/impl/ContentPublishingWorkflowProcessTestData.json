@@ -1,97 +1,97 @@
 {
-	"process-publish-content": {
-			"jcr:primaryType": "cq:Page",
-			"jcr:createdBy": "admin",
-			"jcr:created": "Thu Sep 21 2023 12:10:23 GMT+0530",
-			"jcr:content": {
-				"jcr:primaryType": "cq:PageContent",
-				"jcr:mixinTypes": [
-					"mix:versionable",
-					"cq:ReplicationStatus2"
-				],
-				"jcr:createdBy": "admin",
-				"jcr:title": "info",
-				"cq:lastReplicatedBy_publish": "workflow-process-service",
-				"cq:isDelivered": false,
-				"cq:lastReplicationAction": "Activate",
-				"jcr:versionHistory": "fd06e8e0-4dd6-43cc-89bc-6f70d1cf91f3",
-				"pwaOrientation": "any",
-				"author": " Administrator",
-				"cq:template": "/conf/workday-community/settings/wcm/templates/page-content",
-				"cq:lastReplicatedBy": "workflow-process-service",
-				"cq:lastReplicationAction_publish": "Activate",
-				"jcr:predecessors": [
-					"ee691905-7207-4b82-9a94-b78613a8b669"
-				],
-				"jcr:created": "Thu Sep 21 2023 12:10:23 GMT+0530",
-				"pwaDisplay": "standalone",
-				"cq:lastReplicated": "Tue Oct 03 2023 13:57:18 GMT+0530",
-				"cq:lastModified": "Mon Oct 02 2023 16:39:23 GMT+0530",
-				"pwaCachestrategy": "staleWhileRevalidate",
-				"jcr:baseVersion": "ee691905-7207-4b82-9a94-b78613a8b669",
-				"jcr:isCheckedOut": true,
-				"reviewReminderDate": "2024-08-03T08:27:17.654Z",
-				"jcr:uuid": "90af8d24-9bad-4dd4-a619-f1dd8b3ed5fa",
-				"accessControlTags": [
-					"access-control:customer_all"
-				],
-				"sling:resourceType": "workday-community/components/structure/page",
-				"scheduledRetirementDate": "2024-10-03T08:27:17.654Z",
-				"cq:lastReplicated_publish": "Tue Oct 03 2023 13:57:18 GMT+0530",
-				"retirementNotificationDate": "2024-09-03T08:27:17.654Z",
-				"cq:lastModifiedBy": "admin",
-				"root": {
-					"jcr:primaryType": "nt:unstructured",
-					"layout": "responsiveGrid",
-					"sling:resourceType": "workday-community/components/core/container",
-					"container": {
-						"jcr:primaryType": "nt:unstructured",
-						"layout": "responsiveGrid",
-						"sling:resourceType": "workday-community/components/core/container",
-						"title": {
-							"jcr:primaryType": "nt:unstructured",
-							"sling:resourceType": "workday-community/components/core/title"
-						},
-						"container": {
-							"jcr:primaryType": "nt:unstructured",
-							"layout": "responsiveGrid",
-							"sling:resourceType": "workday-community/components/core/container",
-							"text": {
-								"jcr:primaryType": "nt:unstructured",
-								"jcr:createdBy": "admin",
-								"jcr:lastModifiedBy": "admin",
-								"jcr:created": "Thu Sep 28 2023 20:02:03 GMT+0530",
-								"text": "<p>Testing content publish test 1234</p>",
-								"jcr:lastModified": "Mon Oct 02 2023 16:12:23 GMT+0530",
-								"sling:resourceType": "workday-community/components/core/text",
-								"textIsRich": "true"
-							},
-							"image": {
-								"jcr:primaryType": "nt:unstructured",
-								"jcr:createdBy": "admin",
-								"imageFromPageImage": "false",
-								"fileReference": "/content/dam/vecteezy_silver-tabby-cat-sitting-on-green-background_2098203.jpg",
-								"jcr:lastModifiedBy": "admin",
-								"jcr:created": "Thu Sep 28 2023 20:04:30 GMT+0530",
-								"alt": "aaaa",
-								"displayPopupTitle": "true",
-								"linkTarget": "_blank",
-								"jcr:lastModified": "Mon Oct 02 2023 16:39:23 GMT+0530",
-								"titleValueFromDAM": "true",
-								"sling:resourceType": "workday-community/components/core/image",
-								"isDecorative": "false",
-								"altValueFromDAM": "false"
-							}
-						}
-					}
-				},
-				"cq:featuredimage": {
-					"jcr:primaryType": "nt:unstructured",
-					"jcr:lastModifiedBy": "admin",
-					"jcr:lastModified": "Fri Sep 29 2023 13:21:30 GMT+0530",
-					"sling:resourceType": "core/wcm/components/image/v3/image",
-					"altValueFromDAM": "false"
-				}
-			}
-		}
+  "process-publish-content": {
+    "jcr:primaryType": "cq:Page",
+    "jcr:createdBy": "admin",
+    "jcr:created": "Thu Sep 21 2023 12:10:23 GMT+0530",
+    "jcr:content": {
+      "jcr:primaryType": "cq:PageContent",
+      "jcr:mixinTypes": [
+        "mix:versionable",
+        "cq:ReplicationStatus2"
+      ],
+      "jcr:createdBy": "admin",
+      "jcr:title": "info",
+      "cq:lastReplicatedBy_publish": "workflow-process-service",
+      "cq:isDelivered": false,
+      "cq:lastReplicationAction": "Activate",
+      "jcr:versionHistory": "fd06e8e0-4dd6-43cc-89bc-6f70d1cf91f3",
+      "pwaOrientation": "any",
+      "author": " Administrator",
+      "cq:template": "/conf/workday-community/settings/wcm/templates/page-content",
+      "cq:lastReplicatedBy": "workflow-process-service",
+      "cq:lastReplicationAction_publish": "Activate",
+      "jcr:predecessors": [
+        "ee691905-7207-4b82-9a94-b78613a8b669"
+      ],
+      "jcr:created": "Thu Sep 21 2023 12:10:23 GMT+0530",
+      "pwaDisplay": "standalone",
+      "cq:lastReplicated": "Tue Oct 03 2023 13:57:18 GMT+0530",
+      "cq:lastModified": "Mon Oct 02 2023 16:39:23 GMT+0530",
+      "pwaCachestrategy": "staleWhileRevalidate",
+      "jcr:baseVersion": "ee691905-7207-4b82-9a94-b78613a8b669",
+      "jcr:isCheckedOut": true,
+      "reviewReminderDate": "2024-08-03T08:27:17.654Z",
+      "jcr:uuid": "90af8d24-9bad-4dd4-a619-f1dd8b3ed5fa",
+      "accessControlTags": [
+        "access-control:customer_all"
+      ],
+      "sling:resourceType": "workday-community/components/structure/page",
+      "scheduledRetirementDate": "2024-10-03T08:27:17.654Z",
+      "cq:lastReplicated_publish": "Tue Oct 03 2023 13:57:18 GMT+0530",
+      "retirementNotificationDate": "2024-09-03T08:27:17.654Z",
+      "cq:lastModifiedBy": "admin",
+      "root": {
+        "jcr:primaryType": "nt:unstructured",
+        "layout": "responsiveGrid",
+        "sling:resourceType": "workday-community/components/core/container",
+        "container": {
+          "jcr:primaryType": "nt:unstructured",
+          "layout": "responsiveGrid",
+          "sling:resourceType": "workday-community/components/core/container",
+          "title": {
+            "jcr:primaryType": "nt:unstructured",
+            "sling:resourceType": "workday-community/components/core/title"
+          },
+          "container": {
+            "jcr:primaryType": "nt:unstructured",
+            "layout": "responsiveGrid",
+            "sling:resourceType": "workday-community/components/core/container",
+            "text": {
+              "jcr:primaryType": "nt:unstructured",
+              "jcr:createdBy": "admin",
+              "jcr:lastModifiedBy": "admin",
+              "jcr:created": "Thu Sep 28 2023 20:02:03 GMT+0530",
+              "text": "<p>Testing content publish test 1234</p>",
+              "jcr:lastModified": "Mon Oct 02 2023 16:12:23 GMT+0530",
+              "sling:resourceType": "workday-community/components/core/text",
+              "textIsRich": "true"
+            },
+            "image": {
+              "jcr:primaryType": "nt:unstructured",
+              "jcr:createdBy": "admin",
+              "imageFromPageImage": "false",
+              "fileReference": "/content/dam/vecteezy_silver-tabby-cat-sitting-on-green-background_2098203.jpg",
+              "jcr:lastModifiedBy": "admin",
+              "jcr:created": "Thu Sep 28 2023 20:04:30 GMT+0530",
+              "alt": "aaaa",
+              "displayPopupTitle": "true",
+              "linkTarget": "_blank",
+              "jcr:lastModified": "Mon Oct 02 2023 16:39:23 GMT+0530",
+              "titleValueFromDAM": "true",
+              "sling:resourceType": "workday-community/components/core/image",
+              "isDecorative": "false",
+              "altValueFromDAM": "false"
+            }
+          }
+        }
+      },
+      "cq:featuredimage": {
+        "jcr:primaryType": "nt:unstructured",
+        "jcr:lastModifiedBy": "admin",
+        "jcr:lastModified": "Fri Sep 29 2023 13:21:30 GMT+0530",
+        "sling:resourceType": "core/wcm/components/image/v3/image",
+        "altValueFromDAM": "false"
+      }
+    }
+  }
 }
