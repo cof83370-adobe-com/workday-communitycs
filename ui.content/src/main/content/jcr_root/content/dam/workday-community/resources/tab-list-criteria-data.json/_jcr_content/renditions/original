@@ -31,6 +31,6 @@
     "value" : "(NOT @druwdcworkflowworkflowstate==retired)"
   },
   "feedUrlBase" : {
-    "value" : "https://resourcecenter.workday.com/en-us/wrc/home/search.html#q=workday&tab=all-results&f[commoncontenttype]="
+    "value" : "https://resourcecenter.workday.com/en-us/wrc/home/search.html#tab=all-results&f[commoncontenttype]="
   }
 }

@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.DamException;
-import com.workday.community.aem.core.models.CoveoTabListModel;
+import com.workday.community.aem.core.models.TabularListViewModel;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -42,8 +42,8 @@ public class CoveoFeedFieldsServletTest {
     SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
     lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);
-    CoveoTabListModel model = mock(CoveoTabListModel.class);
-    lenient().when(request.adaptTo(CoveoTabListModel.class)).thenReturn(model);
+    TabularListViewModel model = mock(TabularListViewModel.class);
+    lenient().when(request.adaptTo(TabularListViewModel.class)).thenReturn(model);
 
     JsonArray fields = new JsonArray();
     JsonObject field = new JsonObject();

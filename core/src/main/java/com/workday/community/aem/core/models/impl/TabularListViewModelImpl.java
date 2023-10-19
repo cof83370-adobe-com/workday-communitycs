@@ -100,6 +100,17 @@ public class TabularListViewModelImpl implements TabularListViewModel {
   }
 
   /**
+   * Get field names.
+   *
+   * @return Array of fields
+   * @throws DamException Dam Exception
+   */
+  @Override
+  public JsonArray getFields() throws DamException {
+    return this.getModelConfig().getAsJsonArray("fields");
+  }
+
+  /**
    * Returns extra criteria of search.
    *
    * @return Expression string
@@ -108,7 +119,6 @@ public class TabularListViewModelImpl implements TabularListViewModel {
   @Override
   public String getExtraCriteria() throws DamException {
     return getModelConfig().getAsJsonObject("extraCriteria").get("value").getAsString();
-
   }
 
   /**

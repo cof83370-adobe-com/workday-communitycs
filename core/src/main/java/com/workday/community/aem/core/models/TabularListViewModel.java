@@ -16,6 +16,13 @@ public interface TabularListViewModel extends CoveoCommonModel {
   List<FeedTabModel> getSearches();
 
   /**
+   * Get field names.
+   *
+   * @return fields as JasonArray object
+   */
+  JsonArray getFields() throws DamException;
+
+  /**
    * Get selected fields.
    *
    * @return Selected fields JasonArray object
