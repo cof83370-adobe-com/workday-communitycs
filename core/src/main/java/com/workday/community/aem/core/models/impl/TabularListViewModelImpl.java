@@ -129,7 +129,7 @@ public class TabularListViewModelImpl implements TabularListViewModel {
    */
   @Override
   public String getFeedUrlBase() throws DamException {
-    return getModelConfig().getAsJsonObject("feedUrlBase").get("value").getAsString();
+    return searchConfigService.getGlobalSearchUrl().concat("#tab=all-results&f[commoncontenttype]=");
   }
 
   /**
@@ -156,10 +156,10 @@ public class TabularListViewModelImpl implements TabularListViewModel {
     JsonArray fields = new JsonArray();
     for (int i = 0; i < searches.size(); i++) {
       String tagQuery = searches.get(i).getTagQuery();
-      String dataExpression = searches.get(i).getSelectedFieldsData().get("dataExpression").getAsString();
-      searches.get(i).getSelectedFieldsData()
-          .addProperty("dataExpression", dataExpression + tagQuery + getExtraCriteria());
-      fields.add(searches.get(i).getSelectedFieldsData());
+      JsonObject selectedFieldsData = searches.get(i).getSelectedFieldsData();
+      String dataExpression = selectedFieldsData.get("dataExpression").getAsString();
+      selectedFieldsData.addProperty("dataExpression", dataExpression + tagQuery + getExtraCriteria());
+      fields.add(selectedFieldsData);
     }
     return fields;
   }

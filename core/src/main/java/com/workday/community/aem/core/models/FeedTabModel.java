@@ -148,7 +148,7 @@ public class FeedTabModel {
     }
 
     // Group by namespaces
-    HashMap<String, List<String>> namespaceGroups = new HashMap<String, List<String>>();
+    HashMap<String, List<String>> namespaceGroups = new HashMap<>();
     for (String selectedTag : tags) {
       Tag tag = tagManager.resolve(selectedTag);
       if (tag == null) {
@@ -250,8 +250,13 @@ public class FeedTabModel {
         }
       }
     }
-    selectedObject.addProperty("allLinkExpression", StringUtils.removeEnd(description.toString(), ","));
-    selectedObject.addProperty("dataExpression", dataExpression.substring(0, dataExpression.length() - 4).concat(")"));
+    if (description.length() > 0 && description.toString().endsWith(",")) {
+      selectedObject.addProperty("allLinkExpression", StringUtils.removeEnd(description.toString(), ","));
+    }
+    if (dataExpression.length() > 0 && dataExpression.toString().endsWith(" OR ")) {
+      selectedObject.addProperty("dataExpression",
+          dataExpression.substring(0, dataExpression.length() - 4).concat(")"));
+    }
     return selectedObject;
   }
 
