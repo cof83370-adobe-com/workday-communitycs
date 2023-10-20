@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Objects;
 import javax.servlet.Servlet;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.resource.Resource;
@@ -61,7 +62,7 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
       fields.forEach(field -> {
         ValueMap valueMap = new ValueMapDecorator(new HashMap<>());
         valueMap.put("value", ((JsonObject) field).get("name").getAsString());
-        valueMap.put("text", ((JsonObject) field).get("desc").getAsString());
+        valueMap.put("text", StringEscapeUtils.unescapeXml(((JsonObject) field).get("desc").getAsString()));
         resourceList.add(
             new ValueMapResource(resourceResolver, new ResourceMetadata(), NT_UNSTRUCTURED,
                 valueMap));
