@@ -200,7 +200,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
       return;
     }
 
-    Node node = Objects.requireNonNull(resResolver.getResource(pagePath + "/jcr:content"))
+    Node node = Objects.requireNonNull(resResolver.getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH))
         .adaptTo(Node.class);
     AssetReferenceSearch ref =
         new AssetReferenceSearch(node, DamConstants.MOUNTPOINT_ASSETS, resResolver);
