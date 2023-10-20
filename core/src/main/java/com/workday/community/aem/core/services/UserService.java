@@ -18,15 +18,6 @@ public interface UserService {
   User getCurrentUser(SlingHttpServletRequest request) throws CacheException;
 
   /**
-   * Gets a user.
-   *
-   * @param serviceUserId The service user id
-   * @param userId        The user id
-   * @return The user
-   */
-  User getUser(String serviceUserId, String userId) throws CacheException;
-
-  /**
    * Gets a user's UUID.
    *
    * @param sfId the user's sf id.

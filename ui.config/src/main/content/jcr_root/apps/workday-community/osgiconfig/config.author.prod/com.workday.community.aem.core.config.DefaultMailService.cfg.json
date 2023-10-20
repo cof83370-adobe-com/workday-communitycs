@@ -1,0 +1,9 @@
+{
+    "smtp.host" : "email-smtp.us-west-2.amazonaws.com",
+    "smtp.port" : "$[env:SmtpPort]",
+    "smtp.user" : "$[secret:sesSmtpUsername]",
+    "smtp.password" : "$[secret:sesSmtpPassword]",
+    "from.address" : "$[env:Fromaddress]",
+    "smtp.ssl" : "$[env:SmtpSSL]",
+    "smtp.starttls" : true
+}

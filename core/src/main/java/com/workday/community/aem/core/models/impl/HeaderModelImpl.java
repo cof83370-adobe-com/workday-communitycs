@@ -45,7 +45,7 @@ import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 public class HeaderModelImpl implements HeaderModel {
 
   /**
-   * The react header resource.
+   * The React header resource.
    */
   protected static final String RESOURCE_TYPE = "workday-community/components/react/header";
 
@@ -183,15 +183,21 @@ public class HeaderModelImpl implements HeaderModel {
 
   @Override
   public String getGlobalSearchUrl() {
-    String searchUrlFromConfig = searchApiConfigService.getGlobalSearchUrl();
-    globalSearchUrl = StringUtils.isBlank(searchUrlFromConfig)
-        ? DEFAULT_SEARCH_REDIRECT : searchUrlFromConfig;
+    if (searchApiConfigService == null) {
+      return DEFAULT_SEARCH_REDIRECT;
+    }
 
-    return globalSearchUrl;
+    String searchUrlFromConfig = searchApiConfigService.getGlobalSearchUrl();
+    return StringUtils.isBlank(searchUrlFromConfig) ? DEFAULT_SEARCH_REDIRECT : searchUrlFromConfig;
   }
 
   @Override
   public String userClientId() {
-    return userService.getUserUuid(sfId);
+    return userService != null ? userService.getUserUuid(sfId) : "";
+  }
+
+  @Override
+  public String enableClientCache() {
+    return (snapService != null && snapService.enableCache()) ? "true" : "false";
   }
 }

@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.constants;
 
+import static com.day.cq.commons.jcr.JcrConstants.JCR_CREATED_BY;
+
 import java.util.Collections;
 import java.util.Map;
 
@@ -34,6 +36,11 @@ public final class GlobalConstants {
    * The author property.
    */
   public static final String PROP_AUTHOR = "author";
+  
+  /** 
+   * The JCR CREATED BY property. 
+   */
+  public static final String PROP_JCR_CREATED_BY = JCR_CREATED_BY;
 
   /**
    * The updated date property.
@@ -113,6 +120,18 @@ public final class GlobalConstants {
    * The IDO 8601 date format.
    */
   public static final String ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
+
+  /** 
+   * Path to the notifications root. 
+   */
+  public static final String COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH = 
+      "/content/workday-community/en-us/admin-tools/notifications";
+  
+  /** 
+   * Path of text component. 
+   */
+  public static final String TEXT_COMPONENT = "workday-community/components/core/text";
+
 
   /**
    * Instantiates a new global constants.

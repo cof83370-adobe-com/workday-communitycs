@@ -54,11 +54,6 @@ public class TestUtil {
       }
 
       @Override
-      public int refreshDuration() {
-        return 100;
-      }
-
-      @Override
       public int cacheCleanPeriod() {
         return 60;
       }

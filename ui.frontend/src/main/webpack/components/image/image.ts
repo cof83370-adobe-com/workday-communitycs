@@ -93,17 +93,18 @@
                 addExpandImageOption({ element: elements[i] });
             }
         }
+    }
 
+    document.addEventListener('DOMContentLoaded', onDocumentReady);
+
+    window.addEventListener('load', function() {
         const expandElements = document.querySelectorAll(imageSelectors.expandOption);
         expandElements.forEach(function(expandElement) {
             expandElement.addEventListener('click', function(e) {
                 expandImage({ expandElement });
             });
-
             expandElement.setAttribute('href', '#');
         });
-    }
-
-    document.addEventListener('DOMContentLoaded', onDocumentReady);
+    });
 
 }());
