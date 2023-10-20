@@ -105,7 +105,7 @@ public class SnapServiceImpl implements SnapService {
       cacheManagerService.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
     }
     String retValue =
-        cacheManagerService.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, (key) -> {
+        cacheManagerService.get(CacheBucketName.STRING_VALUE.name(), menuCacheKey, () -> {
           String snapUrl = config.snapUrl();
           String navApi = config.navApi();
           String apiToken = config.navApiToken();
@@ -162,7 +162,7 @@ public class SnapServiceImpl implements SnapService {
           return gson.toJson(this.getDefaultHeaderMenu());
         });
 
-    if (OurmUtils.isMenuEmpty(gson, retValue)) {
+    if (retValue == null || OurmUtils.isMenuEmpty(gson, retValue)) {
       cacheManagerService.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
     }
 
@@ -180,7 +180,7 @@ public class SnapServiceImpl implements SnapService {
     }
 
     JsonObject ret = cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey,
-        (key) -> {
+        () -> {
           try {
             log.debug("SnapImpl: Calling snap api getUserContext()...");
             String url = CommunityUtils.formUrl(config.snapUrl(), config.snapContextPath());
@@ -219,8 +219,8 @@ public class SnapServiceImpl implements SnapService {
       cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(),
           cacheKey);
     }
-    return cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey,
-        (key) -> {
+    ProfilePhoto ret = cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey,
+        () -> {
           String snapUrl = config.snapUrl();
           String avatarUrl = config.sfdcUserAvatarUrl();
           String url = CommunityUtils.formUrl(snapUrl, avatarUrl);
@@ -239,6 +239,8 @@ public class SnapServiceImpl implements SnapService {
           }
           return null;
         });
+
+    return ret;
   }
 
   /**
@@ -252,7 +254,7 @@ public class SnapServiceImpl implements SnapService {
       cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
     JsonObject ret = cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey,
-        (key) -> {
+        () -> {
           try {
             ResourceResolver resourceResolver =
                 this.cacheManagerService.getServiceResolver(READ_SERVICE_USER);
@@ -283,7 +285,7 @@ public class SnapServiceImpl implements SnapService {
       cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
     Object userProfile =
-        cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, (key) -> {
+        cacheManagerService.get(CacheBucketName.OBJECT_VALUE.name(), cacheKey, () -> {
           try {
             String url = CommunityUtils.formUrl(config.snapUrl(), config.snapProfilePath());
             if (StringUtils.isNotBlank(url)) {
@@ -316,7 +318,7 @@ public class SnapServiceImpl implements SnapService {
     if (!enableCache()) {
       cacheManagerService.invalidateCache(CacheBucketName.STRING_VALUE.name(), cacheKey);
     }
-    return cacheManagerService.get(CacheBucketName.STRING_VALUE.name(), cacheKey, (key) -> {
+    return cacheManagerService.get(CacheBucketName.STRING_VALUE.name(), cacheKey, () -> {
       String profileData = getUserProfile(sfId);
       JsonObject digitalData = generateAdobeDigitalData(profileData);
 

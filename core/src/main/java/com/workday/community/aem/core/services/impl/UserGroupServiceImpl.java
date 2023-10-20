@@ -238,7 +238,7 @@ public class UserGroupServiceImpl implements UserGroupService {
       return groups;
     }
     String cacheKey = String.format("sf-user-groups-%s", sfId);
-    List<String> ret = cacheManager.get(CacheBucketName.SF_USER_GROUP.name(), cacheKey, (key) -> {
+    List<String> ret = cacheManager.get(CacheBucketName.SF_USER_GROUP.name(), cacheKey, () -> {
       JsonObject context = snapService.getUserContext(sfId);
 
       if (null == context || context.isJsonNull() || context.size() == 0) {

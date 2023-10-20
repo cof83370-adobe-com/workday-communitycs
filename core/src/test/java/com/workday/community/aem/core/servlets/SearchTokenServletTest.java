@@ -30,6 +30,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.sling.api.request.RequestPathInfo;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletResponse;
 import org.junit.jupiter.api.Test;
@@ -76,6 +77,9 @@ public class SearchTokenServletTest {
       mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME))
           .thenReturn(testCookies[1]);
       SearchTokenServlet servlet = new SearchTokenServlet();
+      RequestPathInfo mockRequestInfo = mock(RequestPathInfo.class);
+      lenient().when(request.getRequestPathInfo()).thenReturn(mockRequestInfo);
+      lenient().when(mockRequestInfo.getResourcePath()).thenReturn("test/path");
       servlet.doGet(request, response);
       verify(response).setStatus(200);
     }
@@ -146,6 +150,10 @@ public class SearchTokenServletTest {
 
       mockHttpClients.when(HttpClients::createDefault).thenReturn(httpClient);
       when(httpClient.execute(any())).thenReturn(httpResponse);
+      RequestPathInfo mockRequestInfo = mock(RequestPathInfo.class);
+      lenient().when(request.getRequestPathInfo()).thenReturn(mockRequestInfo);
+      lenient().when(mockRequestInfo.getResourcePath()).thenReturn("test/path");
+
       searchTokenServlet.doGet(request, response);
       verify(response).setStatus(200);
     }

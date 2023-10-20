@@ -88,7 +88,7 @@ public class UserServiceImpl implements UserService {
   @Override
   public String getUserUuid(String sfId) {
     String cacheKey = String.format("user_uuid_%s", sfId);
-    String ret = cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, (key) -> {
+    String ret = cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, () -> {
       String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
       UUID uuid = UuidUtil.getUserClientId(email);
       return uuid == null ? null : uuid.toString();
