@@ -97,10 +97,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
    */
   @Override
   public JsonObject getSearchConfig() {
-    if (searchConfig == null
-        && this.searchConfigService != null
-        && this.snapService != null
-        && this.userService != null) {
+    if (searchConfig == null) {
       searchConfig = CoveoUtils.getSearchConfig(
           this.searchConfigService,
           this.request,

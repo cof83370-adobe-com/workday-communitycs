@@ -77,8 +77,7 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
    */
   @Override
   public JsonObject getSearchConfig() {
-    if (this.searchConfig == null
-        && searchConfigService != null && snapService != null && userService != null) {
+    if (this.searchConfig == null) {
       this.searchConfig = CoveoUtils.getSearchConfig(
           searchConfigService,
           request,

@@ -23,7 +23,6 @@ import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -32,8 +31,7 @@ import org.osgi.service.component.annotations.Reference;
 @Slf4j
 @Component(
     service = UserService.class,
-    property = {"service.pid=aem.core.services.user"},
-    configurationPolicy = ConfigurationPolicy.OPTIONAL
+    immediate = true
 )
 public class UserServiceImpl implements UserService {
 

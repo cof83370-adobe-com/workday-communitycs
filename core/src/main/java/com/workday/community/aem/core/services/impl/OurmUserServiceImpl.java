@@ -31,7 +31,8 @@ import org.osgi.service.metatype.annotations.Designate;
     service = OurmUserService.class,
     property = {"service.pid=aem.core.services.ourmUsers"},
     configurationPid = "com.workday.community.aem.core.config.OurmDrupalConfig",
-    configurationPolicy = ConfigurationPolicy.OPTIONAL
+    configurationPolicy = ConfigurationPolicy.OPTIONAL,
+    immediate = true
 )
 @Designate(ocd = OurmDrupalConfig.class)
 public class OurmUserServiceImpl implements OurmUserService {

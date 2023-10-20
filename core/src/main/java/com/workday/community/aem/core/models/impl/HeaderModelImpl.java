@@ -115,10 +115,6 @@ public class HeaderModelImpl implements HeaderModel {
    * @return Nav menu as string.
    */
   public String getUserHeaderMenus() {
-    if (userService == null) {
-      return "";
-    }
-
     try {
       User user = userService.getCurrentUser(request);
       if (user == null || (UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())) {
