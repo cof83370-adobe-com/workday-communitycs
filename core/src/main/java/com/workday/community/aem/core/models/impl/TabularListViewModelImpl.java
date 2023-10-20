@@ -13,6 +13,7 @@ import com.workday.community.aem.core.utils.DamUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Named;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
@@ -33,8 +34,18 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
     defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
 )
 public class TabularListViewModelImpl implements TabularListViewModel {
+  /**
+   * Tab list json file.
+   */
   private static final String MODEL_CONFIG_FILE
       = "/content/dam/workday-community/resources/tab-list-criteria-data.json";
+
+  /**
+   * Default search redirect Url.
+   */
+  private static final String DEFAULT_SEARCH_REDIRECT =
+      "https://resourcecenter.workday.com/en-us/wrc/home/search.html#tab=all-results&f[commoncontenttype]=";
+
   @Self
   private SlingHttpServletRequest request;
 
@@ -129,7 +140,13 @@ public class TabularListViewModelImpl implements TabularListViewModel {
    */
   @Override
   public String getFeedUrlBase() throws DamException {
-    return searchConfigService.getGlobalSearchUrl().concat("#tab=all-results&f[commoncontenttype]=");
+    if (searchConfigService == null) {
+      return DEFAULT_SEARCH_REDIRECT;
+    }
+
+    String searchUrlFromConfig = searchConfigService.getGlobalSearchUrl();
+    return StringUtils.isBlank(searchUrlFromConfig) ? DEFAULT_SEARCH_REDIRECT :
+        searchUrlFromConfig.concat("#tab=all-results&f[commoncontenttype]=");
   }
 
   /**
