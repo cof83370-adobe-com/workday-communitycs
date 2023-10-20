@@ -27,6 +27,7 @@
     <artifactId>workday-community.ui.tests</artifactId>
     <name>Workday Community AEM - UI Tests</name>
     <description>This is the Workday Community AEM smog test module.</description>
+    <packaging>pom</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
