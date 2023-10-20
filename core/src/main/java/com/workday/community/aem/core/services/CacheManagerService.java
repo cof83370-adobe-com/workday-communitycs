@@ -1,7 +1,7 @@
 package com.workday.community.aem.core.services;
 
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.utils.cache.ValueCallback;
+import java.util.concurrent.Callable;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.annotation.versioning.ProviderType;
 
@@ -25,7 +25,7 @@ public interface CacheManagerService {
    * @param <V>             The type of returned value.
    * @return The value from the cache for the pass-in cache key.
    */
-  <V> V get(String cacheBucketName, String key, ValueCallback<V> callback);
+  <V> V get(String cacheBucketName, String key, Callable<V> callback);
 
   /**
    * To check if a key is already presented in a cache with corresponding cache name.

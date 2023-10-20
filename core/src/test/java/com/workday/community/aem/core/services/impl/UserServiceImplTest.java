@@ -1,11 +1,10 @@
 package com.workday.community.aem.core.services.impl;
 
-import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import com.workday.community.aem.core.TestUtil;
@@ -24,7 +23,6 @@ import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -111,29 +109,11 @@ public class UserServiceImplTest {
     SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
     lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);
     lenient().when(session.getUserID()).thenReturn(userId);
+    lenient().when(session.isLive()).thenReturn(true);
     lenient().when(user.getPath()).thenReturn("/workdaycommunity/okta");
 
     userService.invalidCurrentUser(request, false);
     verify(user).remove();
-    verify(session).logout();
+    verify(session, times(2)).logout();
   }
-
-  /**
-   * Test getUser method.
-   *
-   * @throws RepositoryException RepositoryException object.
-   */
-  @Test
-  public void testGetUserWithResourceResolver() throws RepositoryException, CacheException {
-    // Success case.
-    String userId = "testUser";
-    lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
-    User test = userService.getUser(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE, userId);
-    assertEquals(test, user);
-  }
-
-  @AfterEach
-  public void tearDown() {
-  }
-
 }

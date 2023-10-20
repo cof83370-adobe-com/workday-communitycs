@@ -14,6 +14,7 @@ const signOutObject = {
 function renderNavHeader() {
     const headerDiv = document.getElementById('community-header-div');
     if (headerDiv !== undefined && headerDiv !== null) {
+        let enableCache = headerDiv.getAttribute('data-enable-cache');
         let headerData = sessionStorage.getItem('navigation-data');
         let headerDataJson = headerData ? JSON.parse(headerData) : null;
         let previousId = headerDataJson ? headerDataJson['previousId'] : null;
@@ -24,7 +25,7 @@ function renderNavHeader() {
             headerDataJson = constructData(headerDiv, currentId);
         }
 
-        if (dataWithMenu(headerDataJson)) {
+        if (dataWithMenu(headerDataJson) && (enableCache === 'true')) {
             sessionStorage.setItem('navigation-data', JSON.stringify(headerDataJson));
         } else {
             document.cookie = 'cacheMenu=FALSE';
