@@ -2,9 +2,9 @@
     "lmsUrl":"$[env:lmsUrl]",
     "lmsTokenPath":"$[env:lmsTokenPath]",
     "lmsCourseDetailPath":"$[env:lmsCourseDetailPath]",
-    "lmsAPIClientId":"$[secret:lmsAPIClientId]",
-    "lmsAPIClientSecret":"$[secret:lmsAPIClientSecret]",
-    "lmsAPIRefreshToken":"$[secret:lmsAPIRefreshToken]",
+    "lmsApiClientId":"$[secret:lmsAPIClientId]",
+    "lmsApiClientSecret":"$[secret:lmsAPIClientSecret]",
+    "lmsApiRefreshToken":"$[secret:lmsAPIRefreshToken]",
     "lmsTokenCacheMax":10,
     "lmsTokenCacheTimeout":3540000
 }
