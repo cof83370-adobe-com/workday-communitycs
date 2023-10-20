@@ -167,10 +167,6 @@ public class HeaderModelImpl implements HeaderModel {
 
   @Override
   public String getDataLayerData() {
-    if (runModeConfigService == null || snapService == null || currentPage == null) {
-      return null;
-    }
-
     String instance = runModeConfigService.getInstance();
     if (instance != null && instance.equals(PUBLISH)) {
       Template template = currentPage.getTemplate();

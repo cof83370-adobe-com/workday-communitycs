@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 import static com.workday.community.aem.core.constants.GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL;
 import static com.workday.community.aem.core.constants.SnapConstants.CUSTOMER_OF_KEY;
 import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
@@ -104,7 +104,7 @@ public class UserGroupServiceImpl implements UserGroupService {
   @Activate
   @Modified
   protected void activate(SnapConfig config) throws CacheException, DamException {
-    ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER);
+    ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER);
     JsonObject sfdcRoleMap =
         DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
     if (sfdcRoleMap != null) {
