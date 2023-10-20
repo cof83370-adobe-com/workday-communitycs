@@ -30,9 +30,9 @@ public interface TabularListViewModel extends CoveoCommonModel {
   JsonArray getSelectedFields() throws DamException;
 
   /**
-   * Get all Url base for each feed field.
+   * Get all Url base for each feed tab.
    *
-   * @return all Url base for each feed field
+   * @return all Url base for each feed tab
    */
-  String getFeedUrlBase() throws DamException;
+  String getFeedUrlBase();
 }

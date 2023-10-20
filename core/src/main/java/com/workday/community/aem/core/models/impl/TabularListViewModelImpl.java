@@ -136,10 +136,9 @@ public class TabularListViewModelImpl implements TabularListViewModel {
    * Gets feed url for all items.
    *
    * @return Url string
-   * @throws DamException Dam Exception
    */
   @Override
-  public String getFeedUrlBase() throws DamException {
+  public String getFeedUrlBase() {
     if (searchConfigService == null) {
       return DEFAULT_SEARCH_REDIRECT;
     }
