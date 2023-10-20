@@ -185,18 +185,18 @@ public class FeedTabModel {
           Tag tag = tagManager.resolve(selectedTag);
           String tagTitle = this.getTagTitle(tag);
           if (StringUtils.isNotBlank(tagTitle)) {
-            sb.append("\"").append(tagTitle).append("\",");
+            sb.append("\"").append(tagTitle).append("\" AND ");
           }
         });
-        if (sb.length() > 0 && sb.charAt(sb.length() - 1) == ',') {
-          sb.deleteCharAt(sb.length() - 1);
+        if (sb.length() > 0 && sb.toString().endsWith(" AND ")) {
+          sb.delete(sb.length() - 5, sb.length());
         }
-        sb.append("))");
+        sb.append(")) AND ");
       } catch (DamException e) {
         LOGGER.error("Exception while getting field map config.");
       }
     }
-    return sb.toString();
+    return StringUtils.removeEnd(sb.toString(), " AND ");
   }
 
   /**
@@ -237,17 +237,20 @@ public class FeedTabModel {
     selectedObject.addProperty("desc", tabTitle);
     selectedObject.addProperty("selected", false);
     StringBuilder dataExpression = new StringBuilder("(");
+    StringBuilder description = new StringBuilder();
     if (feedFields != null && feedFields.length > 0 && allFields != null) {
       for (int i = 0; i < allFields.size(); i++) {
         for (String feed : feedFields) {
           JsonObject item = allFields.get(i).getAsJsonObject();
           if (item.get("name").getAsString().equals(feed)) {
+            description.append(item.get("desc").getAsString()).append(",");
             String de = item.get("dataExpression").getAsString();
             dataExpression.append(de, 1, de.length() - 1).append(" OR ");
           }
         }
       }
     }
+    selectedObject.addProperty("allLinkExpression", StringUtils.removeEnd(description.toString(), ","));
     selectedObject.addProperty("dataExpression", dataExpression.substring(0, dataExpression.length() - 4).concat(")"));
     return selectedObject;
   }

@@ -369,10 +369,12 @@ public class TabularListViewModelImplTest {
     JsonArray fields = new JsonArray();
     JsonObject field = new JsonObject();
     field.addProperty("name", "whats_new");
+    field.addProperty("desc", "What's New Post");
     field.addProperty("dataExpression", "(@commcontenttype==(\"What's New Post\") OR @filetype==(whats_new))");
     fields.add(field);
     JsonObject field1 = new JsonObject();
     field1.addProperty("name", "article");
+    field1.addProperty("desc", "Article");
     field1.addProperty("dataExpression", "\"(@commcontenttype==(Article) OR @filetype==(article))\"");
     fields.add(field1);
     modelConfig.add("fields", fields);
