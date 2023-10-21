@@ -1,7 +1,7 @@
 {
   "fields" : [
     { "name": "article", "desc": "Article", "selected": "false", "dataExpression": "(@commcontenttype==(Article) OR @filetype==(article))" },
-    { "name": "whats_new", "desc": "What's New Post", "selected": "false", "dataExpression": "(@commcontenttype==(\"What's New Post\") OR @filetype==(whats_new))" },
+    { "name": "whats_new", "desc": "What&apos;s New Post", "selected": "false", "dataExpression": "(@commcontenttype==(\"What's New Post\") OR @filetype==(whats_new))" },
     { "name": "patch_note", "desc": "Service Update Note", "selected": "false", "dataExpression": "(@commcontenttype==(\"Service Update Note\") OR @filetype==(patch_note))"},
     { "name": "alert_customer", "desc": "Customer Alert", "selected": "false", "dataExpression": "(@commcontenttype==(\"Customer Alert\") OR @filetype==(alert_customer))"},
     { "name": "alert_services", "desc": "Services Alert", "selected": "false", "dataExpression": "(@commcontenttype==(\"Services Alert\") OR @filetype==(alert_services))"},
@@ -14,7 +14,7 @@
     { "name": "rising_conference_session", "desc": "Rising Conference Session", "selected": "false", "dataExpression": "(@commcontenttype==(\"Rising Conference Session\") OR @filetype==(rising_conference_session))" },
     { "name": "altitude_conference_session", "desc": "Altitude Conference Session", "selected": "false", "dataExpression": "(@commcontenttype==(\"Altitude Conference Session\") OR @filetype==(altitude_conference_session))" },
     { "name": "group_post", "desc": "Group Post", "selected": "false", "dataExpression": "(@commcontenttype==(\"Group Post\") OR @filetype==(group_post))" },
-    { "name": "calendar_event", "desc": "Calendar Event", "selected": "false", "dataExpression": "(@commcontenttype==(\"Calendar Event\") OR @commcontenttype==(\"Event\") OR @filetype==(calendar_event) OR @filetype==(event))" },
+    { "name": "calendar_event", "desc": "Event", "selected": "false", "dataExpression": "(@commcontenttype==(\"Calendar Event\") OR @commcontenttype==(\"Event\") OR @filetype==(calendar_event) OR @filetype==(event))" },
     { "name": "country_configuration", "desc": "Country Configuration", "selected": "false", "dataExpression": "(@commcontenttype==(\"Country Configuration\") OR @filetype==(country_configuration))" },
     { "name": "services_tool", "desc": "Services Tool", "selected": "false", "dataExpression": "(@commcontenttype==(\"Services Tool\") OR @filetype==(services_tool))" },
     { "name": "documentation", "desc": "Documentation", "selected": "false", "dataExpression": "(@commcontenttype==(Documentation) OR @filetype==(documentation))" },
@@ -31,6 +31,6 @@
     "value" : "(NOT @druwdcworkflowworkflowstate==retired)"
   },
   "feedUrlBase" : {
-    "value" : "https://resourcecenter.workday.com/en-us/wrc/home/search.html#q=workday&tab=all-results&f[commoncontenttype]="
+    "value" : "https://resourcecenter.workday.com/en-us/wrc/home/search.html#tab=all-results&f[commoncontenttype]="
   }
 }

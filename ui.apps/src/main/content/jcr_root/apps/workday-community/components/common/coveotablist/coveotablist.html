@@ -1,6 +1,6 @@
-<sly data-sly-use.model='com.workday.community.aem.core.models.CoveoTabListModel'>
+<sly data-sly-use.model='com.workday.community.aem.core.models.TabularListViewModel'>
     <div class='multi-tab-container'>
-        <span id='tabListTitleId'  data-comp-props-data='${properties.title}'></span>
+        <span id='tabListTitleId' data-comp-props-data='${properties.title}'></span>
         <span id='tabListRowsId' data-comp-props-data='${properties.rows}'></span>
         <span id='tabListFeedUrlBaseId' data-comp-props-data='${model.feedUrlBase}'></span>
         <span id='tabListSearchConfigId' data-model-search-config='${model.getSearchConfig}'></span>
@@ -24,7 +24,8 @@
                         <!--Status section-->
                         <atomic-layout-section section='sort' class='multi-tab-sort'>
                             <atomic-sort-dropdown>
-                                <atomic-sort-expression label='Most Recent Activity' expression='commonrecentactivitydate descending'>
+                                <atomic-sort-expression label='Most Recent Activity'
+                                                        expression='commonrecentactivitydate descending'>
                                 </atomic-sort-expression>
                                 <atomic-sort-expression label='Most Recent Posted' expression='date descending'>
                                 </atomic-sort-expression>
@@ -34,7 +35,7 @@
                         </atomic-layout-section>
                     </atomic-layout-section>
 
-                    <hr class='separator' />
+                    <hr class='separator'/>
                     <!--Results section-->
                     <atomic-layout-section section='results'>
                         <atomic-result-list display='list' image-size='icon' density='normal'>
@@ -45,12 +46,14 @@
                                             display: inline-flex;
                                             align-items: center;
                                         }
+
                                         .field-label {
                                             font-weight: bold;
                                             margin-right: 0.25rem;
                                             font-family: 'WorkdayAdelleSans-bold' !important;
                                             font-weight: 400 !important;
                                         }
+
                                         .result-link a {
                                             font-family: 'WorkdayAdelleSans-Regular';
                                             color: #0875e1 !important;
@@ -73,8 +76,9 @@
                                             min-height: 25px;
                                             padding-top: 4px;
                                         }
+
                                         .bottom-line {
-                                          max-height: none !important;
+                                            max-height: none !important;
                                         }
 
                                         strong, b {
@@ -92,12 +96,15 @@
                                     <atomic-result-section-bottom-metadata class='bottom-line'>
                                         <atomic-result-fields-list class='metadata'>
                                             <!--this value is conditionally generated based on druauthororgid's value as '581' which is Workday org id -->
-                                            <atomic-field-condition class='field' if-defined='druauthororgid' must-match-commonsource='Community' must-match-druauthororgid='581'>
+                                            <atomic-field-condition class='field' if-defined='druauthororgid'
+                                                                    must-match-commonsource='Community'
+                                                                    must-match-druauthororgid='581'>
                                                 <span>Workday &nbsp;</span>
                                             </atomic-field-condition>
 
                                             <atomic-field-condition class='field' if-defined='commoncontenttype'>
-                                                <span class='field-label'><atomic-text value='Content Type'></atomic-text>: &nbsp;</span>
+                                                <span class='field-label'><atomic-text
+                                                        value='Content Type'></atomic-text>: &nbsp;</span>
                                                 <atomic-result-text field='commoncontenttype'/>
                                             </atomic-field-condition>
 
@@ -107,14 +114,23 @@
                                             </atomic-field-condition>
 
                                             <atomic-field-condition class='field' if-defined='commonmodifieddate'>
-                                                <span class='field-label'>&nbsp;<atomic-text value='Updated On'></atomic-text>:</span>
-                                                <atomic-result-date field='commonmodifieddate' format='ddd MMM, D YYYY'/>
+                                                <span class='field-label'>&nbsp;<atomic-text
+                                                        value='Updated On'></atomic-text>:</span>
+                                                <atomic-result-date field='commonmodifieddate'
+                                                                    format='ddd MMM, D YYYY'/>
                                             </atomic-field-condition>
                                         </atomic-result-fields-list>
                                         <atomic-result-fields-list class='products'>
-                                            <atomic-field-condition class='field hydrated hide-divider' if-defined='commonproducttags'><!---->
+                                            <atomic-field-condition class='field hydrated hide-divider'
+                                                                    if-defined='commonproducttags'><!---->
                                                 <span class='field-products'>
-                                                    <atomic-result-multi-value-text  class='field hydrated' field='commonproducttags' data-atomic-rendered='true' data-atomic-loaded='true' max-values-to-display='5' should-highlight='true' delimiter='&nbsp;'>
+                                                    <atomic-result-multi-value-text class='field hydrated'
+                                                                                    field='commonproducttags'
+                                                                                    data-atomic-rendered='true'
+                                                                                    data-atomic-loaded='true'
+                                                                                    max-values-to-display='5'
+                                                                                    should-highlight='true'
+                                                                                    delimiter='&nbsp;'>
                                                     </atomic-result-multi-value-text>
                                                 </span>
                                             </atomic-field-condition>
@@ -130,7 +146,7 @@
                 </atomic-layout-section>
             </atomic-search-layout>
         </atomic-search-interface>
-        <hr class='separator' />
+        <hr class='separator'/>
         <div class='all-feeds'>
             <span class='all-feeds-text'></span>
         </div>
@@ -156,7 +172,7 @@
             if (search_fields.length === 1 && search_fields[0] === null) {
                 search_fields = [];
             }
-            search_fields.forEach( field => field['dataExpression'] = field['dataExpression'] + productCriteria + extraCriteria);
+
             // 3 From the service
             const search_config = JSON.parse(document.getElementById('tabListSearchConfigId').getAttribute('data-model-search-config'));
 
@@ -176,9 +192,10 @@
                 // set active update all event
                 const allEventContainer = document.getElementsByClassName('all-feeds-text')[0];
                 const urlBase = document.getElementById('tabListFeedUrlBaseId').getAttribute('data-comp-props-data');
-                const innerHtml = '<a href=\'' + urlBase  + currentTab.textContent + '\'>All ' + currentTab.textContent + '</a>';
+                const innerHtml = '<a href=\'' + urlBase + currentTab.getAttribute('all-link-expression') + '\'>All ' + currentTab.textContent + '</a>';
                 allEventContainer.innerHTML = innerHtml;
             }
+
             function tabHandler(buildTab, engine, buildTabProps) {
                 const controller = buildTab(engine, buildTabProps);
                 const clickHandler = function (event) {
@@ -188,7 +205,7 @@
                     if (parent.className === 'popup-item') {
                         const tab = document.getElementById('multiTabsCompId');
                         tab.setAttribute('item-first', event.target.name);
-                        const elem = search_fields.find( field => field['name'] == event.target.name);
+                        const elem = search_fields.find(field => field['name'] == event.target.name);
                         if (elem) {
                             tab.setAttribute('item-index', search_fields.indexOf(elem));
                         }
@@ -201,6 +218,7 @@
                 };
                 return clickHandler;
             }
+
             function getTabProps(tabButton) {
                 const active = tabButton.getAttribute('data-is-active');
                 const id = tabButton.getAttribute('name');
@@ -217,16 +235,25 @@
                 }
                 return btProps;
             }
+
             function getVisibleTabs(tabContainer, tab) {
                 let totalWidth = tabContainer.clientWidth;
                 const ml = document.defaultView.getComputedStyle(tabContainer).getPropertyValue('margin-left');
                 const mr = document.defaultView.getComputedStyle(tabContainer).getPropertyValue('margin-right');
                 const pl = document.defaultView.getComputedStyle(tabContainer).getPropertyValue('padding-left');
                 const pr = document.defaultView.getComputedStyle(tabContainer).getPropertyValue('padding-right');
-                if (ml) { totalWidth += parseFloat(ml); }
-                if (mr) { totalWidth += parseFloat(mr); }
-                if (pl) { totalWidth += parseFloat(pl); }
-                if (pr) { totalWidth += parseFloat(pr); }
+                if (ml) {
+                    totalWidth += parseFloat(ml);
+                }
+                if (mr) {
+                    totalWidth += parseFloat(mr);
+                }
+                if (pl) {
+                    totalWidth += parseFloat(pl);
+                }
+                if (pr) {
+                    totalWidth += parseFloat(pr);
+                }
 
                 let fields = [];
                 let accuWidth = 0;
@@ -264,6 +291,7 @@
 
                 return fields;
             }
+
             function getMoreTab() {
                 const moreTab = document.createElement('li');
                 moreTab.setAttribute('id', 'navTabMoreId');
@@ -275,6 +303,7 @@
                 moreTab.append(button);
                 return moreTab;
             }
+
             // Render tab bar
             async function buildTabs(buildTab, engine) {
                 const tab = document.getElementById('multiTabsCompId');
@@ -286,13 +315,13 @@
                 // Adjust the search_fields
                 const first = tab.getAttribute('item-first');
                 if (first) {
-                    const field = search_fields.find( field => field['name'] === first);
+                    const field = search_fields.find(field => field['name'] === first);
                     if (field) {
                         const index = search_fields.indexOf(field);
                         [search_fields[0], search_fields[index]] = [search_fields[index], search_fields[0]];
                         search_fields[0]['selected'] = true;
-                        search_fields.forEach( (field, index) => {
-                            if(index > 0) {
+                        search_fields.forEach((field, index) => {
+                            if (index > 0) {
                                 search_fields[index]['selected'] = false;
                             }
                         })
@@ -313,6 +342,7 @@
                     button.setAttribute('id', fieldName);
                     button.setAttribute('data-expression', field['dataExpression']);
                     button.textContent = field['desc'];
+                    button.setAttribute('all-link-expression', field['allLinkExpression']);
 
                     const buildTabProps = getTabProps(button);
                     customFunctions['tabList' + button.name] = tabHandler(buildTab, engine, buildTabProps);
@@ -340,7 +370,7 @@
 
                 const tabContainer = document.getElementsByClassName('coveotablist')[0];
                 waitForElementToDisplay('atomic-search-layout', (elem) => {
-                     if (!elem.classList.contains('grid-30')) elem.classList.add('grid-30');
+                    if (!elem.classList.contains('grid-30')) elem.classList.add('grid-30');
                 })
 
                 const title = tabContainer.getElementsByClassName('multi-tab-title')[0];
@@ -348,12 +378,12 @@
                 const visibleTabs = getVisibleTabs(tabContainer, tab);
 
                 search_fields.forEach((field, index) => {
-                    if (index > visibleTabs.length -1) {
+                    if (index > visibleTabs.length - 1) {
                         hiddenElements.push(tab.childNodes[index])
                     }
                 })
 
-                for (let index = 0; index < hiddenElements.length; index ++) {
+                for (let index = 0; index < hiddenElements.length; index++) {
                     tab.removeChild(hiddenElements[index]);
                 }
 
@@ -361,12 +391,13 @@
                 tab.removeChild(moreTab);
 
                 if (hiddenElements.length > 0) {
-                    moreTab.firstChild.addEventListener('click', ()=> {
+                    moreTab.firstChild.addEventListener('click', () => {
                         toggleDropDown(moreTab, hiddenElements);
                     });
                     tab.appendChild(moreTab);
                 }
             }
+
             function toggleDropDown(parent, hiddenElements) {
                 if (parent.children.length === 2) {
                     //clean up the existing content and return
@@ -381,7 +412,7 @@
                 if (hiddenElements && hiddenElements.length > 0) {
                     const ul = document.createElement('ul');
                     ul.setAttribute('class', 'popup-items');
-                    for (let i=0; i<hiddenElements.length; i++) {
+                    for (let i = 0; i < hiddenElements.length; i++) {
                         hiddenElements[i].setAttribute('class', 'popup-item');
                         ul.append(hiddenElements[i]);
                     }
@@ -390,6 +421,7 @@
 
                 parent.appendChild(dropDownContent);
             }
+
             const getToken = async () => {
                 const tokenUrl = '/bin/search/token';
                 try {
@@ -414,6 +446,7 @@
                     engine.dispatch(action);
                 }
             };
+
             function waitForElementToDisplay(selector, callback, checkFrequencyInMs = 100, timeoutInMs = 50000) {
                 let startTimeInMs = Date.now();
                 let timeOutHandler;
@@ -421,8 +454,7 @@
                     if (document.querySelector(selector) != null) {
                         clearTimeout(timeOutHandler);
                         callback(document.querySelector(selector));
-                    }
-                    else {
+                    } else {
                         timeOutHandler = setTimeout(function () {
                             if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs) {
                                 clearTimeout(timeOutHandler);
@@ -457,7 +489,7 @@
                         preprocessRequest: (request, clientOrigin) => {
                             if (clientOrigin === 'searchApiFetch') {
                                 const body = JSON.parse(request.body);
-                                body.maximumAge=30000;
+                                body.maximumAge = 30000;
                                 body.numberOfResults = listRows;
                                 request.body = JSON.stringify(body);
                             }
@@ -477,13 +509,13 @@
 
                     const engine = searchInterface.engine;
                     if (search_config['clientId']) {
-                      localStorage.setItem('visitorId', search_config['clientId']);
+                        localStorage.setItem('visitorId', search_config['clientId']);
                     }
 
                     setContext(engine);
                     registerFields(engine);
 
-                    const { logClickEvent, logCustomEvent } = loadGenericAnalyticsActions(engine);
+                    const {logClickEvent, logCustomEvent} = loadGenericAnalyticsActions(engine);
 
                     window.customFunctions = {
                         ...(window.customFunctions ? window.customFunctions : {}),
@@ -496,11 +528,11 @@
 
                     const tab = document.getElementById('multiTabsCompId');
                     // Click the first button
-                    if (search_fields.length > 2) {
+                    if (search_fields.length > 0) {
                         tab.firstChild.firstChild.click();
                     }
 
-                    window.addEventListener('click', function(e){
+                    window.addEventListener('click', function (e) {
                         const dropDown = document.getElementById('navMoreDropDownId');
                         const parent = document.getElementById('navTabMoreId');
                         if (parent && dropDown && !dropDown.contains(e.target) && !parent.contains(e.target)) {
@@ -515,15 +547,16 @@
                 });
             });
             window.addEventListener('resize', () => {
-    		if (window.innerWidth <= 1023) {
-        		const main = async () => {
-                    const searchInterface = document.getElementById('multiTabSearchId');
-           		 	const engine = searchInterface.engine;
-            		await buildTabs(buildTab, engine);
-        		};
-        		main().then(() => {});
-    		}
-		});
+                if (window.innerWidth <= 1023) {
+                    const main = async () => {
+                        const searchInterface = document.getElementById('multiTabSearchId');
+                        const engine = searchInterface.engine;
+                        await buildTabs(buildTab, engine);
+                    };
+                    main().then(() => {
+                    });
+                }
+            });
         </script>
     </div>
 </sly>
