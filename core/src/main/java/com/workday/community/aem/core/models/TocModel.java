@@ -1,15 +1,33 @@
 package com.workday.community.aem.core.models;
 
+import com.workday.community.aem.core.pojos.book.BookDto;
+import java.util.List;
+
 /**
  * The Interface TocModel.
  */
 public interface TocModel {
 
   /**
-   * Book resource path.
+   * Checks for access to view link.
    *
-   * @return the string
+   * @param pagePath the page path
+   * @return true, if successful
    */
-  String bookResourcePath();
+  boolean hasAccessToViewLink(final String pagePath);
+
+  /**
+   * Gets the final list.
+   *
+   * @return the final list
+   */
+  List<BookDto> getFinalList();
+
+  /**
+   * Checks if is toc display.
+   *
+   * @return true, if is toc display
+   */
+  boolean isTocDisplay();
 
 }
