@@ -155,7 +155,9 @@ public class TocModelImpl implements TocModel {
   }
 
   /**
-   * Update final list.
+   * Update final list. The HTL display list is set by this method. In case the
+   * instance pertains to a publish or public content page path, the authorization
+   * check is bypassed.
    *
    * @param resource the resource
    * @return the list
@@ -216,8 +218,6 @@ public class TocModelImpl implements TocModel {
 
   /**
    * Check the list to display.
-   *
-   * @param finalList the final list
    */
   private void checkTheListToDisplay() {
     // Masking to make all nodes under one root for logic flexibility.
@@ -294,7 +294,9 @@ public class TocModelImpl implements TocModel {
   }
 
   /**
-   * Prepare level wise DTO.
+   * Prepare level wise DTO. This method is utilized across all levels and is
+   * accountable for generating a DTO at each level, taking into consideration the
+   * authorization criteria.
    *
    * @param givenItemResource the given item resource
    * @param linkPropertyName  the link property name
@@ -369,8 +371,6 @@ public class TocModelImpl implements TocModel {
     Matcher matcher = regex.matcher(pagePath);
     return matcher.find();
   }
-
-
 
   /**
    * Checks if is publish instance.
