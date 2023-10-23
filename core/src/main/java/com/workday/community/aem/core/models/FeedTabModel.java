@@ -146,7 +146,7 @@ public class FeedTabModel {
     if (this.tags == null || this.tags.length == 0 || tagManager == null) {
       return "";
     }
-
+    
     // Group by namespaces
     HashMap<String, List<String>> namespaceGroups = new HashMap<>();
     for (String selectedTag : tags) {
@@ -160,8 +160,9 @@ public class FeedTabModel {
       }
       if (!namespaceGroups.containsKey(nameSpace)) {
         List<String> tagList = new ArrayList<String>();
-        tagList.add(selectedTag);
-
+        if (!StringUtils.equals(selectedTag, nameSpace + ":")) {
+          tagList.add(selectedTag);
+        }
         namespaceGroups.put(nameSpace, tagList);
       } else {
         namespaceGroups.get(nameSpace).add(selectedTag);
@@ -179,24 +180,32 @@ public class FeedTabModel {
           continue;
         }
 
-        sb.append("(@").append(facetField.getAsString()).append("==(");
         List<String> tagList = entry.getValue();
-        tagList.forEach(selectedTag -> {
-          Tag tag = tagManager.resolve(selectedTag);
-          String tagTitle = this.getTagTitle(tag);
-          if (StringUtils.isNotBlank(tagTitle)) {
-            sb.append("\"").append(tagTitle).append("\" AND ");
+        if (tagList.isEmpty()) {
+          sb.append("(@").append(facetField.getAsString()).append(" NOT NULL)");
+        } else {
+          sb.append("(@").append(facetField.getAsString()).append("==(");
+          tagList.forEach(selectedTag -> {
+            Tag tag = tagManager.resolve(selectedTag);
+            //if (tag.getTagID().equals(tag.getNamespace().getName() + ":"))
+            String tagTitle = this.getTagTitle(tag);
+            if (StringUtils.isNotBlank(tagTitle)) {
+              sb.append("\"").append(tagTitle).append("\" AND ");
+            }
+          });
+          if (sb.length() > 0 && sb.toString().endsWith(" AND ")) {
+            sb.delete(sb.length() - 5, sb.length());
           }
-        });
-        if (sb.length() > 0 && sb.toString().endsWith(" AND ")) {
-          sb.delete(sb.length() - 5, sb.length());
+          sb.append(")) AND ");
         }
-        sb.append(")) AND ");
       } catch (DamException e) {
         LOGGER.error("Exception while getting field map config.");
       }
     }
-    return StringUtils.removeEnd(sb.toString(), " AND ");
+    if (sb.length() > 0 && sb.toString().endsWith(" AND ")) {
+      sb.delete(sb.length() - 5, sb.length());
+    }
+    return sb.toString();
   }
 
   /**
@@ -233,22 +242,26 @@ public class FeedTabModel {
       LOGGER.error("Exception while getting model config.");
     }
     JsonObject selectedObject = new JsonObject();
-    selectedObject.addProperty("name", tabTitle.replace(" ", "_"));
     selectedObject.addProperty("desc", tabTitle);
     selectedObject.addProperty("selected", false);
     StringBuilder dataExpression = new StringBuilder("(");
+    StringBuilder name = new StringBuilder();
     StringBuilder description = new StringBuilder();
     if (feedFields != null && feedFields.length > 0 && allFields != null) {
       for (int i = 0; i < allFields.size(); i++) {
         for (String feed : feedFields) {
           JsonObject item = allFields.get(i).getAsJsonObject();
           if (item.get("name").getAsString().equals(feed)) {
+            name.append(item.get("name").getAsString()).append("_");
             description.append(item.get("desc").getAsString()).append(",");
             String de = item.get("dataExpression").getAsString();
             dataExpression.append(de, 1, de.length() - 1).append(" OR ");
           }
         }
       }
+    }
+    if (name.length() > 0 && name.toString().endsWith("_")) {
+      selectedObject.addProperty("name", StringUtils.removeEnd(name.toString(), "_"));
     }
     if (description.length() > 0 && description.toString().endsWith(",")) {
       selectedObject.addProperty("allLinkExpression", StringUtils.removeEnd(description.toString(), ","));
