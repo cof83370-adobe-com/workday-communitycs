@@ -146,7 +146,7 @@ public class FeedTabModel {
     if (this.tags == null || this.tags.length == 0 || tagManager == null) {
       return "";
     }
-    
+
     // Group by namespaces
     HashMap<String, List<String>> namespaceGroups = new HashMap<>();
     for (String selectedTag : tags) {
@@ -159,7 +159,7 @@ public class FeedTabModel {
         continue;
       }
       if (!namespaceGroups.containsKey(nameSpace)) {
-        List<String> tagList = new ArrayList<String>();
+        List<String> tagList = new ArrayList<>();
         if (!StringUtils.equals(selectedTag, nameSpace + ":")) {
           tagList.add(selectedTag);
         }
@@ -174,7 +174,7 @@ public class FeedTabModel {
     for (Map.Entry<String, List<String>> entry : namespaceGroups.entrySet()) {
       try {
         String nameSpace = entry.getKey();
-        JsonElement facetField = null;
+        JsonElement facetField;
         facetField = this.getFieldMapConfig(resolver).get(nameSpace);
         if (facetField == null) {
           continue;
