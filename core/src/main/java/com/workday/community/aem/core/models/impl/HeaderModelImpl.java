@@ -7,12 +7,14 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.models.HeaderModel;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import javax.annotation.PostConstruct;
@@ -103,6 +105,8 @@ public class HeaderModelImpl implements HeaderModel {
   @Inject
   private Page currentPage;
 
+  private JsonObject searchConfig;
+
   @PostConstruct
   protected void init() {
     log.debug("Initializing HeaderModel ....");
@@ -112,7 +116,7 @@ public class HeaderModelImpl implements HeaderModel {
   /**
    * Calls the snapService to get header menu data.
    *
-   * @return Nav menu as string.
+   * @return Nav menu as string
    */
   public String getUserHeaderMenus() {
     try {
@@ -199,5 +203,17 @@ public class HeaderModelImpl implements HeaderModel {
   @Override
   public String enableClientCache() {
     return (snapService != null && snapService.enableCache()) ? "true" : "false";
+  }
+
+  @Override
+  public JsonObject getSearchConfig() {
+    if (this.searchConfig == null) {
+      this.searchConfig = CoveoUtils.getSearchConfig(
+          searchApiConfigService,
+          request,
+          snapService,
+          userService);
+    }
+    return this.searchConfig;
   }
 }
