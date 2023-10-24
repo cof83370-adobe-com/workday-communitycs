@@ -1,43 +1,36 @@
 package com.workday.community.aem.core.models;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
-
+import javax.annotation.PostConstruct;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.annotation.PostConstruct;
 
 /**
  * The Class RootPathModel.
- * 
+ *
  * @author uttej.vardineni
  */
-@Model(adaptables = { SlingHttpServletRequest.class }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
+@Slf4j
+@Model(adaptables = {
+    SlingHttpServletRequest.class}, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class RootPathModel {
 
-    /** The logger. */
-    private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+  /**
+   * The rootPath.
+   */
+  @Getter
+  protected static final String rootPath =
+      String.format("%s%s", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH, "/");
 
-    /** The rootPath. */
-    protected static final String rootPath = String.format("%s%s", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH, "/");
+  /**
+   * Inits the RootPathModel.
+   */
+  @PostConstruct
+  protected void init() {
+    log.debug("Initializing RootPathModel ....");
+  }
 
-    /**
-     * Inits the RootPathModel.
-     */
-    @PostConstruct
-    protected void init() {
-        logger.debug("Initializing RootPathModel ....");
-    }
-
-    /**
-     * Gets the root path
-     *
-     * @return the String
-     */
-    public String getRootPath() {
-        return rootPath;
-    }
 }

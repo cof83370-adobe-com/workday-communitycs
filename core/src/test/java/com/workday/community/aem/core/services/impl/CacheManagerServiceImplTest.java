@@ -3,14 +3,13 @@ package com.workday.community.aem.core.services.impl;
 import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.utils.cache.ValueCallback;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.annotation.Annotation;
+import java.util.concurrent.Callable;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -22,15 +21,18 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CacheManagerServiceImplTest {
   private static final String TEST_CACHE_BUCKET = "test-cache-bucket";
+
   private static final String TEST_KEY = "test-key";
+
   private static final String NON_EXISTING_KEY = "not-existing-key";
+
   private static final String TEST_VALUE = "test-value";
 
   CacheConfig cacheConfig;
 
   @BeforeEach
   public void setup() {
-     cacheConfig = TestUtil.getCacheConfig();
+    cacheConfig = TestUtil.getCacheConfig();
   }
 
   @Test
@@ -43,7 +45,7 @@ public class CacheManagerServiceImplTest {
   public void testDeActive() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, (key) -> TEST_VALUE);
+    cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, () -> TEST_VALUE);
     cacheManager.deactivate();
   }
 
@@ -51,10 +53,11 @@ public class CacheManagerServiceImplTest {
   public void testGet() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    ValueCallback<String> callback = new ValueCallback() {
+    Callable<String> callback = new Callable<>() {
       int count = 0;
+
       @Override
-      public Object getValue(String key) {
+      public String call() {
         count++;
         return TEST_VALUE + count;
       }
@@ -71,10 +74,11 @@ public class CacheManagerServiceImplTest {
   public void testClearCache() throws CacheException {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    ValueCallback<String> callback = new ValueCallback() {
+    Callable<String> callback = new Callable<>() {
       int count = 0;
+
       @Override
-      public Object getValue(String key) {
+      public String call() {
         count++;
         return TEST_VALUE + count;
       }
@@ -93,12 +97,10 @@ public class CacheManagerServiceImplTest {
   }
 
   @Test
-  public void testIfCacheExists() throws CacheException {
+  public void testIfCacheExists() {
     CacheManagerServiceImpl cacheManager = new CacheManagerServiceImpl();
     cacheManager.activate(cacheConfig);
-    ValueCallback<String> callback = (ValueCallback) key -> TEST_VALUE;
-
-    cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, callback);
+    cacheManager.get(TEST_CACHE_BUCKET, TEST_KEY, () -> TEST_VALUE);
     boolean existed = cacheManager.isPresent(TEST_CACHE_BUCKET, TEST_KEY);
     assertTrue(existed);
     existed = cacheManager.isPresent(TEST_CACHE_BUCKET, NON_EXISTING_KEY);

@@ -1,10 +1,16 @@
 package com.workday.community.aem.core.servlets;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.DamException;
-import com.workday.community.aem.core.models.CoveoTabListModel;
+import com.workday.community.aem.core.models.TabularListViewModel;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -16,20 +22,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoFeedFieldsServletTest {
   private final AemContext context = new AemContext();
 
+  CoveoFeedFieldsServlet coveoFeedFieldsServlet;
+
   @Mock
   private transient ObjectMapper objectMapper;
-
-  CoveoFeedFieldsServlet coveoFeedFieldsServlet;
 
   @BeforeEach
   public void setup() {
@@ -42,8 +42,8 @@ public class CoveoFeedFieldsServletTest {
     SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
     lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);
-    CoveoTabListModel model = mock(CoveoTabListModel.class);
-    lenient().when(request.adaptTo(CoveoTabListModel.class)).thenReturn(model);
+    TabularListViewModel model = mock(TabularListViewModel.class);
+    lenient().when(request.adaptTo(TabularListViewModel.class)).thenReturn(model);
 
     JsonArray fields = new JsonArray();
     JsonObject field = new JsonObject();

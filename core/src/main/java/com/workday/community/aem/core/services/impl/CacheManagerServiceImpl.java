@@ -1,18 +1,27 @@
 package com.workday.community.aem.core.services.impl;
 
 import com.adobe.xfa.ut.StringUtils;
+import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
-import com.workday.community.aem.core.utils.cache.ValueCallback;
-import com.workday.community.aem.core.utils.cache.LRUCacheWithTimeout;
 import com.workday.community.aem.core.utils.ResolverUtil;
+import com.workday.community.aem.core.utils.cache.LruCacheWithTimeout;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.map.LRUMap;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -23,55 +32,43 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.metatype.annotations.Designate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 /**
  * The CacheManagerService implementation class.
  */
+@Slf4j
 @Component(service = CacheManagerService.class, property = {
     "service.pid=aem.core.services.cache.serviceCache"
 }, configurationPid = "com.workday.community.aem.core.config.CacheConfig",
     configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 @Designate(ocd = CacheConfig.class)
 public class CacheManagerServiceImpl implements CacheManagerService {
-  private final static Logger LOGGER = LoggerFactory.getLogger(CacheManagerServiceImpl.class);
 
-  private final LRUCacheWithTimeout<String, ResourceResolver> resolverCache = new LRUCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
-  private final Map<String, LoadingCache> caches;
-  private ScheduledFuture<?> cleanCacheHandle;
+  private final LRUMap<String, ResourceResolver> resolverCache;
+
+  private final Map<String, Cache> caches;
 
   private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-  /** The resource resolver factory. */
+  private ScheduledFuture<?> cleanCacheHandle;
+
+  /**
+   * The resource resolver factory.
+   */
   @Reference
+  @Setter
   private ResourceResolverFactory resourceResolverFactory;
+
   private CacheConfig config;
 
   public CacheManagerServiceImpl() {
     caches = new ConcurrentHashMap<>();
+    resolverCache = new LruCacheWithTimeout<>(2, 12 * 60 * 60 * 100);
   }
 
   /**
-   * Set resource resolver factory.
-   *
-   * @param resourceResolverFactory
-   *
-   * Please note that this method is used for testing purpose only.
+   * Activates the cache manager service.
    */
-  public void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory) {
-    this.resourceResolverFactory = resourceResolverFactory;
-  }
-
   @Activate
   @Modified
   public void activate(CacheConfig config) {
@@ -81,11 +78,15 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       closeAndClearCachedResolvers();
     }
     setUpRegularCacheClean();
-    LOGGER.debug("config: enabled:{}, expire:{}, user expire:{}, uuid:{}, user max:{}, refresh:{}, menu size {}",
-        config.enabled(), config.expireDuration(), config.jcrUserExpireDuration(),
-        config.maxUUID(), config.maxJcrUser(), config.refreshDuration(), config.maxMenuSize());
+    log.debug("config: enabled: {}, expire: {}, user expire: {}, uuid: {}, user max: {}, "
+            + "menu size: {}", config.enabled(), config.expireDuration(),
+        config.jcrUserExpireDuration(), config.maxUuid(), config.maxJcrUser(),
+        config.maxMenuSize());
   }
 
+  /**
+   * Deactivates the cache manager service.
+   */
   @Deactivate
   public void deactivate() throws CacheException {
     invalidateCache();
@@ -99,7 +100,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       scheduler.shutdown();
       try {
         if (scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
-          LOGGER.info("Cache clean scheduler is correctly closed.");
+          log.info("Cache clean scheduler is correctly closed.");
         }
       } catch (InterruptedException e) {
         throw new CacheException(e.getMessage());
@@ -107,59 +108,75 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public <V> V get(String cacheBucketName, String key, ValueCallback<V> callback) {
+  public <V> V get(String cacheBucketName, String key, Callable<V> callback) {
     if (!this.config.enabled()) {
-      return callback == null? null : callback.getValue(key);
+      try {
+        return callback == null ? null : callback.call();
+      } catch (Exception e) {
+        return null;
+      }
     }
     try {
       CacheBucketName innerName = getInnerCacheName(cacheBucketName);
-      LoadingCache<String, V> cache = getCache(innerName, key, callback);
+      Cache<String, V> cache = getCache(innerName, key);
       if (cache != null) {
-        return cache.get(key);
+        try {
+          return cache.get(key, callback);
+        } catch (CacheLoader.InvalidCacheLoadException ex) {
+          log.error("Cache return null for key {}", key);
+        }
       }
     } catch (CacheException | ExecutionException e) {
-      LOGGER.error(String.format(
-          "Can't get value from cache for cache key: %s in cache name: %s, error: %s",
-          key, cacheBucketName, e.getMessage()
-      ));
+      log.error("Can't get value from cache for cache key: {} in cache name: {}, error: {}",
+          key, cacheBucketName, e.getMessage());
     }
 
     return null;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public <V> boolean isPresent(String cacheBucketName, String key) {
     try {
       CacheBucketName innerName = getInnerCacheName(cacheBucketName);
-      LoadingCache<String, V> cache = getCache(innerName, key, null);
+      Cache<String, V> cache = getCache(innerName, key);
       return Objects.requireNonNull(cache).asMap().containsKey(key);
     } catch (CacheException e) {
-      LOGGER.error(String.format(
-          "Can't get cache for cache key: %s in cache name: %s, error: %s",
-          key, cacheBucketName, e.getMessage()));
-       return false;
+      log.error("Can't get cache for cache key: {} in cache name: {}, error: {}",
+          key, cacheBucketName, e.getMessage());
+      return false;
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
-  public void invalidateCache(String cacheBucketName, String key)  {
+  public void invalidateCache(String cacheBucketName, String key) {
     if (!this.config.enabled()) {
       return;
     }
     if (cacheBucketName == null) {
       // clear all
-      if (caches.isEmpty()) return;
+      if (caches.isEmpty()) {
+        return;
+      }
       for (String cacheKey : caches.keySet()) {
-        LoadingCache cache = caches.get(cacheKey);
+        Cache cache = caches.get(cacheKey);
         cache.invalidateAll();
         cache.cleanUp();
       }
       caches.clear();
     } else if (!StringUtils.isEmpty(cacheBucketName)) {
-      LoadingCache cache = caches.get(getInnerCacheName(cacheBucketName).name());
+      Cache cache = caches.get(getInnerCacheName(cacheBucketName).name());
       if (cache == null) {
-        LOGGER.debug("There are some problems if this get hit, contact community admin.");
+        log.debug("There are some problems if this get hit, contact community admin.");
         return;
       }
       if (StringUtils.isEmpty(key)) {
@@ -174,21 +191,29 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void invalidateCache(String cacheBucketName) {
     invalidateCache(cacheBucketName, null);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void invalidateCache() {
     invalidateCache(null, null);
   }
 
-  // ====== Convenient Utility APIs ====== //
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public ResourceResolver getServiceResolver(String serviceUser) throws CacheException {
-    ResourceResolver resolver = config.enabled()? resolverCache.get(serviceUser) : null;
-    if (resolver == null || !resolver.isLive() ) {
+    ResourceResolver resolver = config.enabled() ? resolverCache.get(serviceUser) : null;
+    if (resolver == null || !resolver.isLive()) {
       try {
         resolver = ResolverUtil.newResolver(this.resourceResolverFactory, serviceUser);
       } catch (LoginException e) {
@@ -202,64 +227,35 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     return resolver;
   }
 
-  // ================== Private methods ===============//
-  private <V> LoadingCache<String, V> getCache(CacheBucketName innerCacheName, String key,
-                                               ValueCallback<V> callback) throws CacheException  {
+  private <V> Cache<String, V> getCache(CacheBucketName innerCacheName, String key) throws CacheException {
     try {
-      LoadingCache<String, V> cache = caches.get(innerCacheName.name());
-      if (cache != null) return cache;
-      if (key == null) return null;
+      Cache<String, V> cache = caches.get(innerCacheName.name());
+      if (cache != null) {
+        return cache;
+      }
+      if (key == null) {
+        return null;
+      }
 
       CacheBuilder builder = CacheBuilder.newBuilder();
       if (innerCacheName == CacheBucketName.UUID_VALUE) {
-        builder.maximumSize(config.maxUUID());
+        builder.maximumSize(config.maxUuid());
       } else if (innerCacheName == CacheBucketName.JCR_USER) {
         builder.maximumSize(config.maxJcrUser())
             .expireAfterAccess(config.jcrUserExpireDuration(), TimeUnit.SECONDS);
       } else if (innerCacheName == CacheBucketName.SF_USER_GROUP) {
         builder.maximumSize(config.maxUserGroup())
-            .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
-            .refreshAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
+            .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS);
       } else if (innerCacheName == CacheBucketName.SF_MENU) {
         builder.maximumSize(config.maxMenuSize())
             .weakValues()
-            .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
-            .refreshAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
+            .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS);
       } else {
         builder.maximumSize(config.maxSize())
-            .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS)
-            .refreshAfterWrite(config.refreshDuration(), TimeUnit.SECONDS);
+            .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS);
       }
-      cache = builder.build( new CacheLoader<String, V>() {
-        public V load(String key) throws CacheException {
-          V ret = null;
-          if (callback != null) {
-            LOGGER.debug("Enter callback method to call API to get value for: " + key);
-            ret = callback.getValue(key);
-          }
-          if (ret == null) {
-            throw new CacheException("The returned value is null");
-          }
-          LOGGER.debug("Return value from load(..) method for cache key: " + key);
-          return ret;
-        }
 
-        public ListenableFuture<V> reload(final String key, V preVal) throws CacheException {
-          LOGGER.debug(java.lang.String.format("reload value for key %s happens", key));
-          ListenableFuture<V> ret = null;
-          if (callback != null) {
-            LOGGER.debug("Enter callback method to call API to reload value again for: " + key);
-            ret = Futures.immediateFuture(callback.getValue(key));
-          }
-
-          if (ret == null) {
-            throw new CacheException("The reload value is null");
-          }
-          LOGGER.debug("Return value from reload(..) method for key: " + key);
-          return ret;
-        }
-      });
-
+      cache = builder.build();
       caches.put(innerCacheName.name(), cache);
       return cache;
     } catch (IllegalArgumentException e) {
@@ -279,8 +275,8 @@ public class CacheManagerServiceImpl implements CacheManagerService {
   }
 
   private void closeAndClearCachedResolvers() {
-    for (String key :resolverCache.keySet()) {
-       ResourceResolver resolver = resolverCache.get(key);
+    for (String key : resolverCache.keySet()) {
+      ResourceResolver resolver = resolverCache.get(key);
       if (resolver.isLive()) {
         resolver.close();
       }

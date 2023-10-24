@@ -2,16 +2,13 @@ package com.workday.community.aem.core.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.workday.community.aem.core.config.CoveoIndexApiConfig;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.lang.annotation.Annotation;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.workday.community.aem.core.config.CoveoIndexApiConfig;
-
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
  * The Class CoveoIndexApiConfigServiceTest.
@@ -19,11 +16,15 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class CoveoIndexApiConfigServiceTest {
 
-    /** The CoveoIndexApiConfigService. */
-    private final CoveoIndexApiConfigService service = new CoveoIndexApiConfigService();
+  /**
+   * The CoveoIndexApiConfigService.
+   */
+  private final CoveoIndexApiConfigService service = new CoveoIndexApiConfigService();
 
-    /** The CoveoIndexApiConfig. */
-    private final CoveoIndexApiConfig mockConfig = new CoveoIndexApiConfig() {
+  /**
+   * The CoveoIndexApiConfig.
+   */
+  private final CoveoIndexApiConfig mockConfig = new CoveoIndexApiConfig() {
     @Override
     public Class<? extends Annotation> annotationType() {
       return null;
@@ -31,37 +32,37 @@ public class CoveoIndexApiConfigServiceTest {
 
     @Override
     public boolean isCoveoIndexingEnabled() {
-        return true;
+      return true;
     }
 
     @Override
     public String coveoApiKey() {
-        return "coveoApiKey";
+      return "coveoApiKey";
     }
 
     @Override
     public String pushApiUri() {
-        return "https://www.pushapi.com";
+      return "https://www.pushapi.com";
     }
 
     @Override
     public String sourceApiUri() {
-        return "https://www.sourceapi.com";
+      return "https://www.sourceapi.com";
     }
 
     @Override
     public String organizationId() {
-        return "organizationId";
+      return "organizationId";
     }
 
     @Override
     public String sourceId() {
-        return "sourceId";
+      return "sourceId";
     }
 
     @Override
     public int batchSize() {
-        return 50;
+      return 50;
     }
   };
 
@@ -83,5 +84,5 @@ public class CoveoIndexApiConfigServiceTest {
     assertEquals(service.getOrganizationId(), mockConfig.organizationId());
     assertEquals(service.isCoveoIndexEnabled(), mockConfig.isCoveoIndexingEnabled());
   }
-    
+
 }
