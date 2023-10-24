@@ -11,5 +11,5 @@
     "userType": "$[env:coveoSearchUserType]",
     "tokenValidTime": 6000,
     "devMode": "$[env:devMode;default=false]",
-    "globalSearchURL": "$[env:globalSearchURL]"
+    "globalSearchUrl": "$[env:globalSearchURL]"
 }

@@ -1,13 +1,17 @@
 {
   "relatedinformation": {
-    "jcr:primaryType":"nt:unstructured",
-    "jcr:createdBy":"admin",
-    "jcr:lastModifiedBy":"admin",
-    "jcr:created":"Mon Aug 07 2023 23:29:51 GMT-0700",
-    "rows":"4",
-    "type":"dynamic",
-    "footernewTab":"_blank",
-    "jcr:lastModified":"Tue Aug 08 2023 01:01:20 GMT-0700",
-    "sling:resourceType":"workday-community/components/common/relatedinformation",
-    "categories":["using-workday:","product:"]}
+    "jcr:primaryType": "nt:unstructured",
+    "jcr:createdBy": "admin",
+    "jcr:lastModifiedBy": "admin",
+    "jcr:created": "Mon Aug 07 2023 23:29:51 GMT-0700",
+    "rows": "4",
+    "type": "dynamic",
+    "footernewTab": "_blank",
+    "jcr:lastModified": "Tue Aug 08 2023 01:01:20 GMT-0700",
+    "sling:resourceType": "workday-community/components/common/relatedinformation",
+    "categories": [
+      "using-workday:",
+      "product:"
+    ]
+  }
 }

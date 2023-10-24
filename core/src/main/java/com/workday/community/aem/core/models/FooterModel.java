@@ -1,5 +1,8 @@
 package com.workday.community.aem.core.models;
 
+/**
+ * Defines the footer model.
+ */
 public interface FooterModel {
 
   /**
@@ -8,5 +11,5 @@ public interface FooterModel {
    * @return The adobe analytics script uri.
    */
   String getAdobeAnalyticsUri();
-    
+
 }

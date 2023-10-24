@@ -1,5 +1,15 @@
 package com.workday.community.aem.core.servlets;
 
+import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
+import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -9,6 +19,11 @@ import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import javax.servlet.http.Cookie;
 import org.apache.http.HttpEntity;
 import org.apache.http.ProtocolVersion;
 import org.apache.http.StatusLine;
@@ -25,25 +40,11 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.servlet.http.Cookie;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.PrintWriter;
-import java.util.HashMap;
-
-import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
-import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SearchTokenServletTest {
+
+  private final Gson gson = new Gson();
 
   @Mock
   SearchApiConfigService searchApiConfigService;
@@ -57,13 +58,11 @@ public class SearchTokenServletTest {
   @InjectMocks
   SearchTokenServlet searchTokenServlet;
 
-  private final Gson gson = new Gson();
-
   @Test
   public void testDoGetWithExistingCookieInRequest() throws Exception {
 
     Cookie[] testCookies = new Cookie[] {
-      new Cookie("test", "testValue"), new Cookie(COVEO_COOKIE_NAME, "coveo_cookie_value")
+        new Cookie("test", "testValue"), new Cookie(COVEO_COOKIE_NAME, "coveo_cookie_value")
     };
 
     MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
@@ -74,7 +73,8 @@ public class SearchTokenServletTest {
 
     // Invoke your servlet
     try (MockedStatic<HttpUtils> mockHttpUtils = mockStatic(HttpUtils.class)) {
-      mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME)).thenReturn(testCookies[1]);
+      mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME))
+          .thenReturn(testCookies[1]);
       SearchTokenServlet servlet = new SearchTokenServlet();
       servlet.doGet(request, response);
       verify(response).setStatus(200);
@@ -92,11 +92,11 @@ public class SearchTokenServletTest {
 
     // Mock return from searchService
     when(searchApiConfigService.getTokenValidTime()).thenReturn(12000);
-    when(searchApiConfigService.getSearchTokenAPIKey()).thenReturn("mockSearchToken");
-    when(searchApiConfigService.getUpcomingEventAPIKey()).thenReturn("mockUpcomingEventAPIKey");
-    when(searchApiConfigService.getRecommendationAPIKey()).thenReturn("mockRecommendationAPIkey");
+    when(searchApiConfigService.getSearchTokenApiKey()).thenReturn("mockSearchToken");
+    when(searchApiConfigService.getUpcomingEventApiKey()).thenReturn("mockUpcomingEventAPIKey");
+    when(searchApiConfigService.getRecommendationApiKey()).thenReturn("mockRecommendationAPIkey");
     when(searchApiConfigService.getOrgId()).thenReturn("mockOrgId");
-    when(searchApiConfigService.getSearchTokenAPI()).thenReturn("http://coveo/token/api");
+    when(searchApiConfigService.getSearchTokenApi()).thenReturn("http://coveo/token/api");
 
     JsonObject testUserContext = gson.fromJson("{\"email\":\"foo@workday.com\"}", JsonObject.class);
     when(snapService.getUserContext(anyString())).thenReturn(testUserContext);
@@ -139,8 +139,10 @@ public class SearchTokenServletTest {
          MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class);
          MockedStatic<HttpClients> mockHttpClients = mockStatic(HttpClients.class)) {
       mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME)).thenReturn(null);
-      mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any(), any())).thenReturn(DEFAULT_SFID_MASTER);
-      mockOurmUtils.when(() -> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("foo@workday.com");
+      mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any(), any()))
+          .thenReturn(DEFAULT_SFID_MASTER);
+      mockOurmUtils.when(() -> OurmUtils.getUserEmail(anyString(), any(), any()))
+          .thenReturn("foo@workday.com");
 
       mockHttpClients.when(HttpClients::createDefault).thenReturn(httpClient);
       when(httpClient.execute(any())).thenReturn(httpResponse);

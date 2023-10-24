@@ -12,9 +12,9 @@ import org.osgi.service.metatype.annotations.Designate;
  * The OktaService implementation class.
  */
 @Component(
-        service=OktaService.class,
-        immediate=true,
-        configurationPid = "com.workday.community.aem.core.config.OktaConfig"
+    service = OktaService.class,
+    immediate = true,
+    configurationPid = "com.workday.community.aem.core.config.OktaConfig"
 )
 @Designate(ocd = OktaConfig.class)
 public class OktaServiceImpl implements OktaService {
@@ -29,15 +29,20 @@ public class OktaServiceImpl implements OktaService {
     this.objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public String getCustomDomain() {
     return config.customDomain();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public boolean isOktaIntegrationEnabled() {
     return config.isOktaIntegrationEnabled();
   }
-
 
 }
