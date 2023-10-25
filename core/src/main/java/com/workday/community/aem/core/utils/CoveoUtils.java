@@ -5,9 +5,9 @@ import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKI
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
 import static com.workday.community.aem.core.constants.SearchConstants.EMAIL_NAME;
 import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
-import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
@@ -29,11 +29,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -50,26 +48,25 @@ public class CoveoUtils {
   /**
    * Executes a search.
    *
-   * @param request The request object.
-   * @param response The response object.
+   * @param request                The request object.
+   * @param response               The response object.
    * @param searchApiConfigService The search API config.
-   * @param drupalService The drupal service.
-   * @param userService The user service.
-   * @param gson The Gson object.
-   * @param objectMapper The object mapper.
-   * @param servletCallback The servlet callback.
-   *
+   * @param drupalService          The drupal service.
+   * @param userService            The user service.
+   * @param gson                   The Gson object.
+   * @param objectMapper           The object mapper.
+   * @param servletCallback        The servlet callback.
    * @throws ServletException If the user does not have an email address or no search token.
-   * @throws IOException If the callback execution fails.
+   * @throws IOException      If the callback execution fails.
    */
   public static void executeSearchForCallback(SlingHttpServletRequest request,
-      SlingHttpServletResponse response,
-      SearchApiConfigService searchApiConfigService,
-      DrupalService drupalService,
-      UserService userService,
-      Gson gson,
-      ObjectMapper objectMapper,
-      ServletCallback servletCallback)
+                                              SlingHttpServletResponse response,
+                                              SearchApiConfigService searchApiConfigService,
+                                              DrupalService drupalService,
+                                              UserService userService,
+                                              Gson gson,
+                                              ObjectMapper objectMapper,
+                                              ServletCallback servletCallback)
       throws ServletException, IOException, DrupalException {
     String utfName = StandardCharsets.UTF_8.name();
     response.setContentType(JSON);
@@ -142,21 +139,19 @@ public class CoveoUtils {
    * Retrieves a search token.
    *
    * @param searchApiConfigService The search API config.
-   * @param httpClient An HTTP client.
-   * @param gson The Gson object.
-   * @param objectMapper The object mapper.
-   * @param email The user's email address.
-   * @param apiKey The API key.
-   *
+   * @param httpClient             An HTTP client.
+   * @param gson                   The Gson object.
+   * @param objectMapper           The object mapper.
+   * @param email                  The user's email address.
+   * @param apiKey                 The API key.
    * @return The token.
-   *
    * @throws IOException If there is an error retrieving the token.
    */
   public static String getSearchToken(SearchApiConfigService searchApiConfigService,
-      CloseableHttpClient httpClient,
-      Gson gson,
-      ObjectMapper objectMapper,
-      String email, String apiKey) throws IOException {
+                                      CloseableHttpClient httpClient,
+                                      Gson gson,
+                                      ObjectMapper objectMapper,
+                                      String email, String apiKey) throws IOException {
     if (StringUtils.isEmpty(apiKey) || apiKey.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
       log.debug("Pass-in API key is empty or null");
       return "";
@@ -195,8 +190,8 @@ public class CoveoUtils {
    * @return The current user context as string.
    */
   public static String getCurrentUserContext(SlingHttpServletRequest request,
-      DrupalService drupalService,
-      UserService userService) {
+                                             DrupalService drupalService,
+                                             UserService userService) {
     String sfId = OurmUtils.getSalesForceId(request, userService);
     JsonObject contextObject = drupalService.getUserContext(sfId);
     if (contextObject != null && !contextObject.isJsonNull()) {
@@ -215,9 +210,9 @@ public class CoveoUtils {
    * @return the search configuration object used by component.
    */
   public static JsonObject getSearchConfig(SearchApiConfigService searchConfigService,
-      SlingHttpServletRequest request,
-      DrupalService drupalService,
-      UserService userService) {
+                                           SlingHttpServletRequest request,
+                                           DrupalService drupalService,
+                                           UserService userService) {
     JsonObject config = new JsonObject();
     String sfId = OurmUtils.getSalesForceId(request, userService);
     config.addProperty("orgId", searchConfigService.getOrgId());

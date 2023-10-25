@@ -7,9 +7,9 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.UuidUtil;
@@ -33,8 +33,7 @@ import org.osgi.service.component.annotations.Reference;
 public class UserServiceImpl implements UserService {
 
   /**
-
-  * The cache manager.
+   * The cache manager.
    */
   @Reference
   private CacheManagerService cacheManager;
@@ -46,7 +45,7 @@ public class UserServiceImpl implements UserService {
   private RunModeConfigService runModeConfigService;
 
   @Reference
-  DrupalService drupalService;
+  private DrupalService drupalService;
 
   /**
    * {@inheritDoc}

@@ -66,7 +66,7 @@ public class RestApiUtil {
    *
    * @param url       URL of the API endpoint.
    * @param authToken Photo API token.
-   * @param apiKey   API secret key.
+   * @param apiKey    API secret key.
    * @return the Json response as String from snap logic API call.
    * @throws SnapException SnapException object.
    */
@@ -78,7 +78,7 @@ public class RestApiUtil {
 
       apiRequestInfo.setUrl(url);
       apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(authToken))
-          .addHeader(RestApiConstants.X_API_KEY, xApiKey);
+          .addHeader(RestApiConstants.X_API_KEY, apiKey);
       return executeGetRequest(apiRequestInfo).getResponseBody();
     } catch (ApiException e) {
       throw new SnapException(
@@ -146,7 +146,7 @@ public class RestApiUtil {
    *
    * @param url       Request URL.
    * @param authToken Auth token.
-   * @param apiKey   API key.
+   * @param apiKey    API key.
    * @param traceId   Trace id in header.
    * @return API Request object.
    */
@@ -318,8 +318,8 @@ public class RestApiUtil {
   /**
    * Frames the Drupal Token call request.
    *
-   * @param url      Url
-   * @param clientId Client Id
+   * @param url          Url
+   * @param clientId     Client Id
    * @param clientSecret Client Secret
    * @return API Request
    */

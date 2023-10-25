@@ -1,11 +1,8 @@
 package com.workday.community.aem.core.models;
 
 import com.day.cq.wcm.api.Page;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.EventDetailsConstants;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
@@ -21,11 +18,6 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-
-import com.workday.community.aem.core.constants.EventDetailsConstants;
-import com.workday.community.aem.core.services.DrupalService;
-import com.workday.community.aem.core.services.UserService;
-
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -184,12 +176,12 @@ public class EventDetailsModel {
 
   /**
    * Populates User TimeZone.
-	 *
-	 * @return user time zone string
-	 */
-	private String populateUserTimeZone() {
-		String sfId = OurmUtils.getSalesForceId(request, userService);
-		if (StringUtils.isNotBlank(sfId) && null != drupalService) {
+   *
+   * @return user time zone string
+   */
+  private String populateUserTimeZone() {
+    String sfId = OurmUtils.getSalesForceId(request, userService);
+    if (StringUtils.isNotBlank(sfId) && null != drupalService) {
       return drupalService.getUserTimezone(sfId);
     }
     return StringUtils.EMPTY;

@@ -17,6 +17,7 @@ import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.DamUtils;

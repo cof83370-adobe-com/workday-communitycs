@@ -20,9 +20,7 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-import org.apache.http.entity.ContentType;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -30,7 +28,7 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * The Class CoveoPushApiServiceImpl.
+ * The class CoveoPushApiServiceImpl.
  */
 @Slf4j
 @Component(service = CoveoPushApiService.class)
@@ -38,9 +36,10 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
 
   /**
    * The push api uri.
-   */ private String pushApiUri;
+   */
+  private String pushApiUri;
 
-    /*** The organization id.
+  /*** The organization id.
    */
   private String organizationId;
 
@@ -82,7 +81,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   public String generateBatchUploadUri(String fileId) {
     return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
         + "/documents/batch?fileId="
-                + fileId;
+        + fileId;
   }
 
   /**
@@ -101,16 +100,17 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     String time = Long.toString(System.currentTimeMillis());
     return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
         + "/documents/olderthan?orderingId="
-                + time + "&queueDelay=15";
+        + time + "&queueDelay=15";
   }
 
   /**
    * {@inheritDoc}
-   */  @Override
-    public String generateDeleteSingleItemUri(String documentId) {
-        return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
-                + "/documents?deleteChildren=false&documentId=" + documentId;
-    }
+   */
+  @Override
+  public String generateDeleteSingleItemUri(String documentId) {
+    return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
+        + "/documents?deleteChildren=false&documentId=" + documentId;
+  }
 
   /**
    * {@inheritDoc}
@@ -118,7 +118,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   @Override
   public Map<String, Object> callApi(String uri, Map<String, String> header,
                                      String httpMethod,
-            String payload) {
+                                     String payload) {
     return restApiService.send(uri, header, httpMethod, payload);
   }
 
@@ -185,11 +185,11 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
    */
   @Override
   public Map<String, Object> callUploadFileUri(String uploadUri,
-                                                   Map<String, String> uploadFileHeader,
-            List<Object> payload) {
-        return callApi(uploadUri, uploadFileHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT,
-                transformPayload(payload));
-    }
+                                               Map<String, String> uploadFileHeader,
+                                               List<Object> payload) {
+    return callApi(uploadUri, uploadFileHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT,
+        transformPayload(payload));
+  }
 
   /**
    * {@inheritDoc}
@@ -283,14 +283,14 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     ObjectMapper objectMapper = new ObjectMapper();
     try {
       header = objectMapper.readValue(requiredHeaders, new TypeReference<>() {
-            });
-        } catch (JsonProcessingException e) {
+      });
+    } catch (JsonProcessingException e) {
       log.error("Generate requiredheader array failed: {}", e.getMessage());
-            return transformedResponse;
-        }
-        transformedResponse.put("fileId", fileId);
-        transformedResponse.put("uploadUri", uploadUri);
-        transformedResponse.put("requiredHeaders", header);
-        return transformedResponse;
+      return transformedResponse;
     }
+    transformedResponse.put("fileId", fileId);
+    transformedResponse.put("uploadUri", uploadUri);
+    transformedResponse.put("requiredHeaders", header);
+    return transformedResponse;
+  }
 }

@@ -10,8 +10,8 @@ import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.DrupalService;
-import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
+import com.workday.community.aem.core.services.UserService;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -93,9 +93,8 @@ public class OurmUtils {
   /**
    * Whether the menu is empty.
    *
-   * @param gson The Gson object.
+   * @param gson       The Gson object.
    * @param menuString The menu string.
-   *
    * @return True if it's empty, otherwise false.
    */
   public static boolean isMenuEmpty(Gson gson, String menuString) {

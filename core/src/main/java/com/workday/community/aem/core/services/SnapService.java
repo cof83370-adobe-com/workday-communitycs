@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.services;
 
 import com.workday.community.aem.core.config.SnapConfig;
-
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -30,6 +29,8 @@ public interface SnapService {
   void setRunModeConfigService(RunModeConfigService runModeConfigService);
 
   /**
+   * Sets the drupal service.
+   *
    * @param drupalService DrupalService object. This method is used
    *                      to explicitly pass the
    *                      drupalService to the snap logic service
@@ -40,9 +41,7 @@ public interface SnapService {
    * Retrieves the user header menu.
    *
    * @param sfId Salesforce Id.
-   *
-   * @return The menu object as a string for common nav menus in the global header
-   *     of the page.
+   * @return The menu object as a string for common nav menus in the global header of the page.
    */
   String getUserHeaderMenu(String sfId);
 

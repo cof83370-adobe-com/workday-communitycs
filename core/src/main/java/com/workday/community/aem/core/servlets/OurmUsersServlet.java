@@ -51,7 +51,7 @@ public class OurmUsersServlet extends SlingSafeMethodsServlet {
       response.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
       response.getWriter().write(jsonObject.toString());
     } catch (IOException | DrupalException e) {
-            log.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
+      log.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
     }
   }
 }

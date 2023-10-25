@@ -185,8 +185,7 @@ public class HeaderModelImpl implements HeaderModel {
       String pageTitle = currentPage.getTitle();
       String templatePath = template.getPath();
       String contentType = CONTENT_TYPE_MAPPING.get(templatePath);
-      if (contentType == null)
-       {
+      if (contentType == null) {
         return null;
       }
       return this.drupalService.getAdobeDigitalData(sfId, pageTitle, contentType);

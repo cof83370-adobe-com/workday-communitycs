@@ -45,33 +45,33 @@ public interface AdobeAnalyticsConstants {
    */
   String CONTENT_TYPE = "contentType";
 
-    /**
-     * The current page's title.
-     */
-    String PAGE_NAME = "pageName";
+  /**
+   * The current page's title.
+   */
+  String PAGE_NAME = "pageName";
 
-    /**
-     * The constant ADOBE.
-     */
-    String ADOBE = "adobe";
+  /**
+   * The constant ADOBE.
+   */
+  String ADOBE = "adobe";
 
-    /**
-     * The constant USER.
-     */
-    String USER = "user";
+  /**
+   * The constant USER.
+   */
+  String USER = "user";
 
-    /**
-     * The constant TIMEZONE.
-     */
-    String TIMEZONE = "timeZone";
+  /**
+   * The constant TIMEZONE.
+   */
+  String TIMEZONE = "timeZone";
 
-    /**
-     * The constant ACCOUNTID.
-     */
-    String ACCOUNTID = "accountId";
+  /**
+   * The constant ACCOUNTID.
+   */
+  String ACCOUNTID = "accountId";
 
-    /**
-     * The constant ORG.
-     */
-    String ORG = "org";
+  /**
+   * The constant ORG.
+   */
+  String ORG = "org";
 }

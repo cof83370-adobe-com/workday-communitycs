@@ -29,7 +29,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class EventDetailsModelTest.
  */
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class EventDetailsModelTest {
 
   /**
@@ -43,12 +43,13 @@ public class EventDetailsModelTest {
   private EventDetailsModel eventDetailsModel;
 
   /**
-   * The current page. */
-    private Page currentPage;
-/**
+   * The current page.
+   */
+  private Page currentPage;
+  /**
    * The resource.
-   */ private Resource resource;
-
+   */
+  private Resource resource;
 
 
   /**
@@ -83,9 +84,9 @@ public class EventDetailsModelTest {
     currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
     context.registerService(DrupalService.class, drupalService);
-        String timeZoneResponse = String.format("{\"timeZone\":\"%s\"}", this.timeZone);
+    String timeZoneResponse = String.format("{\"timeZone\":\"%s\"}", this.timeZone);
     lenient().when(drupalService.getUserTimezone(anyString())).thenReturn(timeZoneResponse);
-    }
+  }
 
   /**
    * Tests the user's timezone getter.
@@ -93,24 +94,26 @@ public class EventDetailsModelTest {
   @Test
   void testGetUserTimeZone() {
     eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
-    assertEquals(this.timeZone, eventDetailsModel.getUserTimeZone());
+    assert eventDetailsModel != null;
+    String timeZoneResponse = String.format("{\"timeZone\":\"%s\"}", this.timeZone);
+    assertEquals(timeZoneResponse, eventDetailsModel.getUserTimeZone());
   }
 
   /**
-     * Test get time format.
-     *
-     * @throws Exception the exception
-     */
-     @Test
-    void testGetTimeFormat() throws Exception {
-        eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
-        assertNotNull(eventDetailsModel);
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        Date formattedStartDate = formatter.parse(currentPage.getProperties().get("eventStartDate", String.class));
-        ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
-        ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
-        assertEquals("00:44", DateTimeFormatter.ofPattern("HH:mm").format(originDatetime));
-    }
+   * Test get time format.
+   *
+   * @throws Exception the exception
+   */
+  @Test
+  void testGetTimeFormat() throws Exception {
+    eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
+    assertNotNull(eventDetailsModel);
+    DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    Date formattedStartDate = formatter.parse(currentPage.getProperties().get("eventStartDate", String.class));
+    ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
+    ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
+    assertEquals("00:44", DateTimeFormatter.ofPattern("HH:mm").format(originDatetime));
+  }
 
   /**
    * Test get length.

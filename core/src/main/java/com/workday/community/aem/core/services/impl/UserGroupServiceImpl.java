@@ -50,11 +50,12 @@ public class UserGroupServiceImpl implements UserGroupService {
    */
   @Reference
   private SnapService snapService;
+
   /**
    * The drupal service.
    */
   @Reference
-  DrupalService drupalService;
+  private DrupalService drupalService;
 
   /**
    * The cache manager.
