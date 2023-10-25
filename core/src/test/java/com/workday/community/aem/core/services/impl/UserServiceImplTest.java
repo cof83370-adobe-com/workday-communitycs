@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.services.impl;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
@@ -20,6 +22,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -28,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
@@ -115,5 +119,32 @@ public class UserServiceImplTest {
     userService.invalidCurrentUser(request, false);
     verify(user).remove();
     verify(session, times(2)).logout();
+  }
+
+  @Test
+  public void testIsLoggedInUser() throws RepositoryException, CacheException {
+    // Mocking user and getCurrentUser for testing
+    String userId = "testUser";
+    SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
+    lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);
+    lenient().when(session.getUserID()).thenReturn(userId);
+    lenient().when(session.isLive()).thenReturn(true);
+    lenient().when(user.getID()).thenReturn("someNonDefaultId");
+    lenient().when(user.getPath()).thenReturn("/home/users/workda-community/okta");
+
+    boolean result = userService.isLoggedInUser(request);
+    assertTrue(result);
+
+    // Test when the user is not logged in
+    Mockito.when(user.getID()).thenReturn(UserConstants.DEFAULT_ANONYMOUS_ID);
+    lenient().when(user.getPath()).thenReturn("/some/other/path");
+    result = userService.isLoggedInUser(request);
+    assertFalse(result);
+
+    // Test when the path does not contain WORKDAY_OKTA_USERS_ROOT_PATH
+    Mockito.when(user.getID()).thenReturn("someNonDefaultId");
+    Mockito.when(user.getPath()).thenReturn("/some/other/path");
+    result = userService.isLoggedInUser(request);
+    assertFalse(result);
   }
 }

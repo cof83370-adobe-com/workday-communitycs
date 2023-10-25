@@ -2,6 +2,7 @@ package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.SERVICE_USER_GROUP;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_OKTA_USERS_ROOT_PATH;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
@@ -20,6 +21,7 @@ import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
@@ -159,4 +161,19 @@ public class UserServiceImpl implements UserService {
     this.cacheManager = cacheManager;
   }
 
+  @Override
+  public boolean isLoggedInUser(SlingHttpServletRequest request) {
+    boolean isLoggedInUser = false;
+    User user = null;
+    try {
+      user = getCurrentUser(request);
+      if (null != user && !(UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())
+              && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
+        isLoggedInUser = true;
+      }
+    } catch (CacheException | RepositoryException e) {
+      log.error("Getting the error While checking the logged-in user {}", e.getMessage());
+    }
+    return isLoggedInUser;
+  }
 }

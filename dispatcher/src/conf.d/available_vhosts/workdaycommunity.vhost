@@ -102,7 +102,7 @@ Include conf.d/variables/custom.vars
     # Authenticated pages gets cached only in Dispatcher
     <LocationMatch "^/content/workday-community/en-us/.*(\.html)$>"
          Header unset Cache-Control
-	     Header always set Cache-Control "no-store, max-age=0"
+	     Header always set Cache-Control "max-age=300"
          Header always set Surrogate-Control "no-store, max-age=0"
          Header set Age 0
     </LocationMatch>

@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.jcr.Session;
 import javax.servlet.Servlet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -67,10 +66,12 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
         && !uri.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
       log.debug("RequestAuthenticationServlet:Time before validating the user  is {}.",
           new Date().getTime());
-      ResourceResolver requestResourceResolver = request.getResourceResolver();
-      Session userSession = requestResourceResolver.adaptTo(Session.class);
-      if (userSession == null) {
+
+      if (!userService.isLoggedInUser(request)) {
+        log.debug("user don't have access on the page {}", uri);
         response.setStatus(SC_FORBIDDEN);
+        response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+
         return;
       }
       Map<String, Object> serviceParams = new HashMap<>();

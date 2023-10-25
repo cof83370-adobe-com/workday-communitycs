@@ -24,15 +24,15 @@ public class WccConstants {
    * Path to 403 forbidden page.
    */
   public static final String FORBIDDEN_PAGE_PATH =
-      "/content/workday-community/en-us/errors/403.html";
+      "/content/workday-community/en-us/public/errors/403.html";
 
   /**
    * Path to 404 not found page.
    */
   public static final String PAGE_NOT_FOUND_PATH =
-      "/content/workday-community/en-us/errors/404.html";
+      "/content/workday-community/en-us/public/errors/404.html";
 
-  public static final String ERROR_PAGE_PATH = "/content/workday-community/en-us/errors/500.html";
+  public static final String ERROR_PAGE_PATH = "/content/workday-community/en-us/public/errors/500.html";
 
   /**
    * The roles property name.
