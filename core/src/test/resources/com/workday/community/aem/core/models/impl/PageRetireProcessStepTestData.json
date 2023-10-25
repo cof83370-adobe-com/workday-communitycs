@@ -3,7 +3,9 @@
     "jcr:primaryType": "cq:Page",
     "jcr:content": {
       "jcr:primaryType": "cq:PageContent",
-      "jcr:mixinTypes": ["mix:versionable"],
+      "jcr:mixinTypes": [
+        "mix:versionable"
+      ],
       "retirementStatus": "retired",
       "root": {
         "jcr:primaryType": "nt:unstructured",
@@ -23,19 +25,22 @@
             "eventdescription": {
               "jcr:primaryType": "nt:unstructured",
               "sling:resourceType": "workday-community/components/core/container",
-              "cq:styleIds": ["1683930780963"]
+              "cq:styleIds": [
+                "1683930780963"
+              ]
             }
           }
         }
       }
     }
   },
-
   "page-with-retired-badge": {
     "jcr:primaryType": "cq:Page",
     "jcr:content": {
       "jcr:primaryType": "cq:PageContent",
-      "jcr:mixinTypes": ["mix:versionable"],
+      "jcr:mixinTypes": [
+        "mix:versionable"
+      ],
       "retirementStatus": "retired",
       "root": {
         "jcr:primaryType": "nt:unstructured",

@@ -1,0 +1,54 @@
+.wd-limited-access {
+    &__badge {
+        position: absolute;
+        color: $wdc-color-cinnamon-500;
+        font-size: $font-size-xsmall;
+        font-weight: $font-weight-normal;
+        text-transform: uppercase;
+        line-height: 18px;
+        letter-spacing: 0.20px;
+        word-wrap: break-word;
+
+        &::after {
+            content: url('../resources/images/limited-access-icon.svg');
+            vertical-align: top;
+            margin-left: 5px;
+        }
+    }
+
+    &__container {
+        .cmp-container {
+            padding-top: 7px;
+        }
+    }
+
+    &__text {
+        .cmp-text {
+            padding-top: 7px;
+        }
+    }
+
+    &__image {
+        position: relative;
+        .wd-limited-access__badge {
+            background-color: rgba(255, 255, 255, 0.5);
+            top: 0;
+            left: 0;
+        }
+    }
+
+    &__download {
+        .cmp-download {
+            height: 50px;
+            align-items: end;
+        }
+    }
+
+    &__relatedinformation {
+        position: relative;
+        .wd-limited-access__badge {
+            top: 0;
+            left: 0;
+        }
+    }
+}

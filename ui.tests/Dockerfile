@@ -1,4 +1,4 @@
-# Copyright 2020 Adobe Systems Incorporated
+# Copyright 2022 Adobe Systems Incorporated
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,10 @@
 #
 # DO NOT MODIFY
 #
-FROM node:18-slim
+FROM maven:3.8.6-eclipse-temurin-11
+
+# Java options playing well with k8s
+ENV JAVA_OPTIONS="-server -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=2 -XX:+UseG1GC -XshowSettings:vm $JAVA_OPTIONS"
 
 ENV APP_PATH /usr/src/app
 ENV SELENIUM_STARTUP_TIMEOUT 60
@@ -30,28 +33,23 @@ ENV AEM_AUTHOR_PASSWORD admin
 ENV AEM_PUBLISH_URL http://localhost:4503
 ENV AEM_PUBLISH_USERNAME admin
 ENV AEM_PUBLISH_PASSWORD admin
+
 # Following convention variables are null by default
 # ENV SHARED_FOLDER
 # ENV UPLOAD_URL
 
-RUN apt -qqy update \
-    # Generic dependencies
-    && apt -qqy --no-install-recommends install \
-    python \
-    build-essential \
-    # for wait_for_grid script
-    && apt -qqy --no-install-recommends install \
-    curl \
-    jq
 # <<< End CloudManager Convention
 
 # Set Application Environment
 WORKDIR ${APP_PATH}
 
-# Copy + Install WDIO project
-ENV TEST_RUN_COMMAND "npm run test-cloud"
-COPY test-module/ ./
-RUN npm ci
+# Copy project
+ENV TEST_RUN_COMMAND "mvn verify -Pui-tests-cloud-execution"
+COPY test-module ./
+
+# download all Maven dependency into image to prevent download / timeout during each execution
+RUN mvn --batch-mode dependency:resolve-plugins dependency:go-offline install -DskipTests -Dassembly.skipAssembly=true
+RUN mvn --batch-mode dependency:resolve-plugins dependency:go-offline verify -Pui-tests-local-execution -DskipTests -Dassembly.skipAssembly=true
 
 # Begin CloudManager Convention >>>
 COPY wait-for-grid.sh .

@@ -7,7 +7,10 @@
     "+/content/workday-community",
     "+/content/experience-fragments",
     "+/bin",
-    "-/content/workday-community/en-us/public"
+    "-/bin/workday/community/authcheck",
+    "-/content/workday-community/en-us/public",
+    "+/content/dam/workday-community/en-us/images",
+    "+/content/dam/workday-community/en-us/documents"
   ],
   "sling.auth.anonymous.user":"",
   "auth.uri.suffix":[

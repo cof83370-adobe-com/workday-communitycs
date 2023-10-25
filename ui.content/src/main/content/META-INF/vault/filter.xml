@@ -23,6 +23,8 @@
     <filter root="/content/cq:tags/customer-center" mode="merge"/>
     <filter root="/content/cq:tags/khoros" mode="merge"/>
     <filter root="/content/experience-fragments/workday-community" mode="merge"/>
-    <filter root="/var/workflow/models/workday-community" mode="merge"/>
-    <filter root="/conf/global/settings/workflow/models/workday-community" mode="merge"/>
+    <filter root="/var/workflow/models/workday-community" mode="update"/>
+    <filter root="/conf/global/settings/workflow/models/workday-community" mode="update"/>
+    <filter root="/conf/global/settings/workflow/models/content-publishing-workflow" mode="update"/>
+    <filter root="/var/workflow/models/content-publishing-workflow" mode="update"/>
 </workspaceFilter>

@@ -5,10 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 
+import com.day.cq.wcm.api.Page;
+import com.workday.community.aem.core.services.DrupalService;
+import com.workday.community.aem.core.services.UserService;
+import io.wcm.testing.mock.aem.junit5.AemContext;
+import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.util.HashMap;
 import java.util.Map;
-
-import com.workday.community.aem.core.services.UserService;
 import org.apache.sling.api.resource.Resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,36 +19,32 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.services.DrupalService;
-
-import io.wcm.testing.mock.aem.junit5.AemContext;
-import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-
 /**
  * The Class EventLengthTest.
  */
 @ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class EventLengthTest {
 
-        /** The context. */
+        /*** The context. */
         private final AemContext context = new AemContext();
 
-        /** The event details model. */
+        @Mock
+  UserService userService;
+
+  /*** The event details model. */
         private EventDetailsModel eventDetailsModel;
 
-        /** The current page. */
+        /*** The current page. */
         private Page currentPage;
-
-        /** The resource. */
+/**
+        * The resource. */
         private Resource resource;
 
-        /** The Drupal Service */
+        /*** The Drupal Service */
         @Mock
         private DrupalService drupalService;
 
-        @Mock
-        UserService userService;
+
 
         /**
          * Setup.

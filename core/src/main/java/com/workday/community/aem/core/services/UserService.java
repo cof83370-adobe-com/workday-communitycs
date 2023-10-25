@@ -8,7 +8,9 @@ import org.apache.sling.api.SlingHttpServletRequest;
  * The UserService interface.
  */
 public interface UserService {
+
   /**
+   * Returns the current user.
    *
    * @param request The sling request object.
    * @return the current logged-in user.
@@ -16,25 +18,19 @@ public interface UserService {
   User getCurrentUser(SlingHttpServletRequest request) throws CacheException;
 
   /**
-   * Get user.
-   * @param serviceUserId The service user id
-   * @param userId   The user id
-   * @return The user
-   */
-  User getUser(String serviceUserId, String userId) throws CacheException;
-
-  /**
+   * Gets a user's UUID.
    *
    * @param sfId the user's sf id.
    * @return The user's UUID.
    */
-  String getUserUUID(String sfId);
+  String getUserUuid(String sfId);
 
   /**
    * Delete the current user.
    *
-   * @param request  The current sling request object.
-   * @param isPath   Is the user path
+   * @param request The current sling request object.
+   * @param isPath  Is the user path
    */
   void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath) throws CacheException;
+
 }

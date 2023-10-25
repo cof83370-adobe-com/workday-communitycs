@@ -1,19 +1,33 @@
 package com.workday.community.aem.core.services.impl;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+import static com.workday.community.aem.core.constants.GlobalConstants.USER_ROOT_PATH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.day.cq.search.PredicateGroup;
+import com.day.cq.search.Query;
+import com.day.cq.search.QueryBuilder;
 import com.day.cq.search.result.Hit;
 import com.day.cq.search.result.SearchResult;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
@@ -21,27 +35,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.day.cq.search.QueryBuilder;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-
-import com.day.cq.search.Query;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.workday.community.aem.core.constants.GlobalConstants.USER_ROOT_PATH;
-import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
-
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 class QueryServiceImplTest {
 
   @Mock
@@ -85,7 +84,8 @@ class QueryServiceImplTest {
       assertEquals(10, queryService.getNumOfTotalPublishedPages());
 
       // case 1
-      mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER))).thenThrow(new LoginException());
+      mockResolver.when(() -> ResolverUtil.newResolver(any(), eq(READ_SERVICE_USER)))
+          .thenThrow(new LoginException());
       assertEquals(10, queryService.getNumOfTotalPublishedPages());
     }
   }
@@ -111,7 +111,7 @@ class QueryServiceImplTest {
 
     when(query.getResult()).thenReturn(result);
 
-    List<String> paths = queryService.getPagesByTemplates(new String[] { "template/path" });
+    List<String> paths = queryService.getPagesByTemplates(new String[] {"template/path"});
     assertEquals("/test/path", paths.get(0));
     verify(session).logout();
 
@@ -120,7 +120,8 @@ class QueryServiceImplTest {
   @Test
   void testgetPagesByBookPath() throws RepositoryException, CacheException {
     ResourceResolver resourceResolver = mock(ResourceResolver.class);
-    String hitResultPath = "/content/workday-community/en-us/thomas-sandbox/test-download-component/jcr:content/root/container/container/book/firstlevel/item1";
+    String hitResultPath =
+        "/content/workday-community/en-us/thomas-sandbox/test-download-component/jcr:content/root/container/container/book/firstlevel/item1";
 
     when(cacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
     Session session = mock(Session.class);
@@ -140,8 +141,9 @@ class QueryServiceImplTest {
 
     when(query.getResult()).thenReturn(result);
 
-    List<String> paths = queryService.getBookNodesByPath("/content/workday-community/en-us/sprint-17/cmtyaem-341",
-        "/content/workday-community/en-us/products/human-capital-management/resources/next-level/faq");
+    List<String> paths =
+        queryService.getBookNodesByPath("/content/workday-community/en-us/sprint-17/cmtyaem-341",
+            "/content/workday-community/en-us/products/human-capital-management/resources/next-level/faq");
     assertEquals(hitResultPath, paths.get(0));
     verify(session).logout();
 
@@ -192,11 +194,39 @@ class QueryServiceImplTest {
     hitListActive.add(hit);
     when(resultActive.getHits()).thenReturn(hitListActive);
     when(queryActive.getResult()).thenReturn(resultActive);
-    
+
     // Verify result.
     List<String> paths = queryService.getInactiveUsers();
     assertEquals(USER_ROOT_PATH.concat(OKTA_USER_PATH).concat("/B"), paths.get(0));
     verify(session).logout();
+  }
+  
+  @Test
+  void testGetReviewReminderPages() throws RepositoryException, CacheException {
+		ResourceResolver resourceResolver = mock(ResourceResolver.class);
+		String hitResultPath = "/content/workday-community";
+
+		when(cacheManager.getServiceResolver(eq(READ_SERVICE_USER))).thenReturn(resourceResolver);
+		Session session = mock(Session.class);
+		when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
+
+		Query query = mock(Query.class);
+		when(queryBuilder.createQuery(any(), eq(session))).thenReturn(query);
+
+		Hit hit = mock(Hit.class);
+		when(hit.getPath()).thenReturn(hitResultPath);
+
+		SearchResult result = mock(SearchResult.class);
+		List<Hit> hitList = new ArrayList<>();
+		hitList.add(hit);
+
+		when(result.getHits()).thenReturn(hitList);
+
+		when(query.getResult()).thenReturn(result);
+
+		List<String> paths = queryService.getReviewReminderPages();
+		assertEquals(hitResultPath, paths.get(0));
+		verify(session).logout();
   }
 
   @AfterEach

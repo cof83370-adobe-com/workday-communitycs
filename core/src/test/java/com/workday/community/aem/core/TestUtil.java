@@ -1,16 +1,15 @@
 package com.workday.community.aem.core;
 
-import com.workday.community.aem.core.config.CacheConfig;
-import com.workday.community.aem.core.config.CoveoSearchConfig;
-import org.apache.jackrabbit.api.security.user.User;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import java.lang.annotation.Annotation;
-
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
+
+import com.workday.community.aem.core.config.CacheConfig;
+import com.workday.community.aem.core.config.CoveoSearchConfig;
+import java.lang.annotation.Annotation;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import org.apache.jackrabbit.api.security.user.User;
 
 public class TestUtil {
   public static CacheConfig getCacheConfig() {
@@ -25,7 +24,7 @@ public class TestUtil {
         return 10;
       }
 
-      public int maxUUID() {
+      public int maxUuid() {
         return 10;
       }
 
@@ -55,11 +54,6 @@ public class TestUtil {
       }
 
       @Override
-      public int refreshDuration() {
-        return 100;
-      }
-
-      @Override
       public int cacheCleanPeriod() {
         return 60;
       }
@@ -70,6 +64,7 @@ public class TestUtil {
       }
     };
   }
+
   public static CoveoSearchConfig getCoveoSearchConfig() {
     return new CoveoSearchConfig() {
 
@@ -139,16 +134,17 @@ public class TestUtil {
       }
 
       @Override
-      public String globalSearchURL() {
+      public String globalSearchUrl() {
         return "https://resourcecenter.workday.com/en-us/wrc/home/search.html";
       }
     };
   }
+
   public static User getMockUser() throws RepositoryException {
     User user = mock(User.class);
     Value val1 = mock(Value.class);
     Value val2 = mock(Value.class);
-    Value[] val = new Value[]{val1, val2};
+    Value[] val = new Value[] {val1, val2};
     lenient().when(user.getProperty(anyString())).thenReturn(val);
     lenient().when(val[0].getString()).thenReturn("testSfId");
     return user;

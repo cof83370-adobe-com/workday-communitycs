@@ -1,5 +1,8 @@
 package com.workday.community.aem.core.constants;
 
+/**
+ * Interface for defining HTTP constants.
+ */
 public interface HttpConstants {
 
   /**

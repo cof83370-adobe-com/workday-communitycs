@@ -2,7 +2,6 @@ package com.workday.community.aem.core.services;
 
 import com.workday.community.aem.core.config.SnapConfig;
 
-import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -10,7 +9,10 @@ import org.osgi.annotation.versioning.ProviderType;
  */
 @ProviderType
 public interface SnapService {
+
   /**
+   * Activates the snap service.
+   *
    * @param config Service configuration object for snap logic service. This
    *               method is used for programmatically pass
    *               a configuration to the service object during service activate
@@ -19,13 +21,8 @@ public interface SnapService {
   void activate(SnapConfig config);
 
   /**
-   * @param resourceResolverFactory ResourceResolverFactory object. This method is
-   *                                used to explicitly pass the
-   *                                Resource resolver to the snap logic service
-   */
-  void setResourceResolverFactory(ResourceResolverFactory resourceResolverFactory);
-
-  /**
+   * Setter for RunModeConfigService.
+   *
    * @param runModeConfigService RunModeConfigService object. This method is used
    *                             to explicitly pass the
    *                             runModeConfigService to the snap logic service
@@ -40,13 +37,17 @@ public interface SnapService {
   void setDrupalService(DrupalService drupalService);
 
   /**
+   * Retrieves the user header menu.
+   *
    * @param sfId Salesforce Id.
+   *
    * @return The menu object as a string for common nav menus in the global header
-   *         of the page.
+   *     of the page.
    */
   String getUserHeaderMenu(String sfId);
 
   /**
+   * Whether the cache is enabled.
    *
    * @return true if the cache is enabled.
    */

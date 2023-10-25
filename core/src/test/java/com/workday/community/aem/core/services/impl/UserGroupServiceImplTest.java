@@ -1,5 +1,14 @@
 package com.workday.community.aem.core.services.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
+
 import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.config.SnapConfig;
@@ -10,6 +19,12 @@ import com.workday.community.aem.core.utils.CommonUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.exceptions.CacheException;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
+import java.util.List;
+import javax.jcr.Node;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.LoginException;
@@ -26,26 +41,18 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import javax.jcr.*;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
-
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 class UserGroupServiceImplTest {
-    @Mock
-    SlingHttpServletRequest request;
+  @Mock
+  SlingHttpServletRequest request;
 
-    @Mock
-    UserServiceImpl userService;
+  @Mock
+  UserServiceImpl userService;
 
-    @Mock
-    SnapService snapService;
+  @Mock
+  SnapService snapService;
 
-    @Mock
+  @Mock
     DrupalService drupalService;
 
     /**
@@ -54,88 +61,91 @@ class UserGroupServiceImplTest {
     @Mock
     SnapConfig config;
 
-    /**
-     * The UserGroupServiceImpl service.
-     */
-    @InjectMocks
-    UserGroupServiceImpl userGroupService;
+  /**
+   * The UserGroupServiceImpl service.
+   */
+  @InjectMocks
+  UserGroupServiceImpl userGroupService;
 
-    @Mock
-    ResourceResolverFactory resResolverFactory;
+  @Mock
+  ResourceResolverFactory resResolverFactory;
 
-    CacheManagerServiceImpl cacheManager;
+  CacheManagerServiceImpl cacheManager;
 
-    @Mock
-    Session jcrSession;
+  @Mock
+  Session jcrSession;
 
-    @Mock
-    ResourceResolver mockResolver;
+  @Mock
+  ResourceResolver mockResolver;
 
-    MockedStatic<CommonUtils> mockCommonUtils;
+  MockedStatic<CommonUtils> mockCommonUtils;
 
-    MockedStatic<DamUtils> mockDamUtils;
+  MockedStatic<DamUtils> mockDamUtils;
 
-    Resource mockResource;
-    Node mockNode;
+  Resource mockResource;
 
-    @BeforeEach
-    public void setUp() throws Exception {
-        cacheManager = new CacheManagerServiceImpl();
-        CacheConfig cacheConfig = TestUtil.getCacheConfig();
-        cacheManager.activate(cacheConfig);
-        cacheManager.setResourceResolverFactory(resResolverFactory);
-        userGroupService.setCacheManager(cacheManager);
+  Node mockNode;
 
-        mockCommonUtils = mockStatic(CommonUtils.class);
-        mockDamUtils = mockStatic(DamUtils.class);
-        mockResource = mock(Resource.class);
-        mockNode = mock(Node.class);
-    }
+  @BeforeEach
+  public void setUp() throws Exception {
+    cacheManager = new CacheManagerServiceImpl();
+    CacheConfig cacheConfig = TestUtil.getCacheConfig();
+    cacheManager.activate(cacheConfig);
+    cacheManager.setResourceResolverFactory(resResolverFactory);
+    userGroupService.setCacheManager(cacheManager);
 
-    @Test
-    void getUserGroupsBySfIdUserNodeHasGroups() throws RepositoryException, CacheException, LoginException {
-        User mockUser = TestUtil.getMockUser();
-        when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
-        when(userService.getCurrentUser(request)).thenReturn(mockUser);
-        when(mockResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
-        when(mockResource.adaptTo(Node.class)).thenReturn(mockNode);
+    mockCommonUtils = mockStatic(CommonUtils.class);
+    mockDamUtils = mockStatic(DamUtils.class);
+    mockResource = mock(Resource.class);
+    mockNode = mock(Node.class);
+  }
 
-        List<String> testAemGroups = List.of("role1", "role2");
-        when(mockNode.hasProperty("roles")).thenReturn(true);
-        String mockUserRole = "role1;role2";
-        Property mockProperty = mock(Property.class);
-        when(mockNode.getProperty("roles")).thenReturn(mockProperty);
-        when(mockProperty.getString()).thenReturn(mockUserRole);
+  @Test
+  void getUserGroupsBySfIdUserNodeHasGroups()
+      throws RepositoryException, CacheException, LoginException {
+    User mockUser = TestUtil.getMockUser();
+    when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
+    when(userService.getCurrentUser(request)).thenReturn(mockUser);
+    when(mockResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
+    when(mockResource.adaptTo(Node.class)).thenReturn(mockNode);
 
-        assertEquals(testAemGroups, userGroupService.getCurrentUserGroups(request));
-    }
+    List<String> testAemGroups = List.of("role1", "role2");
+    when(mockNode.hasProperty("roles")).thenReturn(true);
+    String mockUserRole = "role1;role2";
+    Property mockProperty = mock(Property.class);
+    when(mockNode.getProperty("roles")).thenReturn(mockProperty);
+    when(mockProperty.getString()).thenReturn(mockUserRole);
 
-    @Test
-    void getUserGroupsBySfIdUserNodeDoesNotHaveAnyGroups() throws RepositoryException, LoginException, CacheException {
-        User mockUser = TestUtil.getMockUser();
-        when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
-        when(userService.getCurrentUser(request)).thenReturn(mockUser);
-        when(mockResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
-        when(mockResource.adaptTo(Node.class)).thenReturn(mockNode);
+    assertEquals(testAemGroups, userGroupService.getCurrentUserGroups(request));
+  }
 
-        String userId = "test-user";
-        Value mockValue = mock(Value.class);
-        when(mockValue.getString()).thenReturn(userId);
-        Value[] values = { mockValue };
+  @Test
+  void getUserGroupsBySfIdUserNodeDoesNotHaveAnyGroups()
+      throws RepositoryException, LoginException, CacheException {
+    User mockUser = TestUtil.getMockUser();
+    when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
+    when(userService.getCurrentUser(request)).thenReturn(mockUser);
+    when(mockResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
+    when(mockResource.adaptTo(Node.class)).thenReturn(mockNode);
 
-        when(mockUser.getProperty(eq(WccConstants.PROFILE_SOURCE_ID))).thenReturn(values);
-        List<String> testSfGroups = List.of("sf-group1", "sf-group2");
-        when(mockNode.hasProperty("roles")).thenReturn(false);
+    String userId = "test-user";
+    Value mockValue = mock(Value.class);
+    when(mockValue.getString()).thenReturn(userId);
+    Value[] values = {mockValue};
 
-        UserGroupServiceImpl userGroupServiceMock = Mockito.spy(userGroupService);
-        doReturn(testSfGroups).when(userGroupServiceMock).getUserGroupsFromDrupal(userId);
+    when(mockUser.getProperty(eq(WccConstants.PROFILE_SOURCE_ID))).thenReturn(values);
+    List<String> testSfGroups = List.of("sf-group1", "sf-group2");
+    when(mockNode.hasProperty("roles")).thenReturn(false);
 
-        Session mockSession = mock(Session.class);
-        when(mockResolver.adaptTo(Session.class)).thenReturn(mockSession);
+    UserGroupServiceImpl userGroupServiceMock = Mockito.spy(userGroupService);
+    doReturn(testSfGroups).when(userGroupServiceMock).getUserGroupsFromDrupal(userId);
 
-        List<String> res = userGroupServiceMock.getCurrentUserGroups(request);
-        assertEquals(testSfGroups, res);
-    }
+    Session mockSession = mock(Session.class);
+    when(mockResolver.adaptTo(Session.class)).thenReturn(mockSession);
+
+    List<String> res = userGroupServiceMock.getCurrentUserGroups(request);
+    assertEquals(testSfGroups, res);
+  }
 
     @Test
     void testCustomerRoles() throws NoSuchFieldException, IllegalAccessException {
@@ -145,7 +155,6 @@ class UserGroupServiceImplTest {
         List<String> groups = userGroupService.getUserGroupsFromDrupal(SF_ID);
         assertTrue(groups.contains("authenticated"));
         assertTrue(groups.contains("customer_adaptive"));
-
     }
 
     @Test
@@ -159,33 +168,33 @@ class UserGroupServiceImplTest {
         assertTrue(groups.contains("partner_sales_track"));
     }
 
-    @Test
-    void testCheckLoggedInUserHasAccessControlTags()
-        throws IllegalStateException, RepositoryException, CacheException, LoginException {
-        when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
+  @Test
+  void testCheckLoggedInUserHasAccessControlTags()
+      throws IllegalStateException, RepositoryException, CacheException, LoginException {
+    when(resResolverFactory.getServiceResourceResolver(any())).thenReturn(mockResolver);
 
-        User mockUser = TestUtil.getMockUser();
-        when(userService.getCurrentUser(request)).thenReturn(mockUser);
-        when(mockResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
-        when(mockResource.adaptTo(Node.class)).thenReturn(mockNode);
+    User mockUser = TestUtil.getMockUser();
+    when(userService.getCurrentUser(request)).thenReturn(mockUser);
+    when(mockResolver.getResource(mockUser.getPath())).thenReturn(mockResource);
+    when(mockResource.adaptTo(Node.class)).thenReturn(mockNode);
 
-        List<String> accessControlTags = List.of("authenticated");
-        assertTrue(userGroupService.validateCurrentUser(request, accessControlTags));
-        List<String> testAemGroups = List.of("role1");
+    List<String> accessControlTags = List.of("authenticated");
+    assertTrue(userGroupService.validateCurrentUser(request, accessControlTags));
+    List<String> testAemGroups = List.of("role1");
 
-        when(mockNode.hasProperty("roles")).thenReturn(true);
-        String mockUserRole = "role1;role2";
-        Property mockProperty = mock(Property.class);
-        when(mockNode.getProperty("roles")).thenReturn(mockProperty);
-        when(mockProperty.getString()).thenReturn(mockUserRole);
+    when(mockNode.hasProperty("roles")).thenReturn(true);
+    String mockUserRole = "role1;role2";
+    Property mockProperty = mock(Property.class);
+    when(mockNode.getProperty("roles")).thenReturn(mockProperty);
+    when(mockProperty.getString()).thenReturn(mockUserRole);
 
-        assertTrue(userGroupService.validateCurrentUser(request, testAemGroups));
-    }
+    assertTrue(userGroupService.validateCurrentUser(request, testAemGroups));
+  }
 
-    @AfterEach
-    public void after() {
-        mockResolver.close();
-        mockCommonUtils.close();
-        mockDamUtils.close();
-    }
+  @AfterEach
+  public void after() {
+    mockResolver.close();
+    mockCommonUtils.close();
+    mockDamUtils.close();
+  }
 }
