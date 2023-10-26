@@ -119,14 +119,14 @@ public class DrupalServiceImplTest {
     context.registerService(RunModeConfigService.class, runModeConfigService);
     context.registerService(cacheManagerService);
 
-    ((DrupalServiceImpl) service).activate(testConfig);
+    service.activate(testConfig);
   }
 
   /**
    * Test method for getAPIToken method.
    *
-   * @throws DrupalException
-   * @throws InterruptedException
+   * @throws DrupalException      DrupalException
+   * @throws InterruptedException InterruptedException
    */
   @Test
   public void testGetAPIToken() throws DrupalException, InterruptedException {
@@ -158,7 +158,6 @@ public class DrupalServiceImplTest {
 
       // Case 4: clear cache using sleep interval, response doesn't contain access
       // token
-      responseBody = "{\"token_type\": \"Bearer\",\"expires_in\": 1799}";
       token = this.service.getApiToken();
       assertEquals("", token);
     }
@@ -232,8 +231,6 @@ public class DrupalServiceImplTest {
       assertEquals(imageReturn, "data:image/jpeg;base64,");
 
       // From cache
-      userDataResponse =
-          "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/png;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
       imageReturn = this.service.getUserProfileImage("sfId");
       assertEquals(imageReturn, "data:image/jpeg;base64,");
     }
@@ -280,8 +277,6 @@ public class DrupalServiceImplTest {
       assertEquals(timeZoneReturn, "America/Los_Angeles");
 
       // From cache
-      userDataResponse =
-          "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/New York\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
       timeZoneReturn = this.service.getUserTimezone("sfId");
       assertEquals(timeZoneReturn, "America/Los_Angeles");
     }
