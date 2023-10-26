@@ -5,7 +5,7 @@
     const container = 'container';
     const aemGridColumn = 'aem-GridColumn--default';
 
-    function toggleTocPanel(show) {
+    function toggleTocPanel(show, toggleIcon) {
         const leftContainer = document.getElementsByClassName(`${container}__left-rail`);
         const leftContainerPanel = leftContainer.length == 1 ? leftContainer[0] : null;
 
@@ -14,12 +14,14 @@
 
         if(leftContainerPanel && centerContainerPanel) {
             if(show) {
+                toggleIcon.setAttribute('aria-expanded', 'true');
                 leftContainerPanel.classList.add(`${aemGridColumn}--3`);
                 leftContainerPanel.classList.remove(`${aemGridColumn}--1`, 'collapse');
 
                 centerContainerPanel.classList.add(`${aemGridColumn}--6`);
                 centerContainerPanel.classList.remove(`${aemGridColumn}--8`);
             } else {
+                toggleIcon.setAttribute('aria-expanded', 'false');
                 leftContainerPanel.classList.remove(`${aemGridColumn}--3`);
                 leftContainerPanel.classList.add(`${aemGridColumn}--1`, 'collapse');
 
@@ -56,19 +58,24 @@
     function onDocumentReady() {
         const toggleIcon = document.querySelector(containerSelectors.tocToggleIcon);
         let showPanel = true;
+        if(toggleIcon && showPanel == true) {
+            toggleIcon.setAttribute('aria-expanded', 'true');
+        } else {
+            toggleIcon.setAttribute('aria-expanded', 'false');
+        }
         checkTocPanel();
 
         if(toggleIcon){
             toggleIcon.addEventListener('click', function(){
                 showPanel = !showPanel;
-                toggleTocPanel(showPanel);
+                toggleTocPanel(showPanel, toggleIcon);
             });
 
             toggleIcon.addEventListener('keydown', (event) => {
                 if((event as KeyboardEvent).key === 'Enter') {
                     event.preventDefault();
                     showPanel = !showPanel;
-                    toggleTocPanel(showPanel);
+                    toggleTocPanel(showPanel, toggleIcon);
                 }
             });
         }
