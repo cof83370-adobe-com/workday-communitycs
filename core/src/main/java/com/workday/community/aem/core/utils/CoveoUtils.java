@@ -11,6 +11,7 @@ import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.services.DrupalService;
@@ -86,9 +87,16 @@ public class CoveoUtils {
 
     String userData = drupalService.getUserData(sfId);
     JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
-    JsonObject userContext = userDataObject != null && !userDataObject.isJsonNull()
-        ? userDataObject.getAsJsonObject(USER_CONTEXT_INFO_KEY)
-        : new JsonObject();
+    JsonObject userContext;
+    JsonArray context = userDataObject != null && !userDataObject.isJsonNull()
+        ? userDataObject.getAsJsonArray(USER_CONTEXT_INFO_KEY)
+        : new JsonArray();
+    if (context == null || context.isJsonNull() || context.isEmpty()) {
+      userContext = new JsonObject();
+    } else {
+      userContext = context.get(0).getAsJsonObject();
+    }
+
     String email;
     if (isDevMode) {
       log.debug("dev mode is enabled");
