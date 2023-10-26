@@ -39,8 +39,6 @@ function renderNavHeader() {
         let headerDataJson = headerData ? JSON.parse(headerData) : null;
         let previousId = headerDataJson ? headerDataJson['previousId'] : null;
         let currentId = headerDiv.getAttribute('data-cache-property');
-        let searchUrl = headerDiv.getAttribute('data-search-url');
-        searchConfig = JSON.parse(headerDiv.getAttribute('data-search-config'));
         let changed = currentId !== previousId;
 
         if (!headerData || headerData && changed) {
@@ -54,30 +52,6 @@ function renderNavHeader() {
             sessionStorage.removeItem('navigation-data');
             headerDataJson = constructData(headerDiv, currentId);
         }
-
-        headerDataJson.coveoProps = {
-            engine: Cmty.CoveoEngineService.CoveoSearchEngine(
-                {
-                    organizationId: searchConfig['orgId'],
-                    search: {
-                        searchHub: searchConfig['searchHub']
-                    },
-                    accessToken: searchToken,
-                    renewAccessToken: getSearchToken
-                }
-            ),
-            controllerConfig: {
-                numberOfSuggestions: 10
-            },
-            redirectProps: {
-                redirectPath: searchUrl,
-                querySeparator: '#',
-                queryParameterName: 'q'
-            },
-            analytics: {
-                analyticsClientMiddleware,
-            }
-        };
 
         try {
             const headerElement = React.createElement(Cmty.GlobalHeader, headerDataJson);
@@ -110,7 +84,10 @@ function dataWithMenu(headerData) {
 
 document.addEventListener('readystatechange', async (event) => {
     if (event.target.readyState === 'complete') {
-        searchToken = await getSearchToken();
+        let headerStringData = document.getElementById('community-header-div').getAttribute('data-model-property');
+        if (stringValid(headerStringData) && headerStringData !== 'HIDE_MENU_UNAUTHENTICATED') {
+            searchToken = await getSearchToken();
+        }
         renderNavHeader();
     }
 });
@@ -123,9 +100,17 @@ function constructData(headerDiv, currentId) {
     let headerStringData = headerDiv.getAttribute('data-model-property');
     let avatarUrl = headerDiv.getAttribute("data-model-avatar");
     let homePage = headerDiv.getAttribute("data-prop-home");
-    let headerMenu;
+    let searchUrl = headerDiv.getAttribute('data-search-url');
+    searchConfig = JSON.parse(headerDiv.getAttribute('data-search-config'));
+
+    let headerData = {
+        previousId: currentId,
+        menus: undefined,
+        skipTo: 'mainContentId',
+        sticky: true,
+    };
     if (stringValid(headerStringData) && headerStringData !== 'HIDE_MENU_UNAUTHENTICATED') {
-        headerMenu = JSON.parse(headerStringData);
+        let headerMenu = JSON.parse(headerStringData);
         if (headerMenu.unAuthenticated === undefined || headerMenu.unAuthenticated === false) {
             if (!headerMenu.profile) {
                 headerMenu.profile = [];
@@ -136,15 +121,32 @@ function constructData(headerDiv, currentId) {
             }
 
             headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
+            headerData.menus = headerMenu;
+            headerData.coveoProps = {
+                engine: Cmty.CoveoEngineService.CoveoSearchEngine(
+                    {
+                        organizationId: searchConfig['orgId'],
+                        search: {
+                            searchHub: searchConfig['searchHub']
+                        },
+                        accessToken: searchToken,
+                        renewAccessToken: getSearchToken
+                    }
+                ),
+                controllerConfig: {
+                    numberOfSuggestions: 10
+                },
+                redirectProps: {
+                    redirectPath: searchUrl,
+                    querySeparator: '#',
+                    queryParameterName: 'q'
+                },
+                analytics: {
+                    analyticsClientMiddleware,
+                }
+            };
         }
     }
-
-    let headerData = {
-        previousId: currentId,
-        menus: headerMenu,
-        skipTo: 'mainContentId',
-        sticky: true,
-    };
 
     if (stringValid(homePage)) {
         headerData.homeUrl = homePage;
