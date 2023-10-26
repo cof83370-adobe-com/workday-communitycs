@@ -74,13 +74,13 @@ public class DrupalServiceImplTest {
     }
 
     @Override
-    public String drupalApiClientId() {
-      return "drupalApiClientId";
+    public String drupalUserLookupClientId() {
+      return "drupalUserLookupClientId";
     }
 
     @Override
-    public String drupalApiClientSecret() {
-      return "drupalApiClientSecret";
+    public String drupalUserLookupClientSecret() {
+      return "drupalUserLookupClientSecret";
     }
 
     @Override

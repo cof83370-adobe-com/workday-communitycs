@@ -39,18 +39,19 @@ public @interface DrupalConfig {
    *
    * @return Drupal API Client Id
    */
-  @AttributeDefinition(name = "Drupal API Client Id", description = "Drupal API Client Id.",
+  @AttributeDefinition(name = "Drupal API User Lookup Client Id", description = "Drupal API User Lookup Client Id.",
       type = AttributeType.STRING)
-  String drupalApiClientId();
+  String drupalUserLookupClientId();
 
   /**
    * Drupal API Client Secret.
    *
    * @return Drupal API Client Secret
    */
-  @AttributeDefinition(name = "Drupal API Client Secret", description = "Drupal API Client Secret.",
+  @AttributeDefinition(name = "Drupal API User Lookup Client Secret",
+      description = "Drupal API User Lookup Client Secret.",
       type = AttributeType.STRING)
-  String drupalApiClientSecret();
+  String drupalUserLookupClientSecret();
 
   /**
    * Drupal API token cache size.

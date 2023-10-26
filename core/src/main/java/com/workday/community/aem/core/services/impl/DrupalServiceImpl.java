@@ -170,8 +170,8 @@ public class DrupalServiceImpl implements DrupalService {
     }
     String drupalUrl = config.drupalApiUrl();
     String tokenPath = config.drupalTokenPath();
-    String clientId = config.drupalApiClientId();
-    String clientSecret = config.drupalApiClientSecret();
+    String clientId = config.drupalUserLookupClientId();
+    String clientSecret = config.drupalUserLookupClientSecret();
 
     if (StringUtils.isEmpty(drupalUrl) || StringUtils.isEmpty(tokenPath)
         || StringUtils.isEmpty(clientId) || StringUtils.isEmpty(clientSecret)) {
