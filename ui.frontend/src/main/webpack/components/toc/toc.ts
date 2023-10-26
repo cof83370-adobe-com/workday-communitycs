@@ -168,6 +168,11 @@
                 if (previousSibling) {
                     previousSibling.classList.add('active');
                     previousSibling.parentElement.parentElement.classList.add('show');
+                    const firstLevelLink = previousSibling.parentElement.parentElement.previousElementSibling;
+
+                    if(firstLevelLink) {
+                        firstLevelLink.classList.add('active');
+                    }
                 }
             }
         }
