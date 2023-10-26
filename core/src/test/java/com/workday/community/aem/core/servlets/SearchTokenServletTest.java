@@ -54,13 +54,13 @@ public class SearchTokenServletTest {
   DrupalService drupalService;
 
   @Mock
-  UserService userService;
+  private UserService userService;
 
   @InjectMocks
   SearchTokenServlet searchTokenServlet;
 
   @Test
-  public void testDoGetWithExistingCookieInRequest() throws Exception {
+  public void testDoGetWithExistingCookieInRequest() {
 
     Cookie[] testCookies = new Cookie[] {
         new Cookie("test", "testValue"), new Cookie(COVEO_COOKIE_NAME, "coveo_cookie_value")

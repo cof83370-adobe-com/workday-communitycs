@@ -102,7 +102,8 @@ public class CoveoUtils {
       log.debug("dev mode is enabled");
       email = searchApiConfigService.getDefaultEmail();
     } else {
-      email = userDataObject.has(EMAIL_NAME) ? userDataObject.get(EMAIL_NAME).getAsString() : null;
+      email = userDataObject != null && !userDataObject.isJsonNull() && userDataObject.has(EMAIL_NAME)
+          ? userDataObject.get(EMAIL_NAME).getAsString() : null;
     }
     if (StringUtils.isEmpty(email)) {
       throw new ServletException("Email for current user is empty, ");
