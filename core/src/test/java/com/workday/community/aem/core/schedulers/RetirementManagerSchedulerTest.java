@@ -197,7 +197,7 @@ public class RetirementManagerSchedulerTest {
 		List<String> pathList = new ArrayList<>();
 		pathList.add(
 				"/content/workday-community/en-us/admin-tools/notifications/workflows/review-reminder-10-months/jcr:content");
-		lenient().when(queryService.getPages("jcr:content/reviewReminderDate")).thenReturn(pathList);
+		lenient().when(queryService.getPagesDueTodayByDateProp("jcr:content/reviewReminderDate")).thenReturn(pathList);
 		lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
 		Resource resource = mock(Resource.class);
 		lenient().when(resolver.getResource(anyString())).thenReturn(resource);

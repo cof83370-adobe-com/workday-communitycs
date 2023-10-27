@@ -81,6 +81,10 @@ public class RetirementManagerScheduler implements Runnable {
   private final String emailTemplateRetNotifyText = 
       "/workflows/retirement-notification-11-months/jcr:content/root/container/container/text";
 
+  private final String propReviewReminderDate = "jcr:content/reviewReminderDate";
+
+  private final String propRetirementNotificationDate = "jcr:content/retirementNotificationDate";
+
   private final String reviewReminderEmailSubject = " to Retire in 60 Days";
 
   private final String retirementNotifyEmailSubject = " to Retire in 30 Days";
@@ -196,7 +200,7 @@ public class RetirementManagerScheduler implements Runnable {
    * @param resResolver the resResolver
    */
   public void sendReviewNotification(ResourceResolver resResolver) {
-    List<String> reviewReminderPagePaths = queryService.getPages("jcr:content/reviewReminderDate");
+    List<String> reviewReminderPagePaths = queryService.getPagesDueTodayByDateProp(propReviewReminderDate);
 
     sendNotification(resResolver, reviewReminderPagePaths, emailTemplateRevReminderText, reviewReminderEmailSubject,
         false);
@@ -208,7 +212,8 @@ public class RetirementManagerScheduler implements Runnable {
    * @param resResolver the resResolver
    */
   public void startRetirementAndNotify(ResourceResolver resResolver) {
-    List<String> retirementNotificationPagePaths = queryService.getPages("jcr:content/retirementNotificationDate");
+    List<String> retirementNotificationPagePaths = queryService
+        .getPagesDueTodayByDateProp(propRetirementNotificationDate);
 
     sendNotification(resResolver, retirementNotificationPagePaths, emailTemplateRetNotifyText,
         retirementNotifyEmailSubject, true);
@@ -285,11 +290,11 @@ public class RetirementManagerScheduler implements Runnable {
   /**
    * Send notification to author.
    *
-   * @param resolver the resolver
-   * @param paths    the paths
-   * @param emailTemplateContainerText       the emailTemplateContainerText
-   * @param emailSubject the emailSubject
-   * @param triggerRetirment the triggerRetirment
+   * @param resolver                   the resolver
+   * @param paths                      the paths
+   * @param emailTemplateContainerText the emailTemplateContainerText
+   * @param emailSubject               the emailSubject
+   * @param triggerRetirment           the triggerRetirment
    */
   public void sendNotification(ResourceResolver resolver, List<String> paths, String emailTemplateContainerText,
       String emailSubject, Boolean triggerRetirment) {
@@ -365,10 +370,10 @@ public class RetirementManagerScheduler implements Runnable {
   /**
    * Trigger Workflow for a payload.
    *
-   * @param resolver the resolver
-   * @param model    the model
-   * @param payloadContentPath       the payloadContentPath
-   * @throws WorkflowException      the workflow exception
+   * @param resolver           the resolver
+   * @param model              the model
+   * @param payloadContentPath the payloadContentPath
+   * @throws WorkflowException the workflow exception
    */
   public void startWorkflow(ResourceResolver resolver, String model, String payloadContentPath)
       throws WorkflowException {

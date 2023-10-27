@@ -224,7 +224,7 @@ class QueryServiceImplTest {
 
 		when(query.getResult()).thenReturn(result);
 
-		List<String> paths = queryService.getPages("jcr:content/reviewReminderDate");
+		List<String> paths = queryService.getPagesDueTodayByDateProp("jcr:content/reviewReminderDate");
 		assertEquals(hitResultPath, paths.get(0));
 		verify(session).logout();
   }

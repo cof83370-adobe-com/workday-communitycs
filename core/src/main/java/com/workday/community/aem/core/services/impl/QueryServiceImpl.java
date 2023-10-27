@@ -197,10 +197,10 @@ public class QueryServiceImpl implements QueryService {
   }
 
   /**
-   * Gets the review reminder pages.
+   * {@inheritDoc}
    */
   @Override
-  public List<String> getPages(String prop) {
+  public List<String> getPagesDueTodayByDateProp(String dateProp) {
     Session session = null;
     List<String> paths = new ArrayList<>();
     Calendar calendar = Calendar.getInstance();
@@ -211,7 +211,7 @@ public class QueryServiceImpl implements QueryService {
       Map<String, String> queryMap = new HashMap<>();
       queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
       queryMap.put("type", NT_PAGE);
-      queryMap.put("1_property", prop);
+      queryMap.put("1_property", dateProp);
       queryMap.put("1_property.value", df.format(currentDate) + "%");
       queryMap.put("1_property.operation", "like");
       queryMap.put("p.limit", "-1");
