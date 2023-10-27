@@ -194,6 +194,16 @@
         });
     }
 
+    function getSelectedTOCItem() {
+        const activeItem = document.querySelector('.cmp-toc__item.active .cmp-toc__firstlevelitem-title, .cmp-toc__item.active .cmp-toc__secondlevelitem-title, .cmp-toc__item.active .cmp-toc__thirdlevelitem-title');
+        if (activeItem) {
+            const visuallyHiddenText = document.createElement('span');
+            visuallyHiddenText.textContent = '(selected)';
+            visuallyHiddenText.classList.add('visually-hidden');
+            activeItem.appendChild(visuallyHiddenText);
+        }
+    }
+
     function onDocumentReady() {
         const tocClose = document.querySelector(tocSelectors.tocModalClose);
         let showModal = false;
@@ -225,6 +235,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', onDocumentReady);
-    window.onload = expandActiveBook;
+
+    window.addEventListener('load', () => {
+      expandActiveBook();
+      getSelectedTOCItem();
+    });
 
 }());
