@@ -202,7 +202,7 @@ class QueryServiceImplTest {
   }
   
   @Test
-  void testGetReviewReminderPages() throws RepositoryException, CacheException {
+  void testGetPages() throws RepositoryException, CacheException {
 		ResourceResolver resourceResolver = mock(ResourceResolver.class);
 		String hitResultPath = "/content/workday-community";
 
@@ -224,7 +224,7 @@ class QueryServiceImplTest {
 
 		when(query.getResult()).thenReturn(result);
 
-		List<String> paths = queryService.getReviewReminderPages();
+		List<String> paths = queryService.getPages("jcr:content/reviewReminderDate");
 		assertEquals(hitResultPath, paths.get(0));
 		verify(session).logout();
   }

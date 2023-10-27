@@ -42,5 +42,5 @@ public interface QueryService {
    *
    * @return List of page paths.
    */
-  List<String> getReviewReminderPages();
+  List<String> getPages(String property);
 }

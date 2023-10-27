@@ -5,21 +5,19 @@ import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 /**
- * The Interface ReviewNotificationSchedulerConfig.
+ * The Interface RetirementManagerSchedulerConfig.
  */
-@ObjectClassDefinition(
-  name = "Review Notification Scheduler Configuration",
-  description = "Paramerters for Review Notification Scheduler"
-)
-public @interface ReviewNotificationSchedulerConfig {
-  
+@ObjectClassDefinition(name = "Retirement Manager Scheduler Configuration", 
+description = "Paramerters for Retirement Manager Scheduler")
+public @interface RetirementManagerSchedulerConfig {
+
   /**
    * Scheduler name.
    *
    * @return the string
    */
   @AttributeDefinition(name = "Scheduler name", description = "Scheduler name", type = AttributeType.STRING)
-  String schedulerName() default "ReviewNotificationScheduler";
+  String schedulerName() default "RetirementManagerScheduler";
 
   /**
    * Workflow notification cron.
@@ -34,8 +32,18 @@ public @interface ReviewNotificationSchedulerConfig {
    *
    * @return true, if successful
    */
-  @AttributeDefinition(name = "Enable Scheduler", description = "Enable Scheduler", type = AttributeType.BOOLEAN)
+  @AttributeDefinition(name = "Enable Scheduler for Review 10 Months", 
+      description = "Enable Scheduler for Review 10 Months", type = AttributeType.BOOLEAN)
   boolean workflowNotificationReview10Months() default true;
+
+  /**
+   * Workflow notification retirement 11 months.
+   *
+   * @return true, if successful
+   */
+  @AttributeDefinition(name = "Enable Scheduler for Retirement 11 Months", 
+      description = "Enable Scheduler for Retirement 11 Months", type = AttributeType.BOOLEAN)
+  boolean workflowNotificationRetirement11Months() default true;
 
   /**
    * Author domain.
