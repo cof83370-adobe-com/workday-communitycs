@@ -18,6 +18,7 @@ import java.util.UUID;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -64,7 +65,7 @@ public class UserServiceImpl implements UserService {
    * {@inheritDoc}
    */
   private User getUser(final ResourceResolver resourceResolver, String userSessionId) {
-    if (userSessionId == null) {
+    if (StringUtils.isEmpty(userSessionId)) {
       return null;
     }
 
@@ -77,7 +78,7 @@ public class UserServiceImpl implements UserService {
       log.error("Cannot find user with id {}.", userSessionId);
       return null;
     } catch (RepositoryException e) {
-      log.error("Exception occurred when fetch user {}: {}.", userSessionId, e.getMessage());
+      log.error("Exception occurred when fetch user with Id {}: msg: {}.", userSessionId, e.getMessage());
       return null;
     }
   }
@@ -87,6 +88,10 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public String getUserUuid(String sfId) {
+    if (StringUtils.isEmpty(sfId)) {
+      return "";
+    }
+
     String cacheKey = String.format("user_uuid_%s", sfId);
     String ret = cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, () -> {
       String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
@@ -137,7 +142,7 @@ public class UserServiceImpl implements UserService {
         }
         session.save();
       } catch (RepositoryException e) {
-        log.error("invalidate current user session failed.");
+        log.error("invalidate current user session failed. {}", e.getMessage());
       } finally {
         if (resourceResolver.isLive()) {
           resourceResolver.close();

@@ -96,15 +96,13 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       cleanCacheHandle = null;
     }
 
-    if (scheduler != null) {
-      scheduler.shutdown();
-      try {
-        if (scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
-          log.info("Cache clean scheduler is correctly closed.");
-        }
-      } catch (InterruptedException e) {
-        throw new CacheException("Fail to shutdown cache scheduler: error: ", e.getMessage());
+    scheduler.shutdown();
+    try {
+      if (scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
+        log.info("Cache clean scheduler is correctly closed.");
       }
+    } catch (InterruptedException e) {
+      throw new CacheException("Fail to shutdown cache scheduler: error: ", e.getMessage());
     }
   }
 
@@ -176,7 +174,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     } else if (!StringUtils.isEmpty(cacheBucketName)) {
       Cache cache = caches.get(getInnerCacheName(cacheBucketName).name());
       if (cache == null) {
-        log.debug("There are some problems if this get hit, contact community admin.");
+        log.info("There are some problems if this get hit, contact community admin.");
         return;
       }
       if (StringUtils.isEmpty(key)) {

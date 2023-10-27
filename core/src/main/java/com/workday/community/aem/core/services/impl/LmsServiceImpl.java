@@ -79,7 +79,7 @@ public class LmsServiceImpl implements LmsService {
         || StringUtils.isEmpty(clientSecret)
         || StringUtils.isEmpty(refreshToken)) {
       // No Lms configuration provided, just return the default one.
-      log.debug("There is no value for one or multiple configuration parameters: "
+      log.info("There is no value for one or multiple configuration parameters: "
               + "lmsUrl={};tokenPath={};clientId={};clientSecret={};refreshToken={}",
           lmsUrl, tokenPath, clientId, clientSecret, refreshToken);
       return StringUtils.EMPTY;
@@ -110,6 +110,7 @@ public class LmsServiceImpl implements LmsService {
       lmsCache.put(LmsConstants.TOKEN_CACHE_KEY, bearerToken);
       return bearerToken;
     } catch (LmsException | JsonSyntaxException e) {
+      lmsCache.remove(LmsConstants.TOKEN_CACHE_KEY);
       throw new LmsException("getApiToken call failed in LmsServiceImpl. Error: %s", e.getMessage());
     }
   }

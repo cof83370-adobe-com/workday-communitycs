@@ -100,6 +100,10 @@ public class SnapServiceImpl implements SnapService {
    */
   @Override
   public String getUserHeaderMenu(String sfId) {
+    if (StringUtils.isEmpty(sfId)) {
+      return "";
+    }
+
     String menuCacheKey = String.format("header_menu_%s_%s", getEnv(), sfId);
     if (!enableCache()) {
       cacheManagerService.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
@@ -481,7 +485,7 @@ public class SnapServiceImpl implements SnapService {
         log.error("No extension found in the data");
       }
     } catch (ArrayIndexOutOfBoundsException | PatternSyntaxException e) {
-      log.error("An exception occurred" + e.getMessage());
+      log.error("An exception occurred, {}", e.getMessage());
     }
     if (StringUtils.isNotBlank(extension) && StringUtils.isNotBlank(encodedPhoto)) {
       return "data:image/" + extension + ";base64," + encodedPhoto;

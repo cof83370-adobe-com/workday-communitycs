@@ -131,8 +131,7 @@ public class UserGroupServiceImpl implements UserGroupService {
               ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
       log.debug("---> UserGroupServiceImpl: After Access control tag List");
       if (!accessControlTagsList.isEmpty()) {
-        log.debug("---> UserGroupServiceImpl:Access control tag List.. {}.",
-            accessControlTagsList);
+        log.debug("---> UserGroupServiceImpl:Access control tag List.. {}.", accessControlTagsList);
         if (accessControlTagsList.contains(AUTHENTICATED)) {
           isValid = true;
         } else {
