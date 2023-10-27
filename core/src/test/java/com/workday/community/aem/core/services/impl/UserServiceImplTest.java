@@ -120,31 +120,4 @@ public class UserServiceImplTest {
     verify(user).remove();
     verify(session, times(2)).logout();
   }
-
-  @Test
-  public void testIsLoggedInUser() throws RepositoryException, CacheException {
-    // Mocking user and getCurrentUser for testing
-    String userId = "testUser";
-    SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
-    lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);
-    lenient().when(session.getUserID()).thenReturn(userId);
-    lenient().when(session.isLive()).thenReturn(true);
-    lenient().when(user.getID()).thenReturn("someNonDefaultId");
-    lenient().when(user.getPath()).thenReturn("/home/users/workda-community/okta");
-
-    boolean result = userService.isLoggedInUser(request);
-    assertTrue(result);
-
-    // Test when the user is not logged in
-    Mockito.when(user.getID()).thenReturn(UserConstants.DEFAULT_ANONYMOUS_ID);
-    lenient().when(user.getPath()).thenReturn("/some/other/path");
-    result = userService.isLoggedInUser(request);
-    assertFalse(result);
-
-    // Test when the path does not contain WORKDAY_OKTA_USERS_ROOT_PATH
-    Mockito.when(user.getID()).thenReturn("someNonDefaultId");
-    Mockito.when(user.getPath()).thenReturn("/some/other/path");
-    result = userService.isLoggedInUser(request);
-    assertFalse(result);
-  }
 }

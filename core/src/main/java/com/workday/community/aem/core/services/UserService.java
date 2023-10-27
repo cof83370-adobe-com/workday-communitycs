@@ -33,10 +33,4 @@ public interface UserService {
    */
   void invalidCurrentUser(SlingHttpServletRequest request, boolean isPath) throws CacheException;
 
-  /**
-   * Checks whether the current user is anonymous user or logged-in user.
-   *
-   * @param request  The current sling request object.
-   */
-  boolean isLoggedInUser(SlingHttpServletRequest request);
 }

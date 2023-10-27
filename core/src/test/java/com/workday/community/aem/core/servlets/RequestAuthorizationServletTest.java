@@ -76,7 +76,7 @@ public class RequestAuthorizationServletTest {
     when(request.getParameter("uri")).thenReturn(uri);
     when(resolverFactory.getServiceResourceResolver(serviceParams)).thenReturn(resourceResolver);
     when(userGroupService.validateCurrentUser(request, uri)).thenReturn(true);
-    when(userService.isLoggedInUser(request)).thenReturn(true);
+    when(userService.getCurrentUser(request)).thenReturn(user);
 
     // Call the method
     servlet.doHead(request, response);
@@ -97,7 +97,7 @@ public class RequestAuthorizationServletTest {
 
     // Mock behavior
     when(request.getParameter("uri")).thenReturn(uri);
-    when(userService.isLoggedInUser(request)).thenReturn(false);
+    when(userService.getCurrentUser(request)).thenReturn(null);
 
     // Call the method
     servlet.doHead(request, response);
