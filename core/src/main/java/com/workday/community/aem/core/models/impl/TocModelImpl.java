@@ -1,31 +1,26 @@
 package com.workday.community.aem.core.models.impl;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
-
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.dto.BookDto;
 import com.workday.community.aem.core.models.TocModel;
-import com.workday.community.aem.core.pojos.book.BookDto;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.utils.PageUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.jackrabbit.api.security.user.User;
-import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -73,9 +68,6 @@ public class TocModelImpl implements TocModel {
 
   /** The Constant LEVEL_DTO_KEY. */
   protected static final String LEVEL_DTO_KEY = "levelDTO";
-
-  /** The Constant PUBLIC_PATH_REGEX. */
-  protected static final String PUBLIC_PATH_REGEX = "/content/workday-community/[a-z]{2}-[a-z]{2}/public/";
 
   /** The run mode config service. */
   @OSGiService
@@ -136,7 +128,6 @@ public class TocModelImpl implements TocModel {
         }
       }
     }
-
   }
 
   /**
@@ -213,7 +204,6 @@ public class TocModelImpl implements TocModel {
         accumulateSubTree(secItemsRes, firstLevelDto, secLevelDto);
       }
     }
-
   }
 
   /**
@@ -306,7 +296,8 @@ public class TocModelImpl implements TocModel {
     Map<String, Object> map = new HashMap<>();
     BookDto levelDto = new BookDto();
     String givenLevelPageLink = fetchAuthoredPath(givenItemResource, linkPropertyName);
-    boolean checkAccess = !isPublishInstance(instance) || hasAccessToViewLink(givenLevelPageLink);
+    boolean checkAccess = !PageUtils.isPublishInstance(instance)
+        || userGroupService.hasAccessToViewLink(givenLevelPageLink, request);
     map.put(HAS_ACCESS_KEY, checkAccess);
     if (checkAccess) {
       String givenLinkPageTitle = getBookPageTitle(givenLevelPageLink);
@@ -331,54 +322,5 @@ public class TocModelImpl implements TocModel {
   private String fetchAuthoredPath(Resource itemResource, String propName) {
     ValueMap properties = Objects.requireNonNull(itemResource.adaptTo(ValueMap.class));
     return properties.get(propName, "");
-  }
-
-  /**
-   * Checks for access to view link.
-   *
-   * @param pagePath the page path
-   * @return true, if successful
-   */
-  @Override
-  public boolean hasAccessToViewLink(String pagePath) {
-    try {
-      if (StringUtils.isNotBlank(pagePath) && !pagePath.startsWith(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH)) {
-        return true;
-      }
-      User user = userService.getCurrentUser(request);
-      log.debug("---> Logged in user from UserServiceImpl: {} ", user);
-      if (user == null || (UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())) {
-        return isPublicPage(pagePath);
-      } else if (user.getPath().contains(GlobalConstants.OKTA_USER_PATH) && isPublicPage(pagePath)) {
-        return true;
-      } else if (user.getPath().contains(GlobalConstants.OKTA_USER_PATH) && !isPublicPage(pagePath)) {
-        return userGroupService.validateCurrentUser(request, pagePath);
-      }
-    } catch (Exception exec) {
-      log.error("---> TocModel: Exception occured in hasAccessToViewLink:..{}.", exec.getMessage());
-    }
-    return false;
-  }
-
-  /**
-   * Checks if is public page.
-   *
-   * @param pagePath the page path
-   * @return true, if is public page
-   */
-  private boolean isPublicPage(String pagePath) {
-    Pattern regex = Pattern.compile(PUBLIC_PATH_REGEX);
-    Matcher matcher = regex.matcher(pagePath);
-    return matcher.find();
-  }
-
-  /**
-   * Checks if is publish instance.
-   *
-   * @param instance the instance
-   * @return true, if is publish instance
-   */
-  private boolean isPublishInstance(final String instance) {
-    return StringUtils.isNotBlank(instance) && instance.equals(PUBLISH);
   }
 }

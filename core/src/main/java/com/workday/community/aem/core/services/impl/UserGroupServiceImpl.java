@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.SnapConfig;
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.services.CacheBucketName;
@@ -38,12 +39,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Activate;
@@ -63,6 +67,8 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class UserGroupServiceImpl implements UserGroupService {
 
+  /** The Constant PUBLIC_PATH_REGEX. */
+  protected static final String PUBLIC_PATH_REGEX = "/content/workday-community/[a-z]{2}-[a-z]{2}/public/";
   /**
    * The snap service.
    */
@@ -314,5 +320,38 @@ public class UserGroupServiceImpl implements UserGroupService {
         }
       }
     }
+  }
+
+  @Override
+  public boolean hasAccessToViewLink(String pagePath, SlingHttpServletRequest request) {
+    try {
+      if (StringUtils.isNotBlank(pagePath) && !pagePath.startsWith(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH)) {
+        return true;
+      }
+      User user = userService.getCurrentUser(request);
+      log.debug("---> Logged in user from UserServiceImpl: {} ", user);
+      if (user == null || (UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())) {
+        return isPublicPage(pagePath);
+      } else if (user.getPath().contains(GlobalConstants.OKTA_USER_PATH) && isPublicPage(pagePath)) {
+        return true;
+      } else if (user.getPath().contains(GlobalConstants.OKTA_USER_PATH) && !isPublicPage(pagePath)) {
+        return validateCurrentUser(request, pagePath);
+      }
+    } catch (Exception exec) {
+      log.error("---> TocModel: Exception occured in hasAccessToViewLink:..{}.", exec.getMessage());
+    }
+    return false;
+  }
+
+  /**
+   * Checks if is public page.
+   *
+   * @param pagePath the page path
+   * @return true, if is public page
+   */
+  private boolean isPublicPage(String pagePath) {
+    Pattern regex = Pattern.compile(PUBLIC_PATH_REGEX);
+    Matcher matcher = regex.matcher(pagePath);
+    return matcher.find();
   }
 }

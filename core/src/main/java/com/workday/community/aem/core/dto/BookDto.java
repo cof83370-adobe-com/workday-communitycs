@@ -1,4 +1,4 @@
-package com.workday.community.aem.core.pojos.book;
+package com.workday.community.aem.core.dto;
 
 import java.util.ArrayList;
 import java.util.List;
