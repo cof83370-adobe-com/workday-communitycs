@@ -8,9 +8,9 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.UuidUtil;
@@ -31,10 +31,7 @@ import org.osgi.service.component.annotations.Reference;
  * The Class UserServiceImpl.
  */
 @Slf4j
-@Component(
-    service = UserService.class,
-    immediate = true
-)
+@Component(service = UserService.class, immediate = true)
 public class UserServiceImpl implements UserService {
 
   /**
@@ -50,7 +47,7 @@ public class UserServiceImpl implements UserService {
   private RunModeConfigService runModeConfigService;
 
   @Reference
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   /**
    * {@inheritDoc}
@@ -92,7 +89,7 @@ public class UserServiceImpl implements UserService {
   public String getUserUuid(String sfId) {
     String cacheKey = String.format("user_uuid_%s", sfId);
     String ret = cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, () -> {
-      String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
+      String email = OurmUtils.getUserEmail(sfId, searchConfigService, drupalService);
       UUID uuid = UuidUtil.getUserClientId(email);
       return uuid == null ? null : uuid.toString();
     });

@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.constants;
 
 import com.workday.community.aem.core.constants.lambda.BearerToken;
+import org.apache.oltu.oauth2.common.OAuth;
 
 /**
  * Interface defining REST API constants.
@@ -10,7 +11,7 @@ public interface RestApiConstants {
   /**
    * Returns a bearer token header value.
    */
-  BearerToken BEARER_TOKEN = (token) -> String.format("Bearer %s", token);
+  BearerToken BEARER_TOKEN = (token) -> String.format("%s %s", OAuth.OAUTH_HEADER_NAME, token);
 
   /**
    * The name of the API key header.
@@ -23,27 +24,12 @@ public interface RestApiConstants {
   String TRACE_ID = "X-Amzn-Trace-Id";
 
   /**
-   * String value of GET request method.
-   */
-  String GET_API = org.apache.sling.api.servlets.HttpConstants.METHOD_GET;
-
-  /**
-   * The timeout length for REST requests.
-   */
-  int TIMEOUT = 10000;
-
-  /**
    * Basic Authorization header.
    */
   String BASIC = "Basic";
 
   /**
-   * Grant type Oauth parameter.
+   * The constant CLIENT_CREDENTIALS.
    */
-  String GRANT_TYPE = "grant_type";
-
-  /**
-   * Refresh token Oauth parameter.
-   */
-  String REFRESH_TOKEN = "refresh_token";
+  String CLIENT_CREDENTIALS = "client_credentials";
 }
