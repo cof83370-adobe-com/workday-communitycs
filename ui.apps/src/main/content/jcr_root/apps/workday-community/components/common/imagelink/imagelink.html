@@ -1,28 +1,27 @@
-	<!--/* Image Link Component */-->
-	<div class="cmp-image-link" data-sly-use.rootpathInfo="com.workday.community.aem.core.models.RootPathModel">
-		<sly data-sly-test="${resource.getChildren }">
-						<div class="cmp-image-link__content" data-sly-list.imagelinkMultifield="${resource.getChildren}">
-							<ul class="cmp-image-link__list" data-sly-list.imagelink="${imagelinkMultifield.getChildren}">
-								<li class="cmp-image-link__item">
-									<sly data-sly-test="${imagelink.fileReference}">
-										<div class="cmp-image-link-image-content">
-													<img src="${imagelink.fileReference}" alt="${imagelink.imgalttext || true}"
-														class="cmp-image-link-imagesrc" />
-										</div>	
-									</sly>	
-									<sly data-sly-test="${imagelink.pagepath}">
-										<a class="cmp-image-link__item-link" target="${imagelink.newTab}"
-										href="${imagelink.pagepath}${rootpathInfo.rootPath in  imagelink.pagepath ? '.html' : ''}"><span
-											class="cmp-image-link__item-title">${imagelink.linktext @ context='html'}</span></a>
-									</sly>
-									<sly data-sly-test="${!imagelink.pagepath}">
-										<span
-											class="cmp-image-link__item-title">${imagelink.linktext @ context='html'}</span>
-									</sly>
-								</li>
-							</ul>
-						</div>
-		</sly>
-	</div>
-	<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
-		data-sly-call="${template.placeholder  @ isEmpty=!resource.getChildren, classAppend='cmp-image-link'}"></sly>
+<!--/* Image Link Component */-->
+<sly data-sly-use.imageLinkModel="com.workday.community.aem.core.models.ImageLinkModel">
+   <sly data-sly-list.imageLink="${imageLinkModel.finalList}" data-sly-test="${!imageLink.isEmpty}">
+      <div class="cmp-image-link">
+         <div class="cmp-image-link__content">
+            <ul class="cmp-image-link__list">
+               <li class="cmp-image-link__item">
+                  <sly data-sly-test="${imageLink.fileReference}">
+                     <div class="cmp-image-link-image-content">
+                        <img src="${imageLink.fileReference}" alt="${imageLink.imageAltText || true}" class="cmp-image-link-imagesrc">
+                     </div>
+                  </sly>
+                  <sly data-sly-test="${imageLink.pagePath}">
+                     <a class="cmp-image-link__item-link" target="${imageLink.newTab}" href="${imageLink.pagePath}"><span class="cmp-image-link__item-title">${imageLink.linkText @ context='html'}</span></a>
+                  </sly>
+                  <sly data-sly-test="${!imageLink.pagePath}">
+                     <span
+                        class="cmp-image-link__item-title">${imageLink.linkText @ context='html'}</span>
+                  </sly>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </sly>
+</sly>
+<sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"
+   data-sly-call="${template.placeholder  @ isEmpty=!resource.getChildren, classAppend='cmp-image-link'}"></sly>

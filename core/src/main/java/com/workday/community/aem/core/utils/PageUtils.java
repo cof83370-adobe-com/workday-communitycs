@@ -1,15 +1,18 @@
 package com.workday.community.aem.core.utils;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
 import static java.util.Objects.requireNonNull;
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.constants.GlobalConstants;
 import java.util.ArrayList;
 import java.util.List;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 
@@ -25,6 +28,7 @@ public class PageUtils {
    * @param pagePath         The Requested page path.
    * @param resourceResolver The Resource Resolver Object.
    * @return tagTitlesList.
+   * @throws RepositoryException the repository exception
    */
   public static List<String> getPageTagsTitleList(String pagePath,
                                                   ResourceResolver resourceResolver)
@@ -53,6 +57,7 @@ public class PageUtils {
    * @param tagName          The tage name.
    * @param pagePropertyName The page roperty name.
    * @return tagTitlesList.
+   * @throws RepositoryException the repository exception
    */
   public static List<String> getPageTagPropertyList(ResourceResolver resourceResolver,
                                                     String pagePath, String tagName,
@@ -78,4 +83,43 @@ public class PageUtils {
     return accessControlList;
   }
 
+  /**
+   * Checks if is publish instance.
+   *
+   * @param instance the instance
+   * @return true, if is publish instance
+   */
+  public static boolean isPublishInstance(final String instance) {
+    return StringUtils.isNotBlank(instance) && instance.equals(PUBLISH);
+  }
+
+  /**
+   * Append extension.
+   *
+   * @param pagePath the page path
+   * @return the string
+   */
+  public static String appendExtension(String pagePath) {
+    if (StringUtils.isNotBlank(pagePath)
+        && pagePath.startsWith(String.format("%s%s", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH, "/"))) {
+      return String.format("%s%s", pagePath, GlobalConstants.HTML_EXTENSION);
+    }
+    return pagePath;
+  }
+
+  /**
+   * Gets the book page title.
+   *
+   * @param resourceResolver the resource resolver
+   * @param pagePath         the page path
+   * @return the book page title
+   */
+  public static String getPageTitleFromPath(ResourceResolver resourceResolver, final String pagePath) {
+    if (StringUtils.isNotBlank(pagePath) && pagePath.startsWith(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH)) {
+      PageManager pm = resourceResolver.adaptTo(PageManager.class);
+      Page page = pm.getPage(pagePath);
+      return page.getTitle();
+    }
+    return StringUtils.EMPTY;
+  }
 }

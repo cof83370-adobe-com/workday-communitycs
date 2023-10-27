@@ -39,4 +39,13 @@ public interface UserGroupService {
    * @return User group list.
    */
   List<String> getCurrentUserGroups(SlingHttpServletRequest request);
+
+  /**
+   * Checks for whether user has an access to view given link or not.
+   *
+   * @param pagePath the page path
+   * @param request  the request
+   * @return true, if successful
+   */
+  boolean hasAccessToViewLink(final String pagePath, SlingHttpServletRequest request);
 }
