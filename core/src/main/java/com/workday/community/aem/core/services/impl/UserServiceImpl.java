@@ -2,6 +2,7 @@ package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.SERVICE_USER_GROUP;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_OKTA_USERS_ROOT_PATH;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
@@ -56,9 +57,9 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public synchronized User getCurrentUser(SlingHttpServletRequest request) throws CacheException {
-    Session session = Objects.requireNonNull(request.getResourceResolver()).adaptTo(Session.class);
-    ResourceResolver serviceResolver = cacheManager.getServiceResolver(SERVICE_USER_GROUP);
-    return getUser(serviceResolver, Objects.requireNonNull(session).getUserID());
+    ResourceResolver resourceResolver = request.getResourceResolver();
+    Session session = Objects.requireNonNull(resourceResolver).adaptTo(Session.class);
+    return getUser(resourceResolver, Objects.requireNonNull(session).getUserID());
   }
 
   /**
@@ -72,10 +73,11 @@ public class UserServiceImpl implements UserService {
     UserManager userManager = Objects.requireNonNull(resourceResolver.adaptTo(UserManager.class));
     try {
       User user = (User) userManager.getAuthorizable(userSessionId);
-      if (user != null && !(UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())) {
+      if (user != null && !(UserConstants.DEFAULT_ANONYMOUS_ID).equals(userSessionId)
+              && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
         return user;
       }
-      log.error("Cannot find user with id {}.", userSessionId);
+      log.error("Cannot find logged in user with id {}.", userSessionId);
       return null;
     } catch (RepositoryException e) {
       log.error("Exception occurred when fetch user {}: {}.", userSessionId, e.getMessage());
