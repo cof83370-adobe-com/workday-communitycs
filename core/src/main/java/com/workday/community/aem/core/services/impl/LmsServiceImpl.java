@@ -110,8 +110,7 @@ public class LmsServiceImpl implements LmsService {
       lmsCache.put(LmsConstants.TOKEN_CACHE_KEY, bearerToken);
       return bearerToken;
     } catch (LmsException | JsonSyntaxException e) {
-      throw new LmsException(String.format("getApiToken call failed in LmsServiceImpl. Error: %s",
-          e.getMessage()));
+      throw new LmsException("getApiToken call failed in LmsServiceImpl. Error: %s", e.getMessage());
     }
   }
 
@@ -152,8 +151,9 @@ public class LmsServiceImpl implements LmsService {
       }
       return StringUtils.EMPTY;
     } catch (LmsException | JsonSyntaxException e) {
-      throw new LmsException(String.format("There is an error while fetching the course detail. "
-          + "Please contact Community Admin. %s", e.getMessage()));
+      throw new LmsException(
+          "There is an error while fetching the course detail. Please contact Community Admin. Msg: %s",
+          e.getMessage());
     }
   }
 

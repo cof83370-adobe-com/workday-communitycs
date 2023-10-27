@@ -329,7 +329,7 @@ public class SnapServiceImplTest {
       snapService.activate(snapConfig.get(1, 1));
       mocked.when(() -> RestApiUtil.doMenuGet(anyString(), anyString(),
               anyString(), anyString()))
-          .thenThrow(new SnapException());
+          .thenThrow(new SnapException("test fails"));
 
       String menuData2 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(menuData, menuData2);
@@ -370,7 +370,7 @@ public class SnapServiceImplTest {
     snapService.activate(snapConfig.get(1, 2));
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString()))
-          .thenThrow(new SnapException());
+          .thenThrow(new SnapException("test fails"));
       assertNull(this.snapService.getProfilePhoto(DEFAULT_SFID_MASTER));
     }
   }
@@ -394,7 +394,7 @@ public class SnapServiceImplTest {
     snapService.activate(snapConfig.get(1, 1));
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString()))
-          .thenThrow(new SnapException());
+          .thenThrow(new SnapException("test fails"));
       JsonObject ret = this.snapService.getUserContext(DEFAULT_SFID_MASTER);
       assertEquals(ret, new JsonObject());
     }
@@ -435,7 +435,7 @@ public class SnapServiceImplTest {
     snapService.activate(snapConfig.get(1, 1));
     try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
       mocked.when(() -> RestApiUtil.doSnapGet(anyString(), anyString(), anyString()))
-          .thenThrow(new SnapException());
+          .thenThrow(new SnapException("test fails"));
       String ret = this.snapService.getUserProfile(DEFAULT_SFID_MASTER);
       assertNull(ret);
       String pageTitle = "FAQ page";

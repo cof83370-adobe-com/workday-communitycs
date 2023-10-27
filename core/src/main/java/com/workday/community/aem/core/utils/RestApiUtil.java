@@ -4,9 +4,9 @@ import static com.workday.community.aem.core.constants.HttpConstants.HTTP_TIMEMO
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
 
 import com.workday.community.aem.core.constants.RestApiConstants;
-import com.workday.community.aem.core.exceptions.ApiException;
 import com.workday.community.aem.core.exceptions.LmsException;
 import com.workday.community.aem.core.exceptions.OurmException;
+import com.workday.community.aem.core.exceptions.RestException;
 import com.workday.community.aem.core.exceptions.SnapException;
 import com.workday.community.aem.core.pojos.restclient.ApiRequest;
 import com.workday.community.aem.core.pojos.restclient.ApiResponse;
@@ -50,10 +50,8 @@ public class RestApiUtil {
       log.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
       ApiRequest req = getMenuApiRequest(url, apiToken, apiKey, traceId);
       return executeGetRequest(req);
-    } catch (ApiException e) {
-      throw new SnapException(
-          String.format("Exception in doMenuGet method while executing the request = %s",
-              e.getMessage()));
+    } catch (RestException e) {
+      throw new SnapException("Exception in doMenuGet method while executing the request = %s", e.getMessage());
     }
   }
 
@@ -76,10 +74,8 @@ public class RestApiUtil {
       apiRequestInfo.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(authToken))
           .addHeader(RestApiConstants.X_API_KEY, apiKey);
       return executeGetRequest(apiRequestInfo).getResponseBody();
-    } catch (ApiException e) {
-      throw new SnapException(
-          String.format("Exception in doSnapGet method while executing the request = %s",
-              e.getMessage()));
+    } catch (RestException e) {
+      throw new SnapException("Exception in doSnapGet method while executing the request = %s", e.getMessage());
     }
   }
 
@@ -101,10 +97,8 @@ public class RestApiUtil {
       apiRequestInfo.setUrl(url);
       apiRequestInfo.addHeader(HttpHeaders.AUTHORIZATION, header);
       return executeGetRequest(apiRequestInfo).getResponseBody();
-    } catch (ApiException e) {
-      throw new OurmException(
-          String.format("Exception in doOURMGet method while executing the request = %s",
-              e.getMessage()));
+    } catch (RestException e) {
+      throw new OurmException("Exception in doOURMGet method while executing the request = %s", e.getMessage());
     }
   }
 
@@ -113,9 +107,9 @@ public class RestApiUtil {
    *
    * @param req API request.
    * @return Response from API.
-   * @throws ApiException APIException object.
+   * @throws RestException APIException object.
    */
-  private static ApiResponse executeGetRequest(ApiRequest req) throws ApiException {
+  private static ApiResponse executeGetRequest(ApiRequest req) throws RestException {
     log.debug("RESTAPIUtil executeGetRequest: Calling REST executeGetRequest().");
     if (StringUtils.isBlank(req.getMethod())) {
       req.setMethod(RestApiConstants.GET_API);
@@ -140,9 +134,7 @@ public class RestApiUtil {
       // Send the HttpGet request using the configured HttpClient.
       response = httpclient.send(request, BodyHandlers.ofString());
     } catch (IOException | InterruptedException e) {
-      throw new ApiException(
-          String.format("Exception in executeGetRequest method while executing the request = %s",
-              e.getMessage()));
+      throw new RestException("Exception in executeGetRequest method while executing the request %s", e.getMessage());
     }
 
     int statusCode = response.statusCode();
@@ -155,8 +147,7 @@ public class RestApiUtil {
     if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
       apiresponse.setResponseBody(response.body());
     } else {
-      throw new ApiException(
-          String.format("Error return from Get request call: status: %s, response body; %s ", statusCode, body));
+      throw new RestException("Error return from Get request call: status: %s, response body; %s ", statusCode, body);
     }
 
     return apiresponse;
@@ -190,9 +181,9 @@ public class RestApiUtil {
    *
    * @param request API Request object
    * @return API Response object
-   * @throws ApiException APIException object.
+   * @throws RestException APIException object.
    */
-  private static ApiResponse executePostRequest(ApiRequest request) throws ApiException {
+  private static ApiResponse executePostRequest(ApiRequest request) throws RestException {
     ApiResponse apiresponse = new ApiResponse();
 
     log.debug("RESTAPIUtil executePostRequest: Calling REST executePostRequest().");
@@ -222,9 +213,8 @@ public class RestApiUtil {
       apiresponse.setResponseCode(resCode);
       apiresponse.setResponseBody(resBody);
     } catch (IOException | InterruptedException e) {
-      throw new ApiException(
-          String.format("Exception in executePostRequest method while executing the request = %s",
-              e.getMessage()));
+      throw new RestException("Exception in executePostRequest method while executing the request = %s",
+          e.getMessage());
     }
 
     return apiresponse;
@@ -304,10 +294,9 @@ public class RestApiUtil {
 
     try {
       return executePostRequest(req);
-    } catch (ApiException e) {
-      throw new LmsException(
-          String.format("Exception in doLmsTokenGet method while executing the request = %s",
-              e.getMessage()));
+    } catch (RestException e) {
+      throw new LmsException("Exception in doLmsTokenGet method while executing the request = %s",
+              e.getMessage());
     }
   }
 
@@ -330,10 +319,9 @@ public class RestApiUtil {
           .addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
 
       return executeGetRequest(apiRequestInfo);
-    } catch (ApiException e) {
-      throw new LmsException(
-          String.format("Exception in doLmsCourseDetailGet method while executing the request = %s",
-              e.getMessage()));
+    } catch (RestException e) {
+      throw new LmsException("Exception in doLmsCourseDetailGet method while executing the request = %s",
+              e.getMessage());
     }
   }
 }

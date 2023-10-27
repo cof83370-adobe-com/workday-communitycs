@@ -80,10 +80,8 @@ public class OurmUserServiceImpl implements OurmUserService {
         String jsonResponse = RestApiUtil.doOurmGet(apiUrl, headerString);
         return gson.fromJson(jsonResponse, JsonObject.class);
       } catch (OurmException | InvalidKeyException | NoSuchAlgorithmException e) {
-        String errorMessage = e.getMessage();
-        throw new OurmException(
-            String.format("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl : %s",
-                errorMessage));
+        throw new OurmException("Error Occurred in searchOurmUserList Method in OurmUserServiceImpl : %s",
+            e.getMessage());
       }
     }
 
