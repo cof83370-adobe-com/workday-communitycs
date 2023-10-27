@@ -119,6 +119,14 @@
                          content: url('../resources/images/wd-icon-chevron-down.svg');
                      }
                 }
+
+                .cmp-toc__item-link:has(+ .cmp-toc__group.cmp-toc__secondlevellist.show) .cmp-toc__chevron::before {
+                  content: url('../resources/images/wd-icon-chevron-down.svg');
+                }
+
+                .cmp-toc__item.active > .cmp-toc__item-link.active:has(+ .cmp-toc__group.cmp-toc__secondlevellist.show) .cmp-toc__chevron::before {
+                  content: url('../resources/images/wd-icon-chevron-blue.svg');
+                }
             }
 
             &.cmp-toc__secondlevellist {
