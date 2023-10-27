@@ -20,6 +20,7 @@ import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
@@ -71,7 +72,7 @@ public class UserServiceImpl implements UserService {
     UserManager userManager = Objects.requireNonNull(resourceResolver.adaptTo(UserManager.class));
     try {
       User user = (User) userManager.getAuthorizable(userSessionId);
-      if (user != null) {
+      if (user != null && !(UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())) {
         return user;
       }
       log.error("Cannot find user with id {}.", userSessionId);

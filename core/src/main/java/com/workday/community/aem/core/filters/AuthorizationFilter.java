@@ -84,7 +84,11 @@ public class AuthorizationFilter implements Filter {
       ResourceResolver requestResourceResolver = slingRequest.getResourceResolver();
       Session userSession = requestResourceResolver.adaptTo(Session.class);
       if (userSession == null) {
+        log.debug("---> User does not have access to the requested page:", pagePath);
+
+        ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
         ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+
         return;
       }
       String userId = userSession.getUserID();
@@ -96,8 +100,14 @@ public class AuthorizationFilter implements Filter {
           isValid = userGroupService.validateCurrentUser(slingRequest, pagePath);
         }
         if (!isValid) {
+          log.debug("---> User does not have access to the requested page:", pagePath);
+
           ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
           ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
+
+          return;
+        } else {
+          log.debug("---> User have access on the page:", pagePath);
         }
       } catch (CacheException | RepositoryException e) {
         log.error("---> Exception occurred in AuthorizationFilter: {}.", e.getMessage());
