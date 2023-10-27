@@ -123,7 +123,7 @@ function constructData(headerDiv, currentId, searchToken) {
 
             headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
             headerData.menus = headerMenu;
-            headerData.coveoProps = {
+            headerData.coveoProps = searchToken ? {
                 engine: Cmty.CoveoEngineService.CoveoSearchEngine(
                     {
                         organizationId: searchConfig['orgId'],
@@ -145,9 +145,19 @@ function constructData(headerDiv, currentId, searchToken) {
                 analytics: {
                     analyticsClientMiddleware,
                 }
-            };
+            } : undefined;
+
+            if (!headerData.coveoProps) {
+                // Add search props if coveo props is not present
+                headerData.searchProps = {
+                    redirectPath: searchUrl,
+                    querySeparator: '#',
+                    queryParameterName: 'q'
+                }
+            }
         }
     }
+
 
     if (stringValid(homePage)) {
         headerData.homeUrl = homePage;
