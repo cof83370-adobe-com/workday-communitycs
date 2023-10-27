@@ -70,7 +70,7 @@ public class CoveoEventsTypeServletTest {
     lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);
     lenient().when(searchApiConfigService.isDevMode()).thenReturn(true);
     String userData =
-        "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"email\":\"foo@workday.com\",\"contextInfo\":[{\"isWorkmate\":\"false\"}],\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
+        "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"email\":\"foo@workday.com\",\"contextInfo\":{\"isWorkmate\":\"false\"},\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
 
     try (MockedStatic<OurmUtils> ourmUtilsMock = mockStatic(OurmUtils.class);
          MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class)) {

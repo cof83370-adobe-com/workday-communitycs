@@ -376,12 +376,11 @@ public class DrupalServiceImpl implements DrupalService {
       String userData = this.getUserData(sfId);
       if (StringUtils.isNotBlank(userData)) {
         JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
-        JsonArray context = userDataObject.getAsJsonArray(USER_CONTEXT_INFO_KEY);
-        if (context == null || context.isJsonNull()
-            || context.isEmpty()) {
+        JsonObject context = userDataObject.getAsJsonObject(USER_CONTEXT_INFO_KEY);
+        if (context == null || context.isJsonNull() || (context.has("error") && context.get("error").getAsBoolean())) {
           return new JsonObject();
         }
-        return context.get(0).getAsJsonObject();
+        return context;
       }
     } catch (JsonSyntaxException e) {
       LOGGER.error("Error in getUserContext method, {} ", e.getMessage());
