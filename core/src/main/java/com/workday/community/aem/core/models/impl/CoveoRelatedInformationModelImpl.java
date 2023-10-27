@@ -90,7 +90,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
    * {@inheritDoc}
    */
   @Override
-  public List<String> getFacetFields() throws DamException {
+  public List<String> getFacetFields() {
     if (facetFields != null) {
       return Collections.unmodifiableList(facetFields);
     }
@@ -118,8 +118,13 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       return Collections.unmodifiableList(facetFields);
     }
     try (ResourceResolver resolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
-      JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG)
-          .getAsJsonObject("tagIdToCoveoField");
+      JsonObject fieldMapConfig;
+      try {
+        fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG)
+            .getAsJsonObject("tagIdToCoveoField");
+      } catch (DamException e) {
+        return Collections.unmodifiableList(facetFields);
+      }
       for (Tag tag : tags) {
         JsonElement facetFieldObj = fieldMapConfig.get(tag.getNamespace().getName());
         if (facetFieldObj == null || facetFieldObj.isJsonNull()) {
@@ -141,8 +146,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
         }
       }
     } catch (CacheException e) {
-      throw new DamException("Exception in getFacetFields call in CoveoRelatedInformationModelImpl. error %s",
-          e.getMessage());
+      return Collections.unmodifiableList(facetFields);
     }
 
     return Collections.unmodifiableList(facetFields);
@@ -167,8 +171,9 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
    * {@inheritDoc}
    */
   @Override
-  public String getExtraCriteria() throws DamException {
-    throw new DamException("ExtraCriteria is not available for related information currently");
+  public String getExtraCriteria() {
+    log.debug("ExtraCriteria is not available for related information currently");
+    return "";
   }
 
 }
