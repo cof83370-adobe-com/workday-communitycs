@@ -11,7 +11,7 @@ const signOutObject = {
     children: [],
 };
 
-let searchToken, searchConfig;
+let searchConfig;
 
 const getSearchToken = async () => {
     const tokenUrl = '/bin/search/token';
@@ -31,7 +31,7 @@ const analyticsClientMiddleware = (eventName, payload) => {
     return payload;
 };
 
-function renderNavHeader() {
+function renderNavHeader(searchToken = '') {
     const headerDiv = document.getElementById('community-header-div');
     if (headerDiv !== undefined && headerDiv !== null) {
         let enableCache = headerDiv.getAttribute('data-enable-cache');
@@ -42,7 +42,7 @@ function renderNavHeader() {
         let changed = currentId !== previousId;
 
         if (!headerData || headerData && changed) {
-            headerDataJson = constructData(headerDiv, currentId);
+            headerDataJson = constructData(headerDiv, currentId, searchToken);
         }
 
         if (dataWithMenu(headerDataJson) && (enableCache === 'true')) {
@@ -50,7 +50,7 @@ function renderNavHeader() {
         } else {
             document.cookie = 'cacheMenu=FALSE';
             sessionStorage.removeItem('navigation-data');
-            headerDataJson = constructData(headerDiv, currentId);
+            headerDataJson = constructData(headerDiv, currentId, searchToken);
         }
 
         try {
@@ -86,9 +86,10 @@ document.addEventListener('readystatechange', async (event) => {
     if (event.target.readyState === 'complete') {
         let headerStringData = document.getElementById('community-header-div').getAttribute('data-model-property');
         if (stringValid(headerStringData) && headerStringData !== 'HIDE_MENU_UNAUTHENTICATED') {
-            searchToken = await getSearchToken();
+            renderNavHeader(await getSearchToken());
+        } else {
+            renderNavHeader();
         }
-        renderNavHeader();
     }
 });
 
@@ -96,7 +97,7 @@ function stringValid(str) {
     return (str !== undefined && str !== null && str.trim() !== '');
 }
 
-function constructData(headerDiv, currentId) {
+function constructData(headerDiv, currentId, searchToken) {
     let headerStringData = headerDiv.getAttribute('data-model-property');
     let avatarUrl = headerDiv.getAttribute("data-model-avatar");
     let homePage = headerDiv.getAttribute("data-prop-home");
