@@ -7,6 +7,7 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import java.util.ArrayList;
 import java.util.List;
 import javax.jcr.RepositoryException;
@@ -86,10 +87,11 @@ public class PageUtils {
   /**
    * Checks if is publish instance.
    *
-   * @param instance the instance
+   * @param runModeConfigService the run mode config service
    * @return true, if is publish instance
    */
-  public static boolean isPublishInstance(final String instance) {
+  public static boolean isPublishInstance(RunModeConfigService runModeConfigService) {
+    final String instance = runModeConfigService.getInstance();
     return StringUtils.isNotBlank(instance) && instance.equals(PUBLISH);
   }
 

@@ -90,7 +90,6 @@ class TocModelmplTest {
   void testInit() throws Exception {
     RunModeConfigService runModeConfigService = mock(RunModeConfigService.class);
     context.registerService(RunModeConfigService.class, runModeConfigService);
-    lenient().when(runModeConfigService.getInstance()).thenReturn("publish");
     Page currentPage = context.currentResource(CURRENT_PAGE_STR).adaptTo(Page.class);
     QueryService queryService = mock(QueryService.class);
     context.registerService(QueryService.class, queryService);
@@ -132,11 +131,10 @@ class TocModelmplTest {
   void testGetFinalListOnlyForFirstLevel() throws Exception {
     RunModeConfigService runModeConfigService = mock(RunModeConfigService.class);
     context.registerService(RunModeConfigService.class, runModeConfigService);
-    lenient().when(runModeConfigService.getInstance()).thenReturn("publish");
 
     UserGroupService mockGroupService = mock(UserGroupService.class);
     context.registerService(UserGroupService.class, mockGroupService);
-    lenient().when(mockGroupService.hasAccessToViewLink(anyString(), any())).thenReturn(true);
+    lenient().when(mockGroupService.validateCurrentUser(any(), anyString())).thenReturn(true);
 
     Page currentPage = context.currentResource(CURRENT_PAGE_STR).adaptTo(Page.class);
     QueryService queryService = mock(QueryService.class);
@@ -182,11 +180,10 @@ class TocModelmplTest {
   void testGetFinalListOnlyForFirstLevelWithInternalPublicLink() throws Exception {
     RunModeConfigService runModeConfigService = mock(RunModeConfigService.class);
     context.registerService(RunModeConfigService.class, runModeConfigService);
-    lenient().when(runModeConfigService.getInstance()).thenReturn("publish");
 
     UserGroupService mockGroupService = mock(UserGroupService.class);
     context.registerService(UserGroupService.class, mockGroupService);
-    lenient().when(mockGroupService.hasAccessToViewLink(anyString(), any())).thenReturn(true);
+    lenient().when(mockGroupService.validateCurrentUser(any(), anyString())).thenReturn(true);
 
     Page currentPage = context.currentResource(CURRENT_PAGE_STR).adaptTo(Page.class);
     QueryService queryService = mock(QueryService.class);
@@ -234,11 +231,10 @@ class TocModelmplTest {
 
     RunModeConfigService runModeConfigService = mock(RunModeConfigService.class);
     context.registerService(RunModeConfigService.class, runModeConfigService);
-    lenient().when(runModeConfigService.getInstance()).thenReturn("publish");
 
     UserGroupService mockGroupService = mock(UserGroupService.class);
     context.registerService(UserGroupService.class, mockGroupService);
-    lenient().when(mockGroupService.hasAccessToViewLink(anyString(), any())).thenReturn(true);
+    lenient().when(mockGroupService.validateCurrentUser(any(), anyString())).thenReturn(true);
 
     Page currentPage = context.currentResource(CURRENT_PAGE_STR).adaptTo(Page.class);
     QueryService queryService = mock(QueryService.class);
@@ -297,6 +293,13 @@ class TocModelmplTest {
     Resource thirdLevelresource = mock(Resource.class);
     lenient().when(secItemsRes.getChild("thirdlevel")).thenReturn(thirdLevelresource);
 
+    RunModeConfigService runModeConfigService = mock(RunModeConfigService.class);
+    context.registerService(RunModeConfigService.class, runModeConfigService);
+
+    UserGroupService mockGroupService = mock(UserGroupService.class);
+    context.registerService(UserGroupService.class, mockGroupService);
+    lenient().when(mockGroupService.validateCurrentUser(any(), anyString())).thenReturn(true);
+
     Iterator<Resource> thirdLevelItr = mock(Iterator.class);
     when(thirdLevelresource.listChildren()).thenReturn(thirdLevelItr);
     when(thirdLevelItr.hasNext()).thenReturn(true, true, false);
@@ -313,6 +316,8 @@ class TocModelmplTest {
     when(thirdItemsRes2.adaptTo(ValueMap.class)).thenReturn(vmap2);
     when(vmap2.get("thirdpagepath", "")).thenReturn("https://community.workday.com/pro-services/tools/551678");
 
+try (MockedStatic<PageUtils> pageUtilsMock = mockStatic(PageUtils.class)) {
+      pageUtilsMock.when(() -> PageUtils.isPublishInstance(any())).thenReturn(true);
     TocModelImpl tocModel = context.request().adaptTo(TocModelImpl.class);
     BookDto firstLevelDTO = new BookDto();
     BookDto secondLevelDTO = new BookDto();
@@ -321,6 +326,7 @@ class TocModelmplTest {
     verify(thirdLevelItr, times(2)).next();
     assertEquals(2, secondLevelDTO.getChildLevelList().size());
     assertEquals(EXT_PAGE_PATH, firstLevelDTO.getChildLevelList().get(0).getChildLevelList().get(0).getHeadingLink());
+}
   }
 
   /**

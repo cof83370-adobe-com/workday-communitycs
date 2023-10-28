@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.DrupalService;
@@ -30,7 +31,6 @@ import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
-import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
@@ -50,6 +50,7 @@ public class UserGroupServiceImpl implements UserGroupService {
 
   /** The Constant PUBLIC_PATH_REGEX. */
   protected static final String PUBLIC_PATH_REGEX = "/content/workday-community/[a-z]{2}-[a-z]{2}/public/";
+
   /**
    * The snap service.
    */
@@ -74,33 +75,53 @@ public class UserGroupServiceImpl implements UserGroupService {
   @Reference
   private UserService userService;
 
+  /**
+   * The evaluation process determines whether a user has the necessary permissions 
+   * to view a specified link. Public pages are accessible by default, while anonymous 
+   * or unavailable logged-in users can also access them. However, for secured internal 
+   * pages with Okta users, the ACL logic is evaluated to determine access.
+   *
+   * @param pagePath the page path
+   * @param request  the request
+   * @return true, if successful
+   */
   @Override
   public boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath) {
     log.debug(" inside validateTheUser method. -->");
-
-    boolean isValid = false;
     try {
-      log.debug("---> UserGroupServiceImpl: Before Access control tag List");
-      List<String> accessControlTagsList =
-          PageUtils.getPageTagPropertyList(request.getResourceResolver(),
-              pagePath,
-              ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
-      log.debug("---> UserGroupServiceImpl: After Access control tag List");
-      if (!accessControlTagsList.isEmpty()) {
-        log.debug("---> UserGroupServiceImpl:Access control tag List.. {}.",
-            accessControlTagsList);
-        if (accessControlTagsList.contains(AUTHENTICATED)) {
-          isValid = true;
-        } else {
-          List<String> groupsList = getCurrentUserGroups(request);
-          log.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
-          isValid = !Collections.disjoint(accessControlTagsList, groupsList);
-        }
+      if (StringUtils.isBlank(pagePath)) {
+        return false;
       }
-    } catch (RepositoryException e) {
-      log.error("---> Exception in validateTheUser function: {}.", e.getMessage());
+      if (pagePath.startsWith(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH)) {
+        User user = userService.getCurrentUser(request);
+        boolean isPublicPage = isPublicPage(pagePath);
+        if (user == null) {
+          return isPublicPage;
+        } else if (isPublicPage) {
+          return true;
+        } else {
+          log.debug("---> UserGroupServiceImpl: Before Access control tag List and userPath is: {}", user.getPath());
+          List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
+              ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
+          log.debug("---> UserGroupServiceImpl: After Access control tag List");
+          if (!accessControlTagsList.isEmpty()) {
+            log.debug("---> UserGroupServiceImpl:Access control tag List.. {}.", accessControlTagsList);
+            if (accessControlTagsList.contains(AUTHENTICATED)) {
+              return true;
+            } else {
+              List<String> groupsList = getCurrentUserGroups(request);
+              log.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
+              return !Collections.disjoint(accessControlTagsList, groupsList);
+            }
+          }
+        }
+      } else {
+        return true;
+      }
+    } catch (Exception exec) {
+      log.error("---> Exception in validateTheUser function: {}", exec);
     }
-    return isValid;
+    return false;
   }
 
   @Override
@@ -204,27 +225,6 @@ public class UserGroupServiceImpl implements UserGroupService {
       log.error("---> Exception in getUserGroupsFromDrupal method: {}.", e.getMessage());
     }
     return groups;
-  }
-
-  @Override
-  public boolean hasAccessToViewLink(String pagePath, SlingHttpServletRequest request) {
-    try {
-      if (StringUtils.isNotBlank(pagePath) && !pagePath.startsWith(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH)) {
-        return true;
-      }
-      User user = userService.getCurrentUser(request);
-      log.debug("---> Logged in user from UserServiceImpl: {} ", user);
-      if (user == null || (UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID())) {
-        return isPublicPage(pagePath);
-      } else if (user.getPath().contains(GlobalConstants.OKTA_USER_PATH) && isPublicPage(pagePath)) {
-        return true;
-      } else if (user.getPath().contains(GlobalConstants.OKTA_USER_PATH) && !isPublicPage(pagePath)) {
-        return validateCurrentUser(request, pagePath);
-      }
-    } catch (Exception exec) {
-      log.error("---> TocModel: Exception occured in hasAccessToViewLink:..{}.", exec.getMessage());
-    }
-    return false;
   }
 
   /**

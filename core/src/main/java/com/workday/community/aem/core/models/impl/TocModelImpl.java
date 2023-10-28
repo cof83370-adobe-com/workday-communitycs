@@ -85,9 +85,6 @@ public class TocModelImpl implements TocModel {
   @Getter
   private List<BookDto> finalList = new ArrayList<>();
 
-  /** The instance. */
-  private String instance;
-
   /** The toc display. */
   @Getter
   private boolean tocDisplay;
@@ -122,7 +119,6 @@ public class TocModelImpl implements TocModel {
       if (null != bookPathList && !bookPathList.isEmpty()) {
         final String bookResourcePath = bookPathList.get(0).split("/firstlevel")[0];
         log.debug("Book Resource path is::{}", bookResourcePath);
-        instance = runModeConfigService.getInstance();
         if (StringUtils.isNotBlank(bookResourcePath)) {
           updateFinalList(resourceResolver.resolve(bookResourcePath));
         }
@@ -296,8 +292,8 @@ public class TocModelImpl implements TocModel {
     Map<String, Object> map = new HashMap<>();
     BookDto levelDto = new BookDto();
     String givenLevelPageLink = fetchAuthoredPath(givenItemResource, linkPropertyName);
-    boolean checkAccess = !PageUtils.isPublishInstance(instance)
-        || userGroupService.hasAccessToViewLink(givenLevelPageLink, request);
+    boolean checkAccess = !PageUtils.isPublishInstance(runModeConfigService)
+        || userGroupService.validateCurrentUser(request, givenLevelPageLink);
     map.put(HAS_ACCESS_KEY, checkAccess);
     if (checkAccess) {
       String givenLinkPageTitle = getBookPageTitle(givenLevelPageLink);
