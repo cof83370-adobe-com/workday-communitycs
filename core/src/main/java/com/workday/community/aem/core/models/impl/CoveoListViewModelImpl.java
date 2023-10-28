@@ -3,8 +3,8 @@ package com.workday.community.aem.core.models.impl;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import java.util.ArrayList;
@@ -47,10 +47,10 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
   private UserService userService;
 
   /**
-   * The snap service object.
+   * The drupal service object.
    */
   @OSGiService
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   private JsonObject searchConfig;
 
@@ -82,7 +82,7 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
       this.searchConfig = CoveoUtils.getSearchConfig(
           searchConfigService,
           request,
-          snapService,
+          drupalService,
           userService);
     }
     return this.searchConfig;
@@ -93,7 +93,7 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
    */
   @Override
   public String getExtraCriteria() {
-    log.debug("ExtraCriteria is not available for list view");
+    log.error("ExtraCriteria is not available for list view");
     return "";
   }
 }

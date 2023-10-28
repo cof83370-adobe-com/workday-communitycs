@@ -5,8 +5,8 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.FeedTabModel;
 import com.workday.community.aem.core.models.TabularListViewModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -68,7 +68,7 @@ public class TabularListViewModelImpl implements TabularListViewModel {
    * The snap service object.
    */
   @OSGiService
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   private JsonObject searchConfig;
 
@@ -106,7 +106,7 @@ public class TabularListViewModelImpl implements TabularListViewModel {
       this.searchConfig = CoveoUtils.getSearchConfig(
           searchConfigService,
           request,
-          snapService,
+          drupalService,
           userService);
     }
     return this.searchConfig;

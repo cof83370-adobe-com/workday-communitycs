@@ -1,42 +1,26 @@
 package com.workday.community.aem.core.services.impl;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 import static com.workday.community.aem.core.constants.GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL;
-import static com.workday.community.aem.core.constants.SnapConstants.CUSTOMER_OF_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.IS_WORKMATE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.PARTNER_TRACK_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_COMMUNITY;
-import static com.workday.community.aem.core.constants.SnapConstants.PROPERTY_ACCESS_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_INFORMATION_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTACT_ROLE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_CONTEXT_INFO_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.USER_TYPE_KEY;
-import static com.workday.community.aem.core.constants.SnapConstants.WSP_KEY;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_TAG;
 import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
-import static com.workday.community.aem.core.constants.WccConstants.INTERNAL_WORKMATES;
 import static com.workday.community.aem.core.constants.WccConstants.ROLES;
 import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.config.SnapConfig;
+import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.exceptions.CacheException;
-import com.workday.community.aem.core.exceptions.DamException;
-import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
-import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.PageUtils;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -46,10 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -70,6 +52,12 @@ public class UserGroupServiceImpl implements UserGroupService {
   private SnapService snapService;
 
   /**
+   * The drupal service.
+   */
+  @Reference
+  private DrupalService drupalService;
+
+  /**
    * The cache manager.
    */
   @Reference
@@ -81,44 +69,6 @@ public class UserGroupServiceImpl implements UserGroupService {
   @Reference
   private UserService userService;
 
-  /**
-   * The customer_role_mapping.
-   */
-  private Map<String, String> customerRoleMapping = new HashMap<>();
-
-  /**
-   * The customer_of_mapping.
-   */
-  private Map<String, String> customerOfMapping = new HashMap<>();
-
-  /**
-   * The wsp_mapping.
-   */
-  private Map<String, String> wspMapping = new HashMap<>();
-
-  /**
-   * The partner_track_mapping.
-   */
-  private Map<String, String> partnerTrackMapping = new HashMap<>();
-
-  @Activate
-  @Modified
-  protected void activate(SnapConfig config) throws CacheException, DamException {
-    ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER);
-    JsonObject sfdcRoleMap =
-        DamUtils.readJsonFromDam(resourceResolver, config.sfToAemUserGroupMap());
-    if (sfdcRoleMap != null) {
-      Gson g = new Gson();
-      customerRoleMapping =
-          g.fromJson(sfdcRoleMap.get("customerRoleMapping").toString(), HashMap.class);
-      customerOfMapping =
-          g.fromJson(sfdcRoleMap.get("customerOfMapping").toString(), HashMap.class);
-      wspMapping = g.fromJson(sfdcRoleMap.get("wspMapping").toString(), HashMap.class);
-      partnerTrackMapping =
-          g.fromJson(sfdcRoleMap.get("partnerTrackMapping").toString(), HashMap.class);
-    }
-  }
-
   @Override
   public boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath) {
     log.debug(" inside validateTheUser method. -->");
@@ -127,7 +77,8 @@ public class UserGroupServiceImpl implements UserGroupService {
     try {
       log.debug("---> UserGroupServiceImpl: Before Access control tag List");
       List<String> accessControlTagsList =
-          PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
+          PageUtils.getPageTagPropertyList(request.getResourceResolver(),
+              pagePath,
               ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
       log.debug("---> UserGroupServiceImpl: After Access control tag List");
       if (!accessControlTagsList.isEmpty()) {
@@ -169,7 +120,6 @@ public class UserGroupServiceImpl implements UserGroupService {
    * node property. If not, call API for roles.
    *
    * @param request current Sling request object.
-   *
    * @return User group list.
    */
   @Override
@@ -182,10 +132,9 @@ public class UserGroupServiceImpl implements UserGroupService {
       String sfId = OurmUtils.getSalesForceId(request, userService);
       if (sfId != null) {
         log.debug("user  sfid {} ", sfId);
-        ResourceResolver jcrResolver =
-            cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
-        Node userNode =
-            Objects.requireNonNull(jcrResolver.getResource(user.getPath())).adaptTo(Node.class);
+        ResourceResolver jcrResolver = cacheManager
+            .getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+        Node userNode = Objects.requireNonNull(jcrResolver.getResource(user.getPath())).adaptTo(Node.class);
         if (Objects.requireNonNull(userNode).hasProperty(ROLES)
             && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString())
             && userNode.getProperty(ROLES).getString().split(";").length > 0) {
@@ -198,7 +147,7 @@ public class UserGroupServiceImpl implements UserGroupService {
           log.debug(
               "---> UserGroupServiceImpl: getCurrentUserGroups - Trying to get Groups from SNAP");
           Session jcrSession = jcrResolver.adaptTo(Session.class);
-          groupIds = getUserGroupsFromSnap(sfId);
+          groupIds = getUserGroupsFromDrupal(sfId);
           userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
           Objects.requireNonNull(jcrSession).save();
           if (null != groupIds && !groupIds.isEmpty()) {
@@ -226,92 +175,28 @@ public class UserGroupServiceImpl implements UserGroupService {
   }
 
   /**
-   * Get user groups from API.
+   * Get user groups from Drupal API.
    *
    * @param sfId User's Salesforce id.
-   * @return List of user groups from snap.
+   * @return List of user groups from Drupal.
    */
-  protected List<String> getUserGroupsFromSnap(String sfId) {
+  protected List<String> getUserGroupsFromDrupal(String sfId) {
     List<String> groups = new ArrayList<>();
-    if (StringUtils.isBlank(sfId)) {
-      return groups;
-    }
-    String cacheKey = String.format("sf-user-groups-%s", sfId);
-    List<String> ret = cacheManager.get(CacheBucketName.SF_USER_GROUP.name(), cacheKey, () -> {
-      JsonObject context = snapService.getUserContext(sfId);
-
-      if (null == context || context.isJsonNull() || context.size() == 0) {
+    try {
+      Gson gson = new Gson();
+      String userData = drupalService.getUserData(sfId);
+      if (StringUtils.isEmpty(userData)) {
+        log.error("Error in getUserGroupsFromDrupal method - empty user data response.");
         return groups;
       }
-
-      JsonObject contactInformation = context.get(USER_CONTACT_INFORMATION_KEY).getAsJsonObject();
-
-      JsonElement propertyAccess = contactInformation.get(PROPERTY_ACCESS_KEY);
-      boolean hasCommunityAccess = false;
-      if (!propertyAccess.isJsonNull()
-          && propertyAccess.getAsString().contains(PROPERTY_ACCESS_COMMUNITY)) {
-        groups.add(AUTHENTICATED);
-        hasCommunityAccess = true;
+      JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
+      JsonArray rolesArray = userDataObject.getAsJsonArray("roles");
+      for (int i = 0; i < rolesArray.size(); i++) {
+        groups.add(rolesArray.get(i).getAsString());
       }
-      addGroups(groups, contactInformation, WSP_KEY, wspMapping);
-
-      JsonObject contextInfo = context.get(USER_CONTEXT_INFO_KEY).getAsJsonObject();
-      addGroups(groups, contextInfo, USER_CONTACT_ROLE_KEY, customerRoleMapping);
-
-      JsonElement type = contextInfo.get(USER_TYPE_KEY);
-      JsonElement customerOf = contactInformation.get(CUSTOMER_OF_KEY);
-      JsonElement partnerTrack = contactInformation.get(PARTNER_TRACK_KEY);
-      JsonElement isWorkmate = contextInfo.get(IS_WORKMATE_KEY);
-      boolean isWorkmateUser = false;
-      if (!isWorkmate.isJsonNull()) {
-        isWorkmateUser = isWorkmate.getAsBoolean();
-      }
-      if (!type.isJsonNull()) {
-        String typeString = type.getAsString();
-        if (typeString.equals("customer") && !isWorkmateUser && !customerOf.isJsonNull()) {
-          String customerOfString = customerOf.getAsString();
-          for (Map.Entry<String, String> entry : customerOfMapping.entrySet()) {
-            if (customerOfString.contains(entry.getKey())) {
-              groups.add(entry.getValue());
-            }
-          }
-        }
-        if (typeString.equals("partner") && !partnerTrack.isJsonNull()) {
-          String partnerTrackString = partnerTrack.getAsString();
-          for (Map.Entry<String, String> entry : partnerTrackMapping.entrySet()) {
-            if (partnerTrackString.contains(entry.getKey())) {
-              groups.add(entry.getValue());
-            }
-          }
-        }
-      }
-      if (isWorkmateUser) {
-        groups.add(INTERNAL_WORKMATES);
-      } else {
-        if (hasCommunityAccess && !type.isJsonNull()) {
-          groups.add(type.getAsString() + "_all");
-        }
-      }
-      return groups;
-    });
-
-    if (ret != null && ret.isEmpty()) {
-      cacheManager.invalidateCache(CacheBucketName.SF_USER_GROUP.name(), cacheKey);
+    } catch (JsonSyntaxException e) {
+      log.error("---> Exception in getUserGroupsFromDrupal method: {}.", e.getMessage());
     }
-
-    return ret;
-  }
-
-  private void addGroups(List<String> groups, JsonObject contactInformation, String key,
-                         Map<String, String> valueMap) {
-    JsonElement wsp = contactInformation.get(key);
-    if (!wsp.isJsonNull()) {
-      String wspString = wsp.getAsString();
-      for (Map.Entry<String, String> entry : valueMap.entrySet()) {
-        if (wspString.contains(entry.getKey())) {
-          groups.add(entry.getValue());
-        }
-      }
-    }
+    return groups;
   }
 }

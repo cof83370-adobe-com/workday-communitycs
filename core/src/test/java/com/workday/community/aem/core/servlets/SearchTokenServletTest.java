@@ -13,8 +13,8 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
@@ -51,16 +51,16 @@ public class SearchTokenServletTest {
   SearchApiConfigService searchApiConfigService;
 
   @Mock
-  SnapService snapService;
+  DrupalService drupalService;
 
   @Mock
-  UserService userService;
+  private UserService userService;
 
   @InjectMocks
   SearchTokenServlet searchTokenServlet;
 
   @Test
-  public void testDoGetWithExistingCookieInRequest() throws Exception {
+  public void testDoGetWithExistingCookieInRequest() {
 
     Cookie[] testCookies = new Cookie[] {
         new Cookie("test", "testValue"), new Cookie(COVEO_COOKIE_NAME, "coveo_cookie_value")
@@ -102,8 +102,9 @@ public class SearchTokenServletTest {
     when(searchApiConfigService.getOrgId()).thenReturn("mockOrgId");
     when(searchApiConfigService.getSearchTokenApi()).thenReturn("http://coveo/token/api");
 
-    JsonObject testUserContext = gson.fromJson("{\"email\":\"foo@workday.com\"}", JsonObject.class);
-    when(snapService.getUserContext(anyString())).thenReturn(testUserContext);
+    String userData =
+        "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"email\":\"foo@workday.com\",\"contextInfo\":{\"isWorkmate\":\"false\"},\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
+    when(drupalService.getUserData(anyString())).thenReturn(userData);
     CloseableHttpClient httpClient = mock(CloseableHttpClient.class);
     CloseableHttpResponse httpResponse = mock(CloseableHttpResponse.class);
 

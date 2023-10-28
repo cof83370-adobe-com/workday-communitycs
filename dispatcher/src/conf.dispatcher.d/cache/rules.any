@@ -9,7 +9,7 @@ $include "./default_rules.any"
 
 /0101 {
 	/glob "/content/workday-community/en-us/*"
-	/type "allow"
+	/type "deny"
 }
 
 /0102 {

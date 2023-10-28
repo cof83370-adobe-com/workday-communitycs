@@ -1,6 +1,9 @@
 package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -17,16 +20,15 @@ import java.util.List;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.ListUtils;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-import org.apache.http.entity.ContentType;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
- * The Class CoveoPushApiServiceImpl.
+ * The class CoveoPushApiServiceImpl.
  */
 @Slf4j
 @Component(service = CoveoPushApiService.class)
@@ -37,8 +39,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
    */
   private String pushApiUri;
 
-  /**
-   * The organization id.
+  /*** The organization id.
    */
   private String organizationId;
 
@@ -79,7 +80,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   @Override
   public String generateBatchUploadUri(String fileId) {
     return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
-        + "/documents/batch?fileId=" + fileId;
+        + "/documents/batch?fileId="
+        + fileId;
   }
 
   /**
@@ -97,7 +99,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   public String generateDeleteAllItemsUri() {
     String time = Long.toString(System.currentTimeMillis());
     return this.pushApiUri + this.organizationId + "/sources/" + this.sourceId
-        + "/documents/olderthan?orderingId=" + time + "&queueDelay=15";
+        + "/documents/olderthan?orderingId="
+        + time + "&queueDelay=15";
   }
 
   /**
@@ -114,7 +117,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
    */
   @Override
   public Map<String, Object> callApi(String uri, Map<String, String> header,
-                                     String httpMethod, String payload) {
+                                     String httpMethod,
+                                     String payload) {
     return restApiService.send(uri, header, httpMethod, payload);
   }
 
@@ -124,8 +128,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   @Override
   public Map<String, Object> callBatchUploadUri(String fileId) {
     Map<String, String> header = new HashMap<>();
-    header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
-    header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    header.put(CONTENT_TYPE, JSON);
+    header.put(AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     return callApi(generateBatchUploadUri(fileId), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, "");
   }
@@ -136,9 +140,9 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   @Override
   public Map<String, Object> callCreateContainerUri() {
     Map<String, String> containerHeader = new HashMap<>();
-    containerHeader.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
-    containerHeader.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-    containerHeader.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    containerHeader.put(CONTENT_TYPE, JSON);
+    containerHeader.put(HttpConstants.HEADER_ACCEPT, JSON);
+    containerHeader.put(AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     return callApi(generateContainerUri(), containerHeader,
         org.apache.sling.api.servlets.HttpConstants.METHOD_POST, "");
   }
@@ -149,8 +153,8 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   @Override
   public Integer callDeleteAllItemsUri() {
     Map<String, String> header = new HashMap<>();
-    header.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-    header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    header.put(HttpConstants.HEADER_ACCEPT, JSON);
+    header.put(AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     Map<String, Object> response = callApi(generateDeleteAllItemsUri(), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
     if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
@@ -166,7 +170,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
   @Override
   public Integer callDeleteSingleItemUri(String documentId) {
     Map<String, String> header = new HashMap<>();
-    header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    header.put(AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     Map<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
     if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
@@ -181,10 +185,10 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
    */
   @Override
   public Map<String, Object> callUploadFileUri(String uploadUri,
-                                                   Map<String, String> uploadFileHeader,
-                                                   List<Object> payload) {
-    return callApi(uploadUri, uploadFileHeader,
-        org.apache.sling.api.servlets.HttpConstants.METHOD_PUT, transformPayload(payload));
+                                               Map<String, String> uploadFileHeader,
+                                               List<Object> payload) {
+    return callApi(uploadUri, uploadFileHeader, org.apache.sling.api.servlets.HttpConstants.METHOD_PUT,
+        transformPayload(payload));
   }
 
   /**
@@ -289,5 +293,4 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     transformedResponse.put("requiredHeaders", header);
     return transformedResponse;
   }
-
 }

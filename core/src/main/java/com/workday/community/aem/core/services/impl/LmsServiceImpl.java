@@ -79,7 +79,7 @@ public class LmsServiceImpl implements LmsService {
         || StringUtils.isEmpty(clientSecret)
         || StringUtils.isEmpty(refreshToken)) {
       // No Lms configuration provided, just return the default one.
-      log.info("There is no value for one or multiple configuration parameters: "
+      log.error("There is no value for one or multiple configuration parameters: "
               + "lmsUrl={};tokenPath={};clientId={};clientSecret={};refreshToken={}",
           lmsUrl, tokenPath, clientId, clientSecret, refreshToken);
       return StringUtils.EMPTY;

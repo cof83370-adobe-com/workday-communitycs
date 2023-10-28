@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.models.HeaderModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
@@ -68,6 +69,13 @@ public class HeaderModelImpl implements HeaderModel {
   @NotNull
   @OSGiService
   SnapService snapService;
+
+  /**
+   * The Drupal service.
+   */
+  @NotNull
+  @OSGiService
+  DrupalService drupalService;
 
   /**
    * The run mode config service.
@@ -180,7 +188,7 @@ public class HeaderModelImpl implements HeaderModel {
       if (contentType == null) {
         return null;
       }
-      return this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
+      return this.drupalService.getAdobeDigitalData(sfId, pageTitle, contentType);
     }
     return null;
   }
@@ -211,7 +219,7 @@ public class HeaderModelImpl implements HeaderModel {
       this.searchConfig = CoveoUtils.getSearchConfig(
           searchApiConfigService,
           request,
-          snapService,
+          drupalService,
           userService);
     }
     return this.searchConfig;
