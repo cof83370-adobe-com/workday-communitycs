@@ -2,14 +2,15 @@ package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.SERVICE_USER_GROUP;
+import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_OKTA_USERS_ROOT_PATH;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheBucketName;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.OurmUtils;
 import com.workday.community.aem.core.utils.UuidUtil;
@@ -20,6 +21,7 @@ import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
@@ -29,10 +31,7 @@ import org.osgi.service.component.annotations.Reference;
  * The Class UserServiceImpl.
  */
 @Slf4j
-@Component(
-    service = UserService.class,
-    immediate = true
-)
+@Component(service = UserService.class, immediate = true)
 public class UserServiceImpl implements UserService {
 
   /**
@@ -48,16 +47,16 @@ public class UserServiceImpl implements UserService {
   private RunModeConfigService runModeConfigService;
 
   @Reference
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   /**
    * {@inheritDoc}
    */
   @Override
   public synchronized User getCurrentUser(SlingHttpServletRequest request) throws CacheException {
-    Session session = Objects.requireNonNull(request.getResourceResolver()).adaptTo(Session.class);
-    ResourceResolver serviceResolver = cacheManager.getServiceResolver(SERVICE_USER_GROUP);
-    return getUser(serviceResolver, Objects.requireNonNull(session).getUserID());
+    ResourceResolver resourceResolver = request.getResourceResolver();
+    Session session = Objects.requireNonNull(resourceResolver).adaptTo(Session.class);
+    return getUser(resourceResolver, Objects.requireNonNull(session).getUserID());
   }
 
   /**
@@ -71,10 +70,11 @@ public class UserServiceImpl implements UserService {
     UserManager userManager = Objects.requireNonNull(resourceResolver.adaptTo(UserManager.class));
     try {
       User user = (User) userManager.getAuthorizable(userSessionId);
-      if (user != null) {
+      if (user != null && !(UserConstants.DEFAULT_ANONYMOUS_ID).equals(userSessionId)
+              && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
         return user;
       }
-      log.error("Cannot find user with id {}.", userSessionId);
+      log.error("Cannot find logged in user with id {}.", userSessionId);
       return null;
     } catch (RepositoryException e) {
       log.error("Exception occurred when fetch user {}: {}.", userSessionId, e.getMessage());
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
   public String getUserUuid(String sfId) {
     String cacheKey = String.format("user_uuid_%s", sfId);
     String ret = cacheManager.get(CacheBucketName.UUID_VALUE.name(), cacheKey, () -> {
-      String email = OurmUtils.getUserEmail(sfId, searchConfigService, snapService);
+      String email = OurmUtils.getUserEmail(sfId, searchConfigService, drupalService);
       UUID uuid = UuidUtil.getUserClientId(email);
       return uuid == null ? null : uuid.toString();
     });

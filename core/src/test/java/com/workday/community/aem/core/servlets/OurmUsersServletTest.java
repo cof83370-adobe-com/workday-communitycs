@@ -8,8 +8,8 @@ import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.services.OurmUserService;
+import com.workday.community.aem.core.exceptions.DrupalException;
+import com.workday.community.aem.core.services.DrupalService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,10 +32,10 @@ public class OurmUsersServletTest {
   private final Gson gson = new Gson();
 
   /**
-   * The ourmUsers api service.
+   * The DrupalService.
    */
   @Mock
-  OurmUserService ourmUserService;
+  DrupalService drupalService;
 
   /**
    * The ourmUsers servlet.
@@ -54,11 +54,11 @@ public class OurmUsersServletTest {
    * Test do get.
    *
    * @throws IOException      Signals that an I/O exception has occurred.
-   * @throws OurmException    the ourm exception
+   * @throws DrupalException  the drupal exception
    * @throws ServletException the servlet exception
    */
   @Test
-  public void testDoGet() throws IOException, OurmException, ServletException {
+  public void testDoGet() throws IOException, DrupalException, ServletException {
     SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
     SlingHttpServletResponse response = mock(SlingHttpServletResponse.class);
 
@@ -67,7 +67,7 @@ public class OurmUsersServletTest {
     String testUserContext =
         "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
     JsonObject userContext = gson.fromJson(testUserContext, JsonObject.class);
-    when(ourmUserService.searchOurmUserList(anyString())).thenReturn(userContext);
+    when(drupalService.searchOurmUserList(anyString())).thenReturn(userContext);
     PrintWriter pr = mock(PrintWriter.class);
     lenient().when(response.getWriter()).thenReturn(pr);
     ourmUsersServlet.doGet(request, response);

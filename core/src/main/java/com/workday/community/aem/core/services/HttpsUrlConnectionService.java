@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.services;
 
-import com.workday.community.aem.core.constants.RestApiConstants;
+import com.workday.community.aem.core.constants.HttpConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -50,8 +50,8 @@ public class HttpsUrlConnectionService {
 
     try {
       HttpsURLConnection request = this.getHttpsUrlConnection(url);
-      request.setConnectTimeout(RestApiConstants.TIMEOUT);
-      request.setReadTimeout(RestApiConstants.TIMEOUT);
+      request.setConnectTimeout(HttpConstants.HTTP_TIMEMOUT);
+      request.setReadTimeout(HttpConstants.HTTP_TIMEMOUT);
       request.setRequestMethod(httpMethod);
       if (!header.isEmpty()) {
         for (Map.Entry<String, String> entry : header.entrySet()) {

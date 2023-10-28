@@ -4,7 +4,10 @@
     "include-filter.config.path":"/content/workday-community",
     "include-filter.config.resource-types":["workday-community/components/dynamic/relatedinformation", "workday-community/components/dynamic/brightcoveplayer"
     , "workday-community/components/dynamic/container", "workday-community/components/dynamic/download"
-    , "workday-community/components/dynamic/image", "workday-community/components/dynamic/text", "workday-community/components/react/header", "workday-community/components/common/time"],
+    , "workday-community/components/dynamic/image", "workday-community/components/dynamic/text", "workday-community/components/react/header", "workday-community/components/common/time"
+    , "workday-community/components/common/coveolistview","workday-community/components/common/coveotablist","workday-community/components/common/eventsfeed","workday-community/components/common/relatedinformation"
+    ,"workday-community/components/common/toc","workday-community/components/common/imagelink"
+    ],
     "include-filter.config.include-type":"SSI",
     "include-filter.config.add_comment":true,
     "include-filter.config.selector":"nocache",

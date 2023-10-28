@@ -13,13 +13,13 @@ import static org.apache.sling.api.SlingHttpServletResponse.SC_FORBIDDEN;
 import static org.apache.sling.api.SlingHttpServletResponse.SC_OK;
 
 import com.workday.community.aem.core.constants.WccConstants;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.UserGroupService;
 import com.workday.community.aem.core.services.UserService;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.jcr.Session;
 import javax.servlet.Servlet;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -67,31 +67,30 @@ public class RequestAuthorizationServlet extends SlingSafeMethodsServlet {
         && !uri.contains(WORKDAY_PUBLIC_PAGE_PATH)) {
       log.debug("RequestAuthenticationServlet:Time before validating the user  is {}.",
           new Date().getTime());
-      ResourceResolver requestResourceResolver = request.getResourceResolver();
-      Session userSession = requestResourceResolver.adaptTo(Session.class);
-      if (userSession == null) {
-        response.setStatus(SC_FORBIDDEN);
-        return;
-      }
-      Map<String, Object> serviceParams = new HashMap<>();
-      serviceParams.put(ResourceResolverFactory.SUBSERVICE,
-          WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
       ResourceResolver resourceResolver = null;
       try {
-        log.debug("Inside Try block of Auth_Checker_Servlet");
+        if (null == userService.getCurrentUser(request)) {
+          log.debug("user don't have access on the page {}", uri);
+          response.setStatus(SC_FORBIDDEN);
+          response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
 
+          return;
+        }
+        Map<String, Object> serviceParams = new HashMap<>();
+        serviceParams.put(ResourceResolverFactory.SUBSERVICE,
+                WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+        log.debug("Inside Try block of Auth_Checker_Servlet");
         resourceResolver = resolverFactory.getServiceResourceResolver(serviceParams);
         boolean isValid = userGroupService.validateCurrentUser(request, uri);
         if (!isValid) {
           log.debug("user don't have access on the page {}", uri);
           response.setStatus(SC_FORBIDDEN);
           response.sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);
-
         } else {
           log.debug("user have access on the page {}", uri);
           response.setStatus(SC_OK);
         }
-      } catch (LoginException e) {
+      } catch (LoginException | CacheException e) {
         log.error("---> Exception occurred in RequestAuthenticationServlet: {}", e.getMessage());
         response.setStatus(SC_INTERNAL_SERVER_ERROR);
         response.sendRedirect(WccConstants.ERROR_PAGE_PATH);

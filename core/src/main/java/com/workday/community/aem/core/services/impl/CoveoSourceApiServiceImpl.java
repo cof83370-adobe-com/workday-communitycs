@@ -1,7 +1,9 @@
 package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
-import static com.workday.community.aem.core.constants.RestApiConstants.GET_API;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
@@ -14,9 +16,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
-import org.apache.http.entity.ContentType;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
@@ -26,10 +27,7 @@ import org.osgi.service.component.annotations.Reference;
  * The Class CoveoSourceApiServiceImpl.
  */
 @Slf4j
-@Component(
-    service = CoveoSourceApiService.class,
-    immediate = true
-)
+@Component(service = CoveoSourceApiService.class, immediate = true)
 public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
 
   /**
@@ -88,9 +86,9 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
    */
   protected Map<String, String> generateHeader() {
     Map<String, String> header = new HashMap<>();
-    header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
-    header.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-    header.put(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
+    header.put(CONTENT_TYPE, JSON);
+    header.put(HttpConstants.HEADER_ACCEPT, JSON);
+    header.put(AUTHORIZATION, BEARER_TOKEN.token(this.apiKey));
     return header;
   }
 
@@ -99,7 +97,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
    */
   @Override
   public Map<String, Object> callApi() {
-    return restApiService.send(this.generateSourceApiUri(), generateHeader(), GET_API, "");
+    return restApiService.send(this.generateSourceApiUri(), generateHeader(), HttpConstants.METHOD_GET, "");
   }
 
   /**

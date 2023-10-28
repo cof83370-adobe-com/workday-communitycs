@@ -1,6 +1,9 @@
 package com.workday.community.aem.core.servlets;
 
 import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_TOKEN;
+import static org.apache.http.HttpHeaders.AUTHORIZATION;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 
 import com.adobe.granite.ui.components.ds.DataSource;
 import com.adobe.granite.ui.components.ds.SimpleDataSource;
@@ -9,9 +12,10 @@ import com.day.crx.JcrConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.pojos.EventTypes;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.ServletCallback;
@@ -22,11 +26,9 @@ import java.util.List;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -47,8 +49,7 @@ import org.osgi.service.component.annotations.Reference;
  * @author Thabrez
  */
 @Slf4j
-@Component(service = Servlet.class, property = {
-    Constants.SERVICE_DESCRIPTION + "= Coveo Events type Dropdown Service",
+@Component(service = Servlet.class, property = {Constants.SERVICE_DESCRIPTION + "= Coveo Events type Dropdown Service",
     "sling.servlet.paths=" + "/bin/eventTypes", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
 public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
@@ -63,7 +64,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
   private transient SearchApiConfigService searchApiConfigService;
 
   @Reference
-  private transient SnapService snapService;
+  private transient DrupalService drupalService;
 
   @Reference
   private transient UserService userService;
@@ -100,7 +101,7 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
               });
             }
 
-            // Create a DataSource that is used to populate the drop-down control.
+            // Create a DataSource that is used to populate the drop-down control .
             DataSource dataSource = new SimpleDataSource(resourceList.iterator());
             request.setAttribute(DataSource.class.getName(), dataSource);
           } catch (IOException exception) {
@@ -108,25 +109,28 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
                 exception.getMessage());
           }
 
-          // Create a DataSource that is used to populate the drop-down control.
+          // Create a DataSource that is used to populate the drop-down control .
           DataSource dataSource = new SimpleDataSource(resourceList.iterator());
           request.setAttribute(DataSource.class.getName(), dataSource);
           return null;
         };
 
-    CoveoUtils.executeSearchForCallback(request,
-        response, searchApiConfigService, snapService, userService,
-        gson, objectMapper, callback);
+    try {
+      CoveoUtils.executeSearchForCallback(request,
+          response, searchApiConfigService, drupalService, userService,
+          gson, objectMapper, callback);
+    } catch (DrupalException e) {
+      log.error("Exception in doGet method of CoveoEventsTypeServlet: {}", e.getMessage());
+    }
   }
 
-  private EventTypes getEventTypes(CloseableHttpClient httpClient, String token)
-      throws IOException {
+  private EventTypes getEventTypes(CloseableHttpClient httpClient, String token) throws IOException {
     String endpoint = this.searchApiConfigService.getSearchFieldLookupApi();
     endpoint += EVENT_TYPE_CRITERIA;
     HttpGet request = new HttpGet(endpoint);
-    request.addHeader(HttpConstants.HEADER_ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-    request.addHeader(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
-    request.addHeader(HttpHeaders.AUTHORIZATION, BEARER_TOKEN.token(token));
+    request.addHeader(HttpConstants.HEADER_ACCEPT, JSON);
+    request.addHeader(CONTENT_TYPE, JSON);
+    request.addHeader(AUTHORIZATION, BEARER_TOKEN.token(token));
     HttpResponse response = httpClient.execute(request);
     int status = response.getStatusLine().getStatusCode();
     if (status == HttpStatus.SC_OK) {
