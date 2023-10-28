@@ -65,7 +65,7 @@ class ImageLinkModelImplTest {
   void testGetFinalList() throws Exception {
     UserGroupService mockGroupService = mock(UserGroupService.class);
     context.registerService(UserGroupService.class, mockGroupService);
-    lenient().when(mockGroupService.hasAccessToViewLink(anyString(), any())).thenReturn(true);
+    lenient().when(mockGroupService.validateCurrentUser(any(), anyString())).thenReturn(true);
 
     RunModeConfigService runModeConfigService = mock(RunModeConfigService.class);
     context.registerService(RunModeConfigService.class, runModeConfigService);

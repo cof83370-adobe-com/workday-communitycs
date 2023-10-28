@@ -78,8 +78,8 @@ public class ImageLinkModelImpl implements ImageLinkModel {
       String pagePath = properties.get("pagepath", StringUtils.EMPTY);
 
       if (StringUtils.isNotBlank(pagePath)) {
-        boolean checkAccess = !PageUtils.isPublishInstance(runModeConfigService.getInstance())
-            || userGroupService.hasAccessToViewLink(pagePath, request);
+        boolean checkAccess = !PageUtils.isPublishInstance(runModeConfigService)
+            || userGroupService.validateCurrentUser(request, pagePath);
         if (checkAccess) {
           ImageLinkDto imageLink = new ImageLinkDto();
           imageLink.setFileReference(properties.get("fileReference", StringUtils.EMPTY));

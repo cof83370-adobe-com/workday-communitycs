@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.PageUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -89,7 +90,9 @@ public class PageUtilsTest {
    */
   @Test
   void testPublishInstanceTrue() {
-    boolean responseVal = PageUtils.isPublishInstance("publish");
+    RunModeConfigService runModeConfigService = mock(RunModeConfigService.class);
+    when(runModeConfigService.getInstance()).thenReturn("publish");
+    boolean responseVal = PageUtils.isPublishInstance(runModeConfigService);
     assertEquals(responseVal, true);
   }
 
@@ -98,7 +101,9 @@ public class PageUtilsTest {
    */
   @Test
   void testPublishInstanceFalse() {
-    boolean responseVal = PageUtils.isPublishInstance("author");
+    RunModeConfigService runModeConfigService = mock(RunModeConfigService.class);
+    when(runModeConfigService.getInstance()).thenReturn("author");
+    boolean responseVal = PageUtils.isPublishInstance(runModeConfigService);
     assertEquals(responseVal, false);
   }
 
