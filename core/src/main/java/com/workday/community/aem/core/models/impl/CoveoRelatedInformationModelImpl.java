@@ -11,8 +11,8 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -67,10 +67,10 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   private SearchApiConfigService searchConfigService;
 
   /**
-   * The snap service object.
+   * The drupal service object.
    */
   @OSGiService
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   @OSGiService
   private UserService userService;
@@ -108,8 +108,10 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     pagePath = pagePath.substring(0, pagePath.indexOf("."));
     Page page = pageManager.getPage(pagePath);
     if (page == null) {
-      log.error("getFacetFields in CoveoRelatedInformationModelImpl failed because current Page "
-              + "unresolved, path: {}", pagePath);
+      log.error(
+          "getFacetFields in CoveoRelatedInformationModelImpl failed because current Page "
+              + "unresolved, path: {}",
+          pagePath);
       return Collections.unmodifiableList(facetFields);
     }
 
@@ -158,7 +160,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       this.searchConfig = CoveoUtils.getSearchConfig(
           searchConfigService,
           request,
-          snapService,
+          drupalService,
           userService);
     }
     return this.searchConfig;

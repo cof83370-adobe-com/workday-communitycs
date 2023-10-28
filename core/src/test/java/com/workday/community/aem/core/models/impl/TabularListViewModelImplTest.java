@@ -20,8 +20,8 @@ import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.FeedTabModel;
 import com.workday.community.aem.core.models.TabularListViewModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
@@ -63,7 +63,7 @@ public class TabularListViewModelImplTest {
   SlingHttpServletRequest request;
 
   @Mock
-  SnapService snapService;
+  DrupalService drupalService;
 
   @Mock
   SearchApiConfigService searchApiConfigService;
@@ -89,7 +89,7 @@ public class TabularListViewModelImplTest {
     context.addModelsForClasses(FeedTabModel.class);
     context.load().json("/com/workday/community/aem/core/models/impl/TabularListViewModel.json", "/component");
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
-    context.registerService(SnapService.class, snapService);
+    context.registerService(DrupalService.class, drupalService);
     context.registerService(SlingHttpServletRequest.class, request);
     context.registerService(UserService.class, userService);
 
@@ -463,7 +463,7 @@ public class TabularListViewModelImplTest {
         "{\"success\":true,\"contactId\":\"sadsadadsa\",\"email\":\"foo@fiooo.com\",\"timeZone\":\"America/Los_Angeles\",\"contextInfo\":{\"functionalArea\":\"Other\",\"contactRole\":\"Workmate;Workday-professionalservices;workday;workday_professional_services;BetaUser\",\"productLine\":\"Other\",\"superIndustry\":\"Communications,Media&Technology\",\"isWorkmate\":true,\"type\":\"customer\"},\"contactInformation\":{\"propertyAccess\":\"Community\",\"nscSupporting\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"wsp\":\"WSP-Guided\",\"lastName\":\"Zhang\",\"firstName\":\"Wangchun\",\"customerOf\":\"Workday;Scout;AdaptivePlanning;Peakon;VNDLY\",\"customerSince\":\"2019-01-28\"}}";
     JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");
-    lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
+    lenient().when(drupalService.getUserContext(anyString())).thenReturn(userContext);
     lenient().when(userService.getUserUuid(anyString())).thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
 
     mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(mockResourceResolver),

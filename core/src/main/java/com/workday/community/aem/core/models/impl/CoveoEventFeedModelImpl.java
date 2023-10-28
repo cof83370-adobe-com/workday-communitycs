@@ -9,8 +9,8 @@ import com.day.cq.wcm.api.PageManager;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoEventFeedModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -40,12 +40,11 @@ import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
  * The CoveoEventFeedModel implementation Class.
  */
 @Slf4j
-@Model(
-    adaptables = {Resource.class, SlingHttpServletRequest.class},
-    adapters = {CoveoEventFeedModel.class},
-    resourceType = {CoveoEventFeedModelImpl.RESOURCE_TYPE},
-    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
-)
+@Model(adaptables = {
+    Resource.class,
+    SlingHttpServletRequest.class
+}, adapters = { CoveoEventFeedModel.class }, resourceType = {
+    CoveoEventFeedModelImpl.RESOURCE_TYPE }, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
 
   protected static final String RESOURCE_TYPE =
@@ -76,10 +75,10 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
   private UserService userService;
 
   /**
-   * The snap service object.
+   * The drupal service object.
    */
   @OSGiService
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   /**
    * Coveo event feed mode init.
@@ -101,7 +100,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
       searchConfig = CoveoUtils.getSearchConfig(
           this.searchConfigService,
           this.request,
-          this.snapService,
+          this.drupalService,
           this.userService);
     }
     return searchConfig;
@@ -130,7 +129,6 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
     GregorianCalendar endTime = (GregorianCalendar) pageObject
         .getProperties()
         .get("eventEndDate");
-
     SimpleDateFormat fmt = new SimpleDateFormat("MMM dd, yyyy");
     fmt.setCalendar(startTime);
     fmt.setCalendar(endTime);
