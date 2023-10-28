@@ -92,31 +92,36 @@ public class UserGroupServiceImpl implements UserGroupService {
       if (StringUtils.isBlank(pagePath)) {
         return false;
       }
-      if (pagePath.startsWith(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH)) {
-        User user = userService.getCurrentUser(request);
-        boolean isPublicPage = isPublicPage(pagePath);
-        if (user == null) {
-          return isPublicPage;
-        } else if (isPublicPage) {
+      if (!pagePath.startsWith(GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH)) {
+        return true;
+      }
+
+      User user = userService.getCurrentUser(request);
+      boolean isPublicPage = isPublicPage(pagePath);
+
+      if (user == null) {
+        return isPublicPage;
+      }
+
+      if (isPublicPage) {
+        return true;
+      }
+
+      log.debug("---> UserGroupServiceImpl: Before Access control tag List and userPath is: {}", user.getPath());
+      List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
+          ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
+      log.debug("---> UserGroupServiceImpl: After Access control tag List");
+
+      if (!accessControlTagsList.isEmpty()) {
+        log.debug("---> UserGroupServiceImpl: Access control tag List: {}.", accessControlTagsList);
+
+        if (accessControlTagsList.contains(AUTHENTICATED)) {
           return true;
         } else {
-          log.debug("---> UserGroupServiceImpl: Before Access control tag List and userPath is: {}", user.getPath());
-          List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
-              ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
-          log.debug("---> UserGroupServiceImpl: After Access control tag List");
-          if (!accessControlTagsList.isEmpty()) {
-            log.debug("---> UserGroupServiceImpl:Access control tag List.. {}.", accessControlTagsList);
-            if (accessControlTagsList.contains(AUTHENTICATED)) {
-              return true;
-            } else {
-              List<String> groupsList = getCurrentUserGroups(request);
-              log.debug("---> UserGroupServiceImpl: Groups List..{}.", groupsList);
-              return !Collections.disjoint(accessControlTagsList, groupsList);
-            }
-          }
+          List<String> groupsList = getCurrentUserGroups(request);
+          log.debug("---> UserGroupServiceImpl: Groups List: {}.", groupsList);
+          return !Collections.disjoint(accessControlTagsList, groupsList);
         }
-      } else {
-        return true;
       }
     } catch (Exception exec) {
       log.error("---> Exception in validateTheUser function: {}", exec);
