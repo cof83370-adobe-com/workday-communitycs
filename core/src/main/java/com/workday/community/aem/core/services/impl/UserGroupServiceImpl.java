@@ -89,7 +89,6 @@ public class UserGroupServiceImpl implements UserGroupService {
   public boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath) {
     log.debug(" inside validateTheUser method. -->");
 
-    boolean isValid = false;
     try {
       if (StringUtils.isBlank(pagePath)) {
         return false;
