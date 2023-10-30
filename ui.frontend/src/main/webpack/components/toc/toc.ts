@@ -195,7 +195,11 @@
     }
 
     function getSelectedTOCItem() {
-        const activeItem = document.querySelector('.cmp-toc__item.active .cmp-toc__firstlevelitem-title, .cmp-toc__item.active .cmp-toc__secondlevelitem-title, .cmp-toc__item.active .cmp-toc__thirdlevelitem-title');
+        const firstLevelItem = document.querySelector('.cmp-toc__item.active .cmp-toc__firstlevelitem-title');
+        const secondLevelItem = document.querySelector('.cmp-toc__item.active .cmp-toc__secondlevelitem-title');
+        const thirdLevelItem = document.querySelector('.cmp-toc__item.active .cmp-toc__thirdlevelitem-title');
+        const activeItem = firstLevelItem || secondLevelItem || thirdLevelItem;
+
         if (activeItem) {
             const visuallyHiddenText = document.createElement('span');
             visuallyHiddenText.textContent = '(selected)';
