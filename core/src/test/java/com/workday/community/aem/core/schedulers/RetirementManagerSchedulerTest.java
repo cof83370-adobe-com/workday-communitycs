@@ -141,7 +141,7 @@ public class RetirementManagerSchedulerTest {
 		}
 
 		@Override
-		public boolean workflowNotificationReview10Months() {
+		public boolean enableWorkflowNotificationReview() {
 			return true;
 		}
 
@@ -156,7 +156,7 @@ public class RetirementManagerSchedulerTest {
 		}
 
 		@Override
-		public boolean workflowNotificationRetirement11Months() {
+		public boolean enableWorkflowNotificationRetirement() {
 			return true;
 		}
     };

@@ -1,6 +1,6 @@
 {
     "workflowNotificationCron" : "$[env:workflowNotificationCron]",
-    "workflowNotificationReview10Months" : "$[env:workflowNotificationReview10Months]",
-    "workflowNotificationRetirement11Months" : "$[env:workflowNotificationRetirement11Months]",
+    "enableWorkflowNotificationReview" : "$[env:enableWorkflowNotificationReview]",
+    "enableWorkflowNotificationRetirement" : "$[env:enableWorkflowNotificationRetirement]",
     "authorDomain" : "$[env:authorDomain]"
 }

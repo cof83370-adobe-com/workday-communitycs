@@ -104,11 +104,11 @@ public class RetirementManagerScheduler implements Runnable {
       authorDomain = config.authorDomain();
       log.debug(" RetirementManagerScheduler activate method called and authorInstUrl : {}", authorDomain);
 
-      if (config.workflowNotificationReview10Months()) {
+      if (config.enableWorkflowNotificationReview()) {
         wfNotifyReview10Months = true;
       }
 
-      if (config.workflowNotificationRetirement11Months()) {
+      if (config.enableWorkflowNotificationRetirement()) {
         wfNotifyRetirement11Months = true;
       }
 

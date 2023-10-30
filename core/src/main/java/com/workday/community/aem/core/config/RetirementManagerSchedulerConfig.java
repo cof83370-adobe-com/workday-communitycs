@@ -34,7 +34,7 @@ public @interface RetirementManagerSchedulerConfig {
    */
   @AttributeDefinition(name = "Enable Scheduler for Review 10 Months", 
       description = "Enable Scheduler for Review 10 Months", type = AttributeType.BOOLEAN)
-  boolean workflowNotificationReview10Months() default true;
+  boolean enableWorkflowNotificationReview() default true;
 
   /**
    * Workflow notification retirement 11 months.
@@ -43,7 +43,7 @@ public @interface RetirementManagerSchedulerConfig {
    */
   @AttributeDefinition(name = "Enable Scheduler for Retirement 11 Months", 
       description = "Enable Scheduler for Retirement 11 Months", type = AttributeType.BOOLEAN)
-  boolean workflowNotificationRetirement11Months() default true;
+  boolean enableWorkflowNotificationRetirement() default true;
 
   /**
    * Author domain.
