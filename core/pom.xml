@@ -88,6 +88,7 @@
 					<excludes>
 						<exclude>com/workday/community/aem/core/constants/**/*</exclude>
                         <exclude>com/workday/community/aem/core/exceptions/**/*</exclude>
+                        <exclude>com/workday/community/aem/core/dto/**/*</exclude>
                         <exclude>META-INF/**</exclude>
 					</excludes>
 				</configuration>
