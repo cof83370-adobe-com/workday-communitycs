@@ -121,7 +121,7 @@ public class CoveoSourceApiServiceImpl implements CoveoSourceApiService {
         return totalNumberOfIndexedItems;
       }
     } else {
-      log.error("Get number of indexed pages from coveo failed with status code {}: {}",
+      log.error("Get number of indexed pages from coveo failed with status code: {} response: {}",
           response.get("statusCode"), response.get("response"));
     }
 

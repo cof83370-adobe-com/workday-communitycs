@@ -330,7 +330,7 @@ public class SnapServiceImplTest {
       snapService.activate(snapConfig.get(1, 1));
       mocked.when(() -> RestApiUtil.doMenuGet(anyString(), anyString(),
           anyString(), anyString()))
-          .thenThrow(new SnapException());
+          .thenThrow(new SnapException("test fails"));
 
       String menuData2 = this.snapService.getUserHeaderMenu(DEFAULT_SFID_MASTER);
       assertEquals(menuData, menuData2);

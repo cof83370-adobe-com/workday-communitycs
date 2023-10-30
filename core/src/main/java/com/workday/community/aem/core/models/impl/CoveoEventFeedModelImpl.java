@@ -23,7 +23,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import lombok.extern.slf4j.Slf4j;
@@ -110,7 +109,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
    * {@inheritDoc}
    */
   @Override
-  public Map<String, String> getFeatureEvent() throws RepositoryException {
+  public Map<String, String> getFeatureEvent() {
     if (StringUtils.isEmpty(this.featuredEvent)) {
       return new HashMap<>();
     }
@@ -144,7 +143,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
           imagePath =
               requireNonNull(image.adaptTo(Node.class)).getProperty("fileReference").getValue()
                   .getString();
-        } catch (PathNotFoundException e) {
+        } catch (RepositoryException e) {
           log.error("There is no image for the selected feature event");
           imagePath = "";
         }
@@ -195,7 +194,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
    * {@inheritDoc}
    */
   @Override
-  public String getSortCriteria() throws DamException {
+  public String getSortCriteria() {
     return this.getModelConfig().get("sortCriteria").getAsString();
   }
 
@@ -203,7 +202,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
    * {@inheritDoc}
    */
   @Override
-  public String getEventCriteria() throws DamException {
+  public String getEventCriteria() {
     LocalDate localDate = LocalDate.now();
     ZonedDateTime startOfDay = localDate.atStartOfDay(ZoneId.of("Z"));
     DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy/MM/dd@HH:mm");
@@ -225,7 +224,7 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
    * {@inheritDoc}
    */
   @Override
-  public String getAllEventsUrl() throws DamException {
+  public String getAllEventsUrl() {
     return this.getModelConfig().get("allEventsUrl").getAsString();
   }
 
@@ -233,14 +232,19 @@ public class CoveoEventFeedModelImpl implements CoveoEventFeedModel {
    * {@inheritDoc}
    */
   @Override
-  public String getExtraCriteria() throws DamException {
+  public String getExtraCriteria() {
     return this.getModelConfig().get("extraCriteria").getAsString();
   }
 
-  private JsonObject getModelConfig() throws DamException {
+  private JsonObject getModelConfig() {
     if (this.modelConfig == null) {
-      this.modelConfig =
-          DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
+      try {
+        this.modelConfig =
+            DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
+      } catch (DamException e) {
+        log.error("getModelConfig() call fails: {}", e.getMessage());
+        return new JsonObject();
+      }
     }
     return this.modelConfig;
   }

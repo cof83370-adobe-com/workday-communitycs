@@ -158,7 +158,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     Map<String, Object> response = callApi(generateDeleteAllItemsUri(), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
     if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
-      log.error("Deleting all items from coveo failed with status code {}: {}.",
+      log.error("Deleting all items from Coveo failed with status code {}:  response: {}.",
           response.get("statusCode"), response.get("response"));
     }
     return (Integer) response.get("statusCode");
@@ -174,7 +174,7 @@ public class CoveoPushApiServiceImpl implements CoveoPushApiService {
     Map<String, Object> response = callApi(generateDeleteSingleItemUri(documentId), header,
         org.apache.sling.api.servlets.HttpConstants.METHOD_DELETE, "");
     if ((Integer) response.get("statusCode") != HttpStatus.SC_ACCEPTED) {
-      log.error("Deleting single item {} from coveo failed with status code {}: {}.", documentId,
+      log.error("Deleting single item {} from coveo failed with status code: {} response: {}.", documentId,
           response.get("statusCode"), response.get("response"));
     }
     return (Integer) response.get("statusCode");

@@ -76,9 +76,9 @@ public class UserGroupServiceImpl implements UserGroupService {
   private UserService userService;
 
   /**
-   * The evaluation process determines whether a user has the necessary permissions 
-   * to view a specified link. Public pages are accessible by default, while anonymous 
-   * or unavailable logged-in users can also access them. However, for secured internal 
+   * The evaluation process determines whether a user has the necessary permissions
+   * to view a specified link. Public pages are accessible by default, while anonymous
+   * or unavailable logged-in users can also access them. However, for secured internal
    * pages with Okta users, the ACL logic is evaluated to determine access.
    *
    * @param pagePath the page path
@@ -88,6 +88,7 @@ public class UserGroupServiceImpl implements UserGroupService {
   @Override
   public boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath) {
     log.debug(" inside validateTheUser method. -->");
+
     try {
       if (StringUtils.isBlank(pagePath)) {
         return false;
@@ -107,9 +108,10 @@ public class UserGroupServiceImpl implements UserGroupService {
         return true;
       }
 
-      log.debug("---> UserGroupServiceImpl: Before Access control tag List and userPath is: {}", user.getPath());
-      List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
-          ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
+      List<String> accessControlTagsList =
+          PageUtils.getPageTagPropertyList(request.getResourceResolver(),
+              pagePath,
+              ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
       log.debug("---> UserGroupServiceImpl: After Access control tag List");
 
       if (!accessControlTagsList.isEmpty()) {
@@ -123,8 +125,8 @@ public class UserGroupServiceImpl implements UserGroupService {
           return !Collections.disjoint(accessControlTagsList, groupsList);
         }
       }
-    } catch (Exception exec) {
-      log.error("---> Exception in validateTheUser function: {}", exec);
+    } catch (RepositoryException | CacheException e) {
+      log.error("---> Exception in validateTheUser function: {}.", e.getMessage());
     }
     return false;
   }
@@ -156,7 +158,7 @@ public class UserGroupServiceImpl implements UserGroupService {
    */
   @Override
   public List<String> getCurrentUserGroups(SlingHttpServletRequest request) {
-    log.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
+    log.debug("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
     String userRole;
     List<String> groupIds = new ArrayList<>();
     try {
@@ -188,7 +190,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 StringUtils.join(groupIds, ";"));
           }
         }
-        log.info("Salesforce roles {}", groupIds);
+        log.debug("Salesforce roles {}", groupIds);
       }
 
     } catch (RepositoryException | CacheException e) {

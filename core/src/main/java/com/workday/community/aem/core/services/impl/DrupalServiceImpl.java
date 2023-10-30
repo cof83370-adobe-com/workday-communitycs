@@ -87,7 +87,7 @@ public class DrupalServiceImpl implements DrupalService {
    *
    * @param serviceCacheMgr the pass-in Cache manager object.
    */
-  public void setServiceCacheMgr(CacheManagerService serviceCacheMgr) {
+  protected void setServiceCacheMgr(CacheManagerService serviceCacheMgr) {
     this.serviceCacheMgr = serviceCacheMgr;
   }
 
@@ -96,7 +96,7 @@ public class DrupalServiceImpl implements DrupalService {
    *
    * @param runModeConfigService the pass-in run mode config service object.
    */
-  public void setRunModeConfigService(RunModeConfigService runModeConfigService) {
+  protected void setRunModeConfigService(RunModeConfigService runModeConfigService) {
     this.runModeConfigService = runModeConfigService;
   }
 
@@ -105,65 +105,16 @@ public class DrupalServiceImpl implements DrupalService {
    */
   @Activate
   @Modified
-  @Override
-  public void activate(DrupalConfig config) {
+  protected void activate(DrupalConfig config) {
     this.config = config;
     this.drupalApiCache = new LruCacheWithTimeout<>(config.drupalTokenCacheMax(), config.drupalTokenCacheTimeout());
     LOGGER.info("DrupalService is activated.");
   }
 
   /**
-   * Makes Drupal API call and fetches the user data for logged in user.
-   */
-  @Override
-  public String getUserData(String sfId) {
-    String userDataCacheKey = String.format("user_data_%s_%s", getEnv(), sfId);
-    if (!config.enableCache()) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey);
-    }
-    String retValue = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey, () -> {
-      try {
-        if (StringUtils.isNotBlank(sfId)) {
-          String drupalUrl = config.drupalApiUrl();
-          String userDataPath = config.drupalUserDataPath();
-          // Get the bearer token needed for user data API call.
-          String bearerToken = getApiToken();
-          if (StringUtils.isNotBlank(bearerToken)) {
-            // Frame the request URL.
-            String url = CommunityUtils.formUrl(drupalUrl, userDataPath);
-            // Format the URL.
-            url = String.format(url, sfId);
-            // Execute the request.
-            ApiResponse userDataResponse = RestApiUtil.doDrupalUserDataGet(url, bearerToken);
-            if (userDataResponse == null || StringUtils.isEmpty(userDataResponse.getResponseBody())
-                || userDataResponse.getResponseCode() != HttpStatus.SC_OK) {
-              LOGGER.error("Drupal API user data response is empty.");
-              return StringUtils.EMPTY;
-            }
-
-            return userDataResponse.getResponseBody();
-          }
-        }
-        return StringUtils.EMPTY;
-      } catch (DrupalException e) {
-        LOGGER.error(
-            String.format(
-                "There is an error while fetching the user data. Please contact Community Admin. %s",
-                e.getMessage()));
-        return null;
-      }
-    });
-    if (StringUtils.isEmpty(retValue)) {
-      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey);
-    }
-    return retValue;
-  }
-
-  /**
    * Gets the Drupal API Bearer Token required for user data API.
    */
-  @Override
-  public String getApiToken() throws DrupalException {
+  protected String getApiToken() throws DrupalException {
     String cachedResult = drupalApiCache.get(DrupalConstants.TOKEN_CACHE_KEY);
     if (StringUtils.isNotBlank(cachedResult)) {
       return cachedResult;
@@ -214,6 +165,53 @@ public class DrupalServiceImpl implements DrupalService {
   }
 
   /**
+   * Makes Drupal API call and fetches the user data for logged-in user.
+   */
+  @Override
+  public String getUserData(String sfId) {
+    String userDataCacheKey = String.format("user_data_%s_%s", getEnv(), sfId);
+    if (!config.enableCache()) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey);
+    }
+    String retValue = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey, () -> {
+      try {
+        if (StringUtils.isNotBlank(sfId)) {
+          String drupalUrl = config.drupalApiUrl();
+          String userDataPath = config.drupalUserDataPath();
+          // Get the bearer token needed for user data API call.
+          String bearerToken = getApiToken();
+          if (StringUtils.isNotBlank(bearerToken)) {
+            // Frame the request URL.
+            String url = CommunityUtils.formUrl(drupalUrl, userDataPath);
+            // Format the URL.
+            url = String.format(url, sfId);
+            // Execute the request.
+            ApiResponse userDataResponse = RestApiUtil.doDrupalUserDataGet(url, bearerToken);
+            if (userDataResponse == null || StringUtils.isEmpty(userDataResponse.getResponseBody())
+                || userDataResponse.getResponseCode() != HttpStatus.SC_OK) {
+              LOGGER.error("Drupal API user data response is empty.");
+              return StringUtils.EMPTY;
+            }
+
+            return userDataResponse.getResponseBody();
+          }
+        }
+        return StringUtils.EMPTY;
+      } catch (DrupalException e) {
+        LOGGER.error(
+            String.format(
+                "There is an error while fetching the user data. Please contact Community Admin. %s",
+                e.getMessage()));
+        return null;
+      }
+    });
+    if (StringUtils.isEmpty(retValue)) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey);
+    }
+    return retValue;
+  }
+
+  /**
    * Gets the user profile image data from drupal user data API.
    *
    * @param sfId SFID
@@ -240,7 +238,7 @@ public class DrupalServiceImpl implements DrupalService {
   /**
    * Gets the adobe data to be set on digital data object on frontend.
    *
-   * @param sfId        SFID.
+   * @param sfId        salesforce id.
    * @param pageTitle   Page title.
    * @param contentType Content type.
    * @return Adobe data.
@@ -248,10 +246,11 @@ public class DrupalServiceImpl implements DrupalService {
   @Override
   public String getAdobeDigitalData(String sfId, String pageTitle, String contentType) {
     try {
-      JsonObject digitalData = new JsonObject();
+      JsonObject digitalData;
       String userData = getUserData(sfId);
       if (StringUtils.isEmpty(userData)) {
         LOGGER.error("Error in getAdobeDigitalData method - empty user data response.");
+        return StringUtils.EMPTY;
       } else {
         digitalData = generateAdobeDigitalData(userData);
       }
@@ -316,8 +315,7 @@ public class DrupalServiceImpl implements DrupalService {
         accountType = (accountTypeElement == null || accountTypeElement.isJsonNull()) ? StringUtils.EMPTY
             : accountTypeElement.getAsString();
       } catch (JsonSyntaxException e) {
-        LOGGER.error("Error in generateAdobeDigitalData method :: {}",
-            e.getMessage());
+        LOGGER.error("Error in generateAdobeDigitalData method :: {}", e.getMessage());
       }
     }
     userProperties.addProperty(CONTACT_ROLE, contactRole);

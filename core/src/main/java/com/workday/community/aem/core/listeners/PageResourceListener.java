@@ -185,7 +185,7 @@ public class PageResourceListener implements ResourceChangeListener {
         }
         if (resolver.hasChanges()) {
           resolver.commit();
-          log.info("Removed node for page {}", pagePath);
+          log.debug("Removed node for page {}", pagePath);
         }
       }
     } catch (PersistenceException | RepositoryException | CacheException e) {

@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.models;
 
 import com.google.gson.JsonArray;
-import com.workday.community.aem.core.exceptions.DamException;
 import java.util.List;
 
 /**
@@ -20,14 +19,14 @@ public interface TabularListViewModel extends CoveoCommonModel {
    *
    * @return fields as JasonArray object
    */
-  JsonArray getFields() throws DamException;
+  JsonArray getFields();
 
   /**
    * Get selected fields.
    *
    * @return Selected fields JasonArray object
    */
-  JsonArray getSelectedFields() throws DamException;
+  JsonArray getSelectedFields();
 
   /**
    * Get all Url base for each feed tab.
