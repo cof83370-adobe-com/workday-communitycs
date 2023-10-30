@@ -8,24 +8,6 @@ import org.osgi.annotation.versioning.ProviderType;
 @ProviderType
 public interface SnapService {
   /**
-   * Setter for RunModeConfigService.
-   *
-   * @param runModeConfigService RunModeConfigService object. This method is used
-   *                             to explicitly pass the
-   *                             runModeConfigService to the snap logic service
-   */
-  void setRunModeConfigService(RunModeConfigService runModeConfigService);
-
-  /**
-   * Sets the drupal service.
-   *
-   * @param drupalService DrupalService object. This method is used
-   *                      to explicitly pass the
-   *                      drupalService to the snap logic service
-   */
-  void setDrupalService(DrupalService drupalService);
-
-  /**
    * Retrieves the user header menu.
    *
    * @param sfId Salesforce Id.

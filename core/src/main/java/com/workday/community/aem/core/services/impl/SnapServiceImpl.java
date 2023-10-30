@@ -53,14 +53,14 @@ public class SnapServiceImpl implements SnapService {
    */
   @Reference
   @Setter
-  private RunModeConfigService runModeConfigService;
+  protected RunModeConfigService runModeConfigService;
 
   /**
    * The Drupal service.
    */
   @Reference
   @Setter
-  private DrupalService drupalService;
+  protected DrupalService drupalService;
 
   /**
    * The cache manager service.

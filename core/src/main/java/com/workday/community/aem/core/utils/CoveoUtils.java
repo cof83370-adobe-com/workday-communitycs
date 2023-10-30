@@ -166,7 +166,7 @@ public class CoveoUtils {
                                       ObjectMapper objectMapper,
                                       String email, String apiKey) throws IOException {
     if (StringUtils.isEmpty(apiKey) || apiKey.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
-      log.debug("Pass-in API key is empty or null");
+      log.error("Pass-in API key is empty or null");
       return "";
     }
 
@@ -238,16 +238,14 @@ public class CoveoUtils {
   private static String getTokenPayload(
       SearchApiConfigService searchApiConfigService, Gson gson, String email) {
     String searchHub = searchApiConfigService.getSearchHub();
-    log.debug(
-        String.format("Inside getTokenPayload method, and the configured Search hub is: %s",
-            searchHub));
+    log.debug("Inside getTokenPayload method, and the configured Search hub is: {}", searchHub);
 
     Map<String, String> userMap = new HashMap<>();
     userMap.put("name", email);
     userMap.put("provider", searchApiConfigService.getUserIdProvider());
     String userIdType = searchApiConfigService.getUserIdType();
     if (!StringUtils.isEmpty(userIdType) && !userIdType.equalsIgnoreCase(CLOUD_CONFIG_NULL_VALUE)) {
-      log.debug(String.format("UserIdType is: %s", userIdType));
+      log.debug("UserIdType is: {}", userIdType);
       userMap.put("type", userIdType);
     }
 
