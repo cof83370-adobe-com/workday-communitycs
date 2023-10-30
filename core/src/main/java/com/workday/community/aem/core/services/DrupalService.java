@@ -1,31 +1,12 @@
 package com.workday.community.aem.core.services;
 
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.exceptions.DrupalException;
 
 /**
  * The Drupal service definition interface.
  */
 public interface DrupalService {
-  /**
-   * Activate method.
-   *
-   * @param config Service configuration object for drupal service. This
-   *               method is used for programmatically pass
-   *               a configuration to the service object during service activate
-   *               stage.
-   */
-  void activate(DrupalConfig config);
-
-  /**
-   * Gets the Drupal API Bearer token.
-   *
-   * @return Bearer token.
-   * @throws DrupalException DrupalException Object.
-   */
-  String getApiToken() throws DrupalException;
-
   /**
    * Gets user data.
    *

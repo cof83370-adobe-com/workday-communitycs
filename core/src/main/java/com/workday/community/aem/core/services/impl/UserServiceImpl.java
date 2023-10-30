@@ -57,13 +57,7 @@ public class UserServiceImpl implements UserService {
   public synchronized User getCurrentUser(SlingHttpServletRequest request) throws CacheException {
     ResourceResolver resourceResolver = request.getResourceResolver();
     Session session = Objects.requireNonNull(resourceResolver).adaptTo(Session.class);
-    return getUser(resourceResolver, Objects.requireNonNull(session).getUserID());
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  private User getUser(final ResourceResolver resourceResolver, String userSessionId) {
+    String userSessionId = Objects.requireNonNull(session).getUserID();
     if (StringUtils.isEmpty(userSessionId)) {
       return null;
     }
@@ -72,7 +66,7 @@ public class UserServiceImpl implements UserService {
     try {
       User user = (User) userManager.getAuthorizable(userSessionId);
       if (user != null && !(UserConstants.DEFAULT_ANONYMOUS_ID).equals(userSessionId)
-              && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
+          && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
         return user;
       }
       log.error("Cannot find logged in user with id {}.", userSessionId);
@@ -163,5 +157,4 @@ public class UserServiceImpl implements UserService {
   protected void setCacheManager(CacheManagerService cacheManager) {
     this.cacheManager = cacheManager;
   }
-
 }

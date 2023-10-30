@@ -92,6 +92,7 @@ public class CoveoUtils {
         : new JsonObject();
     if (userContext == null || userContext.isJsonNull()
         || (userContext.has("error") && userContext.get("error").getAsBoolean())) {
+      log.error("the userContext is null or not fetched correctly");
       userContext = new JsonObject();
     }
 
@@ -104,7 +105,7 @@ public class CoveoUtils {
           ? userDataObject.get(EMAIL_NAME).getAsString() : null;
     }
     if (StringUtils.isEmpty(email)) {
-      throw new ServletException("Email for current user is empty, ");
+      throw new ServletException("Email for current user is empty");
     }
 
     try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -121,15 +122,20 @@ public class CoveoUtils {
           getSearchToken(searchApiConfigService, httpClient, gson, objectMapper,
               email, searchApiConfigService.getUpcomingEventApiKey());
 
-      userContext.addProperty("searchToken", searchToken);
-      userContext.addProperty("recommendationToken", recommendationToken);
-      userContext.addProperty("upcomingEventToken", upcomingEventToken);
-      userContext.addProperty("orgId", searchApiConfigService.getOrgId());
-      userContext.addProperty("validFor", searchApiConfigService.getTokenValidTime());
-      userContext.remove("contactId");
-      userContext.remove("email");
+      JsonObject cookeObject = new JsonObject();
+      cookeObject.addProperty("searchToken", searchToken);
+      cookeObject.addProperty("recommendationToken", recommendationToken);
+      cookeObject.addProperty("upcomingEventToken", upcomingEventToken);
+      cookeObject.addProperty("orgId", searchApiConfigService.getOrgId());
+      cookeObject.addProperty("validFor", searchApiConfigService.getTokenValidTime());
+      cookeObject.addProperty("firstName",
+          userContext.has("firstName") ? userContext.get("firstName").getAsString() : "");
+      cookeObject.addProperty("lastName",
+          userContext.has("lastName") ? userContext.get("lastName").getAsString() : "");
+      cookeObject.add("address",
+          userContext.has("address") ? userContext.get("address").getAsJsonObject() : new JsonObject());
 
-      String coveoInfo = gson.toJson(userContext);
+      String coveoInfo = gson.toJson(cookeObject);
       Cookie cookie = new Cookie(COVEO_COOKIE_NAME, URLEncoder.encode(coveoInfo, utfName));
       HttpUtils.setCookie(cookie, response, true, tokenExpiryTime, "/",
           searchApiConfigService.isDevMode());
@@ -184,8 +190,7 @@ public class CoveoUtils {
       return (String) result.get("token");
     }
 
-    log.error("getSearchToken API call failed. error {}",
-        objectMapper.writeValueAsString(result));
+    log.error("getSearchToken API call failed. error {}", objectMapper.writeValueAsString(result));
     return "";
   }
 
