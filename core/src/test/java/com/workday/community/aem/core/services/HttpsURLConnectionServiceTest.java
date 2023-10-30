@@ -1,5 +1,7 @@
 package com.workday.community.aem.core.services;
 
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 
@@ -10,9 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpStatus;
-import org.apache.http.entity.ContentType;
+import org.apache.sling.api.servlets.HttpConstants;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,7 +55,7 @@ public class HttpsURLConnectionServiceTest {
    */
   @Test
   public void testSendSccessed() throws IOException {
-    header.put(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON.getMimeType());
+    header.put(CONTENT_TYPE, JSON);
     int expected = 200;
     doReturn(request).when(service).getHttpsUrlConnection(any());
     doReturn(expected).when(request).getResponseCode();
@@ -73,8 +73,8 @@ public class HttpsURLConnectionServiceTest {
    */
   @Test
   public void testSendFailed() throws IOException {
-    header.put(HttpHeaders.ACCEPT, ContentType.APPLICATION_JSON.getMimeType());
-    int expected = HttpStatus.SC_FORBIDDEN;
+    header.put(HttpConstants.HEADER_ACCEPT, JSON);
+    int expected = 403;
     doReturn(request).when(service).getHttpsUrlConnection(any());
     doReturn(expected).when(request).getResponseCode();
     String response = "";

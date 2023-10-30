@@ -6,10 +6,11 @@ import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFI
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.constants.SnapConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -69,24 +70,31 @@ public class OurmUtils {
    *
    * @param sfId                   User's Salesforce id.
    * @param searchApiConfigService Pass-in SearchApiConfigService object.
-   * @param snapService            Pass-in snapService object
+   * @param drupalService          Pass-in DrupalService object
    * @return the user's email address.
    */
   public static String getUserEmail(
-      String sfId, SearchApiConfigService searchApiConfigService, SnapService snapService
-  ) {
+      String sfId, SearchApiConfigService searchApiConfigService, DrupalService drupalService) {
     boolean isDevMode = searchApiConfigService.isDevMode();
-    JsonObject userContext = snapService.getUserContext(sfId);
-    return userContext.has(EMAIL_NAME) ? userContext.get(EMAIL_NAME).getAsString()
-        : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
+    String userData;
+    try {
+      userData = drupalService.getUserData(sfId);
+      Gson gson = new Gson();
+      JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
+      return userDataObject != null && !userDataObject.isJsonNull() && userDataObject.has(EMAIL_NAME)
+          ? userDataObject.get(EMAIL_NAME).getAsString()
+          : (isDevMode ? searchApiConfigService.getDefaultEmail() : null);
+    } catch (JsonSyntaxException e) {
+      log.error("Exception in getUserEmail method in OurmUtils class: {}", e.getMessage());
+      return null;
+    }
   }
 
   /**
    * Whether the menu is empty.
    *
-   * @param gson The Gson object.
+   * @param gson       The Gson object.
    * @param menuString The menu string.
-   *
    * @return True if it's empty, otherwise false.
    */
   public static boolean isMenuEmpty(Gson gson, String menuString) {
