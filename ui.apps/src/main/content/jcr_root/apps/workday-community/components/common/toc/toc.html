@@ -1,66 +1,48 @@
-<div class="cmp-toc" data-cmp-is="cmp-toc" data-sly-use.model="com.workday.community.aem.core.models.TocModel">
-    <a class="cmp-toc__skip" href="#center-container" tabindex="0">Skip Table of Contents</a>
-    <div class="cmp-toc__heading">
-        <h1 class="cmp-toc__heading-title">${'Table of Contents' @ i18n, context='text'}</h1>
-        <a href="#" class="cmp-toc__heading-icon" aria-label="Table of Contents" role="button"></a>
-    </div>
-
-    <div class="button">
-        <button type="button" class="cmp-button">
-            <span class="cmp-button__text">Topics</span>
-        </button>
-    </div>
-
-    <div class="cmp-toc__modal" data-sly-test="${model.bookResourcePath}" data-sly-use.book="${model.bookResourcePath}">
-        <div class="cmp-toc__modal-heading">
-            <span class="cmp-toc__modal-title">Topics</span>
-            <span class="cmp-toc__modal-close"></span>
-        </div>
-        <sly data-sly-test="${book.getChildren}" data-sly-list.booksMultifield="${book.getChildren}">
-            <sly data-sly-test="${booksMultifield.name == 'firstlevel'}">
-                <ul class="cmp-toc__group cmp-toc__firstlevellist"
-                    data-sly-list.booklink="${booksMultifield.getChildren}">
-                    <li class="cmp-toc__item" data-sly-test="${booklink.mainpagepath}"><div class="cmp-toc__item-link">
-                        <a class="cmp-toc__firstlevelitem-title" data-sly-use.bookPathMainTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=booklink.mainpagepath }"
-                           href="${booklink.mainpagepath}${bookPathMainTitle.rootPath in  booklink.mainpagepath ? '.html' : ''}" tabindex="0">${bookPathMainTitle.bookPage.title ||
-                            booklink.mainpagepath}</a></div>
-                        <sly class="cmp-toc__secondlevelheading"
-                            data-sly-list.secondlevelMultifield="${booklink.getChildren}">
-                            <sly data-sly-test="${booklink.getChildren && secondlevelMultifield.name == 'secondlevel'}">
-                                <ul class="cmp-toc__group cmp-toc__secondlevellist"
-                                    data-sly-list.secondlink="${secondlevelMultifield.getChildren}">
-                                    <li class="cmp-toc__item" data-sly-test="${secondlink.secondpagepath}"><div
-                                            class="cmp-toc__item-link">
-                                        <a class="cmp-toc__secondlevelitem-title" data-sly-use.bookPathSecondTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=secondlink.secondpagepath}"
-                                           href="${secondlink.secondpagepath}${bookPathSecondTitle.rootPath in  secondlink.secondpagepath ? '.html' : ''}" tabindex="0">${bookPathSecondTitle.bookPage.title
-                                            || secondlink.secondpagepath}</a></div>
-                                        <sly class="cmp-toc__thirdlevelheading"
-                                            data-sly-list.thirdlevelMultifield="${secondlink.getChildren}">
-                                            <sly
-                                                data-sly-test="${secondlink.getChildren && thirdlevelMultifield.name == 'thirdlevel'}">
-                                                <ul class="cmp-toc__group cmp-toc__thirdlevellist"
-                                                    data-sly-list.thirdlink="${thirdlevelMultifield.getChildren}">
-                                                    <li class="cmp-toc__item"
-                                                        data-sly-test="${thirdlink.thirdpagepath}"><a
-                                                            class="cmp-toc__item-link"
-                                                            data-sly-use.bookPathThirdTitle="${'com.workday.community.aem.core.models.BookModel' @ pagePath=thirdlink.thirdpagepath}"
-                                                            href="${thirdlink.thirdpagepath}${bookPathThirdTitle.rootPath in thirdlink.thirdpagepath ? '.html' : ''}"><span
-                                                                class="cmp-toc__thirdlevelitem-title">${bookPathThirdTitle.bookPage.title
-                                                                || thirdlink.thirdpagepath}</span></a>
-                                                    </li>
-                                                </ul>
-                                            </sly>
-                                        </sly>
-                                    </li>
-                                </ul>
-                            </sly>
-                        </sly>
-                    </li>
-                </ul>
-            </sly>
-        </sly>
-    </div>
-
-</div>
-<div data-sly-test="${wcmmode.edit || wcmmode.design}" class="cq-placeholder"
+<sly data-sly-use.bookModel="com.workday.community.aem.core.models.TocModel">
+    <sly data-sly-test="${bookModel.tocDisplay}">
+       <div class="cmp-toc" data-cmp-is="cmp-toc">
+          <a class="cmp-toc__skip" href="#center-container" tabindex="0">Skip Table of Contents</a>
+          <div class="cmp-toc__heading">
+             <h1 class="cmp-toc__heading-title">${'Table of Contents' @ i18n, context='text'}</h1>
+             <a href="#" class="cmp-toc__heading-icon" aria-label="Table of Contents" role="button"></a>
+          </div>
+          <div class="button">
+             <button type="button" class="cmp-button">
+             <span class="cmp-button__text">Topics</span>
+             </button>
+          </div>
+          <div class="cmp-toc__modal">
+             <div class="cmp-toc__modal-heading">
+                <span class="cmp-toc__modal-title">Topics</span>
+                <span class="cmp-toc__modal-close"></span>
+             </div>
+             <ul class="cmp-toc__group cmp-toc__firstlevellist">
+                <sly data-sly-list.menuList="${bookModel.finalList}">
+                   <li class="cmp-toc__item">
+                      <div class="cmp-toc__item-link">
+                         <a class="cmp-toc__firstlevelitem-title" href="${menuList.headingLink}" tabindex="0">${menuList.headingTitle || menuList.headingLink}</a>
+                      </div>
+                      <ul class="cmp-toc__group cmp-toc__secondlevellist">
+                         <sly data-sly-list.secondLevelList="${menuList.childLevelList}">
+                            <li class="cmp-toc__item">
+                               <div class="cmp-toc__item-link">
+                                  <a class="cmp-toc__secondlevelitem-title" href="${secondLevelList.headingLink}" tabindex="0">${secondLevelList.headingTitle || secondLevelList.headingLink}</a>
+                               </div>
+                               <ul class="cmp-toc__group cmp-toc__thirdlevellist">
+                                  <sly data-sly-list.thirdLevelList="${secondLevelList.childLevelList}">
+                                     <li class="cmp-toc__item"><a class="cmp-toc__item-link" href="${thirdLevelList.headingLink}"><span class="cmp-toc__thirdlevelitem-title">${thirdLevelList.headingTitle || thirdLevelList.headingLink}</span></a>
+                                     </li>
+                                  </sly>
+                               </ul>
+                            </li>
+                         </sly>
+                      </ul>
+                   </li>
+                </sly>
+             </ul>
+          </div>
+       </div>
+    </sly>
+ </sly>
+ <div data-sly-test="${wcmmode.edit || wcmmode.design}" class="cq-placeholder"
     data-emptyText="WD Community Site - Table Of Content Component"></div>
