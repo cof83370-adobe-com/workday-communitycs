@@ -100,7 +100,7 @@ public class AuthorizationFilter implements Filter {
           isValid = userGroupService.validateCurrentUser(slingRequest, pagePath);
         }
         if (!isValid) {
-          log.debug("---> User does not have access to the requested page:", pagePath);
+          log.error("---> User does not have access to the requested page:", pagePath);
 
           ((SlingHttpServletResponse) response).setStatus(SC_FORBIDDEN);
           ((SlingHttpServletResponse) response).sendRedirect(WccConstants.FORBIDDEN_PAGE_PATH);

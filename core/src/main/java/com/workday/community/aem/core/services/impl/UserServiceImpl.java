@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService {
       String userId = session.getUserID();
       ResourceResolver serviceResolver = cacheManager.getServiceResolver(SERVICE_USER_GROUP);
 
-      log.info("Start to delete user with param {}.", userId);
+      log.debug("Start to delete user with param {}.", userId);
       UserManager userManager = Objects.requireNonNull(serviceResolver.adaptTo(UserManager.class));
       User user;
       try {

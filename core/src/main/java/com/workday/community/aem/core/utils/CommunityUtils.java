@@ -15,14 +15,6 @@ import org.apache.sling.api.resource.ValueMap;
  */
 @Slf4j
 public class CommunityUtils {
-
-  /**
-   * Instantiates a new community utils.
-   */
-  private CommunityUtils() {
-    log.info("Initialized");
-  }
-
   /**
    * Gets the page tags list.
    *

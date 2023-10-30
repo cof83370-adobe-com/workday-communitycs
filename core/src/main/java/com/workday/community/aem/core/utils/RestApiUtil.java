@@ -98,8 +98,7 @@ public class RestApiUtil {
 
     HttpClient httpclient =
         HttpClient.newBuilder().connectTimeout(Duration.ofMillis(HTTP_TIMEMOUT)).build();
-    log.debug("RestAPIUtil executeGetRequest: req.getMethod():{}, {}", req.getMethod(),
-        req.getUri().toString());
+    log.debug("RestAPIUtil executeGetRequest: method:{}, uri: {}", req.getMethod(), req.getUri().toString());
 
     Builder builder = HttpRequest.newBuilder().uri(req.getUri());
 
@@ -120,8 +119,7 @@ public class RestApiUtil {
 
     int statusCode = response.statusCode();
     String body = response.body();
-    log.debug("HTTP response code : {}", statusCode);
-    log.debug("HTTP response : {}", body);
+    log.debug("HTTP response {}, code : {}", body, statusCode);
 
     ApiResponse apiresponse = new ApiResponse();
     apiresponse.setResponseCode(response.statusCode());
@@ -188,8 +186,7 @@ public class RestApiUtil {
       int resCode = response.statusCode();
       String resBody = response.body();
       if (resCode != HttpStatus.SC_OK && resCode != HttpStatus.SC_CREATED) {
-        log.debug("HTTP response code : {}", resCode);
-        log.debug("HTTP response : {}", resBody);
+        log.error("HTTP response {}, code : {}", resBody, resCode);
       }
       apiresponse.setResponseCode(resCode);
       apiresponse.setResponseBody(resBody);

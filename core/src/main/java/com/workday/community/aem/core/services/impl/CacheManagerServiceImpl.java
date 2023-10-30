@@ -89,6 +89,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
    */
   @Deactivate
   public void deactivate() throws CacheException {
+    log.debug("De-active cache manager service.");
     invalidateCache();
     closeAndClearCachedResolvers();
     if (null != cleanCacheHandle && !cleanCacheHandle.isDone() && !cleanCacheHandle.isCancelled()) {
@@ -174,7 +175,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     } else if (!StringUtils.isEmpty(cacheBucketName)) {
       Cache cache = caches.get(getInnerCacheName(cacheBucketName).name());
       if (cache == null) {
-        log.info("There are some problems if this get hit, contact community admin.");
+        log.error("There are some problems if this get hit, contact community admin.");
         return;
       }
       if (StringUtils.isEmpty(key)) {

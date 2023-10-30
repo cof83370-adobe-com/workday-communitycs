@@ -124,7 +124,7 @@ public class UserGroupServiceImpl implements UserGroupService {
    */
   @Override
   public List<String> getCurrentUserGroups(SlingHttpServletRequest request) {
-    log.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
+    log.debug("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
     String userRole;
     List<String> groupIds = new ArrayList<>();
     try {
@@ -156,7 +156,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 StringUtils.join(groupIds, ";"));
           }
         }
-        log.info("Salesforce roles {}", groupIds);
+        log.debug("Salesforce roles {}", groupIds);
       }
 
     } catch (RepositoryException | CacheException e) {

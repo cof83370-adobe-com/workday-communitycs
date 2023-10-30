@@ -43,7 +43,7 @@ public class OurmUtils {
 
       Value[] sfIdObj = user.getProperty(SnapConstants.PROFILE_SOURCE_ID);
       if (sfIdObj == null || sfIdObj.length == 0) {
-        log.info("Current user with user id {} have no sfId. Possible with no okta integration", user.getID());
+        log.error("Current user with user id {} have no sfId. Possible with no okta integration", user.getID());
         return DEFAULT_SFID_MASTER;
       }
 
