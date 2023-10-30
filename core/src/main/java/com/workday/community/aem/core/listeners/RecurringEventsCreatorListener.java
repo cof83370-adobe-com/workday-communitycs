@@ -147,7 +147,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
    */
   @Override
   public void onChange(List<ResourceChange> changes) {
-    log.info("Entered into RecurringEventPageListener");
+    log.debug("Entered into RecurringEventPageListener");
     changes.stream()
         .filter(item -> item.getType().equals(ResourceChange.ChangeType.ADDED)
             && item.getPath().endsWith(GlobalConstants.JCR_CONTENT_PATH))
@@ -160,9 +160,7 @@ public class RecurringEventsCreatorListener implements ResourceChangeListener {
    * @param resourcePath the event page path
    */
   public void generateRecurringEventPages(String resourcePath) {
-    log.info(
-        "Entered into generateRecurringEventPages method of RecurringEventsCreatorListener:{}",
-        resourcePath);
+    log.debug("Entered into generateRecurringEventPages method:{}", resourcePath);
     try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
       Resource addedResource = resourceResolver.getResource(resourcePath);
       if (null != addedResource && null != addedResource.adaptTo(Node.class)) {

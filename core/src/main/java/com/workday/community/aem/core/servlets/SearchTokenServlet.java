@@ -3,8 +3,9 @@ package com.workday.community.aem.core.servlets;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
+import com.workday.community.aem.core.exceptions.DrupalException;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.ServletCallback;
@@ -25,14 +26,11 @@ import org.osgi.service.component.annotations.Reference;
  * The search Token servlet class.
  */
 @Slf4j
-@Component(
-    service = Servlet.class,
-    property = {
-        org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Search Token Servlet",
-        "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-        "sling.servlet.paths=" + "/bin/search/token"
-    }
-)
+@Component(service = Servlet.class, property = {
+    org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Search Token Servlet",
+    "sling.servlet.methods=" + HttpConstants.METHOD_GET,
+    "sling.servlet.paths=" + "/bin/search/token"
+})
 public class SearchTokenServlet extends SlingAllMethodsServlet {
 
   private final transient Gson gson = new Gson();
@@ -41,7 +39,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   private transient SearchApiConfigService searchApiConfigService;
 
   @Reference
-  private transient SnapService snapService;
+  private transient DrupalService drupalService;
 
   @Reference
   private transient UserService userService;
@@ -78,16 +76,15 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
       log.debug("inside getToken API callback with response; {} for request path: {}", body,
           req.getRequestPathInfo().getResourcePath());
       response.setStatus(HttpStatus.SC_OK);
-      response.setContentType("application/json");
       response.setCharacterEncoding(StandardCharsets.UTF_8.name());
       response.getWriter().write(body);
       return body;
     };
 
     try {
-      CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, snapService,
+      CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, drupalService,
           userService, gson, objectMapper, servletCallback);
-    } catch (IOException | ServletException e) {
+    } catch (IOException | ServletException | DrupalException e) {
       log.error("get Token fails with error: {}", e.getMessage());
     }
   }

@@ -1,8 +1,8 @@
 package com.workday.community.aem.core.servlets;
 
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.exceptions.OurmException;
-import com.workday.community.aem.core.services.OurmUserService;
+import com.workday.community.aem.core.exceptions.DrupalException;
+import com.workday.community.aem.core.services.DrupalService;
 import java.io.IOException;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -29,10 +29,10 @@ import org.osgi.service.component.annotations.Reference;
 public class OurmUsersServlet extends SlingSafeMethodsServlet {
 
   /**
-   * The OurmUsers api service.
+   * The DrupalService object.
    */
   @Reference
-  private transient OurmUserService ourmUserService;
+  private transient DrupalService drupalService;
 
   /**
    * Do get.
@@ -46,11 +46,11 @@ public class OurmUsersServlet extends SlingSafeMethodsServlet {
       throws ServletException {
     try {
       String searchText = request.getParameter("searchText");
-      JsonObject jsonObject = ourmUserService.searchOurmUserList(searchText);
+      JsonObject jsonObject = drupalService.searchOurmUserList(searchText);
 
       response.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
       response.getWriter().write(jsonObject.toString());
-    } catch (IOException | OurmException e) {
+    } catch (IOException | DrupalException e) {
       log.error("Error Occurred in DoGet Method in OurmUsersServlet : {}", e.getMessage());
     }
   }

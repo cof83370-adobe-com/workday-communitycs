@@ -5,14 +5,15 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.FeedTabModel;
 import com.workday.community.aem.core.models.TabularListViewModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Named;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -25,6 +26,7 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 /**
  * TabularListViewModel implementation class.
  */
+@Slf4j
 @Model(
     adaptables = {
         Resource.class,
@@ -66,7 +68,7 @@ public class TabularListViewModelImpl implements TabularListViewModel {
    * The snap service object.
    */
   @OSGiService
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   private JsonObject searchConfig;
 
@@ -104,7 +106,7 @@ public class TabularListViewModelImpl implements TabularListViewModel {
       this.searchConfig = CoveoUtils.getSearchConfig(
           searchConfigService,
           request,
-          snapService,
+          drupalService,
           userService);
     }
     return this.searchConfig;
@@ -114,10 +116,9 @@ public class TabularListViewModelImpl implements TabularListViewModel {
    * Get field names.
    *
    * @return Array of fields
-   * @throws DamException Dam Exception
    */
   @Override
-  public JsonArray getFields() throws DamException {
+  public JsonArray getFields() {
     return this.getModelConfig().getAsJsonArray("fields");
   }
 
@@ -125,10 +126,9 @@ public class TabularListViewModelImpl implements TabularListViewModel {
    * Returns extra criteria of search.
    *
    * @return Expression string
-   * @throws DamException Dam Exception
    */
   @Override
-  public String getExtraCriteria() throws DamException {
+  public String getExtraCriteria() {
     return getModelConfig().getAsJsonObject("extraCriteria").get("value").getAsString();
   }
 
@@ -152,11 +152,15 @@ public class TabularListViewModelImpl implements TabularListViewModel {
    * Read tab list criteria from DAM.
    *
    * @return Json object of the file data
-   * @throws DamException Dam Exception
    */
-  private JsonObject getModelConfig() throws DamException {
+  private JsonObject getModelConfig() {
     if (this.modelConfig == null) {
-      this.modelConfig = DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
+      try {
+        this.modelConfig = DamUtils.readJsonFromDam(this.request.getResourceResolver(), MODEL_CONFIG_FILE);
+      } catch (DamException e) {
+        log.error("Failed to call getModelConfig(): {}", e.getMessage());
+        return new JsonObject();
+      }
     }
     return this.modelConfig;
   }
@@ -165,14 +169,13 @@ public class TabularListViewModelImpl implements TabularListViewModel {
    * Returns array of search data expression objects.
    *
    * @return Array of json objects
-   * @throws DamException Dam Exception
    */
   @Override
-  public JsonArray getSelectedFields() throws DamException {
+  public JsonArray getSelectedFields() {
     JsonArray fields = new JsonArray();
-    for (int i = 0; i < searches.size(); i++) {
-      String tagQuery = searches.get(i).getTagQuery();
-      JsonObject selectedFieldsData = searches.get(i).getSelectedFieldsData();
+    for (FeedTabModel search : searches) {
+      String tagQuery = search.getTagQuery();
+      JsonObject selectedFieldsData = search.getSelectedFieldsData();
       String dataExpression = selectedFieldsData.get("dataExpression").getAsString();
       selectedFieldsData.addProperty("dataExpression", dataExpression + tagQuery + getExtraCriteria());
       fields.add(selectedFieldsData);

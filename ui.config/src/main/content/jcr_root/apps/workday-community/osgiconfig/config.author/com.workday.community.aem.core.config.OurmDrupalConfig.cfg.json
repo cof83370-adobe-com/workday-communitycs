@@ -1,6 +1,0 @@
-{
-    "ourmDrupalRestRoot":"$[env:ourmDrupalRestRoot]",
-    "ourmDrupalUserSearchPath":"$[env:ourmDrupalUserSearchPath]",
-    "ourmDrupalConsumerKey":"$[secret:ourmDrupalConsumerKey]",
-    "ourmDrupalConsumerSecret":"$[secret:ourmDrupalConsumerSecret]"
-}

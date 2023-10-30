@@ -11,7 +11,27 @@ const signOutObject = {
     children: [],
 };
 
-function renderNavHeader() {
+let searchConfig;
+
+const getSearchToken = async () => {
+    const tokenUrl = '/bin/search/token';
+    try {
+        const response = await fetch(tokenUrl);
+        const res = await response.json();
+        return res['searchToken'];
+    } catch (err) {
+        return '';
+    }
+};
+
+const analyticsClientMiddleware = (eventName, payload) => {
+    if (searchConfig["userContext"]) {
+        payload.customData = {...payload.customData, ...JSON.parse(searchConfig["userContext"])};
+    }
+    return payload;
+};
+
+function renderNavHeader(searchToken = '') {
     const headerDiv = document.getElementById('community-header-div');
     if (headerDiv !== undefined && headerDiv !== null) {
         let enableCache = headerDiv.getAttribute('data-enable-cache');
@@ -22,7 +42,7 @@ function renderNavHeader() {
         let changed = currentId !== previousId;
 
         if (!headerData || headerData && changed) {
-            headerDataJson = constructData(headerDiv, currentId);
+            headerDataJson = constructData(headerDiv, currentId, searchToken);
         }
 
         if (dataWithMenu(headerDataJson) && (enableCache === 'true')) {
@@ -30,7 +50,7 @@ function renderNavHeader() {
         } else {
             document.cookie = 'cacheMenu=FALSE';
             sessionStorage.removeItem('navigation-data');
-            headerDataJson = constructData(headerDiv, currentId);
+            headerDataJson = constructData(headerDiv, currentId, searchToken);
         }
 
         try {
@@ -62,9 +82,14 @@ function dataWithMenu(headerData) {
     return headerData;
 }
 
-document.addEventListener('readystatechange', event => {
+document.addEventListener('readystatechange', async (event) => {
     if (event.target.readyState === 'complete') {
-        renderNavHeader();
+        let headerStringData = document.getElementById('community-header-div').getAttribute('data-model-property');
+        if (stringValid(headerStringData) && headerStringData !== 'HIDE_MENU_UNAUTHENTICATED') {
+            renderNavHeader(await getSearchToken());
+        } else {
+            renderNavHeader();
+        }
     }
 });
 
@@ -72,16 +97,21 @@ function stringValid(str) {
     return (str !== undefined && str !== null && str.trim() !== '');
 }
 
-function constructData(headerDiv, currentId) {
+function constructData(headerDiv, currentId, searchToken) {
     let headerStringData = headerDiv.getAttribute('data-model-property');
     let avatarUrl = headerDiv.getAttribute("data-model-avatar");
     let homePage = headerDiv.getAttribute("data-prop-home");
-    let searchURL = headerDiv.getAttribute('data-search-url');
+    let searchUrl = headerDiv.getAttribute('data-search-url');
+    searchConfig = JSON.parse(headerDiv.getAttribute('data-search-config'));
 
-    let headerMenu;
-    let searchProps;
+    let headerData = {
+        previousId: currentId,
+        menus: undefined,
+        skipTo: 'mainContentId',
+        sticky: true,
+    };
     if (stringValid(headerStringData) && headerStringData !== 'HIDE_MENU_UNAUTHENTICATED') {
-        headerMenu = JSON.parse(headerStringData);
+        let headerMenu = JSON.parse(headerStringData);
         if (headerMenu.unAuthenticated === undefined || headerMenu.unAuthenticated === false) {
             if (!headerMenu.profile) {
                 headerMenu.profile = [];
@@ -92,17 +122,42 @@ function constructData(headerDiv, currentId) {
             }
 
             headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
-            searchProps = { redirectPath: searchURL, querySeparator: '#', queryParameterName: 'q' }
+            headerData.menus = headerMenu;
+            headerData.coveoProps = searchToken ? {
+                engine: Cmty.CoveoEngineService.CoveoSearchEngine(
+                    {
+                        organizationId: searchConfig['orgId'],
+                        search: {
+                            searchHub: searchConfig['searchHub']
+                        },
+                        accessToken: searchToken,
+                        renewAccessToken: getSearchToken
+                    }
+                ),
+                controllerConfig: {
+                    numberOfSuggestions: 10
+                },
+                redirectProps: {
+                    redirectPath: searchUrl,
+                    querySeparator: '#',
+                    queryParameterName: 'q'
+                },
+                analytics: {
+                    analyticsClientMiddleware,
+                }
+            } : undefined;
+
+            if (!headerData.coveoProps) {
+                // Add search props if coveo props is not present
+                headerData.searchProps = {
+                    redirectPath: searchUrl,
+                    querySeparator: '#',
+                    queryParameterName: 'q'
+                }
+            }
         }
     }
 
-    let headerData = {
-        previousId: currentId,
-        menus: headerMenu,
-        skipTo: 'mainContentId',
-        sticky: true,
-        searchProps: searchProps
-    };
 
     if (stringValid(homePage)) {
         headerData.homeUrl = homePage;

@@ -46,7 +46,7 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
   @Override
   protected void doPost(final SlingHttpServletRequest req, final SlingHttpServletResponse resp)
       throws ServletException, IOException {
-    log.info("Starting to process Book Paths");
+    log.debug("Starting to process Book Paths");
     boolean success = true;
 
     // Get Book Resource Path info from request.
@@ -62,7 +62,7 @@ public class BookOperationsServlet extends SlingAllMethodsServlet {
     resp.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
     jsonResponse.addProperty("success", success);
     jsonResponse.addProperty("pagePaths", String.join(",", activatePaths));
-    log.info("Finished processing Book Paths");
+    log.debug("Finished processing Book Paths");
     resp.getWriter().write(jsonResponse.toString());
   }
 }

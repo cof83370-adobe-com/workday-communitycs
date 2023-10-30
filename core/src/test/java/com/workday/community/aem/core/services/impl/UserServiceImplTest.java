@@ -1,7 +1,9 @@
 package com.workday.community.aem.core.services.impl;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -11,13 +13,15 @@ import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+import javax.json.JsonObject;
+
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -50,7 +54,7 @@ public class UserServiceImplTest {
   SearchApiConfigService searchConfigService;
 
   @Mock
-  SnapService snapService;
+  DrupalService drupalService;
 
   @Mock
   ResourceResolverFactory resResolverFactory;
@@ -85,6 +89,7 @@ public class UserServiceImplTest {
     cacheManager.activate(cacheConfig);
     cacheManager.setResourceResolverFactory(resResolverFactory);
     context.registerService(CacheManagerServiceImpl.class, cacheManager);
+    context.registerService(DrupalService.class, drupalService);
 
     userService.setCacheManager(cacheManager);
     lenient().when(runModeConfigService.getInstance()).thenReturn(GlobalConstants.PUBLISH);
@@ -96,6 +101,27 @@ public class UserServiceImplTest {
     lenient().when(resourceResolver.adaptTo(UserManager.class)).thenReturn(userManager);
     lenient().when(resourceResolver.adaptTo(Session.class)).thenReturn(session);
     lenient().when(userManager.getAuthorizable(anyString())).thenReturn(user);
+  }
+
+  @Test
+  public void testGetCurrentUser() throws CacheException, RepositoryException {
+    String userId = "testUser";
+    SlingHttpServletRequest request = mock(SlingHttpServletRequest.class);
+    lenient().when(request.getResourceResolver()).thenReturn(resourceResolver);
+    lenient().when(session.getUserID()).thenReturn(userId);
+    lenient().when(session.isLive()).thenReturn(true);
+    lenient().when(user.getPath()).thenReturn("foo/okta");
+    User user = userService.getCurrentUser(request);
+    assertEquals(user, user);
+  }
+
+  @Test
+  public void testGetUserUuid() {
+    String testSfId = "testSfId";
+    String userObject = "{\"email\":\"test@workday.com\"}";
+    lenient().when(drupalService.getUserData(eq(testSfId))).thenReturn(userObject);
+    String uuid = userService.getUserUuid("testSfId");
+    assertEquals(uuid, "bbcc40fd-1b71-5163-b76b-a4f2185577d4");
   }
 
   /**

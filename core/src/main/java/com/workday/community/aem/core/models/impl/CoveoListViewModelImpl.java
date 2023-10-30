@@ -1,16 +1,16 @@
 package com.workday.community.aem.core.models.impl;
 
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Named;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
@@ -22,6 +22,7 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 /**
  * Coveo list view model implementation.
  */
+@Slf4j
 @Model(
     adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {CoveoListViewModel.class},
@@ -46,10 +47,10 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
   private UserService userService;
 
   /**
-   * The snap service object.
+   * The drupal service object.
    */
   @OSGiService
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   private JsonObject searchConfig;
 
@@ -81,7 +82,7 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
       this.searchConfig = CoveoUtils.getSearchConfig(
           searchConfigService,
           request,
-          snapService,
+          drupalService,
           userService);
     }
     return this.searchConfig;
@@ -91,7 +92,8 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
    * {@inheritDoc}
    */
   @Override
-  public String getExtraCriteria() throws DamException {
-    throw new DamException("ExtraCriteria is not available for list view");
+  public String getExtraCriteria() {
+    log.error("ExtraCriteria is not available for list view");
+    return "";
   }
 }
