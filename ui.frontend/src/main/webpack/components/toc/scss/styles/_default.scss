@@ -126,4 +126,12 @@
             position: inherit;
         }
     }
+
+    .visually-hidden {
+       position: absolute;
+       width: 0;
+       height: 0;
+       padding: 0;
+       overflow: hidden;
+     }
 }

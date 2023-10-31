@@ -36,8 +36,7 @@ public class TerminateRetirementWorkflowProcess implements WorkflowProcess {
       return;
     }
 
-    log.debug("Payload type: {}", payloadType);
-    log.info("Payload path: {}", path);
+    log.debug("Payload type: {}, path: {}", payloadType, path);
     try {
       WorkItem[] workitems = workflowSession.getActiveWorkItems();
       for (WorkItem workitem : workitems) {

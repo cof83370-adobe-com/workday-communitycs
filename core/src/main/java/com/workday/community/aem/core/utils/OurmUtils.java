@@ -43,7 +43,7 @@ public class OurmUtils {
 
       Value[] sfIdObj = user.getProperty(SnapConstants.PROFILE_SOURCE_ID);
       if (sfIdObj == null || sfIdObj.length == 0) {
-        log.error("Current user have no sfId, mostly because no Okta integration, use default.");
+        log.error("Current user with user id {} have no sfId. Possible with no okta integration", user.getID());
         return DEFAULT_SFID_MASTER;
       }
 
@@ -51,7 +51,7 @@ public class OurmUtils {
     } catch (RepositoryException re) {
       log.error("getSalesForceId call fails with Repository Exception: {}.", re.getMessage());
     } catch (CacheException ce) {
-      log.error("userService.getCurrentUser call fails");
+      log.error("userService.getCurrentUser call fails, {}", ce.getMessage());
     } catch (RuntimeException re) {
       log.error("Runtime exception: {}.", re.getMessage());
     }

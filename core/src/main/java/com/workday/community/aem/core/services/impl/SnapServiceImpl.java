@@ -53,14 +53,14 @@ public class SnapServiceImpl implements SnapService {
    */
   @Reference
   @Setter
-  private RunModeConfigService runModeConfigService;
+  protected RunModeConfigService runModeConfigService;
 
   /**
    * The Drupal service.
    */
   @Reference
   @Setter
-  private DrupalService drupalService;
+  protected DrupalService drupalService;
 
   /**
    * The cache manager service.
@@ -84,8 +84,7 @@ public class SnapServiceImpl implements SnapService {
    */
   @Activate
   @Modified
-  @Override
-  public void activate(SnapConfig config) {
+  protected void activate(SnapConfig config) {
     this.config = config;
     log.debug("SnapService is activated. enable Cache: {}, beta: {}",
         config.enableCache(), config.beta());
@@ -96,7 +95,11 @@ public class SnapServiceImpl implements SnapService {
    */
   @Override
   public String getUserHeaderMenu(String sfId) {
-    String menuCacheKey = String.format("header_menu_%s_%s", getEnv(), sfId);
+    if (StringUtils.isEmpty(sfId)) {
+      return "";
+    }
+
+    String menuCacheKey = String.format("header_menu_%s_%s_%s", getEnv(), getInstance(), sfId);
     if (!enableCache()) {
       cacheManagerService.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
     }
@@ -110,7 +113,7 @@ public class SnapServiceImpl implements SnapService {
           if (StringUtils.isEmpty(snapUrl) || StringUtils.isEmpty(navApi)
               || StringUtils.isEmpty(apiToken) || StringUtils.isEmpty(apiKey)) {
             // No Snap configuration provided, just return the default one.
-            log.debug("There is no value for one or multiple configuration parameter: "
+            log.error("There is no value for one or multiple configuration parameter: "
                     + "snapUrl={};navApi={};apiToken={};apiKey={};",
                 snapUrl, navApi, apiToken, apiKey);
             return gson.toJson(this.getDefaultHeaderMenu());
@@ -171,7 +174,8 @@ public class SnapServiceImpl implements SnapService {
    * @return The menu.
    */
   private JsonObject getDefaultHeaderMenu() {
-    String cacheKey = "default_menu_" + getEnv();
+    // We only need to cache a single instance of default menu in all environment.
+    String cacheKey = "default_menu";
     if (!enableCache()) {
       cacheManagerService.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), cacheKey);
     }
@@ -183,10 +187,7 @@ public class SnapServiceImpl implements SnapService {
             // Reading the JSON File from DAM.
             return DamUtils.readJsonFromDam(resourceResolver, config.navFallbackMenuData());
           } catch (CacheException | DamException e) {
-            log
-                .error(
-                    String.format("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: %s",
-                        e.getMessage()));
+            log.error("Exception in SnapServiceImpl for getFailStateHeaderMenu, error: {}", e.getMessage());
             return new JsonObject();
           }
         });
@@ -256,6 +257,11 @@ public class SnapServiceImpl implements SnapService {
   private String getEnv() {
     String env = this.runModeConfigService.getEnv();
     return (env == null) ? "local" : env;
+  }
+
+  private String getInstance() {
+    String instance = this.runModeConfigService.getInstance();
+    return (instance == null) ? "local" : instance;
   }
 
   /**

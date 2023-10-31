@@ -76,7 +76,6 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
       log.debug("inside getToken API callback with response; {} for request path: {}", body,
           req.getRequestPathInfo().getResourcePath());
       response.setStatus(HttpStatus.SC_OK);
-      response.setContentType("application/json");
       response.setCharacterEncoding(StandardCharsets.UTF_8.name());
       response.getWriter().write(body);
       return body;
@@ -84,8 +83,7 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
 
     try {
       CoveoUtils.executeSearchForCallback(request, response, searchApiConfigService, drupalService,
-          userService, gson,
-          objectMapper, servletCallback);
+          userService, gson, objectMapper, servletCallback);
     } catch (IOException | ServletException | DrupalException e) {
       log.error("get Token fails with error: {}", e.getMessage());
     }

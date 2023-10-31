@@ -7,7 +7,6 @@ import com.adobe.granite.ui.components.ds.SimpleDataSource;
 import com.adobe.granite.ui.components.ds.ValueMapResource;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.TabularListViewModel;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,12 +50,7 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
     ResourceResolver resourceResolver = request.getResourceResolver();
     List<Resource> resourceList = new ArrayList<>();
     TabularListViewModel model = request.adaptTo(TabularListViewModel.class);
-    JsonArray fields = null;
-    try {
-      fields = Objects.requireNonNull(model).getFields();
-    } catch (DamException e) {
-      log.error("Feed fields are not fetched from TabularListViewModel, please fix it.");
-    }
+    JsonArray fields = Objects.requireNonNull(model).getFields();
 
     if (fields != null && !fields.isEmpty()) {
       fields.forEach(field -> {

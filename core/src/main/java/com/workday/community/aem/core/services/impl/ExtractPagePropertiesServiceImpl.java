@@ -243,7 +243,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             description);
       }
     } catch (CacheException | RepositoryException | SlingException e) {
-      log.error("Extract page properties {} failed: {}", path, e.getMessage());
+      log.error("Extract page properties path: {} message: {}", path, e.getMessage());
       return properties;
     }
     return properties;

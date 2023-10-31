@@ -89,6 +89,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
    */
   @Deactivate
   public void deactivate() throws CacheException {
+    log.debug("De-active cache manager service.");
     invalidateCache();
     closeAndClearCachedResolvers();
     if (null != cleanCacheHandle && !cleanCacheHandle.isDone() && !cleanCacheHandle.isCancelled()) {
@@ -96,15 +97,13 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       cleanCacheHandle = null;
     }
 
-    if (scheduler != null) {
-      scheduler.shutdown();
-      try {
-        if (scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
-          log.info("Cache clean scheduler is correctly closed.");
-        }
-      } catch (InterruptedException e) {
-        throw new CacheException(e.getMessage());
+    scheduler.shutdown();
+    try {
+      if (scheduler.awaitTermination(60, TimeUnit.SECONDS)) {
+        log.info("Cache clean scheduler is correctly closed.");
       }
+    } catch (InterruptedException e) {
+      throw new CacheException("Fail to shutdown cache scheduler: error: ", e.getMessage());
     }
   }
 
@@ -176,7 +175,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
     } else if (!StringUtils.isEmpty(cacheBucketName)) {
       Cache cache = caches.get(getInnerCacheName(cacheBucketName).name());
       if (cache == null) {
-        log.debug("There are some problems if this get hit, contact community admin.");
+        log.error("There are some problems if this get hit, contact community admin.");
         return;
       }
       if (StringUtils.isEmpty(key)) {
@@ -217,7 +216,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       try {
         resolver = ResolverUtil.newResolver(this.resourceResolverFactory, serviceUser);
       } catch (LoginException e) {
-        throw new CacheException("Failed to create Resolver in CacheManagerImpl");
+        throw new CacheException("Failed to create Resolver in CacheManagerImpl, %s", e.getMessage());
       }
       if (config.enabled()) {
         resolverCache.put(serviceUser, resolver);
@@ -259,7 +258,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       caches.put(innerCacheName.name(), cache);
       return cache;
     } catch (IllegalArgumentException e) {
-      throw new CacheException("Can't create or retrieve cache from the cache store");
+      throw new CacheException("Can't create or retrieve cache from the cache store, msg: %s", e.getMessage());
     }
   }
 

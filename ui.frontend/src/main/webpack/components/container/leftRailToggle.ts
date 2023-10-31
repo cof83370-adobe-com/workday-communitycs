@@ -14,19 +14,19 @@
 
         if(leftContainerPanel && centerContainerPanel) {
             if(show) {
-                toggleIcon.setAttribute('aria-expanded', 'true');
                 leftContainerPanel.classList.add(`${aemGridColumn}--3`);
                 leftContainerPanel.classList.remove(`${aemGridColumn}--1`, 'collapse');
 
                 centerContainerPanel.classList.add(`${aemGridColumn}--6`);
                 centerContainerPanel.classList.remove(`${aemGridColumn}--8`);
+                toggleIcon.setAttribute('aria-expanded', 'true');
             } else {
-                toggleIcon.setAttribute('aria-expanded', 'false');
                 leftContainerPanel.classList.remove(`${aemGridColumn}--3`);
                 leftContainerPanel.classList.add(`${aemGridColumn}--1`, 'collapse');
 
                 centerContainerPanel.classList.remove(`${aemGridColumn}--6`);
                 centerContainerPanel.classList.add(`${aemGridColumn}--8`);
+                toggleIcon.setAttribute('aria-expanded', 'false');
             }
         }
     }
@@ -60,8 +60,6 @@
         let showPanel = true;
         if(toggleIcon && showPanel == true) {
             toggleIcon.setAttribute('aria-expanded', 'true');
-        } else {
-            toggleIcon.setAttribute('aria-expanded', 'false');
         }
         checkTocPanel();
 

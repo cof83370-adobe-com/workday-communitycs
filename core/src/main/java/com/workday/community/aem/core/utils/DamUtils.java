@@ -58,7 +58,7 @@ public class DamUtils {
       Gson gson = new Gson();
       return gson.fromJson(sb.toString(), JsonObject.class);
     } catch (IOException | SlingException e) {
-      throw new DamException();
+      throw new DamException("readJsonFromDam fails with msg: %s", e.getMessage());
     }
   }
 

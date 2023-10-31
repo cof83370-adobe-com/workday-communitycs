@@ -19,6 +19,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -33,6 +34,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class CategoryFacetModel.
  */
+@Slf4j
 @Model(adaptables = Resource.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class FeedTabModel {
 
@@ -172,35 +174,32 @@ public class FeedTabModel {
     StringBuilder sb = new StringBuilder();
     // Frame the tag filter.
     for (Map.Entry<String, List<String>> entry : namespaceGroups.entrySet()) {
-      try {
-        String nameSpace = entry.getKey();
-        JsonElement facetField;
-        facetField = this.getFieldMapConfig(resolver).get(nameSpace);
-        if (facetField == null) {
-          continue;
-        }
-
-        List<String> tagList = entry.getValue();
-        if (tagList.isEmpty()) {
-          sb.append("(@").append(facetField.getAsString()).append(" NOT NULL)");
-        } else {
-          sb.append("(@").append(facetField.getAsString()).append("==(");
-          tagList.forEach(selectedTag -> {
-            Tag tag = tagManager.resolve(selectedTag);
-            //if (tag.getTagID().equals(tag.getNamespace().getName() + ":"))
-            String tagTitle = this.getTagTitle(tag);
-            if (StringUtils.isNotBlank(tagTitle)) {
-              sb.append("\"").append(tagTitle).append("\" AND ");
-            }
-          });
-          if (sb.length() > 0 && sb.toString().endsWith(" AND ")) {
-            sb.delete(sb.length() - 5, sb.length());
-          }
-          sb.append(")) AND ");
-        }
-      } catch (DamException e) {
-        LOGGER.error("Exception while getting field map config.");
+      String nameSpace = entry.getKey();
+      JsonElement facetField;
+      facetField = this.getFieldMapConfig(resolver).get(nameSpace);
+      if (facetField == null) {
+        continue;
       }
+
+      List<String> tagList = entry.getValue();
+      if (tagList.isEmpty()) {
+        sb.append("(@").append(facetField.getAsString()).append(" NOT NULL)");
+      } else {
+        sb.append("(@").append(facetField.getAsString()).append("==(");
+        tagList.forEach(selectedTag -> {
+          Tag tag = tagManager.resolve(selectedTag);
+          //if (tag.getTagID().equals(tag.getNamespace().getName() + ":"))
+          String tagTitle = this.getTagTitle(tag);
+          if (StringUtils.isNotBlank(tagTitle)) {
+            sb.append("\"").append(tagTitle).append("\" AND ");
+          }
+        });
+        if (sb.length() > 0 && sb.toString().endsWith(" AND ")) {
+          sb.delete(sb.length() - 5, sb.length());
+        }
+        sb.append(")) AND ");
+      }
+
     }
     if (sb.length() > 0 && sb.toString().endsWith(" AND ")) {
       sb.delete(sb.length() - 5, sb.length());
@@ -235,12 +234,8 @@ public class FeedTabModel {
    * @return Data expression of feed fields
    */
   private JsonObject populateSelectedFieldsData(ResourceResolver resolver) {
-    JsonArray allFields = null;
-    try {
-      allFields = this.getModelConfig(resolver).getAsJsonArray("fields");
-    } catch (DamException e) {
-      LOGGER.error("Exception while getting model config.");
-    }
+    JsonArray allFields = this.getModelConfig(resolver).getAsJsonArray("fields");
+
     JsonObject selectedObject = new JsonObject();
     selectedObject.addProperty("desc", tabTitle);
     selectedObject.addProperty("selected", false);
@@ -278,11 +273,15 @@ public class FeedTabModel {
    *
    * @param resourceResolver Resource resolver
    * @return Json object of input file
-   * @throws DamException Dam Exception
    */
-  private JsonObject getModelConfig(ResourceResolver resourceResolver) throws DamException {
+  private JsonObject getModelConfig(ResourceResolver resourceResolver) {
     if (this.modelConfig == null) {
-      this.modelConfig = DamUtils.readJsonFromDam(resourceResolver, MODEL_CONFIG_FILE);
+      try {
+        this.modelConfig = DamUtils.readJsonFromDam(resourceResolver, MODEL_CONFIG_FILE);
+      } catch (DamException e) {
+        log.error("getModelConfig call failed: {}", e.getMessage());
+        return new JsonObject();
+      }
     }
     return this.modelConfig;
   }
@@ -292,11 +291,15 @@ public class FeedTabModel {
    *
    * @param resourceResolver Resource resolver object
    * @return field map config.
-   * @throws DamException Dam Exception
    */
-  private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) throws DamException {
+  private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) {
     if (fieldMapConfig == null) {
-      fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
+      try {
+        fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
+      } catch (DamException e) {
+        log.error("getFieldMapConfig call failed: {}", e.getMessage());
+        return new JsonObject();
+      }
     }
     return fieldMapConfig.getAsJsonObject("tagIdToCoveoField");
   }

@@ -1,7 +1,6 @@
 package com.workday.community.aem.core.models.impl;
 
 import com.google.gson.JsonObject;
-import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CategoryFacetModel;
 import com.workday.community.aem.core.models.CoveoListViewModel;
 import com.workday.community.aem.core.services.DrupalService;
@@ -11,6 +10,7 @@ import com.workday.community.aem.core.utils.CoveoUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Named;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
@@ -22,6 +22,7 @@ import org.apache.sling.models.annotations.injectorspecific.Self;
 /**
  * Coveo list view model implementation.
  */
+@Slf4j
 @Model(
     adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {CoveoListViewModel.class},
@@ -91,7 +92,8 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
    * {@inheritDoc}
    */
   @Override
-  public String getExtraCriteria() throws DamException {
-    throw new DamException("ExtraCriteria is not available for list view");
+  public String getExtraCriteria() {
+    log.error("ExtraCriteria is not available for list view");
+    return "";
   }
 }

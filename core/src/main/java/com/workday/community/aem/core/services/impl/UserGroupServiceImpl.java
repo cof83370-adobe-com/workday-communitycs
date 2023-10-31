@@ -11,6 +11,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.DrupalService;
@@ -23,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.jcr.Node;
@@ -48,9 +51,8 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class UserGroupServiceImpl implements UserGroupService {
 
-  /** The Constant PUBLIC_PATH_PATTERN. */
-  private static final Pattern PUBLIC_PATH_PATTERN = Pattern
-      .compile("/content/workday-community/[a-z]{2}-[a-z]{2}/public/");
+  /** The Constant PUBLIC_PATH_REGEX. */
+  protected static final String PUBLIC_PATH_REGEX = "/content/workday-community/[a-z]{2}-[a-z]{2}/public/";
 
   /**
    * The snap service.
@@ -108,9 +110,10 @@ public class UserGroupServiceImpl implements UserGroupService {
         return true;
       }
 
-      log.debug("---> UserGroupServiceImpl: Before Access control tag List and userPath is: {}", user.getPath());
-      List<String> accessControlTagsList = PageUtils.getPageTagPropertyList(request.getResourceResolver(), pagePath,
-          ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
+      List<String> accessControlTagsList =
+          PageUtils.getPageTagPropertyList(request.getResourceResolver(),
+              pagePath,
+              ACCESS_CONTROL_TAG, TAG_PROPERTY_ACCESS_CONTROL);
       log.debug("---> UserGroupServiceImpl: After Access control tag List");
 
       if (!accessControlTagsList.isEmpty()) {
@@ -124,8 +127,8 @@ public class UserGroupServiceImpl implements UserGroupService {
           return !Collections.disjoint(accessControlTagsList, groupsList);
         }
       }
-    } catch (Exception exec) {
-      log.error("---> Exception in validateTheUser function: {}", exec);
+    } catch (RepositoryException | CacheException e) {
+      log.error("---> Exception in validateTheUser function: {}.", e.getMessage());
     }
     return false;
   }
@@ -157,7 +160,7 @@ public class UserGroupServiceImpl implements UserGroupService {
    */
   @Override
   public List<String> getCurrentUserGroups(SlingHttpServletRequest request) {
-    log.info("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
+    log.debug("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
     String userRole;
     List<String> groupIds = new ArrayList<>();
     try {
@@ -189,7 +192,7 @@ public class UserGroupServiceImpl implements UserGroupService {
                 StringUtils.join(groupIds, ";"));
           }
         }
-        log.info("Salesforce roles {}", groupIds);
+        log.debug("Salesforce roles {}", groupIds);
       }
 
     } catch (RepositoryException | CacheException e) {
@@ -240,7 +243,8 @@ public class UserGroupServiceImpl implements UserGroupService {
    * @return true, if is public page
    */
   private boolean isPublicPage(String pagePath) {
-    Matcher matcher = PUBLIC_PATH_PATTERN.matcher(pagePath);
+    Pattern regex = Pattern.compile(PUBLIC_PATH_REGEX);
+    Matcher matcher = regex.matcher(pagePath);
     return matcher.find();
   }
 }

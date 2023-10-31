@@ -1,8 +1,6 @@
 package com.workday.community.aem.core.models;
 
-import com.workday.community.aem.core.exceptions.DamException;
 import java.util.Map;
-import javax.jcr.RepositoryException;
 
 /**
  * The Sling model for Coveo Event Feed component.
@@ -14,29 +12,28 @@ public interface CoveoEventFeedModel extends CoveoCommonModel {
    *
    * @return FeatureEvent details as a Map object.
    */
-  Map<String, String> getFeatureEvent() throws RepositoryException;
+  Map<String, String> getFeatureEvent();
 
   /**
    * Gets the sort criteria.
    *
    * @return The sort criteria.
    *
-   * @throws DamException If there was an error getting the config.
    */
-  String getSortCriteria() throws DamException;
+  String getSortCriteria();
 
   /**
    * Get Event Criteria.
    *
    * @return the Event Criteria
    */
-  String getEventCriteria() throws DamException;
+  String getEventCriteria();
 
   /**
    * Get all events Url.
    *
    * @return all events Url.
    */
-  String getAllEventsUrl() throws DamException;
+  String getAllEventsUrl();
 
 }

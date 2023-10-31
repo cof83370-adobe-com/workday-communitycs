@@ -80,7 +80,7 @@ public class CategoryFacetModel {
    * Post construct to build facet object.
    */
   @PostConstruct
-  private void init() throws DamException {
+  private void init() {
     try (ResourceResolver resolver = cacheManager == null
         ? ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)
         : cacheManager.getServiceResolver(READ_SERVICE_USER)) {
@@ -112,7 +112,7 @@ public class CategoryFacetModel {
         }
       }
     } catch (CacheException | LoginException e) {
-      log.error("Initialization of CategoryFacetModel fails");
+      log.error("Initialization of CategoryFacetModel fails, {}", e.getMessage());
     }
   }
 
@@ -122,9 +122,14 @@ public class CategoryFacetModel {
    * @param resourceResolver Resource resolver object
    * @return field map config.
    */
-  private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) throws DamException {
+  private JsonObject getFieldMapConfig(ResourceResolver resourceResolver) {
     if (fieldMapConfig == null) {
-      fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
+      try {
+        fieldMapConfig = DamUtils.readJsonFromDam(resourceResolver, COVEO_FILED_MAP_CONFIG);
+      } catch (DamException e) {
+        log.error("getFieldMapConfig() call throws exception: {}", e.getMessage());
+        return new JsonObject();
+      }
     }
     return fieldMapConfig.getAsJsonObject("tagIdToCoveoField");
   }
