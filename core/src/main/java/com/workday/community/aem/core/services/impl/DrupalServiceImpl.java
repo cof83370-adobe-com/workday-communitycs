@@ -169,7 +169,7 @@ public class DrupalServiceImpl implements DrupalService {
    */
   @Override
   public String getUserData(String sfId) {
-    String userDataCacheKey = String.format("user_data_%s_%s", getEnv(), sfId);
+    String userDataCacheKey = String.format("user_data_%s_%s_%s", getEnv(), getInstance(), sfId);
     if (!config.enableCache()) {
       serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey);
     }
@@ -435,4 +435,10 @@ public class DrupalServiceImpl implements DrupalService {
     String env = this.runModeConfigService.getEnv();
     return (env == null) ? "local" : env;
   }
+
+  private String getInstance() {
+    String inst = this.runModeConfigService.getInstance();
+    return (inst == null) ? "local" : inst;
+  }
+
 }
