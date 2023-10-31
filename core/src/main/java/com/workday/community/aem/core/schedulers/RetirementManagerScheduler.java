@@ -102,8 +102,10 @@ public class RetirementManagerScheduler implements Runnable {
   protected void activate(final RetirementManagerSchedulerConfig config) {
     if (isAuthorInstance()) {
       authorDomain = config.authorDomain();
-      log.debug(" RetirementManagerScheduler activate method called and authorInstUrl : {}", authorDomain);
-
+      log.debug("RetirementManagerScheduler activate method called - "
+              + "authorInstUrl: {}, cron: {}, review notification: {}, retirement notification: {}", 
+              authorDomain, config.workflowNotificationCron(), config.enableWorkflowNotificationReview(), 
+              config.enableWorkflowNotificationRetirement());
       if (config.enableWorkflowNotificationReview()) {
         wfNotifyReview10Months = true;
       }
@@ -200,8 +202,10 @@ public class RetirementManagerScheduler implements Runnable {
    * @param resResolver the resResolver
    */
   public void sendReviewNotification(ResourceResolver resResolver) {
+    log.debug("RetirementManagerScheduler::Start querying Review Notification pages");
     List<String> reviewReminderPagePaths = queryService.getPagesDueTodayByDateProp(propReviewReminderDate);
 
+    log.debug("RetirementManagerScheduler::End querying Review Notification pages.. Sending Notification");
     sendNotification(resResolver, reviewReminderPagePaths, emailTemplateRevReminderText, reviewReminderEmailSubject,
         false);
   }
@@ -212,9 +216,11 @@ public class RetirementManagerScheduler implements Runnable {
    * @param resResolver the resResolver
    */
   public void startRetirementAndNotify(ResourceResolver resResolver) {
+    log.debug("RetirementManagerScheduler::Start querying Retirement and Notify pages");
     List<String> retirementNotificationPagePaths = queryService
         .getPagesDueTodayByDateProp(propRetirementNotificationDate);
 
+    log.debug("RetirementManagerScheduler::End querying Retirement and Notify pages.. Sending Notification");
     sendNotification(resResolver, retirementNotificationPagePaths, emailTemplateRetNotifyText,
         retirementNotifyEmailSubject, true);
 
@@ -377,7 +383,7 @@ public class RetirementManagerScheduler implements Runnable {
    */
   public void startWorkflow(ResourceResolver resolver, String model, String payloadContentPath)
       throws WorkflowException {
-    log.debug("startWorkflow >>>>>>>   ");
+    log.debug("startWorkflow for >>>>>>> {}  ", payloadContentPath);
 
     WorkflowSession workflowSession = resolver.adaptTo(WorkflowSession.class);
 
@@ -392,5 +398,6 @@ public class RetirementManagerScheduler implements Runnable {
 
     // Trigger workflow
     workflowSession.startWorkflow(workflowModel, workflowData, workflowMetadata);
+    log.debug("startWorkflow completed >>>>>>>   ");
   }
 }
