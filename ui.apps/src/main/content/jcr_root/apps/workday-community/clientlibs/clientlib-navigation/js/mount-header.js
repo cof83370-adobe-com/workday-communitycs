@@ -74,7 +74,7 @@ function renderNavHeader(searchToken = '') {
                         payload.customData = {...payload.customData, ...JSON.parse(searchConfig["userContext"])};
                     }
                     return payload;
-                };
+                }
             }
         } : undefined;
 
