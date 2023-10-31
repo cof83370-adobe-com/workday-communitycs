@@ -24,13 +24,6 @@ const getSearchToken = async () => {
     }
 };
 
-const analyticsClientMiddleware = (eventName, payload) => {
-    if (searchConfig["userContext"]) {
-        payload.customData = {...payload.customData, ...JSON.parse(searchConfig["userContext"])};
-    }
-    return payload;
-};
-
 function renderNavHeader(searchToken = '') {
     const headerDiv = document.getElementById('community-header-div');
     if (headerDiv !== undefined && headerDiv !== null) {
@@ -42,7 +35,7 @@ function renderNavHeader(searchToken = '') {
         let changed = currentId !== previousId;
 
         if (!headerData || headerData && changed) {
-            headerDataJson = constructData(headerDiv, currentId, searchToken);
+            headerDataJson = constructData(headerDiv, currentId);
         }
 
         if (dataWithMenu(headerDataJson) && (enableCache === 'true')) {
@@ -50,7 +43,48 @@ function renderNavHeader(searchToken = '') {
         } else {
             document.cookie = 'cacheMenu=FALSE';
             sessionStorage.removeItem('navigation-data');
-            headerDataJson = constructData(headerDiv, currentId, searchToken);
+            headerDataJson = constructData(headerDiv, currentId);
+        }
+        // coveoProp can't be cached. move it out.
+        const searchUrl = headerDiv.getAttribute('data-search-url');
+        searchConfig = JSON.parse(headerDiv.getAttribute('data-search-config'));
+
+        headerDataJson.coveoProps = searchToken ? {
+            engine: Cmty.CoveoEngineService.CoveoSearchEngine(
+                {
+                    organizationId: searchConfig['orgId'],
+                    search: {
+                        searchHub: searchConfig['searchHub']
+                    },
+                    accessToken: searchToken,
+                    renewAccessToken: getSearchToken
+                }
+            ),
+            controllerConfig: {
+                numberOfSuggestions: 10
+            },
+            redirectProps: {
+                redirectPath: searchUrl,
+                querySeparator: '#',
+                queryParameterName: 'q'
+            },
+            analytics: {
+                analyticsClientMiddleware: (eventName, payload) => {
+                    if (searchConfig["userContext"]) {
+                        payload.customData = {...payload.customData, ...JSON.parse(searchConfig["userContext"])};
+                    }
+                    return payload;
+                }
+            }
+        } : undefined;
+
+        if (!headerDataJson.coveoProps) {
+            // Add search props if coveo props is not present
+            headerDataJson.searchProps = {
+                redirectPath: searchUrl,
+                querySeparator: '#',
+                queryParameterName: 'q'
+            }
         }
 
         try {
@@ -97,12 +131,10 @@ function stringValid(str) {
     return (str !== undefined && str !== null && str.trim() !== '');
 }
 
-function constructData(headerDiv, currentId, searchToken) {
+function constructData(headerDiv, currentId) {
     let headerStringData = headerDiv.getAttribute('data-model-property');
     let avatarUrl = headerDiv.getAttribute("data-model-avatar");
     let homePage = headerDiv.getAttribute("data-prop-home");
-    let searchUrl = headerDiv.getAttribute('data-search-url');
-    searchConfig = JSON.parse(headerDiv.getAttribute('data-search-config'));
 
     let headerData = {
         previousId: currentId,
@@ -123,38 +155,6 @@ function constructData(headerDiv, currentId, searchToken) {
 
             headerMenu.profile.menu = [...headerMenu.profile.menu, signOutObject];
             headerData.menus = headerMenu;
-            headerData.coveoProps = searchToken ? {
-                engine: Cmty.CoveoEngineService.CoveoSearchEngine(
-                    {
-                        organizationId: searchConfig['orgId'],
-                        search: {
-                            searchHub: searchConfig['searchHub']
-                        },
-                        accessToken: searchToken,
-                        renewAccessToken: getSearchToken
-                    }
-                ),
-                controllerConfig: {
-                    numberOfSuggestions: 10
-                },
-                redirectProps: {
-                    redirectPath: searchUrl,
-                    querySeparator: '#',
-                    queryParameterName: 'q'
-                },
-                analytics: {
-                    analyticsClientMiddleware,
-                }
-            } : undefined;
-
-            if (!headerData.coveoProps) {
-                // Add search props if coveo props is not present
-                headerData.searchProps = {
-                    redirectPath: searchUrl,
-                    querySeparator: '#',
-                    queryParameterName: 'q'
-                }
-            }
         }
     }
 
