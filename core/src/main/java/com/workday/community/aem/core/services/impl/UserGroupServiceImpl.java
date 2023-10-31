@@ -11,7 +11,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.constants.GlobalConstants;
-import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.DrupalService;
@@ -24,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.jcr.Node;
@@ -52,7 +49,8 @@ import org.osgi.service.component.annotations.Reference;
 public class UserGroupServiceImpl implements UserGroupService {
 
   /** The Constant PUBLIC_PATH_REGEX. */
-  protected static final String PUBLIC_PATH_REGEX = "/content/workday-community/[a-z]{2}-[a-z]{2}/public/";
+  private static final Pattern PUBLIC_PATH_PATTERN = Pattern
+      .compile("/content/workday-community/[a-z]{2}-[a-z]{2}/public/");
 
   /**
    * The snap service.
@@ -79,9 +77,9 @@ public class UserGroupServiceImpl implements UserGroupService {
   private UserService userService;
 
   /**
-   * The evaluation process determines whether a user has the necessary permissions 
-   * to view a specified link. Public pages are accessible by default, while anonymous 
-   * or unavailable logged-in users can also access them. However, for secured internal 
+   * The evaluation process determines whether a user has the necessary permissions
+   * to view a specified link. Public pages are accessible by default, while anonymous
+   * or unavailable logged-in users can also access them. However, for secured internal
    * pages with Okta users, the ACL logic is evaluated to determine access.
    *
    * @param pagePath the page path
@@ -91,6 +89,7 @@ public class UserGroupServiceImpl implements UserGroupService {
   @Override
   public boolean validateCurrentUser(SlingHttpServletRequest request, String pagePath) {
     log.debug(" inside validateTheUser method. -->");
+
     try {
       if (StringUtils.isBlank(pagePath)) {
         return false;
@@ -243,8 +242,7 @@ public class UserGroupServiceImpl implements UserGroupService {
    * @return true, if is public page
    */
   private boolean isPublicPage(String pagePath) {
-    Pattern regex = Pattern.compile(PUBLIC_PATH_REGEX);
-    Matcher matcher = regex.matcher(pagePath);
+    Matcher matcher = PUBLIC_PATH_PATTERN.matcher(pagePath);
     return matcher.find();
   }
 }
