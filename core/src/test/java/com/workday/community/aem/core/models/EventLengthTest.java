@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 
 import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.UserService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -22,164 +22,156 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class EventLengthTest.
  */
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class EventLengthTest {
 
-  /**
-   * The context.
-   */
-  private final AemContext context = new AemContext();
+        /*** The context. */
+        private final AemContext context = new AemContext();
 
-  @Mock
+        @Mock
   UserService userService;
 
-  /**
-   * The event details model.
-   */
-  private EventDetailsModel eventDetailsModel;
+  /*** The event details model. */
+        private EventDetailsModel eventDetailsModel;
 
-  /**
-   * The current page.
-   */
-  private Page currentPage;
+        /*** The current page. */
+        private Page currentPage;
+/**
+        * The resource. */
+        private Resource resource;
 
-  /**
-   * The resource.
-   */
-  private Resource resource;
+        /*** The Drupal Service */
+        @Mock
+        private DrupalService drupalService;
 
-  /**
-   * The Snap Service
-   */
-  @Mock
-  private SnapService snapService;
 
-  /**
-   * Setup.
-   *
-   * @throws Exception the exception
-   */
-  @BeforeEach
-  public void setup() throws Exception {
-    context.registerService(SnapService.class, snapService);
-    context.registerService(UserService.class, userService);
-    context.addModelsForClasses(EventDetailsModel.class);
-    String profileResponse = "{\"timeZone\":\"America/New_York\"}";
-    lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse);
-  }
 
-  /**
-   * Test event length less than 8 hours.
-   *
-   * @throws Exception the exception
-   */
-  @Test
-  void testEventLengthLessThan8Hours() throws Exception {
-    Map<String, Object> pageProperties = new HashMap<>();
-    pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
-    pageProperties.put("eventEndDate", "2022-11-22T05:54:02.000+05:30");
-    currentPage = context.create().page("/content/workday-community/event",
-        "/conf/workday-community/settings/wcm/templates/events", pageProperties);
-    resource = context.create().resource(currentPage, "eventslengthpage",
-        "sling:resourceType", "workday-community/components/structure/eventspage");
-    currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
-    context.registerService(Page.class, currentPage);
-    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-    assertNotNull(eventDetailsModel);
-    assertEquals(0, eventDetailsModel.getEventLengthDays());
-    assertEquals(5, eventDetailsModel.getEventLengthHours());
-    assertEquals(10, eventDetailsModel.getEventLengthMinutes());
-    assertEquals("Minutes", eventDetailsModel.getMinutesLabel());
-    assertEquals("Hours", eventDetailsModel.getHoursLabel());
-  }
+        /**
+         * Setup.
+         *
+         * @throws Exception the exception
+         */
+        @BeforeEach
+        public void setup() throws Exception {
+                context.registerService(DrupalService.class, drupalService);
+                context.registerService(UserService.class, userService);
+                context.addModelsForClasses(EventDetailsModel.class);
+                String timezoneResponse = "{\"timeZone\":\"America/New_York\"}";
+                lenient().when(drupalService.getUserTimezone(anyString())).thenReturn(timezoneResponse);
+        }
 
-  /**
-   * Test event length less than one hour.
-   *
-   * @throws Exception the exception
-   */
-  @Test
-  void testEventLengthLessThanOneHour() throws Exception {
-    Map<String, Object> pageProperties = new HashMap<>();
-    pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
-    pageProperties.put("eventEndDate", "2022-11-22T00:59:02.000+05:30");
-    currentPage = context.create().page("/content/workday-community/event",
-        "/conf/workday-community/settings/wcm/templates/events", pageProperties);
-    resource = context.create().resource(currentPage, "eventslengthpage",
-        "sling:resourceType", "workday-community/components/structure/eventspage");
-    currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
-    context.registerService(Page.class, currentPage);
-    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-    assertNotNull(eventDetailsModel);
-    assertEquals(0, eventDetailsModel.getEventLengthDays());
-    assertEquals(0, eventDetailsModel.getEventLengthHours());
-    assertEquals(15, eventDetailsModel.getEventLengthMinutes());
-    assertEquals("Minutes", eventDetailsModel.getMinutesLabel());
-    assertEquals("Hour", eventDetailsModel.getHoursLabel());
-  }
+        /**
+         * Test event length less than 8 hours.
+         *
+         * @throws Exception the exception
+         */
+        @Test
+        void testEventLengthLessThan8Hours() throws Exception {
+                Map<String, Object> pageProperties = new HashMap<>();
+                pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
+                pageProperties.put("eventEndDate", "2022-11-22T05:54:02.000+05:30");
+                currentPage = context.create().page("/content/workday-community/event",
+                                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
+                resource = context.create().resource(currentPage, "eventslengthpage",
+                                "sling:resourceType", "workday-community/components/structure/eventspage");
+                currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
+                context.registerService(Page.class, currentPage);
+                eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+                assertNotNull(eventDetailsModel);
+                assertEquals(0, eventDetailsModel.getEventLengthDays());
+                assertEquals(5, eventDetailsModel.getEventLengthHours());
+                assertEquals(10, eventDetailsModel.getEventLengthMinutes());
+                assertEquals("Minutes", eventDetailsModel.getMinutesLabel());
+                assertEquals("Hours", eventDetailsModel.getHoursLabel());
+        }
 
-  /**
-   * Test event length one day and zero minutes.
-   *
-   * @throws Exception the exception
-   */
-  @Test
-  void testEventLengthOneDayAndZeroMinutes() throws Exception {
-    Map<String, Object> pageProperties = new HashMap<>();
-    pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
-    pageProperties.put("eventEndDate", "2022-11-23T00:44:02.000+05:30");
-    currentPage = context.create().page("/content/workday-community/event",
-        "/conf/workday-community/settings/wcm/templates/events", pageProperties);
-    resource = context.create().resource(currentPage, "eventslengthpage",
-        "sling:resourceType", "workday-community/components/structure/eventspage");
-    currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
-    context.registerService(Page.class, currentPage);
-    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-    assertNotNull(eventDetailsModel);
-    assertEquals(1, eventDetailsModel.getEventLengthDays());
-    assertEquals(0, eventDetailsModel.getEventLengthHours());
-    assertEquals(0, eventDetailsModel.getEventLengthMinutes());
-  }
+        /**
+         * Test event length less than one hour.
+         *
+         * @throws Exception the exception
+         */
+        @Test
+        void testEventLengthLessThanOneHour() throws Exception {
+                Map<String, Object> pageProperties = new HashMap<>();
+                pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
+                pageProperties.put("eventEndDate", "2022-11-22T00:59:02.000+05:30");
+                currentPage = context.create().page("/content/workday-community/event",
+                                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
+                resource = context.create().resource(currentPage, "eventslengthpage",
+                                "sling:resourceType", "workday-community/components/structure/eventspage");
+                currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
+                context.registerService(Page.class, currentPage);
+                eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+                assertNotNull(eventDetailsModel);
+                assertEquals(0, eventDetailsModel.getEventLengthDays());
+                assertEquals(0, eventDetailsModel.getEventLengthHours());
+                assertEquals(15, eventDetailsModel.getEventLengthMinutes());
+                assertEquals("Minutes", eventDetailsModel.getMinutesLabel());
+                assertEquals("Hour", eventDetailsModel.getHoursLabel());
+        }
 
-  /**
-   * Test event length more than day.
-   *
-   * @throws Exception the exception
-   */
-  @Test
-  void testEventLengthMoreThanDay() throws Exception {
-    Map<String, Object> pageProperties = new HashMap<>();
-    pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
-    pageProperties.put("eventEndDate", "2022-11-24T05:54:02.000+05:30");
-    currentPage = context.create().page("/content/workday-community/event",
-        "/conf/workday-community/settings/wcm/templates/events", pageProperties);
-    resource = context.create().resource(currentPage, "eventslengthpage",
-        "sling:resourceType", "workday-community/components/structure/eventspage");
-    currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
-    context.registerService(Page.class, currentPage);
-    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-    assertNotNull(eventDetailsModel);
-    assertEquals(3, eventDetailsModel.getEventLengthDays());
-    assertEquals("Days", eventDetailsModel.getDaysLabel());
-  }
+        /**
+         * Test event length one day and zero minutes.
+         *
+         * @throws Exception the exception
+         */
+        @Test
+        void testEventLengthOneDayAndZeroMinutes() throws Exception {
+                Map<String, Object> pageProperties = new HashMap<>();
+                pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
+                pageProperties.put("eventEndDate", "2022-11-23T00:44:02.000+05:30");
+                currentPage = context.create().page("/content/workday-community/event",
+                                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
+                resource = context.create().resource(currentPage, "eventslengthpage",
+                                "sling:resourceType", "workday-community/components/structure/eventspage");
+                currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
+                context.registerService(Page.class, currentPage);
+                eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+                assertNotNull(eventDetailsModel);
+                assertEquals(1, eventDetailsModel.getEventLengthDays());
+                assertEquals(0, eventDetailsModel.getEventLengthHours());
+                assertEquals(0, eventDetailsModel.getEventLengthMinutes());
+        }
 
-  /**
-   * Test event length no strat and end dates.
-   *
-   * @throws Exception the exception
-   */
-  @Test
-  void testEventLengthNoStratAndEndDates() throws Exception {
-    Map<String, Object> pageProperties = new HashMap<>();
-    pageProperties.put("eventStartDate", "");
-    pageProperties.put("eventEndDate", "");
-    currentPage = context.create().page("/content/workday-community/event",
-        "/conf/workday-community/settings/wcm/templates/events", pageProperties);
-    resource = context.create().resource(currentPage, "eventslengthpage",
-        "sling:resourceType", "workday-community/components/structure/eventspage");
-    currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
-    context.registerService(Page.class, currentPage);
-    eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
-    assertNotNull(eventDetailsModel);
-  }
+        /**
+         * Test event length more than day.
+         *
+         * @throws Exception the exception
+         */
+        @Test
+        void testEventLengthMoreThanDay() throws Exception {
+                Map<String, Object> pageProperties = new HashMap<>();
+                pageProperties.put("eventStartDate", "2022-11-22T00:44:02.000+05:30");
+                pageProperties.put("eventEndDate", "2022-11-24T05:54:02.000+05:30");
+                currentPage = context.create().page("/content/workday-community/event",
+                                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
+                resource = context.create().resource(currentPage, "eventslengthpage",
+                                "sling:resourceType", "workday-community/components/structure/eventspage");
+                currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
+                context.registerService(Page.class, currentPage);
+                eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+                assertNotNull(eventDetailsModel);
+                assertEquals(3, eventDetailsModel.getEventLengthDays());
+                assertEquals("Days", eventDetailsModel.getDaysLabel());
+        }
+
+        /**
+         * Test event length no strat and end dates.
+         *
+         * @throws Exception the exception
+         */
+        @Test
+        void testEventLengthNoStratAndEndDates() throws Exception {
+                Map<String, Object> pageProperties = new HashMap<>();
+                pageProperties.put("eventStartDate", "");
+                pageProperties.put("eventEndDate", "");
+                currentPage = context.create().page("/content/workday-community/event",
+                                "/conf/workday-community/settings/wcm/templates/events", pageProperties);
+                resource = context.create().resource(currentPage, "eventslengthpage",
+                                "sling:resourceType", "workday-community/components/structure/eventspage");
+                currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
+                context.registerService(Page.class, currentPage);
+                eventDetailsModel = context.request().adaptTo(EventDetailsModel.class);
+                assertNotNull(eventDetailsModel);
+        }
 }

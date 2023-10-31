@@ -187,9 +187,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         throw new ResourceNotFoundException("Page data not found");
       }
       TagManager tagManager = resourceResolver.adaptTo(TagManager.class);
-      String documentId =
+      String pageLink =
           runModeConfigService.getPublishInstanceDomain().concat(path).concat(".html");
-      properties.put("documentId", documentId);
+      properties.put("documentId", pageLink);
+      properties.put("aemPageLink", pageLink);
       properties.put("isAem", true);
       processDateFields(data, properties);
       processStringFields(data, properties);
@@ -242,7 +243,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             description);
       }
     } catch (CacheException | RepositoryException | SlingException e) {
-      log.error("Extract page properties {} failed: {}", path, e.getMessage());
+      log.error("Extract page properties path: {} message: {}", path, e.getMessage());
       return properties;
     }
     return properties;
@@ -292,7 +293,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
           allowAnonymous = true;
         } else {
           log.info("Coveo indexing: Access control value {} missing in the map for the page {}",
-              accessControlValue, properties.get("documentId"));
+              accessControlValue, properties.get("aemPageLink"));
         }
       }
     }

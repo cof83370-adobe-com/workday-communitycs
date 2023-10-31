@@ -95,18 +95,6 @@ public @interface CacheConfig {
   int jcrUserExpireDuration() default 30 * 60;
 
   /**
-   * The time in seconds before the cache is refreshed.
-   *
-   * @return The length in seconds.
-   */
-  @AttributeDefinition(
-      name = "Cache refresh duration in seconds ",
-      description = "Cache duration in seconds (default 1 hours)",
-      type = AttributeType.INTEGER
-  )
-  int refreshDuration() default 60 * 60;
-
-  /**
    * The time in seconds before the cache cleaned.
    *
    * @return The length in seconds.

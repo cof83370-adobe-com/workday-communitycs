@@ -33,6 +33,7 @@ public class DamUtils {
   public static JsonObject readJsonFromDam(ResourceResolver resourceResolver, String path)
       throws DamException {
     try {
+      log.debug("readJsonFromDam for {}", path);
       Resource resource = resourceResolver.getResource(path);
       Asset asset = requireNonNull(resource).adaptTo(Asset.class);
       Resource original = requireNonNull(asset).getOriginal();
@@ -57,7 +58,7 @@ public class DamUtils {
       Gson gson = new Gson();
       return gson.fromJson(sb.toString(), JsonObject.class);
     } catch (IOException | SlingException e) {
-      throw new DamException();
+      throw new DamException("readJsonFromDam fails with msg: %s", e.getMessage());
     }
   }
 

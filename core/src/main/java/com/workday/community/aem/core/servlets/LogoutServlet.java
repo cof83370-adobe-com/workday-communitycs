@@ -2,6 +2,7 @@ package com.workday.community.aem.core.servlets;
 
 import static com.workday.community.aem.core.constants.HttpConstants.COVEO_COOKIE_NAME;
 import static com.workday.community.aem.core.constants.HttpConstants.LOGIN_COOKIE_NAME;
+import static org.apache.oltu.oauth2.common.OAuth.ContentType.JSON;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,7 +17,6 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.entity.ContentType;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.auth.Authenticator;
@@ -31,14 +31,11 @@ import org.osgi.service.component.annotations.ReferencePolicy;
  * The user logout servlet class to redirect the action to okta logout.
  */
 @Slf4j
-@Component(
-    service = Servlet.class,
-    property = {
-        org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Logout Servlet",
-        "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-        "sling.servlet.paths=" + "/bin/user/logout"
-    }
-)
+@Component(service = Servlet.class, property = {
+    org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Logout Servlet",
+    "sling.servlet.methods=" + HttpConstants.METHOD_GET,
+    "sling.servlet.paths=" + "/bin/user/logout"
+})
 public class LogoutServlet extends SlingAllMethodsServlet {
 
   private final transient ObjectMapper objectMapper = new ObjectMapper();
@@ -75,7 +72,7 @@ public class LogoutServlet extends SlingAllMethodsServlet {
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
       throws IOException {
     String utfName = StandardCharsets.UTF_8.name();
-    response.setContentType(ContentType.APPLICATION_JSON.getMimeType());
+    response.setContentType(JSON);
     response.setCharacterEncoding(utfName);
 
     String oktaDomain = oktaService.getCustomDomain();

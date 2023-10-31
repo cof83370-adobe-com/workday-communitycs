@@ -20,7 +20,7 @@ import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.DamUtils;
 import com.workday.community.aem.core.utils.ResolverUtil;
@@ -63,7 +63,7 @@ public class CoveoRelatedInformationModelTest {
   SearchApiConfigService searchApiConfigService;
 
   @Mock
-  SnapService snapService;
+  DrupalService drupalService;
 
   @Mock
   ResourceResolver resourceResolver;
@@ -91,7 +91,7 @@ public class CoveoRelatedInformationModelTest {
         .json("/com/workday/community/aem/core/models/impl/CoveoRelatedInformationModel.json",
             "/component");
     context.registerService(SearchApiConfigService.class, searchApiConfigService);
-    context.registerService(SnapService.class, snapService);
+    context.registerService(DrupalService.class, drupalService);
     context.registerService(SlingHttpServletRequest.class, request);
     context.registerService(ResourceResolver.class, resourceResolver);
     context.registerService(UserService.class, userService);
@@ -111,7 +111,7 @@ public class CoveoRelatedInformationModelTest {
     lenient().when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
     Page page = mock(Page.class);
     lenient().when(pageManager.getPage(anyString())).thenReturn(page);
-    lenient().when(page.getTags()).thenReturn(new Tag[] {tag1, tag2});
+    lenient().when(page.getTags()).thenReturn(new Tag[] { tag1, tag2 });
     lenient().when(tag1.getNamespace()).thenReturn(tag1Namespace);
     lenient().when(tag2.getNamespace()).thenReturn(tag2Namespace);
     lenient().when(tagManager.resolve("product:")).thenReturn(tag1);
@@ -124,7 +124,8 @@ public class CoveoRelatedInformationModelTest {
 
     mockDamUtils = mockStatic(DamUtils.class);
 
-    mockDamUtils.when(() -> DamUtils.readJsonFromDam(eq(resourceResolver),
+    mockDamUtils
+        .when(() -> DamUtils.readJsonFromDam(eq(resourceResolver),
             eq("/content/dam/workday-community/resources/coveo-field-map.json")))
         .thenReturn(fieldMapConfigObj);
 
@@ -147,7 +148,7 @@ public class CoveoRelatedInformationModelTest {
     UserManager userManager = mock(UserManager.class);
     User user = mock(User.class);
 
-    Value[] profileSId = new Value[] {new Value() {
+    Value[] profileSId = new Value[] { new Value() {
       @Override
       public String getString() throws IllegalStateException {
         return "testSFId";
@@ -192,7 +193,7 @@ public class CoveoRelatedInformationModelTest {
       public int getType() {
         return 0;
       }
-    }};
+    } };
     lenient().when(request.getResourceResolver()).thenReturn(mockResourceResolver);
     lenient().when(mockResourceResolver.adaptTo(Session.class)).thenReturn(session);
     lenient().when(session.getUserID()).thenReturn("userId");
@@ -205,7 +206,7 @@ public class CoveoRelatedInformationModelTest {
         .thenReturn("eb6f7b59-e3d5-5199-8019-394c8982412b");
     JsonObject userContext = JsonParser.parseString(testData).getAsJsonObject();
     userContext.addProperty("email", "testEmailFoo@workday.com");
-    lenient().when(snapService.getUserContext(anyString())).thenReturn(userContext);
+    lenient().when(drupalService.getUserContext(anyString())).thenReturn(userContext);
 
     JsonObject searchConfig = coveoRelatedInformationModel.getSearchConfig();
     assertEquals(5, searchConfig.size());

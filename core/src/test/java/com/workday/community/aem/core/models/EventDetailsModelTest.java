@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 
 import com.day.cq.wcm.api.Page;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.DrupalService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.text.DateFormat;
@@ -46,17 +46,17 @@ public class EventDetailsModelTest {
    * The current page.
    */
   private Page currentPage;
-
   /**
    * The resource.
    */
   private Resource resource;
 
+
   /**
-   * The Snap Service
+   * The Drupal Service
    */
   @Mock
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   /**
    * The user's timezone to be returned by the mocked snap service.
@@ -83,10 +83,9 @@ public class EventDetailsModelTest {
         "sling:resourceType", "workday-community/components/structure/eventspage");
     currentPage = context.currentResource("/content/workday-community/event").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
-    context.registerService(SnapService.class, snapService);
-
-    String profileResponse = String.format("{\"timeZone\":\"%s\"}", this.timeZone);
-    lenient().when(snapService.getUserProfile(anyString())).thenReturn(profileResponse);
+    context.registerService(DrupalService.class, drupalService);
+    String timeZoneResponse = String.format("{\"timeZone\":\"%s\"}", this.timeZone);
+    lenient().when(drupalService.getUserTimezone(anyString())).thenReturn(timeZoneResponse);
   }
 
   /**
@@ -95,7 +94,9 @@ public class EventDetailsModelTest {
   @Test
   void testGetUserTimeZone() {
     eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
-    assertEquals(this.timeZone, eventDetailsModel.getUserTimeZone());
+    assert eventDetailsModel != null;
+    String timeZoneResponse = String.format("{\"timeZone\":\"%s\"}", this.timeZone);
+    assertEquals(timeZoneResponse, eventDetailsModel.getUserTimeZone());
   }
 
   /**
@@ -108,8 +109,7 @@ public class EventDetailsModelTest {
     eventDetailsModel = resource.adaptTo(EventDetailsModel.class);
     assertNotNull(eventDetailsModel);
     DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-    Date formattedStartDate =
-        formatter.parse(currentPage.getProperties().get("eventStartDate", String.class));
+    Date formattedStartDate = formatter.parse(currentPage.getProperties().get("eventStartDate", String.class));
     ZonedDateTime localDateTime = formattedStartDate.toInstant().atZone(ZoneId.systemDefault());
     ZonedDateTime originDatetime = localDateTime.withZoneSameInstant(ZoneId.of("Asia/Kolkata"));
     assertEquals("00:44", DateTimeFormatter.ofPattern("HH:mm").format(originDatetime));

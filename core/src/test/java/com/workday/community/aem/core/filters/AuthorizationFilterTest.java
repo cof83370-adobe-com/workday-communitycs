@@ -36,7 +36,7 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({AemContextExtension.class, MockitoExtension.class})
+@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
 public class AuthorizationFilterTest {
 
   private final AemContext context = new AemContext();
@@ -115,10 +115,10 @@ public class AuthorizationFilterTest {
     verify(userGroupService, times(0)).getCurrentUserGroups(any());
   }
 
-  @Test
-  void testDoFilterWithValidUserAndAuthenticatedTag()
-      throws ServletException, IOException, RepositoryException, CacheException {
-    authorizationFilter.init(filterConfig);
+    @Test
+    void testDoFilterWithValidUserAndAuthenticatedTag()
+            throws ServletException, IOException, RepositoryException, CacheException {
+        authorizationFilter.init(filterConfig);
 
     String pagePath = "/content/workday-community/en-us/test";
     when(oktaService.isOktaIntegrationEnabled()).thenReturn(true);
@@ -135,10 +135,10 @@ public class AuthorizationFilterTest {
     verify(userGroupService, times(1)).validateCurrentUser(any(), anyString());
   }
 
-  @Test
-  void testDoFilterWithValidUserAndWithOutAuthenticatedTag()
-      throws ServletException, IOException, RepositoryException, CacheException {
-    authorizationFilter.init(filterConfig);
+    @Test
+    void testDoFilterWithValidUserAndWithOutAuthenticatedTag()
+            throws ServletException, IOException, RepositoryException, CacheException {
+        authorizationFilter.init(filterConfig);
 
     String pagePath = "/content/workday-community/en-us/test";
     Tag[] tags = new Tag[2];
