@@ -17,9 +17,9 @@ import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * The Class AuthorshipRenderConditionModel.
@@ -56,7 +56,7 @@ public class AuthorshipRenderConditionModel {
   /**
    * The run mode config service.
    */
-  @Reference
+  @OSGiService
   private RunModeConfigService runModeConfigService;
 
   /**
@@ -78,7 +78,8 @@ public class AuthorshipRenderConditionModel {
         Group g = groups.next();
         for (String groupStr : editGroups) {
           groupStr = groupStr.concat(" {").concat(env).concat("}");
-          if (g.getID().equalsIgnoreCase(groupStr)) {
+          String gid = g.getID();
+          if (gid != null && gid.equalsIgnoreCase(groupStr)) {
             allowed = true;
             break;
           }
