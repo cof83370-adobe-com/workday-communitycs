@@ -79,7 +79,7 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
     if (isStaticType(type)) {
       Resource itemsResource = resource.getChild("items");
       if (null != itemsResource) {
-        isPublishInstance = true; //PageUtils.isPublishInstance(runModeConfigService);
+        isPublishInstance = PageUtils.isPublishInstance(runModeConfigService);
         prepareRelatedInfoLinks(itemsResource, dto);
       }
     }
