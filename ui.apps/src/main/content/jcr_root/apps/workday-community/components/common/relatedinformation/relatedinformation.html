@@ -33,9 +33,9 @@
             </sly>
             <sly data-sly-test="${properties.type=='dynamic'}"
                data-sly-use.coveo="com.workday.community.aem.core.models.CoveoRelatedInformationModel">
-               <span id="searchConfigId" data-search-config="${coveo.searchConfig}"></span>
-               <span id="rowsId" data-property="${relatedInfoModel.rows}"></span>
-               <span id="facetFieldsId" data-property="${coveo.facetFields}"></span>
+               <span id="relInfoSearchConfigId" data-search-config="${coveo.searchConfig}"></span>
+               <span id="relInfoRowsId" data-property="${relatedInfoModel.rows}"></span>
+               <span id="relInfoFacetFieldsId" data-property="${coveo.facetFields}"></span>
                <atomic-search-interface id="relatedInfoSearchId">
                   <style>
                      atomic-search-layout {
@@ -104,9 +104,9 @@
        loadGenericAnalyticsActions,
    } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
    
-   const facetFieldsElm = document.getElementById('facetFieldsId');
+   const facetFieldsElm = document.getElementById('relInfoFacetFieldsId');
    if(facetFieldsElm) {
-       const searchConfigNode = document.getElementById("searchConfigId");
+       const searchConfigNode = document.getElementById("relInfoSearchConfigId");
        if (searchConfigNode) {
            const searchConfig = JSON.parse(searchConfigNode.getAttribute("data-search-config"));
    
@@ -147,7 +147,7 @@
                const main = async () => {
                    let token = await getToken();
                    await customElements.whenDefined('atomic-search-interface');
-                   let rows = document.getElementById('rowsId').getAttribute('data-property');
+                   let rows = document.getElementById('relInfoRowsId').getAttribute('data-property');
                    if (!rows) rows = 4;
                    const facetFields = facetFieldsElm.getAttribute('data-property');
    
