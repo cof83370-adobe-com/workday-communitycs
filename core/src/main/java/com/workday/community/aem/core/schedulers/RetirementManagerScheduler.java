@@ -56,9 +56,6 @@ public class RetirementManagerScheduler implements Runnable {
   @Reference
   private QueryService queryService;
 
-  /** The author domain. */
-  private String authorDomain = "";
-
   /** The message gateway service. */
   @Reference
   private MessageGatewayService messageGatewayService;
@@ -75,11 +72,13 @@ public class RetirementManagerScheduler implements Runnable {
   @Reference
   private ResourceResolverFactory resolverFactory;
 
+  private RetirementManagerSchedulerConfig retireConfig;
+
   private final String emailTemplateRevReminderText = 
-      "/workflows/review-reminder-10-months/jcr:content/root/container/container/text";
+        "/workflows/review-reminder/jcr:content/root/container/container/text";
 
   private final String emailTemplateRetNotifyText = 
-      "/workflows/retirement-notification-11-months/jcr:content/root/container/container/text";
+        "/workflows/retirement-notification/jcr:content/root/container/container/text";
 
   private final String propReviewReminderDate = "jcr:content/reviewReminderDate";
 
@@ -89,29 +88,26 @@ public class RetirementManagerScheduler implements Runnable {
 
   private final String retirementNotifyEmailSubject = " to Retire in 30 Days";
 
-  private boolean wfNotifyReview10Months = false;
-
-  private boolean wfNotifyRetirement11Months = false;
-
   /**
-   * Activate RetirementManagerScheduler scheduler.
+   * Activate/Modified RetirementManagerScheduler scheduler.
    *
    * @param config the config
    */
   @Activate
+  @Modified
   protected void activate(final RetirementManagerSchedulerConfig config) {
-    if (isAuthorInstance()) {
-      authorDomain = config.authorDomain();
-      log.debug("RetirementManagerScheduler activate method called - "
-              + "authorInstUrl: {}, cron: {}, review notification: {}, retirement notification: {}", 
-              authorDomain, config.workflowNotificationCron(), config.enableWorkflowNotificationReview(), 
-              config.enableWorkflowNotificationRetirement());
-      if (config.enableWorkflowNotificationReview()) {
-        wfNotifyReview10Months = true;
-      }
+    this.retireConfig = config;
 
-      if (config.enableWorkflowNotificationRetirement()) {
-        wfNotifyRetirement11Months = true;
+    if (isAuthorInstance()) {
+      log.debug(
+          "RetirementManagerScheduler activate method called - "
+              + "authorInstUrl: {}, cron: {}, review notification: {}, retirement notification: {}",
+          config.authorDomain(), config.workflowNotificationCron(), config.enableWorkflowNotificationReview(),
+          config.enableWorkflowNotificationRetirement());
+
+      // un-schedule the existing scheduler for modified event
+      if (scheduler != null) {
+        scheduler.unschedule(this.getClass().getSimpleName());
       }
 
       // Execute this method to add scheduler.
@@ -128,26 +124,16 @@ public class RetirementManagerScheduler implements Runnable {
   public void addScheduler(RetirementManagerSchedulerConfig config) {
     log.debug("Scheduler added successfully >>>>>>>   ");
 
-    if (wfNotifyReview10Months || wfNotifyRetirement11Months) {
+    if (config.enableWorkflowNotificationReview() || config.enableWorkflowNotificationRetirement()) {
       ScheduleOptions options = scheduler.EXPR(config.workflowNotificationCron());
-      options.name(config.schedulerName());
+      options.name(this.getClass().getSimpleName());
 
       // Add scheduler to call depending on option passed.
       scheduler.schedule(this, options);
-      log.debug("Scheduler added successfully name='{}'", config.schedulerName());
+      log.debug("Scheduler added successfully name='{}'", this.getClass().getSimpleName());
     } else {
       log.debug("RetirementManagerScheduler disabled");
     }
-  }
-
-  /**
-   * Removes the scheduler. Custom method to deactivate or unschedule scheduler.
-   *
-   *
-   * @param config the config
-   */
-  public void removeScheduler(RetirementManagerSchedulerConfig config) {
-    scheduler.unschedule(config.schedulerName());
   }
 
   /**
@@ -157,22 +143,9 @@ public class RetirementManagerScheduler implements Runnable {
    */
   @Deactivate
   protected void deactivate(RetirementManagerSchedulerConfig config) {
-    if (isAuthorInstance()) {
-      removeScheduler(config);
-    }
-  }
-
-  /**
-   * Modified. On component modification change status will remove and add
-   * scheduler
-   *
-   * @param config the config
-   */
-  @Modified
-  protected void modified(RetirementManagerSchedulerConfig config) {
-    if (isAuthorInstance()) {
-      removeScheduler(config);
-      addScheduler(config);
+    if (isAuthorInstance() && scheduler != null) {
+      scheduler.unschedule(this.getClass().getSimpleName());
+      scheduler = null;
     }
   }
 
@@ -183,11 +156,11 @@ public class RetirementManagerScheduler implements Runnable {
   public void run() {
     log.debug("RetirementManagerScheduler run >>>>>>>>>>>");
     try (ResourceResolver resResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-      if (wfNotifyReview10Months) {
+      if (this.retireConfig.enableWorkflowNotificationReview()) {
         sendReviewNotification(resResolver);
       }
 
-      if (wfNotifyRetirement11Months) {
+      if (this.retireConfig.enableWorkflowNotificationRetirement()) {
         startRetirementAndNotify(resResolver);
       }
 
@@ -244,7 +217,7 @@ public class RetirementManagerScheduler implements Runnable {
         if (resourceType.equals(GlobalConstants.TEXT_COMPONENT)) {
           text = textNode.getProperty("text").getValue().getString();
 
-          String pageUrl = authorDomain.concat("/editor.html").concat(path).concat(".html");
+          String pageUrl = this.retireConfig.authorDomain().concat("/editor.html").concat(path).concat(".html");
           String pageTitle = node.getProperty(JCR_TITLE).getString();
           String pageTitleLink = "<a href='".concat(pageUrl).concat("' target='_blank'>").concat(pageTitle)
               .concat("</a>");
@@ -273,12 +246,9 @@ public class RetirementManagerScheduler implements Runnable {
    *
    * @param authorMail the author mail
    * @param message    the message
-   * @param node       the node
-   * @throws RepositoryException the repository exception
-   * @throws EmailException      the email exception
+   * @throws EmailException the email exception
    */
-  public void sendEmail(String authorMail, String message, Node node, String subject)
-      throws RepositoryException, EmailException {
+  public void sendEmail(String authorMail, String message, String subject) throws EmailException {
 
     Email email = new SimpleEmail();
     email.addTo(authorMail);
@@ -349,7 +319,7 @@ public class RetirementManagerScheduler implements Runnable {
 
                 // send email once Day CQ Mail Configuration is ready
                 log.debug("Sending email to author: {}", author);
-                // sendEmail(author, msg, node, subject);
+                // sendEmail(author, msg, subject);
               } else if (emailTemplateParentNode != null) {
                 NodeIterator nodeItr = emailTemplateParentNode.getNodes();
 
@@ -360,7 +330,7 @@ public class RetirementManagerScheduler implements Runnable {
 
                 // send email once Day CQ Mail Configuration is ready
                 log.debug("Sending email to author: {}", author);
-                // sendEmail(author, msg, node, subject);
+                // sendEmail(author, msg, subject);
               }
               log.debug("Mail content is: {}", msg);
             }
@@ -368,7 +338,7 @@ public class RetirementManagerScheduler implements Runnable {
         }
 
       } catch (Exception e) {
-        log.error("Exception occured while sending the mail: {}", e.getMessage());
+        log.error("Exception occured in sendNotification: {}", e.getMessage());
       }
     });
   }

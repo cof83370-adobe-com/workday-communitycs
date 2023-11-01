@@ -2,14 +2,17 @@
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:primaryType="cq:Page">
     <jcr:content
-        cq:lastModified="{Date}2023-10-17T18:18:55.428+05:30"
+        cq:lastModified="{Date}2023-11-01T13:53:28.818+05:30"
         cq:lastModifiedBy="admin"
         cq:template="/conf/workday-community/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
-        jcr:title="Review Reminder 10 months"
+        jcr:title="Review Reminder"
         sling:resourceType="workday-community/components/structure/page"
         accessControlTags="[access-control:authenticated,access-control:internal_workmates]"
-        author=" Administrator">
+        author=" Administrator"
+        pwaCachestrategy="staleWhileRevalidate"
+        pwaDisplay="standalone"
+        pwaOrientation="any">
         <root
             jcr:primaryType="nt:unstructured"
             sling:resourceType="workday-community/components/core/container"
@@ -37,5 +40,11 @@
                 </container>
             </container>
         </root>
+        <cq:featuredimage
+            jcr:lastModified="{Date}2023-11-01T13:53:28.813+05:30"
+            jcr:lastModifiedBy="admin"
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="core/wcm/components/image/v3/image"
+            altValueFromDAM="false"/>
     </jcr:content>
 </jcr:root>

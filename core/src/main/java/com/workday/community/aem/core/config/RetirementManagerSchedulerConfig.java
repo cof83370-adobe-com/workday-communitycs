@@ -12,14 +12,6 @@ description = "Paramerters for Retirement Manager Scheduler")
 public @interface RetirementManagerSchedulerConfig {
 
   /**
-   * Scheduler name.
-   *
-   * @return the string
-   */
-  @AttributeDefinition(name = "Scheduler name", description = "Scheduler name", type = AttributeType.STRING)
-  String schedulerName() default "RetirementManagerScheduler";
-
-  /**
    * Workflow notification cron.
    *
    * @return the string
