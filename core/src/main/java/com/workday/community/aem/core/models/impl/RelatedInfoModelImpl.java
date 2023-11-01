@@ -11,11 +11,9 @@ import com.workday.community.aem.core.utils.PageUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import javax.jcr.RepositoryException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
-import org.apache.jackrabbit.oak.spi.security.user.UserConstants;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ValueMap;
@@ -98,10 +96,9 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
   private boolean isAnonymousUser() {
     try {
       User user = userService.getCurrentUser(request);
-      if (isPublishInstance && (user == null || (UserConstants.DEFAULT_ANONYMOUS_ID).equals(user.getID()))) {
-        return true;
-      }
-    } catch (CacheException | RepositoryException e) {
+      //return non loggedin user in publish environment
+      return isPublishInstance && user == null;
+    } catch (CacheException e) {
       log.error("Exception occurred while getting currentUser:{}", e.getMessage());
     }
     return false;
