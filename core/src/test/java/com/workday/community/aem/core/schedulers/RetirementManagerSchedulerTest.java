@@ -6,8 +6,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -21,12 +19,10 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
@@ -39,12 +35,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.osgi.service.component.annotations.Reference;
+
+import com.adobe.granite.workflow.WorkflowException;
+import com.adobe.granite.workflow.WorkflowSession;
+import com.adobe.granite.workflow.exec.WorkflowData;
+import com.adobe.granite.workflow.model.WorkflowModel;
 import com.day.cq.mailer.MessageGateway;
 import com.day.cq.mailer.MessageGatewayService;
 import com.day.cq.search.QueryBuilder;
-import com.workday.community.aem.core.config.ReviewNotificationSchedulerConfig;
+import com.workday.community.aem.core.config.RetirementManagerSchedulerConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
@@ -53,8 +54,6 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
-import org.mockito.ArgumentCaptor;
-
 import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
 
 /**
@@ -62,16 +61,13 @@ import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
  */
 @ExtendWith(AemContextExtension.class)
 @ExtendWith(MockitoExtension.class)
-public class ReviewNotificationSchedulerTest {
+public class RetirementManagerSchedulerTest {
 	
 	/** The context. */
     private final AemContext context = new AemContext(ResourceResolverType.JCR_MOCK);
-
-    /** The session. */
-    private final Session session = context.resourceResolver().adaptTo(Session.class);
     
     @InjectMocks
-    ReviewNotificationScheduler revNotifScheduler;
+    RetirementManagerScheduler revNotifScheduler;
     
     /** The scheduler options. */
     @Mock
@@ -105,14 +101,27 @@ public class ReviewNotificationSchedulerTest {
     @Mock
     MessageGateway<Email> messageGatewaySimpleEmail;
     
+    /**
+     * The workflow session.
+     */
+    @Mock
+    private WorkflowSession workflowSession;
+    
+    /**
+     * The workflow model.
+     */
+    @Mock
+    private WorkflowModel workflowModel;
+    
+    /**
+     * The workflow data.
+     */
+    @Mock
+    private WorkflowData workflowData;
+    
     
     /** The review scheduler config. */
-    private final ReviewNotificationSchedulerConfig revNotifSchedulerConfig = new ReviewNotificationSchedulerConfig() {
-
-		@Override
-		public String schedulerName() {
-			return "ReviewNotificationScheduler";
-		}
+    private final RetirementManagerSchedulerConfig revNotifSchedulerConfig = new RetirementManagerSchedulerConfig() {
 
 		@Override
 		public String workflowNotificationCron() {
@@ -120,7 +129,7 @@ public class ReviewNotificationSchedulerTest {
 		}
 
 		@Override
-		public boolean workflowNotificationReview10Months() {
+		public boolean enableWorkflowNotificationReview() {
 			return true;
 		}
 
@@ -133,6 +142,11 @@ public class ReviewNotificationSchedulerTest {
 		public Class<? extends Annotation> annotationType() {
 			return Annotation.class;
 		}
+
+		@Override
+		public boolean enableWorkflowNotificationRetirement() {
+			return true;
+		}
     };
     
     /**
@@ -143,33 +157,33 @@ public class ReviewNotificationSchedulerTest {
     @BeforeEach
     void setup() throws LoginException {
 		lenient().when(scheduler.EXPR(revNotifSchedulerConfig.workflowNotificationCron())).thenReturn(scheduleOptions);
-		scheduler.schedule(ReviewNotificationScheduler.class, scheduleOptions);
+		scheduler.schedule(RetirementManagerScheduler.class, scheduleOptions);
 
 		revNotifScheduler.activate(revNotifSchedulerConfig);
 		revNotifScheduler.deactivate(revNotifSchedulerConfig);
-		revNotifScheduler.modified(revNotifSchedulerConfig);
 		
 		revNotifScheduler.addScheduler(revNotifSchedulerConfig);
-		revNotifScheduler.removeScheduler(revNotifSchedulerConfig);
 		
-		scheduler.unschedule(revNotifSchedulerConfig.schedulerName());
+		scheduler.unschedule("RetirementManagerScheduler");
 
-		context.load().json("/com/workday/community/aem/core/models/impl/ReviewNotificationSchedulerTestData.json",
+		context.load().json("/com/workday/community/aem/core/models/impl/RetirementManagerSchedulerTestData.json",
 				"/content");
 		context.registerService(ResourceResolver.class, resolver);
 		context.registerService(QueryService.class, queryService);
 		
 		lenient().when(messageGatewayService.getGateway(Email.class)).thenReturn(messageGatewaySimpleEmail);
-
+		
+		lenient().when(resolver.adaptTo(WorkflowSession.class)).thenReturn(workflowSession);
+		
 	    context.registerService(MessageGatewayService.class, messageGatewayService);
     }
     
     @Test
-    void run() throws CacheException, RepositoryException, EmailException {
+    void run() throws CacheException, RepositoryException, EmailException, WorkflowException {
 		List<String> pathList = new ArrayList<>();
 		pathList.add(
-				"/content/workday-community/en-us/admin-tools/notifications/workflows/review-reminder-10-months/jcr:content");
-		lenient().when(queryService.getReviewReminderPages()).thenReturn(pathList);
+				"/content/workday-community/en-us/admin-tools/notifications/workflows/review-reminder/jcr:content");
+		lenient().when(queryService.getPagesDueTodayByDateProp("jcr:content/reviewReminderDate")).thenReturn(pathList);
 		lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
 		Resource resource = mock(Resource.class);
 		lenient().when(resolver.getResource(anyString())).thenReturn(resource);
@@ -190,15 +204,40 @@ public class ReviewNotificationSchedulerTest {
 		Resource resource2 = mock(Resource.class);
 		lenient()
 				.when(resolver.getResource(
-						GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH + "/workflows/review-reminder-10-months"))
+						GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH + "/workflows/review-reminder"))
 				.thenReturn(resource2);
 		Node nodeObj = mock(Node.class);
 		assertNotNull(nodeObj);
 		lenient().when(resource2.adaptTo(Node.class)).thenReturn(nodeObj);
+		
+		testSendReviewNotification();
+		
+		testStartRetirementAndNotify();
+		
+		testSendNotification();
 
 		testProcessTextComponentFromEmailTemplate();
+		
+		testStartWorkflow();
 
 		revNotifScheduler.run();
+    }
+    
+    @Test
+    public final void testSendReviewNotification() {
+        revNotifScheduler.sendReviewNotification(resolver);
+    }
+    
+    @Test
+    public final void testStartRetirementAndNotify() {
+        revNotifScheduler.startRetirementAndNotify(resolver);
+    }
+    
+    @Test
+    public final void testSendNotification() {
+    	List<String> paths = new ArrayList<>();
+    	paths.add("/content/workday-community/en-us/test");
+        revNotifScheduler.sendNotification(resolver, paths, "/workflows/retirement-notification/jcr:content/root/container/container/text", " to Retire in 30 Days", true);
     }
     
     @Test
@@ -272,7 +311,7 @@ public class ReviewNotificationSchedulerTest {
 		};
 
 		return revNotifScheduler.processTextComponentFromEmailTemplate(nodeIterator.nextNode(), nodeObj,
-				"/content/workday-community/en-us/admin-tools/notifications/workflows/review-reminder-10-months");
+				"/content/workday-community/en-us/admin-tools/notifications/workflows/review-reminder");
     }
     
     @Test
@@ -287,14 +326,17 @@ public class ReviewNotificationSchedulerTest {
         final String expectedMessage = "This is just a message";
         final String expectedSenderName = "John Smith";
         final String expectedSenderEmailAddress = "john@smith.com";
-        //This subject is provided directly inside the sample emailtemplate
-        final String expectedSubject = "Greetings";
 
         final Map<String, String> params = new HashMap<String, String>();
         params.put("message", expectedMessage);
         params.put("senderName", expectedSenderName);
         params.put("senderEmailAddress", expectedSenderEmailAddress);
         
-        revNotifScheduler.sendEmail(expectedSenderEmailAddress, expectedMessage, nodeObj);
+        revNotifScheduler.sendEmail(expectedSenderEmailAddress, expectedMessage, "to retire in days");
+    }
+    
+    @Test
+    public final void testStartWorkflow() throws WorkflowException {
+        revNotifScheduler.startWorkflow(resolver, WorkflowConstants.RETIREMENT_WORKFLOW, "/content/workday-community/en-us/test");
     }
 }

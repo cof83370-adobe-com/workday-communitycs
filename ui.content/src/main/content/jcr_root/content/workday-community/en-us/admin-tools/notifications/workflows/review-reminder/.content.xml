@@ -2,11 +2,9 @@
 <jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:primaryType="cq:Page">
     <jcr:content
-        cq:lastModified="{Date}2023-10-17T18:18:55.428+05:30"
-        cq:lastModifiedBy="admin"
         cq:template="/conf/workday-community/settings/wcm/templates/page-content"
         jcr:primaryType="cq:PageContent"
-        jcr:title="Review Reminder 10 months"
+        jcr:title="Review Reminder"
         sling:resourceType="workday-community/components/structure/page"
         accessControlTags="[access-control:authenticated,access-control:internal_workmates]"
         author=" Administrator">
@@ -26,10 +24,7 @@
                     sling:resourceType="workday-community/components/core/container"
                     layout="responsiveGrid">
                     <text
-                        jcr:created="{Date}2023-10-16T18:50:03.247+05:30"
                         jcr:createdBy="admin"
-                        jcr:lastModified="{Date}2023-10-17T18:18:55.416+05:30"
-                        jcr:lastModifiedBy="admin"
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="workday-community/components/core/text"
                         text="&lt;p>This page, {pageTitle}, will retire 60 days from today. If this content is no longer needed, you don’t need to take any action.&lt;/p>&#xd;&#xa;&lt;p>In order to avoid the page retiring:&lt;/p>&#xd;&#xa;&lt;ul>&#xd;&#xa;&lt;li>If you are an author in AEM:&amp;nbsp;Review this page, make updates, and start the publish workflow so the Community Content team can review and republish.&lt;/li>&#xd;&#xa;&lt;li>If you are not an author in AEM:&amp;nbsp;&lt;a href=&quot;https://jira2.workday.com/browse/WCADMIN-13412&quot;>Clone this Jira&lt;/a>&amp;nbsp;to request assistance from the Community Content team.&lt;/li>&#xd;&#xa;&lt;/ul>&#xd;&#xa;"
@@ -37,5 +32,9 @@
                 </container>
             </container>
         </root>
+        <cq:featuredimage
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="core/wcm/components/image/v3/image"
+            altValueFromDAM="false"/>
     </jcr:content>
 </jcr:root>

@@ -1,6 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0"
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
     jcr:primaryType="cq:Page">
-    <jcr:content/>
+    <jcr:content
+        cq:template="/conf/workday-community/settings/wcm/templates/page-content"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="Workflows"
+        sling:resourceType="workday-community/components/structure/page"
+        accessControlTags="[access-control:authenticated,access-control:internal_workmates]"
+        author=" Administrator">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="workday-community/components/core/container"
+            layout="responsiveGrid">
+            <container
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="workday-community/components/core/container"
+                layout="responsiveGrid">
+                <title
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="workday-community/components/core/title"/>
+                <container
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="workday-community/components/core/container"
+                    layout="responsiveGrid"/>
+            </container>
+        </root>
+    </jcr:content>
     <review-reminder/>
+    <retirement-notification/>
 </jcr:root>
