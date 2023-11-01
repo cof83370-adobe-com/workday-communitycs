@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.day.cq.wcm.api.Page;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.util.ArrayList;
@@ -26,13 +27,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * The Class AuthorshipRenderConditionModelTest.
  *
  * @author uttej.vardineni
  */
-@ExtendWith(AemContextExtension.class)
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class AuthorshipRenderConditionModelTest {
 
   /**
@@ -57,6 +59,9 @@ public class AuthorshipRenderConditionModelTest {
    */
   @Mock
   Authorizable authorizable;
+
+  @Mock
+  RunModeConfigService runModeConfigService;
 
   /**
    * The mocked user.
@@ -103,6 +108,7 @@ public class AuthorshipRenderConditionModelTest {
         "sling:resourceType", "workday-community/components/structure/eventspage", "editGroups",
         "[CMTY CC Admin]");
     context.registerService(Page.class, currentPage);
+    context.registerService(RunModeConfigService.class, runModeConfigService);
   }
 
   /**
@@ -132,7 +138,7 @@ public class AuthorshipRenderConditionModelTest {
     Iterator<Group> it = userGroups.iterator();
     when(userManager.getAuthorizable(userId)).thenReturn(user);
     lenient().when(session.getUserID()).thenReturn(userId);
-
+    lenient().when(runModeConfigService.getEnv()).thenReturn("local");
     lenient().when(userManager.getAuthorizable(groupId)).thenReturn(null);
     lenient().when(userManager.createGroup(groupId)).thenReturn(group);
     lenient().when(user.memberOf()).thenReturn(it);
@@ -173,7 +179,7 @@ public class AuthorshipRenderConditionModelTest {
     Iterator<Group> it = userGroups.iterator();
     when(userManager.getAuthorizable(userId)).thenReturn(user);
     lenient().when(session.getUserID()).thenReturn(userId);
-
+    lenient().when(runModeConfigService.getEnv()).thenReturn("local");
     lenient().when(userManager.getAuthorizable(groupId)).thenReturn(null);
     lenient().when(userManager.createGroup(groupId)).thenReturn(group);
     lenient().when(user.memberOf()).thenReturn(it);
