@@ -32,6 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -165,10 +166,16 @@ public class UserGroupServiceImpl implements UserGroupService {
       User user = userService.getCurrentUser(request);
       String sfId = OurmUtils.getSalesForceId(request, userService);
       if (sfId != null) {
-        log.debug("user  sfid {} ", sfId);
-        ResourceResolver jcrResolver = cacheManager
-            .getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
-        Node userNode = Objects.requireNonNull(jcrResolver.getResource(user.getPath())).adaptTo(Node.class);
+        String userPath = user.getPath();
+        log.debug("user  sfId {}, path: {} ", sfId, userPath);
+        ResourceResolver jcrResolver = cacheManager.getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
+        Resource resource = jcrResolver.getResource(user.getPath());
+        if (resource == null) {
+          log.error("can't find user with path: {}", userPath);
+          return groupIds;
+        }
+
+        Node userNode = Objects.requireNonNull(resource).adaptTo(Node.class);
         if (Objects.requireNonNull(userNode).hasProperty(ROLES)
             && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString())
             && userNode.getProperty(ROLES).getString().split(";").length > 0) {
