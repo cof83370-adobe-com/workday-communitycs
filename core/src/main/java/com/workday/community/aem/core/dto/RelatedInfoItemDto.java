@@ -1,13 +1,11 @@
 package com.workday.community.aem.core.dto;
 
 import lombok.Data;
-import lombok.Setter;
 
 /**
  * The Class RelatedInfoItemDto.
  */
 @Data
-@Setter
 public class RelatedInfoItemDto {
 
   /** The link title. */

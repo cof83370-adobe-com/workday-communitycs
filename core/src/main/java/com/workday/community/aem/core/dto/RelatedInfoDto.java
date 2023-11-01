@@ -2,13 +2,11 @@ package com.workday.community.aem.core.dto;
 
 import java.util.List;
 import lombok.Data;
-import lombok.Setter;
 
 /**
  * The Class RelatedInfoDto.
  */
 @Data
-@Setter
 public class RelatedInfoDto {
   /** The heading title. */
   private String headingTitle;
