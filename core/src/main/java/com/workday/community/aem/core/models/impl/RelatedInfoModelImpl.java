@@ -52,7 +52,7 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
   @OSGiService
   private RunModeConfigService runModeConfigService;
 
-  /** The is publish instance. */
+  /** The flag to indicate publish instance. */
   private boolean isPublishInstance;
 
   /**
@@ -66,11 +66,13 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
 
     RelatedInfoDto dto = new RelatedInfoDto();
     if (request == null || userGroupService == null) {
+      log.error("The sling request or UserGroupService is null");
       return dto;
     }
 
     Resource resource = request.getResource();
     if (resource == null) {
+      log.error("Underlying JCR resource is null");
       return dto;
     }
 
@@ -100,7 +102,7 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
         return true;
       }
     } catch (CacheException | RepositoryException e) {
-      log.error("Exception occured while getting currentUser:{}", e.getMessage());
+      log.error("Exception occurred while getting currentUser:{}", e.getMessage());
     }
     return false;
   }
@@ -137,20 +139,20 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
    * @param dto      the dto
    */
   private void setCurrentResourceProps(Resource resource, RelatedInfoDto dto) {
-    ValueMap currentResourceprops = resource.adaptTo(ValueMap.class);
+    ValueMap currentResourceProps = resource.adaptTo(ValueMap.class);
     dto.setAnonymousUser(isAnonymousUser());
-    dto.setFileReference(currentResourceprops.get("fileReference", StringUtils.EMPTY));
-    dto.setDescription(currentResourceprops.get("description", StringUtils.EMPTY));
-    dto.setAltText(currentResourceprops.get("alttext", StringUtils.EMPTY));
-    dto.setDecorative(currentResourceprops.get("isDecorative", "false"));
-    dto.setHeadingTitle(currentResourceprops.get("title", StringUtils.EMPTY));
-    dto.setType(currentResourceprops.get("type", "static"));
-    dto.setRows(currentResourceprops.get("rows", StringUtils.EMPTY));
-    String footerLinkUrl = currentResourceprops.get("footerlinkurl", StringUtils.EMPTY);
+    dto.setFileReference(currentResourceProps.get("fileReference", StringUtils.EMPTY));
+    dto.setDescription(currentResourceProps.get("description", StringUtils.EMPTY));
+    dto.setAltText(currentResourceProps.get("alttext", StringUtils.EMPTY));
+    dto.setDecorative(currentResourceProps.get("isDecorative", "false"));
+    dto.setHeadingTitle(currentResourceProps.get("title", StringUtils.EMPTY));
+    dto.setType(currentResourceProps.get("type", "static"));
+    dto.setRows(currentResourceProps.get("rows", StringUtils.EMPTY));
+    String footerLinkUrl = currentResourceProps.get("footerlinkurl", StringUtils.EMPTY);
     if (isValidPagePath(footerLinkUrl)) {
-      dto.setFooterLinkUrl(PageUtils.appendExtension(currentResourceprops.get("footerlinkurl", StringUtils.EMPTY)));
-      dto.setFooterLinkText(currentResourceprops.get("footerlinktext", StringUtils.EMPTY));
-      dto.setFooterNewTab(currentResourceprops.get("footernewTab", StringUtils.EMPTY));
+      dto.setFooterLinkUrl(PageUtils.appendExtension(currentResourceProps.get("footerlinkurl", StringUtils.EMPTY)));
+      dto.setFooterLinkText(currentResourceProps.get("footerlinktext", StringUtils.EMPTY));
+      dto.setFooterNewTab(currentResourceProps.get("footernewTab", StringUtils.EMPTY));
     }
   }
 
