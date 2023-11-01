@@ -2,7 +2,6 @@ package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.OKTA_USER_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.SERVICE_USER_GROUP;
-import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_OKTA_USERS_ROOT_PATH;
 
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
@@ -65,8 +64,7 @@ public class UserServiceImpl implements UserService {
     UserManager userManager = Objects.requireNonNull(resourceResolver.adaptTo(UserManager.class));
     try {
       User user = (User) userManager.getAuthorizable(userSessionId);
-      if (user != null && !(UserConstants.DEFAULT_ANONYMOUS_ID).equals(userSessionId)
-          && user.getPath().contains(WORKDAY_OKTA_USERS_ROOT_PATH)) {
+      if (user != null && !(UserConstants.DEFAULT_ANONYMOUS_ID).equals(userSessionId)) {
         return user;
       }
       log.error("Cannot find logged in user with id {}.", userSessionId);
