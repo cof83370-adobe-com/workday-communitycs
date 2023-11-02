@@ -1,7 +1,7 @@
 <!--/* Related Information Component */-->
 <sly data-sly-use.model="com.workday.community.aem.core.models.RelatedInfoModel"></sly>
 <sly data-sly-test="${model.relatedInfoDto}" data-sly-set.relatedInfoModel="${model.relatedInfoDto}">
-   <sly data-sly-set.relatedInfoLinks="${relatedInfoModel.relatedInfoItemsList}" data-sly-test="${!relatedInfoModel.anonymousUser && (!relatedInfoLinks.isEmpty || relatedInfoModel.type == 'dynamic')}">
+   <sly data-sly-set.relatedInfoLinks="${relatedInfoModel.relatedInfoItemsList}" data-sly-test="${relatedInfoModel.showComp}">
       <div class="cmp-related-info">
          <div class="cmp-related-info__heading">
             <h3 data-sly-test="${relatedInfoModel.headingTitle}" class="cmp-related-info__heading-title">${relatedInfoModel.headingTitle}</h3>

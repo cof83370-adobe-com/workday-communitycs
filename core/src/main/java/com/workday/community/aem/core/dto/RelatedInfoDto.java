@@ -38,7 +38,9 @@ public class RelatedInfoDto {
   /** The alt text. */
   private String altText;
 
+  /** The related info items list. */
   private List<RelatedInfoItemDto> relatedInfoItemsList;
-  
-  private boolean anonymousUser;
+
+  /** The show comp. */
+  private boolean showComp;
 }

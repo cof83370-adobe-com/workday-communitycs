@@ -110,7 +110,7 @@ public class RelatedInfoModelImplTest {
        assertEquals("_blank", relatedInfoDto.getRelatedInfoItemsList().get(0).getNewTab());
        assertEquals("/content/workday-community/en-us/admin-tools/books.html", relatedInfoDto.getRelatedInfoItemsList().get(0).getPagePath());
        assertEquals("https://sling.apache.org/documentation/bundles/models.html", relatedInfoDto.getRelatedInfoItemsList().get(1).getPagePath());
-       assertEquals(false, relatedInfoDto.isAnonymousUser());
+       assertEquals(true, relatedInfoDto.isShowComp());
     }
   }
 }

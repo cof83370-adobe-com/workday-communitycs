@@ -59,6 +59,9 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
   @Getter
   private RelatedInfoDto relatedInfoDto;
 
+  /** The show comp. */
+  private boolean showComp = true;
+
   /**
    * Inits the RelatedInforModel class and prepares the RelatedInfoDto to FE.
    */
@@ -85,8 +88,8 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
       log.error("Underlying JCR resource is null");
     }
 
-    ValueMap currentResourceprops = resource.adaptTo(ValueMap.class);
-    final String type = currentResourceprops.get("type", StringUtils.EMPTY);
+    ValueMap currentResourceProps = resource.adaptTo(ValueMap.class);
+    final String type = currentResourceProps.get("type", StringUtils.EMPTY);
     isPublishInstance = PageUtils.isPublishInstance(runModeConfigService);
     if (isStaticType(type)) {
       Resource itemsResource = resource.getChild("items");
@@ -96,6 +99,21 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
     }
     setCurrentResourceProps(resource, relatedInfoDto);
     log.debug("Prepared RelatedInfo block details: {}", relatedInfoDto);
+    setDisplayVar(type);
+  }
+
+  /**
+   * Sets the display value to show/hide comp on FE .
+   *
+   * @param type the new display var
+   */
+
+  private void setDisplayVar(final String type) {
+    if (isAnonymousUser() && (type.equalsIgnoreCase("dynamic") || relatedInfoDto.getRelatedInfoItemsList() == null
+        || relatedInfoDto.getRelatedInfoItemsList().isEmpty())) {
+      showComp = false;
+    }
+    relatedInfoDto.setShowComp(showComp);
   }
 
   /**
@@ -147,7 +165,6 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
    */
   private void setCurrentResourceProps(Resource resource, RelatedInfoDto dto) {
     ValueMap currentResourceProps = resource.adaptTo(ValueMap.class);
-    dto.setAnonymousUser(isAnonymousUser());
     dto.setFileReference(currentResourceProps.get("fileReference", StringUtils.EMPTY));
     dto.setDescription(currentResourceProps.get("description", StringUtils.EMPTY));
     dto.setAltText(currentResourceProps.get("alttext", StringUtils.EMPTY));
