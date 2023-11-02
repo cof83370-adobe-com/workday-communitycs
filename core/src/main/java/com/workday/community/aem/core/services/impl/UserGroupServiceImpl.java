@@ -45,8 +45,8 @@ public class UserGroupServiceImpl implements UserGroupService {
   /**
    * The Constant PUBLIC_PATH_REGEX.
    */
-  protected static final String PUBLIC_PATH_REGEX = "/content/workday-community/[a-z]{2}-[a-z]{2}/public/";
-
+  private static final Pattern PUBLIC_PATH_PATTERN = Pattern
+      .compile("/content/workday-community/[a-z]{2}-[a-z]{2}/public/");
   /**
    * The snap service.
    */
@@ -212,8 +212,7 @@ public class UserGroupServiceImpl implements UserGroupService {
    * @return true, if is public page
    */
   private boolean isPublicPage(String pagePath) {
-    Pattern regex = Pattern.compile(PUBLIC_PATH_REGEX);
-    Matcher matcher = regex.matcher(pagePath);
+    Matcher matcher = PUBLIC_PATH_PATTERN.matcher(pagePath);
     return matcher.find();
   }
 }

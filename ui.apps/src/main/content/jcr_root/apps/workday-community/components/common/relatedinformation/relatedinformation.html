@@ -1,247 +1,243 @@
 <!--/* Related Information Component */-->
-<div class="cmp-related-info" data-sly-use.rootpathInfo="com.workday.community.aem.core.models.RootPathModel">
-    <sly data-sly-test="${resource.getChildren || properties.type=='dynamic' }">
-        <div class="cmp-related-info__heading">
-            <h3 data-sly-test="${properties.title}" class="cmp-related-info__heading-title">${properties.title}</h3>
-        </div>
-        <sly data-sly-test="${properties.description}">
-            <div class="cmp-related-info-curated__desc">${properties.description @ context='html'}</div>
-        </sly>
-        <sly data-sly-test="${properties.fileReference || properties.type=='static' || properties.type=='dynamic'}">
-            <div class="cmp-related-info-curated__image-content">
-                <sly data-sly-test="${properties.fileReference}">
-                    <div class="cmp-related-info-curated__image">
-                        <img src="${properties.fileReference}" alt="${(properties.isDecorative ? true : properties.alttext) || true }"
-                             class="cmp-related-info-curated__imagesrc"/>
-                    </div>
-                </sly>
-                <sly data-sly-test="${properties.type=='static'}">
-                    <div class="cmp-related-info__content" data-sly-list.urllinkMultifield="${resource.getChildren}">
-                        <ul class="cmp-related-info__list" data-sly-list.urllink="${urllinkMultifield.getChildren}">
-                            <li class="cmp-related-info__item">
-                                <sly data-sly-test="${urllink.pagepath}">
-                                    <a class="cmp-related-info__item-link" target="${urllink.newTab}"
-                                       href="${urllink.pagepath}${rootpathInfo.rootPath in  urllink.pagepath ? '.html' : ''}"><span
-                                            class="cmp-related-info__item-title">${urllink.linktitle @ context='html'}</span></a>
-                                </sly>
-                                <sly data-sly-test="${!urllink.pagepath}">
-										<span
-                                                class="cmp-related-info__item-title">${urllink.linktitle @ context='html'}</span>
-                                </sly>
-                            </li>
-                        </ul>
-                    </div>
-                </sly>
-                <sly data-sly-test="${properties.type=='dynamic'}"
-                     data-sly-use.coveo="com.workday.community.aem.core.models.CoveoRelatedInformationModel">
-                    <span id="searchConfigId" data-search-config="${coveo.searchConfig}"></span>
-                    <span id="rowsId" data-property="${properties.rows}"></span>
-                    <span id="facetFieldsId" data-property="${coveo.facetFields}"></span>
-                    <atomic-search-interface id="relatedInfoSearchId">
-                        <style>
-                            atomic-search-layout {
-                                grid-template-columns: none;
-                            }
-                            @media only screen and (min-width: 1024px) {
-                                atomic-search-layout {
-                                    grid-template-columns: none !important;
-                                }
-                            }
-                        </style>
-                        <atomic-search-layout>
-                            <atomic-layout-section section="results">
-                                <atomic-result-list display="list" image-size="icon" density="normal">
-                                    <atomic-result-template>
-                                        <style>
-                                            atomic-result-list::part(outline) {
-                                                padding: 0 !important;
-                                                border: none !important;
-                                            }
-
-                                            atomic-result-list::part(outline)::before {
-                                                background-color: #ffffff;
-                                                margin: 5px 0;
-                                            }
-                                        </style>
-                                        <template>
-                                            <atomic-result-section-title class="title">
-                                                <style>
-                                                    atomic-result-link a {
-                                                        color: #0875e1 !important;
-                                                        display: inline-block;
-                                                        font-size: 14px;
-                                                        font-style: normal;
-                                                        font-weight: 700;
-                                                        letter-spacing: .2px;
-                                                        line-height: 20px;
-                                                        font-family: "Workday Adelle Sans", Roboto, sans-serif;
-                                                    }
-                                                </style>
-                                                <atomic-result-link target="_blank" class="result-link"></atomic-result-link>
-                                            </atomic-result-section-title>
-                                        </template>
-                                    </atomic-result-template>
-                                </atomic-result-list>
-                                <atomic-query-error class="query-error-custom"></atomic-query-error>
-                                <atomic-no-results enable-cancel-last-action="false"
-                                                   search-tips=""></atomic-no-results>
-                            </atomic-layout-section>
-                        </atomic-search-layout>
-                    </atomic-search-interface>
-                </sly>
-            </div>
-        </sly>
-        <sly data-sly-test="${properties.footerlinktext && properties.footerlinkurl}">
+<sly data-sly-use.model="com.workday.community.aem.core.models.RelatedInfoModel"></sly>
+<sly data-sly-test="${model.relatedInfoDto}" data-sly-set.relatedInfoModel="${model.relatedInfoDto}">
+   <sly data-sly-set.relatedInfoLinks="${relatedInfoModel.relatedInfoItemsList}" data-sly-test="${relatedInfoModel.showComp}">
+      <div class="cmp-related-info">
+         <div class="cmp-related-info__heading">
+            <h3 data-sly-test="${relatedInfoModel.headingTitle}" class="cmp-related-info__heading-title">${relatedInfoModel.headingTitle}</h3>
+         </div>
+         <sly data-sly-test="${relatedInfoModel.description}">
+            <div class="cmp-related-info-curated__desc">${relatedInfoModel.description @ context='html'}</div>
+         </sly>
+         <div class="cmp-related-info-curated__image-content">
+            <sly data-sly-test="${relatedInfoModel.fileReference}">
+               <div class="cmp-related-info-curated__image">
+                  <img src="${relatedInfoModel.fileReference}" alt="${(relatedInfoModel.decorative ? true : relatedInfoModel.altText) || true }" class="cmp-related-info-curated__imagesrc">
+               </div>
+            </sly>
+            <sly data-sly-test="${relatedInfoModel.type == 'static'}">
+               <sly data-sly-test="${relatedInfoLinks}">
+                  <div class="cmp-related-info__content">
+                     <ul class="cmp-related-info__list" data-sly-list.eachListItem="${relatedInfoLinks}">
+                        <li class="cmp-related-info__item">
+                           <sly data-sly-test="${eachListItem.pagePath}">
+                              <a class="cmp-related-info__item-link" target="${eachListItem.newTab}" href="${eachListItem.pagePath}"><span class="cmp-related-info__item-title">${eachListItem.linkTitle @ context='html'}</span></a>
+                           </sly>
+                           <sly data-sly-test="${!eachListItem.pagePath}">
+                              <span class="cmp-related-info__item-title">${eachListItem.linkTitle @ context='html'}"</span>
+                           </sly>
+                        </li>
+                     </ul>
+                  </div>
+               </sly>
+            </sly>
+            <sly data-sly-test="${properties.type=='dynamic'}"
+               data-sly-use.coveo="com.workday.community.aem.core.models.CoveoRelatedInformationModel">
+               <span id="relInfoSearchConfigId" data-search-config="${coveo.searchConfig}"></span>
+               <span id="relInfoRowsId" data-property="${relatedInfoModel.rows}"></span>
+               <span id="relInfoFacetFieldsId" data-property="${coveo.facetFields}"></span>
+               <atomic-search-interface id="relatedInfoSearchId">
+                  <style>
+                     atomic-search-layout {
+                     grid-template-columns: none;
+                     }
+                     @media only screen and (min-width: 1024px) {
+                     atomic-search-layout {
+                     grid-template-columns: none !important;
+                     }
+                     }
+                  </style>
+                  <atomic-search-layout>
+                     <atomic-layout-section section="results">
+                        <atomic-result-list display="list" image-size="icon" density="normal">
+                           <atomic-result-template>
+                              <style>
+                                 atomic-result-list::part(outline) {
+                                 padding: 0 !important;
+                                 border: none !important;
+                                 }
+                                 atomic-result-list::part(outline)::before {
+                                 background-color: #ffffff;
+                                 margin: 5px 0;
+                                 }
+                              </style>
+                              <template>
+                                 <atomic-result-section-title class="title">
+                                    <style>
+                                       atomic-result-link a {
+                                       color: #0875e1 !important;
+                                       display: inline-block;
+                                       font-size: 14px;
+                                       font-style: normal;
+                                       font-weight: 700;
+                                       letter-spacing: .2px;
+                                       line-height: 20px;
+                                       font-family: "Workday Adelle Sans", Roboto, sans-serif;
+                                       }
+                                    </style>
+                                    <atomic-result-link target="_blank" class="result-link"></atomic-result-link>
+                                 </atomic-result-section-title>
+                              </template>
+                           </atomic-result-template>
+                        </atomic-result-list>
+                        <atomic-query-error class="query-error-custom"></atomic-query-error>
+                        <atomic-no-results enable-cancel-last-action="false"
+                           search-tips=""></atomic-no-results>
+                     </atomic-layout-section>
+                  </atomic-search-layout>
+               </atomic-search-interface>
+            </sly>
+         </div>
+         <sly data-sly-test="${relatedInfoModel.footerLinkText && relatedInfoModel.footerLinkUrl}">
             <div class="cmp-related-info-curated__footer"><a class="cmp-related-info-curated__footer-link"
-                                                             target="${properties.footernewTab}"
-                                                             href="${properties.footerlinkurl}${rootpathInfo.rootPath in  urllink.pagepath ? '.html' : ''}"><span
-                    class="cmp-related-info-curated__footer-title">${properties.footerlinktext}</span></a></div>
-        </sly>
-    </sly>
-</div>
-<script type="module">
-    import {
-        loadContextActions,
-        loadFieldActions,
-        loadGenericAnalyticsActions,
-    } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
-
-    const facetFieldsElm = document.getElementById('facetFieldsId');
-    if(facetFieldsElm) {
-        const searchConfigNode = document.getElementById("searchConfigId");
-        if (searchConfigNode) {
-            const searchConfig = JSON.parse(searchConfigNode.getAttribute("data-search-config"));
-
-            const getToken = async () => {
-                const tokenUrl = '/bin/search/token';
-                try {
-                    const response = await fetch(tokenUrl);
-                    const res = await response.json();
-                    return res['searchToken'];
-                } catch (err) {
-                    return '';
-                }
-            };
-
-            const setContext = (engine) => {
-                const ctx = {
-                    location: 'USA.CA.Pleasanton',
-                    costCenter: 'Community, CX',
-                };
-                const action = loadContextActions(engine).setContext(ctx);
-                engine.dispatch(action);
-            };
-            const registerFields = (engine) => {
-                const action = loadFieldActions(engine).enableFetchAllFields();
-                if (action) {
-                    engine.dispatch(action);
-                }
-            };
-
-            const analyticsClientMiddleware = (eventName, payload) => {
-                if (searchConfig["userContext"]) {
-                    payload.customData = {...payload.customData, ...JSON.parse(searchConfig["userContext"])};
-                }
-                return payload;
-            };
-
-            document.addEventListener('DOMContentLoaded', () => {
-                const main = async () => {
-                    let token = await getToken();
-                    await customElements.whenDefined('atomic-search-interface');
-                    let rows = document.getElementById('rowsId').getAttribute('data-property');
-                    if (!rows) rows = 4;
-                    const facetFields = facetFieldsElm.getAttribute('data-property');
-
-                    let currentValues;
-                    if (facetFields) {
-                        let parts = facetFields.split(",");
-                        currentValues = parts.map(part => ({'value': part, 'state': 'selected'}));
-                    }
-                    let facet = [];
-                    if (currentValues && currentValues.length > 0) {
-                        for(let i = 0; i<currentValues.length; i++) {
-                            let currentValue = currentValues[i].value;
-                            if (currentValue.indexOf('::') !== -1) {
-                                let fieldName = currentValue.split('::')[0];
-                                let basePaths = currentValue.split('::')[1].split(':');
-                                facet[i] = {
-                                    basePath: basePaths,
-                                    'facetId': fieldName,
-                                    'numberOfValues': currentValues.length + 1,
-                                    delimitingCharacter: '|',
-                                    filterByBasePath: true,
-                                    'field': fieldName,
-                                    'type': 'hierarchical',
-                                    'injectionDepth': 5000,
-                                    'filterFacetCount': true,
-                                    'sortCriteria': 'alphanumeric'
-                                }
-                            } else {
-                                facet[i] = {
-                                    'facetId': currentValue,
-                                    'numberOfValues': currentValues.length + 1,
-                                    'field': currentValue,
-                                    'type': 'specific',
-                                    'injectionDepth': 5000,
-                                    'filterFacetCount': true,
-                                    'sortCriteria': 'alphanumeric'
-                                }
-                            }
-                        }
-                    }
-
-                    const searchInterface = document.getElementById('relatedInfoSearchId');
-                    await searchInterface.initialize({
-                        accessToken: token,
-                        searchHub: searchConfig['searchHub'],
-                        organizationId: searchConfig['orgId'],
-                        renewAccessToken: getToken,
-                        preprocessRequest: (request, clientOrigin) => {
-                            if (clientOrigin === 'searchApiFetch') {
-                                const body = JSON.parse(request.body);
-                                body.maximumAge=30000;
-                                body.numberOfResults = rows;
-                                body.sortCriteria = 'date descending';
-                                if (facetFields) {
-                                    body.facets = facet;
-                                }
-                                request.body = JSON.stringify(body);
-                            }
-
-                            return request;
-                        },
-                        analytics: {
-                            analyticsClientMiddleware,
-                        }
-                    });
-
-                    const engine = searchInterface.engine;
-                    if (searchConfig['clientId']) {
-                        localStorage.setItem('visitorId', searchConfig['clientId']);
-                    }
-
-                    setContext(engine);
-                    registerFields(engine);
-
-                    const { logClickEvent, logCustomEvent } = loadGenericAnalyticsActions(engine);
-
-                    window.customFunctions = {
-                        ...(window.customFunctions ? window.customFunctions : {}),
-                        logClickEvent,
-                        logCustomEvent,
-                        engine,
-                    };
-                    searchInterface.executeFirstSearch();
-                };
-                main().then(() => {
-                });
-            });
-
-        }
-    }
-</script>
-
-<sly data-sly-use.template='core/wcm/components/commons/v1/templates.html'
-     data-sly-call="${template.placeholder  @ isEmpty=!resource.getChildren, classAppend='cmp-related-info'}">
+               target="${relatedInfoModel.footerNewTab}"
+               href="${relatedInfoModel.footerLinkUrl}"><span
+               class="cmp-related-info-curated__footer-title">${relatedInfoModel.footerLinkText}</span></a></div>
+         </sly>
+      </div>
+   </sly>
 </sly>
+<script type="module">
+   import {
+       loadContextActions,
+       loadFieldActions,
+       loadGenericAnalyticsActions,
+   } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
+   
+   const facetFieldsElm = document.getElementById('relInfoFacetFieldsId');
+   if(facetFieldsElm) {
+       const searchConfigNode = document.getElementById("relInfoSearchConfigId");
+       if (searchConfigNode) {
+           const searchConfig = JSON.parse(searchConfigNode.getAttribute("data-search-config"));
+   
+           const getToken = async () => {
+               const tokenUrl = '/bin/search/token';
+               try {
+                   const response = await fetch(tokenUrl);
+                   const res = await response.json();
+                   return res['searchToken'];
+               } catch (err) {
+                   return '';
+               }
+           };
+   
+           const setContext = (engine) => {
+               const ctx = {
+                   location: 'USA.CA.Pleasanton',
+                   costCenter: 'Community, CX',
+               };
+               const action = loadContextActions(engine).setContext(ctx);
+               engine.dispatch(action);
+           };
+           const registerFields = (engine) => {
+               const action = loadFieldActions(engine).enableFetchAllFields();
+               if (action) {
+                   engine.dispatch(action);
+               }
+           };
+   
+           const analyticsClientMiddleware = (eventName, payload) => {
+               if (searchConfig["userContext"]) {
+                   payload.customData = {...payload.customData, ...JSON.parse(searchConfig["userContext"])};
+               }
+               return payload;
+           };
+   
+           document.addEventListener('DOMContentLoaded', () => {
+               const main = async () => {
+                   let token = await getToken();
+                   await customElements.whenDefined('atomic-search-interface');
+                   let rows = document.getElementById('relInfoRowsId').getAttribute('data-property');
+                   if (!rows) rows = 4;
+                   const facetFields = facetFieldsElm.getAttribute('data-property');
+   
+                   let currentValues;
+                   if (facetFields) {
+                       let parts = facetFields.split(",");
+                       currentValues = parts.map(part => ({'value': part, 'state': 'selected'}));
+                   }
+                   let facet = [];
+                   if (currentValues && currentValues.length > 0) {
+                       for(let i = 0; i<currentValues.length; i++) {
+                           let currentValue = currentValues[i].value;
+                           if (currentValue.indexOf('::') !== -1) {
+                               let fieldName = currentValue.split('::')[0];
+                               let basePaths = currentValue.split('::')[1].split(':');
+                               facet[i] = {
+                                   basePath: basePaths,
+                                   'facetId': fieldName,
+                                   'numberOfValues': currentValues.length + 1,
+                                   delimitingCharacter: '|',
+                                   filterByBasePath: true,
+                                   'field': fieldName,
+                                   'type': 'hierarchical',
+                                   'injectionDepth': 5000,
+                                   'filterFacetCount': true,
+                                   'sortCriteria': 'alphanumeric'
+                               }
+                           } else {
+                               facet[i] = {
+                                   'facetId': currentValue,
+                                   'numberOfValues': currentValues.length + 1,
+                                   'field': currentValue,
+                                   'type': 'specific',
+                                   'injectionDepth': 5000,
+                                   'filterFacetCount': true,
+                                   'sortCriteria': 'alphanumeric'
+                               }
+                           }
+                       }
+                   }
+   
+                   const searchInterface = document.getElementById('relatedInfoSearchId');
+                   await searchInterface.initialize({
+                       accessToken: token,
+                       searchHub: searchConfig['searchHub'],
+                       organizationId: searchConfig['orgId'],
+                       renewAccessToken: getToken,
+                       preprocessRequest: (request, clientOrigin) => {
+                           if (clientOrigin === 'searchApiFetch') {
+                               const body = JSON.parse(request.body);
+                               body.maximumAge=30000;
+                               body.numberOfResults = rows;
+                               body.sortCriteria = 'date descending';
+                               if (facetFields) {
+                                   body.facets = facet;
+                               }
+                               request.body = JSON.stringify(body);
+                           }
+   
+                           return request;
+                       },
+                       analytics: {
+                           analyticsClientMiddleware,
+                       }
+                   });
+   
+                   const engine = searchInterface.engine;
+                   if (searchConfig['clientId']) {
+                       localStorage.setItem('visitorId', searchConfig['clientId']);
+                   }
+   
+                   setContext(engine);
+                   registerFields(engine);
+   
+                   const { logClickEvent, logCustomEvent } = loadGenericAnalyticsActions(engine);
+   
+                   window.customFunctions = {
+                       ...(window.customFunctions ? window.customFunctions : {}),
+                       logClickEvent,
+                       logCustomEvent,
+                       engine,
+                   };
+                   searchInterface.executeFirstSearch();
+               };
+               main().then(() => {
+               });
+           });
+   
+       }
+   }
+</script>
+<sly data-sly-use.template='core/wcm/components/commons/v1/templates.html'
+   data-sly-call="${template.placeholder  @ isEmpty=!resource.getChildren, classAppend='cmp-related-info'}"></sly>
