@@ -58,13 +58,15 @@ Include conf.d/variables/custom.vars
 		RewriteCond %{REQUEST_METHOD} ^(TRACE|TRACK)
     RewriteRule .* - [F]
 	</IfModule>
-	ErrorDocument 400 ${400_PAGE}
-	ErrorDocument 403 ${403_PAGE}
-	ErrorDocument 404 ${404_PAGE}
-	ErrorDocument 500 ${500_PAGE}
-	ErrorDocument 502 ${502_PAGE}
-	ErrorDocument 503 ${503_PAGE}
-	ErrorDocument 504 ${504_PAGE}
+
+	#Re-visit this when dispatcher cache is enabled.
+	#ErrorDocument 400 ${400_PAGE}
+	#ErrorDocument 403 ${403_PAGE}
+	#ErrorDocument 404 ${404_PAGE}
+	#ErrorDocument 500 ${500_PAGE}
+	#ErrorDocument 502 ${502_PAGE}
+	#ErrorDocument 503 ${503_PAGE}
+	#ErrorDocument 504 ${504_PAGE}
 
   <IfModule mod_proxy.c>
     SSLProxyEngine On

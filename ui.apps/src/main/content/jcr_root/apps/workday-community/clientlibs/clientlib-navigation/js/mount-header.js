@@ -32,6 +32,7 @@ function renderNavHeader(searchToken = '') {
         let headerDataJson = headerData ? JSON.parse(headerData) : null;
         let previousId = headerDataJson ? headerDataJson['previousId'] : null;
         let currentId = headerDiv.getAttribute('data-cache-property');
+        let dataModel = headerDiv.getAttribute('data-model-property');
         let changed = currentId !== previousId;
 
         if (!headerData || headerData && changed) {
@@ -78,8 +79,8 @@ function renderNavHeader(searchToken = '') {
             }
         } : undefined;
 
-        if (!headerDataJson.coveoProps) {
-            // Add search props if coveo props is not present
+        if (!headerDataJson.coveoProps && dataModel !== 'HIDE_MENU_UNAUTHENTICATED') {
+            // Add search props if Coveo props is not present
             headerDataJson.searchProps = {
                 redirectPath: searchUrl,
                 querySeparator: '#',

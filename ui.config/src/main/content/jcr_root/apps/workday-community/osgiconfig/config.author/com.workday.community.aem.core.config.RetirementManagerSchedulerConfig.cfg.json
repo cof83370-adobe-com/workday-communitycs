@@ -1,0 +1,6 @@
+{
+    "workflowNotificationCron" : "$[env:workflowNotificationCron]",
+    "enableWorkflowNotificationReview" : "$[env:enableWorkflowNotificationReview]",
+    "enableWorkflowNotificationRetirement" : "$[env:enableWorkflowNotificationRetirement]",
+    "authorDomain" : "$[env:authorDomain]"
+}

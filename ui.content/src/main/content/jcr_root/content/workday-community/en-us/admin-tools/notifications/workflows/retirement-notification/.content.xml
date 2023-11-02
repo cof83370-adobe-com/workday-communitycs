@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:sling="http://sling.apache.org/jcr/sling/1.0"
+    jcr:primaryType="cq:Page">
+    <jcr:content
+        cq:template="/conf/workday-community/settings/wcm/templates/page-content"
+        jcr:primaryType="cq:PageContent"
+        jcr:title="Retirement Notification"
+        sling:resourceType="workday-community/components/structure/page"
+        accessControlTags="[access-control:authenticated,access-control:internal_workmates]"
+        author=" Administrator">
+        <root
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="workday-community/components/core/container"
+            layout="responsiveGrid">
+            <container
+                jcr:primaryType="nt:unstructured"
+                sling:resourceType="workday-community/components/core/container"
+                layout="responsiveGrid">
+                <title
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="workday-community/components/core/title"/>
+                <container
+                    jcr:primaryType="nt:unstructured"
+                    sling:resourceType="workday-community/components/core/container"
+                    layout="responsiveGrid">
+                    <text
+                        jcr:createdBy="admin"
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/core/text"
+                        text="&lt;p>This page,&amp;nbsp;[title of page and URL to page in author site], will retire 30 days from today. If this content is no longer needed, you don’t need to take any action.&lt;/p>&#xd;&#xa;&lt;p>In order to avoid the page retiring:&lt;/p>&#xd;&#xa;&lt;ul>&#xd;&#xa;&lt;li>&lt;b>If you are an author in AEM:&lt;/b>&amp;nbsp;Review this page, make updates, and start the publish workflow so the Community Content team can review and republish.&lt;/li>&#xd;&#xa;&lt;li>&lt;b>If you are not an author in AEM:&lt;/b>&amp;nbsp;Clone this Jira&amp;nbsp;&lt;a href=&quot;https://jira2.workday.com/browse/WCADMIN-13412&quot; title=&quot;Follow link&quot;>https://jira2.workday.com/browse/WCADMIN-13412&lt;/a>&amp;nbsp;to request assistance from the Community Content team.&lt;/li>&#xd;&#xa;&lt;/ul>&#xd;&#xa;"
+                        textIsRich="true"/>
+                </container>
+            </container>
+        </root>
+        <cq:featuredimage
+            jcr:primaryType="nt:unstructured"
+            sling:resourceType="core/wcm/components/image/v3/image"
+            altValueFromDAM="false"/>
+    </jcr:content>
+</jcr:root>
