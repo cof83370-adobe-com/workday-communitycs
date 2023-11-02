@@ -11,6 +11,8 @@ import com.workday.community.aem.core.utils.PageUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
@@ -53,39 +55,43 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
   /** The flag to indicate publish instance. */
   private boolean isPublishInstance;
 
+  @Getter
+  private RelatedInfoDto relatedInfoDto; 
+
+  @PostConstruct
+  public void init() {
+    relatedInfoDto = new RelatedInfoDto();
+    getRelatedInfoBlockData();
+  }
+
   /**
    * Gets the related info block data.
    *
    * @return the related info block data
    */
-  @Override
-  public RelatedInfoDto getRelatedInfoBlockData() {
+  private void getRelatedInfoBlockData() {
     log.debug("Entered into getRelatedInfoBlockData method:");
 
-    RelatedInfoDto dto = new RelatedInfoDto();
-    if (request == null || userGroupService == null) {
-      log.error("The sling request or UserGroupService is null");
-      return dto;
+    if (userGroupService == null) {
+      log.error("The UserGroupService is null");
     }
 
     Resource resource = request.getResource();
     if (resource == null) {
       log.error("Underlying JCR resource is null");
-      return dto;
     }
 
     ValueMap currentResourceprops = resource.adaptTo(ValueMap.class);
     final String type = currentResourceprops.get("type", StringUtils.EMPTY);
+    isPublishInstance = PageUtils.isPublishInstance(runModeConfigService);
     if (isStaticType(type)) {
       Resource itemsResource = resource.getChild("items");
       if (null != itemsResource) {
-        isPublishInstance = PageUtils.isPublishInstance(runModeConfigService);
-        prepareRelatedInfoLinks(itemsResource, dto);
+        prepareRelatedInfoLinks(itemsResource, relatedInfoDto);
       }
     }
-    setCurrentResourceProps(resource, dto);
-    log.debug("Prepared RelatedInfo block details: {}", dto);
-    return dto;
+    setCurrentResourceProps(resource, relatedInfoDto);
+    log.debug("Prepared RelatedInfo block details: {}", relatedInfoDto);
   }
 
   /**

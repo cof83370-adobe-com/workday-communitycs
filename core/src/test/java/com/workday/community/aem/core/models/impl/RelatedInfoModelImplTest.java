@@ -92,7 +92,7 @@ public class RelatedInfoModelImplTest {
           .thenReturn("/content/workday-community/en-us/admin-tools/test.html");
 
       RelatedInfoModel relatedInfoModel = context.request().adaptTo(RelatedInfoModel.class);
-      RelatedInfoDto relatedInfoDto = relatedInfoModel.getRelatedInfoBlockData();
+      RelatedInfoDto relatedInfoDto = relatedInfoModel.getRelatedInfoDto();
 
        assertNotNull(relatedInfoDto);
        assertEquals("alt text for curated block", relatedInfoDto.getAltText());

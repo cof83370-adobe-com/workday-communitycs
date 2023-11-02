@@ -12,5 +12,5 @@ public interface RelatedInfoModel {
    *
    * @return the related info block data
    */
-  RelatedInfoDto getRelatedInfoBlockData();
+  RelatedInfoDto getRelatedInfoDto();
 }

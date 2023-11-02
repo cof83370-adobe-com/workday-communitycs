@@ -1,6 +1,6 @@
 <!--/* Related Information Component */-->
 <sly data-sly-use.model="com.workday.community.aem.core.models.RelatedInfoModel"></sly>
-<sly data-sly-test="${model.relatedInfoBlockData}" data-sly-set.relatedInfoModel="${model.relatedInfoBlockData}">
+<sly data-sly-test="${model.relatedInfoDto}" data-sly-set.relatedInfoModel="${model.relatedInfoDto}">
    <sly data-sly-set.relatedInfoLinks="${relatedInfoModel.relatedInfoItemsList}" data-sly-test="${!relatedInfoModel.anonymousUser && (!relatedInfoLinks.isEmpty || relatedInfoModel.type == 'dynamic')}">
       <div class="cmp-related-info">
          <div class="cmp-related-info__heading">
