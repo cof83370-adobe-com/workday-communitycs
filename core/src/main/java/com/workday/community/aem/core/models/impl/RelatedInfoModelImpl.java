@@ -55,9 +55,13 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
   /** The flag to indicate publish instance. */
   private boolean isPublishInstance;
 
+  /** The related info dto. */
   @Getter
-  private RelatedInfoDto relatedInfoDto; 
+  private RelatedInfoDto relatedInfoDto;
 
+  /**
+   * Inits the RelatedInforModel class and prepares the RelatedInfoDto to FE.
+   */
   @PostConstruct
   public void init() {
     relatedInfoDto = new RelatedInfoDto();
@@ -102,7 +106,7 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
   private boolean isAnonymousUser() {
     try {
       User user = userService.getCurrentUser(request);
-      //return non loggedin user in publish environment
+      // return non loggedin user in publish environment
       return isPublishInstance && user == null;
     } catch (CacheException e) {
       log.error("Exception occurred while getting currentUser:{}", e.getMessage());
@@ -114,7 +118,7 @@ public class RelatedInfoModelImpl implements RelatedInfoModel {
    * Prepare related info links.
    *
    * @param itemsResource the items resource
-   * @param dto the dto
+   * @param dto           the dto
    */
   private void prepareRelatedInfoLinks(Resource itemsResource, RelatedInfoDto dto) {
     Iterator<Resource> resourceItr = itemsResource.listChildren();
