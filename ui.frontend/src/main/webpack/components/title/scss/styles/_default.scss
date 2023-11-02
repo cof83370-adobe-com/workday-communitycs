@@ -7,11 +7,5 @@
         align-items: $align-center;
         color: $wdc-color-black-pepper-600;
         margin: 0;
-
-        @media (max-width: $screen-small) {
-            font-size: 20px;
-            line-height: 26px;
-            letter-spacing: 0.5px;
-        }
     }
 }
