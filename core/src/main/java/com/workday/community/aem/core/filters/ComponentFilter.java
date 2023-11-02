@@ -1,12 +1,10 @@
 package com.workday.community.aem.core.filters;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
-import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_TAG;
 
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.UserGroupService;
-import com.workday.community.aem.core.utils.ResolverUtil;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
@@ -22,8 +20,6 @@ import javax.servlet.ServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.resource.LoginException;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.engine.EngineConstants;
@@ -89,42 +85,33 @@ public class ComponentFilter implements Filter {
       String resourceType = request.getResource().getResourceType();
       if (instance != null && instance.equals(PUBLISH)
           && resourceType.contains(DYNAMIC_RESOURCE_TYPE_PATH)) {
-        try (ResourceResolver resolver = ResolverUtil.newResolver(resolverFactory,
-            READ_SERVICE_USER)) {
-          List<String> userGroupsList = userGroupService.getCurrentUserGroups(request);
-          log.debug("ComponentFilter::ACL Tags of user {}", userGroupsList);
-          ValueMap properties = request.getResource().getValueMap();
-          List<String> componentAclTags = Arrays
-              .asList(properties.get("componentACLTags", new String[0]));
-          List<String> accessControlList = new ArrayList<>();
-          componentAclTags
-              .forEach(
-                  tag -> accessControlList.add(tag.replace(ACCESS_CONTROL_TAG.concat(":"), "")));
-          log.debug("ComponentFilter::ACL Tags of component {}", accessControlList);
-          if (CollectionUtils.isNotEmpty(accessControlList)
-              && CollectionUtils.isNotEmpty(userGroupsList)
-              && CollectionUtils.intersection(accessControlList, userGroupsList).isEmpty()) {
-            log.debug("ComponentFilter::Permission not matching.. not rendeing component.");
-            log.debug(
-                "...............Execution time of filter method for resource {} {}...............",
-                resourceType, Duration.between(start, Instant.now()));
-            return;
-          } else if (CollectionUtils.isNotEmpty(accessControlList)
-              && CollectionUtils.isEmpty(userGroupsList)) {
-            log.debug("ComponentFilter::User permissions are empty.. not rendeing component.");
-            log.debug(
-                "...............Execution time of filter method for resource {} {}...............",
-                resourceType, Duration.between(start, Instant.now()));
-            return;
-          }
-        } catch (LoginException e) {
-          log.error("Exception retrieving Resource Resolver for path {}",
-              request.getResource().getPath());
+        List<String> userGroupsList = userGroupService.getCurrentUserGroups(request);
+        log.debug("ComponentFilter::ACL Tags of user {}", userGroupsList);
+        ValueMap properties = request.getResource().getValueMap();
+        List<String> componentAclTags = Arrays
+            .asList(properties.get("componentACLTags", new String[0]));
+        List<String> accessControlList = new ArrayList<>();
+        componentAclTags
+            .forEach(
+                tag -> accessControlList.add(tag.replace(ACCESS_CONTROL_TAG.concat(":"), "")));
+        log.debug("ComponentFilter::ACL Tags of component {}", accessControlList);
+        if (CollectionUtils.isNotEmpty(accessControlList)
+            && CollectionUtils.isNotEmpty(userGroupsList)
+            && CollectionUtils.intersection(accessControlList, userGroupsList).isEmpty()) {
+          log.debug("ComponentFilter::Permission not matching.. not rendeing component.");
+          log.debug(
+              "...............Execution time of filter method for resource {} {}...............",
+              resourceType, Duration.between(start, Instant.now()));
+          return;
+        } else if (CollectionUtils.isNotEmpty(accessControlList)
+            && CollectionUtils.isEmpty(userGroupsList)) {
+          log.debug("ComponentFilter::User permissions are empty.. not rendeing component.");
+          log.debug(
+              "...............Execution time of filter method for resource {} {}...............",
+              resourceType, Duration.between(start, Instant.now()));
+          return;
         }
       }
-      log.debug(
-          "...............Component Filter Execution time for resource {} {}...............",
-          resourceType, Duration.between(start, Instant.now()));
     }
 
     filterChain.doFilter(servletRequest, servletResponse);

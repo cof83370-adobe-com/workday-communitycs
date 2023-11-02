@@ -3,8 +3,6 @@ package com.workday.community.aem.core.services.impl;
 import static com.workday.community.aem.core.constants.GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL;
 import static com.workday.community.aem.core.constants.WccConstants.ACCESS_CONTROL_TAG;
 import static com.workday.community.aem.core.constants.WccConstants.AUTHENTICATED;
-import static com.workday.community.aem.core.constants.WccConstants.ROLES;
-import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -22,17 +20,13 @@ import com.workday.community.aem.core.utils.PageUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
-import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -48,7 +42,9 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class UserGroupServiceImpl implements UserGroupService {
 
-  /** The Constant PUBLIC_PATH_REGEX. */
+  /**
+   * The Constant PUBLIC_PATH_REGEX.
+   */
   protected static final String PUBLIC_PATH_REGEX = "/content/workday-community/[a-z]{2}-[a-z]{2}/public/";
 
   /**
@@ -159,42 +155,17 @@ public class UserGroupServiceImpl implements UserGroupService {
   @Override
   public List<String> getCurrentUserGroups(SlingHttpServletRequest request) {
     log.debug("from  UserGroupServiceImpl.getLoggedInUsersGroups() ");
-    String userRole;
     List<String> groupIds = new ArrayList<>();
-    try {
-      User user = userService.getCurrentUser(request);
-      String sfId = OurmUtils.getSalesForceId(request, userService);
-      if (sfId != null) {
-        log.debug("user  sfid {} ", sfId);
-        ResourceResolver jcrResolver = cacheManager
-            .getServiceResolver(WORKDAY_COMMUNITY_ADMINISTRATIVE_SERVICE);
-        Node userNode = Objects.requireNonNull(jcrResolver.getResource(user.getPath())).adaptTo(Node.class);
-        if (Objects.requireNonNull(userNode).hasProperty(ROLES)
-            && StringUtils.isNotBlank(userNode.getProperty(ROLES).getString())
-            && userNode.getProperty(ROLES).getString().split(";").length > 0) {
-          log.debug(
-              "---> UserGroupServiceImpl: getCurrentUserGroups - User has Groups in CRX...{}",
-              userNode.getProperty(ROLES).getString());
-          userRole = userNode.getProperty(ROLES).getString();
-          groupIds = List.of(userRole.split(";"));
-        } else {
-          log.debug(
-              "---> UserGroupServiceImpl: getCurrentUserGroups - Trying to get Groups from SNAP");
-          Session jcrSession = jcrResolver.adaptTo(Session.class);
-          groupIds = getUserGroupsFromDrupal(sfId);
-          userNode.setProperty(ROLES, StringUtils.join(groupIds, ";"));
-          Objects.requireNonNull(jcrSession).save();
-          if (null != groupIds && !groupIds.isEmpty()) {
-            log.debug(
-                "---> UserGroupServiceImpl: getCurrentUserGroups - Groups from SNAP ... {} ",
-                StringUtils.join(groupIds, ";"));
-          }
-        }
-        log.debug("Salesforce roles {}", groupIds);
+    String sfId = OurmUtils.getSalesForceId(request, userService);
+    if (!StringUtils.isEmpty(sfId)) {
+      log.debug(
+          "---> UserGroupServiceImpl: getCurrentUserGroups - Trying to get Groups from Drupal");
+      groupIds = getUserGroupsFromDrupal(sfId);
+      if (null != groupIds && !groupIds.isEmpty()) {
+        log.debug(
+            "---> UserGroupServiceImpl: getCurrentUserGroups - Groups from Drupal ... {} ",
+            StringUtils.join(groupIds, ";"));
       }
-
-    } catch (RepositoryException | CacheException e) {
-      log.error("---> Exception in AuthorizationFilter.. {}", e.getMessage());
     }
     return groupIds;
   }

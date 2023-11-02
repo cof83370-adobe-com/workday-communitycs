@@ -38,9 +38,10 @@ public interface QueryService {
   List<String> getBookNodesByPath(String bookPath, String currentPath);
   
   /**
-   * Gets the review reminder pages.
+   * Gets the pages by date propery if value matching current date.
    *
+   * @param dateProperty the property in page to search against
    * @return List of page paths.
    */
-  List<String> getReviewReminderPages();
+  List<String> getPagesDueTodayByDateProp(String dateProperty);
 }
