@@ -7,8 +7,6 @@
         &-title {
             font-style: $font-style-normal;
             font-weight: $font-weight-bold;
-            font-size: 18px;
-            line-height: 24px;
             color: $wdc-color-black-pepper-400;
             margin: 0;
         }
@@ -55,11 +53,6 @@
         &__heading {
             padding-top: 18px;
             margin: 0 24px;
-
-            &-title {
-                font-size: 20px;
-                line-height: 26px;
-            }
         }
 
         &__content {
@@ -147,8 +140,6 @@
             &-title {
                 font-style: $font-style-normal;
                 font-weight: $font-weight-bold;
-                font-size: 20px;
-                line-height: 26px;
                 color: $wdc-color-black-pepper-600;
             }
         }
