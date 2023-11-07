@@ -8,8 +8,6 @@ import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.model.WorkflowModel;
-import com.day.cq.mailer.MessageGateway;
-import com.day.cq.mailer.MessageGatewayService;
 import com.workday.community.aem.core.config.RetirementManagerSchedulerConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
@@ -26,9 +24,6 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
@@ -56,10 +51,6 @@ public class RetirementManagerScheduler implements Runnable {
   @Reference
   private QueryService queryService;
 
-  /** The message gateway service. */
-  @Reference
-  private MessageGatewayService messageGatewayService;
-
   /** The run mode config service. */
   @Reference
   private RunModeConfigService runModeConfigService;
@@ -83,10 +74,12 @@ public class RetirementManagerScheduler implements Runnable {
   private final String propReviewReminderDate = "jcr:content/reviewReminderDate";
 
   private final String propRetirementNotificationDate = "jcr:content/retirementNotificationDate";
+  
+  private final String emailTemplateRevReminderSubject = 
+      "/workflows/review-reminder/jcr:content/root/container/container/title";
 
-  private final String reviewReminderEmailSubject = " to Retire in 60 Days";
-
-  private final String retirementNotifyEmailSubject = " to Retire in 30 Days";
+  private final String emailTemplateRetNotifySubject = 
+      "/workflows/retirement-notification/jcr:content/root/container/container/title";
 
   /**
    * Activate/Modified RetirementManagerScheduler scheduler.
@@ -179,8 +172,8 @@ public class RetirementManagerScheduler implements Runnable {
     List<String> reviewReminderPagePaths = queryService.getPagesDueTodayByDateProp(propReviewReminderDate);
 
     log.debug("RetirementManagerScheduler::End querying Review Notification pages.. Sending Notification");
-    sendNotification(resResolver, reviewReminderPagePaths, emailTemplateRevReminderText, reviewReminderEmailSubject,
-        false);
+    sendNotification(resResolver, reviewReminderPagePaths, emailTemplateRevReminderText,
+        emailTemplateRevReminderSubject, false);
   }
 
   /**
@@ -195,7 +188,7 @@ public class RetirementManagerScheduler implements Runnable {
 
     log.debug("RetirementManagerScheduler::End querying Retirement and Notify pages.. Sending Notification");
     sendNotification(resResolver, retirementNotificationPagePaths, emailTemplateRetNotifyText,
-        retirementNotifyEmailSubject, true);
+        emailTemplateRetNotifySubject, true);
 
   }
 
@@ -239,28 +232,6 @@ public class RetirementManagerScheduler implements Runnable {
   public boolean isAuthorInstance() {
     return (runModeConfigService.getInstance() != null
         && runModeConfigService.getInstance().equals(GlobalConstants.PROP_AUTHOR));
-  }
-
-  /**
-   * Send mail to author.
-   *
-   * @param authorMail the author mail
-   * @param message    the message
-   * @throws EmailException the email exception
-   */
-  public void sendEmail(String authorMail, String message, String subject) throws EmailException {
-
-    Email email = new SimpleEmail();
-    email.addTo(authorMail);
-    email.setSubject(subject);
-    email.setMsg(message);
-    MessageGateway<Email> messageGateway;
-
-    // Inject a Messagegateway Service and send the message
-    messageGateway = messageGatewayService.getGateway(Email.class);
-
-    // check the logs to see that messageGateway is not null
-    messageGateway.send(email);
   }
 
   /**
@@ -319,7 +290,7 @@ public class RetirementManagerScheduler implements Runnable {
 
                 // send email once Day CQ Mail Configuration is ready
                 log.debug("Sending email to author: {}", author);
-                // sendEmail(author, msg, subject);
+                // sendEmail(author, subject, msg);
               } else if (emailTemplateParentNode != null) {
                 NodeIterator nodeItr = emailTemplateParentNode.getNodes();
 
@@ -330,7 +301,7 @@ public class RetirementManagerScheduler implements Runnable {
 
                 // send email once Day CQ Mail Configuration is ready
                 log.debug("Sending email to author: {}", author);
-                // sendEmail(author, msg, subject);
+                // sendEmail(author, subject, msg);
               }
               log.debug("Mail content is: {}", msg);
             }

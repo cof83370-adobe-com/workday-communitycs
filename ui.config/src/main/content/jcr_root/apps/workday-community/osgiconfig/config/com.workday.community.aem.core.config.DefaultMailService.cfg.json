@@ -1,0 +1,9 @@
+{
+    "smtp.host": "$[env:AEM_PROXY_HOST;default=proxy.tunnel]",
+    "smtp.port": "$[env:SmtpPort]",
+    "smtp.user": "$[secret:sesSmtpUsername]",
+    "smtp.password": "$[secret:sesSmtpPassword]",
+    "from.address": "$[env:Fromaddress;default=community@workday.com]",
+    "smtp.ssl": "$[env:SmtpSSL]",
+    "smtp.starttls": "$[env:SmtpStartTls;default=true]"
+}
