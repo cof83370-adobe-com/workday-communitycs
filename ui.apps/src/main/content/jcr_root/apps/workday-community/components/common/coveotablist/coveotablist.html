@@ -86,6 +86,16 @@
                                             -webkit-font-smoothing: antialiased;
                                             font-weight: 400;
                                         }
+
+                                        @media not all and (min-width: 1023px) {
+                                            :host {
+                                                border: none !important;
+                                                border-bottom: 1px solid #ced3d9 !important;
+                                                border-radius: 0 !important;
+                                                padding-left: 0 !important;
+                                                padding-right: 0 !important;
+                                            }
+                                        }
                                     </style>
                                     <atomic-result-section-title>
                                         <atomic-result-link target='_blank' class='result-link'></atomic-result-link>
@@ -176,6 +186,26 @@
             // 3 From the service
             const search_config = JSON.parse(document.getElementById('tabListSearchConfigId').getAttribute('data-model-search-config'));
 
+            function waitForElementToDisplayWithElemCallback(elmCallback, callback, checkFrequencyInMs = 100, timeoutInMs = 50000) {
+                let startTimeInMs = Date.now();
+                let timeOutHandler;
+                (function loopSearch() {
+                    let elem = elmCallback();
+                    if (elem) {
+                        clearTimeout(timeOutHandler);
+                        callback(elem);
+                    } else {
+                        timeOutHandler = setTimeout(function () {
+                            if (timeoutInMs && Date.now() - startTimeInMs > timeoutInMs) {
+                                clearTimeout(timeOutHandler);
+                                return;
+                            }
+                            loopSearch();
+                        }, checkFrequencyInMs);
+                    }
+                })();
+            }
+
             function setActive(currentTab) {
                 if (!currentTab.className.includes('item-button-active')) {
                     currentTab.classList.add('item-button-active');
@@ -192,7 +222,7 @@
                 // set active update all event
                 const allEventContainer = document.getElementsByClassName('all-feeds-text')[0];
                 const urlBase = document.getElementById('tabListFeedUrlBaseId').getAttribute('data-comp-props-data');
-                const innerHtml = '<a href=\'' + urlBase + currentTab.getAttribute('all-link-expression') + '\'>All ' + currentTab.textContent + '</a>';
+                const innerHtml = '<a class=\'all-feeds-text\' href=\'' + urlBase + currentTab.getAttribute('all-link-expression') + '\'>All ' + currentTab.textContent + '</a>';
                 allEventContainer.innerHTML = innerHtml;
             }
 
@@ -215,6 +245,12 @@
                     } else {
                         setActive(event.target);
                     }
+                    waitForElementToDisplayWithElemCallback(
+                        () => document.querySelector('atomic-sort-dropdown').shadowRoot.querySelector('label'),
+                        (elem) => {
+                            elem.innerHTML = 'Sort by';
+                        }
+                    );
                 };
                 return clickHandler;
             }
@@ -371,7 +407,7 @@
                 const tabContainer = document.getElementsByClassName('coveotablist')[0];
                 waitForElementToDisplay('atomic-search-layout', (elem) => {
                     if (!elem.classList.contains('grid-30')) elem.classList.add('grid-30');
-                })
+                });
 
                 const title = tabContainer.getElementsByClassName('multi-tab-title')[0];
                 title.innerText = compTitle;
@@ -544,6 +580,12 @@
                 };
 
                 main().then(() => {
+                    waitForElementToDisplayWithElemCallback(
+                        () => document.querySelector('atomic-sort-dropdown').shadowRoot.querySelector('label'),
+                        (elem) => {
+                            elem.innerHTML = 'Sort by';
+                        }
+                    );
                 });
             });
             window.addEventListener('resize', () => {
@@ -554,6 +596,12 @@
                         await buildTabs(buildTab, engine);
                     };
                     main().then(() => {
+                        waitForElementToDisplayWithElemCallback(
+                            () => document.querySelector('atomic-sort-dropdown').shadowRoot.querySelector('label'),
+                            (elem) => {
+                                elem.innerHTML = 'Sort by';
+                            }
+                        );
                     });
                 }
             });
