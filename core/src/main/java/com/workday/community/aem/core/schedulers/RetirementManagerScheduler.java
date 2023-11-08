@@ -12,6 +12,7 @@ import com.workday.community.aem.core.config.RetirementManagerSchedulerConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.EmailService;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import java.util.HashMap;
@@ -58,6 +59,10 @@ public class RetirementManagerScheduler implements Runnable {
   /** The run mode config service. */
   @Reference
   private RunModeConfigService runModeConfigService;
+
+  /** The email service of workday. */
+  @Reference
+  private EmailService emailService;
 
   /** The scheduler. */
   @Reference
@@ -245,15 +250,15 @@ public class RetirementManagerScheduler implements Runnable {
    * @param paths                      the paths
    * @param emailTemplateContainerText the emailTemplateContainerText
    * @param emailSubject               the emailSubject
-   * @param triggerRetirment           the triggerRetirment
+   * @param triggerRetirement          the triggerRetirement
    */
   public void sendNotification(ResourceResolver resolver, List<String> paths, String emailTemplateContainerText,
-      String emailSubject, Boolean triggerRetirment) {
+      String emailSubject, Boolean triggerRetirement) {
     log.debug("sendNotification >>>>>>>   ");
 
     paths.stream().filter(item -> resolver.getResource(item) != null).forEach(path -> {
       try {
-        if (triggerRetirment) {
+        if (triggerRetirement) {
           startWorkflow(resolver, WorkflowConstants.RETIREMENT_WORKFLOW, path);
         }
 
@@ -294,7 +299,7 @@ public class RetirementManagerScheduler implements Runnable {
 
                 // send email once Day CQ Mail Configuration is ready
                 log.debug("Sending email to author: {}", author);
-                // sendEmail(author, subject, msg);
+                emailService.sendEmail(author, subject, msg);
               } else if (emailTemplateParentNode != null) {
                 NodeIterator nodeItr = emailTemplateParentNode.getNodes();
 
@@ -305,7 +310,7 @@ public class RetirementManagerScheduler implements Runnable {
 
                 // send email once Day CQ Mail Configuration is ready
                 log.debug("Sending email to author: {}", author);
-                // sendEmail(author, subject, msg);
+                emailService.sendEmail(author, subject, msg);
               }
               log.debug("Mail content is: {}", msg);
             }
