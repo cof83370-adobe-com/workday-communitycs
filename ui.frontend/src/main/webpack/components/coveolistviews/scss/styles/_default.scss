@@ -1,9 +1,9 @@
 :root {
-  --spacing:$wdc-spacing-s;
-  --search-box-width:50% px;
+  --spacing: $wdc-spacing-s;
+  --search-box-width: 50% px;
   --atomic-primary: $wdc-color-primary-main;
-  --atomic-font-family:-apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
-  --atomic-font-family:"WorkdayAdelleSans-Regular" !important;
+  --atomic-font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+  --atomic-font-family: "WorkdayAdelleSans-Regular" !important;
 }
 
 atomic-did-you-mean::part(no-results) {
@@ -470,7 +470,7 @@ atomic-breadbox {
     font-size: 10px;
     font-family: 'WorkdayAdelleSans-Medium';
     text-transform: uppercase;
-    padding:$wdc-spacing-xxxs 6px;
+    padding: $wdc-spacing-xxxs 6px;
     border-radius: 3px;
     border-color: $wdc-color-soap-500;
     color: $wdc-color-black-pepper-600 !important;
@@ -569,7 +569,7 @@ atomic-sort-dropdown {
     display: inherit !important;
   }
 
-  atomic-sort-dropdown::part(label) {
+  .coveolistview atomic-sort-dropdown::part(label) {
     display: none;
   }
 
@@ -638,7 +638,7 @@ span {
     justify-content: center;
     align-items: center;
     position: absolute;
-    padding:$wdc-spacing-xxxs;
+    padding: $wdc-spacing-xxxs;
     color: #dadada;
     margin: 0 $wdc-spacing-xxs;
   }
@@ -768,21 +768,21 @@ atomic-refine-toggle::part(button) {
   color: $wdc-color-black-pepper-400;
 }
 
-@media (max-width: 1023px) {  
+@media (max-width: 1023px) {
   atomic-refine-toggle::part(button) {
-	width: 150px;
+    width: 150px;
   }
   atomic-sort-dropdown {
     &::part(select-parent) {
-	margin-top: -5px;
+      margin-top: -5px;
     }
-  }      
+  }
 }
 
-@media (max-width: 767px) {  
+@media (max-width: 767px) {
   atomic-refine-toggle::part(button) {
     margin-top: 42px;
-	width: 150px;
+    width: 150px;
   }
   atomic-sort-dropdown.hydrated,
   atomic-search-box.hydrated {
@@ -792,7 +792,8 @@ atomic-refine-toggle::part(button) {
   }
   atomic-sort-dropdown {
     width: 100% !important;
-	&::part(select),
+
+    &::part(select),
     &::part(select-parent) {
       width: 100% !important;
     }
