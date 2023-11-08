@@ -71,23 +71,25 @@ public class AuthorshipRenderConditionModel {
     String userId = requireNonNull(userSession).getUserID();
     String env = runModeConfigService.getEnv();
     Authorizable auth;
-    try {
-      auth = requireNonNull(userManager).getAuthorizable(userId);
-      Iterator<Group> groups = requireNonNull(auth).memberOf();
-      while (groups.hasNext() && !allowed) {
-        Group g = groups.next();
-        for (String groupStr : editGroups) {
-          groupStr = groupStr.concat(" {").concat(env).concat("}");
-          String gid = g.getID();
-          if (gid != null && gid.equalsIgnoreCase(groupStr)) {
-            allowed = true;
-            break;
+    if (env != null) {
+      try {
+        auth = requireNonNull(userManager).getAuthorizable(userId);
+        Iterator<Group> groups = requireNonNull(auth).memberOf();
+        while (groups.hasNext() && !allowed) {
+          Group g = groups.next();
+          for (String groupStr : editGroups) {
+            groupStr = groupStr.concat(" {").concat(env).concat("}");
+            String gid = g.getID();
+            if (gid != null && gid.equalsIgnoreCase(groupStr)) {
+              allowed = true;
+              break;
+            }
           }
         }
+      } catch (RepositoryException e) {
+        log.error("User not found");
       }
-    } catch (RepositoryException e) {
-      log.error("User not found");
-    }
+    }   
     if (allowed) {
       check = !suffix.endsWith("ReadOnly/granite:rendercondition");
     } else {
