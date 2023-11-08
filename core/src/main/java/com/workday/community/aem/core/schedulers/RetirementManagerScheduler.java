@@ -83,7 +83,7 @@ public class RetirementManagerScheduler implements Runnable {
   private final String propReviewReminderDate = "jcr:content/reviewReminderDate";
 
   private final String propRetirementNotificationDate = "jcr:content/retirementNotificationDate";
-  
+
   private final String emailTemplateRevReminderSubject = 
       "/workflows/review-reminder/jcr:content/root/container/container/title";
 
@@ -227,10 +227,38 @@ public class RetirementManagerScheduler implements Runnable {
         }
       }
     } catch (RepositoryException e) {
-      log.error("Iterator page jcr:content failed: {}", e.getMessage());
+      log.error("Exception in processTextComponentFromEmailTemplate: {}", e.getMessage());
     }
 
     return text;
+  }
+
+  /**
+   * Read title component value of email template.
+   *
+   * @param titleNode the title node
+   * @param node      the node
+   * @param path      the path
+   * @return the string
+   */
+  public String processTitleComponentFromEmailTemplate(Node titleNode, Node node, String path) {
+    log.debug("processTitleComponentFromEmailTemplate >>>>>>>   ");
+    String title = "";
+
+    try {
+      if (titleNode.hasProperty(SLING_RESOURCE_TYPE_PROPERTY)) {
+        String resourceType = titleNode.getProperty(SLING_RESOURCE_TYPE_PROPERTY).getValue().getString();
+        if (resourceType.equals(GlobalConstants.TITLE_COMPONENT)) {
+          title = titleNode.getProperty("title").getValue().getString();
+
+          title = title.trim().replace("{pageTitle}", node.getProperty(JCR_TITLE).getString());
+        }
+      }
+    } catch (RepositoryException e) {
+      log.error("Exception in processTitleComponentFromEmailTemplate: {}", e.getMessage());
+    }
+
+    return title;
   }
 
   /**
@@ -246,14 +274,14 @@ public class RetirementManagerScheduler implements Runnable {
   /**
    * Send notification to author.
    *
-   * @param resolver                   the resolver
-   * @param paths                      the paths
-   * @param emailTemplateContainerText the emailTemplateContainerText
-   * @param emailSubject               the emailSubject
-   * @param triggerRetirement          the triggerRetirement
+   * @param resolver                                  the resolver
+   * @param paths                                     the paths
+   * @param emailTemplateContainerText                the emailTemplateContainerText
+   * @param emailTemplateContainerTitle               the emailTemplateContainerTitle
+   * @param triggerRetirement                         the triggerRetirement
    */
   public void sendNotification(ResourceResolver resolver, List<String> paths, String emailTemplateContainerText,
-      String emailSubject, Boolean triggerRetirement) {
+      String emailTemplateContainerTitle, Boolean triggerRetirement) {
     log.debug("sendNotification >>>>>>>   ");
 
     paths.stream().filter(item -> resolver.getResource(item) != null).forEach(path -> {
@@ -280,7 +308,7 @@ public class RetirementManagerScheduler implements Runnable {
             Matcher matcher = pattern.matcher(author);
 
             if (author != null && matcher.matches()) {
-              Node emailTemplateParentNode = Objects
+              Node emailTemplateTextParentNode = Objects
                   .requireNonNull(resolver.getResource(GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH
                       + emailTemplateContainerText.replace("/text", "")))
                   .adaptTo(Node.class);
@@ -290,29 +318,59 @@ public class RetirementManagerScheduler implements Runnable {
                       GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH + emailTemplateContainerText))
                   .adaptTo(Node.class);
 
+              Node emailTemplateTitleParentNode = Objects
+                  .requireNonNull(resolver.getResource(GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH
+                      + emailTemplateContainerTitle.replace("/title", "")))
+                  .adaptTo(Node.class);
+
+              Node emailTemplateTitleNode = Objects
+                  .requireNonNull(resolver.getResource(
+                      GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH + emailTemplateContainerTitle))
+                  .adaptTo(Node.class);
+
               String msg = "";
-              String subject = node.getProperty(JCR_TITLE).getString() + emailSubject;
+              String subject = "";
+
+              if (emailTemplateTitleNode != null) {
+                subject = processTitleComponentFromEmailTemplate(emailTemplateTitleNode, node, path);
+              } else if (emailTemplateTitleParentNode != null) {
+                NodeIterator nodeItr = emailTemplateTitleParentNode.getNodes();
+
+                while (nodeItr.hasNext()) {
+                  Node childNode = nodeItr.nextNode();
+                  String emailSubjectTitle = processTitleComponentFromEmailTemplate(childNode, node,
+                      path);
+                  if (!(emailSubjectTitle.isBlank())) {
+                    subject = emailSubjectTitle;
+                    break;
+                  }
+                }
+              }
+
               log.debug("Email Subject: {}", subject);
 
               if (emailTemplateTextNode != null) {
                 msg = processTextComponentFromEmailTemplate(emailTemplateTextNode, node, path);
-
                 // send email once Day CQ Mail Configuration is ready
                 log.debug("Sending email to author: {}", author);
+                log.debug("Mail content is: {}", msg);
                 emailService.sendEmail(author, subject, msg);
-              } else if (emailTemplateParentNode != null) {
-                NodeIterator nodeItr = emailTemplateParentNode.getNodes();
+              } else if (emailTemplateTextParentNode != null) {
+                NodeIterator nodeItr = emailTemplateTextParentNode.getNodes();
 
                 while (nodeItr.hasNext()) {
                   Node childNode = nodeItr.nextNode();
-                  msg = processTextComponentFromEmailTemplate(childNode, node, path);
+                  String emailBodyText = processTextComponentFromEmailTemplate(childNode, node, path);
+                  if (!(emailBodyText.isBlank())) {
+                    msg = emailBodyText;
+                    break;
+                  }
                 }
-
                 // send email once Day CQ Mail Configuration is ready
                 log.debug("Sending email to author: {}", author);
+                log.debug("Mail content is: {}", msg);
                 emailService.sendEmail(author, subject, msg);
               }
-              log.debug("Mail content is: {}", msg);
             }
           }
         }

@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.services.impl;
 
+import com.day.cq.mailer.MailingException;
 import com.day.cq.mailer.MessageGateway;
 import com.day.cq.mailer.MessageGatewayService;
 import com.workday.community.aem.core.services.EmailService;
@@ -50,19 +51,36 @@ public class EmailServiceImpl implements EmailService {
    * @param message the message
    */
   @Override
-  public void sendEmail(String emailTo, String subject, String message) throws EmailException {
-    log.debug("in sendEmail >>");
-    Email email = new SimpleEmail();
-    email.addTo(emailTo);
-    email.setSubject(subject);
-    email.setMsg(message);
-    MessageGateway<Email> messageGateway;
+  public void sendEmail(String emailTo, String subject, String message) {
+    log.debug("in sendEmail >> emailTo is : {}, subject is: {}, message is : {}", emailTo, subject, message);
+    try {
+      Email email = new SimpleEmail();
+      email.addTo(emailTo);
+      email.setSubject(subject);
+      email.setMsg(message);
+      MessageGateway<Email> messageGateway;
 
-    // Inject a Messagegateway Service and send the message
-    messageGateway = messageGatewayService.getGateway(Email.class);
+      log.debug("before if messageGatewayService");
+      // Inject a Messagegateway Service and send the message
+      if (messageGatewayService != null) {
+        messageGateway = messageGatewayService.getGateway(Email.class);
 
-    // check the logs to see that messageGateway is not null
-    messageGateway.send(email);
+        log.debug("within if messageGatewayService");
+        // check the logs to see that messageGateway is not null
+        if (messageGateway != null) {
+          log.debug("within if messageGateway");
+          messageGateway.send(email);
+        }
+      }
+
+      log.debug("try end");
+    } catch (EmailException ee) {
+      log.error("EmailException occured in sendNotification: {}, message : {}", ee.getStackTrace(), ee.getMessage());
+    } catch (MailingException me) {
+      log.error("MailingException occured in sendNotification: {}, message : {}", me.getStackTrace(), me.getMessage());
+    } catch (Exception ex) {
+      log.error("Exception occured in sendNotification: {}, message : {}", ex.getStackTrace(), ex.getMessage());
+    }
   }
 
 }
