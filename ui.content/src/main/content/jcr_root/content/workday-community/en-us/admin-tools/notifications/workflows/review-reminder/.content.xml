@@ -25,7 +25,7 @@
                     layout="responsiveGrid">
                     <title
                         jcr:createdBy="admin"
-                        jjcr:primaryType="nt:unstructured"
+                        jcr:primaryType="nt:unstructured"
                         jcr:title="\{pageTitle} to Retire in 60 Days"
                         sling:resourceType="workday-community/components/core/title"
                         linkTarget="_blank"
