@@ -60,15 +60,15 @@ public class EmailServiceImpl implements EmailService {
       email.setMsg(message);
       MessageGateway<Email> messageGateway;
 
-      log.debug("before if messageGatewayService");
+      log.debug("before messageGatewayService");
       // Inject a Messagegateway Service and send the message
       if (messageGatewayService != null) {
         messageGateway = messageGatewayService.getGateway(Email.class);
 
-        log.debug("within if messageGatewayService");
+        log.debug("within messageGatewayService");
         // check the logs to see that messageGateway is not null
         if (messageGateway != null) {
-          log.debug("within if messageGateway");
+          log.debug("within messageGateway");
           messageGateway.send(email);
         }
       }

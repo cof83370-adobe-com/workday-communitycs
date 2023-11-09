@@ -21,11 +21,8 @@ import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,7 +41,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Slf4j
 @Component(service = WorkflowProcess.class, property = {
-    "process.label = Process to Activate Page, Referenced Assets and Book"})
+    "process.label = Process to Activate Page, Referenced Assets and Book" })
 public class ContentPublishingWorkflowProcess implements WorkflowProcess {
 
   @Reference
@@ -79,8 +76,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
       path = workItem.getWorkflowData().getPayload().toString();
       log.debug("Payload path: {}", path);
 
-      try (
-          ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+      try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
         Session jcrSession = workflowSession.adaptTo(Session.class);
 
         if (null != jcrSession) {
@@ -101,8 +97,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
    * @param jcrSession  the jcr session
    * @param resResolver the ResourceResolver
    */
-  public void updatePageProperties(String pagePath, Session jcrSession,
-                                   ResourceResolver resResolver) {
+  public void updatePageProperties(String pagePath, Session jcrSession, ResourceResolver resResolver) {
     LocalDate date = LocalDate.now();
     log.debug("Current Date: {}", date);
 
@@ -114,50 +109,37 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     Calendar retirementNotificationCalendar = Calendar.getInstance();
     Calendar scheduledRetirementCalendar = Calendar.getInstance();
 
-    reviewReminderCalendar.set(reviewReminderDate.getYear(),
-        reviewReminderDate.getMonthValue() - 1,
+    reviewReminderCalendar.set(reviewReminderDate.getYear(), reviewReminderDate.getMonthValue() - 1,
         reviewReminderDate.getDayOfMonth());
     retirementNotificationCalendar.set(retirementNotificationDate.getYear(),
-        retirementNotificationDate.getMonthValue() - 1,
-        retirementNotificationDate.getDayOfMonth());
-    scheduledRetirementCalendar.set(scheduledRetirementDate.getYear(),
-        scheduledRetirementDate.getMonthValue() - 1, scheduledRetirementDate.getDayOfMonth());
-
-    Date revReminderDate = reviewReminderCalendar.getTime();
-    Date retNotificationDate = retirementNotificationCalendar.getTime();
-    Date scheduledRetDate = scheduledRetirementCalendar.getTime();
-
-    DateFormat df = new SimpleDateFormat(GlobalConstants.ISO_8601_FORMAT);
+        retirementNotificationDate.getMonthValue() - 1, retirementNotificationDate.getDayOfMonth());
+    scheduledRetirementCalendar.set(scheduledRetirementDate.getYear(), scheduledRetirementDate.getMonthValue() - 1,
+        scheduledRetirementDate.getDayOfMonth());
 
     PageManager pageManager = resResolver.adaptTo(PageManager.class);
     Page currentPage = pageManager.getPage(pagePath);
 
     try {
       Node node = (Node) jcrSession.getItem(pagePath + GlobalConstants.JCR_CONTENT_PATH);
-      if (currentPage == null || node == null
-          || pagePath.contains(WccConstants.WORKDAY_PUBLIC_PAGE_PATH)) {
+      if (currentPage == null || node == null || pagePath.contains(WccConstants.WORKDAY_PUBLIC_PAGE_PATH)) {
         return;
       }
 
       Template template = currentPage.getTemplate();
       if (template.getPath().equalsIgnoreCase(WorkflowConstants.EVENT_TEMPLATE_PATH)) {
         if (!node.hasProperty(WorkflowConstants.REVIEW_REMINDER_DATE)) {
-          node.setProperty(WorkflowConstants.REVIEW_REMINDER_DATE, df.format(revReminderDate));
+          node.setProperty(WorkflowConstants.REVIEW_REMINDER_DATE, reviewReminderCalendar);
         }
         if (!node.hasProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE)) {
-          node.setProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE,
-              df.format(retNotificationDate));
+          node.setProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE, retirementNotificationCalendar);
         }
         if (!node.hasProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE)) {
-          node.setProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE,
-              df.format(scheduledRetDate));
+          node.setProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE, scheduledRetirementCalendar);
         }
       } else {
-        node.setProperty(WorkflowConstants.REVIEW_REMINDER_DATE, df.format(revReminderDate));
-        node.setProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE,
-            df.format(retNotificationDate));
-        node.setProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE,
-            df.format(scheduledRetDate));
+        node.setProperty(WorkflowConstants.REVIEW_REMINDER_DATE, reviewReminderCalendar);
+        node.setProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE, retirementNotificationCalendar);
+        node.setProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE, scheduledRetirementCalendar);
       }
       jcrSession.save();
     } catch (RepositoryException e) {
@@ -194,16 +176,14 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
    * @param pagePath    the page path
    * @param resResolver the ResourceResolver
    */
-  public void replicateReferencedAssets(Session jcrSession, String pagePath,
-                                        ResourceResolver resResolver) {
+  public void replicateReferencedAssets(Session jcrSession, String pagePath, ResourceResolver resResolver) {
     if (replicator == null) {
       return;
     }
 
     Node node = Objects.requireNonNull(resResolver.getResource(pagePath + GlobalConstants.JCR_CONTENT_PATH))
         .adaptTo(Node.class);
-    AssetReferenceSearch ref =
-        new AssetReferenceSearch(node, DamConstants.MOUNTPOINT_ASSETS, resResolver);
+    AssetReferenceSearch ref = new AssetReferenceSearch(node, DamConstants.MOUNTPOINT_ASSETS, resResolver);
     Map<String, Asset> allref = new HashMap<>(ref.search());
 
     try {
@@ -224,31 +204,25 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
    * @param jcrSession  the jcr session
    * @param resResolver the ResourceResolver
    */
-  public void replicateBookNodes(String pagePath, Session jcrSession,
-                                 ResourceResolver resResolver) {
+  public void replicateBookNodes(String pagePath, Session jcrSession, ResourceResolver resResolver) {
     if (replicator == null || pagePath.contains(GlobalConstants.JCR_CONTENT_PATH)) {
       return;
     }
 
     try {
       List<String> paths = queryService.getBookNodesByPath(pagePath, null);
-      paths.stream().filter(item -> resResolver.getResource(item) != null)
-          .forEach(path -> {
-            try {
-              Node root =
-                  Objects.requireNonNull(resResolver.getResource(path)).adaptTo(Node.class);
-              final String pathToReplicate = root.getParent().getPath();
-              replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pathToReplicate);
-            } catch (Exception exec) {
-              log.error("Exception occured while replicating the book node and cause was: {}",
-                  exec.getMessage());
-            }
-          });
+      paths.stream().filter(item -> resResolver.getResource(item) != null).forEach(path -> {
+        try {
+          Node root = Objects.requireNonNull(resResolver.getResource(path)).adaptTo(Node.class);
+          final String pathToReplicate = root.getParent().getPath();
+          replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pathToReplicate);
+        } catch (Exception exec) {
+          log.error("Exception occured while replicating the book node and cause was: {}", exec.getMessage());
+        }
+      });
       log.debug("Replicate node for page {}", pagePath);
     } catch (Exception exec) {
-      log.error(
-          "Exception occured while replicating the: {} page from book node. Exception was: {} :",
-          pagePath,
+      log.error("Exception occured while replicating the: {} page from book node. Exception was: {} :", pagePath,
           exec.getMessage());
     }
   }

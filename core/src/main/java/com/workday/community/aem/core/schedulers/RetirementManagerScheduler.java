@@ -40,11 +40,9 @@ import org.osgi.service.metatype.annotations.Designate;
  * The Class RetirementManagerScheduler.
  */
 @Slf4j
-@Component(
-    service = RetirementManagerScheduler.class,
-    configurationPid = "com.workday.community.aem.core.config.RetirementManagerSchedulerConfig",
-    immediate = true
-)
+@Component(service = RetirementManagerScheduler.class, 
+    configurationPid = "com.workday.community.aem.core.config.RetirementManagerSchedulerConfig", 
+    property = {"scheduler.runOn=LEADER" }, immediate = true)
 @Designate(ocd = RetirementManagerSchedulerConfig.class)
 public class RetirementManagerScheduler implements Runnable {
 
@@ -72,6 +70,7 @@ public class RetirementManagerScheduler implements Runnable {
   @Reference
   private ResourceResolverFactory resolverFactory;
 
+  /** The retire config. */
   private RetirementManagerSchedulerConfig retireConfig;
 
   private final String emailTemplateRevReminderText = 
@@ -80,8 +79,14 @@ public class RetirementManagerScheduler implements Runnable {
   private final String emailTemplateRetNotifyText = 
         "/workflows/retirement-notification/jcr:content/root/container/container/text";
 
+  /**
+   * The Property reviewReminderDate.
+   */
   private final String propReviewReminderDate = "jcr:content/reviewReminderDate";
 
+  /**
+   * The Property retirementNotificationDate.
+   */
   private final String propRetirementNotificationDate = "jcr:content/retirementNotificationDate";
 
   private final String emailTemplateRevReminderSubject = 
@@ -217,13 +222,17 @@ public class RetirementManagerScheduler implements Runnable {
       if (textNode.hasProperty(SLING_RESOURCE_TYPE_PROPERTY)) {
         String resourceType = textNode.getProperty(SLING_RESOURCE_TYPE_PROPERTY).getValue().getString();
         if (resourceType.equals(GlobalConstants.TEXT_COMPONENT)) {
-          text = textNode.getProperty("text").getValue().getString();
+          if (textNode.getProperty("text") != null) {
+            text = textNode.getProperty("text").getValue().getString();
 
-          String pageUrl = this.retireConfig.authorDomain().concat("/editor.html").concat(path).concat(".html");
-          String pageTitle = node.getProperty(JCR_TITLE).getString();
-          String pageTitleLink = "<a href='".concat(pageUrl).concat("' target='_blank'>").concat(pageTitle)
-              .concat("</a>");
-          text = text.trim().replace("{pageTitle}", pageTitleLink);
+            String pageUrl = this.retireConfig.authorDomain().concat("/editor.html").concat(path).concat(".html");
+            if (node.getProperty(JCR_TITLE) != null) {
+              String pageTitle = node.getProperty(JCR_TITLE).getString();
+              String pageTitleLink = "<a href='".concat(pageUrl).concat("' target='_blank'>").concat(pageTitle)
+                  .concat("</a>");
+              text = text.trim().replace("{pageTitle}", pageTitleLink);
+            }
+          }
         }
       }
     } catch (RepositoryException e) {
@@ -249,9 +258,13 @@ public class RetirementManagerScheduler implements Runnable {
       if (titleNode.hasProperty(SLING_RESOURCE_TYPE_PROPERTY)) {
         String resourceType = titleNode.getProperty(SLING_RESOURCE_TYPE_PROPERTY).getValue().getString();
         if (resourceType.equals(GlobalConstants.TITLE_COMPONENT)) {
-          title = titleNode.getProperty("title").getValue().getString();
+          if (titleNode.getProperty(JCR_TITLE) != null) {
+            title = titleNode.getProperty(JCR_TITLE).getValue().getString();
 
-          title = title.trim().replace("{pageTitle}", node.getProperty(JCR_TITLE).getString());
+            if (node.getProperty(JCR_TITLE) != null) {
+              title = title.trim().replace("{pageTitle}", node.getProperty(JCR_TITLE).getString());
+            }
+          }
         }
       }
     } catch (RepositoryException e) {
@@ -274,11 +287,11 @@ public class RetirementManagerScheduler implements Runnable {
   /**
    * Send notification to author.
    *
-   * @param resolver                                  the resolver
-   * @param paths                                     the paths
-   * @param emailTemplateContainerText                the emailTemplateContainerText
-   * @param emailTemplateContainerTitle               the emailTemplateContainerTitle
-   * @param triggerRetirement                         the triggerRetirement
+   * @param resolver                    the resolver
+   * @param paths                       the paths
+   * @param emailTemplateContainerText  the emailTemplateContainerText
+   * @param emailTemplateContainerTitle the emailTemplateContainerTitle
+   * @param triggerRetirement           the triggerRetirement
    */
   public void sendNotification(ResourceResolver resolver, List<String> paths, String emailTemplateContainerText,
       String emailTemplateContainerTitle, Boolean triggerRetirement) {
@@ -338,8 +351,7 @@ public class RetirementManagerScheduler implements Runnable {
 
                 while (nodeItr.hasNext()) {
                   Node childNode = nodeItr.nextNode();
-                  String emailSubjectTitle = processTitleComponentFromEmailTemplate(childNode, node,
-                      path);
+                  String emailSubjectTitle = processTitleComponentFromEmailTemplate(childNode, node, path);
                   if (!(emailSubjectTitle.isBlank())) {
                     subject = emailSubjectTitle;
                     break;
