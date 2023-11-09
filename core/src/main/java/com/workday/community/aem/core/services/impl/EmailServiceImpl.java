@@ -7,7 +7,7 @@ import com.workday.community.aem.core.services.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
+import org.apache.commons.mail.HtmlEmail;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -54,16 +54,16 @@ public class EmailServiceImpl implements EmailService {
   public void sendEmail(String emailTo, String subject, String message) {
     log.debug("in sendEmail >> emailTo is : {}, subject is: {}, message is : {}", emailTo, subject, message);
     try {
-      Email email = new SimpleEmail();
+      HtmlEmail email = new HtmlEmail();
       email.addTo(emailTo);
       email.setSubject(subject);
-      email.setMsg(message);
+      email.setHtmlMsg(message);
       MessageGateway<Email> messageGateway;
 
       log.debug("before if messageGatewayService");
       // Inject a Messagegateway Service and send the message
       if (messageGatewayService != null) {
-        messageGateway = messageGatewayService.getGateway(Email.class);
+        messageGateway = messageGatewayService.getGateway(HtmlEmail.class);
 
         log.debug("within if messageGatewayService");
         // check the logs to see that messageGateway is not null
