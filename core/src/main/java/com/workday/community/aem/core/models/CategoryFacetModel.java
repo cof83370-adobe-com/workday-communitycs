@@ -4,8 +4,6 @@ import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERV
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.CacheException;
@@ -46,12 +44,6 @@ public class CategoryFacetModel {
    */
   @Getter
   private String field = null;
-
-  /**
-   * Use simple non-hierarchy facet.
-   */
-  @Getter
-  private Boolean useSimpleFacet = false;
 
   /**
    * Facet sub category.
@@ -108,12 +100,11 @@ public class CategoryFacetModel {
       }
       String nameSpace = tag.getNamespace().getName();
       label = tag.getNamespace().getTitle();
-
       if (nameSpace == null) {
         return;
       }
 
-      JsonElement facetField = this.getFieldMapConfig(resolver).getAsJsonObject("tagIdToCoveoField").get(nameSpace);
+      JsonElement facetField = this.getFieldMapConfig(resolver).get(nameSpace);
 
       if (facetField != null) {
         field = facetField.getAsString();
@@ -127,10 +118,6 @@ public class CategoryFacetModel {
           subCategory = "\"" + String.join("\", \"", tags) + "\"";
         }
       }
-
-      JsonArray hierarchyFacets = this.getFieldMapConfig(resolver).getAsJsonArray("simpleFacetFields");
-      Gson gson = new Gson();
-      useSimpleFacet = hierarchyFacets.contains(gson.fromJson(nameSpace, JsonElement.class));
     } catch (CacheException | LoginException e) {
       log.error("Initialization of CategoryFacetModel fails, {}", e.getMessage());
     }
@@ -151,7 +138,7 @@ public class CategoryFacetModel {
         return new JsonObject();
       }
     }
-    return fieldMapConfig;
+    return fieldMapConfig.getAsJsonObject("tagIdToCoveoField");
   }
 
 }

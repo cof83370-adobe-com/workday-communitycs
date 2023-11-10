@@ -8,10 +8,8 @@
       <span class="facet-header">Refine By</span>
       <atomic-facet-manager data-sly-list.facet="${coveo.categories}">
         <span id="facet-${facetList.index}">
-          <atomic-category-facet field="${facet.field}" label="${facet.label}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric" data-sly-test="${!facet.useSimpleFacet}">
+          <atomic-category-facet field="${facet.field}" label="${facet.label}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric">
           </atomic-category-facet>
-          <atomic-facet field="${facet.field}" label="${facet.label}" base-path='[${facet.subCategory}]' with-search="true" class="facet" sort-criteria="alphanumeric" data-sly-test="${facet.useSimpleFacet}">
-          </atomic-facet>
         </span>
       </atomic-facet-manager>
     </atomic-layout-section>

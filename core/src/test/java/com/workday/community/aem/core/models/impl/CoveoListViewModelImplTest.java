@@ -106,7 +106,7 @@ public class CoveoListViewModelImplTest {
     when(tagManager.resolve("using-workday:")).thenReturn(tag2);
 
     String fieldMapConfig =
-        "{\"tagIdToCoveoField\": {\"product\" : \"coveo_product\", \"using-workday\": \"coveo_using-workday\"}, \"simpleFacetFields\":[\"test1\"] }";
+        "{\"tagIdToCoveoField\": {\"product\" : \"coveo_product\", \"using-workday\": \"coveo_using-workday\"}}";
     Gson gson = new Gson();
     JsonObject fieldMapConfigObj = gson.fromJson(fieldMapConfig, JsonObject.class);
 
