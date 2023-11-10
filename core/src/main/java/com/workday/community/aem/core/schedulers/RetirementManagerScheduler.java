@@ -40,9 +40,9 @@ import org.osgi.service.metatype.annotations.Designate;
  * The Class RetirementManagerScheduler.
  */
 @Slf4j
-@Component(service = Runnable.class, 
+@Component(service = RetirementManagerScheduler.class, 
     configurationPid = "com.workday.community.aem.core.config.RetirementManagerSchedulerConfig", 
-    property = {"scheduler.runOn=LEADER" }, immediate = true)
+    property = {"scheduler.runOn=SINGLE"}, immediate = true)
 @Designate(ocd = RetirementManagerSchedulerConfig.class)
 public class RetirementManagerScheduler implements Runnable {
 
