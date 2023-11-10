@@ -42,5 +42,6 @@
       "access-control:customer_vndly_only": "customer_vndly_only",
       "access-control:partner_all": "partner_channel_partner;community_partner_channel_partner;partner_implementation_partner;community_partner_implementation_partner;partner_integration_partner;community_partner_software_alliances;partner_read_only;community_partner_read_only;partner_main",
       "access-control:internal_workmates": "workday"
-  }
+  },
+  simpleFacetFields: ['release', 'content-types']
 }

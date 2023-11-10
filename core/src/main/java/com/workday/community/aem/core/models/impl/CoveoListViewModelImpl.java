@@ -96,4 +96,16 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
     log.error("ExtraCriteria is not available for list view");
     return "";
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public JsonObject getHelpTextMap() {
+    JsonObject helpTextMap = new JsonObject();
+    categories.forEach(category -> {
+      helpTextMap.addProperty(category.getLabel(), category.getSearchHelpText());
+    });
+    return helpTextMap;
+  }
 }

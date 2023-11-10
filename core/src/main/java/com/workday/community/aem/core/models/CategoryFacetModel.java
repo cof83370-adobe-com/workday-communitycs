@@ -4,6 +4,8 @@ import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERV
 
 import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.CacheException;
@@ -46,6 +48,12 @@ public class CategoryFacetModel {
   private String field = null;
 
   /**
+   * Use simple non-hierarchy facet.
+   */
+  @Getter
+  private Boolean useSimpleFacet = false;
+
+  /**
    * Facet sub category.
    */
   @Getter
@@ -72,9 +80,18 @@ public class CategoryFacetModel {
   @ValueMapValue
   private String category;
 
+  /**
+   * Search help text.
+   */
   @Getter
   @ValueMapValue
   private String searchHelpText;
+
+  /**
+   * Facet label.
+   */
+  @Getter
+  private String label;
 
   /**
    * Post construct to build facet object.
@@ -90,27 +107,30 @@ public class CategoryFacetModel {
         return;
       }
       String nameSpace = tag.getNamespace().getName();
-      if (searchHelpText == null) {
-        searchHelpText = tag.getNamespace().getTitle();
-      }
+      label = tag.getNamespace().getTitle();
+
       if (nameSpace == null) {
         return;
       }
 
-      JsonElement facetField = this.getFieldMapConfig(resolver).get(nameSpace);
+      JsonElement facetField = this.getFieldMapConfig(resolver).getAsJsonObject("tagIdToCoveoField").get(nameSpace);
+
       if (facetField != null) {
         field = facetField.getAsString();
         List<String> tags = new ArrayList<>();
         while (!tag.isNamespace()) {
           tags.add(tag.getTitle());
           tag = tag.getParent();
-
         }
         if (!tags.isEmpty()) {
           Collections.reverse(tags);
           subCategory = "\"" + String.join("\", \"", tags) + "\"";
         }
       }
+
+      JsonArray hierarchyFacets = this.getFieldMapConfig(resolver).getAsJsonArray("simpleFacetFields");
+      Gson gson = new Gson();
+      useSimpleFacet = hierarchyFacets.contains(gson.fromJson(nameSpace, JsonElement.class));
     } catch (CacheException | LoginException e) {
       log.error("Initialization of CategoryFacetModel fails, {}", e.getMessage());
     }
@@ -131,7 +151,7 @@ public class CategoryFacetModel {
         return new JsonObject();
       }
     }
-    return fieldMapConfig.getAsJsonObject("tagIdToCoveoField");
+    return fieldMapConfig;
   }
 
 }
