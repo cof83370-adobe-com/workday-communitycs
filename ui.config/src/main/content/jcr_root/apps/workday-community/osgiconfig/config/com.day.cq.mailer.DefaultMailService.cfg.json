@@ -1,0 +1,12 @@
+{
+    "smtp.host": "$[env:AEM_PROXY_HOST;default=proxy.tunnel]",
+    "smtp.port": "30465",
+    "smtp.user": "$[secret:sesSmtpUsername]",
+    "smtp.password": "$[secret:sesSmtpPassword]",
+    "from.address": "$[env:fromAddress]",
+    "smtp.ssl": true,
+    "smtp.starttls": false,
+    "smtp.requiretls": true,
+    "debug.email": false,
+    "oauth.flow": false
+}
