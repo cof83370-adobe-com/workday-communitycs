@@ -52,7 +52,6 @@ public class EmailServiceImpl implements EmailService {
    */
   @Override
   public void sendEmail(String emailTo, String subject, String message) {
-    log.debug("in sendEmail >> emailTo is : {}, subject is: {}, message is : {}", emailTo, subject, message);
     try {
       HtmlEmail email = new HtmlEmail();
       email.addTo(emailTo);

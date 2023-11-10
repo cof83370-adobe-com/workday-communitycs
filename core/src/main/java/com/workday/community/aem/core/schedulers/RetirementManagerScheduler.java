@@ -310,7 +310,6 @@ public class RetirementManagerScheduler implements Runnable {
           if (node.hasProperty(GlobalConstants.PROP_JCR_CREATED_BY)) {
             // logic to send mail to author
             String author = node.getProperty(GlobalConstants.PROP_JCR_CREATED_BY).getString();
-            log.debug("author is: {}", author);
 
             // Regular Expression
             String regex = "^(.+)@(.+)$";
@@ -321,6 +320,7 @@ public class RetirementManagerScheduler implements Runnable {
             Matcher matcher = pattern.matcher(author);
 
             if (author != null && matcher.matches()) {
+              log.debug("author email is present");
               Node emailTemplateTextParentNode = Objects
                   .requireNonNull(resolver.getResource(GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH
                       + emailTemplateContainerText.replace("/text", "")))
@@ -359,13 +359,8 @@ public class RetirementManagerScheduler implements Runnable {
                 }
               }
 
-              log.debug("Email Subject: {}", subject);
-
               if (emailTemplateTextNode != null) {
                 msg = processTextComponentFromEmailTemplate(emailTemplateTextNode, node, path);
-                // send email once Day CQ Mail Configuration is ready
-                log.debug("Sending email to author: {}", author);
-                log.debug("Mail content is: {}", msg);
                 emailService.sendEmail(author, subject, msg);
               } else if (emailTemplateTextParentNode != null) {
                 NodeIterator nodeItr = emailTemplateTextParentNode.getNodes();
@@ -378,9 +373,6 @@ public class RetirementManagerScheduler implements Runnable {
                     break;
                   }
                 }
-                // send email once Day CQ Mail Configuration is ready
-                log.debug("Sending email to author: {}", author);
-                log.debug("Mail content is: {}", msg);
                 emailService.sendEmail(author, subject, msg);
               }
             }
