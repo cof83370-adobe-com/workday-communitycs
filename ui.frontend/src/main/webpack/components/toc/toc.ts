@@ -114,6 +114,7 @@
                 const listChevron = document.createElement('button');
                 listChevron.classList.add('cmp-toc__chevron');
                 listChevron.setAttribute('tabindex', '0');
+                listChevron.setAttribute('aria-label', (item as HTMLElement).outerText);
                 const firstChild = item.firstChild;
                 item.insertBefore(listChevron, firstChild);
             });

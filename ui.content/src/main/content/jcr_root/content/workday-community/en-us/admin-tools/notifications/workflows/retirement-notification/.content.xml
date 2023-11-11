@@ -23,11 +23,16 @@
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="workday-community/components/core/container"
                     layout="responsiveGrid">
+                    <title
+                        jcr:primaryType="nt:unstructured"
+                        jcr:title="\{pageTitle} to Retire in 30 Days"
+                        sling:resourceType="workday-community/components/core/title"
+                        linkTarget="_self"
+                        type="h2"/>
                     <text
-                        jcr:createdBy="admin"
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="workday-community/components/core/text"
-                        text="&lt;p>This page,&amp;nbsp;[title of page and URL to page in author site], will retire 30 days from today. If this content is no longer needed, you don’t need to take any action.&lt;/p>&#xd;&#xa;&lt;p>In order to avoid the page retiring:&lt;/p>&#xd;&#xa;&lt;ul>&#xd;&#xa;&lt;li>&lt;b>If you are an author in AEM:&lt;/b>&amp;nbsp;Review this page, make updates, and start the publish workflow so the Community Content team can review and republish.&lt;/li>&#xd;&#xa;&lt;li>&lt;b>If you are not an author in AEM:&lt;/b>&amp;nbsp;Clone this Jira&amp;nbsp;&lt;a href=&quot;https://jira2.workday.com/browse/WCADMIN-13412&quot; title=&quot;Follow link&quot;>https://jira2.workday.com/browse/WCADMIN-13412&lt;/a>&amp;nbsp;to request assistance from the Community Content team.&lt;/li>&#xd;&#xa;&lt;/ul>&#xd;&#xa;"
+                        text="&lt;p>This page, {pageTitle}, will retire 30 days from today. If this content is no longer needed, you don't need to take any action.&lt;/p>&#xd;&#xa;&lt;p>In order to avoid the page retiring:&lt;/p>&#xd;&#xa;&lt;ul>&#xd;&#xa;&lt;li>&lt;b>If you are an author in AEM:&lt;/b>&amp;nbsp;Review this page, make updates, and start the publish workflow so the Community Content team can review and republish.&lt;/li>&#xd;&#xa;&lt;li>&lt;b>If you are not an author in AEM:&lt;/b>&amp;nbsp;&lt;a href=&quot;https://jira2.workday.com/browse/WCADMIN-13412&quot;>Clone this Jira&lt;/a>&amp;nbsp;to request assistance from the Community Content team.&lt;/li>&#xd;&#xa;&lt;/ul>&#xd;&#xa;"
                         textIsRich="true"/>
                 </container>
             </container>
