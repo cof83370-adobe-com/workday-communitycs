@@ -1,6 +1,6 @@
 <sly data-sly-use.coveo="${'com.workday.community.aem.core.models.CoveoListViewModel'}"></sly>
 <span>
-  <span id="listViewConfig" data-search-config="${coveo.searchConfig}" data-help-text-map="${coveo.helpTextMap}"></span>
+  <span id="listViewConfig" data-search-config="${coveo.searchConfig}"></span>
 </span>
 <atomic-search-interface id="search">
   <atomic-search-layout>
@@ -8,7 +8,7 @@
       <span class="facet-header">Refine By</span>
       <atomic-facet-manager data-sly-list.facet="${coveo.categories}">
         <span id="facet-${facetList.index}">
-          <atomic-category-facet field="${facet.field}" label="${facet.label}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric">
+          <atomic-category-facet field="${facet.field}" label="${facet.label}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric" data-placeholder-text="${facet.searchHelpText}">
           </atomic-category-facet>
         </span>
       </atomic-facet-manager>
@@ -267,7 +267,6 @@
 
   const searchConfigNode = document.getElementById('listViewConfig');
   const listViewConfig = JSON.parse(searchConfigNode.getAttribute('data-search-config'));
-  const helpTextMap = JSON.parse(searchConfigNode.getAttribute('data-help-text-map'))
   const getToken = async () => {
     const tokenUrl = '/bin/search/token';
     try {
@@ -342,7 +341,7 @@
         search: {
           preprocessSearchResponseMiddleware: (response) => {
 
-            const facets = document.querySelectorAll('atomic-category-facet,atomic-facet');
+            const facets = document.querySelectorAll('atomic-category-facet');
             for (let i = 0; i < facets.length; i++) {
               waitForElementToDisplay(
                       () => facets[i],
@@ -359,8 +358,9 @@
                                       if (!inputField) {
                                         return;
                                       }
-                                      if (helpTextMap[helpText]) {
-                                        inputField.placeholder = helpTextMap[helpText];
+                                      const  placeholderText = elem.getAttribute('data-placeholder-text');
+                                      if (placeholderText) {
+                                        inputField.placeholder = placeholderText;
                                       }
                                       else {
                                         inputField.placeholder = `Find a ` +  elem.shadowRoot.querySelector('button div').innerText;
