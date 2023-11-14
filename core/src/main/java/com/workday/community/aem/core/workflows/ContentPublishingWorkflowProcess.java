@@ -3,8 +3,12 @@ package com.workday.community.aem.core.workflows;
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 import static com.workday.community.aem.core.constants.WorkflowConstants.JCR_PATH;
 
+import com.adobe.granite.taskmanagement.Task;
+import com.adobe.granite.taskmanagement.TaskManager;
+import com.adobe.granite.taskmanagement.TaskManagerException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
+import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.dam.api.Asset;
@@ -12,6 +16,7 @@ import com.day.cq.dam.api.DamConstants;
 import com.day.cq.dam.commons.util.AssetReferenceSearch;
 import com.day.cq.replication.ReplicationActionType;
 import com.day.cq.replication.ReplicationException;
+import com.day.cq.replication.ReplicationStatus;
 import com.day.cq.replication.Replicator;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
@@ -76,12 +81,22 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
       path = workItem.getWorkflowData().getPayload().toString();
       log.debug("Payload path: {}", path);
 
+      String wfInitiator = workItem.getWorkflow().getInitiator();
+
+      WorkflowData workflowData = workItem.getWorkflowData();
+      MetaDataMap dataMap = workflowData.getMetaDataMap();
+      String wfTitle = dataMap.get("workflowTitle").toString();
+      log.debug("wfTitle: {}", wfTitle);
+
       try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+        PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
+        Page currentPage = pageManager.getPage(path);
+
         Session jcrSession = workflowSession.adaptTo(Session.class);
 
         if (null != jcrSession) {
-          updatePageProperties(path, jcrSession, resourceResolver);
-          replicatePage(jcrSession, path, resourceResolver);
+          updatePageProperties(path, jcrSession, resourceResolver, currentPage);
+          replicatePage(jcrSession, path, resourceResolver, wfInitiator, currentPage);
           replicateBookNodes(path, jcrSession, resourceResolver);
         }
       } catch (Exception e) {
@@ -97,7 +112,8 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
    * @param jcrSession  the jcr session
    * @param resResolver the ResourceResolver
    */
-  public void updatePageProperties(String pagePath, Session jcrSession, ResourceResolver resResolver) {
+  public void updatePageProperties(String pagePath, Session jcrSession, ResourceResolver resResolver,
+      Page currentPage) {
     LocalDate date = LocalDate.now();
     log.debug("Current Date: {}", date);
 
@@ -115,9 +131,6 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
         retirementNotificationDate.getMonthValue() - 1, retirementNotificationDate.getDayOfMonth());
     scheduledRetirementCalendar.set(scheduledRetirementDate.getYear(), scheduledRetirementDate.getMonthValue() - 1,
         scheduledRetirementDate.getDayOfMonth());
-
-    PageManager pageManager = resResolver.adaptTo(PageManager.class);
-    Page currentPage = pageManager.getPage(pagePath);
 
     try {
       Node node = (Node) jcrSession.getItem(pagePath + GlobalConstants.JCR_CONTENT_PATH);
@@ -154,7 +167,8 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
    * @param pagePath    the page path
    * @param resResolver the ResourceResolver
    */
-  public void replicatePage(Session jcrSession, String pagePath, ResourceResolver resResolver) {
+  public void replicatePage(Session jcrSession, String pagePath, ResourceResolver resResolver, String initiator,
+      Page currentPage) {
     if (replicator == null) {
       return;
     }
@@ -164,6 +178,11 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     log.debug("PAGE ACTIVATION STARTED");
     try {
       replicator.replicate(jcrSession, ReplicationActionType.ACTIVATE, pagePath);
+
+      ReplicationStatus repStatus = replicator.getReplicationStatus(jcrSession, pagePath);
+      if (repStatus.isActivated()) {
+        sendInboxNotification(pagePath, resResolver, initiator, currentPage);
+      }
     } catch (ReplicationException e) {
       log.error("Exception occured while replicatePage method: {}", e.getMessage());
     }
@@ -225,5 +244,34 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
       log.error("Exception occured while replicating the: {} page from book node. Exception was: {} :", pagePath,
           exec.getMessage());
     }
+  }
+
+  /**
+   * Send inbox notification to the initiator.
+   *
+   * @param pagePath    the page path
+   * @param resResolver the ResourceResolver
+   * @param initiator   the initiator
+   */
+  public void sendInboxNotification(String pagePath, ResourceResolver resResolver, String initiator, Page currentPage) {
+    log.debug("sendInboxNotification start");
+
+    try {
+      TaskManager taskManager = resResolver.adaptTo(TaskManager.class);
+      Task newTask = taskManager.getTaskManagerFactory().newTask(WorkflowConstants.NOTIFICATION_TASK_TYPE);
+
+      newTask.setName(WorkflowConstants.NOTIFICATION_NAME);
+      newTask.setContentPath(pagePath);
+      if (currentPage != null) {
+        newTask.setDescription(currentPage.getTitle());
+      }
+      newTask.setCurrentAssignee(initiator);
+
+      taskManager.createTask(newTask);
+    } catch (TaskManagerException e) {
+      log.error("Exception occured while sending inbox notification: {}", e.getMessage());
+    }
+
+    log.debug("sendInboxNotification end");
   }
 }

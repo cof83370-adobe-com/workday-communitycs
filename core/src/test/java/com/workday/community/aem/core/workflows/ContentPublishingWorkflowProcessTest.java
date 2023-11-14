@@ -6,12 +6,17 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
+import com.adobe.granite.taskmanagement.Task;
+import com.adobe.granite.taskmanagement.TaskManager;
+import com.adobe.granite.taskmanagement.TaskManagerFactory;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.metadata.SimpleMetaDataMap;
+import com.adobe.granite.workflow.model.WorkflowModel;
+import com.day.cq.replication.ReplicationStatus;
 import com.day.cq.replication.Replicator;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
@@ -79,6 +84,18 @@ public class ContentPublishingWorkflowProcessTest {
    */
   @Mock
   private WorkflowData workflowData;
+  
+  /**
+   * The workflow model.
+   */
+  @Mock
+  private WorkflowModel workflowModel;
+  
+  /**
+   * The metaDataMap.
+   */
+  @Mock
+  private MetaDataMap metaDataMap;
 
   /**
    * The query service.
@@ -97,6 +114,12 @@ public class ContentPublishingWorkflowProcessTest {
    */
   @Mock
   private Replicator replicator;
+  
+  /**
+   * The replication status.
+   */
+  @Mock
+  private ReplicationStatus repStatus;
 
   /**
    * The resolver.
@@ -127,6 +150,8 @@ public class ContentPublishingWorkflowProcessTest {
     lenient().when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
     lenient().when(workItem.getWorkflow()).thenReturn(workflow);
     lenient().when(workItem.getWorkflowData()).thenReturn(workflowData);
+    lenient().when(workflow.getWorkflowModel()).thenReturn(workflowModel);
+    lenient().when(workflowData.getMetaDataMap()).thenReturn(metaDataMap);
 
     assertNotNull(session);
 
@@ -137,6 +162,7 @@ public class ContentPublishingWorkflowProcessTest {
     context.registerService(ResourceResolver.class, resolver);
     context.registerService(QueryService.class, queryService);
     context.registerService(Replicator.class, replicator);
+    context.registerService(ReplicationStatus.class, repStatus);
     Page currentPage =
         context.currentResource("/content/process-publish-content").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
@@ -153,6 +179,7 @@ public class ContentPublishingWorkflowProcessTest {
     lenient().when(workflowData.getPayload()).thenReturn("/content/process-publish-content");
     Node node = session.getNode("/content/process-publish-content/jcr:content");
     assertNotNull(node);
+    lenient().when(metaDataMap.get("workflowTitle")).thenReturn("TestWFWTitle");
     cpwProcessStep.execute(workItem, workflowSession, metaData);
     assertNotNull(session);
 
@@ -165,6 +192,10 @@ public class ContentPublishingWorkflowProcessTest {
    */
   @Test
   void testReplicatePage() throws Exception {
+	PageManager pm = mock(PageManager.class);
+    lenient().when(resolver.adaptTo(PageManager.class)).thenReturn(pm);
+    Page page = mock(Page.class);
+    lenient().when(pm.getPage(context.currentPage().getPath())).thenReturn(page);
     Resource resource = mock(Resource.class);
     lenient().when(resolver.getResource(anyString())).thenReturn(resource);
     Node node = mock(Node.class);
@@ -175,10 +206,20 @@ public class ContentPublishingWorkflowProcessTest {
     lenient().when(node.getProperties()).thenReturn(pIter);
     NodeIterator nIter = mock(NodeIterator.class);
     lenient().when(node.getNodes()).thenReturn(nIter);
+    lenient().when(replicator.getReplicationStatus(session, context.currentPage().getPath())).thenReturn(repStatus);
+    lenient().when(repStatus.isActivated()).thenReturn(true);
+    
+    TaskManager tm = mock(TaskManager.class);
+	lenient().when(resolver.adaptTo(TaskManager.class)).thenReturn(tm);
+	Task ts = mock(Task.class);
+	TaskManagerFactory tmf = mock(TaskManagerFactory.class);
+	lenient().when(tm.getTaskManagerFactory()).thenReturn(tmf);
+	lenient().when(tmf.newTask("Notification")).thenReturn(ts);
 
-    cpwProcessStep.replicatePage(session, context.currentPage().getPath(), resolver);
+    cpwProcessStep.replicatePage(session, context.currentPage().getPath(), resolver, "test", page);
     assertNotNull(session);
     assertNotNull(replicator);
+    assertNotNull(repStatus);
   }
 
   /**
@@ -273,7 +314,7 @@ public class ContentPublishingWorkflowProcessTest {
     boolean actualResultSdRtDt = node.hasProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
     assertTrue(actualResultSdRtDt);
 
-    cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver);
+    cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver, page);
     assertNotNull(page);
   }
 
@@ -306,7 +347,7 @@ public class ContentPublishingWorkflowProcessTest {
     Property propertySdRtDt = node.getProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
     assertNotNull(propertySdRtDt);
 
-    cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver);
+    cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver, page);
     assertNotNull(page);
   }
 }
