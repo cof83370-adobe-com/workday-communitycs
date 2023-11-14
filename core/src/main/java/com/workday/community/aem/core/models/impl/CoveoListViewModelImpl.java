@@ -96,5 +96,4 @@ public class CoveoListViewModelImpl implements CoveoListViewModel {
     log.error("ExtraCriteria is not available for list view");
     return "";
   }
-
 }

@@ -12,5 +12,4 @@ public interface CoveoListViewModel extends CoveoCommonModel {
    * @return The selected Categories.
    */
   List<CategoryFacetModel> getCategories();
-
 }
