@@ -93,10 +93,10 @@ public interface WorkflowConstants {
   /**
    * The notification task type.
    */
-  String NOTIFICATION_TASK_TYPE = "Notification";
+  String TASK_TYPE_NOTIFICATION = "Notification";
   
   /**
    * The notification name.
    */
-  String NOTIFICATION_NAME = "Content has been published";
+  String NOTIFICATION_NAME_CONTENT_PUBLISHED = "Content has been published";
 }

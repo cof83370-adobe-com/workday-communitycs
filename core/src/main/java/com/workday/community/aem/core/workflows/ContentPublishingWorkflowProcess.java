@@ -181,7 +181,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
 
       ReplicationStatus repStatus = replicator.getReplicationStatus(jcrSession, pagePath);
       if (repStatus.isActivated()) {
-        sendInboxNotification(pagePath, resResolver, initiator, currentPage);
+        sendInboxNotification(resResolver, initiator, currentPage);
       }
     } catch (ReplicationException e) {
       log.error("Exception occured while replicatePage method: {}", e.getMessage());
@@ -249,23 +249,22 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
   /**
    * Send inbox notification to the initiator.
    *
-   * @param pagePath    the page path
    * @param resResolver the ResourceResolver
-   * @param initiator   the initiator
+   * @param assignee   the initiator
    */
-  public void sendInboxNotification(String pagePath, ResourceResolver resResolver, String initiator, Page currentPage) {
+  public void sendInboxNotification(ResourceResolver resResolver, String assignee, Page payloadPage) {
     log.debug("sendInboxNotification start");
 
     try {
       TaskManager taskManager = resResolver.adaptTo(TaskManager.class);
-      Task newTask = taskManager.getTaskManagerFactory().newTask(WorkflowConstants.NOTIFICATION_TASK_TYPE);
+      Task newTask = taskManager.getTaskManagerFactory().newTask(WorkflowConstants.TASK_TYPE_NOTIFICATION);
 
-      newTask.setName(WorkflowConstants.NOTIFICATION_NAME);
-      newTask.setContentPath(pagePath);
-      if (currentPage != null) {
-        newTask.setDescription(currentPage.getTitle());
+      newTask.setName(WorkflowConstants.NOTIFICATION_NAME_CONTENT_PUBLISHED);
+      if (payloadPage != null) {
+        newTask.setContentPath(payloadPage.getPath());
+        newTask.setDescription(payloadPage.getTitle());
       }
-      newTask.setCurrentAssignee(initiator);
+      newTask.setCurrentAssignee(assignee);
 
       taskManager.createTask(newTask);
     } catch (TaskManagerException e) {
