@@ -35,7 +35,7 @@
                         </atomic-layout-section>
                     </atomic-layout-section>
 
-                    <hr class='separator'/>
+                    <hr id='actionbar-hr' class='separator'/>
                     <!--Results section-->
                     <atomic-layout-section section='results'>
                         <atomic-result-list display='list' image-size='icon' density='normal'>
@@ -151,7 +151,9 @@
                             <!-- ========= DEFAULT template - END  ==========================================-->
                         </atomic-result-list>
                         <atomic-query-error></atomic-query-error>
-                        <atomic-no-results></atomic-no-results>
+
+                        <atomic-no-results enable-cancel-last-action="false"></atomic-no-results>
+
                     </atomic-layout-section>
                 </atomic-layout-section>
             </atomic-search-layout>
@@ -226,6 +228,14 @@
                 allEventContainer.innerHTML = innerHtml;
             }
 
+            function toggleActionBar(displayValue) {
+                let actionBar = document.getElementsByClassName('multi-tab-actionbar');
+                if (actionBar && actionBar.length > 0) {
+                    actionBar[0].setAttribute('style', 'display:' + displayValue);
+                }
+                document.getElementById('actionbar-hr').setAttribute('style', 'display:' + displayValue);
+            }
+
             function tabHandler(buildTab, engine, buildTabProps) {
                 const controller = buildTab(engine, buildTabProps);
                 const clickHandler = function (event) {
@@ -246,9 +256,15 @@
                         setActive(event.target);
                     }
                     waitForElementToDisplayWithElemCallback(
-                        () => document.querySelector('atomic-sort-dropdown').shadowRoot.querySelector('label'),
-                        (elem) => {
-                            elem.innerHTML = 'Sort by';
+                        () => document.querySelector('atomic-no-results').shadowRoot.querySelector('div'),
+                        () => {
+                            toggleActionBar('none');
+                        }
+                    );
+                    waitForElementToDisplayWithElemCallback(
+                        () => document.querySelector('atomic-result-list').shadowRoot.querySelector('div'),
+                        () => {
+                            toggleActionBar('block');
                         }
                     );
                 };
@@ -335,7 +351,8 @@
                 const button = document.createElement('button');
                 button.setAttribute('name', 'moreButton');
                 button.setAttribute('class', 'item-button');
-                button.textContent = 'More>>';
+                button.innerHTML = '<table class="more-button-table"><tr><td>More</td><td class="more-button-img-td"><img src="/etc.clientlibs/workday-community/clientlibs/clientlib-site/resources/images/wd-icon-chevron-grey-down.svg" class="more-button-img" \n' +
+                    'alt="Down Arrow"/></td></tr></table>';
                 moreTab.append(button);
                 return moreTab;
             }
@@ -581,9 +598,15 @@
 
                 main().then(() => {
                     waitForElementToDisplayWithElemCallback(
-                        () => document.querySelector('atomic-sort-dropdown').shadowRoot.querySelector('label'),
-                        (elem) => {
-                            elem.innerHTML = 'Sort by';
+                        () => document.querySelector('atomic-no-results').shadowRoot.querySelector('div'),
+                        () => {
+                            toggleActionBar('none');
+                        }
+                    );
+                    waitForElementToDisplayWithElemCallback(
+                        () => document.querySelector('atomic-result-list').shadowRoot.querySelector('div'),
+                        () => {
+                            toggleActionBar('block');
                         }
                     );
                 });
@@ -596,12 +619,6 @@
                         await buildTabs(buildTab, engine);
                     };
                     main().then(() => {
-                        waitForElementToDisplayWithElemCallback(
-                            () => document.querySelector('atomic-sort-dropdown').shadowRoot.querySelector('label'),
-                            (elem) => {
-                                elem.innerHTML = 'Sort by';
-                            }
-                        );
                     });
                 }
             });

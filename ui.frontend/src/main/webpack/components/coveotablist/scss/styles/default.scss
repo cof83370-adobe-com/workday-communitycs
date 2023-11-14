@@ -218,6 +218,26 @@
       letter-spacing: 0.5px;
       font-family: 'Workday Adelle Sans';
     }
+
+    atomic-no-results::part(search-tips) {
+      display: none;
+    }
+
+    .more-button-img {
+      height: 15px;
+      width: 15px;
+    }
+
+    .more-button-table {
+      td {
+        border: none;
+        padding: 0;
+      }
+
+      .more-button-img-td {
+        padding: 6px 0 0 8px;
+      }
+    }
   }
 }
 
