@@ -8,7 +8,6 @@ import com.adobe.granite.taskmanagement.TaskManager;
 import com.adobe.granite.taskmanagement.TaskManagerException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
-import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.cq.dam.api.Asset;
@@ -82,11 +81,6 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
       log.debug("Payload path: {}", path);
 
       String wfInitiator = workItem.getWorkflow().getInitiator();
-
-      WorkflowData workflowData = workItem.getWorkflowData();
-      MetaDataMap dataMap = workflowData.getMetaDataMap();
-      String wfTitle = dataMap.get("workflowTitle").toString();
-      log.debug("wfTitle: {}", wfTitle);
 
       try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
         PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
@@ -252,7 +246,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
    * @param resResolver the ResourceResolver
    * @param assignee   the initiator
    */
-  public void sendInboxNotification(ResourceResolver resResolver, String assignee, Page payloadPage) {
+  private void sendInboxNotification(ResourceResolver resResolver, String assignee, Page payloadPage) {
     log.debug("sendInboxNotification start");
 
     try {

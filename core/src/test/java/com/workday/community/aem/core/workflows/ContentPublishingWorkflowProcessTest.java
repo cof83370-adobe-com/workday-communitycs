@@ -90,12 +90,6 @@ public class ContentPublishingWorkflowProcessTest {
    */
   @Mock
   private WorkflowModel workflowModel;
-  
-  /**
-   * The metaDataMap.
-   */
-  @Mock
-  private MetaDataMap metaDataMap;
 
   /**
    * The query service.
@@ -151,7 +145,6 @@ public class ContentPublishingWorkflowProcessTest {
     lenient().when(workItem.getWorkflow()).thenReturn(workflow);
     lenient().when(workItem.getWorkflowData()).thenReturn(workflowData);
     lenient().when(workflow.getWorkflowModel()).thenReturn(workflowModel);
-    lenient().when(workflowData.getMetaDataMap()).thenReturn(metaDataMap);
 
     assertNotNull(session);
 
@@ -179,7 +172,6 @@ public class ContentPublishingWorkflowProcessTest {
     lenient().when(workflowData.getPayload()).thenReturn("/content/process-publish-content");
     Node node = session.getNode("/content/process-publish-content/jcr:content");
     assertNotNull(node);
-    lenient().when(metaDataMap.get("workflowTitle")).thenReturn("TestWFWTitle");
     cpwProcessStep.execute(workItem, workflowSession, metaData);
     assertNotNull(session);
 
