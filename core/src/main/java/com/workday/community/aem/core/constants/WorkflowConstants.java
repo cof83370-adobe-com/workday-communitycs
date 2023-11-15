@@ -89,5 +89,14 @@ public interface WorkflowConstants {
    * The jcr path.
    */
   String JCR_PATH = "JCR_PATH";
-
+  
+  /**
+   * The notification task type.
+   */
+  String TASK_TYPE_NOTIFICATION = "Notification";
+  
+  /**
+   * The notification name.
+   */
+  String NOTIFICATION_NAME_CONTENT_PUBLISHED = "Content has been published";
 }
