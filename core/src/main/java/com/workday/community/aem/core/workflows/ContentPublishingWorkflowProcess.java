@@ -252,15 +252,16 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     try {
       TaskManager taskManager = resResolver.adaptTo(TaskManager.class);
       Task newTask = taskManager.getTaskManagerFactory().newTask(WorkflowConstants.TASK_TYPE_NOTIFICATION);
-
-      newTask.setName(WorkflowConstants.NOTIFICATION_NAME_CONTENT_PUBLISHED);
-      if (payloadPage != null) {
-        newTask.setContentPath(payloadPage.getPath());
-        newTask.setDescription(payloadPage.getTitle());
+      if (newTask != null) {
+        newTask.setName(WorkflowConstants.NOTIFICATION_NAME_CONTENT_PUBLISHED);
+        if (payloadPage != null) {
+          newTask.setContentPath(payloadPage.getPath());
+          newTask.setDescription(payloadPage.getTitle());
+        }
+        newTask.setCurrentAssignee(assignee);
+        
+        taskManager.createTask(newTask);
       }
-      newTask.setCurrentAssignee(assignee);
-
-      taskManager.createTask(newTask);
     } catch (TaskManagerException e) {
       log.error("Exception occured while sending inbox notification: {}", e.getMessage());
     }
