@@ -6,6 +6,10 @@
   --atomic-font-family: "WorkdayAdelleSans-Regular" !important;
 }
 
+atomic-search-interface {
+  margin-top: 15px;
+}
+
 atomic-did-you-mean::part(no-results) {
   font-size: 20px;
   line-height: 26px;
@@ -308,7 +312,7 @@ atomic-facet::part(facet), atomic-category-facet::part(facet) {
   position: relative;
 }
 
-atomic-facet:not(:last-child)::part(facet):after, atomic-category-facet::part(facet):after {
+atomic-facet:not(:last-child)::part(facet):after, atomic-category-facet::part(facet):after, atomic-facet::part(facet):after {
   content: '';
   display: block;
   width: calc(100% - 32px);
@@ -333,6 +337,7 @@ span.facet-header {
   font-size: 22px;
   line-height: 29px;
   color: $wdc-color-black-pepper-600;
+  font-family: "Workday Adelle Sans", Roboto, sans-serif;
   display: block;
   padding: 19px 0 0 $wdc-spacing-s;
 }
@@ -389,7 +394,9 @@ atomic-facet::part(value-checkbox) {
   height: 18px;
   border-color: $wdc-color-licorice-200 !important;
 }
-
+atomic-facet::part(value-checkbox-checked) {
+  background-color: $wdc-color-primary-main;
+}
 atomic-category-facet::part(clear-button), atomic-timeframe-facet::part(clear-button) {
   font-size: 14px;
   font-family: 'WorkdayAdelleSans-Bold';
@@ -595,13 +602,8 @@ atomic-sort-dropdown {
     grid-area: breadbox !important;
   }
 
-  atomic-refine-toggle, atomic-sort-dropdown, atomic-query-summary {
-    margin: 5px 0;
-  }
-
-  custom-bread-box {
-    grid-area: breadbox;
-    display: none;
+  atomic-breadbox {
+    display: inline-block;
   }
 }
 
@@ -781,8 +783,8 @@ atomic-refine-toggle::part(button) {
 
 @media (max-width: 767px) {
   atomic-refine-toggle::part(button) {
-    margin-top: 42px;
-    width: 150px;
+	width: 150px;
+    margin: auto;
   }
   atomic-sort-dropdown.hydrated,
   atomic-search-box.hydrated {
@@ -805,6 +807,8 @@ atomic-refine-toggle::part(button) {
 }
 
 atomic-search-layout atomic-layout-section[section='status'] {
+  width: 100%;
+  justify-content: center;
   grid-template-areas: "atomic-breadbox atomic-breadbox" "atomic-did-you-mean atomic-did-you-mean" "atomic-query-summary atomic-sort";
 }
 

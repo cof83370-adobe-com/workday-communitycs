@@ -72,9 +72,18 @@ public class CategoryFacetModel {
   @ValueMapValue
   private String category;
 
+  /**
+   * Search help text.
+   */
   @Getter
   @ValueMapValue
   private String searchHelpText;
+
+  /**
+   * Facet label.
+   */
+  @Getter
+  private String label;
 
   /**
    * Post construct to build facet object.
@@ -90,21 +99,19 @@ public class CategoryFacetModel {
         return;
       }
       String nameSpace = tag.getNamespace().getName();
-      if (searchHelpText == null) {
-        searchHelpText = tag.getNamespace().getTitle();
-      }
+      label = tag.getNamespace().getTitle();
       if (nameSpace == null) {
         return;
       }
 
       JsonElement facetField = this.getFieldMapConfig(resolver).get(nameSpace);
+
       if (facetField != null) {
         field = facetField.getAsString();
         List<String> tags = new ArrayList<>();
         while (!tag.isNamespace()) {
           tags.add(tag.getTitle());
           tag = tag.getParent();
-
         }
         if (!tags.isEmpty()) {
           Collections.reverse(tags);

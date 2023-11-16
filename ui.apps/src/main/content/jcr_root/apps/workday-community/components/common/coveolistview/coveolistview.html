@@ -8,7 +8,8 @@
       <span class="facet-header">Refine By</span>
       <atomic-facet-manager data-sly-list.facet="${coveo.categories}">
         <span id="facet-${facetList.index}">
-          <atomic-category-facet field="${facet.field}" label="${facet.searchHelpText}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric"></atomic-category-facet>
+          <atomic-category-facet field="${facet.field}" label="${facet.label}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric" data-placeholder-text="${facet.searchHelpText}">
+          </atomic-category-facet>
         </span>
       </atomic-facet-manager>
     </atomic-layout-section>
@@ -28,12 +29,19 @@
           >
           </atomic-sort-expression>
         </atomic-sort-dropdown>
+        <atomic-breadbox>
+          <style>
+            atomic-breadbox::part(container) {
+              padding-top: 5px;
+            }
+          </style>
+        </atomic-breadbox>
       </atomic-layout-section>
       <atomic-layout-section section="status">
-          <atomic-breadbox></atomic-breadbox>
-          <atomic-refine-toggle></atomic-refine-toggle>
+        <atomic-refine-toggle></atomic-refine-toggle>
+      </atomic-layout-section>
+      <atomic-layout-section  section="toggle">
 
-        <atomic-did-you-mean></atomic-did-you-mean>
       </atomic-layout-section>
       <atomic-layout-section section="results">
         <atomic-query-error></atomic-query-error>
@@ -77,6 +85,11 @@
           </style>
         </atomic-no-results>
         <atomic-result-list>
+          <style>
+            atomic-result-list::part(result-list) {
+              border-top: 1px solid #e5e8e8 !important;
+            }
+          </style>
           <atomic-result-template>
             <template>
               <style>
@@ -252,8 +265,8 @@
     loadGenericAnalyticsActions,
   } from 'https://static.cloud.coveo.com/atomic/v2/headless/headless.esm.js';
 
-  const searchConfigNode = document.getElementById("listViewConfig");
-  const listViewConfig = JSON.parse(searchConfigNode.getAttribute("data-search-config"));
+  const searchConfigNode = document.getElementById('listViewConfig');
+  const listViewConfig = JSON.parse(searchConfigNode.getAttribute('data-search-config'));
   const getToken = async () => {
     const tokenUrl = '/bin/search/token';
     try {
@@ -311,6 +324,7 @@
       await customElements.whenDefined('atomic-search-interface');
 
       const searchInterface = document.querySelector('atomic-search-interface');
+
       await searchInterface.initialize({
         accessToken: token,
         searchHub: listViewConfig["searchHub"],
@@ -322,8 +336,42 @@
             body.maximumAge=30000;
             request.body = JSON.stringify(body);
           }
-
           return request;
+        },
+        search: {
+          preprocessSearchResponseMiddleware: (response) => {
+
+            const facets = document.querySelectorAll('atomic-category-facet');
+            for (let i = 0; i < facets.length; i++) {
+              waitForElementToDisplay(
+                      () => facets[i],
+                      (elem) => {
+                        waitForElementToDisplay(
+                                () => {
+                                  if (!elem.shadowRoot.querySelector('input')) return false;
+                                  return true;
+                                },
+                                (visible) => {
+                                  if (visible) {
+                                      const inputField = elem.shadowRoot.querySelector('input');
+                                      let helpText = elem.shadowRoot.querySelector('button div').innerText;
+                                      if (!inputField) {
+                                        return;
+                                      }
+                                      const  placeholderText = elem.getAttribute('data-placeholder-text');
+                                      if (placeholderText) {
+                                        inputField.placeholder = placeholderText;
+                                      }
+                                      else {
+                                        inputField.placeholder = `Find a ` +  elem.shadowRoot.querySelector('button div').innerText;
+                                      }
+
+                                    }
+                                });
+                      });
+            }
+            return response;
+          }
         },
         analytics: {
           analyticsClientMiddleware,
@@ -337,7 +385,6 @@
 
       setContext(engine);
       registerFields(engine);
-
       const { logClickEvent, logCustomEvent } = loadGenericAnalyticsActions(engine);
 
       window.customFunctions = {
@@ -347,28 +394,13 @@
         engine,
       };
       searchInterface.executeFirstSearch();
+      searchInterface.i18n.addResourceBundle("en", "translation", {
+        "sort-and-filter":  "Filter",
+        "view-results": "Apply Filters"
+      });
     };
+
     main().then(() => {
-      waitForElementToDisplay(
-        () => document.getElementsByTagName('atomic-category-facet'),
-        (elems) => {
-          waitForElementToDisplay(
-            () => {
-              for (let i = 0; i < elems.length; i++) {
-                const inputField = elems[i].shadowRoot.querySelector('input');
-                if (!inputField) return false;
-              }
-              return true;
-            },
-            (visible) => {
-              if (visible) {
-                for (let i = 0; i < elems.length; i++) {
-                  const inputField = elems[i].shadowRoot.querySelector('input');
-                  inputField.placeholder = `Find a ` +  elems[i].shadowRoot.querySelector('button div').innerText;
-                }
-              }
-            })
-        })
     });
   });
 </script>
