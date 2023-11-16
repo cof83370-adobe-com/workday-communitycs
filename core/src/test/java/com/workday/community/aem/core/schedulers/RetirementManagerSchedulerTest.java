@@ -9,9 +9,7 @@ import static org.mockito.Mockito.mock;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,7 +19,6 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
-import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
@@ -40,8 +37,6 @@ import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.model.WorkflowModel;
-import com.day.cq.mailer.MessageGateway;
-import com.day.cq.mailer.MessageGatewayService;
 import com.day.cq.search.QueryBuilder;
 import com.workday.community.aem.core.config.RetirementManagerSchedulerConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
@@ -93,13 +88,7 @@ public class RetirementManagerSchedulerTest {
     QueryBuilder queryBuilder;
     
     @Mock
-    MessageGatewayService messageGatewayService;
-    
-    @Mock
     RunModeConfigService runModeConfigService;
-
-    @Mock
-    MessageGateway<Email> messageGatewaySimpleEmail;
     
     /**
      * The workflow session.
@@ -171,11 +160,7 @@ public class RetirementManagerSchedulerTest {
 		context.registerService(ResourceResolver.class, resolver);
 		context.registerService(QueryService.class, queryService);
 		
-		lenient().when(messageGatewayService.getGateway(Email.class)).thenReturn(messageGatewaySimpleEmail);
-		
 		lenient().when(resolver.adaptTo(WorkflowSession.class)).thenReturn(workflowSession);
-		
-	    context.registerService(MessageGatewayService.class, messageGatewayService);
     }
     
     @Test
@@ -312,27 +297,6 @@ public class RetirementManagerSchedulerTest {
 
 		return revNotifScheduler.processTextComponentFromEmailTemplate(nodeIterator.nextNode(), nodeObj,
 				"/content/workday-community/en-us/admin-tools/notifications/workflows/review-reminder");
-    }
-    
-    @Test
-    public final void testSendEmail() throws RepositoryException, EmailException {
-    	Node nodeObj = mock(Node.class);
-		Property prop1 = mock(Property.class);
-		lenient().when(nodeObj.hasProperty(JCR_TITLE)).thenReturn(true);
-		lenient().when(nodeObj.getProperty(anyString())).thenReturn(prop1);
-		assertNotNull(prop1);
-		lenient().when(prop1.getString()).thenReturn("title");
-    	
-        final String expectedMessage = "This is just a message";
-        final String expectedSenderName = "John Smith";
-        final String expectedSenderEmailAddress = "john@smith.com";
-
-        final Map<String, String> params = new HashMap<String, String>();
-        params.put("message", expectedMessage);
-        params.put("senderName", expectedSenderName);
-        params.put("senderEmailAddress", expectedSenderEmailAddress);
-        
-        revNotifScheduler.sendEmail(expectedSenderEmailAddress, expectedMessage, "to retire in days");
     }
     
     @Test

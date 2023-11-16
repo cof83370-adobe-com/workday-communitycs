@@ -134,6 +134,11 @@ public final class GlobalConstants {
 
   /** The Constant HTML_EXTENSION. */
   public static final String HTML_EXTENSION = ".html";
+  
+  /** 
+   * Path of title component. 
+   */
+  public static final String TITLE_COMPONENT = "workday-community/components/core/title";
 
   /**
    * Instantiates a new global constants.

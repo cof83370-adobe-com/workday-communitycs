@@ -8,12 +8,11 @@ import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.model.WorkflowModel;
-import com.day.cq.mailer.MessageGateway;
-import com.day.cq.mailer.MessageGatewayService;
 import com.workday.community.aem.core.config.RetirementManagerSchedulerConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.EmailService;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import java.util.HashMap;
@@ -26,9 +25,6 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.mail.Email;
-import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.SimpleEmail;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.commons.scheduler.ScheduleOptions;
@@ -44,7 +40,9 @@ import org.osgi.service.metatype.annotations.Designate;
  * The Class RetirementManagerScheduler.
  */
 @Slf4j
-@Component(service = RetirementManagerScheduler.class, immediate = true)
+@Component(service = RetirementManagerScheduler.class, 
+    configurationPid = "com.workday.community.aem.core.config.RetirementManagerSchedulerConfig", 
+    property = {"scheduler.runOn=SINGLE"}, immediate = true)
 @Designate(ocd = RetirementManagerSchedulerConfig.class)
 public class RetirementManagerScheduler implements Runnable {
 
@@ -56,13 +54,13 @@ public class RetirementManagerScheduler implements Runnable {
   @Reference
   private QueryService queryService;
 
-  /** The message gateway service. */
-  @Reference
-  private MessageGatewayService messageGatewayService;
-
   /** The run mode config service. */
   @Reference
   private RunModeConfigService runModeConfigService;
+
+  /** The email service of workday. */
+  @Reference
+  private EmailService emailService;
 
   /** The scheduler. */
   @Reference
@@ -72,6 +70,7 @@ public class RetirementManagerScheduler implements Runnable {
   @Reference
   private ResourceResolverFactory resolverFactory;
 
+  /** The retire config. */
   private RetirementManagerSchedulerConfig retireConfig;
 
   private final String emailTemplateRevReminderText = 
@@ -80,13 +79,21 @@ public class RetirementManagerScheduler implements Runnable {
   private final String emailTemplateRetNotifyText = 
         "/workflows/retirement-notification/jcr:content/root/container/container/text";
 
+  /**
+   * The Property reviewReminderDate.
+   */
   private final String propReviewReminderDate = "jcr:content/reviewReminderDate";
 
+  /**
+   * The Property retirementNotificationDate.
+   */
   private final String propRetirementNotificationDate = "jcr:content/retirementNotificationDate";
 
-  private final String reviewReminderEmailSubject = " to Retire in 60 Days";
+  private final String emailTemplateRevReminderSubject = 
+      "/workflows/review-reminder/jcr:content/root/container/container/title";
 
-  private final String retirementNotifyEmailSubject = " to Retire in 30 Days";
+  private final String emailTemplateRetNotifySubject = 
+      "/workflows/retirement-notification/jcr:content/root/container/container/title";
 
   /**
    * Activate/Modified RetirementManagerScheduler scheduler.
@@ -179,8 +186,8 @@ public class RetirementManagerScheduler implements Runnable {
     List<String> reviewReminderPagePaths = queryService.getPagesDueTodayByDateProp(propReviewReminderDate);
 
     log.debug("RetirementManagerScheduler::End querying Review Notification pages.. Sending Notification");
-    sendNotification(resResolver, reviewReminderPagePaths, emailTemplateRevReminderText, reviewReminderEmailSubject,
-        false);
+    sendNotification(resResolver, reviewReminderPagePaths, emailTemplateRevReminderText,
+        emailTemplateRevReminderSubject, false);
   }
 
   /**
@@ -195,7 +202,7 @@ public class RetirementManagerScheduler implements Runnable {
 
     log.debug("RetirementManagerScheduler::End querying Retirement and Notify pages.. Sending Notification");
     sendNotification(resResolver, retirementNotificationPagePaths, emailTemplateRetNotifyText,
-        retirementNotifyEmailSubject, true);
+        emailTemplateRetNotifySubject, true);
 
   }
 
@@ -215,20 +222,56 @@ public class RetirementManagerScheduler implements Runnable {
       if (textNode.hasProperty(SLING_RESOURCE_TYPE_PROPERTY)) {
         String resourceType = textNode.getProperty(SLING_RESOURCE_TYPE_PROPERTY).getValue().getString();
         if (resourceType.equals(GlobalConstants.TEXT_COMPONENT)) {
-          text = textNode.getProperty("text").getValue().getString();
+          if (textNode.getProperty("text") != null) {
+            text = textNode.getProperty("text").getValue().getString();
 
-          String pageUrl = this.retireConfig.authorDomain().concat("/editor.html").concat(path).concat(".html");
-          String pageTitle = node.getProperty(JCR_TITLE).getString();
-          String pageTitleLink = "<a href='".concat(pageUrl).concat("' target='_blank'>").concat(pageTitle)
-              .concat("</a>");
-          text = text.trim().replace("{pageTitle}", pageTitleLink);
+            String pageUrl = this.retireConfig.authorDomain().concat("/editor.html").concat(path).concat(".html");
+            if (node.getProperty(JCR_TITLE) != null) {
+              String pageTitle = node.getProperty(JCR_TITLE).getString();
+              String pageTitleLink = "<a href='".concat(pageUrl).concat("' target='_blank'>").concat(pageTitle)
+                  .concat("</a>");
+              text = text.trim().replace("{pageTitle}", pageTitleLink);
+            }
+          }
         }
       }
     } catch (RepositoryException e) {
-      log.error("Iterator page jcr:content failed: {}", e.getMessage());
+      log.error("Exception in processTextComponentFromEmailTemplate: {}", e.getMessage());
     }
 
     return text;
+  }
+
+  /**
+   * Read title component value of email template.
+   *
+   * @param titleNode the title node
+   * @param node      the node
+   * @param path      the path
+   * @return the string
+   */
+  public String processTitleComponentFromEmailTemplate(Node titleNode, Node node, String path) {
+    log.debug("processTitleComponentFromEmailTemplate >>>>>>>   ");
+    String title = "";
+
+    try {
+      if (titleNode.hasProperty(SLING_RESOURCE_TYPE_PROPERTY)) {
+        String resourceType = titleNode.getProperty(SLING_RESOURCE_TYPE_PROPERTY).getValue().getString();
+        if (resourceType.equals(GlobalConstants.TITLE_COMPONENT)) {
+          if (titleNode.getProperty(JCR_TITLE) != null) {
+            title = titleNode.getProperty(JCR_TITLE).getValue().getString();
+
+            if (node.getProperty(JCR_TITLE) != null) {
+              title = title.trim().replace("{pageTitle}", node.getProperty(JCR_TITLE).getString());
+            }
+          }
+        }
+      }
+    } catch (RepositoryException e) {
+      log.error("Exception in processTitleComponentFromEmailTemplate: {}", e.getMessage());
+    }
+
+    return title;
   }
 
   /**
@@ -242,43 +285,21 @@ public class RetirementManagerScheduler implements Runnable {
   }
 
   /**
-   * Send mail to author.
-   *
-   * @param authorMail the author mail
-   * @param message    the message
-   * @throws EmailException the email exception
-   */
-  public void sendEmail(String authorMail, String message, String subject) throws EmailException {
-
-    Email email = new SimpleEmail();
-    email.addTo(authorMail);
-    email.setSubject(subject);
-    email.setMsg(message);
-    MessageGateway<Email> messageGateway;
-
-    // Inject a Messagegateway Service and send the message
-    messageGateway = messageGatewayService.getGateway(Email.class);
-
-    // check the logs to see that messageGateway is not null
-    messageGateway.send(email);
-  }
-
-  /**
    * Send notification to author.
    *
-   * @param resolver                   the resolver
-   * @param paths                      the paths
-   * @param emailTemplateContainerText the emailTemplateContainerText
-   * @param emailSubject               the emailSubject
-   * @param triggerRetirment           the triggerRetirment
+   * @param resolver                    the resolver
+   * @param paths                       the paths
+   * @param emailTemplateContainerText  the emailTemplateContainerText
+   * @param emailTemplateContainerTitle the emailTemplateContainerTitle
+   * @param triggerRetirement           the triggerRetirement
    */
   public void sendNotification(ResourceResolver resolver, List<String> paths, String emailTemplateContainerText,
-      String emailSubject, Boolean triggerRetirment) {
+      String emailTemplateContainerTitle, Boolean triggerRetirement) {
     log.debug("sendNotification >>>>>>>   ");
 
     paths.stream().filter(item -> resolver.getResource(item) != null).forEach(path -> {
       try {
-        if (triggerRetirment) {
+        if (triggerRetirement) {
           startWorkflow(resolver, WorkflowConstants.RETIREMENT_WORKFLOW, path);
         }
 
@@ -289,7 +310,6 @@ public class RetirementManagerScheduler implements Runnable {
           if (node.hasProperty(GlobalConstants.PROP_JCR_CREATED_BY)) {
             // logic to send mail to author
             String author = node.getProperty(GlobalConstants.PROP_JCR_CREATED_BY).getString();
-            log.debug("author is: {}", author);
 
             // Regular Expression
             String regex = "^(.+)@(.+)$";
@@ -300,7 +320,8 @@ public class RetirementManagerScheduler implements Runnable {
             Matcher matcher = pattern.matcher(author);
 
             if (author != null && matcher.matches()) {
-              Node emailTemplateParentNode = Objects
+              log.debug("author email is present");
+              Node emailTemplateTextParentNode = Objects
                   .requireNonNull(resolver.getResource(GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH
                       + emailTemplateContainerText.replace("/text", "")))
                   .adaptTo(Node.class);
@@ -310,29 +331,50 @@ public class RetirementManagerScheduler implements Runnable {
                       GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH + emailTemplateContainerText))
                   .adaptTo(Node.class);
 
+              Node emailTemplateTitleParentNode = Objects
+                  .requireNonNull(resolver.getResource(GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH
+                      + emailTemplateContainerTitle.replace("/title", "")))
+                  .adaptTo(Node.class);
+
+              Node emailTemplateTitleNode = Objects
+                  .requireNonNull(resolver.getResource(
+                      GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH + emailTemplateContainerTitle))
+                  .adaptTo(Node.class);
+
               String msg = "";
-              String subject = node.getProperty(JCR_TITLE).getString() + emailSubject;
-              log.debug("Email Subject: {}", subject);
+              String subject = "";
 
-              if (emailTemplateTextNode != null) {
-                msg = processTextComponentFromEmailTemplate(emailTemplateTextNode, node, path);
-
-                // send email once Day CQ Mail Configuration is ready
-                log.debug("Sending email to author: {}", author);
-                // sendEmail(author, msg, subject);
-              } else if (emailTemplateParentNode != null) {
-                NodeIterator nodeItr = emailTemplateParentNode.getNodes();
+              if (emailTemplateTitleNode != null) {
+                subject = processTitleComponentFromEmailTemplate(emailTemplateTitleNode, node, path);
+              } else if (emailTemplateTitleParentNode != null) {
+                NodeIterator nodeItr = emailTemplateTitleParentNode.getNodes();
 
                 while (nodeItr.hasNext()) {
                   Node childNode = nodeItr.nextNode();
-                  msg = processTextComponentFromEmailTemplate(childNode, node, path);
+                  String emailSubjectTitle = processTitleComponentFromEmailTemplate(childNode, node, path);
+                  if (!(emailSubjectTitle.isBlank())) {
+                    subject = emailSubjectTitle;
+                    break;
+                  }
                 }
-
-                // send email once Day CQ Mail Configuration is ready
-                log.debug("Sending email to author: {}", author);
-                // sendEmail(author, msg, subject);
               }
-              log.debug("Mail content is: {}", msg);
+
+              if (emailTemplateTextNode != null) {
+                msg = processTextComponentFromEmailTemplate(emailTemplateTextNode, node, path);
+                emailService.sendEmail(author, subject, msg);
+              } else if (emailTemplateTextParentNode != null) {
+                NodeIterator nodeItr = emailTemplateTextParentNode.getNodes();
+
+                while (nodeItr.hasNext()) {
+                  Node childNode = nodeItr.nextNode();
+                  String emailBodyText = processTextComponentFromEmailTemplate(childNode, node, path);
+                  if (!(emailBodyText.isBlank())) {
+                    msg = emailBodyText;
+                    break;
+                  }
+                }
+                emailService.sendEmail(author, subject, msg);
+              }
             }
           }
         }
