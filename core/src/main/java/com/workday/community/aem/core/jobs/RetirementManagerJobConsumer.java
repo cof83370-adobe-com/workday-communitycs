@@ -37,7 +37,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Slf4j
 @Component(service = JobConsumer.class, immediate = true, 
-    property = { JobConsumer.PROPERTY_TOPICS + "=" + "content/retirement/manager/job" })
+    property = { JobConsumer.PROPERTY_TOPICS + "=" + "community/retirement/manager/job" })
 public class RetirementManagerJobConsumer implements JobConsumer {
 
   /** The cache manager. */

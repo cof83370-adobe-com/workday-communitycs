@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Reference;
 public class RetirementManagerJobScheduler {
 
   /** The job topic. */
-  private static final String TOPIC = "content/retirement/manager/job";
+  private static final String TOPIC = "community/retirement/manager/job";
 
   /** The job manager. */
   @Reference
