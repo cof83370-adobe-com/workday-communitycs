@@ -11,13 +11,18 @@ import org.apache.sling.event.jobs.JobManager;
 import org.apache.sling.event.jobs.ScheduledJobInfo;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * The Class RetirementManagerJobScheduler.
  */
 @Slf4j
-@Component(immediate = true)
+@Component(
+    service = {RetirementManagerJobScheduler.class},
+    configurationPolicy = ConfigurationPolicy.OPTIONAL,
+    immediate = true
+)
 public class RetirementManagerJobScheduler {
 
   /** The job topic. */
