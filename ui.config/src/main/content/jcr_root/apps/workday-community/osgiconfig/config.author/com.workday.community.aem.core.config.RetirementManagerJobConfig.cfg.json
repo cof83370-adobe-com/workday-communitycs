@@ -1,0 +1,6 @@
+{
+    "workflowNotificationCron" : "0 */5 * ? * *",
+    "enableWorkflowNotificationReview" : true,
+    "enableWorkflowNotificationRetirement" : true,
+    "authorDomain" : "http://localhost:4502"
+}

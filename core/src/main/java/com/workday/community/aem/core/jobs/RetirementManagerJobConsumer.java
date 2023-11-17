@@ -1,4 +1,4 @@
-package com.workday.community.aem.core.schedulers;
+package com.workday.community.aem.core.jobs;
 
 import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
@@ -8,12 +8,12 @@ import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.model.WorkflowModel;
-import com.workday.community.aem.core.config.RetirementManagerSchedulerConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.EmailService;
 import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import java.util.HashMap;
 import java.util.List;
@@ -27,24 +27,18 @@ import javax.jcr.RepositoryException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.commons.scheduler.ScheduleOptions;
-import org.apache.sling.commons.scheduler.Scheduler;
-import org.osgi.service.component.annotations.Activate;
+import org.apache.sling.event.jobs.Job;
+import org.apache.sling.event.jobs.consumer.JobConsumer;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.metatype.annotations.Designate;
 
 /**
- * The Class RetirementManagerScheduler.
+ * The Class RetirementManagerJobConsumer.
  */
 @Slf4j
-@Component(service = RetirementManagerScheduler.class, 
-    configurationPid = "com.workday.community.aem.core.config.RetirementManagerSchedulerConfig", 
-    property = {"scheduler.runOn=SINGLE"}, immediate = true)
-@Designate(ocd = RetirementManagerSchedulerConfig.class)
-public class RetirementManagerScheduler implements Runnable {
+@Component(service = JobConsumer.class, immediate = true, 
+    property = { JobConsumer.PROPERTY_TOPICS + "=" + "content/retirement/manager/job" })
+public class RetirementManagerJobConsumer implements JobConsumer {
 
   /** The cache manager. */
   @Reference
@@ -62,20 +56,23 @@ public class RetirementManagerScheduler implements Runnable {
   @Reference
   private EmailService emailService;
 
-  /** The scheduler. */
-  @Reference
-  private Scheduler scheduler;
-
   /** The resolver factory. */
   @Reference
   private ResourceResolverFactory resolverFactory;
+  
+  /** The retirement manager job config service. */
+  @Reference
+  private RetirementManagerJobConfigService retirementManagerJobConfigService;
 
-  /** The retire config. */
-  private RetirementManagerSchedulerConfig retireConfig;
-
+  /**
+   * The email template review reminder text.
+   */
   private final String emailTemplateRevReminderText = 
         "/workflows/review-reminder/jcr:content/root/container/container/text";
 
+  /**
+   * The email template retirement notification text.
+   */
   private final String emailTemplateRetNotifyText = 
         "/workflows/retirement-notification/jcr:content/root/container/container/text";
 
@@ -89,85 +86,43 @@ public class RetirementManagerScheduler implements Runnable {
    */
   private final String propRetirementNotificationDate = "jcr:content/retirementNotificationDate";
 
+  /**
+   * The email template review reminder subject.
+   */
   private final String emailTemplateRevReminderSubject = 
       "/workflows/review-reminder/jcr:content/root/container/container/title";
 
+  /**
+   * The email template retirement notification subject.
+   */
   private final String emailTemplateRetNotifySubject = 
       "/workflows/retirement-notification/jcr:content/root/container/container/title";
 
-  /**
-   * Activate/Modified RetirementManagerScheduler scheduler.
-   *
-   * @param config the config
-   */
-  @Activate
-  @Modified
-  protected void activate(final RetirementManagerSchedulerConfig config) {
-    this.retireConfig = config;
-
-    if (isAuthorInstance()) {
-      log.debug(
-          "RetirementManagerScheduler activate method called - "
-              + "authorInstUrl: {}, cron: {}, review notification: {}, retirement notification: {}",
-          config.authorDomain(), config.workflowNotificationCron(), config.enableWorkflowNotificationReview(),
-          config.enableWorkflowNotificationRetirement());
-
-      // un-schedule the existing scheduler for modified event
-      if (scheduler != null) {
-        scheduler.unschedule(this.getClass().getSimpleName());
-      }
-
-      // Execute this method to add scheduler.
-      addScheduler(config);
-    }
-  }
-
-  /**
-   * Add all configurations to Schedule a scheduler depending on name and
-   * expression.
-   *
-   * @param config the config
-   */
-  public void addScheduler(RetirementManagerSchedulerConfig config) {
-    log.debug("Scheduler added successfully >>>>>>>   ");
-
-    if (config.enableWorkflowNotificationReview() || config.enableWorkflowNotificationRetirement()) {
-      ScheduleOptions options = scheduler.EXPR(config.workflowNotificationCron());
-      options.name(this.getClass().getSimpleName());
-
-      // Add scheduler to call depending on option passed.
-      scheduler.schedule(this, options);
-      log.debug("Scheduler added successfully name='{}'", this.getClass().getSimpleName());
-    } else {
-      log.debug("RetirementManagerScheduler disabled");
-    }
-  }
-
-  /**
-   * Deactivate. On deactivate component it will unschedule scheduler
-   *
-   * @param config the config
-   */
-  @Deactivate
-  protected void deactivate(RetirementManagerSchedulerConfig config) {
-    if (isAuthorInstance() && scheduler != null) {
-      scheduler.unschedule(this.getClass().getSimpleName());
-      scheduler = null;
-    }
-  }
-
-  /**
-   * Run. run() method will get call every day based on CRON
-   */
   @Override
-  public void run() {
-    log.debug("RetirementManagerScheduler run >>>>>>>>>>>");
+  public JobResult process(Job job) {
+    log.debug("RetirementManagerJobConsumer process >>>>>>>>>>>");
+    // Check for any custom parameters in the job
+    String customParam = (String) job.getProperty("customJob");
+    log.debug("Custom Job: {}", customParam);
+
+    //logic for retirement scheduler
+    runJob();
+
+    // Return JobResult.OK if processing is successful
+    return JobResult.OK;
+  }
+  
+  /**
+   * Runjob for RetirementManager notification.
+   */
+  public void runJob() {
+    log.debug("RetirementManagerJobConsumer runJob >>>>>>>>>>>");
     try (ResourceResolver resResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-      if (this.retireConfig.enableWorkflowNotificationReview()) {
+      if (retirementManagerJobConfigService.getEnableWorkflowNotificationReview()) {
         sendReviewNotification(resResolver);
       }
 
-      if (this.retireConfig.enableWorkflowNotificationRetirement()) {
+      if (retirementManagerJobConfigService.getEnableWorkflowNotificationRetirement()) {
         startRetirementAndNotify(resResolver);
       }
 
@@ -182,10 +137,10 @@ public class RetirementManagerScheduler implements Runnable {
    * @param resResolver the resResolver
    */
   public void sendReviewNotification(ResourceResolver resResolver) {
-    log.debug("RetirementManagerScheduler::Start querying Review Notification pages");
+    log.debug("RetirementManagerJobConsumer::Start querying Review Notification pages");
     List<String> reviewReminderPagePaths = queryService.getPagesDueTodayByDateProp(propReviewReminderDate);
 
-    log.debug("RetirementManagerScheduler::End querying Review Notification pages.. Sending Notification");
+    log.debug("RetirementManagerJobConsumer::End querying Review Notification pages.. Sending Notification");
     sendNotification(resResolver, reviewReminderPagePaths, emailTemplateRevReminderText,
         emailTemplateRevReminderSubject, false);
   }
@@ -196,11 +151,11 @@ public class RetirementManagerScheduler implements Runnable {
    * @param resResolver the resResolver
    */
   public void startRetirementAndNotify(ResourceResolver resResolver) {
-    log.debug("RetirementManagerScheduler::Start querying Retirement and Notify pages");
+    log.debug("RetirementManagerJobConsumer::Start querying Retirement and Notify pages");
     List<String> retirementNotificationPagePaths = queryService
         .getPagesDueTodayByDateProp(propRetirementNotificationDate);
 
-    log.debug("RetirementManagerScheduler::End querying Retirement and Notify pages.. Sending Notification");
+    log.debug("RetirementManagerJobConsumer::End querying Retirement and Notify pages.. Sending Notification");
     sendNotification(resResolver, retirementNotificationPagePaths, emailTemplateRetNotifyText,
         emailTemplateRetNotifySubject, true);
 
@@ -225,7 +180,8 @@ public class RetirementManagerScheduler implements Runnable {
           if (textNode.getProperty("text") != null) {
             text = textNode.getProperty("text").getValue().getString();
 
-            String pageUrl = this.retireConfig.authorDomain().concat("/editor.html").concat(path).concat(".html");
+            String pageUrl = retirementManagerJobConfigService.getAuthorDomain()
+                .concat("/editor.html").concat(path).concat(".html");
             if (node.getProperty(JCR_TITLE) != null) {
               String pageTitle = node.getProperty(JCR_TITLE).getString();
               String pageTitleLink = "<a href='".concat(pageUrl).concat("' target='_blank'>").concat(pageTitle)
