@@ -31,6 +31,7 @@
         if(isEventsPage) {
             const hiddenEventStartDate = document.getElementById('hiddenEventStartDate');
             const hiddenEventEndDate = document.getElementById('hiddenEventEndDate');
+            const wcmmode = document.getElementById('publishmode');
             if (hiddenEventStartDate) {
                 const utcTimeString = hiddenEventStartDate.getAttribute('data-value');
                 const hiddenUserTimeZone = document.getElementById('hiddenUserTimeZone');
@@ -43,14 +44,11 @@
                 }
 
                 if (hiddenEventEndDate) {
-                    const utcEndDateTimeString = hiddenEventEndDate.getAttribute('data-value');
-                    const now = new Date();
-                    const currentDateUTC = now.getUTCDate();
-                    const currentMonthUTC = now.getUTCMonth() + 1;
-                    const currentYearUTC = now.getUTCFullYear();
-                    const currentDateUTCString = String(currentYearUTC) + '-' + String(currentMonthUTC) + '-' + String(currentDateUTC);
                     const registerEventButton = document.querySelector('.event-registration .cmp-button') as HTMLElement;
-                    if (currentDateUTCString > utcEndDateTimeString.substring(0,10)) {
+                    const authoredEventEndDate = hiddenEventEndDate.getAttribute('data-value');
+                    const EventEndDate = new Date(authoredEventEndDate);
+                    const now = new Date();
+                    if (now > EventEndDate && wcmmode != null) {
                         registerEventButton.style.display = 'none';
                     }
                     else {
