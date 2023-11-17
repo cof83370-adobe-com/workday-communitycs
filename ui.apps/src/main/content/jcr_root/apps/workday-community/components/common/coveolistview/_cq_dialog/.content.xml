@@ -32,7 +32,7 @@
                                                 jcr:primaryType="nt:unstructured"
                                                 sling:resourceType="granite/ui/components/coral/foundation/form/multifield"
                                                 composite="{Boolean}true"
-                                                fieldLabel="Refine by Category">
+                                                fieldLabel="Refine by category">
                                                 <granite:data jcr:primaryType="nt:unstructured"/>
                                                 <field
                                                     jcr:primaryType="nt:unstructured"
@@ -47,12 +47,13 @@
                                                             fieldDescription="Choose category"
                                                             fieldLabel="Category"
                                                             multiple="{Boolean}false"
+                                                            required="{Boolean}true"
                                                             name="./category"
                                                             rootPath="/content/cq:tags"/>
                                                         <searchhelptext
                                                                 jcr:primaryType="nt:unstructured"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                                fieldLabel="Search Help Text"
+                                                                fieldLabel="Search box help text"
                                                                 name="./searchHelpText" />
                                                     </items>
                                                 </field>
