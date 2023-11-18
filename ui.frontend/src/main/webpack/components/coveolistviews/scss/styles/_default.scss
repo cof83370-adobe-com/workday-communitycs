@@ -519,7 +519,7 @@ atomic-sort-dropdown {
 
   &::part(select) {
     font-size: 15px;
-    font-family: 'WorkdayAdelleSans-Bold';
+    font-family: 'WorkdayAdelleSans-Regular';
     color: $wdc-color-black-pepper-600 !important;
     border-color: $wdc-color-soap-500 !important;
   }
@@ -745,7 +745,7 @@ a.link-no-result {
 }
 
 atomic-refine-modal {
-  &::part(section-title), &::part(sort-section), &::part(footer-button-count) {
+  &::part(section-title), &::part(sort-section), &::part(footer-button-count), &::part(select-wrapper) {
     display: none;
   }
 }
