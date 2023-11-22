@@ -210,8 +210,7 @@ public class ExtractPagePropertiesServiceImplTest {
     UserManager userManager = mock(UserManager.class);
     User user = mock(User.class);
     String userName = "admin";
-    String authorLink =
-        "https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115";
+    String authorLink = "http://test-link.com/profile/h5JGBrQTGorO7q6IaFMfu5cSqqB6XTp1aybOD11spnQ=";
     doReturn(userName).when(data).get("cq:lastModifiedBy", String.class);
     doReturn(user).when(userManager).getAuthorizable(userName);
     Value value = mock(Value.class);
@@ -219,6 +218,7 @@ public class ExtractPagePropertiesServiceImplTest {
     String email = "test@gmail.com";
     doReturn(values).when(user).getProperty("./profile/email");
     doReturn(email).when(value).getString();
+    doReturn("http://test-link.com").when(runModeConfigService).getDrupalInstanceDomain();
     String expectedEmail = extract.processUserFields(data, userManager, properties);
     assertEquals(userName, properties.get("author"));
     assertEquals(authorLink, properties.get("authorLink"));
