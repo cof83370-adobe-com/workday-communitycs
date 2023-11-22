@@ -63,4 +63,13 @@ public class RunModeConfigService {
   public String getPublishInstanceDomain() {
     return config.publishInstanceDomain();
   }
+
+  /**
+   * Get drupal instance domain.
+   *
+   * @return The drupal instance domain.
+   */
+  public String getDrupalInstanceDomain() {
+    return config.publishInstanceDomain();
+  }
 }

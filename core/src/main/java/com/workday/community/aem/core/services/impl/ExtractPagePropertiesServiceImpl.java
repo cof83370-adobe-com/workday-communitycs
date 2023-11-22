@@ -17,6 +17,7 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.services.RunModeConfigService;
+<<<<<<< Updated upstream
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,6 +26,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+=======
+import com.workday.community.aem.core.utils.DamUtils;
+
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
+>>>>>>> Stashed changes
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -429,13 +438,10 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       properties.put("author", userName);
       try {
         User user = (User) userManager.getAuthorizable(userName);
-        // @Todo When we do the author migration, need to pass author profile link, contact id is
-        //  needed.
-        // Example link: https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115.
         email = (user != null && user.getProperty("./profile/email") != null)
             ? Objects.requireNonNull(user.getProperty("./profile/email"))[0].getString() : null;
         properties.put("authorLink",
-            "https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115");
+                runModeConfigService.getDrupalInstanceDomain().concat("/profile/").concat(this.hashEmail(email)));
       } catch (RepositoryException e) {
         log.error("Extract user email and contact number failed: {}", e.getMessage());
         return email;
@@ -498,6 +504,23 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       }
     }
 
+  }
+
+  /**
+   * Returns hash value for email.
+   *
+   * @param email email of the author.
+   * @return Hashed email.
+   */
+  protected String hashEmail(String email) {
+    MessageDigest digest = null;
+    try {
+      digest = MessageDigest.getInstance("SHA-256");
+    } catch (NoSuchAlgorithmException e) {
+      return "";
+    }
+    byte[] hash = digest.digest(email.getBytes(StandardCharsets.UTF_8));
+    return Base64.getEncoder().encodeToString(hash);
   }
 
 }
