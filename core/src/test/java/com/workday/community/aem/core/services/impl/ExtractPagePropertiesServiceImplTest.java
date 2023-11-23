@@ -210,7 +210,7 @@ public class ExtractPagePropertiesServiceImplTest {
     UserManager userManager = mock(UserManager.class);
     User user = mock(User.class);
     String userName = "admin";
-    String authorLink = "http://test-link.com/profile/h5JGBrQTGorO7q6IaFMfu5cSqqB6XTp1aybOD11spnQ=";
+    String authorLink = "http://test-link.com/profile/87924606b4131a8aceeeae8868531fbb9712aaa07a5d3a756b26ce0f5d6ca674";
     doReturn(userName).when(data).get("cq:lastModifiedBy", String.class);
     doReturn(user).when(userManager).getAuthorizable(userName);
     Value value = mock(Value.class);

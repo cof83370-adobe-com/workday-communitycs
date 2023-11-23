@@ -17,12 +17,12 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -515,7 +515,12 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       return "";
     }
     byte[] hash = digest.digest(email.getBytes(StandardCharsets.UTF_8));
-    return Base64.getEncoder().encodeToString(hash);
+    BigInteger number = new BigInteger(1, hash);
+    StringBuilder hexString = new StringBuilder(number.toString(16));
+    while (hexString.length() < 64) {
+      hexString.insert(0, '0');
+    }
+    return hexString.toString();
   }
 
 }
