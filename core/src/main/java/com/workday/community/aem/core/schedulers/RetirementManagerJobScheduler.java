@@ -52,7 +52,7 @@ public class RetirementManagerJobScheduler {
   /**
    * This method will unschedule job.
    */
-  public void stopRetirementManagerJob() {
+  protected void stopRetirementManagerJob() {
     log.debug("in stopRetirementManagerJob: {}", TOPIC);
     Collection<ScheduledJobInfo> myJobs = jobManager.getScheduledJobs(TOPIC, 0, null);
     myJobs.forEach(sji -> sji.unschedule());
@@ -61,7 +61,7 @@ public class RetirementManagerJobScheduler {
   /**
    * This method will get call every day based on CRON to create and schedule job.
    */
-  public void startRetirementManagerJob() {
+  protected void startRetirementManagerJob() {
     log.debug("in startRetirementManagerJob: {}", TOPIC);
     Date date = new Date();
     Timestamp timestamp = new Timestamp(date.getTime());
