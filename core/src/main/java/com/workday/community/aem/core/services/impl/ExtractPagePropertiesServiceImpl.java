@@ -12,15 +12,13 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.google.common.hash.Hashing;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.services.RunModeConfigService;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -435,8 +433,9 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         User user = (User) userManager.getAuthorizable(userName);
         email = (user != null && user.getProperty("./profile/email") != null)
             ? Objects.requireNonNull(user.getProperty("./profile/email"))[0].getString() : null;
+        String hashedEmail = Hashing.sha256().hashString(email, StandardCharsets.UTF_8).toString();
         properties.put("authorLink",
-                runModeConfigService.getDrupalInstanceDomain().concat("/profile/").concat(this.hashEmail(email)));
+                runModeConfigService.getDrupalInstanceDomain().concat("/profile/").concat(hashedEmail));
       } catch (RepositoryException e) {
         log.error("Extract user email and contact number failed: {}", e.getMessage());
         return email;
@@ -499,28 +498,6 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       }
     }
 
-  }
-
-  /**
-   * Returns hash value for email.
-   *
-   * @param email email of the author.
-   * @return Hashed email.
-   */
-  protected String hashEmail(String email) {
-    MessageDigest digest = null;
-    try {
-      digest = MessageDigest.getInstance("SHA-256");
-    } catch (NoSuchAlgorithmException e) {
-      return "";
-    }
-    byte[] hash = digest.digest(email.getBytes(StandardCharsets.UTF_8));
-    BigInteger number = new BigInteger(1, hash);
-    StringBuilder hexString = new StringBuilder(number.toString(16));
-    while (hexString.length() < 64) {
-      hexString.insert(0, '0');
-    }
-    return hexString.toString();
   }
 
 }
