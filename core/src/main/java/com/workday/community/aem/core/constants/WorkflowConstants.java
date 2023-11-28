@@ -99,4 +99,9 @@ public interface WorkflowConstants {
    * The notification name.
    */
   String NOTIFICATION_NAME_CONTENT_PUBLISHED = "Content has been published";
+  
+  /**
+   * The archival date.
+   */
+  String ARCHIVAL_DATE = "archivalDate";
 }

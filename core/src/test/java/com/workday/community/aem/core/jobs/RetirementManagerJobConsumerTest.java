@@ -390,7 +390,7 @@ public class RetirementManagerJobConsumerTest {
       lenient().when(replicator.getReplicationStatus(session, "/content/workday-community/en-us/test")).thenReturn(repStatus);
       lenient().when(repStatus.isActivated()).thenReturn(true);
       
-  	  retirementManagerJobConsumer.archiveContent(resolver, "/content/workday-community/en-us/test");
+  	  retirementManagerJobConsumer.archiveContent(resolver);
       assertNotNull(session);
       assertNotNull(replicator);
       assertNotNull(repStatus);

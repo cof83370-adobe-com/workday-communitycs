@@ -231,4 +231,42 @@ public class QueryServiceImpl implements QueryService {
     }
     return paths;
   }
+  
+  @Override
+  public List<String> getRetiredPagesByArchivalDate(String acrchivalDateProp) {
+    log.debug("in getRetiredPagesByArchivalDate");
+    Session session = null;
+    List<String> paths = new ArrayList<>();
+    Calendar calendar = Calendar.getInstance();
+    Date currentDate = calendar.getTime();
+    DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+    try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
+      session = resourceResolver.adaptTo(Session.class);
+      Map<String, String> queryMap = new HashMap<>();
+      queryMap.put("path", GlobalConstants.COMMUNITY_CONTENT_ROOT_PATH);
+      queryMap.put("type", NT_PAGE);
+      queryMap.put("1_property", acrchivalDateProp);
+      queryMap.put("1_property.value", df.format(currentDate) + "%");
+      queryMap.put("1_property.operation", "like");
+      queryMap.put("2_property", "jcr:content/cq:lastReplicationAction");
+      queryMap.put("2_property.value", "Activate");
+      queryMap.put("3_property", "jcr:content/retirementStatus");
+      queryMap.put("3_property.value", "retired");
+      queryMap.put("p.limit", "-1");
+
+      Query query = queryBuilder.createQuery(PredicateGroup.create(queryMap), session);
+      SearchResult searchResult = query.getResult();
+      for (Hit hit : searchResult.getHits()) {
+        String path = hit.getPath();
+        paths.add(path);
+      }
+    } catch (CacheException | RepositoryException e) {
+      log.error("Exception occurred when running query to get retired pages by archival date {} ", e.getMessage());
+    } finally {
+      if (session != null) {
+        session.logout();
+      }
+    }
+    return paths;
+  }
 }

@@ -2,8 +2,6 @@ package com.workday.community.aem.core.jobs;
 
 import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
-import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_PROP;
-import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_VAL;
 import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
 import com.adobe.granite.workflow.WorkflowException;
@@ -11,10 +9,11 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.model.WorkflowModel;
 import com.day.cq.replication.ReplicationActionType;
-import com.day.cq.replication.ReplicationStatus;
+import com.day.cq.replication.ReplicationException;
 import com.day.cq.replication.Replicator;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.day.cq.wcm.api.WCMException;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
@@ -22,7 +21,6 @@ import com.workday.community.aem.core.services.EmailService;
 import com.workday.community.aem.core.services.QueryService;
 import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
 import com.workday.community.aem.core.services.RunModeConfigService;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +34,6 @@ import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
 import org.osgi.service.component.annotations.Component;
@@ -110,6 +107,11 @@ public class RetirementManagerJobConsumer implements JobConsumer {
    */
   private final String emailTemplateRetNotifySubject = 
       "/workflows/retirement-notification/jcr:content/root/container/container/title";
+  
+  /**
+   * The Property archivalDate.
+   */
+  private final String propArchivalDate = "jcr:content/archivalDate";
 
   @Override
   public JobResult process(Job job) {
@@ -138,6 +140,8 @@ public class RetirementManagerJobConsumer implements JobConsumer {
       if (retirementManagerJobConfigService.getEnableWorkflowNotificationRetirement()) {
         startRetirementAndNotify(resResolver);
       }
+      
+      archiveContent(resResolver);
 
     } catch (Exception e) {
       log.error("Exception in run >>>>>>> {}", e.getMessage());
@@ -270,8 +274,6 @@ public class RetirementManagerJobConsumer implements JobConsumer {
       try {
         if (triggerRetirement) {
           startWorkflow(resolver, WorkflowConstants.RETIREMENT_WORKFLOW, path);
-          
-          archiveContent(resolver, path);
         }
 
         Node node = Objects.requireNonNull(resolver.getResource(path + GlobalConstants.JCR_CONTENT_PATH))
@@ -385,71 +387,45 @@ public class RetirementManagerJobConsumer implements JobConsumer {
   }
   
   /**
-   * Archive Content for a payload.
+   * Archive Content.
    *
-   * @param resolver    the resolver
-   * @param payloadPath the payloadPath
+   * @param resolver the resolver
    */
-  public void archiveContent(ResourceResolver resolver, String payloadPath) {
-    log.debug("archiveContent for >>>>>>> {}  ", payloadPath);
-    try {
-      if (replicator == null) {
-        return;
-      }
+  public void archiveContent(ResourceResolver resolver) {
+    log.debug("in archiveContent >>>>>>>");
 
+    if (replicator == null) {
+      return;
+    }
+
+    List<String> retiredPagePaths = queryService.getRetiredPagesByArchivalDate(propArchivalDate);
+    retiredPagePaths.stream().filter(item -> resolver.getResource(item) != null).forEach(path -> {
       Session session = resolver.adaptTo(Session.class);
-      ReplicationStatus repStatus = replicator.getReplicationStatus(session, payloadPath);
       PageManager pageManager = resolver.adaptTo(PageManager.class);
       Page page = null;
-      int daysDiff = 0;
-      if (pageManager != null) {
-        page = pageManager.getPage(payloadPath);
-        if (page != null) {
-          daysDiff = getDaysDifference(page);
+      try {
+        if (pageManager != null) {
+          page = pageManager.getPage(path);
+          if (page != null) {
+            log.debug("before archive >>>>>>>");
+
+            // Deactivate the page before archiving
+            replicator.replicate(session, ReplicationActionType.DEACTIVATE, path);
+
+            // Create version for page before deleting
+            pageManager.createRevision(page);
+
+            // Delete page
+            pageManager.delete(page, false);
+
+            log.debug("after archive >>>>>>>");
+          }
         }
+      } catch (ReplicationException e) {
+        log.error("ReplicationException occured in archiveContent method: {}", e.getMessage());
+      } catch (WCMException exec) {
+        log.error("WCMException occured in archiveContent method: {} ", exec.getMessage());
       }
-
-      if (repStatus != null && repStatus.isActivated() && page != null
-          && page.getProperties().get(RETIREMENT_STATUS_PROP, "").equalsIgnoreCase(RETIREMENT_STATUS_VAL)
-          && daysDiff == 90) {
-        log.debug("before archive >>>>>>>");
-        
-        // Deactivate the page before archiving
-        replicator.replicate(session, ReplicationActionType.DEACTIVATE, payloadPath);
-
-        // Create version for page
-        pageManager.createRevision(page);
-
-        // Delete page
-        pageManager.delete(page, false);
-        
-        log.debug("after archive >>>>>>>");
-      }
-    } catch (Exception e) {
-      log.error("Exception occured in archiveContent method: {}", e.getMessage());
-    }
-  }
-  
-  /**
-   * Gets the difference in days.
-   *
-   * @param currentPage the current page
-   * @return the differenceInDays
-   */
-  private int getDaysDifference(Page currentPage) {
-    log.debug("in getDaysDifference >>>>>>>");
-    ValueMap valueMap = currentPage.getProperties();
-    Calendar actualRetirementDateCalInstance = valueMap.get(WorkflowConstants.ACTUAL_RETIREMENT_DATE, Calendar.class);
-    Calendar currentDateCalInstance = Calendar.getInstance();
-    if (null != actualRetirementDateCalInstance && null != currentDateCalInstance) {
-      int result = currentDateCalInstance.compareTo(actualRetirementDateCalInstance);
-      if (result > 0) {
-        long differenceInMilliseconds = Math
-            .abs(currentDateCalInstance.getTimeInMillis() - actualRetirementDateCalInstance.getTimeInMillis());
-        long differenceInDays = differenceInMilliseconds / (24 * 60 * 60 * 1000);
-        return (int) differenceInDays;
-      }
-    }
-    return 0;
+    });
   }
 }

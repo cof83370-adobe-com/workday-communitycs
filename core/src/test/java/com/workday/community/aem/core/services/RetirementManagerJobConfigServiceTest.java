@@ -47,6 +47,11 @@ public class RetirementManagerJobConfigServiceTest {
 		public boolean enableWorkflowNotificationRetirement() {
 			return true;
 		}
+		
+		@Override
+		public int archivalDays() {
+		    return 90;
+		}
   };
 
   @BeforeEach
@@ -63,6 +68,7 @@ public class RetirementManagerJobConfigServiceTest {
     assertEquals(service.getEnableWorkflowNotificationReview(), retirementManagerJobConfig.enableWorkflowNotificationReview());
     assertEquals(service.getAuthorDomain(), retirementManagerJobConfig.authorDomain());
     assertEquals(service.getEnableWorkflowNotificationRetirement(), retirementManagerJobConfig.enableWorkflowNotificationRetirement());
+    assertEquals(service.getArchivalDays(), retirementManagerJobConfig.archivalDays());
   }
 
 }

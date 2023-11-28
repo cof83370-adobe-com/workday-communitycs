@@ -44,4 +44,12 @@ public @interface RetirementManagerJobConfig {
    */
   @AttributeDefinition(name = "Author Domain", description = "Author Domain", type = AttributeType.STRING)
   String authorDomain() default "";
+  
+  /**
+   * Archival days.
+   *
+   * @return the days
+   */
+  @AttributeDefinition(name = "Archival Days", description = "Archival Days", type = AttributeType.INTEGER)
+  int archivalDays() default 90;
 }
