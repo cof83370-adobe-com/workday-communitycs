@@ -350,8 +350,8 @@ public class RetirementManagerJobConsumerTest {
      */
     @Test
     void testProcessJobFail() {
-      doReturn(null).when(job).getProperty("customJob");
+      doReturn(null).when(job).getProperty("jobTimestamp");
       JobResult result = retirementManagerJobConsumer.process(job);
-      assertEquals(JobResult.OK, result);
+      assertEquals(JobResult.FAILED, result);
     }
 }
