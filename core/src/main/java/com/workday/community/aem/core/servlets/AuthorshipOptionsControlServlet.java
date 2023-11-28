@@ -47,10 +47,11 @@ public class AuthorshipOptionsControlServlet extends SlingSafeMethodsServlet {
   private transient RunModeConfigService runModeConfigService;
 
   /**
-   * {@inheritDoc}
+   * Do get.
    *
-   * @throws IOException the IO exception
-   * 
+   * @param request       the sling http servlet request
+   * @param response      the sling http servlet response
+   * @throws IOException  the IO exception
    */
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
@@ -64,18 +65,7 @@ public class AuthorshipOptionsControlServlet extends SlingSafeMethodsServlet {
     try {
       auth = requireNonNull(userManager).getAuthorizable(userId);
       Iterator<Group> currentUserGroups = requireNonNull(auth).memberOf();
-      while (currentUserGroups != null && currentUserGroups.hasNext() && !isAllowed) {
-        Group currentUserGroup = currentUserGroups.next();
-        // Evaluating access for enabling table option
-        for (String accessGroup : accessGroupsTextTable) {
-          accessGroup = accessGroup.concat(" {").concat(env).concat("}");
-          String currentUserGroupId = currentUserGroup.getID();
-          if (currentUserGroupId != null && currentUserGroupId.equalsIgnoreCase(accessGroup)) {
-            isAllowed = true;
-            break;
-          }
-        }
-      }
+      isAllowed = evaluateTableAccess(env, currentUserGroups);
     } catch (RepositoryException e) {
       log.error("User not found");
     }
@@ -83,5 +73,28 @@ public class AuthorshipOptionsControlServlet extends SlingSafeMethodsServlet {
     response.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
     jsonResponse.addProperty("render", isAllowed);
     response.getWriter().write(jsonResponse.toString());
+  }
+
+  /**
+   * Evaluate access to enable table option for current user.
+   *
+   * @param environment           current AEM environment
+   * @param currentUserGroups     user group iterator of current user
+   * @param isAllowed             permission for viewing table option
+   * @throws RepositoryException  repository exception
+   */
+  private boolean evaluateTableAccess(String environment, Iterator<Group> currentUserGroups)
+      throws RepositoryException {
+    while (currentUserGroups != null && currentUserGroups.hasNext()) {
+      Group currentUserGroup = currentUserGroups.next();
+      for (String accessGroup : accessGroupsTextTable) {
+        accessGroup = accessGroup.concat(" {").concat(environment).concat("}");
+        String currentUserGroupId = currentUserGroup.getID();
+        if (currentUserGroupId != null && currentUserGroupId.equalsIgnoreCase(accessGroup)) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }

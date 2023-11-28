@@ -93,7 +93,7 @@ class AuthorshipOptionsControlServletTest {
   }
 
   /**
-   * Test doGet method of the servlet for deny scnario.
+   * Test doGet method of the servlet for allow scenario.
    *
    * @throws Exception the exception
    */
@@ -127,7 +127,7 @@ class AuthorshipOptionsControlServletTest {
   }
 
   /**
-   * Test doGet method of the servlet for deny scnario.
+   * Test doGet method of the servlet for deny scenario.
    *
    * @throws Exception the exception
    */
