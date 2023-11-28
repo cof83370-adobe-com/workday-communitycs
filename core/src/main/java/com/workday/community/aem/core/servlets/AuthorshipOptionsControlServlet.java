@@ -47,7 +47,9 @@ public class AuthorshipOptionsControlServlet extends SlingSafeMethodsServlet {
   private transient RunModeConfigService runModeConfigService;
 
   /**
-   * Do get.
+   * Do get method evaluates permissions of compoment controls 
+   * and returns json containing 'render' key with boolean value true or false
+   * in servlet ressponse.
    *
    * @param request       the sling http servlet request
    * @param response      the sling http servlet response
