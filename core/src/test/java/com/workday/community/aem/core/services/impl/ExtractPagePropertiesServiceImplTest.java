@@ -21,6 +21,7 @@ import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.common.collect.ImmutableMap;
+import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.ResolverUtil;
@@ -70,6 +71,9 @@ public class ExtractPagePropertiesServiceImplTest {
    */
   @InjectMocks
   private ExtractPagePropertiesServiceImpl extract;
+
+  @Mock
+  DrupalConfig drupalConfig;
 
   /**
    * Test process taxonomy field product.
@@ -218,7 +222,7 @@ public class ExtractPagePropertiesServiceImplTest {
     String email = "test@gmail.com";
     doReturn(values).when(user).getProperty("./profile/email");
     doReturn(email).when(value).getString();
-    doReturn("http://test-link.com").when(runModeConfigService).getDrupalInstanceDomain();
+    doReturn("http://test-link.com").when(drupalConfig).drupalInstanceDomain();
     String expectedEmail = extract.processUserFields(data, userManager, properties);
     assertEquals(userName, properties.get("author"));
     assertEquals(authorLink, properties.get("authorLink"));

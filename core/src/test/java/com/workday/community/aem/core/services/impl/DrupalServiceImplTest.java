@@ -102,6 +102,11 @@ public class DrupalServiceImplTest {
     public String drupalUserSearchPath() {
       return "drupalUserSearchPath";
     }
+
+    @Override
+    public String drupalInstanceDomain() {
+      return "http://test-link.com";
+    }
   };
 
   /**

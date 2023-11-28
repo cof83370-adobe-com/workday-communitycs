@@ -2,6 +2,5 @@
     "instance":"publish",
     "env":"$[env:envName]",
     "adobeAnalyticsUri":"$[env:adobeAnalyticsUri]",
-    "publishInstanceDomain":"$[env:publishInstanceDomain]",
-    "drupalInstanceDomain":"$[env:drupalInstanceDomain]"
+    "publishInstanceDomain":"$[env:publishInstanceDomain]"
 }

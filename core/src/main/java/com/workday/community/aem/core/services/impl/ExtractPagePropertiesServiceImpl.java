@@ -13,6 +13,7 @@ import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.common.hash.Hashing;
+import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
@@ -167,6 +168,13 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    */
   @Reference
   private RunModeConfigService runModeConfigService;
+
+  /**
+   * The drupal Config.
+   */
+  @Reference
+  private DrupalConfig drupalConfig;
+
 
   /**
    * {@inheritDoc}
@@ -435,7 +443,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
             ? Objects.requireNonNull(user.getProperty("./profile/email"))[0].getString() : null;
         String hashedEmail = Hashing.sha256().hashString(email, StandardCharsets.UTF_8).toString();
         properties.put("authorLink",
-                runModeConfigService.getDrupalInstanceDomain().concat("/profile/").concat(hashedEmail));
+                drupalConfig.drupalInstanceDomain().concat("/profile/").concat(hashedEmail));
       } catch (RepositoryException e) {
         log.error("Extract user email and contact number failed: {}", e.getMessage());
         return email;

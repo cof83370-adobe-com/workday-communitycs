@@ -86,4 +86,12 @@ public @interface DrupalConfig {
    */
   @AttributeDefinition(name = "Drupal User Search API Path", description = "Drupal User Search API Path.")
   String drupalUserSearchPath();
+
+  /**
+   * Drupal Instances Domain.
+   *
+   * @return Domain of Drupal environment
+   */
+  @AttributeDefinition(name = "Drupal Instances Domain", description = "Domain of Drupal environment.")
+  String drupalInstanceDomain();
 }
