@@ -1,18 +1,16 @@
 package com.workday.community.aem.core.servlets;
 
-import static java.util.Objects.requireNonNull;
-
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import com.workday.community.aem.core.services.UserService;
 import java.io.IOException;
 import java.util.Iterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 import javax.servlet.Servlet;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.jackrabbit.api.security.user.Authorizable;
 import org.apache.jackrabbit.api.security.user.Group;
-import org.apache.jackrabbit.api.security.user.UserManager;
+import org.apache.jackrabbit.api.security.user.User;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
@@ -47,6 +45,12 @@ public class AuthorshipOptionsControlServlet extends SlingSafeMethodsServlet {
   private transient RunModeConfigService runModeConfigService;
 
   /**
+   * The run mode config service.
+   */
+  @Reference
+  private transient UserService userService;
+
+  /**
    * Do get method evaluates permissions of compoment controls 
    * and returns json containing 'render' key with boolean value true or false
    * in servlet ressponse.
@@ -58,18 +62,17 @@ public class AuthorshipOptionsControlServlet extends SlingSafeMethodsServlet {
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
     boolean isAllowed = false;
-    UserManager userManager = request.getResourceResolver().adaptTo(UserManager.class);
-    Session userSession = request.getResourceResolver().adaptTo(Session.class);
-    String userId = requireNonNull(userSession).getUserID();
     String env = runModeConfigService.getEnv();
     env = env == null ? "local" : env;
-    Authorizable auth;
     try {
-      auth = requireNonNull(userManager).getAuthorizable(userId);
-      Iterator<Group> currentUserGroups = requireNonNull(auth).memberOf();
-      isAllowed = evaluateTableAccess(env, currentUserGroups);
-    } catch (RepositoryException e) {
-      log.error("User not found");
+      User user = userService.getCurrentUser(request);
+      if (user != null) {
+        isAllowed = hasAccessToTable(env, user.memberOf(), accessGroupsTextTable);
+      }
+    } catch (RepositoryException re) {
+      log.error("Exception occurred while accessing user group ID {}", re);
+    } catch (CacheException ce) {
+      log.error("Exception occurred while getting the current user {}", ce);
     }
     JsonObject jsonResponse = new JsonObject();
     response.setContentType(JSONResponse.RESPONSE_CONTENT_TYPE);
@@ -82,16 +85,16 @@ public class AuthorshipOptionsControlServlet extends SlingSafeMethodsServlet {
    *
    * @param environment           current AEM environment
    * @param currentUserGroups     user group iterator of current user
-   * @param isAllowed             permission for viewing table option
+   * @param tableAccessGroups     user groups that has access to table option
    * @throws RepositoryException  repository exception
    */
-  private boolean evaluateTableAccess(String environment, Iterator<Group> currentUserGroups)
+  private boolean hasAccessToTable(String environment, Iterator<Group> currentUserGroups, String[] tableAccessGroups)
       throws RepositoryException {
     while (currentUserGroups != null && currentUserGroups.hasNext()) {
       Group currentUserGroup = currentUserGroups.next();
-      for (String accessGroup : accessGroupsTextTable) {
+      String currentUserGroupId = currentUserGroup.getID();
+      for (String accessGroup : tableAccessGroups) {
         accessGroup = accessGroup.concat(" {").concat(environment).concat("}");
-        String currentUserGroupId = currentUserGroup.getID();
         if (currentUserGroupId != null && currentUserGroupId.equalsIgnoreCase(accessGroup)) {
           return true;
         }

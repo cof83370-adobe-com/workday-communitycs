@@ -8,6 +8,8 @@ import static org.mockito.Mockito.mock;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import com.workday.community.aem.core.services.UserService;
+
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.util.ArrayList;
@@ -46,22 +48,16 @@ class AuthorshipOptionsControlServletTest {
   private AuthorshipOptionsControlServlet authorshipOptionsControlServlet;
 
   /**
-   * The session.
+   * The runmode config service.
    */
   @Mock
-  Session session;
-
-  /**
-   * The user manager.
-   */
-  @Mock
-  UserManager userManager;
+  RunModeConfigService runModeConfigService;
 
   /**
    * The runmode config service.
    */
   @Mock
-  RunModeConfigService runModeConfigService;
+  UserService userService;
 
   /**
    * The mocked user.
@@ -99,8 +95,6 @@ class AuthorshipOptionsControlServletTest {
    */
   @Test
   void testAuthorshipTableAccessTrue() throws Exception {
-    userManager = mock(UserManager.class);
-    session = mock(Session.class);
     Group group = mock(Group.class);
     user = mock(User.class);
 
@@ -108,17 +102,13 @@ class AuthorshipOptionsControlServletTest {
     userGroups.add(group);
     Iterator<Group> it = userGroups.iterator();
 
-    String userId = "testUser";
     String groupId = "CMTY CC Admin {DEV}";
 
-    lenient().when(session.getUserID()).thenReturn(userId);
     lenient().when(runModeConfigService.getEnv()).thenReturn("dev");
-    lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+    lenient().when(userService.getCurrentUser(mockSlingRequest)).thenReturn(user);
     lenient().when(user.memberOf()).thenReturn(it);
     lenient().when(group.getID()).thenReturn(groupId);
 
-    context.registerAdapter(ResourceResolver.class, Session.class, session);
-    context.registerAdapter(ResourceResolver.class, UserManager.class, userManager);
     authorshipOptionsControlServlet.doGet(mockSlingRequest, mockSlingResponse);
     assertNotNull(mockSlingResponse);
     Gson gson = new Gson();
@@ -133,8 +123,6 @@ class AuthorshipOptionsControlServletTest {
    */
   @Test
   void testAuthorshipTableAccessFalse() throws Exception {
-    userManager = mock(UserManager.class);
-    session = mock(Session.class);
     Group group = mock(Group.class);
     user = mock(User.class);
 
@@ -142,17 +130,13 @@ class AuthorshipOptionsControlServletTest {
     userGroups.add(group);
     Iterator<Group> it = userGroups.iterator();
 
-    String userId = "testUser";
     String groupId = "CMTY Education Author {DEV}";
 
-    lenient().when(session.getUserID()).thenReturn(userId);
     lenient().when(runModeConfigService.getEnv()).thenReturn("dev");
-    lenient().when(userManager.getAuthorizable(userId)).thenReturn(user);
+    lenient().when(userService.getCurrentUser(mockSlingRequest)).thenReturn(user);
     lenient().when(user.memberOf()).thenReturn(it);
     lenient().when(group.getID()).thenReturn(groupId);
 
-    context.registerAdapter(ResourceResolver.class, Session.class, session);
-    context.registerAdapter(ResourceResolver.class, UserManager.class, userManager);
     authorshipOptionsControlServlet.doGet(mockSlingRequest, mockSlingResponse);
     assertNotNull(mockSlingResponse);
     Gson gson = new Gson();
