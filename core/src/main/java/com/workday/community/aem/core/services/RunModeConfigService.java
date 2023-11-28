@@ -63,5 +63,4 @@ public class RunModeConfigService {
   public String getPublishInstanceDomain() {
     return config.publishInstanceDomain();
   }
-
 }
