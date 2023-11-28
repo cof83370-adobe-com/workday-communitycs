@@ -42,7 +42,7 @@ public class RetirementManagerJobConfigService {
    *
    * @return Enable workflow notification review
    */
-  public boolean getEnableWorkflowNotificationReview() {
+  public boolean enableWorkflowNotificationReview() {
     return config.enableWorkflowNotificationReview();
   }
 
@@ -51,7 +51,7 @@ public class RetirementManagerJobConfigService {
    *
    * @return Enable workflow notification retirement
    */
-  public boolean getEnableWorkflowNotificationRetirement() {
+  public boolean enableWorkflowNotificationRetirement() {
     return config.enableWorkflowNotificationRetirement();
   }
 

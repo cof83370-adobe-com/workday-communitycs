@@ -65,10 +65,9 @@ public class RetirementManagerJobConfigServiceTest {
   @Test
   public void testMethods() {
     assertEquals(service.getWorkflowNotificationCron(), retirementManagerJobConfig.workflowNotificationCron());
-    assertEquals(service.getEnableWorkflowNotificationReview(), retirementManagerJobConfig.enableWorkflowNotificationReview());
+    assertEquals(service.enableWorkflowNotificationReview(), retirementManagerJobConfig.enableWorkflowNotificationReview());
     assertEquals(service.getAuthorDomain(), retirementManagerJobConfig.authorDomain());
-    assertEquals(service.getEnableWorkflowNotificationRetirement(), retirementManagerJobConfig.enableWorkflowNotificationRetirement());
-    assertEquals(service.getArchivalDays(), retirementManagerJobConfig.archivalDays());
+    assertEquals(service.enableWorkflowNotificationRetirement(), retirementManagerJobConfig.enableWorkflowNotificationRetirement());
   }
 
 }

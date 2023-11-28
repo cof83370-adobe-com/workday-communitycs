@@ -36,6 +36,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
+import org.apache.sling.event.jobs.consumer.JobConsumer.JobResult;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -117,27 +118,32 @@ public class RetirementManagerJobConsumer implements JobConsumer {
   public JobResult process(Job job) {
     log.debug("RetirementManagerJobConsumer process >>>>>>>>>>>");
     // Check for any custom parameters in the job
-    String customParam = (String) job.getProperty("customJob");
-    log.debug("Custom Job: {}", customParam);
+    String timestamp = (String) job.getProperty("jobTimestamp");
+    log.debug("Job Timestamp: {}", timestamp);
 
-    //logic for retirement scheduler
-    runJob();
-
+    // logic for retirement job scheduler
+    boolean jobStatus = runJob();
     // Return JobResult.OK if processing is successful
+    if (!jobStatus) {
+      return JobResult.FAILED;
+    }
     return JobResult.OK;
   }
   
   /**
    * Runjob for RetirementManager notification.
+   *
+   * @return Returns true is AEM is in author mode, false otherwise
    */
-  public void runJob() {
+  public boolean runJob() {
     log.debug("RetirementManagerJobConsumer runJob >>>>>>>>>>>");
+    boolean status = false;
     try (ResourceResolver resResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-      if (retirementManagerJobConfigService.getEnableWorkflowNotificationReview()) {
+      if (retirementManagerJobConfigService.enableWorkflowNotificationReview()) {
         sendReviewNotification(resResolver);
       }
 
-      if (retirementManagerJobConfigService.getEnableWorkflowNotificationRetirement()) {
+      if (retirementManagerJobConfigService.enableWorkflowNotificationRetirement()) {
         startRetirementAndNotify(resResolver);
       }
       
@@ -145,7 +151,9 @@ public class RetirementManagerJobConsumer implements JobConsumer {
 
     } catch (Exception e) {
       log.error("Exception in run >>>>>>> {}", e.getMessage());
+      status = false;
     }
+    return status;
   }
 
   /**
@@ -270,7 +278,7 @@ public class RetirementManagerJobConsumer implements JobConsumer {
       String emailTemplateContainerTitle, Boolean triggerRetirement) {
     log.debug("sendNotification >>>>>>>   ");
 
-    paths.stream().filter(item -> resolver.getResource(item) != null).forEach(path -> {
+    paths.stream().filter(item -> resolver.getResource(item) != null).forEach(path -> { 
       try {
         if (triggerRetirement) {
           startWorkflow(resolver, WorkflowConstants.RETIREMENT_WORKFLOW, path);
@@ -351,7 +359,6 @@ public class RetirementManagerJobConsumer implements JobConsumer {
             }
           }
         }
-
       } catch (Exception e) {
         log.error("Exception occured in sendNotification: {}", e.getMessage());
       }
@@ -369,7 +376,6 @@ public class RetirementManagerJobConsumer implements JobConsumer {
   public void startWorkflow(ResourceResolver resolver, String model, String payloadContentPath)
       throws WorkflowException {
     log.debug("startWorkflow for >>>>>>> {}  ", payloadContentPath);
-
     WorkflowSession workflowSession = resolver.adaptTo(WorkflowSession.class);
 
     // Create workflow model using model path

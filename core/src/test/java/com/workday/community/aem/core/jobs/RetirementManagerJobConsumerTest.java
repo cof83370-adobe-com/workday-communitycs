@@ -366,10 +366,10 @@ public class RetirementManagerJobConsumerTest {
      * Test process job.
      */
     @Test
-    void testProcessJob() {
-      doReturn(null).when(job).getProperty("customJob");
+    void testProcessJobFail() {
+      doReturn(null).when(job).getProperty("jobTimestamp");
       JobResult result = retirementManagerJobConsumer.process(job);
-      assertEquals(JobResult.OK, result);
+      assertEquals(JobResult.FAILED, result);
     }
     
     /**

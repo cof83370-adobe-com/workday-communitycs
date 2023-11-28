@@ -1,7 +1,9 @@
 package com.workday.community.aem.core.schedulers;
 
 import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
+import java.sql.Timestamp;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +54,7 @@ public class RetirementManagerJobScheduler {
    */
   public void stopRetirementManagerJob() {
     log.debug("in stopRetirementManagerJob: {}", TOPIC);
-    Collection<ScheduledJobInfo> myJobs = jobManager.getScheduledJobs(TOPIC, 10, null);
+    Collection<ScheduledJobInfo> myJobs = jobManager.getScheduledJobs(TOPIC, 0, null);
     myJobs.forEach(sji -> sji.unschedule());
   }
 
@@ -61,29 +63,24 @@ public class RetirementManagerJobScheduler {
    */
   public void startRetirementManagerJob() {
     log.debug("in startRetirementManagerJob: {}", TOPIC);
+    Date date = new Date();
+    Timestamp timestamp = new Timestamp(date.getTime());
     // Check if the scheduled job already exists.
     Collection<ScheduledJobInfo> myJobs = jobManager.getScheduledJobs(TOPIC, 1, null);
     if (myJobs.isEmpty()) {
-      if (retirementManagerJobConfigService != null) {
-        // Setting some properties to pass to the JOb
-        Map<String, Object> jobProperties = new HashMap<>();
-        jobProperties.put("customJob", "retirementManagerJob");
+      // Setting some properties to pass to the JOb
+      Map<String, Object> jobProperties = new HashMap<>();
+      jobProperties.put("jobTimestamp", timestamp);
 
-        JobBuilder jobBuilder = jobManager.createJob(TOPIC);
-        if (jobBuilder != null) {
-          jobBuilder.properties(jobProperties);
+      JobBuilder jobBuilder = jobManager.createJob(TOPIC);
+      if (jobBuilder != null) {
+        jobBuilder.properties(jobProperties);
 
-          ScheduleBuilder scheduleBuilder = jobBuilder.schedule();
-          if (scheduleBuilder != null) {
-            scheduleBuilder.cron(retirementManagerJobConfigService.getWorkflowNotificationCron());
+        ScheduleBuilder scheduleBuilder = jobBuilder.schedule();
+        if (scheduleBuilder != null) {
+          scheduleBuilder.cron(retirementManagerJobConfigService.getWorkflowNotificationCron());
 
-            if (scheduleBuilder.add() == null) {
-              log.debug(
-                  "Something went wrong here, use scheduleBuilder.add(List<String>) instead");
-            } else {
-              log.debug("Job scheduled for: {}", TOPIC);
-            }
-          }
+          log.debug("Job scheduled for: {}", TOPIC);
         }
       }
     }
