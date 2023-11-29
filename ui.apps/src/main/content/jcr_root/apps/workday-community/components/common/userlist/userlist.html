@@ -5,9 +5,9 @@
 
     <div class="cmp-speakers__content" data-sly-list.speakersMultifield="${resource.getChildren}">
       <ul class="cmp-speakers__list" data-sly-list.ourmUsers="${speakersMultifield.getChildren}">
-        <li class="cmp-speakers__list__item"><span><img class="cmp-speakers__list__image"
-              src="${ourmUsers.profileImageData ? ourmUsers.profileImageData :'/etc.clientlibs/workday-community/clientlibs/clientlib-site/resources/images/profile.svg'}"><a
-              class="cmp-speakers__list__name" href="#">${ourmUsers.ourmUser}</a></span></li>
+        <li class="cmp-speakers__list__item"><span class="cmp-speakers__list__image-content"><img class="cmp-speakers__list__image"
+              src="${ourmUsers.profileImageData ? ourmUsers.profileImageData :'/etc.clientlibs/workday-community/clientlibs/clientlib-site/resources/images/profile.svg'}"><span
+              class="cmp-speakers__list__name">${ourmUsers.ourmUser}</span></span></li>
       </ul>
     </div>
   </div>
