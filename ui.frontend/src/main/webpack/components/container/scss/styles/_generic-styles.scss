@@ -64,4 +64,15 @@
 
 .bg-gray {
     background: $wdc-color-soap-200;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    width: 100vw !important;
+    padding-bottom: 32px;
+
+     .cmp-container {
+        &:first-child {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    }
 }
