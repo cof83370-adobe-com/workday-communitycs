@@ -262,7 +262,6 @@
                                         name="./programsToolsTags"
                                         rootPath="/content/cq:tags/programs-tools"/>
                                     <reviewReminderDate
-                                        cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                         disabled="{Boolean}true"
@@ -272,7 +271,6 @@
                                         fieldLabel="Review Notification Date"
                                         name="./reviewReminderDate"/>
                                     <retirementNotificationDate
-                                        cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                         disabled="{Boolean}true"
@@ -282,17 +280,15 @@
                                         fieldLabel="Retirement Notification Date"
                                         name="./retirementNotificationDate"/>
                                     <scheduledRetirementDate
-                                        cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                         disabled="{Boolean}true"
                                         displayedFormat="MMM DD, YYYY"
-                                        emptyText="Planned Retirement date"
+                                        emptyText="Planned Retirement Date"
                                         fieldDescription="Date when the page is expected to retire as per automatic retirement process"
-                                        fieldLabel="Planned Retirement date"
+                                        fieldLabel="Planned Retirement Date"
                                         name="./scheduledRetirementDate"/>
                                     <actualRetirementDate
-                                        cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                         disabled="{Boolean}true"
@@ -302,17 +298,15 @@
                                         fieldLabel="Actual Retirement Date"
                                         name="./actualRetirementDate"/>
                                     <unRetirementDate
-                                        cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                         disabled="{Boolean}true"
                                         displayedFormat="MMM DD, YYYY"
-                                        emptyText="Event Un-retirement Date"
+                                        emptyText="Un-retirement Date"
                                         fieldDescription="Date when the retired page is un-retired by content publishing workflow"
-                                        fieldLabel="Event Un-retirement Date"
+                                        fieldLabel="Un-retirement Date"
                                         name="./unRetirementDate"/>
                                     <archivalDate
-                                        cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
                                         disabled="{Boolean}true"
