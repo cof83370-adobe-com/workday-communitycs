@@ -305,6 +305,10 @@ public class ContentPublishingWorkflowProcessTest {
     assertTrue(actualResultRetNtDt);
     boolean actualResultSdRtDt = node.hasProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
     assertTrue(actualResultSdRtDt);
+    boolean actualResultRtSt = node.hasProperty(WorkflowConstants.RETIREMENT_STATUS_PROP);
+    assertTrue(actualResultRtSt);
+    boolean actualResultRtDt = node.hasProperty(WorkflowConstants.ACTUAL_RETIREMENT_DATE);
+    assertTrue(actualResultRtDt);
 
     cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver, page);
     assertNotNull(page);

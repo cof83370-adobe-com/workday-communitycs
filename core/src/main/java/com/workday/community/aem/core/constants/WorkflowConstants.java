@@ -101,6 +101,16 @@ public interface WorkflowConstants {
   String NOTIFICATION_NAME_CONTENT_PUBLISHED = "Content has been published";
   
   /**
+   * The retirement status val.
+   */
+  String UNRETIREMENT_STATUS_VAL = "unretired";
+  
+  /**
+   * The unretirement date.
+   */
+  String UNRETIREMENT_DATE = "unRetirementDate";
+  
+  /**
    * The archival date.
    */
   String ARCHIVAL_DATE = "archivalDate";
