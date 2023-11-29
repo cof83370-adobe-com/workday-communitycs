@@ -36,7 +36,6 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
-import org.apache.sling.event.jobs.consumer.JobConsumer.JobResult;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -123,9 +122,6 @@ public class RetirementManagerJobConsumer implements JobConsumer {
 
     //logic for retirement scheduler
     return runJob();
-
-    // Return JobResult.OK if processing is successful
-    //return JobResult.OK;
   }
   
   /**
