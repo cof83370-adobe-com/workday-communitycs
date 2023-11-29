@@ -1,7 +1,9 @@
 package com.workday.community.aem.core.schedulers;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import org.apache.sling.event.jobs.JobBuilder;
 import org.apache.sling.event.jobs.JobManager;
 import org.apache.sling.event.jobs.JobBuilder.ScheduleBuilder;
@@ -22,7 +24,7 @@ import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 public class RetirementManagerJobSchedulerTest {
     
     /** The job topic. */
-	private static final String TOPIC = "content/retirement/manager/job";
+	private static final String TOPIC = "community/retirement/manager/job";
     
     @Mock
     JobManager jobManager;
@@ -45,20 +47,14 @@ public class RetirementManagerJobSchedulerTest {
      */
     @BeforeEach
     void setup() {
-		revNotifScheduler.activate();
-    }
-    
-    @Test
-    public final void testStopRetirementManagerJob() {
-    	revNotifScheduler.stopRetirementManagerJob();
-    }
-    
-    @Test
-    public final void testStartRetirementManagerJob() {
     	lenient().when(jobManager.createJob(TOPIC)).thenReturn(jobBuilder);
-    	assertNotNull(jobBuilder);
     	lenient().when(jobBuilder.schedule()).thenReturn(scheduleBuilder);
-    	assertNotNull(scheduleBuilder);
-    	revNotifScheduler.startRetirementManagerJob();
+    }
+    
+    @Test
+    public final void testActivate() {
+    	revNotifScheduler.activate();
+		verify(jobManager, times(1)).createJob(TOPIC);
+		verify(jobBuilder, times(1)).schedule();
     }
 }

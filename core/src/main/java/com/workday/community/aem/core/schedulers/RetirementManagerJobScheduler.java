@@ -80,7 +80,11 @@ public class RetirementManagerJobScheduler {
         if (scheduleBuilder != null) {
           scheduleBuilder.cron(retirementManagerJobConfigService.getWorkflowNotificationCron());
 
-          log.debug("Job scheduled for: {}", TOPIC);
+          if (scheduleBuilder.add() == null) {
+            log.debug("Unable to add jobs to the queue");
+          } else {
+            log.debug("Job scheduled for: {}", TOPIC);
+          }
         }
       }
     }
