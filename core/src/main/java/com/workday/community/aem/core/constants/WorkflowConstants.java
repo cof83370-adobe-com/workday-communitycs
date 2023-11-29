@@ -114,4 +114,9 @@ public interface WorkflowConstants {
    * The archival date.
    */
   String ARCHIVAL_DATE = "archivalDate";
+  
+  /**
+   * The archival version comment.
+   */
+  String ARCHIVAL_VERSION_COMMENT = "Version created by automated archival process";
 }

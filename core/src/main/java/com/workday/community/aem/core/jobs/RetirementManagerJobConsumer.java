@@ -416,7 +416,7 @@ public class RetirementManagerJobConsumer implements JobConsumer {
             replicator.replicate(session, ReplicationActionType.DEACTIVATE, path);
 
             // Create version for page before deleting
-            pageManager.createRevision(page);
+            pageManager.createRevision(page, null, WorkflowConstants.ARCHIVAL_VERSION_COMMENT);
 
             // Delete page
             pageManager.delete(page, false);
