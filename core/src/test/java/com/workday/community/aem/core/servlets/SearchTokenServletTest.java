@@ -76,6 +76,7 @@ public class SearchTokenServletTest {
     try (MockedStatic<HttpUtils> mockHttpUtils = mockStatic(HttpUtils.class)) {
       mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME))
           .thenReturn(testCookies[1]);
+      mockHttpUtils.when(() -> HttpUtils.forbiddenResponse(request, response, userService)).thenReturn(false);
       SearchTokenServlet servlet = new SearchTokenServlet();
       RequestPathInfo mockRequestInfo = mock(RequestPathInfo.class);
       lenient().when(request.getRequestPathInfo()).thenReturn(mockRequestInfo);
@@ -144,6 +145,7 @@ public class SearchTokenServletTest {
          MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class);
          MockedStatic<HttpClients> mockHttpClients = mockStatic(HttpClients.class)) {
       mockHttpUtils.when(() -> HttpUtils.getCookie(request, COVEO_COOKIE_NAME)).thenReturn(null);
+      mockHttpUtils.when(() -> HttpUtils.forbiddenResponse(request, response, userService)).thenReturn(false);
       mockOurmUtils.when(() -> OurmUtils.getSalesForceId(any(), any()))
           .thenReturn(DEFAULT_SFID_MASTER);
       mockOurmUtils.when(() -> OurmUtils.getUserEmail(anyString(), any(), any()))

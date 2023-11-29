@@ -112,92 +112,48 @@ public class DrupalServiceImpl implements DrupalService {
   }
 
   /**
-   * Gets the Drupal API Bearer Token required for user data API.
-   */
-  protected String getApiToken() throws DrupalException {
-    String cachedResult = drupalApiCache.get(DrupalConstants.TOKEN_CACHE_KEY);
-    if (StringUtils.isNotBlank(cachedResult)) {
-      return cachedResult;
-    }
-    String drupalUrl = config.drupalApiUrl();
-    String tokenPath = config.drupalTokenPath();
-    String clientId = config.drupalUserLookupClientId();
-    String clientSecret = config.drupalUserLookupClientSecret();
-
-    if (StringUtils.isEmpty(drupalUrl) || StringUtils.isEmpty(tokenPath)
-        || StringUtils.isEmpty(clientId) || StringUtils.isEmpty(clientSecret)) {
-      // No Drupal configuration provided, just return the default one.
-      LOGGER.debug(String.format("There is no value "
-              + "for one or multiple configuration parameters: "
-              + "drupalUrl=%s;tokenPath=%s;clientId=%s;clientSecret=%s",
-          drupalUrl, tokenPath, clientId, clientSecret));
-      return StringUtils.EMPTY;
-    }
-
-    try {
-      String url = CommunityUtils.formUrl(drupalUrl, tokenPath);
-
-      // Execute the request.
-      ApiResponse drupalResponse = RestApiUtil.doDrupalTokenGet(url, clientId, clientSecret);
-      if (drupalResponse == null || StringUtils.isEmpty(drupalResponse.getResponseBody())
-          || drupalResponse.getResponseCode() != HttpStatus.SC_OK) {
-        LOGGER.error("Drupal API token response is empty.");
-        return StringUtils.EMPTY;
-      }
-
-      // Gson object for json handling of token response.
-      JsonObject tokenResponse = gson.fromJson(drupalResponse.getResponseBody(), JsonObject.class);
-      if (tokenResponse.get("access_token") == null || tokenResponse.get("access_token").isJsonNull()) {
-        LOGGER.error("Drupal API token is empty.");
-        return StringUtils.EMPTY;
-      }
-
-      // Update the cache with the bearer token.
-      String bearerToken = tokenResponse.get("access_token").getAsString();
-      drupalApiCache.put(DrupalConstants.TOKEN_CACHE_KEY, bearerToken);
-      return bearerToken;
-    } catch (DrupalException e) {
-      throw new DrupalException(
-          String.format(
-              "Error while fetching the Drupal Api token. Please contact Community Admin. Error: %s",
-              e.getMessage()));
-    }
-  }
-
-  /**
    * Makes Drupal API call and fetches the user data for logged-in user.
    */
   @Override
   public String getUserData(String sfId) {
+    if (StringUtils.isEmpty(sfId)) {
+      return "";
+    }
     String userDataCacheKey = String.format("user_data_%s_%s_%s", getEnv(), getInstance(), sfId);
     if (!config.enableCache()) {
       serviceCacheMgr.invalidateCache(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey);
     }
     String retValue = serviceCacheMgr.get(CacheBucketName.OBJECT_VALUE.name(), userDataCacheKey, () -> {
       try {
-        if (StringUtils.isNotBlank(sfId)) {
-          String drupalUrl = config.drupalApiUrl();
-          String userDataPath = config.drupalUserDataPath();
-          // Get the bearer token needed for user data API call.
-          String bearerToken = getApiToken();
-          if (StringUtils.isNotBlank(bearerToken)) {
-            // Frame the request URL.
-            String url = CommunityUtils.formUrl(drupalUrl, userDataPath);
-            // Format the URL.
-            url = String.format(url, sfId);
-            // Execute the request.
-            ApiResponse userDataResponse = RestApiUtil.doDrupalUserDataGet(url, bearerToken);
+        String drupalUrl = config.drupalApiUrl();
+        String userDataPath = config.drupalUserDataPath();
+        // Get the bearer token needed for user data API call.
+        String bearerToken = getApiToken();
+        if (StringUtils.isNotBlank(bearerToken)) {
+          // Frame the request URL.
+          String url = CommunityUtils.formUrl(drupalUrl, userDataPath);
+          // Format the URL.
+          url = String.format(url, sfId);
+          // Execute the request.
+          ApiResponse userDataResponse = RestApiUtil.doDrupalUserDataGet(url, bearerToken);
+          if (userDataResponse == null || StringUtils.isEmpty(userDataResponse.getResponseBody())
+              || userDataResponse.getResponseCode() != HttpStatus.SC_OK) {
+            LOGGER.error("Drupal API user data response is empty. try ago with new token");
+            this.drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
+            userDataResponse = RestApiUtil.doDrupalUserDataGet(url, getApiToken());
             if (userDataResponse == null || StringUtils.isEmpty(userDataResponse.getResponseBody())
                 || userDataResponse.getResponseCode() != HttpStatus.SC_OK) {
               LOGGER.error("Drupal API user data response is empty.");
               return StringUtils.EMPTY;
             }
-
-            return userDataResponse.getResponseBody();
           }
+
+          return userDataResponse.getResponseBody();
         }
+
         return StringUtils.EMPTY;
       } catch (DrupalException e) {
+        this.drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
         LOGGER.error(
             String.format(
                 "There is an error while fetching the user data. Please contact Community Admin. %s",
@@ -219,20 +175,32 @@ public class DrupalServiceImpl implements DrupalService {
    */
   @Override
   public String getUserProfileImage(String sfId) {
-    try {
-      String userData = this.getUserData(sfId);
-      if (StringUtils.isEmpty(userData)) {
-        LOGGER.error("Error in getUserProfileImage method - empty user data response.");
-        return StringUtils.EMPTY;
-      }
-      JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
-      JsonElement profileImageElement = userDataObject.get("profileImage");
-      return (profileImageElement == null || profileImageElement.isJsonNull()) ? ""
-          : profileImageElement.getAsString();
-    } catch (JsonSyntaxException e) {
-      LOGGER.error("Error in getUserProfileImage method, {} ", e.getMessage());
-      return StringUtils.EMPTY;
+    if (StringUtils.isEmpty(sfId)) {
+      return "";
     }
+
+    String userDataCacheKey = String.format("user_profile_image_%s_%s_%s", getEnv(), getInstance(), sfId);
+    if (!config.enableCache()) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.USER_IMAGES.name(), userDataCacheKey);
+    }
+    String retValue = serviceCacheMgr.get(CacheBucketName.USER_IMAGES.name(), userDataCacheKey, () -> {
+      try {
+        String userData = this.getUserData(sfId);
+        if (StringUtils.isEmpty(userData)) {
+          LOGGER.error("Error in getUserProfileImage method - empty user data response.");
+          return null;
+        }
+        JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
+        JsonElement profileImageElement = userDataObject.get("profileImage");
+        return (profileImageElement == null || profileImageElement.isJsonNull()) ? ""
+            : profileImageElement.getAsString();
+      } catch (JsonSyntaxException e) {
+        LOGGER.error("Error in getUserProfileImage method, {} ", e.getMessage());
+        return null;
+      }
+    });
+
+    return retValue == null ? StringUtils.EMPTY : retValue;
   }
 
   /**
@@ -266,13 +234,137 @@ public class DrupalServiceImpl implements DrupalService {
   }
 
   /**
+   * Gets the user timezone from drupal user data API.
+   *
+   * @param sfId SFID
+   * @return image data as string
+   */
+  @Override
+  public String getUserTimezone(String sfId) {
+    String userTimeZoneCacheKey = String.format("user_time_zone_%s_%s_%s", getEnv(), getInstance(), sfId);
+    if (!config.enableCache()) {
+      serviceCacheMgr.invalidateCache(CacheBucketName.STRING_VALUE.name(), userTimeZoneCacheKey);
+    }
+
+    String retValue = serviceCacheMgr.get(CacheBucketName.STRING_VALUE.name(), userTimeZoneCacheKey, () -> {
+      try {
+        String userData = this.getUserData(sfId);
+        if (StringUtils.isEmpty(userData)) {
+          LOGGER.error("Error in getUserTimezone method - empty user data response.");
+          return null;
+        }
+        if (StringUtils.isNotBlank(userData)) {
+          JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
+          JsonObject adobeObject = userDataObject.getAsJsonObject(ADOBE);
+          // Process user data
+          JsonObject userObject = adobeObject.getAsJsonObject(USER);
+          JsonElement timeZoneElement = userObject.get(TIMEZONE);
+          return (timeZoneElement == null || timeZoneElement.isJsonNull()) ? StringUtils.EMPTY
+              : timeZoneElement.getAsString();
+        }
+      } catch (JsonSyntaxException e) {
+        LOGGER.error("Error in getUserTimezone method, {} ", e.getMessage());
+        return null;
+      }
+      return null;
+    });
+
+    return (retValue == null) ? StringUtils.EMPTY : retValue;
+  }
+
+  /**
+   * Gets the user context from drupal user data API.
+   *
+   * @param sfId SFID
+   * @return User context json object
+   */
+  @Override
+  public JsonObject getUserContext(String sfId) {
+    try {
+      String userData = this.getUserData(sfId);
+      if (StringUtils.isNotBlank(userData)) {
+        JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
+        JsonObject context = userDataObject.getAsJsonObject(USER_CONTEXT_INFO_KEY);
+        if (context == null || context.isJsonNull() || (context.has("error") && context.get("error").getAsBoolean())) {
+          return new JsonObject();
+        }
+        return context;
+      }
+    } catch (JsonSyntaxException e) {
+      LOGGER.error("Error in getUserContext method, {} ", e.getMessage());
+    }
+    return new JsonObject();
+  }
+
+  /**
+   * Search ourm user list.
+   *
+   * @param searchText the search text
+   * @return the json object
+   * @throws DrupalException drupal exception
+   */
+  @Override
+  public JsonObject searchOurmUserList(String searchText) throws DrupalException {
+    try {
+      if (StringUtils.isNotBlank(searchText)) {
+        String drupalUrl = config.drupalApiUrl();
+        String userSearchPath = config.drupalUserSearchPath();
+        // Get the bearer token needed for user data API call.
+        String bearerToken = getApiToken();
+        if (StringUtils.isNotBlank(bearerToken)) {
+          // Frame the request URL.
+          String url = CommunityUtils.formUrl(drupalUrl, userSearchPath);
+          // Format the URL.
+          url = String.format(url, searchText);
+          // Execute the request.
+          ApiResponse userSearchResponse = RestApiUtil.doDrupalUserSearchGet(url, bearerToken);
+          if (StringUtils.isEmpty(userSearchResponse.getResponseBody())
+              || userSearchResponse.getResponseCode() != HttpStatus.SC_OK) {
+
+            // Try one more time with updated token if it is because of expired token.
+            this.drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
+            userSearchResponse = RestApiUtil.doDrupalUserSearchGet(url, getApiToken());
+            if (StringUtils.isEmpty(userSearchResponse.getResponseBody())
+                || userSearchResponse.getResponseCode() != HttpStatus.SC_OK) {
+              LOGGER.error("Drupal API user search response is empty.");
+              return new JsonObject();
+            }
+          }
+
+          return gson.fromJson(userSearchResponse.getResponseBody(), JsonObject.class);
+        }
+      }
+      return new JsonObject();
+    } catch (DrupalException e) {
+      this.drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
+      throw new DrupalException(
+          "There is an error while fetching user search data. Please contact Community Admin. %s",
+          e.getMessage());
+    }
+  }
+
+  /**
+   * Returns the environment name.
+   *
+   * @return Environment name.
+   */
+  private String getEnv() {
+    String env = this.runModeConfigService.getEnv();
+    return (env == null) ? "local" : env;
+  }
+
+  private String getInstance() {
+    String inst = this.runModeConfigService.getInstance();
+    return (inst == null) ? "local" : inst;
+  }
+
+  /**
    * Generate adobe digital data.
    *
    * @param userData The drupal user data api response as string.
    * @return The digital data.
    */
   private JsonObject generateAdobeDigitalData(String userData) {
-
     JsonObject userProperties = new JsonObject();
 
     String contactRole = StringUtils.EMPTY;
@@ -334,111 +426,54 @@ public class DrupalServiceImpl implements DrupalService {
   }
 
   /**
-   * Gets the user timezone from drupal user data API.
-   *
-   * @param sfId SFID
-   * @return image data as string
+   * Gets the Drupal API Bearer Token required for user data API.
    */
-  @Override
-  public String getUserTimezone(String sfId) {
+  protected String getApiToken() throws DrupalException {
+    String cachedResult = drupalApiCache.get(DrupalConstants.TOKEN_CACHE_KEY);
+    if (StringUtils.isNotBlank(cachedResult)) {
+      return cachedResult;
+    }
+    String drupalUrl = config.drupalApiUrl();
+    String tokenPath = config.drupalTokenPath();
+    String clientId = config.drupalUserLookupClientId();
+    String clientSecret = config.drupalUserLookupClientSecret();
+
+    if (StringUtils.isEmpty(drupalUrl) || StringUtils.isEmpty(tokenPath)
+        || StringUtils.isEmpty(clientId) || StringUtils.isEmpty(clientSecret)) {
+      // No Drupal configuration provided, just return the default one.
+      LOGGER.debug(String.format("There is no value "
+              + "for one or multiple configuration parameters: "
+              + "drupalUrl=%s;tokenPath=%s;clientId=%s;clientSecret=%s",
+          drupalUrl, tokenPath, clientId, clientSecret));
+      return StringUtils.EMPTY;
+    }
+
     try {
-      String userData = this.getUserData(sfId);
-      if (StringUtils.isEmpty(userData)) {
-        LOGGER.error("Error in getUserTimezone method - empty user data response.");
+      String url = CommunityUtils.formUrl(drupalUrl, tokenPath);
+
+      // Execute the request.
+      ApiResponse drupalResponse = RestApiUtil.doDrupalTokenGet(url, clientId, clientSecret);
+      if (drupalResponse == null || StringUtils.isEmpty(drupalResponse.getResponseBody())
+          || drupalResponse.getResponseCode() != HttpStatus.SC_OK) {
+        LOGGER.error("Drupal API token response is empty.");
         return StringUtils.EMPTY;
       }
-      if (StringUtils.isNotBlank(userData)) {
-        JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
-        JsonObject adobeObject = userDataObject.getAsJsonObject(ADOBE);
-        // Process user data
-        JsonObject userObject = adobeObject.getAsJsonObject(USER);
-        JsonElement timeZoneElement = userObject.get(TIMEZONE);
-        return (timeZoneElement == null || timeZoneElement.isJsonNull()) ? StringUtils.EMPTY
-            : timeZoneElement.getAsString();
-      }
-    } catch (JsonSyntaxException e) {
-      LOGGER.error("Error in getUserTimezone method, {} ", e.getMessage());
-    }
-    return StringUtils.EMPTY;
-  }
 
-  /**
-   * Gets the user context from drupal user data API.
-   *
-   * @param sfId SFID
-   * @return User context json object
-   */
-  @Override
-  public JsonObject getUserContext(String sfId) {
-    try {
-      String userData = this.getUserData(sfId);
-      if (StringUtils.isNotBlank(userData)) {
-        JsonObject userDataObject = gson.fromJson(userData, JsonObject.class);
-        JsonObject context = userDataObject.getAsJsonObject(USER_CONTEXT_INFO_KEY);
-        if (context == null || context.isJsonNull() || (context.has("error") && context.get("error").getAsBoolean())) {
-          return new JsonObject();
-        }
-        return context;
+      // Gson object for json handling of token response.
+      JsonObject tokenResponse = gson.fromJson(drupalResponse.getResponseBody(), JsonObject.class);
+      if (tokenResponse.get("access_token") == null || tokenResponse.get("access_token").isJsonNull()) {
+        LOGGER.error("Drupal API token is empty.");
+        return StringUtils.EMPTY;
       }
-    } catch (JsonSyntaxException e) {
-      LOGGER.error("Error in getUserContext method, {} ", e.getMessage());
-    }
-    return new JsonObject();
-  }
 
-  /**
-   * Search ourm user list.
-   *
-   * @param searchText the search text
-   * @return the json object
-   * @throws DrupalException drupal exception
-   */
-  @Override
-  public JsonObject searchOurmUserList(String searchText) throws DrupalException {
-    try {
-      if (StringUtils.isNotBlank(searchText)) {
-        String drupalUrl = config.drupalApiUrl();
-        String userSearchPath = config.drupalUserSearchPath();
-        // Get the bearer token needed for user data API call.
-        String bearerToken = getApiToken();
-        if (StringUtils.isNotBlank(bearerToken)) {
-          // Frame the request URL.
-          String url = CommunityUtils.formUrl(drupalUrl, userSearchPath);
-          // Format the URL.
-          url = String.format(url, searchText);
-          // Execute the request.
-          ApiResponse userSearchResponse = RestApiUtil.doDrupalUserSearchGet(url, bearerToken);
-          if (StringUtils.isEmpty(userSearchResponse.getResponseBody())
-              || userSearchResponse.getResponseCode() != HttpStatus.SC_OK) {
-            LOGGER.error("Drupal API user search response is empty.");
-            return new JsonObject();
-          }
-
-          return gson.fromJson(userSearchResponse.getResponseBody(), JsonObject.class);
-        }
-      }
-      return new JsonObject();
+      // Update the cache with the bearer token.
+      String bearerToken = tokenResponse.get("access_token").getAsString();
+      drupalApiCache.put(DrupalConstants.TOKEN_CACHE_KEY, bearerToken);
+      return bearerToken;
     } catch (DrupalException e) {
       throw new DrupalException(
-          String.format(
-              "There is an error while fetching user search data. Please contact Community Admin. %s",
-              e.getMessage()));
+          "Error while fetching the Drupal Api token. Please contact Community Admin. Error: %s",
+          e.getMessage());
     }
   }
-
-  /**
-   * Returns the environment name.
-   *
-   * @return Environment name.
-   */
-  private String getEnv() {
-    String env = this.runModeConfigService.getEnv();
-    return (env == null) ? "local" : env;
-  }
-
-  private String getInstance() {
-    String inst = this.runModeConfigService.getInstance();
-    return (inst == null) ? "local" : inst;
-  }
-
 }

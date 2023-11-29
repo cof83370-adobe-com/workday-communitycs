@@ -8,6 +8,7 @@ import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
+import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.ServletCallback;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -71,6 +72,12 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
     log.debug("Get search token call, method {}", request.getMethod());
+
+    // In case user is not logged in, response with forbidden.
+    if (HttpUtils.forbiddenResponse(request, response, this.userService)) {
+      return;
+    }
+
     ServletCallback servletCallback = (SlingHttpServletRequest req,
                                        SlingHttpServletResponse res, String body) -> {
       log.debug("inside getToken API callback with response; {} for request path: {}", body,

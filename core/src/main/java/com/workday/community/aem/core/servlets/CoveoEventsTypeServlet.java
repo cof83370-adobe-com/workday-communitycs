@@ -18,6 +18,7 @@ import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
+import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.ServletCallback;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -82,6 +83,11 @@ public class CoveoEventsTypeServlet extends SlingSafeMethodsServlet {
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
       throws ServletException, IOException {
+    log.debug("Start to fetch event types");
+    // In case user is not logged in, response with forbidden.
+    if (HttpUtils.forbiddenResponse(request, response, this.userService)) {
+      return;
+    }
 
     ServletCallback callback =
         (SlingHttpServletRequest req, SlingHttpServletResponse res, String body) -> {
