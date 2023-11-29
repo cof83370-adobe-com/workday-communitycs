@@ -28,8 +28,9 @@
         padding-bottom: 32px;
 
         &__item {
-            max-height: 41px;
-            overflow: hidden;
+            min-height: 41px;
+            height: auto;
+            padding-bottom: 10px;
         }
 
         &__image {
@@ -44,14 +45,11 @@
             font-style: $font-style-normal;
             font-weight: $font-weight-normal;
             font-size: 15px;
-            line-height: 41px;
+            line-height: 20px;
             letter-spacing: 0.2px;
             color: $wdc-color-black-pepper-600;
             text-decoration: none;
-
-            &:hover {
-                text-decoration: underline;
-            }
+            cursor: default;
         }
     }
 }
