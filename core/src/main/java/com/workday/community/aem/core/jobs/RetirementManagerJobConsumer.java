@@ -403,10 +403,10 @@ public class RetirementManagerJobConsumer implements JobConsumer {
       PageManager pageManager = resolver.adaptTo(PageManager.class);
       Page page = null;
       try {
-        if (pageManager != null) {
+        if (session != null && pageManager != null) {
           page = pageManager.getPage(path);
           if (page != null) {
-            log.debug("before archive >>>>>>>");
+            log.debug("Before archiving path >>>>>>> {}", path);
 
             // Deactivate the page before archiving
             replicator.replicate(session, ReplicationActionType.DEACTIVATE, path);
@@ -417,13 +417,13 @@ public class RetirementManagerJobConsumer implements JobConsumer {
             // Delete page
             pageManager.delete(page, false);
 
-            log.debug("after archive >>>>>>>");
+            log.debug("After archiving path >>>>>>> {}", path);
           }
         }
       } catch (ReplicationException e) {
-        log.error("ReplicationException occured in archiveContent method: {}", e.getMessage());
+        log.error("ReplicationException occured while archiving path: '{}' : {} ", path, e.getMessage());
       } catch (WCMException exec) {
-        log.error("WCMException occured in archiveContent method: {} ", exec.getMessage());
+        log.error("WCMException occured while archiving path: '{}' : {} ", path, exec.getMessage());
       }
     });
   }
