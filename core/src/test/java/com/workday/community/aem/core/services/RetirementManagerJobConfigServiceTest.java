@@ -47,6 +47,11 @@ public class RetirementManagerJobConfigServiceTest {
 		public boolean enableWorkflowNotificationRetirement() {
 			return true;
 		}
+		
+		@Override
+		public int archivalDays() {
+		    return 90;
+		}
   };
 
   @BeforeEach

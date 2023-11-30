@@ -18,6 +18,7 @@ import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.Value;
 
 import org.apache.commons.mail.EmailException;
@@ -38,7 +39,11 @@ import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.model.WorkflowModel;
+import com.day.cq.replication.ReplicationStatus;
+import com.day.cq.replication.Replicator;
 import com.day.cq.search.QueryBuilder;
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
@@ -85,6 +90,18 @@ public class RetirementManagerJobConsumerTest {
     
     @Mock
     QueryBuilder queryBuilder;
+    
+    /**
+     * The replicator.
+     */
+    @Mock
+    private Replicator replicator;
+    
+    /**
+     * The replication status.
+     */
+    @Mock
+    private ReplicationStatus repStatus;
     
     @Mock
     RetirementManagerJobConfigService retirementManagerJobConfigService;
@@ -354,5 +371,29 @@ public class RetirementManagerJobConsumerTest {
       lenient().when(job.getProperty("jobTimestamp")).thenReturn(true);
       JobResult result = retirementManagerJobConsumer.process(job);
       assertEquals(JobResult.OK, result);
+    }
+    
+    /**
+     * Test archive content.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    void testArchiveContent() throws Exception {
+      Session session = mock(Session.class);
+      lenient().when(resolver.adaptTo(Session.class)).thenReturn(session);
+      PageManager pm = mock(PageManager.class);
+      lenient().when(resolver.adaptTo(PageManager.class)).thenReturn(pm);
+      Page page = mock(Page.class);
+      lenient().when(pm.getPage("/content/workday-community/en-us/test")).thenReturn(page);
+      Resource resource = mock(Resource.class);
+      lenient().when(resolver.getResource(anyString())).thenReturn(resource);
+      lenient().when(replicator.getReplicationStatus(session, "/content/workday-community/en-us/test")).thenReturn(repStatus);
+      lenient().when(repStatus.isActivated()).thenReturn(true);
+      
+  	  retirementManagerJobConsumer.archiveContent(resolver);
+      assertNotNull(session);
+      assertNotNull(replicator);
+      assertNotNull(repStatus);
     }
 }

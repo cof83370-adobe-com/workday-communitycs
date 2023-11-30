@@ -8,6 +8,12 @@ import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkflowData;
 import com.adobe.granite.workflow.model.WorkflowModel;
+import com.day.cq.replication.ReplicationActionType;
+import com.day.cq.replication.ReplicationException;
+import com.day.cq.replication.Replicator;
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
+import com.day.cq.wcm.api.WCMException;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
@@ -24,12 +30,12 @@ import java.util.regex.Pattern;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
-import org.apache.sling.event.jobs.consumer.JobConsumer.JobResult;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -64,6 +70,9 @@ public class RetirementManagerJobConsumer implements JobConsumer {
   /** The retirement manager job config service. */
   @Reference
   private RetirementManagerJobConfigService retirementManagerJobConfigService;
+  
+  @Reference
+  private Replicator replicator;
 
   /**
    * The email template review reminder text.
@@ -98,6 +107,11 @@ public class RetirementManagerJobConsumer implements JobConsumer {
    */
   private final String emailTemplateRetNotifySubject = 
       "/workflows/retirement-notification/jcr:content/root/container/container/title";
+  
+  /**
+   * The Property archivalDate.
+   */
+  private final String propArchivalDate = "jcr:content/archivalDate";
 
   @Override
   public JobResult process(Job job) {
@@ -108,9 +122,6 @@ public class RetirementManagerJobConsumer implements JobConsumer {
 
     //logic for retirement scheduler
     return runJob();
-
-    // Return JobResult.OK if processing is successful
-    //return JobResult.OK;
   }
   
   /**
@@ -126,6 +137,8 @@ public class RetirementManagerJobConsumer implements JobConsumer {
       if (retirementManagerJobConfigService.enableWorkflowNotificationRetirement()) {
         startRetirementAndNotify(resResolver);
       }
+      
+      archiveContent(resResolver);
 
     } catch (Exception e) {
       log.error("Exception in run >>>>>>> {}", e.getMessage());
@@ -370,5 +383,48 @@ public class RetirementManagerJobConsumer implements JobConsumer {
     // Trigger workflow
     workflowSession.startWorkflow(workflowModel, workflowData, workflowMetadata);
     log.debug("startWorkflow completed >>>>>>>   ");
+  }
+  
+  /**
+   * Archive Content.
+   *
+   * @param resolver the resolver
+   */
+  public void archiveContent(ResourceResolver resolver) {
+    log.debug("in archiveContent >>>>>>>");
+
+    if (replicator == null) {
+      return;
+    }
+
+    List<String> retiredPagePaths = queryService.getRetiredPagesByArchivalDate(propArchivalDate);
+    retiredPagePaths.stream().filter(item -> resolver.getResource(item) != null).forEach(path -> {
+      Session session = resolver.adaptTo(Session.class);
+      PageManager pageManager = resolver.adaptTo(PageManager.class);
+      Page page = null;
+      try {
+        if (session != null && pageManager != null) {
+          page = pageManager.getPage(path);
+          if (page != null) {
+            log.debug("Before archiving path >>>>>>> {}", path);
+
+            // Deactivate the page before archiving
+            replicator.replicate(session, ReplicationActionType.DEACTIVATE, path);
+
+            // Create version for page before deleting
+            pageManager.createRevision(page, null, WorkflowConstants.ARCHIVAL_VERSION_COMMENT);
+
+            // Delete page
+            pageManager.delete(page, false);
+
+            log.debug("After archiving path >>>>>>> {}", path);
+          }
+        }
+      } catch (ReplicationException e) {
+        log.error("ReplicationException occured while archiving path: '{}' : {} ", path, e.getMessage());
+      } catch (WCMException exec) {
+        log.error("WCMException occured while archiving path: '{}' : {} ", path, exec.getMessage());
+      }
+    });
   }
 }

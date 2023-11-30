@@ -63,5 +63,14 @@ public class RetirementManagerJobConfigService {
   public String getAuthorDomain() {
     return config.authorDomain();
   }
+  
+  /**
+   * Get archival days.
+   *
+   * @return days
+   */
+  public int getArchivalDays() {
+    return config.archivalDays();
+  }
 
 }
