@@ -173,6 +173,10 @@ public class TabularListViewModelImpl implements TabularListViewModel {
   @Override
   public JsonArray getSelectedFields() {
     JsonArray fields = new JsonArray();
+    if (searches == null) {
+      return fields;
+    }
+
     for (int i = 0; i < searches.size(); i++) {
       FeedTabModel search = searches.get(i);
       String tagQuery = search.getTagQuery();

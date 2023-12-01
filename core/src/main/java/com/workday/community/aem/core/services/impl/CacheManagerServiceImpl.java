@@ -78,7 +78,7 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       closeAndClearCachedResolvers();
     }
     setUpRegularCacheClean();
-    log.debug("config: enabled: {}, expire: {}, user expire: {}, uuid: {}, user max: {}, "
+    log.debug("config: enabled: {}, expire: {}, user expire: {}, uuid: {}, user avatar max: {}, "
             + "menu size: {}", config.enabled(), config.expireDuration(),
         config.userImageExpireDuration(), config.maxUuid(), config.maxUserImages(),
         config.maxMenuSize());
