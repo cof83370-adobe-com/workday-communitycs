@@ -88,8 +88,8 @@ public @interface CacheConfig {
    * @return The length in seconds.
    */
   @AttributeDefinition(
-      name = "JCR user cache duration in seconds before expire",
-      description = "JCR user cache duration in seconds before expire (default 30 minutes)",
+      name = "JCR user avatar cache duration in seconds before expire",
+      description = "JCR user avatar cache duration in seconds before expire (default 30 minutes)",
       type = AttributeType.INTEGER
   )
   int userImageExpireDuration() default 30 * 60;
