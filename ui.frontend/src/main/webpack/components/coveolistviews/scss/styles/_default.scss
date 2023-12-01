@@ -1,9 +1,13 @@
 :root {
-  --spacing:$wdc-spacing-s;
-  --search-box-width:50% px;
+  --spacing: $wdc-spacing-s;
+  --search-box-width: 50% px;
   --atomic-primary: $wdc-color-primary-main;
-  --atomic-font-family:-apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
-  --atomic-font-family:"WorkdayAdelleSans-Regular" !important;
+  --atomic-font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui, helvetica neue, helvetica, Ubuntu, roboto, noto, arial, sans-serif;
+  --atomic-font-family: "WorkdayAdelleSans-Regular" !important;
+}
+
+atomic-search-interface {
+  margin-top: 15px;
 }
 
 atomic-did-you-mean::part(no-results) {
@@ -308,7 +312,7 @@ atomic-facet::part(facet), atomic-category-facet::part(facet) {
   position: relative;
 }
 
-atomic-facet:not(:last-child)::part(facet):after, atomic-category-facet::part(facet):after {
+atomic-facet:not(:last-child)::part(facet):after, atomic-category-facet::part(facet):after, atomic-facet::part(facet):after {
   content: '';
   display: block;
   width: calc(100% - 32px);
@@ -333,6 +337,7 @@ span.facet-header {
   font-size: 22px;
   line-height: 29px;
   color: $wdc-color-black-pepper-600;
+  font-family: "Workday Adelle Sans", Roboto, sans-serif;
   display: block;
   padding: 19px 0 0 $wdc-spacing-s;
 }
@@ -389,7 +394,9 @@ atomic-facet::part(value-checkbox) {
   height: 18px;
   border-color: $wdc-color-licorice-200 !important;
 }
-
+atomic-facet::part(value-checkbox-checked) {
+  background-color: $wdc-color-primary-main;
+}
 atomic-category-facet::part(clear-button), atomic-timeframe-facet::part(clear-button) {
   font-size: 14px;
   font-family: 'WorkdayAdelleSans-Bold';
@@ -470,7 +477,7 @@ atomic-breadbox {
     font-size: 10px;
     font-family: 'WorkdayAdelleSans-Medium';
     text-transform: uppercase;
-    padding:$wdc-spacing-xxxs 6px;
+    padding: $wdc-spacing-xxxs 6px;
     border-radius: 3px;
     border-color: $wdc-color-soap-500;
     color: $wdc-color-black-pepper-600 !important;
@@ -512,7 +519,7 @@ atomic-sort-dropdown {
 
   &::part(select) {
     font-size: 15px;
-    font-family: 'WorkdayAdelleSans-Bold';
+    font-family: 'WorkdayAdelleSans-Regular';
     color: $wdc-color-black-pepper-600 !important;
     border-color: $wdc-color-soap-500 !important;
   }
@@ -569,7 +576,7 @@ atomic-sort-dropdown {
     display: inherit !important;
   }
 
-  atomic-sort-dropdown::part(label) {
+  .coveolistview atomic-sort-dropdown::part(label) {
     display: none;
   }
 
@@ -595,13 +602,8 @@ atomic-sort-dropdown {
     grid-area: breadbox !important;
   }
 
-  atomic-refine-toggle, atomic-sort-dropdown, atomic-query-summary {
-    margin: 5px 0;
-  }
-
-  custom-bread-box {
-    grid-area: breadbox;
-    display: none;
+  atomic-breadbox {
+    display: inline-block;
   }
 }
 
@@ -638,7 +640,7 @@ span {
     justify-content: center;
     align-items: center;
     position: absolute;
-    padding:$wdc-spacing-xxxs;
+    padding: $wdc-spacing-xxxs;
     color: #dadada;
     margin: 0 $wdc-spacing-xxs;
   }
@@ -743,7 +745,7 @@ a.link-no-result {
 }
 
 atomic-refine-modal {
-  &::part(section-title), &::part(sort-section), &::part(footer-button-count) {
+  &::part(section-title), &::part(sort-section), &::part(footer-button-count), &::part(select-wrapper) {
     display: none;
   }
 }
@@ -768,21 +770,21 @@ atomic-refine-toggle::part(button) {
   color: $wdc-color-black-pepper-400;
 }
 
-@media (max-width: 1023px) {  
+@media (max-width: 1023px) {
   atomic-refine-toggle::part(button) {
-	width: 150px;
+    width: 150px;
   }
   atomic-sort-dropdown {
     &::part(select-parent) {
-	margin-top: -5px;
+      margin-top: -5px;
     }
-  }      
+  }
 }
 
-@media (max-width: 767px) {  
+@media (max-width: 767px) {
   atomic-refine-toggle::part(button) {
-    margin-top: 42px;
 	width: 150px;
+    margin: auto;
   }
   atomic-sort-dropdown.hydrated,
   atomic-search-box.hydrated {
@@ -792,7 +794,8 @@ atomic-refine-toggle::part(button) {
   }
   atomic-sort-dropdown {
     width: 100% !important;
-	&::part(select),
+
+    &::part(select),
     &::part(select-parent) {
       width: 100% !important;
     }
@@ -804,6 +807,8 @@ atomic-refine-toggle::part(button) {
 }
 
 atomic-search-layout atomic-layout-section[section='status'] {
+  width: 100%;
+  justify-content: center;
   grid-template-areas: "atomic-breadbox atomic-breadbox" "atomic-did-you-mean atomic-did-you-mean" "atomic-query-summary atomic-sort";
 }
 

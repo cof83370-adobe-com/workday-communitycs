@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import com.adobe.granite.ui.components.rendercondition.RenderCondition;
 import com.adobe.granite.ui.components.rendercondition.SimpleRenderCondition;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -16,6 +17,7 @@ import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
+import org.apache.sling.models.annotations.injectorspecific.OSGiService;
 import org.apache.sling.models.annotations.injectorspecific.Self;
 import org.apache.sling.models.annotations.injectorspecific.ValueMapValue;
 
@@ -52,6 +54,12 @@ public class AuthorshipRenderConditionModel {
   private List<String> editGroups;
 
   /**
+   * The run mode config service.
+   */
+  @OSGiService
+  private RunModeConfigService runModeConfigService;
+
+  /**
    * Inits the Model.
    */
   @PostConstruct
@@ -61,14 +69,18 @@ public class AuthorshipRenderConditionModel {
     UserManager userManager = request.getResourceResolver().adaptTo(UserManager.class);
     Session userSession = request.getResourceResolver().adaptTo(Session.class);
     String userId = requireNonNull(userSession).getUserID();
+    String env = runModeConfigService.getEnv();
+    env = env == null ? "local" : env;
     Authorizable auth;
     try {
       auth = requireNonNull(userManager).getAuthorizable(userId);
       Iterator<Group> groups = requireNonNull(auth).memberOf();
-      while (groups.hasNext() && !allowed) {
+      while (groups != null && groups.hasNext() && !allowed) {
         Group g = groups.next();
         for (String groupStr : editGroups) {
-          if (g.getID().startsWith(groupStr)) {
+          groupStr = groupStr.concat(" {").concat(env).concat("}");
+          String gid = g.getID();
+          if (gid != null && gid.equalsIgnoreCase(groupStr)) {
             allowed = true;
             break;
           }
@@ -76,7 +88,7 @@ public class AuthorshipRenderConditionModel {
       }
     } catch (RepositoryException e) {
       log.error("User not found");
-    }
+    }  
     if (allowed) {
       check = !suffix.endsWith("ReadOnly/granite:rendercondition");
     } else {

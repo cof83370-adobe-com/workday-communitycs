@@ -7,12 +7,15 @@ import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.Template;
 import com.drew.lang.annotations.NotNull;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.models.HeaderModel;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import javax.annotation.PostConstruct;
@@ -45,7 +48,7 @@ import org.apache.sling.models.annotations.injectorspecific.SlingObject;
 public class HeaderModelImpl implements HeaderModel {
 
   /**
-   * The react header resource.
+   * The React header resource.
    */
   protected static final String RESOURCE_TYPE = "workday-community/components/react/header";
 
@@ -66,6 +69,13 @@ public class HeaderModelImpl implements HeaderModel {
   @NotNull
   @OSGiService
   SnapService snapService;
+
+  /**
+   * The Drupal service.
+   */
+  @NotNull
+  @OSGiService
+  DrupalService drupalService;
 
   /**
    * The run mode config service.
@@ -103,6 +113,8 @@ public class HeaderModelImpl implements HeaderModel {
   @Inject
   private Page currentPage;
 
+  private JsonObject searchConfig;
+
   @PostConstruct
   protected void init() {
     log.debug("Initializing HeaderModel ....");
@@ -112,7 +124,7 @@ public class HeaderModelImpl implements HeaderModel {
   /**
    * Calls the snapService to get header menu data.
    *
-   * @return Nav menu as string.
+   * @return Nav menu as string
    */
   public String getUserHeaderMenus() {
     try {
@@ -176,22 +188,40 @@ public class HeaderModelImpl implements HeaderModel {
       if (contentType == null) {
         return null;
       }
-      return this.snapService.getAdobeDigitalData(sfId, pageTitle, contentType);
+      return this.drupalService.getAdobeDigitalData(sfId, pageTitle, contentType);
     }
     return null;
   }
 
   @Override
   public String getGlobalSearchUrl() {
-    String searchUrlFromConfig = searchApiConfigService.getGlobalSearchUrl();
-    globalSearchUrl = StringUtils.isBlank(searchUrlFromConfig)
-        ? DEFAULT_SEARCH_REDIRECT : searchUrlFromConfig;
+    if (searchApiConfigService == null) {
+      return DEFAULT_SEARCH_REDIRECT;
+    }
 
-    return globalSearchUrl;
+    String searchUrlFromConfig = searchApiConfigService.getGlobalSearchUrl();
+    return StringUtils.isBlank(searchUrlFromConfig) ? DEFAULT_SEARCH_REDIRECT : searchUrlFromConfig;
   }
 
   @Override
   public String userClientId() {
-    return userService.getUserUuid(sfId);
+    return userService != null ? userService.getUserUuid(sfId) : "";
+  }
+
+  @Override
+  public String enableClientCache() {
+    return (snapService != null && snapService.enableCache()) ? "true" : "false";
+  }
+
+  @Override
+  public JsonObject getSearchConfig() {
+    if (this.searchConfig == null) {
+      this.searchConfig = CoveoUtils.getSearchConfig(
+          searchApiConfigService,
+          request,
+          drupalService,
+          userService);
+    }
+    return this.searchConfig;
   }
 }

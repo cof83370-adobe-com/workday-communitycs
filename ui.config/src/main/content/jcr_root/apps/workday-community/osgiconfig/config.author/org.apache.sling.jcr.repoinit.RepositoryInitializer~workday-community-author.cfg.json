@@ -1,0 +1,5 @@
+{
+  "scripts":[
+    "set ACL for \"workflow-users\"\r\nallow jcr:read on /libs/workflow\r\n end"
+  ]
+}

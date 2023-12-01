@@ -1,11 +1,8 @@
 package com.workday.community.aem.core.models;
 
 import com.day.cq.wcm.api.Page;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.workday.community.aem.core.constants.EventDetailsConstants;
-import com.workday.community.aem.core.services.SnapService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
@@ -133,10 +130,10 @@ public class EventDetailsModel {
   private ResourceResolver resolver;
 
   /**
-   * The Snap Service.
+   * The Drupal Service.
    */
   @Inject
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   /**
    * The Sling Http Servlet Request.
@@ -184,18 +181,10 @@ public class EventDetailsModel {
    */
   private String populateUserTimeZone() {
     String sfId = OurmUtils.getSalesForceId(request, userService);
-    String timeZoneStr = "";
-    Gson gson = new Gson();
-    if (StringUtils.isNotBlank(sfId) && null != snapService) {
-      String profileData = snapService.getUserProfile(sfId);
-      if (StringUtils.isNotBlank(profileData)) {
-        JsonObject profileObject = gson.fromJson(profileData, JsonObject.class);
-        JsonElement timeZoneElement = profileObject.get("timeZone");
-        timeZoneStr = (timeZoneElement == null || timeZoneElement.isJsonNull()) ? "" :
-            timeZoneElement.getAsString();
-      }
+    if (StringUtils.isNotBlank(sfId) && null != drupalService) {
+      return drupalService.getUserTimezone(sfId);
     }
-    return timeZoneStr;
+    return StringUtils.EMPTY;
   }
 
   /**

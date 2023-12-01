@@ -132,6 +132,13 @@ public final class GlobalConstants {
    */
   public static final String TEXT_COMPONENT = "workday-community/components/core/text";
 
+  /** The Constant HTML_EXTENSION. */
+  public static final String HTML_EXTENSION = ".html";
+  
+  /** 
+   * Path of title component. 
+   */
+  public static final String TITLE_COMPONENT = "workday-community/components/core/title";
 
   /**
    * Instantiates a new global constants.

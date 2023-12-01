@@ -114,6 +114,7 @@
                 const listChevron = document.createElement('button');
                 listChevron.classList.add('cmp-toc__chevron');
                 listChevron.setAttribute('tabindex', '0');
+                listChevron.setAttribute('aria-label', (item as HTMLElement).outerText);
                 const firstChild = item.firstChild;
                 item.insertBefore(listChevron, firstChild);
             });
@@ -168,6 +169,11 @@
                 if (previousSibling) {
                     previousSibling.classList.add('active');
                     previousSibling.parentElement.parentElement.classList.add('show');
+                    const firstLevelLink = previousSibling.parentElement.parentElement.previousElementSibling;
+
+                    if(firstLevelLink) {
+                        firstLevelLink.classList.add('active');
+                    }
                 }
             }
         }
@@ -187,6 +193,20 @@
                 itemLink.children[0].setAttribute('aria-expanded', false.toString());
             }
         });
+    }
+
+    function getSelectedTOCItem() {
+        const firstLevelItem = document.querySelector('.cmp-toc__item.active .cmp-toc__firstlevelitem-title');
+        const secondLevelItem = document.querySelector('.cmp-toc__item.active .cmp-toc__secondlevelitem-title');
+        const thirdLevelItem = document.querySelector('.cmp-toc__item.active .cmp-toc__thirdlevelitem-title');
+        const activeItem = firstLevelItem || secondLevelItem || thirdLevelItem;
+
+        if (activeItem) {
+            const visuallyHiddenText = document.createElement('span');
+            visuallyHiddenText.textContent = '(selected)';
+            visuallyHiddenText.classList.add('visually-hidden');
+            activeItem.appendChild(visuallyHiddenText);
+        }
     }
 
     function onDocumentReady() {
@@ -220,6 +240,10 @@
     }
 
     document.addEventListener('DOMContentLoaded', onDocumentReady);
-    window.onload = expandActiveBook;
+
+    window.addEventListener('load', () => {
+      expandActiveBook();
+      getSelectedTOCItem();
+    });
 
 }());

@@ -32,6 +32,46 @@
       }
     }
 
+    @media (max-width: $screen-small) {
+      atomic-layout-section[section='sort'] {
+        width: 100% !important;
+        display: inline-flex;
+        margin: 7px 0;
+
+        atomic-sort-dropdown {
+          display: block !important;
+
+          &::part(select) {
+            width: 100% !important;
+          }
+
+          &::part(select-parent) {
+            width: 88% !important;
+          }
+        }
+      }
+    }
+
+    @media (max-width: 668px) {
+      atomic-layout-section[section='sort'] {
+        width: 100% !important;
+        display: inline-flex;
+        margin: 7px 0;
+
+        atomic-sort-dropdown {
+          display: block !important;
+
+          &::part(select) {
+            width: 100% !important;
+          }
+
+          &::part(select-parent) {
+            width: 83% !important;
+          }
+        }
+      }
+    }
+
     atomic-search-layout.grid-30 {
       grid-template-columns: 30px !important;
     }
@@ -39,6 +79,7 @@
     atomic-layout-section[section='main'] {
       margin: 20px 0 0 -20px !important;
       width: 100%;
+
       .width-auto {
         width: auto !important;
       }
@@ -97,7 +138,6 @@
               content: "";
               height: 2px;
               width: 100%;
-              background-color: blue;
               border-radius: 4px 4px 0 0;
               display: block;
             }
@@ -116,7 +156,6 @@
           border-radius: 12px;
           box-sizing: border-box;
           box-shadow: 0 24px 32px rgba(0, 0, 0, 0.16);
-          padding: 4px 10px 6px;
           background-color: #ffff;
 
           .popup-items {
@@ -132,8 +171,16 @@
               color: #000000;
               background-color: #ffffff;
               font-weight: 500;
-              height: 50px;
-              padding: 0 20px;
+              padding: 10px 20px;
+
+              &:hover {
+                background-color: #e8ebed;
+              }
+
+              .item-button {
+                text-align: left;
+                white-space: pre-wrap;
+              }
             }
           }
         }
@@ -149,6 +196,53 @@
         font-size: 15px !important;
         letter-spacing: 0.5px !important;
         line-height: 22px !important;
+      }
+    }
+
+    atomic-layout-section[section='sort'] {
+      margin-top: 0;
+      display: inline-flex;
+      float: right;
+      width: max-content;
+
+      span.sort-dropdown {
+        margin-left: 10px;
+      }
+    }
+
+    atomic-sort-dropdown::part(select) {
+      font-weight: normal;
+      font-family: "Workday Adelle Sans";
+      font-size: 14px;
+      line-height: 20px;
+      letter-spacing: 0.24px;
+    }
+
+    atomic-sort-dropdown::part(label) {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 21px;
+      letter-spacing: 0.5px;
+      font-family: 'Workday Adelle Sans';
+    }
+
+    atomic-no-results::part(search-tips) {
+      display: none;
+    }
+
+    .more-button-img {
+      height: 15px;
+      width: 15px;
+    }
+
+    .more-button-table {
+      td {
+        border: none;
+        padding: 0;
+      }
+
+      .more-button-img-td {
+        padding: 6px 0 0 8px;
       }
     }
   }

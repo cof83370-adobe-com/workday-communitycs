@@ -11,8 +11,8 @@ import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.exceptions.DamException;
 import com.workday.community.aem.core.models.CoveoRelatedInformationModel;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
-import com.workday.community.aem.core.services.SnapService;
 import com.workday.community.aem.core.services.UserService;
 import com.workday.community.aem.core.utils.CoveoUtils;
 import com.workday.community.aem.core.utils.DamUtils;
@@ -67,10 +67,10 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
   private SearchApiConfigService searchConfigService;
 
   /**
-   * The snap service object.
+   * The drupal service object.
    */
   @OSGiService
-  private SnapService snapService;
+  private DrupalService drupalService;
 
   @OSGiService
   private UserService userService;
@@ -90,7 +90,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
    * {@inheritDoc}
    */
   @Override
-  public List<String> getFacetFields() throws DamException {
+  public List<String> getFacetFields() {
     if (facetFields != null) {
       return Collections.unmodifiableList(facetFields);
     }
@@ -108,8 +108,10 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
     pagePath = pagePath.substring(0, pagePath.indexOf("."));
     Page page = pageManager.getPage(pagePath);
     if (page == null) {
-      log.error("getFacetFields in CoveoRelatedInformationModelImpl failed because current Page "
-              + "unresolved, path: {}", pagePath);
+      log.error(
+          "getFacetFields in CoveoRelatedInformationModelImpl failed because current Page "
+              + "unresolved, path: {}",
+          pagePath);
       return Collections.unmodifiableList(facetFields);
     }
 
@@ -118,8 +120,14 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       return Collections.unmodifiableList(facetFields);
     }
     try (ResourceResolver resolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
-      JsonObject fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG)
-          .getAsJsonObject("tagIdToCoveoField");
+      JsonObject fieldMapConfig;
+      try {
+        fieldMapConfig = DamUtils.readJsonFromDam(resolver, COVEO_FILED_MAP_CONFIG)
+            .getAsJsonObject("tagIdToCoveoField");
+      } catch (DamException e) {
+        log.error("readJsonFromDam call failed to tagIdToCoveoField: {}", e.getMessage());
+        return Collections.unmodifiableList(facetFields);
+      }
       for (Tag tag : tags) {
         JsonElement facetFieldObj = fieldMapConfig.get(tag.getNamespace().getName());
         if (facetFieldObj == null || facetFieldObj.isJsonNull()) {
@@ -141,9 +149,8 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
         }
       }
     } catch (CacheException e) {
-      throw new DamException(String.format(
-          "Exception in getFacetFields call in CoveoRelatedInformationModelImpl. error %s",
-          e.getMessage()));
+      log.error("getFacetFields call failed: {}", e.getMessage());
+      return Collections.unmodifiableList(facetFields);
     }
 
     return Collections.unmodifiableList(facetFields);
@@ -158,7 +165,7 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
       this.searchConfig = CoveoUtils.getSearchConfig(
           searchConfigService,
           request,
-          snapService,
+          drupalService,
           userService);
     }
     return this.searchConfig;
@@ -168,8 +175,9 @@ public class CoveoRelatedInformationModelImpl implements CoveoRelatedInformation
    * {@inheritDoc}
    */
   @Override
-  public String getExtraCriteria() throws DamException {
-    throw new DamException("ExtraCriteria is not available for related information currently");
+  public String getExtraCriteria() {
+    log.error("ExtraCriteria is not available for related information currently");
+    return "";
   }
 
 }

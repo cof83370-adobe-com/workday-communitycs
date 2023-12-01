@@ -1,6 +1,5 @@
 package com.workday.community.aem.core.models;
 
-import com.workday.community.aem.core.exceptions.DamException;
 import java.util.List;
 
 /**
@@ -12,8 +11,7 @@ public interface CoveoRelatedInformationModel extends CoveoCommonModel {
    * Get the search criteria for related information.
    *
    * @return the search criteria
-   * @throws DamException a DamException object.
    */
-  List<String> getFacetFields() throws DamException;
+  List<String> getFacetFields();
 
 }
