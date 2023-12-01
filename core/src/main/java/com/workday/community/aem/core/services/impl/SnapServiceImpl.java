@@ -2,7 +2,6 @@ package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -144,8 +143,7 @@ public class SnapServiceImpl implements SnapService {
               return gson.toJson(defaultMenu);
             }
 
-            // Update the user profile data from contactInformation field to userInfo field.
-            updateProfileInfoWithNameAndAvatar(sfMenu, sfId);
+
             // Need to make merge sfMenu with local cache with beta experience.
             if (config.beta()) {
               return this.getMergedHeaderMenu(sfMenu, defaultMenu);
@@ -154,7 +152,7 @@ public class SnapServiceImpl implements SnapService {
             // Non-Beta will directly return the sf menu
             return gson.toJson(sfMenu);
 
-          } catch (SnapException | JsonSyntaxException | JsonProcessingException e) {
+          } catch (SnapException | JsonSyntaxException e) {
             log.error("Error in getNavUserData method call :: {}", e.getMessage());
           }
 
@@ -163,6 +161,11 @@ public class SnapServiceImpl implements SnapService {
 
     if (retValue == null || OurmUtils.isMenuEmpty(gson, retValue)) {
       cacheManagerService.invalidateCache(CacheBucketName.STRING_VALUE.name(), menuCacheKey);
+    }
+
+    // Update the user profile data from contactInformation field to userInfo field.
+    if (!StringUtils.isEmpty(retValue)) {
+      updateProfileInfoWithNameAndAvatar(retValue, sfId);
     }
 
     return retValue;
@@ -222,10 +225,11 @@ public class SnapServiceImpl implements SnapService {
   /**
    * Updates the user profile data from contact information.
    *
-   * @param sfMenu The menu data.
+   * @param sfMenuStr The menu data.
+   * @param sfId User's Salesforce id.
    */
-  private void updateProfileInfoWithNameAndAvatar(JsonObject sfMenu, String sfId)
-      throws JsonProcessingException {
+  private void updateProfileInfoWithNameAndAvatar(String sfMenuStr, String sfId) {
+    JsonObject sfMenu = gson.fromJson(sfMenuStr, JsonObject.class);
     JsonElement profileElement = sfMenu.get(SnapConstants.PROFILE_KEY);
 
     if (isJsonElementNonNull(profileElement)) {

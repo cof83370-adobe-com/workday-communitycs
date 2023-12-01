@@ -14,6 +14,7 @@ import com.workday.community.aem.core.pojos.EventTypes;
 import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.utils.HttpUtils;
 import com.workday.community.aem.core.utils.OurmUtils;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -73,7 +74,9 @@ public class CoveoEventsTypeServletTest {
         "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"email\":\"foo@workday.com\",\"contextInfo\":{\"isWorkmate\":\"false\"},\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
 
     try (MockedStatic<OurmUtils> ourmUtilsMock = mockStatic(OurmUtils.class);
-         MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class)) {
+         MockedStatic<HttpClients> httpClientsMockedStatic = mockStatic(HttpClients.class);
+         MockedStatic<HttpUtils> httpUtilsMock = mockStatic(HttpUtils.class)) {
+      httpUtilsMock.when(() -> HttpUtils.forbiddenResponse(request, response, userService)).thenReturn(false);
       ourmUtilsMock.when(() -> OurmUtils.getSalesForceId(any(), any())).thenReturn(DEFAULT_SFID_MASTER);
       ourmUtilsMock.when(() -> OurmUtils.getUserEmail(anyString(), any(), any())).thenReturn("test@workday.com");
 

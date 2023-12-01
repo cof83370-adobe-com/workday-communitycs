@@ -246,7 +246,7 @@ public class DrupalServiceImplTest {
       when(tokenResponse.getResponseBody()).thenReturn(responseBody);
       when(tokenResponse.getResponseCode()).thenReturn(200);
       mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString()))
-          .thenThrow(new DrupalException());
+          .thenThrow(new DrupalException("test failure"));
       assertEquals(this.service.getUserProfileImage("sfId"), StringUtils.EMPTY);
     }
   }

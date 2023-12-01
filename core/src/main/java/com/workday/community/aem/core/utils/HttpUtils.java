@@ -1,5 +1,9 @@
 package com.workday.community.aem.core.utils;
 
+import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.services.UserService;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import javax.servlet.http.Cookie;
@@ -7,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.SlingHttpServletResponse;
 
 /**
  * Utility class for Http request/response related code.
@@ -107,5 +114,40 @@ public class HttpUtils {
     }
 
     return count;
+  }
+
+  /**
+   * Send forbidden response to client if not logged-in.
+   *
+   * @param request The sling http request object.
+   * @param response  The sling http response object.
+   * @param userService The user service object.
+   * @return true if user is not logged in. false if logged in.
+   */
+  public static boolean forbiddenResponse(
+      SlingHttpServletRequest request, SlingHttpServletResponse response, UserService userService
+  ) {
+    try {
+      if (userService.getCurrentUser(request) == null) {
+        log.info("Current log is not logged in.");
+        response.setStatus(HttpStatus.SC_FORBIDDEN);
+        response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        response.getWriter().write("You are not allowed to call this API");
+        return true;
+      }
+    } catch (CacheException | IOException e) {
+      log.error("exception is thrown when try to get current login user");
+      response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
+      response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+      try {
+        response.getWriter().write("Get current User failed, please contact community admin");
+      } catch (IOException ex) {
+        log.error("can't send response to client, please contact community admin");
+      }
+
+      return false;
+    }
+
+    return false;
   }
 }

@@ -34,7 +34,7 @@ public class TestUtil {
       }
 
       @Override
-      public int maxJcrUser() {
+      public int maxUserImages() {
         return 10;
       }
 
@@ -48,8 +48,7 @@ public class TestUtil {
         return 1000;
       }
 
-      @Override
-      public int jcrUserExpireDuration() {
+      public int userImageExpireDuration() {
         return 1000;
       }
 
