@@ -1,14 +1,16 @@
 package com.workday.community.aem.core.exceptions;
 
 /**
- * DrupalException class.
+ * Exception is thrown for any error calling drupal Rest APIs.
  */
 public class DrupalException extends Exception {
-  public DrupalException() {
-    super();
-  }
+  private static final String PREFIX = "Drupal exception: ";
 
   public DrupalException(String message) {
     super(message);
+  }
+
+  public DrupalException(String message, Object... rest) {
+    super(PREFIX + String.format(message, rest));
   }
 }

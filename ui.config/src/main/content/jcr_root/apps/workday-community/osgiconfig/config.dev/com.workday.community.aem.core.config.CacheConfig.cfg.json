@@ -1,9 +1,9 @@
 {
     "maxSize":"$[env:CacheMaxSize;default=5000]",
     "maxUuid": "$[env:CacheMaxUUID;default=300000]",
-    "maxJcrUser": "$[env:CacheMaxJcrUser;default=2000]",
+    "maxUserImages": "$[env:CacheMaxUserImages;default=2000]",
     "maxMenuSize": "$[env:CacheMaxMenu;default=1000]",
     "expireDuration":"$[env:CacheExpireDuration;default=7200]",
-    "jcrUserExpireDuration": "$[env:CacheJcrUserExpireDuration;default=1800]",
+    "userImageExpireDuration": "$[env:CacheUserImageExpireDuration;default=1800]",
     "enabled": "$[env:CacheEnabled;default=true]"
 }

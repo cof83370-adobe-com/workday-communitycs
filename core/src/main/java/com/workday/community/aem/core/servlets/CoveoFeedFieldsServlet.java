@@ -8,6 +8,8 @@ import com.adobe.granite.ui.components.ds.ValueMapResource;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.models.TabularListViewModel;
+import com.workday.community.aem.core.services.UserService;
+import com.workday.community.aem.core.utils.HttpUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,7 @@ import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * The Class CoveoFeedFieldsServlet.
@@ -38,6 +41,9 @@ import org.osgi.service.component.annotations.Component;
     "sling.servlet.paths=" + "/bin/feedFields", "sling.servlet.methods=" + HttpConstants.METHOD_GET
 })
 public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
+  @Reference
+  protected transient UserService userService;
+
   /**
    * Do get.
    *
@@ -47,6 +53,11 @@ public class CoveoFeedFieldsServlet extends SlingSafeMethodsServlet {
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) {
     log.debug("Start to fetch feed fields");
+    // In case user is not logged in, response with forbidden.
+    if (HttpUtils.forbiddenResponse(request, response, this.userService)) {
+      return;
+    }
+
     ResourceResolver resourceResolver = request.getResourceResolver();
     List<Resource> resourceList = new ArrayList<>();
     TabularListViewModel model = request.adaptTo(TabularListViewModel.class);

@@ -6,10 +6,6 @@ package com.workday.community.aem.core.exceptions;
 public class DamException extends Exception {
   private static final String PREFIX = "DAM access exception: ";
 
-  public DamException() {
-    super();
-  }
-
   public DamException(String message) {
     super(message);
   }

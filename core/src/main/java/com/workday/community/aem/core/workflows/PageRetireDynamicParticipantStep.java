@@ -23,7 +23,7 @@ import org.osgi.service.component.annotations.Reference;
     Constants.SERVICE_DESCRIPTION
         + "=Participant step to choose the assignee group based on environment/workflow",
     Constants.SERVICE_VENDOR + "=Workday Community",
-    "chooser.label=" + "Env Speicifc Dynamic Participant"
+    "chooser.label=" + "Env Specific Dynamic Participant"
 })
 public class PageRetireDynamicParticipantStep implements ParticipantStepChooser {
 

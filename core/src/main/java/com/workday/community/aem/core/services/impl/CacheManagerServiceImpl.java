@@ -78,9 +78,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       closeAndClearCachedResolvers();
     }
     setUpRegularCacheClean();
-    log.debug("config: enabled: {}, expire: {}, user expire: {}, uuid: {}, user max: {}, "
+    log.debug("config: enabled: {}, expire: {}, user expire: {}, uuid: {}, user avatar max: {}, "
             + "menu size: {}", config.enabled(), config.expireDuration(),
-        config.jcrUserExpireDuration(), config.maxUuid(), config.maxJcrUser(),
+        config.userImageExpireDuration(), config.maxUuid(), config.maxUserImages(),
         config.maxMenuSize());
   }
 
@@ -239,9 +239,9 @@ public class CacheManagerServiceImpl implements CacheManagerService {
       CacheBuilder builder = CacheBuilder.newBuilder();
       if (innerCacheName == CacheBucketName.UUID_VALUE) {
         builder.maximumSize(config.maxUuid());
-      } else if (innerCacheName == CacheBucketName.JCR_USER) {
-        builder.maximumSize(config.maxJcrUser())
-            .expireAfterAccess(config.jcrUserExpireDuration(), TimeUnit.SECONDS);
+      } else if (innerCacheName == CacheBucketName.USER_IMAGES) {
+        builder.maximumSize(config.maxUserImages())
+            .expireAfterAccess(config.userImageExpireDuration(), TimeUnit.SECONDS);
       } else if (innerCacheName == CacheBucketName.SF_USER_GROUP) {
         builder.maximumSize(config.maxUserGroup())
             .expireAfterAccess(config.expireDuration(), TimeUnit.SECONDS);

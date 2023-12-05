@@ -95,17 +95,60 @@
                                         fieldLabel="Last Updated Date"
                                         name="./updatedDate"
                                         type="datetime"/>
-                                    <retirementdate
-                                        cq:showOnCreate="{Boolean}true"
+                                    <reviewReminderDate
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                        disabled="{Boolean}true"
                                         displayedFormat="MMM DD, YYYY"
-                                        emptyText="Enter Retirement Date"
-                                        fieldDescription="Choose retirement date"
-                                        fieldLabel="Retirement Date"
-                                        name="./retirementDate"
-                                        type="datetime"
-                                        typeHint="Date"/>
+                                        emptyText="Review Notification Date"
+                                        fieldDescription="Date when review notification is sent to page author for reviewing content after 10 months"
+                                        fieldLabel="Review Notification Date"
+                                        name="./reviewReminderDate"/>
+                                    <retirementNotificationDate
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                        disabled="{Boolean}true"
+                                        displayedFormat="MMM DD, YYYY"
+                                        emptyText="Retirement Notification Date"
+                                        fieldDescription="Date when retirement notification is sent to page author post triggering retirement workflow after 11 months"
+                                        fieldLabel="Retirement Notification Date"
+                                        name="./retirementNotificationDate"/>
+                                    <scheduledRetirementDate
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                        disabled="{Boolean}true"
+                                        displayedFormat="MMM DD, YYYY"
+                                        emptyText="Planned Retirement Date"
+                                        fieldDescription="Date when the page is expected to retire as per automatic retirement process"
+                                        fieldLabel="Planned Retirement Date"
+                                        name="./scheduledRetirementDate"/>
+                                    <actualRetirementDate
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                        disabled="{Boolean}true"
+                                        displayedFormat="MMM DD, YYYY"
+                                        emptyText="Actual Retirement Date"
+                                        fieldDescription="Date when the page is actually retired"
+                                        fieldLabel="Actual Retirement Date"
+                                        name="./actualRetirementDate"/>
+                                    <unRetirementDate
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                        disabled="{Boolean}true"
+                                        displayedFormat="MMM DD, YYYY"
+                                        emptyText="Un-retirement Date"
+                                        fieldDescription="Date when the retired page is un-retired by content publishing workflow"
+                                        fieldLabel="Un-retirement Date"
+                                        name="./unRetirementDate"/>
+                                    <archivalDate
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/datepicker"
+                                        disabled="{Boolean}true"
+                                        displayedFormat="MMM DD, YYYY"
+                                        emptyText="Archival Date"
+                                        fieldDescription="Date when the retired page is archived"
+                                        fieldLabel="Archival Date"
+                                        name="./archivalDate"/>
                                     <readCount
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/foundation/form/numberfield"
