@@ -279,9 +279,9 @@ public class RetirementManagerJobConsumer implements JobConsumer {
             .adaptTo(Node.class);
 
         if (node != null) {
-          if (node.hasProperty(GlobalConstants.PROP_JCR_CREATED_BY)) {
+          if (node.hasProperty(GlobalConstants.PROP_AUTHOR)) {
             // logic to send mail to author
-            String author = node.getProperty(GlobalConstants.PROP_JCR_CREATED_BY).getString();
+            String author = node.getProperty(GlobalConstants.PROP_AUTHOR).getString();
 
             // Regular Expression
             String regex = "^(.+)@(.+)$";
