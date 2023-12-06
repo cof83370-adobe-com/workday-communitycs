@@ -7,5 +7,6 @@
   "drupalUserLookupClientSecret": "$[secret:drupalUserLookupClientSecret]",
   "drupalTokenCacheMax": 10,
   "drupalTokenCacheTimeout": 1740000,
-  "enableCache": "$[env:drupalEnableCache;default=true]"
+  "enableCache": "$[env:drupalEnableCache;default=true]",
+  "drupalInstanceDomain":"$[env:drupalInstanceDomain]"
 }

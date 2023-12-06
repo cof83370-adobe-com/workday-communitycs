@@ -12,11 +12,14 @@ import com.day.cq.tagging.Tag;
 import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.google.common.hash.Hashing;
+import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.ExtractPagePropertiesService;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -37,14 +40,18 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceNotFoundException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * The Class ExtractPagePropertiesServiceImpl.
  */
 @Slf4j
-@Component(service = ExtractPagePropertiesService.class, immediate = true)
+@Component(service = ExtractPagePropertiesService.class, property = {
+  "service.pid=aem.core.services.ExtractPagePropertiesService"
+}, configurationPid = "com.workday.community.aem.core.config.DrupalConfig", immediate = true)
 public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesService {
 
   /**
@@ -165,6 +172,20 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    */
   @Reference
   private RunModeConfigService runModeConfigService;
+
+  /**
+   * The drupal Config.
+   */
+  private DrupalConfig drupalConfig;
+
+  /**
+   * Activates the Drupal Service class.
+   */
+  @Activate
+  @Modified
+  protected void activate(DrupalConfig config) {
+    this.drupalConfig = config;
+  }
 
   /**
    * {@inheritDoc}
@@ -429,13 +450,14 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       properties.put("author", userName);
       try {
         User user = (User) userManager.getAuthorizable(userName);
-        // @Todo When we do the author migration, need to pass author profile link, contact id is
-        //  needed.
-        // Example link: https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115.
         email = (user != null && user.getProperty("./profile/email") != null)
             ? Objects.requireNonNull(user.getProperty("./profile/email"))[0].getString() : null;
-        properties.put("authorLink",
-            "https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115");
+        if (!StringUtils.isEmpty(email)) {
+          String hashedEmail = Hashing.sha256().hashString(email, StandardCharsets.UTF_8).toString();
+          properties.put("authorLink",
+                  drupalConfig.drupalInstanceDomain().concat("/profile/").concat(hashedEmail));
+        }
+
       } catch (RepositoryException e) {
         log.error("Extract user email and contact number failed: {}", e.getMessage());
         return email;
