@@ -155,7 +155,7 @@ public class RetirementManagerJobConsumerTest {
 		lenient().when(resource.adaptTo(Node.class)).thenReturn(node);
 		Property prop1 = mock(Property.class);
 		lenient().when(resource.adaptTo(Node.class)).thenReturn(node);
-		lenient().when(node.hasProperty(GlobalConstants.PROP_JCR_CREATED_BY)).thenReturn(true);
+		lenient().when(node.hasProperty(GlobalConstants.PROP_AUTHOR)).thenReturn(true);
 		lenient().when(node.getProperty(anyString())).thenReturn(prop1);
 		assertNotNull(prop1);
 		lenient().when(prop1.getString()).thenReturn("test@user.com");
@@ -367,7 +367,6 @@ public class RetirementManagerJobConsumerTest {
      */
     @Test
     void testProcessJobSuccess() {
-      //doReturn("sometime").when(job).getProperty("jobTimestamp");
       lenient().when(job.getProperty("jobTimestamp")).thenReturn(true);
       JobResult result = retirementManagerJobConsumer.process(job);
       assertEquals(JobResult.OK, result);
