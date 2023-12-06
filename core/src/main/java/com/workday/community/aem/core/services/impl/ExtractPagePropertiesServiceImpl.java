@@ -50,7 +50,7 @@ import org.osgi.service.component.annotations.Reference;
  */
 @Slf4j
 @Component(service = ExtractPagePropertiesService.class, property = {
-  "service.pid=aem.core.services.drupalservice"
+  "service.pid=aem.core.services.ExtractPagePropertiesService"
 }, configurationPid = "com.workday.community.aem.core.config.DrupalConfig", immediate = true)
 public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesService {
 
@@ -186,7 +186,6 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
   protected void activate(DrupalConfig config) {
     this.drupalConfig = config;
   }
-
 
   /**
    * {@inheritDoc}
@@ -453,7 +452,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         User user = (User) userManager.getAuthorizable(userName);
         email = (user != null && user.getProperty("./profile/email") != null)
             ? Objects.requireNonNull(user.getProperty("./profile/email"))[0].getString() : null;
-        if (!email.isEmpty()) {
+        if (!StringUtils.isEmpty(email)) {
           String hashedEmail = Hashing.sha256().hashString(email, StandardCharsets.UTF_8).toString();
           properties.put("authorLink",
                   drupalConfig.drupalInstanceDomain().concat("/profile/").concat(hashedEmail));
