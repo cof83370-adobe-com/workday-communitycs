@@ -139,6 +139,16 @@ public final class GlobalConstants {
    * Path of title component. 
    */
   public static final String TITLE_COMPONENT = "workday-community/components/core/title";
+  
+  /**
+   * The posted date property.
+   */
+  public static final String PROP_OVERRIDE_DATE = "overrideDate";
+  
+  /**
+   * The time zone.
+   */
+  public static final String TIME_ZONE = "GMT";
 
   /**
    * Instantiates a new global constants.
