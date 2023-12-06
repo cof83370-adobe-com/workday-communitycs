@@ -119,6 +119,8 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
     Calendar retirementNotificationCalendar = Calendar.getInstance();
     Calendar scheduledRetirementCalendar = Calendar.getInstance();
 
+    Calendar calendar = Calendar.getInstance();
+
     reviewReminderCalendar.set(reviewReminderDate.getYear(), reviewReminderDate.getMonthValue() - 1,
         reviewReminderDate.getDayOfMonth());
     retirementNotificationCalendar.set(retirementNotificationDate.getYear(),
@@ -148,7 +150,7 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
         node.setProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE, retirementNotificationCalendar);
         node.setProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE, scheduledRetirementCalendar);
       }
-      
+
       if (node.hasProperty(WorkflowConstants.RETIREMENT_STATUS_PROP)) {
         if (node.getProperty(WorkflowConstants.RETIREMENT_STATUS_PROP) != null
             && node.getProperty(WorkflowConstants.RETIREMENT_STATUS_PROP).getString()
@@ -160,10 +162,21 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
           node.getProperty(WorkflowConstants.ACTUAL_RETIREMENT_DATE).remove();
         }
 
-        Calendar unRetirementCalendar = Calendar.getInstance();
-        node.setProperty(WorkflowConstants.UNRETIREMENT_DATE, unRetirementCalendar);
+        node.setProperty(WorkflowConstants.UNRETIREMENT_DATE, calendar);
       }
-      
+
+      if (node.hasProperty(GlobalConstants.PROP_OVERRIDE_DATE)) {
+        node.getProperty(GlobalConstants.PROP_OVERRIDE_DATE).remove();
+      } else {
+        node.setProperty(GlobalConstants.PROP_UPDATED_DATE, calendar);
+      }
+
+      if (!node.hasProperty(GlobalConstants.PROP_POSTED_DATE)) {
+        node.setProperty(GlobalConstants.PROP_POSTED_DATE, calendar);
+      } else if (node.getProperty(GlobalConstants.PROP_POSTED_DATE).getDate() == null) {
+        node.setProperty(GlobalConstants.PROP_POSTED_DATE, calendar);
+      }
+
       jcrSession.save();
     } catch (RepositoryException e) {
       log.error("RepositoryException occurred in updatePageProperties {}:", e.getMessage());

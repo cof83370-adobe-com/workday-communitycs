@@ -31,6 +31,10 @@
       "jcr:baseVersion": "ee691905-7207-4b82-9a94-b78613a8b669",
       "jcr:isCheckedOut": true,
       "reviewReminderDate": "2024-08-03T08:27:17.654Z",
+      "unRetirementDate" : true,
+      "overrideDate" : true,
+      "updatedDate" : true,
+      "postedDate" : true,
       "jcr:uuid": "90af8d24-9bad-4dd4-a619-f1dd8b3ed5fa",
       "accessControlTags": [
         "access-control:customer_all"
