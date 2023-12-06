@@ -25,6 +25,8 @@ import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.ResolverUtil;
+
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -41,6 +43,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -72,8 +75,71 @@ public class ExtractPagePropertiesServiceImplTest {
   @InjectMocks
   private ExtractPagePropertiesServiceImpl extract;
 
-  @Mock
-  DrupalConfig drupalConfig;
+  /**
+   * Test config.
+   */
+  private final DrupalConfig testConfig = new DrupalConfig() {
+
+    @Override
+    public Class<? extends Annotation> annotationType() {
+      return null;
+    }
+
+    @Override
+    public String drupalApiUrl() {
+      return "drupalApiUrl";
+    }
+
+    @Override
+    public String drupalTokenPath() {
+      return "drupalTokenPath";
+    }
+
+    @Override
+    public String drupalUserDataPath() {
+      return "drupalUserDataPath";
+    }
+
+    @Override
+    public String drupalUserLookupClientId() {
+      return "drupalUserLookupClientId";
+    }
+
+    @Override
+    public String drupalUserLookupClientSecret() {
+      return "drupalUserLookupClientSecret";
+    }
+
+    @Override
+    public int drupalTokenCacheMax() {
+      return 100;
+    }
+
+    @Override
+    public long drupalTokenCacheTimeout() {
+      return 1000;
+    }
+
+    @Override
+    public boolean enableCache() {
+      return true;
+    }
+
+    @Override
+    public String drupalUserSearchPath() {
+      return "drupalUserSearchPath";
+    }
+
+    @Override
+    public String drupalInstanceDomain() {
+      return "http://test-link.com";
+    }
+  };
+
+  @BeforeEach
+  public void setup() {
+    extract.activate(testConfig);
+  }
 
   /**
    * Test process taxonomy field product.
@@ -222,7 +288,6 @@ public class ExtractPagePropertiesServiceImplTest {
     String email = "test@gmail.com";
     doReturn(values).when(user).getProperty("./profile/email");
     doReturn(email).when(value).getString();
-    doReturn("http://test-link.com").when(drupalConfig).drupalInstanceDomain();
     String expectedEmail = extract.processUserFields(data, userManager, properties);
     assertEquals(userName, properties.get("author"));
     assertEquals(authorLink, properties.get("authorLink"));
