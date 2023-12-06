@@ -40,14 +40,18 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceNotFoundException;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
  * The Class ExtractPagePropertiesServiceImpl.
  */
 @Slf4j
-@Component(service = ExtractPagePropertiesService.class, immediate = true)
+@Component(service = ExtractPagePropertiesService.class, property = {
+  "service.pid=aem.core.services.drupalservice"
+}, configurationPid = "com.workday.community.aem.core.config.DrupalConfig", immediate = true)
 public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesService {
 
   /**
@@ -172,8 +176,16 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
   /**
    * The drupal Config.
    */
-  @Reference
   private DrupalConfig drupalConfig;
+
+  /**
+   * Activates the Drupal Service class.
+   */
+  @Activate
+  @Modified
+  protected void activate(DrupalConfig config) {
+    this.drupalConfig = config;
+  }
 
 
   /**
@@ -441,9 +453,12 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
         User user = (User) userManager.getAuthorizable(userName);
         email = (user != null && user.getProperty("./profile/email") != null)
             ? Objects.requireNonNull(user.getProperty("./profile/email"))[0].getString() : null;
-        String hashedEmail = Hashing.sha256().hashString(email, StandardCharsets.UTF_8).toString();
-        properties.put("authorLink",
-                drupalConfig.drupalInstanceDomain().concat("/profile/").concat(hashedEmail));
+        if (!email.isEmpty()) {
+          String hashedEmail = Hashing.sha256().hashString(email, StandardCharsets.UTF_8).toString();
+          properties.put("authorLink",
+                  drupalConfig.drupalInstanceDomain().concat("/profile/").concat(hashedEmail));
+        }
+
       } catch (RepositoryException e) {
         log.error("Extract user email and contact number failed: {}", e.getMessage());
         return email;
