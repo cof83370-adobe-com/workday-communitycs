@@ -66,15 +66,15 @@
                                             editGroups="[CMTY CC Admin]"
                                             sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
                                     </authorReadOnly>
-                                    <overrideDate
+                                    <suppressUpdatedDate
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
                                         fieldDescription="If checked, page modified date"
-                                        name="./overrideDate"
+                                        name="./suppressUpdatedDate"
                                         renderReadOnly="{Boolean}true"
                                         text="Check Page Modified Date"
                                         value="true">
-                                    </overrideDate>                                     
+                                    </suppressUpdatedDate>                                     
                                     <posteddate
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"

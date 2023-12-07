@@ -165,15 +165,14 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
         node.setProperty(WorkflowConstants.UNRETIREMENT_DATE, calendar);
       }
 
-      if (node.hasProperty(GlobalConstants.PROP_OVERRIDE_DATE)) {
-        node.getProperty(GlobalConstants.PROP_OVERRIDE_DATE).remove();
+      if (node.hasProperty(GlobalConstants.PROP_SUPPRESS_UPDATED_DATE)) {
+        node.getProperty(GlobalConstants.PROP_SUPPRESS_UPDATED_DATE).remove();
       } else {
         node.setProperty(GlobalConstants.PROP_UPDATED_DATE, calendar);
       }
 
-      if (!node.hasProperty(GlobalConstants.PROP_POSTED_DATE)) {
-        node.setProperty(GlobalConstants.PROP_POSTED_DATE, calendar);
-      } else if (node.getProperty(GlobalConstants.PROP_POSTED_DATE).getDate() == null) {
+      if (!node.hasProperty(GlobalConstants.PROP_POSTED_DATE)
+          || node.getProperty(GlobalConstants.PROP_POSTED_DATE).getDate() == null) {
         node.setProperty(GlobalConstants.PROP_POSTED_DATE, calendar);
       }
 

@@ -141,9 +141,9 @@ public final class GlobalConstants {
   public static final String TITLE_COMPONENT = "workday-community/components/core/title";
   
   /**
-   * The posted date property.
+   * The suppress updated date property.
    */
-  public static final String PROP_OVERRIDE_DATE = "overrideDate";
+  public static final String PROP_SUPPRESS_UPDATED_DATE = "suppressUpdatedDate";
   
   /**
    * The time zone.
