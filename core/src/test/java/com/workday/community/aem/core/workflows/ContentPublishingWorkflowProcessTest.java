@@ -312,8 +312,8 @@ public class ContentPublishingWorkflowProcessTest {
     assertTrue(actualResultRtDt);
     boolean unRtDt = node.hasProperty(WorkflowConstants.UNRETIREMENT_DATE);
     assertTrue(unRtDt);
-    boolean ovrDt = node.hasProperty(GlobalConstants.PROP_OVERRIDE_DATE);
-    assertTrue(ovrDt);
+    boolean supDt = node.hasProperty(GlobalConstants.PROP_SUPPRESS_UPDATED_DATE);
+    assertTrue(supDt);
     boolean updDt = node.hasProperty(GlobalConstants.PROP_UPDATED_DATE);
     assertTrue(updDt);
     boolean posDt = node.hasProperty(GlobalConstants.PROP_POSTED_DATE);
@@ -357,8 +357,8 @@ public class ContentPublishingWorkflowProcessTest {
     assertTrue(actualResultRtDt);
     boolean unRtDt = node.hasProperty(WorkflowConstants.UNRETIREMENT_DATE);
     assertTrue(unRtDt);
-    boolean ovrDt = node.hasProperty(GlobalConstants.PROP_OVERRIDE_DATE);
-    assertTrue(ovrDt);
+    boolean supDt = node.hasProperty(GlobalConstants.PROP_SUPPRESS_UPDATED_DATE);
+    assertTrue(supDt);
     boolean updDt = node.hasProperty(GlobalConstants.PROP_UPDATED_DATE);
     assertTrue(updDt);
     boolean posDt = node.hasProperty(GlobalConstants.PROP_POSTED_DATE);

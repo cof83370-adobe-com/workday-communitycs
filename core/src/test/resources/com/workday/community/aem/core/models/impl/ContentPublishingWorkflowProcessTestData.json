@@ -32,7 +32,7 @@
       "jcr:isCheckedOut": true,
       "reviewReminderDate": "2024-08-03T08:27:17.654Z",
       "unRetirementDate" : true,
-      "overrideDate" : true,
+      "suppressUpdatedDate" : true,
       "updatedDate" : true,
       "postedDate" : true,
       "jcr:uuid": "90af8d24-9bad-4dd4-a619-f1dd8b3ed5fa",
