@@ -22,6 +22,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.constants.DrupalConstants;
+import com.workday.community.aem.core.constants.GlobalConstants;
+import com.workday.community.aem.core.dto.AemContentDto;
 import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.pojos.restclient.ApiResponse;
 import com.workday.community.aem.core.services.CacheBucketName;
@@ -147,16 +149,61 @@ public class DrupalServiceImpl implements DrupalService {
 
       // Gson object for json handling of token response.
       JsonObject tokenResponse = gson.fromJson(drupalResponse.getResponseBody(), JsonObject.class);
-      if (tokenResponse.get("access_token") == null || tokenResponse.get("access_token").isJsonNull()) {
+      if (tokenResponse.get(GlobalConstants.ACCESS_TOKEN) == null
+          || tokenResponse.get(GlobalConstants.ACCESS_TOKEN).isJsonNull()) {
         LOGGER.error("Drupal API token is empty.");
         return StringUtils.EMPTY;
       }
 
       // Update the cache with the bearer token.
-      String bearerToken = tokenResponse.get("access_token").getAsString();
+      String bearerToken = tokenResponse.get(GlobalConstants.ACCESS_TOKEN).getAsString();
       drupalApiCache.put(DrupalConstants.TOKEN_CACHE_KEY, bearerToken);
       return bearerToken;
     } catch (DrupalException e) {
+      throw new DrupalException(
+          String.format(
+              "Error while fetching the Drupal Api token. Please contact Community Admin. Error: %s",
+              e.getMessage()));
+    }
+  }
+
+  /**
+   * Gets the Drupal API CSRF Token required for Drupal AEM content Entity API.
+   *
+   * @return CSRF API Token.
+   * @throws DrupalException custom exception.
+   */
+  protected String getCsrfToken() throws DrupalException {
+    /*    String cachedCsrfTokenResult = drupalApiCache.get(DrupalConstants.CSRF_TOKEN_CACHE_KEY);
+    if (StringUtils.isNotBlank(cachedCsrfTokenResult)) {
+      return cachedCsrfTokenResult;
+    }*/
+    String drupalUrl = config.drupalApiUrl();
+    String csrfTokenPath = config.drupalCsrfTokenPath();
+
+    if (StringUtils.isEmpty(drupalUrl) || StringUtils.isEmpty(csrfTokenPath)) {
+      // No Drupal configuration provided, just return the default one.
+      LOGGER.debug(String.format("There is no value "
+          + "for one or multiple configuration parameters: "
+          + "drupalUrl=%s;tokenPath=%s", drupalUrl, csrfTokenPath));
+      return StringUtils.EMPTY;
+    }
+
+    try {
+      String url = CommunityUtils.formUrl(drupalUrl, csrfTokenPath);
+
+      // Execute the request.
+      ApiResponse drupalResponse = RestApiUtil.doDrupalCsrfTokenGet(url);
+      if (drupalResponse == null || StringUtils.isEmpty(drupalResponse.getResponseBody())
+          || drupalResponse.getResponseCode() != HttpStatus.SC_OK) {
+        LOGGER.error("Drupal API CSRF token response is empty.");
+        return StringUtils.EMPTY;
+      }
+
+      String csrfToken = drupalResponse.getResponseBody();
+      drupalApiCache.put(DrupalConstants.CSRF_TOKEN_CACHE_KEY, csrfToken);
+      return csrfToken;
+    } catch (Exception e) {
       throw new DrupalException(
           String.format(
               "Error while fetching the Drupal Api token. Please contact Community Admin. Error: %s",
@@ -424,6 +471,68 @@ public class DrupalServiceImpl implements DrupalService {
               "There is an error while fetching user search data. Please contact Community Admin. %s",
               e.getMessage()));
     }
+  }
+
+  @Override
+  public ApiResponse createOrUpdateEntity(AemContentDto aemContentDto) throws DrupalException {
+    try {
+      String bearerToken = getApiToken();  // Get the bearer token needed for user data API call.
+      String csrfToken = getCsrfToken(); // Get the CSRF token needed for user data API call.
+
+      if (StringUtils.isNotBlank(bearerToken) && StringUtils.isNotBlank(csrfToken)) {
+        // Frame the request URL.
+        String url = CommunityUtils.formUrl(config.drupalApiUrl(), config.drupalAemContentEntityPath());
+        // Execute the request.
+        ApiResponse createEntityResponse =
+            RestApiUtil.doDrupalCreateOrUpdateEntity(url, aemContentDto, bearerToken, csrfToken);
+        if (createEntityResponse.getResponseCode() == HttpStatus.SC_OK
+            || createEntityResponse.getResponseCode() == HttpStatus.SC_CREATED) {
+          return createEntityResponse;
+        } else {
+          LOGGER.error("Failed to create or update entity in Drupal. Response is empty or not OK.");
+        }
+      }
+    } catch (Exception e) {
+      throw new DrupalException(String.format("There is an error while creating AEM content entity in Drupal. {} ",
+          e.getMessage()));
+    }
+    return null;
+  }
+
+
+  @Override
+  public ApiResponse deleteEntity(String pagePath) throws DrupalException {
+    try {
+      String bearerToken = getApiToken();  // Get the bearer token needed for user data API call.
+      String csrfToken = getCsrfToken(); // Get the CSRF token needed for user data API call.
+
+      if (StringUtils.isNotBlank(bearerToken) && StringUtils.isNotBlank(csrfToken)) {
+        // Frame the request URL.
+        String url = CommunityUtils.formUrl(config.drupalApiUrl(), config.drupalAemContentDeleteEntityPath());
+        // Execute the request.
+        ApiResponse deleteEntityResponse = RestApiUtil.doDrupalDeleteEntity(url, bearerToken, csrfToken, pagePath);
+        if (deleteEntityResponse.getResponseCode() == HttpStatus.SC_NO_CONTENT) {
+          return deleteEntityResponse;
+        } else {
+          LOGGER.error("Failed to delete entity in Drupal. Response is empty or not OK.");
+        }
+      }
+
+    } catch (DrupalException e) {
+      throw new DrupalException(
+          String.format("There is an error while fetching user search data. Please contact Community Admin. %s",
+              e.getMessage()));
+    }
+    return null;
+  }
+
+  /**
+   * Get AEM Drupal Content sync is enabled.
+   *
+   * @return AEM Drupal Content sync is enabled or not
+   */
+  public boolean isContentSyncEnabled() {
+    return config.contentSyncEnabled();
   }
 
   /**

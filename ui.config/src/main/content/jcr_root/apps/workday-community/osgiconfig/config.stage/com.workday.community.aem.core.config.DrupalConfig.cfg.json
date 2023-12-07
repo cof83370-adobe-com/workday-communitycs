@@ -7,5 +7,9 @@
   "drupalUserLookupClientSecret": "$[secret:drupalUserLookupClientSecret]",
   "drupalTokenCacheMax": 10,
   "drupalTokenCacheTimeout": 1740000,
-  "enableCache": "$[env:drupalEnableCache;default=true]"
+  "enableCache": "$[env:drupalEnableCache;default=true]",
+  "drupalCSRFTokenPath": "$[env:drupalCSRFTokenPath;default=/session/token]",
+  "drupalAemContentEntityPath": "$[env:drupalAemContentEntityPath;default=/aem/node?_format=json]",
+  "drupalAemContentDeleteEntityPath": "$[env:drupalAemContentDeleteEntityPath;default=/aem/node/delete]",
+  "contentSyncEnabled": "$[env:contentSyncEnabled;default=false]"
 }
