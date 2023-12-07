@@ -5,11 +5,11 @@ import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 /**
- * The Interface RetirementManagerSchedulerConfig.
+ * The Interface RetirementManagerJobConfig.
  */
-@ObjectClassDefinition(name = "Retirement Manager Scheduler Configuration", 
+@ObjectClassDefinition(name = "Retirement Manager Job Configuration", 
 description = "Paramerters for Retirement Manager Scheduler")
-public @interface RetirementManagerSchedulerConfig {
+public @interface RetirementManagerJobConfig {
 
   /**
    * Workflow notification cron.
@@ -44,4 +44,12 @@ public @interface RetirementManagerSchedulerConfig {
    */
   @AttributeDefinition(name = "Author Domain", description = "Author Domain", type = AttributeType.STRING)
   String authorDomain() default "";
+  
+  /**
+   * Archival days.
+   *
+   * @return the days
+   */
+  @AttributeDefinition(name = "Archival Days", description = "Archival Days", type = AttributeType.INTEGER)
+  int archivalDays() default 90;
 }

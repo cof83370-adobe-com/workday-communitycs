@@ -88,6 +88,14 @@ public @interface DrupalConfig {
   String drupalUserSearchPath();
 
   /**
+   * Drupal Instances Domain.
+   *
+   * @return Domain of Drupal environment
+   */
+  @AttributeDefinition(name = "Drupal Instances Domain", description = "Domain of Drupal environment.")
+  String drupalInstanceDomain();
+
+  /**
    * Drupal CSRF token path.
    *
    * @return Drupal CSRF token path

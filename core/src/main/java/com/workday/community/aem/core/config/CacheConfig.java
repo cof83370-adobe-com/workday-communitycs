@@ -56,7 +56,7 @@ public @interface CacheConfig {
       description = "Cache maximum JCR user size",
       type = AttributeType.INTEGER
   )
-  int maxJcrUser() default 2000;
+  int maxUserImages() default 2000;
 
   /**
    * The user group cache max size.
@@ -88,11 +88,11 @@ public @interface CacheConfig {
    * @return The length in seconds.
    */
   @AttributeDefinition(
-      name = "JCR user cache duration in seconds before expire",
-      description = "JCR user cache duration in seconds before expire (default 30 minutes)",
+      name = "JCR user avatar cache duration in seconds before expire",
+      description = "JCR user avatar cache duration in seconds before expire (default 30 minutes)",
       type = AttributeType.INTEGER
   )
-  int jcrUserExpireDuration() default 30 * 60;
+  int userImageExpireDuration() default 30 * 60;
 
   /**
    * The time in seconds before the cache cleaned.

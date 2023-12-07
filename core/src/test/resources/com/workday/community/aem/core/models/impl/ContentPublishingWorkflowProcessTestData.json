@@ -31,6 +31,10 @@
       "jcr:baseVersion": "ee691905-7207-4b82-9a94-b78613a8b669",
       "jcr:isCheckedOut": true,
       "reviewReminderDate": "2024-08-03T08:27:17.654Z",
+      "unRetirementDate" : true,
+      "suppressUpdatedDate" : true,
+      "updatedDate" : true,
+      "postedDate" : true,
       "jcr:uuid": "90af8d24-9bad-4dd4-a619-f1dd8b3ed5fa",
       "accessControlTags": [
         "access-control:customer_all"
@@ -39,6 +43,8 @@
       "scheduledRetirementDate": "2024-10-03T08:27:17.654Z",
       "cq:lastReplicated_publish": "Tue Oct 03 2023 13:57:18 GMT+0530",
       "retirementNotificationDate": "2024-09-03T08:27:17.654Z",
+      "retirementStatus": "retired",
+      "actualRetirementDate": "2024-09-03T08:27:17.654Z",
       "cq:lastModifiedBy": "admin",
       "root": {
         "jcr:primaryType": "nt:unstructured",

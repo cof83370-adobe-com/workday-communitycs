@@ -21,6 +21,7 @@ import com.day.cq.replication.Replicator;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.day.cq.wcm.api.Template;
+import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
@@ -305,6 +306,18 @@ public class ContentPublishingWorkflowProcessTest {
     assertTrue(actualResultRetNtDt);
     boolean actualResultSdRtDt = node.hasProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
     assertTrue(actualResultSdRtDt);
+    boolean actualResultRtSt = node.hasProperty(WorkflowConstants.RETIREMENT_STATUS_PROP);
+    assertTrue(actualResultRtSt);
+    boolean actualResultRtDt = node.hasProperty(WorkflowConstants.ACTUAL_RETIREMENT_DATE);
+    assertTrue(actualResultRtDt);
+    boolean unRtDt = node.hasProperty(WorkflowConstants.UNRETIREMENT_DATE);
+    assertTrue(unRtDt);
+    boolean supDt = node.hasProperty(GlobalConstants.PROP_SUPPRESS_UPDATED_DATE);
+    assertTrue(supDt);
+    boolean updDt = node.hasProperty(GlobalConstants.PROP_UPDATED_DATE);
+    assertTrue(updDt);
+    boolean posDt = node.hasProperty(GlobalConstants.PROP_POSTED_DATE);
+    assertTrue(posDt);
 
     cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver, page);
     assertNotNull(page);
@@ -338,6 +351,18 @@ public class ContentPublishingWorkflowProcessTest {
     assertTrue(actualResultSdRtDt);
     Property propertySdRtDt = node.getProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE);
     assertNotNull(propertySdRtDt);
+    boolean actualResultRtSt = node.hasProperty(WorkflowConstants.RETIREMENT_STATUS_PROP);
+    assertTrue(actualResultRtSt);
+    boolean actualResultRtDt = node.hasProperty(WorkflowConstants.ACTUAL_RETIREMENT_DATE);
+    assertTrue(actualResultRtDt);
+    boolean unRtDt = node.hasProperty(WorkflowConstants.UNRETIREMENT_DATE);
+    assertTrue(unRtDt);
+    boolean supDt = node.hasProperty(GlobalConstants.PROP_SUPPRESS_UPDATED_DATE);
+    assertTrue(supDt);
+    boolean updDt = node.hasProperty(GlobalConstants.PROP_UPDATED_DATE);
+    assertTrue(updDt);
+    boolean posDt = node.hasProperty(GlobalConstants.PROP_POSTED_DATE);
+    assertTrue(posDt);
 
     cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver, page);
     assertNotNull(page);

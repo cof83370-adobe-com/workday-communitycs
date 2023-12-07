@@ -21,9 +21,12 @@ import com.day.cq.tagging.TagManager;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
 import com.google.common.collect.ImmutableMap;
+import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.ResolverUtil;
+
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -40,6 +43,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.api.wrappers.ValueMapDecorator;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -70,6 +74,92 @@ public class ExtractPagePropertiesServiceImplTest {
    */
   @InjectMocks
   private ExtractPagePropertiesServiceImpl extract;
+
+  /**
+   * Test config.
+   */
+  private final DrupalConfig testConfig = new DrupalConfig() {
+
+    @Override
+    public Class<? extends Annotation> annotationType() {
+      return null;
+    }
+
+    @Override
+    public String drupalApiUrl() {
+      return "drupalApiUrl";
+    }
+
+    @Override
+    public String drupalTokenPath() {
+      return "drupalTokenPath";
+    }
+
+    @Override
+    public String drupalUserDataPath() {
+      return "drupalUserDataPath";
+    }
+
+    @Override
+    public String drupalUserLookupClientId() {
+      return "drupalUserLookupClientId";
+    }
+
+    @Override
+    public String drupalUserLookupClientSecret() {
+      return "drupalUserLookupClientSecret";
+    }
+
+    @Override
+    public int drupalTokenCacheMax() {
+      return 100;
+    }
+
+    @Override
+    public long drupalTokenCacheTimeout() {
+      return 1000;
+    }
+
+    @Override
+    public boolean enableCache() {
+      return true;
+    }
+
+    @Override
+    public String drupalUserSearchPath() {
+      return "drupalUserSearchPath";
+    }
+
+    @Override
+    public String drupalInstanceDomain() {
+      return "http://test-link.com";
+    }
+
+    @Override
+    public String drupalCsrfTokenPath() {
+      return null;
+    }
+
+    @Override
+    public boolean contentSyncEnabled() {
+      return false;
+    }
+
+    @Override
+    public String drupalAemContentEntityPath() {
+      return null;
+    }
+
+    @Override
+    public String drupalAemContentDeleteEntityPath() {
+      return null;
+    }
+  };
+
+  @BeforeEach
+  public void setup() {
+    extract.activate(testConfig);
+  }
 
   /**
    * Test process taxonomy field product.
@@ -210,8 +300,7 @@ public class ExtractPagePropertiesServiceImplTest {
     UserManager userManager = mock(UserManager.class);
     User user = mock(User.class);
     String userName = "admin";
-    String authorLink =
-        "https://dev-resourcecenter.workday.com/en-us/wrc/public-profile.html?id=5222115";
+    String authorLink = "http://test-link.com/profile/87924606b4131a8aceeeae8868531fbb9712aaa07a5d3a756b26ce0f5d6ca674";
     doReturn(userName).when(data).get("cq:lastModifiedBy", String.class);
     doReturn(user).when(userManager).getAuthorizable(userName);
     Value value = mock(Value.class);

@@ -6,10 +6,6 @@ package com.workday.community.aem.core.exceptions;
 public class RestException extends Exception {
   private static final String PREFIX = "Rest api exception: ";
 
-  public RestException(String message) {
-    super(message);
-  }
-
   public RestException(String message, Object... rest) {
     super(PREFIX + String.format(message, rest));
   }

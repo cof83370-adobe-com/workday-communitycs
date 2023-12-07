@@ -181,6 +181,16 @@ public final class GlobalConstants {
    * Path of title component. 
    */
   public static final String TITLE_COMPONENT = "workday-community/components/core/title";
+  
+  /**
+   * The suppress updated date property.
+   */
+  public static final String PROP_SUPPRESS_UPDATED_DATE = "suppressUpdatedDate";
+  
+  /**
+   * The time zone.
+   */
+  public static final String TIME_ZONE = "GMT";
 
   /**
    * Constant for REPLICATION_ACTION_TYPE_ACTIVATE.
