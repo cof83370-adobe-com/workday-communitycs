@@ -3,6 +3,7 @@ package com.workday.community.aem.core.workflows;
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 import static com.workday.community.aem.core.constants.GlobalConstants.ISO_8601_FORMAT;
 import static com.workday.community.aem.core.constants.WorkflowConstants.ACTUAL_RETIREMENT_DATE;
+import static com.workday.community.aem.core.constants.WorkflowConstants.ARCHIVAL_DATE;
 import static com.workday.community.aem.core.constants.WorkflowConstants.IMMEDIATE_RETIREMENT;
 import static com.workday.community.aem.core.constants.WorkflowConstants.JCR_PATH;
 import static com.workday.community.aem.core.constants.WorkflowConstants.LAST_RETIREMENT_ACTION;
@@ -22,8 +23,10 @@ import com.day.cq.replication.Replicator;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -71,6 +74,10 @@ public class PageRetireProcessStep implements WorkflowProcess {
    */
   @Reference
   private Replicator replicator;
+  
+  /** The retirement manager job config service. */
+  @Reference
+  private RetirementManagerJobConfigService retirementManagerJobConfigService;
 
   /**
    * {@inheritDoc}
@@ -170,6 +177,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
     ModifiableValueMap map = resource.adaptTo(ModifiableValueMap.class);
     map.put(RETIREMENT_STATUS_PROP, RETIREMENT_STATUS_VAL);
     map.put(ACTUAL_RETIREMENT_DATE, Objects.requireNonNull(getCurrentTimeInIso8601Format()));
+    map.put(ARCHIVAL_DATE, Objects.requireNonNull(getArchivalDate()));
     switch (modelName) {
       case RETIREMENT_WORKFLOW_IMMEDIATE_MODEL_NAME:
         map.put(LAST_RETIREMENT_ACTION, IMMEDIATE_RETIREMENT);
@@ -217,6 +225,32 @@ public class PageRetireProcessStep implements WorkflowProcess {
     } catch (ParseException exec) {
       log.error("Exception occured in getCurrentTimeInIso8601Format method: {}",
           exec.getMessage());
+    }
+
+    return null;
+  }
+  
+  /**
+   * Gets the archival date in iso 8601 format.
+   *
+   * @return the archival date in iso 8601 format
+   */
+  private Calendar getArchivalDate() {
+    log.debug("in getArchivalDate");
+    Calendar archivalCalendar = Calendar.getInstance();
+    SimpleDateFormat sdf = new SimpleDateFormat(ISO_8601_FORMAT);
+
+    LocalDate date = LocalDate.now();
+    log.debug("Current Date: {}", date);
+    LocalDate archivalDate = date.plusDays(retirementManagerJobConfigService.getArchivalDays());
+    archivalCalendar.set(archivalDate.getYear(), archivalDate.getMonthValue() - 1, archivalDate.getDayOfMonth());
+    String archivalCalendarString = sdf.format(archivalCalendar.getTime());
+
+    try {
+      archivalCalendar.setTime(sdf.parse(archivalCalendarString));
+      return archivalCalendar;
+    } catch (ParseException exec) {
+      log.error("Exception occured in getArchivalDate method: {}", exec.getMessage());
     }
 
     return null;

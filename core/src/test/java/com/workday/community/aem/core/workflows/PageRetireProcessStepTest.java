@@ -25,6 +25,8 @@ import com.day.cq.replication.Replicator;
 import com.day.cq.wcm.api.Page;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
+
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.util.ArrayList;
@@ -118,6 +120,12 @@ public class PageRetireProcessStepTest {
    */
   @Mock
   private WorkItem workItem;
+  
+  /**
+   * The retirement manager job config service.
+   */
+  @Mock
+  private RetirementManagerJobConfigService retirementManagerJobConfigService;
 
   /**
    * Setup.
@@ -140,11 +148,14 @@ public class PageRetireProcessStepTest {
         "/content");
     context.registerService(ResourceResolver.class, resolver);
     context.registerService(QueryService.class, queryService);
+    context.registerService(RetirementManagerJobConfigService.class, retirementManagerJobConfigService);
     context.registerService(Replicator.class, replicator);
     Page currentPage =
         context.currentResource("/content/page-no-retired-badge").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
     lenient().when(workflowSession.adaptTo(ResourceResolver.class)).thenReturn(resolver);
+    
+    lenient().when(retirementManagerJobConfigService.getArchivalDays()).thenReturn(90);
   }
 
   /**

@@ -99,4 +99,24 @@ public interface WorkflowConstants {
    * The notification name.
    */
   String NOTIFICATION_NAME_CONTENT_PUBLISHED = "Content has been published";
+  
+  /**
+   * The retirement status val.
+   */
+  String UNRETIREMENT_STATUS_VAL = "unretired";
+  
+  /**
+   * The unretirement date.
+   */
+  String UNRETIREMENT_DATE = "unRetirementDate";
+  
+  /**
+   * The archival date.
+   */
+  String ARCHIVAL_DATE = "archivalDate";
+  
+  /**
+   * The archival version comment.
+   */
+  String ARCHIVAL_VERSION_COMMENT = "Version created by automated archival process";
 }

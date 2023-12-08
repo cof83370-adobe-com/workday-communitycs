@@ -148,6 +148,22 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
         node.setProperty(WorkflowConstants.RETIREMENT_NOTIFICATION_DATE, retirementNotificationCalendar);
         node.setProperty(WorkflowConstants.SCHEDULED_RETIREMENT_DATE, scheduledRetirementCalendar);
       }
+      
+      if (node.hasProperty(WorkflowConstants.RETIREMENT_STATUS_PROP)) {
+        if (node.getProperty(WorkflowConstants.RETIREMENT_STATUS_PROP) != null
+            && node.getProperty(WorkflowConstants.RETIREMENT_STATUS_PROP).getString()
+                .equalsIgnoreCase(WorkflowConstants.RETIREMENT_STATUS_VAL)) {
+          node.setProperty(WorkflowConstants.RETIREMENT_STATUS_PROP, WorkflowConstants.UNRETIREMENT_STATUS_VAL);
+        }
+
+        if (node.hasProperty(WorkflowConstants.ACTUAL_RETIREMENT_DATE)) {
+          node.getProperty(WorkflowConstants.ACTUAL_RETIREMENT_DATE).remove();
+        }
+
+        Calendar unRetirementCalendar = Calendar.getInstance();
+        node.setProperty(WorkflowConstants.UNRETIREMENT_DATE, unRetirementCalendar);
+      }
+      
       jcrSession.save();
     } catch (RepositoryException e) {
       log.error("RepositoryException occurred in updatePageProperties {}:", e.getMessage());

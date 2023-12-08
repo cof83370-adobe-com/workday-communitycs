@@ -38,10 +38,18 @@ public interface QueryService {
   List<String> getBookNodesByPath(String bookPath, String currentPath);
   
   /**
-   * Gets the pages by date propery if value matching current date.
+   * Gets the pages by date property if value matching current date.
    *
    * @param dateProperty the property in page to search against
    * @return List of page paths.
    */
   List<String> getPagesDueTodayByDateProp(String dateProperty);
+  
+  /**
+   * Gets the pages by archival date property if value matching current date.
+   *
+   * @param acrchivalDateProp the property in page to search against
+   * @return List of page paths.
+   */
+  List<String> getRetiredPagesByArchivalDate(String acrchivalDateProp);
 }
