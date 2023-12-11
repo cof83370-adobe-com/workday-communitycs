@@ -99,6 +99,14 @@
                                             editGroups="[CMTY CC Admin]"
                                             sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
                                     </authorReadOnly>
+                                    <userName
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        disabled="{Boolean}true"
+                                        fieldDescription="Read only User Name."
+                                        fieldLabel="User Name"
+                                        name="./username">
+                                    </userName>
                                     <suppressUpdatedDate
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
