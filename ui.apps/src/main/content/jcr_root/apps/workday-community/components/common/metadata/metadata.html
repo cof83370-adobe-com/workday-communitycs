@@ -7,9 +7,9 @@
         <span class="cmp-metadata__item-label">${'Updated' @ i18n, context='text'} </span>
         <span class="cmp-metadata__item-output" data-cmp-hook-metadata="updated">${'MMM dd, YYYY' @ format=updatedDate}</span>
     </span>
-    <span class="cmp-metadata__item" data-sly-test.authorName="${metadata.authorName}">
+    <span class="cmp-metadata__item" data-sly-test.userName="${metadata.userName}">
         <span class="cmp-metadata__item-label">${'Posted By' @ i18n, context='text'}:</span>
-        <span class="cmp-metadata__item-output" data-cmp-hook-metadata="postedby">${authorName @ context ='text'}</span>
+        <span class="cmp-metadata__item-output" data-cmp-hook-metadata="postedby">${userName @ context ='text'}</span>
     </span>
     <span class="cmp-metadata__item"  data-sly-test="${pageProperties.readCount}">
         <span class="cmp-metadata__item-label">${'Read' @ i18n, context='text'}</span>

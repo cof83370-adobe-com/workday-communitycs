@@ -36,9 +36,12 @@ public final class GlobalConstants {
    * The author property.
    */
   public static final String PROP_AUTHOR = "author";
-  
-  /** 
-   * The JCR CREATED BY property. 
+
+  /** The Constant USER_NAME. */
+  public static final String USER_NAME = "username";
+
+  /**
+   * The JCR CREATED BY property.
    */
   public static final String PROP_JCR_CREATED_BY = JCR_CREATED_BY;
 
@@ -88,8 +91,7 @@ public final class GlobalConstants {
   /**
    * Path to the book root.
    */
-  public static final String COMMUNITY_CONTENT_BOOK_ROOT_PATH =
-      "/content/workday-community/en-us/admin-tools/books";
+  public static final String COMMUNITY_CONTENT_BOOK_ROOT_PATH = "/content/workday-community/en-us/admin-tools/books";
 
   /**
    * Value of unset configs.
@@ -121,30 +123,30 @@ public final class GlobalConstants {
    */
   public static final String ISO_8601_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
 
-  /** 
-   * Path to the notifications root. 
+  /**
+   * Path to the notifications root.
    */
   public static final String COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH = 
       "/content/workday-community/en-us/admin-tools/notifications";
-  
-  /** 
-   * Path of text component. 
+
+  /**
+   * Path of text component.
    */
   public static final String TEXT_COMPONENT = "workday-community/components/core/text";
 
   /** The Constant HTML_EXTENSION. */
   public static final String HTML_EXTENSION = ".html";
-  
-  /** 
-   * Path of title component. 
+
+  /**
+   * Path of title component.
    */
   public static final String TITLE_COMPONENT = "workday-community/components/core/title";
-  
+
   /**
    * The suppress updated date property.
    */
   public static final String PROP_SUPPRESS_UPDATED_DATE = "suppressUpdatedDate";
-  
+
   /**
    * The time zone.
    */
