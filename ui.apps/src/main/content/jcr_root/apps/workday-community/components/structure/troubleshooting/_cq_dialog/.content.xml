@@ -44,11 +44,12 @@
                                     <author
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        sling:resourceType="/apps/workday-community/components/search-pathbrowser"
                                         emptyText="Enter Author Name"
                                         fieldDescription="Enter Author Name."
                                         fieldLabel="Author Name"
-                                        name="./author">
+                                        name="./author"
+                                        rootPath="/content/workday-community">
                                            <granite:rendercondition
                                             jcr:primaryType="nt:unstructured"
                                             editGroups="[CMTY CC Admin]"
@@ -66,6 +67,15 @@
                                             editGroups="[CMTY CC Admin]"
                                             sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
                                     </authorReadOnly>
+                                    <username
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                            disabled="{Boolean}true"
+                                            emptyText="Username"
+                                            fieldDescription="Username"
+                                            fieldLabel="Username"
+                                            name="./username">
+                                    </username>
                                     <suppressUpdatedDate
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"

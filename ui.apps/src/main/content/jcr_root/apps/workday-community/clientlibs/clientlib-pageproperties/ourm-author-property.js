@@ -9,7 +9,7 @@
             pathBrowser = wrapper.find("[data-init='pathbrowser']");
 
         wrapper.find("button[title='Browse']").hide();
-        wrapper.find("input").first().val($(this).data('email')).css('width', 'inherit');
+        wrapper.find("input").first().css('width', 'inherit');
         wrapper.find('.coral-Form-fieldinfo').css('font-size', '12px');
         if (_.isEmpty(pathBrowser)) {
             return;

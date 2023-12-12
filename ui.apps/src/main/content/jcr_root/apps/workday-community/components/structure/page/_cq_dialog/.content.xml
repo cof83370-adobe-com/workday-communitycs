@@ -109,15 +109,15 @@
                                         fieldLabel="Username"
                                         name="./username">
                                     </username>
-                                    <overrideDate
-                                        jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                        fieldDescription="If checked, page modified date"
-                                        name="./overrideDate"
-                                        renderReadOnly="{Boolean}true"
-                                        text="Check Page Modified Date"
-                                        value="true">
-                                    </overrideDate>                                 
+                                    <suppressUpdatedDate
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                            fieldDescription="If checked, page modified date"
+                                            name="./suppressUpdatedDate"
+                                            renderReadOnly="{Boolean}true"
+                                            text="Check Page Modified Date"
+                                            value="true">
+                                    </suppressUpdatedDate>
                                 </items>
                             </column>
                         </items>
