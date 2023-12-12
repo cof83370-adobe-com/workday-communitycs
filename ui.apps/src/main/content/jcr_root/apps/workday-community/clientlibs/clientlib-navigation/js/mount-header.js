@@ -20,6 +20,8 @@ const getSearchToken = new Promise((resolve, reject) => {
             .then(res => {
                 if (!res && !res['searchToken']) {
                     reject('failed to getToken');
+                } else {
+                    resolve(res['searchToken']);
                 }
             });
     } catch (err) {
@@ -59,7 +61,7 @@ function renderNavHeader() {
             queryParameterName: 'q'
         };
 
-        headerDataJson.coveoProps = (dataModel !== 'HIDE_MENU_UNAUTHENTICATED') ? undefined : getSearchToken.then((searchToken) => (
+        headerDataJson.coveoProps = (dataModel === 'HIDE_MENU_UNAUTHENTICATED') ? undefined : getSearchToken.then((searchToken) => (
             {
                 engine: Cmty.CoveoEngineService.CoveoSearchEngine(
                     {
@@ -81,8 +83,9 @@ function renderNavHeader() {
                 },
                 analytics: {
                     analyticsClientMiddleware: (eventName, payload) => {
-                        if (searchConfig["userContext"]) {
-                            payload.customData = {...payload.customData, ...JSON.parse(searchConfig["userContext"])};
+                        const userContext = searchConfig["userContext"]
+                        if (userContext) {
+                            payload.customData = {...payload.customData, ...JSON.parse(userContext)};
                         }
                         return payload;
                     }
@@ -90,14 +93,12 @@ function renderNavHeader() {
             }
         )).catch((error) => {
             if (dataModel !== 'HIDE_MENU_UNAUTHENTICATED') {
-                // Add search props if Coveo props is not present
+                // Add search props if Coveo props is not present and not public page
                 headerDataJson.searchProps = { ...unAuthenticated };
+            } else {
+                headerDataJson.searchProps = undefined;
             }
         });
-
-        if (!headerDataJson.coveoProps) {
-            headerDataJson.searchProps = { ...unAuthenticated };
-        }
 
         try {
             const headerElement = React.createElement(Cmty.GlobalHeader, headerDataJson);
