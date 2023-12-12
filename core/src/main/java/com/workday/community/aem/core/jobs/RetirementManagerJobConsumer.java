@@ -19,8 +19,8 @@ import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.EmailService;
 import com.workday.community.aem.core.services.QueryService;
-import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
 import com.workday.community.aem.core.services.RunModeConfigService;
+import com.workday.community.aem.core.services.WorkflowConfigService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,9 +67,9 @@ public class RetirementManagerJobConsumer implements JobConsumer {
   @Reference
   private ResourceResolverFactory resolverFactory;
   
-  /** The retirement manager job config service. */
+  /** The workflow config service. */
   @Reference
-  private RetirementManagerJobConfigService retirementManagerJobConfigService;
+  private WorkflowConfigService workflowConfigService;
   
   @Reference
   private Replicator replicator;
@@ -130,11 +130,11 @@ public class RetirementManagerJobConsumer implements JobConsumer {
   public JobResult runJob() {
     log.debug("RetirementManagerJobConsumer runJob >>>>>>>>>>>");
     try (ResourceResolver resResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
-      if (retirementManagerJobConfigService.enableWorkflowNotificationReview()) {
+      if (workflowConfigService.enableWorkflowNotificationReview()) {
         sendReviewNotification(resResolver);
       }
 
-      if (retirementManagerJobConfigService.enableWorkflowNotificationRetirement()) {
+      if (workflowConfigService.enableWorkflowNotificationRetirement()) {
         startRetirementAndNotify(resResolver);
       }
       
@@ -196,7 +196,7 @@ public class RetirementManagerJobConsumer implements JobConsumer {
           if (textNode.getProperty("text") != null) {
             text = textNode.getProperty("text").getValue().getString();
 
-            String pageUrl = retirementManagerJobConfigService.getAuthorDomain()
+            String pageUrl = workflowConfigService.getAuthorDomain()
                 .concat("/editor.html").concat(path).concat(".html");
             if (node.getProperty(JCR_TITLE) != null) {
               String pageTitle = node.getProperty(JCR_TITLE).getString();

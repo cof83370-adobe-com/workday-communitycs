@@ -49,7 +49,7 @@ import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
-import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
+import com.workday.community.aem.core.services.WorkflowConfigService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
@@ -104,7 +104,7 @@ public class RetirementManagerJobConsumerTest {
     private ReplicationStatus repStatus;
     
     @Mock
-    RetirementManagerJobConfigService retirementManagerJobConfigService;
+    WorkflowConfigService workflowConfigService;
     
     @Mock
     RunModeConfigService runModeConfigService;
@@ -209,7 +209,7 @@ public class RetirementManagerJobConsumerTest {
     @Test
     public String testProcessTextComponentFromEmailTemplate() throws RepositoryException {
     	String domain = "http://localhost:4502";
-        lenient().when(retirementManagerJobConfigService.getAuthorDomain()).thenReturn(domain);
+        lenient().when(workflowConfigService.getAuthorDomain()).thenReturn(domain);
     	
 		List<Node> testItems = new ArrayList<>();
 		testItems.add(mock(Node.class));

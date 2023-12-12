@@ -1,7 +1,9 @@
 package com.workday.community.aem.core.workflows;
 
+import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
 import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 import static com.workday.community.aem.core.constants.WorkflowConstants.JCR_PATH;
+import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 
 import com.adobe.granite.taskmanagement.Task;
 import com.adobe.granite.taskmanagement.TaskManager;
@@ -24,18 +26,28 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.EmailService;
 import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.services.WorkflowConfigService;
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -62,6 +74,26 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
    */
   @Reference
   private QueryService queryService;
+  
+  /** The workflow config service. */
+  @Reference
+  private WorkflowConfigService workflowConfigService;
+  
+  /** The email service. */
+  @Reference
+  private EmailService emailService;
+  
+  /**
+   * The email template publish text.
+   */
+  private final String emailTemplatePagePublishText = 
+        "/workflows/publish-notification/jcr:content/root/container/container/text";
+  
+  /**
+   * The email template publish subject.
+   */
+  private final String emailTemplatePagePublishSubject = 
+      "/workflows/publish-notification/jcr:content/root/container/container/title";
 
   /**
    * {@inheritDoc}
@@ -274,9 +306,9 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
    * @param resResolver the ResourceResolver
    * @param assignee   the initiator
    */
-  private void sendInboxNotification(ResourceResolver resResolver, String assignee, Page payloadPage) {
+  private void sendInboxNotification(ResourceResolver resResolver, String initiator, Page payloadPage) {
     log.debug("sendInboxNotification start");
-
+    String authorId = null;
     try {
       TaskManager taskManager = resResolver.adaptTo(TaskManager.class);
       Task newTask = taskManager.getTaskManagerFactory().newTask(WorkflowConstants.TASK_TYPE_NOTIFICATION);
@@ -285,15 +317,204 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
         if (payloadPage != null) {
           newTask.setContentPath(payloadPage.getPath());
           newTask.setDescription(payloadPage.getTitle());
+          newTask.setCurrentAssignee(initiator); // workflow initiator inbox notification
+          taskManager.createTask(newTask);
+
+          UserManager userManager = resResolver.adaptTo(UserManager.class);
+          String author = (String) payloadPage.getProperties().get(GlobalConstants.PROP_AUTHOR);
+          Iterator<Authorizable> iter = userManager.findAuthorizables("email", author, UserManager.SEARCH_TYPE_USER);
+          while (iter != null && iter.hasNext()) {
+            Authorizable auth = iter.next();
+            authorId = auth.getID();
+          }
+
+          if (null != authorId) {
+            log.debug("author has AEM Account");
+            if (!authorId.equalsIgnoreCase(initiator)) {
+              log.debug("author and initiator are not same");
+              newTask.setCurrentAssignee(authorId); // author inbox notification
+              taskManager.createTask(newTask);
+            } else {
+              log.debug("author: {} and initiator: {} are same", authorId, initiator);
+            }
+          } else {
+            log.debug("author has no AEM Account");
+            // send email notification to author
+            sendMailNotification(author, resResolver, emailTemplatePagePublishText, emailTemplatePagePublishSubject,
+                payloadPage.getPath());
+          }
         }
-        newTask.setCurrentAssignee(assignee);
-        
-        taskManager.createTask(newTask);
       }
     } catch (TaskManagerException e) {
       log.error("Exception occured while sending inbox notification: {}", e.getMessage());
+    } catch (RepositoryException e) {
+      log.error("RepositoryException in MetadataImpl::getFullNameByUserID: {}", e.getMessage());
     }
 
     log.debug("sendInboxNotification end");
+  }
+  
+  /**
+   * Send mail notification to author.
+   *
+   * @param author                      the author
+   * @param resolver                    the resolver
+   * @param emailTemplateContainerText  the emailTemplateContainerText
+   * @param emailTemplateContainerTitle the emailTemplateContainerTitle
+   * @param path                        the path
+   */
+  public void sendMailNotification(String author, ResourceResolver resolver, String emailTemplateContainerText,
+      String emailTemplateContainerTitle, String path) {
+    log.debug("sendMailNotification >>>>>>>   ");
+
+    try {
+      Node node = Objects.requireNonNull(resolver.getResource(path + GlobalConstants.JCR_CONTENT_PATH))
+          .adaptTo(Node.class);
+
+      if (node != null) {
+        // Regular Expression
+        String regex = "^(.+)@(.+)$";
+        // Compile regular expression to get the pattern
+        Pattern pattern = Pattern.compile(regex);
+
+        // Create instance of matcher
+        Matcher matcher = pattern.matcher(author);
+
+        if (author != null && matcher.matches()) {
+          log.debug("author email is present");
+          Node emailTemplateTextParentNode = Objects
+              .requireNonNull(resolver.getResource(GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH
+                  + emailTemplateContainerText.replace("/text", "")))
+              .adaptTo(Node.class);
+
+          Node emailTemplateTextNode = Objects
+              .requireNonNull(resolver
+                  .getResource(GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH + emailTemplateContainerText))
+              .adaptTo(Node.class);
+
+          Node emailTemplateTitleParentNode = Objects
+              .requireNonNull(resolver.getResource(GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH
+                  + emailTemplateContainerTitle.replace("/title", "")))
+              .adaptTo(Node.class);
+
+          Node emailTemplateTitleNode = Objects
+              .requireNonNull(resolver
+                  .getResource(GlobalConstants.COMMUNITY_CONTENT_NOTIFICATIONS_ROOT_PATH + emailTemplateContainerTitle))
+              .adaptTo(Node.class);
+
+          String msg = "";
+          String subject = "";
+
+          if (emailTemplateTitleNode != null) {
+            subject = processTitleComponentFromEmailTemplate(emailTemplateTitleNode, node, path);
+          } else if (emailTemplateTitleParentNode != null) {
+            NodeIterator nodeItr = emailTemplateTitleParentNode.getNodes();
+
+            while (nodeItr.hasNext()) {
+              Node childNode = nodeItr.nextNode();
+              String emailSubjectTitle = processTitleComponentFromEmailTemplate(childNode, node, path);
+              if (!(emailSubjectTitle.isBlank())) {
+                subject = emailSubjectTitle;
+                break;
+              }
+            }
+          }
+
+          if (emailTemplateTextNode != null) {
+            msg = processTextComponentFromEmailTemplate(emailTemplateTextNode, node, path);
+            emailService.sendEmail(author, subject, msg);
+          } else if (emailTemplateTextParentNode != null) {
+            NodeIterator nodeItr = emailTemplateTextParentNode.getNodes();
+
+            while (nodeItr.hasNext()) {
+              Node childNode = nodeItr.nextNode();
+              String emailBodyText = processTextComponentFromEmailTemplate(childNode, node, path);
+              if (!(emailBodyText.isBlank())) {
+                msg = emailBodyText;
+                break;
+              }
+            }
+            emailService.sendEmail(author, subject, msg);
+          }
+        } else {
+          log.debug("email id is not valid: {}", author);
+        }
+      }
+    } catch (Exception e) {
+      log.error("Exception occured in sendMailNotification: {}", e.getMessage());
+    }
+  }
+  
+  /**
+   * Read text component value of email template content.
+   *
+   * @param textNode the text node
+   * @param node     the node
+   * @param path     the path
+   * @return the string
+   */
+  public String processTextComponentFromEmailTemplate(Node textNode, Node node, String path) {
+    log.debug("processTextComponentFromEmailTemplate >>>>>>>   ");
+    String text = "";
+
+    try {
+      if (textNode.hasProperty(SLING_RESOURCE_TYPE_PROPERTY)) {
+        String resourceType = textNode.getProperty(SLING_RESOURCE_TYPE_PROPERTY).getValue().getString();
+        if (resourceType.equals(GlobalConstants.TEXT_COMPONENT)) {
+          if (textNode.getProperty("text") != null) {
+            text = textNode.getProperty("text").getValue().getString();
+
+            String pageUrl = workflowConfigService.getAuthorDomain()
+                .concat("/editor.html").concat(path).concat(".html");
+            if (node.getProperty(JCR_TITLE) != null) {
+              String pageTitle = node.getProperty(JCR_TITLE).getString();
+              String pageTitleLink = "<a href='".concat(pageUrl).concat("' target='_blank'>").concat(pageTitle)
+                  .concat("</a>");
+              text = text.trim().replace("{pageTitle}", pageTitleLink);
+            }
+            
+            Date date = new Date();
+            Timestamp timestamp = new Timestamp(date.getTime());
+            text = text.trim().replace("{dateTime}", timestamp.toString());
+          }
+        }
+      }
+    } catch (RepositoryException e) {
+      log.error("Exception in processTextComponentFromEmailTemplate: {}", e.getMessage());
+    }
+
+    return text;
+  }
+
+  /**
+   * Read title component value of email template.
+   *
+   * @param titleNode the title node
+   * @param node      the node
+   * @param path      the path
+   * @return the string
+   */
+  public String processTitleComponentFromEmailTemplate(Node titleNode, Node node, String path) {
+    log.debug("processTitleComponentFromEmailTemplate >>>>>>>   ");
+    String title = "";
+
+    try {
+      if (titleNode.hasProperty(SLING_RESOURCE_TYPE_PROPERTY)) {
+        String resourceType = titleNode.getProperty(SLING_RESOURCE_TYPE_PROPERTY).getValue().getString();
+        if (resourceType.equals(GlobalConstants.TITLE_COMPONENT)) {
+          if (titleNode.getProperty(JCR_TITLE) != null) {
+            title = titleNode.getProperty(JCR_TITLE).getValue().getString();
+
+            if (node.getProperty(JCR_TITLE) != null) {
+              title = title.trim().replace("{pageTitle}", node.getProperty(JCR_TITLE).getString());
+            }
+          }
+        }
+      }
+    } catch (RepositoryException e) {
+      log.error("Exception in processTitleComponentFromEmailTemplate: {}", e.getMessage());
+    }
+
+    return title;
   }
 }
