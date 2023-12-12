@@ -106,7 +106,7 @@
             let fullName = `${value.firstName} ${value.lastName}`;
             let profileImageData = value.profileImageData;
 
-            return $(`<li class="coral-SelectList-item ourmUserLi coral-SelectList-item--option" data-profile-image-data="${profileImageData}" data-value="${fullName}">${email}</li>`);
+            return $(`<li class="coral-SelectList-item ourmUserLi coral-SelectList-item--option" data-profile-image-data="${profileImageData}" data-value="${fullName}" data-email="${email}" data-username="${username}">${email}</li>`);
         }
     }
 
