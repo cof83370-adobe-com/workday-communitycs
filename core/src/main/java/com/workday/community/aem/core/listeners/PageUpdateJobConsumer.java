@@ -180,6 +180,8 @@ public class PageUpdateJobConsumer implements JobConsumer {
    */
   private JobResult processPageDeletion(String path) {
     try {
+      path = runModeConfigService.getPublishInstanceDomain()
+          .concat(path).concat(".html");
       ApiResponse deleteEntityResponse = drupalService.deleteEntity(path);
       if (null != deleteEntityResponse && deleteEntityResponse.getResponseCode() == HttpStatus.SC_NO_CONTENT) {
         return JobResult.OK;
@@ -214,8 +216,7 @@ public class PageUpdateJobConsumer implements JobConsumer {
     String fieldAemStatus = determineAemStatus(currentPageProperties);
     if (StringUtils.isBlank(fieldAemStatus) && actionType.equalsIgnoreCase(REPLICATION_ACTION_TYPE_ACTIVATE)) {
       fieldAemStatus = "published";
-    }
-    if (StringUtils.isBlank(fieldAemStatus) && actionType.equalsIgnoreCase(REPLICATION_ACTION_TYPE_DEACTIVATE)) {
+    } else if (StringUtils.isBlank(fieldAemStatus) && actionType.equalsIgnoreCase(REPLICATION_ACTION_TYPE_DEACTIVATE)) {
       fieldAemStatus = "unpublished";
     }
     AemContentDto aemContentDto = new AemContentDto();

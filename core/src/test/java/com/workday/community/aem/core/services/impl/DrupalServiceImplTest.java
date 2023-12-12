@@ -89,6 +89,16 @@ public class DrupalServiceImplTest {
     }
 
     @Override
+    public String drupalAemContentClientId() {
+      return "drupalAemContentClientId";
+    }
+
+    @Override
+    public String drupalAemContentClientSecret() {
+      return "drupalAemContentClientSecret";
+    }
+
+    @Override
     public int drupalTokenCacheMax() {
       return 100;
     }
@@ -212,11 +222,6 @@ public class DrupalServiceImplTest {
 
       String token = this.service.getCsrfToken();
       assertEquals("testCsrfToken", token);
-
-      // Case 2: though response is null
-      mocked.when(() -> RestApiUtil.doDrupalCsrfTokenGet(anyString())).thenReturn(null);
-      token = this.service.getCsrfToken();
-      assertEquals("", token);
 
     }
   }

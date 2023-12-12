@@ -127,10 +127,19 @@ public class ReplicationEventHandler implements EventHandler {
         }
       }
     }
-    if (isContentSyncEnabled() && isCurrentPageIsInSubscriptionPageTypes(actionPath)) {
+    if (isContentSyncEnabled()) {
       String actionType = determineActionType(action.getType());
-      if (startPageUpdateJob(actionType, actionPath) == null) {
-        log.error("\n Error occurred while Creating Page Update push job for page");
+      if ((action.getType().equals(ReplicationActionType.ACTIVATE)
+          || action.getType().equals(ReplicationActionType.DEACTIVATE))
+          && isCurrentPageIsInSubscriptionPageTypes(actionPath)) {
+
+        if (startPageUpdateJob(actionType, actionPath) == null) {
+          log.error("\n Error occurred while Page Create/update push job for page {}", actionPath);
+        }
+      } else if (action.getType().equals(ReplicationActionType.DELETE)) {
+        if (startPageUpdateJob(actionType, actionPath) == null) {
+          log.error("\n Error occurred while Page Delete push job for page {}", actionPath);
+        }
       }
     }
   }

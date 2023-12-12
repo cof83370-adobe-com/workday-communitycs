@@ -53,6 +53,25 @@ public @interface DrupalConfig {
       type = AttributeType.STRING)
   String drupalUserLookupClientSecret();
 
+
+  /**
+   * Drupal API AEM Content Client Id.
+   *
+   * @return Drupal API AEM Content Client Id
+   */
+  @AttributeDefinition(name = "Drupal API AEM Content Client Id", description = "Drupal API AEM Content Client Id.",
+      type = AttributeType.STRING)
+  String drupalAemContentClientId();
+
+  /**
+   * Drupal AEM Content Client Secret.
+   *
+   * @return Drupal AEM Content Client Secret
+   */
+  @AttributeDefinition(name = "Drupal API AEM Content Client Secret",
+      description = "Drupal API AEM Content Client Secret.",
+      type = AttributeType.STRING)
+  String drupalAemContentClientSecret();
   /**
    * Drupal API token cache size.
    *
@@ -121,8 +140,9 @@ public @interface DrupalConfig {
    *
    * @return Drupal AEM Content Data API Path
    */
-  @AttributeDefinition(name = "Drupal AEM Data Entity API Path", description = "Drupal AEM Data Entity API Path.",
-          type = AttributeType.STRING)
+  @AttributeDefinition(name = "Drupal AEM Entity Post/Patch API Path",
+      description = "Drupal AEM Entity Post/Patch API Path.",
+      type = AttributeType.STRING)
   String drupalAemContentEntityPath();
 
   /**
@@ -130,8 +150,8 @@ public @interface DrupalConfig {
    *
    * @return Drupal AEM Content Data Delete API Path
    */
-  @AttributeDefinition(name = "Drupal AEM Data Entity Delete API Path",
-      description = "Drupal AEM Data Entity Delete API Path.",
+  @AttributeDefinition(name = "Drupal AEM  Entity Delete API Path",
+      description = "Drupal AEM Entity Delete API Path.",
       type = AttributeType.STRING)
   String drupalAemContentDeleteEntityPath();
 

@@ -253,6 +253,11 @@ public final class GlobalConstants {
   public static final String X_CSRF_TOKEN = "X-CSRF-Token";
 
   /**
+   * Constant for X_AEM_IDENTIFIER.
+   */
+  public static final String X_AEM_IDENTIFIER = "X-AEM-Identifier";
+
+  /**
    * Constant for SLASH.
    */
   public static final String SLASH = "/";

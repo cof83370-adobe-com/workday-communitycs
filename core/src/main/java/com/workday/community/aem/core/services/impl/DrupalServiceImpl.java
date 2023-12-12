@@ -174,10 +174,10 @@ public class DrupalServiceImpl implements DrupalService {
    * @throws DrupalException custom exception.
    */
   protected String getCsrfToken() throws DrupalException {
-    /*    String cachedCsrfTokenResult = drupalApiCache.get(DrupalConstants.CSRF_TOKEN_CACHE_KEY);
+    String cachedCsrfTokenResult = drupalApiCache.get(DrupalConstants.CSRF_TOKEN_CACHE_KEY);
     if (StringUtils.isNotBlank(cachedCsrfTokenResult)) {
       return cachedCsrfTokenResult;
-    }*/
+    }
     String drupalUrl = config.drupalApiUrl();
     String csrfTokenPath = config.drupalCsrfTokenPath();
 
@@ -459,7 +459,7 @@ public class DrupalServiceImpl implements DrupalService {
             || createEntityResponse.getResponseCode() == HttpStatus.SC_CREATED) {
           return createEntityResponse;
         } else {
-          LOGGER.error("Failed to create or update entity in Drupal. Response is empty or not OK.");
+          LOGGER.error("Failed to create or update entity in Drupal for the page path.{}", url);
         }
       }
     } catch (Exception e) {
@@ -484,7 +484,7 @@ public class DrupalServiceImpl implements DrupalService {
         if (deleteEntityResponse.getResponseCode() == HttpStatus.SC_NO_CONTENT) {
           return deleteEntityResponse;
         } else {
-          LOGGER.error("Failed to delete entity in Drupal. Response is empty or not OK.");
+          LOGGER.error("Failed to delete entity in Drupal for the page path.{}", url);
         }
       }
 

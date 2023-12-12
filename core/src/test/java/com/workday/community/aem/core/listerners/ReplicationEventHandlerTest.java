@@ -145,11 +145,11 @@ public class ReplicationEventHandlerTest {
   }
 
   /**
-   * Test handler events passed for events page content sync.
+   * Test handler events passed for events page when content is activated or deactivated.
    */
   @ParameterizedTest
-  @EnumSource(value = ReplicationActionType.class, names = {"ACTIVATE", "DEACTIVATE", "DELETE"})
-  void testHandleEventsPassedForContentSync(ReplicationActionType actionType) {
+  @EnumSource(value = ReplicationActionType.class, names = {"ACTIVATE", "DEACTIVATE"})
+  void testHandleEventsPassedWhenContentIsActivateOrDeactivated(ReplicationActionType actionType) {
     ReplicationAction action = new ReplicationAction(actionType,
             GlobalConstants.COMMUNITY_EVENT_PAGE_PATH);
     when(service.isCoveoIndexEnabled()).thenReturn(false);
@@ -165,6 +165,27 @@ public class ReplicationEventHandlerTest {
     }
     verify(jobManager).addJob(anyString(), anyMap());
   }
+
+  /**
+   * Test handler events passed for events page when content is deleted.
+   */
+  @ParameterizedTest
+  @EnumSource(value = ReplicationActionType.class, names = {"DELETE"})
+  void testHandleEventsPassedWhenContentIsDeleted(ReplicationActionType actionType) {
+    ReplicationAction action = new ReplicationAction(actionType,
+        GlobalConstants.COMMUNITY_EVENT_PAGE_PATH);
+    when(service.isCoveoIndexEnabled()).thenReturn(false);
+    when(drupalService.isContentSyncEnabled()).thenReturn(true);
+    eventHandler.activate();
+    try (MockedStatic<ReplicationAction> mock = mockStatic(ReplicationAction.class)) {
+      when(ReplicationAction.fromEvent(event)).thenReturn(action);
+      eventHandler.handleEvent(event);
+    }
+    verify(jobManager).addJob(anyString(), anyMap());
+  }
+
+
+
 
   /**
    * Test handler events failed for events page when content sync is disabled.

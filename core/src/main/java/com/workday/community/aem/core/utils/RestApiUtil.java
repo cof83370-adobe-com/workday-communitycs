@@ -149,15 +149,19 @@ public class RestApiUtil {
 
     int statusCode = response.statusCode();
     String body = response.body();
-    log.debug("HTTP response {}, code : {}", body, statusCode);
+    log.debug("HTTP response {}, code : {}", statusCode, body);
 
     ApiResponse apiResponse = new ApiResponse();
     apiResponse.setResponseCode(statusCode);
     if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
       apiResponse.setResponseBody(body);
+      log.debug("Sending the Response for GET call");
+    } else if (statusCode == HttpStatus.SC_NO_CONTENT) {
+      apiResponse.setResponseBody(body);
+      log.debug("Sending the Response for DELETE call");
     } else {
       throw new RestException("Error returned from %s request call: status: %s, response body: %s",
-              method, statusCode, body);
+          method, statusCode, body);
     }
 
     return apiResponse;
@@ -526,7 +530,7 @@ public class RestApiUtil {
           .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
           .addHeader(CONTENT_TYPE, ContentType.JSON)
           .addHeader(GlobalConstants.X_CSRF_TOKEN, csrfToken)
-          .addFormData("field_aem_link", pagePath);
+          .addHeader(GlobalConstants.X_AEM_IDENTIFIER, pagePath);
 
       return executeDeleteRequest(apiRequestInfo);
     } catch (RestException e) {
