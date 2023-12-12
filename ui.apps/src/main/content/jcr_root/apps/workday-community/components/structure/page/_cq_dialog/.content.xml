@@ -77,11 +77,12 @@
                                 <items jcr:primaryType="nt:unstructured">
                                     <author
                                         jcr:primaryType="nt:unstructured"
-                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        sling:resourceType="/apps/workday-community/components/search-pathbrowser"
                                         emptyText="Enter Author Name"
                                         fieldDescription="Enter Author Name."
                                         fieldLabel="Author Name"
-                                        name="./author">
+                                        name="./author"
+                                        rootPath="/content/workday-community">
                                         <granite:rendercondition
                                             jcr:primaryType="nt:unstructured"
                                             editGroups="[CMTY CC Admin]"
@@ -99,15 +100,24 @@
                                             editGroups="[CMTY CC Admin]"
                                             sling:resourceType="workday-community/components/renderconditions/authorshipRender"/>
                                     </authorReadOnly>
-                                    <suppressUpdatedDate
+                                    <username
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
+                                        disabled="{Boolean}true"
+                                        emptyText="Username"
+                                        fieldDescription="Username"
+                                        fieldLabel="Username"
+                                        name="./username">
+                                    </username>
+                                    <overrideDate
                                         jcr:primaryType="nt:unstructured"
                                         sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
                                         fieldDescription="If checked, page modified date"
-                                        name="./suppressUpdatedDate"
+                                        name="./overrideDate"
                                         renderReadOnly="{Boolean}true"
                                         text="Check Page Modified Date"
                                         value="true">
-                                    </suppressUpdatedDate>                                 
+                                    </overrideDate>                                 
                                 </items>
                             </column>
                         </items>

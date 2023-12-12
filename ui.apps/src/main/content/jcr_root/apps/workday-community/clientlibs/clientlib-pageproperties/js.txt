@@ -1,2 +1,4 @@
 required-validation.js
 checkbox-validation.js
+author-search-based-pathbrowser.js
+ourm-author-property.js
