@@ -116,11 +116,9 @@ public class PageResourceListenerTest {
    */
   @BeforeEach
   public void setUp() throws Exception {
-    context.load()
-        .json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
-            "/content");
-    Page currentPage = context.currentResource("/content/book-faq-page")
-        .adaptTo(Page.class);
+    context.load().json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
+        "/content");
+    Page currentPage = context.currentResource("/content/book-faq-page").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
     context.registerService(ResourceResolver.class, resolver);
   }
@@ -179,13 +177,11 @@ public class PageResourceListenerTest {
   void testAddMandatoryTags() throws Exception {
     List<String> updatedACLTags = new ArrayList<>(Arrays.asList("product:hcm", "access-control:internal_workmates"));
     String[] aclTags = { "product:hcm" };
-    when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
-    when(pageManager.getContainingPage(context.currentPage().getContentResource().getPath())).thenReturn(page);
     when(page.getProperties()).thenReturn(valueMap);
     when(page.getContentResource()).thenReturn(resource);
     when(resource.adaptTo(Node.class)).thenReturn(node);
     when(valueMap.get(GlobalConstants.CQ_TAGS_PROPERTY, String[].class)).thenReturn(aclTags);
-    pageResourceListener.addMandatoryTags(context.currentPage().getContentResource().getPath(), resolver);
+    pageResourceListener.addMandatoryTags(context.currentPage().getContentResource().getPath(), page);
     verify(node, times(1)).setProperty(GlobalConstants.CQ_TAGS_PROPERTY, updatedACLTags.toArray(String[]::new));
   }
 

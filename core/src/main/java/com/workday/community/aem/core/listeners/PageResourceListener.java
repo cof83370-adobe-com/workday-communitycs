@@ -91,7 +91,15 @@ public class PageResourceListener implements ResourceChangeListener {
   private void handleNewPage(String pagePath) {
     try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
       if (resourceResolver.getResource(pagePath) != null) {
-        addMandatoryTags(pagePath, resourceResolver);
+        PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
+        Page page = Objects.requireNonNull(pageManager).getContainingPage(pagePath);
+
+        // This check has been added to prevent the execution of the following code for
+        // migration pages
+        if (page == null || createdByAdminServiceUser(page)) {
+          return;
+        }
+        addMandatoryTags(pagePath, page);
         addAuthorPropertyToContentNode(pagePath, resourceResolver);
       }
       if (resourceResolver.hasChanges()) {
@@ -103,40 +111,47 @@ public class PageResourceListener implements ResourceChangeListener {
   }
 
   /**
+   * Created by admin service user.
+   *
+   * @param page the page
+   * @return true, if successful
+   */
+  private boolean createdByAdminServiceUser(Page page) {
+    return "workday-community-administrative-service-user"
+        .equalsIgnoreCase(page.getProperties().get("jcr:createdBy", StringUtils.EMPTY));
+  }
+
+  /**
    * Adds the Internal Workmates tag and Content Type tag to page.
    *
-   * @param pagePath         The path to the resource.
-   * @param resourceResolver A resource resolver object.
+   * @param pagePath The path to the resource.
+   * @param page     the page
    */
-  public void addMandatoryTags(String pagePath, ResourceResolver resourceResolver) {
-    PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
-    Page page = Objects.requireNonNull(pageManager).getContainingPage(pagePath);
-    if (page == null) {
-      return;
-    }
+  public void addMandatoryTags(String pagePath, Page page) {
     Node pageNode = page.getContentResource().adaptTo(Node.class);
-    String[] cqTags = Optional.ofNullable(page.getProperties().get(GlobalConstants.CQ_TAGS_PROPERTY, String[].class))
-        .orElse(new String[0]);
-    List<String> cqTagList = new ArrayList<>(Arrays.asList(cqTags));
-    if (pageNode != null && !cqTagList.contains(TAG_INTERNAL_WORKMATE)) {
-      cqTagList.add(TAG_INTERNAL_WORKMATE);
-    }
-    Template template = page.getTemplate();
-    if (template != null) {
-      String contentTypeTag = String.format("content-types:%s", template.getName());
-      if (pageNode != null && !cqTagList.contains(contentTypeTag)) {
-        if (template.getName().equalsIgnoreCase("events")) {
-          cqTagList.add("content-types:event");
-        } else {
-          cqTagList.add(contentTypeTag);
+    if (pageNode != null) {
+      List<String> cqTagList = new ArrayList<>(
+          Arrays.asList(Optional.ofNullable(page.getProperties().get(GlobalConstants.CQ_TAGS_PROPERTY, String[].class))
+              .orElse(new String[0])));
+
+      if (!cqTagList.contains(TAG_INTERNAL_WORKMATE)) {
+        cqTagList.add(TAG_INTERNAL_WORKMATE);
+      }
+
+      Template template = page.getTemplate();
+      if (template != null) {
+        String contentTypeTag = String.format("content-types:%s", template.getName());
+        if (!cqTagList.contains(contentTypeTag)) {
+          cqTagList.add(template.getName().equalsIgnoreCase("events") ? "content-types:event" : contentTypeTag);
         }
       }
-    }
-    try {
-      pageNode.setProperty(GlobalConstants.CQ_TAGS_PROPERTY, cqTagList.toArray(String[]::new));
-    } catch (RepositoryException exception) {
-      log.error("Exception occurred when adding Internal Workmates Tag and ContentType Tag property to page {} ",
-          exception.getMessage());
+
+      try {
+        pageNode.setProperty(GlobalConstants.CQ_TAGS_PROPERTY, cqTagList.toArray(String[]::new));
+      } catch (RepositoryException exception) {
+        log.error("Exception occurred when adding Internal Workmates Tag and ContentType Tag property to page {} ",
+            exception.getMessage());
+      }
     }
   }
 
