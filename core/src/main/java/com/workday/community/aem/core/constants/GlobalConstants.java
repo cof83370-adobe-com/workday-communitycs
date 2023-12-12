@@ -38,7 +38,7 @@ public final class GlobalConstants {
   public static final String PROP_AUTHOR = "author";
 
   /** The Constant USER_NAME. */
-  public static final String USER_NAME = "username";
+  public static final String PROP_USER_NAME = "username";
 
   /**
    * The JCR CREATED BY property.
@@ -151,6 +151,9 @@ public final class GlobalConstants {
    * The time zone.
    */
   public static final String TIME_ZONE = "GMT";
+
+  /** The Constant CQ_TAGS_PROPERTY. */
+  public static final String CQ_TAGS_PROPERTY = "cq:tags";
 
   /**
    * Instantiates a new global constants.

@@ -37,13 +37,15 @@ public class MetadataImpl implements Metadata {
    */
   @Override
   public String getUserName() {
-    log.debug("Entered in getAuthorName method of  MetadataImpl");
-    ValueMap currentPageProperties = currentPage.getProperties();
-    if (null != currentPageProperties) {
-      return currentPageProperties.get(GlobalConstants.USER_NAME, StringUtils.EMPTY);
+    log.debug("Entered in getUserName method of MetadataImpl");
+    if (currentPage != null) {
+        ValueMap currentPageProperties = currentPage.getProperties();
+        if (currentPageProperties != null) {
+            return currentPageProperties.get(GlobalConstants.PROP_USER_NAME, StringUtils.EMPTY);
+        }
     }
     return StringUtils.EMPTY;
-  }
+}
 
   /**
    * {@inheritDoc}
