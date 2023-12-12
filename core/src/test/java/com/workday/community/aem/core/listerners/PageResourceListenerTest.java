@@ -26,6 +26,8 @@ import java.util.Arrays;
 import java.util.List;
 import javax.jcr.Node;
 import javax.jcr.Property;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
@@ -41,7 +43,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /**
  * The Class PageResourceListenerTest.
  */
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class PageResourceListenerTest {
 
   /**
@@ -116,9 +118,11 @@ public class PageResourceListenerTest {
    */
   @BeforeEach
   public void setUp() throws Exception {
-    context.load().json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
-        "/content");
-    Page currentPage = context.currentResource("/content/book-faq-page").adaptTo(Page.class);
+    context.load()
+        .json("/com/workday/community/aem/core/models/impl/BookOperationsServiceImplTestData.json",
+            "/content");
+    Page currentPage = context.currentResource("/content/book-faq-page")
+        .adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
     context.registerService(ResourceResolver.class, resolver);
   }
@@ -126,8 +130,7 @@ public class PageResourceListenerTest {
   /**
    * Test Remove Book Nodes.
    *
-   * @throws CacheException If there's an error getting a ResourceResolver from
-   *                        the cache manager.
+   * @throws CacheException If there's an error getting a ResourceResolver from the cache manager.
    */
   @Test
   void testRemoveBookNodes() throws CacheException {
@@ -138,7 +141,8 @@ public class PageResourceListenerTest {
 
     List<String> pathList = new ArrayList<>();
     pathList.add("/content/book-1/jcr:content/root/container/container/book");
-    lenient().when(queryService.getBookNodesByPath(context.currentPage().getPath(), null)).thenReturn(pathList);
+    lenient().when(queryService.getBookNodesByPath(context.currentPage().getPath(), null))
+        .thenReturn(pathList);
     lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resolver);
 
     when(resolver.getResource(anyString())).thenReturn(resource);
@@ -151,7 +155,7 @@ public class PageResourceListenerTest {
    *
    * @throws Exception the exception
    */
-  @Test
+ @Test
   void testAddAuthorPropertyToContentNode() throws Exception {
     Node expectedUserNode = mock(Node.class);
     Property prop1 = mock(Property.class);
@@ -174,15 +178,22 @@ public class PageResourceListenerTest {
    * @throws Exception Exception object.
    */
   @Test
-  void testAddMandatoryTags() throws Exception {
-    List<String> updatedACLTags = new ArrayList<>(Arrays.asList("product:hcm", "access-control:internal_workmates"));
-    String[] aclTags = { "product:hcm" };
+  void testAddInternalWorkmatesTag() throws Exception {
+    List<String> updatedACLTags =
+        new ArrayList<>(Arrays.asList("product:hcm", "access-control:internal_workmates"));
+    String[] aclTags = {"product:hcm"};
+    when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+    when(pageManager.getContainingPage(
+        context.currentPage().getContentResource().getPath())).thenReturn(page);
     when(page.getProperties()).thenReturn(valueMap);
     when(page.getContentResource()).thenReturn(resource);
     when(resource.adaptTo(Node.class)).thenReturn(node);
-    when(valueMap.get(GlobalConstants.CQ_TAGS_PROPERTY, String[].class)).thenReturn(aclTags);
-    pageResourceListener.addMandatoryTags(context.currentPage().getContentResource().getPath(), page);
-    verify(node, times(1)).setProperty(GlobalConstants.CQ_TAGS_PROPERTY, updatedACLTags.toArray(String[]::new));
+    when(valueMap.get(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL, String[].class)).thenReturn(
+        aclTags);
+    pageResourceListener.addInternalWorkmatesTag(
+        context.currentPage().getContentResource().getPath(), resolver);
+    verify(node, times(1)).setProperty(GlobalConstants.TAG_PROPERTY_ACCESS_CONTROL,
+        updatedACLTags.toArray(String[]::new));
   }
 
   private ResourceChange createResourceChange(ResourceChange.ChangeType changeType, String path) {
