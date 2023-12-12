@@ -110,13 +110,13 @@
                                         name="./username">
                                     </username>
                                     <suppressUpdatedDate
-                                            jcr:primaryType="nt:unstructured"
-                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                            fieldDescription="If checked, page modified date"
-                                            name="./suppressUpdatedDate"
-                                            renderReadOnly="{Boolean}true"
-                                            text="Check Page Modified Date"
-                                            value="true">
+                                        jcr:primaryType="nt:unstructured"
+                                        sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                        fieldDescription="If checked, page modified date"
+                                        name="./suppressUpdatedDate"
+                                        renderReadOnly="{Boolean}true"
+                                        text="Check Page Modified Date"
+                                        value="true">
                                     </suppressUpdatedDate>
                                 </items>
                             </column>
