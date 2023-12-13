@@ -24,7 +24,14 @@
     function populateOurmUserInputs() {
         const wrapper = $(this).parents(WRAPPER_CLASS);
         wrapper.find("input").first().val($(this).data('email'));
-        wrapper.nextAll(FORM_FIELD_WRAPPER).find("input").first().val($(this).data('username'));
+        wrapper.nextAll(FORM_FIELD_WRAPPER).find("[name='./username']").first().val($(this).data('username'));
+        wrapper.nextAll(FORM_FIELD_WRAPPER).find("[name='./username']").first().removeAttr("disabled");
+        wrapper.nextAll(FORM_FIELD_WRAPPER).find("[name='./username']").css({
+            'background-color': '#eaeaea',
+            'border-color': 'transparent',
+            'color': '#b3b3b3',
+            'cursor': 'default'
+        });
     };
 
     $(document).on("foundation-contentloaded", ourmUsers);
