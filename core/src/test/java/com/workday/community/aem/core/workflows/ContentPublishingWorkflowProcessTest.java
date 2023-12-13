@@ -1,16 +1,10 @@
 package com.workday.community.aem.core.workflows;
 
-import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
-import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import com.adobe.granite.taskmanagement.Task;
 import com.adobe.granite.taskmanagement.TaskManager;
@@ -36,10 +30,7 @@ import com.workday.community.aem.core.services.WorkflowConfigService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -47,10 +38,8 @@ import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 
 import org.apache.jackrabbit.api.security.user.Authorizable;
-import org.apache.jackrabbit.api.security.user.Group;
 import org.apache.jackrabbit.api.security.user.User;
 import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.LoginException;
@@ -198,9 +187,6 @@ public class ContentPublishingWorkflowProcessTest {
         context.currentResource("/content/process-publish-content").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
     lenient().when(workflowSession.adaptTo(ResourceResolver.class)).thenReturn(resolver);
-    
-    //lenient().when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-    //lenient().when(userManager.getAuthorizable("administrator")).thenReturn(authorizable);
   }
 
   /**
@@ -261,8 +247,6 @@ public class ContentPublishingWorkflowProcessTest {
 	lenient().when(tmf.newTask("Notification")).thenReturn(ts);
 	
 	testSendMailNotification();
-	testProcessTextComponentFromEmailTemplate();
-	testProcessTitleComponentFromEmailTemplate();
 
     cpwProcessStep.replicatePage(session, context.currentPage().getPath(), resolver, "admin", page);
     assertNotNull(session);
@@ -427,157 +411,6 @@ public class ContentPublishingWorkflowProcessTest {
   public final void testSendMailNotification() {
   	List<String> paths = new ArrayList<>();
   	paths.add("/content/workday-community/en-us/test");
-  	cpwProcessStep.sendMailNotification("test@oworkday.com", resolver, "/workflows/publish-notification/jcr:content/root/container/container/text", "Page Publish", "/content/process-publish-content");
-  }
-  
-  @Test
-  public String testProcessTextComponentFromEmailTemplate() throws RepositoryException {
-  	String domain = "http://localhost:4502";
-      lenient().when(workflowConfigService.getAuthorDomain()).thenReturn(domain);
-  	
-		List<Node> testItems = new ArrayList<>();
-		testItems.add(mock(Node.class));
-		testItems.add(mock(Node.class));
-
-		Node nodeObj = mock(Node.class);
-		Property prop1 = mock(Property.class);
-		lenient().when(nodeObj.hasProperty(JCR_TITLE)).thenReturn(true);
-		lenient().when(nodeObj.getProperty(anyString())).thenReturn(prop1);
-		assertNotNull(prop1);
-		lenient().when(prop1.getString()).thenReturn("title");
-
-		testItems.forEach(node -> {
-			try {
-				Property property = mock(Property.class);
-				Property propertyText = mock(Property.class);
-				Value value = mock(Value.class);
-				Value value1 = mock(Value.class);
-
-				lenient().when(node.hasProperty(eq(SLING_RESOURCE_TYPE_PROPERTY))).thenReturn(true);
-				lenient().when(node.getProperty(eq(SLING_RESOURCE_TYPE_PROPERTY))).thenReturn(property);
-				lenient().when(node.getProperty(eq("text"))).thenReturn(propertyText);
-				lenient().when(property.getValue()).thenReturn(value);
-				lenient().when(value.getString()).thenReturn(GlobalConstants.TEXT_COMPONENT);
-				lenient().when(propertyText.getValue()).thenReturn(value1);
-				lenient().when(value1.getString()).thenReturn(GlobalConstants.TEXT_COMPONENT);
-			} catch (RepositoryException e) {
-				throw new RuntimeException(e);
-			}
-		});
-
-		NodeIterator nodeIterator = new NodeIterator() {
-			int count = 0;
-
-			@Override
-			public Node nextNode() {
-				if (count < testItems.size()) {
-					Node next = testItems.get(count);
-					count++;
-					return next;
-				}
-				return null;
-			}
-
-			@Override
-			public void skip(long l) {
-			}
-
-			@Override
-			public long getSize() {
-				return testItems.size();
-			}
-
-			@Override
-			public long getPosition() {
-				return count;
-			}
-
-			@Override
-			public boolean hasNext() {
-				return count < testItems.size();
-			}
-
-			@Override
-			public Object next() {
-				return nextNode();
-			}
-		};
-
-		return cpwProcessStep.processTextComponentFromEmailTemplate(nodeIterator.nextNode(), nodeObj,
-				"/content/workday-community/en-us/admin-tools/notifications/workflows/publish-notification");
-  }
-  
-  @Test
-  public String testProcessTitleComponentFromEmailTemplate() throws RepositoryException {
-		List<Node> testItems = new ArrayList<>();
-		testItems.add(mock(Node.class));
-		testItems.add(mock(Node.class));
-
-		Node nodeObj = mock(Node.class);
-		Property prop1 = mock(Property.class);
-		lenient().when(nodeObj.hasProperty(JCR_TITLE)).thenReturn(true);
-		lenient().when(nodeObj.getProperty(anyString())).thenReturn(prop1);
-		assertNotNull(prop1);
-		lenient().when(prop1.getString()).thenReturn("title");
-
-		testItems.forEach(node -> {
-			try {
-				Property property = mock(Property.class);
-				Property propertyText = mock(Property.class);
-				Value value = mock(Value.class);
-				Value value1 = mock(Value.class);
-
-				lenient().when(node.hasProperty(eq(SLING_RESOURCE_TYPE_PROPERTY))).thenReturn(true);
-				lenient().when(node.getProperty(eq(SLING_RESOURCE_TYPE_PROPERTY))).thenReturn(property);
-				lenient().when(node.getProperty(eq(JCR_TITLE))).thenReturn(propertyText);
-				lenient().when(property.getValue()).thenReturn(value);
-				lenient().when(value.getString()).thenReturn(GlobalConstants.TITLE_COMPONENT);
-				lenient().when(propertyText.getValue()).thenReturn(value1);
-				lenient().when(value1.getString()).thenReturn(GlobalConstants.TITLE_COMPONENT);
-			} catch (RepositoryException e) {
-				throw new RuntimeException(e);
-			}
-		});
-
-		NodeIterator nodeIterator = new NodeIterator() {
-			int count = 0;
-
-			@Override
-			public Node nextNode() {
-				if (count < testItems.size()) {
-					Node next = testItems.get(count);
-					count++;
-					return next;
-				}
-				return null;
-			}
-
-			@Override
-			public void skip(long l) {
-			}
-
-			@Override
-			public long getSize() {
-				return testItems.size();
-			}
-
-			@Override
-			public long getPosition() {
-				return count;
-			}
-
-			@Override
-			public boolean hasNext() {
-				return count < testItems.size();
-			}
-
-			@Override
-			public Object next() {
-				return nextNode();
-			}
-		};
-
-		return cpwProcessStep.processTitleComponentFromEmailTemplate(nodeIterator.nextNode(), nodeObj,
-				"/content/workday-community/en-us/admin-tools/notifications/workflows/publish-notification");
+  	cpwProcessStep.sendPublishNotificationEmail("test@oworkday.com", resolver, "/workflows/publish-notification/jcr:content/root/container/container/text", "Page Publish", "/content/process-publish-content");
   }
 }

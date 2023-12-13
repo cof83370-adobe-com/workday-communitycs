@@ -34,7 +34,7 @@ public class RetirementManagerJobScheduler {
   @Reference
   private JobManager jobManager;
   
-  /** The retirement manager job config service. */
+  /** The workflow config service. */
   @Reference
   private WorkflowConfigService workflowConfigService;
 

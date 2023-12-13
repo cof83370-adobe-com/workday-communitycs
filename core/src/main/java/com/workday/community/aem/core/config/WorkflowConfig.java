@@ -8,7 +8,7 @@ import org.osgi.service.metatype.annotations.ObjectClassDefinition;
  * The Interface WorkflowConfig.
  */
 @ObjectClassDefinition(name = "Workflow Configuration", 
-description = "Paramerters for Retirement Manager Scheduler")
+description = "WorkflowService OSGi Config Vaues")
 public @interface WorkflowConfig {
 
   /**
