@@ -51,15 +51,16 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class PageUpdateJobConsumer implements JobConsumer {
 
-
-  Map<String, String> bundleMap;
+  /**
+   * The bundleMap.
+   */
+  private Map<String, String> bundleMap;
 
   /**
    * The cache manager.
    */
   @Reference
   private CacheManagerService cacheManager;
-
 
   /**
    * The run mode config service.

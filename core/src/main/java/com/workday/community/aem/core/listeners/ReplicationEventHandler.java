@@ -47,7 +47,10 @@ import org.osgi.service.event.EventHandler;
     })
 public class ReplicationEventHandler implements EventHandler {
 
-  List<String> subscriptionTemplatesList;
+  /**
+   * The subscriptionTemplatesList.
+   */
+  private List<String> subscriptionTemplatesList;
 
   /**
    * The CoveoIndexApiConfigService.
