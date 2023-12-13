@@ -114,7 +114,8 @@
                                 sling:resourceType="workday-community/components/common/relatedinformation"
                                 footernewTab="_blank"
                                 title="Related Information"
-                                type="static"/>
+                                type="dynamic"
+                                rows="4"/>
                         </relatedinfo>
                     </bottomrightcontainer>
                 </bottomcontainer>
