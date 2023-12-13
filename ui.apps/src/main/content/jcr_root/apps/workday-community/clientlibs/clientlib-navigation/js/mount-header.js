@@ -61,7 +61,7 @@ function renderNavHeader() {
             queryParameterName: 'q'
         };
 
-        headerDataJson.coveoProps = (dataModel === 'HIDE_MENU_UNAUTHENTICATED') ? undefined : getSearchToken.then((searchToken) => (
+        headerDataJson.coveoProps = (dataModel === 'HIDE_MENU_UNAUTHENTICATED') ? undefined : () => getSearchToken.then((searchToken) => (
             {
                 engine: Cmty.CoveoEngineService.CoveoSearchEngine(
                     {
