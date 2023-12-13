@@ -1,6 +1,6 @@
 (function ($, $document) {
     const WORKDAY_PREFIX = "workday.granite.ui.search.pathBrowser",
-        WRAPPER_CLASS = ".workday-search-pathbrowser-wrapper-author"
+        WRAPPER_CLASS = ".workday-search-pathbrowser-wrapper-author",
         FORM_FIELD_WRAPPER = ".coral-Form-fieldwrapper";
 
     "use strict";
