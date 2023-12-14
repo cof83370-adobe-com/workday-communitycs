@@ -1,13 +1,11 @@
 <div class="community-subscribe-container">
-    <sly data-sly-use.model="com.workday.community.aem.core.models.SubscribeModel">
-        <sly data-sly-test="${model.enabled}">
-            <div id="community-subscribe-div" style="width: 150px"
-                 data-manage-url="${properties.manageUrl}" data-title="${properties.title}"
-                 data-width="${properties.width}" data-height="${properties.height}"
-                 data-subscribe-text="${properties.subscribeText}" data-manage-text="${properties.manageText}"
-                 data-error-message="${properties.errorMessage}">
-            </div>
-        </sly>
+    <sly data-sly-use.model="com.workday.community.aem.core.models.SubscribeModel" data-sly-test="${model.enabled}">
+        <div id="community-subscribe-div" style="width: 150px"
+             data-manage-url="${properties.manageUrl}" data-title="${properties.title}"
+             data-width="${properties.width}" data-height="${properties.height}"
+             data-subscribe-text="${properties.subscribeText}" data-manage-text="${properties.manageText}"
+             data-error-message="${properties.errorMessage}">
+        </div>
     </sly>
 </div>
 <sly data-sly-use.template="core/wcm/components/commons/v1/templates.html"

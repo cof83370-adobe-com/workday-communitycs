@@ -133,6 +133,10 @@
                         <taxonomy
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="workday-community/components/common/taxonomy"/>
+                        <subscribe
+                                jcr:primaryType="nt:unstructured"
+                                sling:resourceType="workday-community/components/react/subscribe"
+                                editable="{Boolean}true"/>
                         <relatedinformation
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="workday-community/components/common/relatedinformation"
