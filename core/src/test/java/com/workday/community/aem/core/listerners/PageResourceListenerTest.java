@@ -1,5 +1,6 @@
 package com.workday.community.aem.core.listerners;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -9,10 +10,14 @@ import static org.mockito.Mockito.when;
 
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.listeners.PageResourceListener;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.QueryService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
@@ -57,6 +62,12 @@ public class PageResourceListenerTest {
    */
   @Mock
   private CacheManagerService cacheManager;
+
+  /**
+   * A mocked DrupalService object.
+   */
+  @Mock
+  private DrupalService drupalService;
 
   /**
    * A mocked QueryService object.
@@ -144,22 +155,21 @@ public class PageResourceListenerTest {
    *
    * @throws Exception the exception
    */
-  @Test
+ @Test
   void testAddAuthorPropertyToContentNode() throws Exception {
     Node expectedUserNode = mock(Node.class);
-    UserManager userManager = mock(UserManager.class);
     Property prop1 = mock(Property.class);
-    User user = mock(User.class);
-    lenient().when(resolver.getResource(context.currentPage().getContentResource().getPath()))
-        .thenReturn(resource);
+    lenient().when(resolver.getResource(context.currentPage().getContentResource().getPath())).thenReturn(resource);
     lenient().when(resource.adaptTo(Node.class)).thenReturn(expectedUserNode);
     lenient().when(expectedUserNode.getProperty(anyString())).thenReturn(prop1);
     lenient().when(prop1.getString()).thenReturn("test user");
-    lenient().when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
-    lenient().when(userManager.getAuthorizable(anyString())).thenReturn(user);
+    String jsonString = "{\"users\":[{\"sfId\":\"0031B00002s0XHQQA2\",\"username\":\"acarmichael\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"andy.carmichael@workday.com.uat\",\"profileImageData\":\"data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGh...\"}]}";
 
-    pageResourceListener.addAuthorPropertyToContentNode(
-        context.currentPage().getContentResource().getPath(), resolver);
+    JsonElement jsonElement = JsonParser.parseString(jsonString);
+    JsonObject jsonObject = jsonElement.getAsJsonObject();
+    assertNotNull(drupalService);
+    lenient().when(drupalService.searchOurmUserList(anyString())).thenReturn(jsonObject);
+    pageResourceListener.addAuthorPropertyToContentNode(context.currentPage().getContentResource().getPath(), resolver);
   }
 
   /**
