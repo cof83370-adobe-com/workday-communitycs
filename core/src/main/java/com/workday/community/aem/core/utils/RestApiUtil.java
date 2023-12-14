@@ -5,6 +5,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_T
 import static com.workday.community.aem.core.constants.RestApiConstants.CLIENT_CREDENTIALS;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.sling.api.servlets.HttpConstants.METHOD_POST;
 
 import com.workday.community.aem.core.constants.RestApiConstants;
 import com.workday.community.aem.core.exceptions.DrupalException;
@@ -53,7 +54,7 @@ public class RestApiUtil {
       // Construct the request header.
       log.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
       ApiRequest req = getMenuApiRequest(url, apiToken, apiKey, traceId);
-      return executeGetRequest(req);
+      return executeRequest(req);
     } catch (RestException e) {
       throw new SnapException("Exception in doMenuGet method while executing the request = %s", e.getMessage());
     }
@@ -77,7 +78,7 @@ public class RestApiUtil {
       apiRequestInfo.setUrl(url);
       apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(authToken))
           .addHeader(RestApiConstants.X_API_KEY, apiKey);
-      return executeGetRequest(apiRequestInfo).getResponseBody();
+      return executeRequest(apiRequestInfo).getResponseBody();
     } catch (RestException e) {
       throw new SnapException("Exception in doSnapGet method while executing the request = %s", e.getMessage());
     }
@@ -90,7 +91,7 @@ public class RestApiUtil {
    * @return Response from API.
    * @throws RestException APIException object.
    */
-  private static ApiResponse executeGetRequest(ApiRequest req) throws RestException {
+  private static ApiResponse executeRequest(ApiRequest req) throws RestException {
     log.debug("RESTAPIUtil executeGetRequest: Calling REST executeGetRequest().");
     if (StringUtils.isBlank(req.getMethod())) {
       req.setMethod(HttpConstants.METHOD_GET);
@@ -178,21 +179,35 @@ public class RestApiUtil {
     }
 
     // Build the request.
-    HttpRequest httpRequest = builder.POST(buildFormDataFromMap(request.getFormData())).build();
-
-    try {
-      HttpResponse<String> response =
-          httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-      int resCode = response.statusCode();
-      String resBody = response.body();
-      if (resCode != HttpStatus.SC_OK && resCode != HttpStatus.SC_CREATED) {
-        log.error("HTTP response {}, code : {}", resBody, resCode);
+    HttpRequest.BodyPublisher bodyPublisher = null;
+    String payload = request.getBody();
+    if (!StringUtils.isEmpty(payload)) {
+      bodyPublisher = buildFormDataFromPayload(payload);
+    } else {
+      Map<String, String> formData = request.getFormData();
+      if (formData != null && !formData.isEmpty()) {
+        bodyPublisher =  buildFormDataFromMap(formData);
       }
-      apiresponse.setResponseCode(resCode);
-      apiresponse.setResponseBody(resBody);
-    } catch (IOException | InterruptedException e) {
-      throw new RestException("Exception in executePostRequest method while executing the request = %s",
-          e.getMessage());
+    }
+
+    if (bodyPublisher != null) {
+      HttpRequest httpRequest = builder.POST(bodyPublisher).build();
+
+      try {
+        HttpResponse<String> response =
+            httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+        int resCode = response.statusCode();
+        String resBody = response.body();
+        if (resCode != HttpStatus.SC_OK && resCode != HttpStatus.SC_CREATED) {
+          log.error("HTTP response {}, code : {}", resBody, resCode);
+          return apiresponse;
+        }
+        apiresponse.setResponseCode(resCode);
+        apiresponse.setResponseBody(resBody);
+      } catch (IOException | InterruptedException e) {
+        throw new RestException("Exception in executePostRequest method while executing the request = %s",
+            e.getMessage());
+      }
     }
 
     return apiresponse;
@@ -228,6 +243,10 @@ public class RestApiUtil {
       builder.append(URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8));
     }
     return HttpRequest.BodyPublishers.ofString(builder.toString());
+  }
+
+  private static HttpRequest.BodyPublisher buildFormDataFromPayload(String payload) {
+    return HttpRequest.BodyPublishers.ofString(payload);
   }
 
   /**
@@ -295,7 +314,7 @@ public class RestApiUtil {
           .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
           .addHeader(CONTENT_TYPE, ContentType.JSON);
 
-      return executeGetRequest(apiRequestInfo);
+      return executeRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new LmsException("Exception in doLmsCourseDetailGet method while executing the request = %s",
               e.getMessage());
@@ -351,7 +370,7 @@ public class RestApiUtil {
    * @return API Response
    * @throws DrupalException DrupalException object.
    */
-  public static ApiResponse doDrupalUserDataGet(String url, String bearerToken) throws DrupalException {
+  public static ApiResponse doDrupalGet(String url, String bearerToken) throws DrupalException {
     try {
       ApiRequest apiRequestInfo = new ApiRequest();
 
@@ -360,7 +379,7 @@ public class RestApiUtil {
           .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
           .addHeader(CONTENT_TYPE, ContentType.JSON);
 
-      return executeGetRequest(apiRequestInfo);
+      return executeRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new DrupalException(
           String.format("Exception in doDrupalUserDataGet method while executing the request = %s", e.getMessage()));
@@ -368,26 +387,28 @@ public class RestApiUtil {
   }
 
   /**
-   * Frames the Drupal API user search get request.
+   * Do Drupal Post.
    *
-   * @param url         Url
-   * @param bearerToken Bearer Token
-   * @return API Response
-   * @throws DrupalException DrupalException object.
+   * @param url the pass-in url
+   * @param bearerToken the pass-in bearer token
+   * @param payload  the payload
+   * @return an ApiResponse object
+   * @throws DrupalException if drupal post fails.
    */
-  public static ApiResponse doDrupalUserSearchGet(String url, String bearerToken) throws DrupalException {
+  public static ApiResponse doDrupalPost(String url, String bearerToken, String payload) throws DrupalException {
     try {
       ApiRequest apiRequestInfo = new ApiRequest();
+      apiRequestInfo.setMethod(METHOD_POST);
 
       apiRequestInfo.setUrl(url);
       apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
           .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
           .addHeader(CONTENT_TYPE, ContentType.JSON);
-
-      return executeGetRequest(apiRequestInfo);
+      apiRequestInfo.setBody(payload);
+      return executePostRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new DrupalException(
-          String.format("Exception in doDrupalUserSearchGet method while executing the request = %s", e.getMessage()));
+          String.format("Exception in doDrupalUserDataGet method while executing the request = %s", e.getMessage()));
     }
   }
 }

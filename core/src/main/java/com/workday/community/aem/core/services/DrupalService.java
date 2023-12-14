@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.services;
 
 import com.google.gson.JsonObject;
+import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.exceptions.DrupalException;
 
 /**
@@ -57,4 +58,29 @@ public interface DrupalService {
    * @throws DrupalException DrupalException.
    */
   JsonObject searchOurmUserList(String searchText) throws DrupalException;
+
+  /**
+   * Check if current user is subscribed to the page or question.
+   *
+   * @param id  pass-in page id or question id.
+   * @param email  the user's email
+   * @return true if subscribed, false not.
+   */
+  boolean isSubscribed(String id, String email) throws DrupalException;
+
+  /**
+   * Create user subscription to specific page or question.
+   *
+   * @param id pass-in page id or question id.
+   * @param email the user's email
+   *  @return true if subscription is created successfully, false not.
+   */
+  boolean subscribe(String id, String email) throws DrupalException;
+
+  /**
+   * Get Configuration.
+   *
+   * @return the drupal configuration
+   */
+  DrupalConfig getConfig();
 }

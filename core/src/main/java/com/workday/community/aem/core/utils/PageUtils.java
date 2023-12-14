@@ -124,4 +124,20 @@ public class PageUtils {
     }
     return StringUtils.EMPTY;
   }
+
+  /**
+   * Return the page's uuid.
+   *
+   * @param resourceResolver pass-in resource resolver object
+   * @param pagePath pass-in page path
+   * @return the page's uuid.
+   */
+  public static String getPageUuid(ResourceResolver resourceResolver, String pagePath) {
+    PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
+    // Trim .html at end.
+    pagePath = pagePath.substring(0, pagePath.indexOf("."));
+    Page page = pageManager.getPage(pagePath);
+    Object ret =  page.getProperties().get("jcr:uuid");
+    return ret == null ? "" : ret.toString();
+  }
 }

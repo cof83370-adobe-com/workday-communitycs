@@ -134,6 +134,16 @@ public class ExtractPagePropertiesServiceImplTest {
     public String drupalInstanceDomain() {
       return "http://test-link.com";
     }
+
+    @Override
+    public boolean enableSubscribe() {
+      return false;
+    }
+
+    @Override
+    public String subscribePath() {
+      return "subscribe";
+    }
   };
 
   @BeforeEach

@@ -95,5 +95,4 @@ public class SearchTokenServlet extends SlingAllMethodsServlet {
       log.error("get Token fails with error: {}", e.getMessage());
     }
   }
-
 }

@@ -181,7 +181,7 @@ public class RestApiUtilTest {
       when(response.statusCode()).thenReturn(200);
       when(response.body()).thenReturn("");
 
-      RestApiUtil.doDrupalUserDataGet("url", "bearerToken");
+      RestApiUtil.doDrupalGet("url", "bearerToken");
     }
   }
 }

@@ -135,12 +135,12 @@ public class DrupalServiceImpl implements DrupalService {
           // Format the URL.
           url = String.format(url, sfId);
           // Execute the request.
-          ApiResponse userDataResponse = RestApiUtil.doDrupalUserDataGet(url, bearerToken);
+          ApiResponse userDataResponse = RestApiUtil.doDrupalGet(url, bearerToken);
           if (userDataResponse == null || StringUtils.isEmpty(userDataResponse.getResponseBody())
               || userDataResponse.getResponseCode() != HttpStatus.SC_OK) {
             LOGGER.error("Drupal API user data response is empty. try ago with new token");
             this.drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
-            userDataResponse = RestApiUtil.doDrupalUserDataGet(url, getApiToken());
+            userDataResponse = RestApiUtil.doDrupalGet(url, getApiToken());
             if (userDataResponse == null || StringUtils.isEmpty(userDataResponse.getResponseBody())
                 || userDataResponse.getResponseCode() != HttpStatus.SC_OK) {
               LOGGER.error("Drupal API user data response is empty.");
@@ -317,13 +317,13 @@ public class DrupalServiceImpl implements DrupalService {
           // Format the URL.
           url = String.format(url, searchText);
           // Execute the request.
-          ApiResponse userSearchResponse = RestApiUtil.doDrupalUserSearchGet(url, bearerToken);
+          ApiResponse userSearchResponse = RestApiUtil.doDrupalGet(url, bearerToken);
           if (StringUtils.isEmpty(userSearchResponse.getResponseBody())
               || userSearchResponse.getResponseCode() != HttpStatus.SC_OK) {
 
             // Try one more time with updated token if it is because of expired token.
             this.drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
-            userSearchResponse = RestApiUtil.doDrupalUserSearchGet(url, getApiToken());
+            userSearchResponse = RestApiUtil.doDrupalGet(url, getApiToken());
             if (StringUtils.isEmpty(userSearchResponse.getResponseBody())
                 || userSearchResponse.getResponseCode() != HttpStatus.SC_OK) {
               LOGGER.error("Drupal API user search response is empty.");
@@ -341,6 +341,48 @@ public class DrupalServiceImpl implements DrupalService {
           "There is an error while fetching user search data. Please contact Community Admin. %s",
           e.getMessage());
     }
+  }
+
+
+  @Override
+  public boolean isSubscribed(String id, String email) throws DrupalException {
+    String drupalUrl = config.drupalApiUrl();
+    String subscribePath = config.subscribePath();
+    String bearerToken = getApiToken();
+    String url = CommunityUtils.formUrl(drupalUrl, subscribePath);
+    url = String.format("%s/%s/%s", url, id, email);
+    ApiResponse subscribeReturn = RestApiUtil.doDrupalGet(url, bearerToken);
+    if (subscribeReturn == null || StringUtils.isEmpty(subscribeReturn.getResponseBody())) {
+      return false;
+    }
+
+    return subscribeReturn.getResponseBody().equalsIgnoreCase("true") ? true : false;
+  }
+
+  @Override
+  public boolean subscribe(String id, String email) throws DrupalException {
+    String drupalUrl = config.drupalApiUrl();
+    String subscribePath = config.subscribePath();
+    String bearerToken = getApiToken();
+    String payload = String.format("{\"email\":\"%s\",\"id\":%s}", email, id);
+    String url = CommunityUtils.formUrl(drupalUrl, subscribePath);
+    url = String.format("%s/%s?_format=json", url, "create");
+    ApiResponse subscribeReturn = RestApiUtil.doDrupalPost(url, bearerToken, payload);
+    if (subscribeReturn == null || StringUtils.isEmpty(subscribeReturn.getResponseBody())) {
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Get the Drupal config.
+   *
+   * @return the drupal config object.
+   */
+  @Override
+  public DrupalConfig getConfig() {
+    return this.config;
   }
 
   /**

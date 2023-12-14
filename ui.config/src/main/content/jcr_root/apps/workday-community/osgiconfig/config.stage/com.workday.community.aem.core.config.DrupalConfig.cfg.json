@@ -8,5 +8,6 @@
   "drupalTokenCacheMax": 10,
   "drupalTokenCacheTimeout": 1740000,
   "enableCache": "$[env:drupalEnableCache;default=true]",
-  "drupalInstanceDomain":"$[env:drupalInstanceDomain]"
+  "drupalInstanceDomain":"$[env:drupalInstanceDomain]",
+  "enableSubscribe":"$[env:enableSubscribe;default=true]"
 }

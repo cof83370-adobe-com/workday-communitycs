@@ -2,6 +2,7 @@ package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
@@ -60,27 +61,27 @@ public class DrupalServiceImplTest {
 
     @Override
     public String drupalApiUrl() {
-      return "drupalApiUrl";
+      return "https://mex.community-workday.com";
     }
 
     @Override
     public String drupalTokenPath() {
-      return "drupalTokenPath";
+      return "/oauth/token";
     }
 
     @Override
     public String drupalUserDataPath() {
-      return "drupalUserDataPath";
+      return "/user/data/%s";
     }
 
     @Override
     public String drupalUserLookupClientId() {
-      return "drupalUserLookupClientId";
+      return "default_consumer";
     }
 
     @Override
     public String drupalUserLookupClientSecret() {
-      return "drupalUserLookupClientSecret";
+      return "12345";
     }
 
     @Override
@@ -106,6 +107,16 @@ public class DrupalServiceImplTest {
     @Override
     public String drupalInstanceDomain() {
       return "http://test-link.com";
+    }
+
+    @Override
+    public boolean enableSubscribe() {
+      return true;
+    }
+
+    @Override
+    public String subscribePath() {
+      return "/subscription";
     }
   };
 
@@ -183,7 +194,7 @@ public class DrupalServiceImplTest {
 
       // Case 1: with valid response
       ApiResponse response = mock(ApiResponse.class);
-      mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString())).thenReturn(response);
+      mocked.when(() -> RestApiUtil.doDrupalGet(anyString(), anyString())).thenReturn(response);
 
       String userDataResponse =
           "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
@@ -195,7 +206,7 @@ public class DrupalServiceImplTest {
       cacheManagerService.invalidateCache();
 
       // Case 2: with response as null
-      mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString())).thenReturn(null);
+      mocked.when(() -> RestApiUtil.doDrupalGet(anyString(), anyString())).thenReturn(null);
       userData = this.service.getUserData("sfId");
       assertEquals("", userData);
     }
@@ -225,7 +236,7 @@ public class DrupalServiceImplTest {
 
       // Return from drupal api
       ApiResponse response = mock(ApiResponse.class);
-      mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString())).thenReturn(response);
+      mocked.when(() -> RestApiUtil.doDrupalGet(anyString(), anyString())).thenReturn(response);
 
       String userDataResponse =
           "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
@@ -250,7 +261,7 @@ public class DrupalServiceImplTest {
       String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"expires_in\": 1799}";
       when(tokenResponse.getResponseBody()).thenReturn(responseBody);
       when(tokenResponse.getResponseCode()).thenReturn(200);
-      mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString()))
+      mocked.when(() -> RestApiUtil.doDrupalGet(anyString(), anyString()))
           .thenThrow(new DrupalException("test failure"));
       assertEquals(this.service.getUserProfileImage("sfId"), StringUtils.EMPTY);
     }
@@ -271,7 +282,7 @@ public class DrupalServiceImplTest {
 
       // Return from drupal api
       ApiResponse response = mock(ApiResponse.class);
-      mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString())).thenReturn(response);
+      mocked.when(() -> RestApiUtil.doDrupalGet(anyString(), anyString())).thenReturn(response);
 
       String userDataResponse =
           "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
@@ -301,7 +312,7 @@ public class DrupalServiceImplTest {
       when(tokenResponse.getResponseCode()).thenReturn(200);
 
       ApiResponse response = mock(ApiResponse.class);
-      mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString())).thenReturn(response);
+      mocked.when(() -> RestApiUtil.doDrupalGet(anyString(), anyString())).thenReturn(response);
 
       String userDataResponse =
           "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"adobe\":{\"user\":{\"contactNumber\":\"123\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
@@ -338,7 +349,7 @@ public class DrupalServiceImplTest {
 
       // Return from drupal api
       ApiResponse response = mock(ApiResponse.class);
-      mocked.when(() -> RestApiUtil.doDrupalUserDataGet(anyString(), anyString())).thenReturn(response);
+      mocked.when(() -> RestApiUtil.doDrupalGet(anyString(), anyString())).thenReturn(response);
 
       String userDataResponse =
           "{\"roles\":[\"authenticated\",\"internal_workmates\"],\"profileImage\":\"data:image/jpeg;base64,\",\"email\":\"foo@workday.com\",\"contextInfo\":{\"isWorkmate\":\"false\"},\"adobe\":{\"user\":{\"contactNumber\":\"0034X00002xaPU2QAM\",\"contactRole\":[\"Authenticated\",\"Internal - Workmates\"],\"isNSC\":false,\"timeZone\":\"America/Los_Angeles\"},\"org\":{\"accountId\": \"aEB4X0000004CfdWAE\",\"accountName\":\"Workday\",\"accountType\":\"workmate\"}}}";
@@ -368,7 +379,7 @@ public class DrupalServiceImplTest {
           "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
       // Return from drupal api
       ApiResponse response = mock(ApiResponse.class);
-      mocked.when(() -> RestApiUtil.doDrupalUserSearchGet(anyString(), anyString())).thenReturn(response);
+      mocked.when(() -> RestApiUtil.doDrupalGet(anyString(), anyString())).thenReturn(response);
       when(response.getResponseBody()).thenReturn(testUserContext);
       when(response.getResponseCode()).thenReturn(200);
 
@@ -395,12 +406,55 @@ public class DrupalServiceImplTest {
           "{\"users\":[{\"sfId\":\"fakeSfId\",\"username\":\"fakeUserName\",\"firstName\":\"fake_first_name\",\"lastName\":\"fake_last_name\",\"email\":\"fakeEmail\",\"profileImageData\":\"fakeProfileData\"}]}";
       // Return from drupal api
       ApiResponse response = mock(ApiResponse.class);
-      mocked.when(() -> RestApiUtil.doDrupalUserSearchGet(anyString(), anyString())).thenReturn(response);
+      mocked.when(() -> RestApiUtil.doDrupalGet(anyString(), anyString())).thenReturn(response);
       when(response.getResponseBody()).thenReturn(testUserContext);
       when(response.getResponseCode()).thenReturn(200);
 
       JsonObject ret = this.service.searchOurmUserList(searchText);
       assertEquals(testUserContext, ret.toString());
+    }
+  }
+
+  @Test
+  public void testCheckSubscriptionSuccess() throws DrupalException {
+    try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      ApiResponse response = mock(ApiResponse.class);
+      mocked.when(()->RestApiUtil.doDrupalGet(anyString(), anyString())).thenReturn(response);
+      when(response.getResponseBody()).thenReturn("true");
+      boolean subscribed = this.service.isSubscribed("105", "foo@workday.com");
+      assertTrue(subscribed);
+    }
+  }
+
+  @Test
+  public void testCheckSubscriptionFailed() throws DrupalException {
+    try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      ApiResponse response = mock(ApiResponse.class);
+      mocked.when(()->RestApiUtil.doDrupalGet(anyString(), anyString())).thenReturn(response);
+      when(response.getResponseBody()).thenReturn("false");
+      boolean subscribed = this.service.isSubscribed("105", "foo@workday.com");
+      assertFalse(subscribed);
+    }
+  }
+
+  @Test
+  public void testCreateSubscriptionSuccess() throws DrupalException {
+    try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      ApiResponse response = mock(ApiResponse.class);
+      mocked.when(()->RestApiUtil.doDrupalPost(anyString(), anyString(), anyString())).thenReturn(response);
+      boolean subscribed = this.service.subscribe("105", "foo@workday.com");
+      assertFalse(subscribed);
+    }
+  }
+
+  @Test
+  public void testCreateSubscriptionFailed() throws DrupalException {
+    try(MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      ApiResponse response = mock(ApiResponse.class);
+      mocked.when(()->RestApiUtil.doDrupalPost(anyString(), anyString(), anyString())).thenReturn(response);
+      when(response.getResponseBody()).thenReturn(null);
+      boolean subscribed = this.service.subscribe("107", "foo@workday.com");
+      assertFalse(subscribed);
     }
   }
 }
