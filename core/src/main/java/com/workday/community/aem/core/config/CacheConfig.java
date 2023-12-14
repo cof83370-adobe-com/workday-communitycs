@@ -116,6 +116,6 @@ public @interface CacheConfig {
       description = "Indicate if the cache is enabled (default TRUE)",
       type = AttributeType.BOOLEAN
   )
-  boolean enabled() default false;
+  boolean enabled() default true;
 
 }
