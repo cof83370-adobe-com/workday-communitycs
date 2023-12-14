@@ -23,7 +23,7 @@ import com.day.cq.replication.Replicator;
 import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
-import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
+import com.workday.community.aem.core.services.WorkflowConfigService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -75,9 +75,9 @@ public class PageRetireProcessStep implements WorkflowProcess {
   @Reference
   private Replicator replicator;
   
-  /** The retirement manager job config service. */
+  /** The workflow config service. */
   @Reference
-  private RetirementManagerJobConfigService retirementManagerJobConfigService;
+  private WorkflowConfigService workflowConfigService;
 
   /**
    * {@inheritDoc}
@@ -242,7 +242,7 @@ public class PageRetireProcessStep implements WorkflowProcess {
 
     LocalDate date = LocalDate.now();
     log.debug("Current Date: {}", date);
-    LocalDate archivalDate = date.plusDays(retirementManagerJobConfigService.getArchivalDays());
+    LocalDate archivalDate = date.plusDays(workflowConfigService.getArchivalDays());
     archivalCalendar.set(archivalDate.getYear(), archivalDate.getMonthValue() - 1, archivalDate.getDayOfMonth());
     String archivalCalendarString = sdf.format(archivalCalendar.getTime());
 

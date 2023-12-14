@@ -41,6 +41,8 @@
 
     "set ACL for \"CMTY Public Author {PROD}\"\r\n allow jcr:versionManagement, jcr:modifyProperties, jcr:read, jcr:lockManagement on /content/workday-community/en-us/public\r\n deny jcr:removeChildNodes, jcr:removeNode, jcr:addChildNodes, crx:replicate, jcr:nodeTypeManagement on /content/workday-community/en-us/public\r\n allow jcr:removeChildNodes, jcr:removeNode, jcr:addChildNodes, jcr:nodeTypeManagement on /content/workday-community/en-us/public restriction(rep:glob,*/jcr:content*)\r\nend",
     "set ACL for \"CMTY Public Assets {PROD}\"\r\n allow jcr:versionManagement, jcr:modifyProperties, jcr:read, jcr:addChildNodes, jcr:lockManagement, jcr:nodeTypeManagement on /content/dam/workday-community/en-us/public\r\nend",
-    "set ACL for \"CMTY Support {PROD}\",\"CMTY Author {PROD}\",\"CMTY Services Author {PROD}\",\"CMTY Education Author {PROD}\"\r\ndeny rep:write on /content/dam/workday-community/en-us/public\r\nend"
+    "set ACL for \"CMTY Support {PROD}\",\"CMTY Author {PROD}\",\"CMTY Services Author {PROD}\",\"CMTY Education Author {PROD}\"\r\ndeny rep:write on /content/dam/workday-community/en-us/public\r\nend",
+
+    "set ACL for \"CMTY CC Admin {PROD}\"\r\nallow jcr:read on /conf/global\r\n end"
   ]
 }

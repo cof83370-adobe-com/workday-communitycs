@@ -101,7 +101,9 @@
                         <relatedinformation
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="workday-community/components/common/relatedinformation"
-                            title="Related Information"/>
+                            title="Related Information"
+                            type="dynamic"
+                            rows="4"/>
                     </container_rightrail>
                 </container>
             </container>

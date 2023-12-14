@@ -60,6 +60,8 @@
                         <relatedinformation
                             jcr:primaryType="nt:unstructured"
                             title="Related Information"
+                            type="dynamic"
+                            rows="4"
                             sling:resourceType="workday-community/components/common/relatedinformation"/>
                     </container_rightrail>
                 </container>

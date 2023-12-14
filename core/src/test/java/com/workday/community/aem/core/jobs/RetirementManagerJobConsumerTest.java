@@ -1,11 +1,8 @@
 package com.workday.community.aem.core.jobs;
 
-import static org.apache.sling.jcr.resource.api.JcrResourceConstants.SLING_RESOURCE_TYPE_PROPERTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
 
@@ -15,11 +12,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import javax.jcr.Value;
 
 import org.apache.commons.mail.EmailException;
 import org.apache.sling.api.resource.LoginException;
@@ -49,13 +44,11 @@ import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.exceptions.CacheException;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
-import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
+import com.workday.community.aem.core.services.WorkflowConfigService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-
-import static com.day.cq.commons.jcr.JcrConstants.JCR_TITLE;
 
 /**
  * The Class ReviewNotificationSchedulerTest.
@@ -104,7 +97,7 @@ public class RetirementManagerJobConsumerTest {
     private ReplicationStatus repStatus;
     
     @Mock
-    RetirementManagerJobConfigService retirementManagerJobConfigService;
+    WorkflowConfigService workflowConfigService;
     
     @Mock
     RunModeConfigService runModeConfigService;
@@ -179,10 +172,6 @@ public class RetirementManagerJobConsumerTest {
 		testStartRetirementAndNotify();
 		
 		testSendNotification();
-
-		testProcessTextComponentFromEmailTemplate();
-		
-		testProcessTitleComponentFromEmailTemplate();
 		
 		testStartWorkflow();
 
@@ -204,157 +193,6 @@ public class RetirementManagerJobConsumerTest {
     	List<String> paths = new ArrayList<>();
     	paths.add("/content/workday-community/en-us/test");
     	retirementManagerJobConsumer.sendNotification(resolver, paths, "/workflows/retirement-notification/jcr:content/root/container/container/text", " to Retire in 30 Days", true);
-    }
-    
-    @Test
-    public String testProcessTextComponentFromEmailTemplate() throws RepositoryException {
-    	String domain = "http://localhost:4502";
-        lenient().when(retirementManagerJobConfigService.getAuthorDomain()).thenReturn(domain);
-    	
-		List<Node> testItems = new ArrayList<>();
-		testItems.add(mock(Node.class));
-		testItems.add(mock(Node.class));
-
-		Node nodeObj = mock(Node.class);
-		Property prop1 = mock(Property.class);
-		lenient().when(nodeObj.hasProperty(JCR_TITLE)).thenReturn(true);
-		lenient().when(nodeObj.getProperty(anyString())).thenReturn(prop1);
-		assertNotNull(prop1);
-		lenient().when(prop1.getString()).thenReturn("title");
-
-		testItems.forEach(node -> {
-			try {
-				Property property = mock(Property.class);
-				Property propertyText = mock(Property.class);
-				Value value = mock(Value.class);
-				Value value1 = mock(Value.class);
-
-				lenient().when(node.hasProperty(eq(SLING_RESOURCE_TYPE_PROPERTY))).thenReturn(true);
-				lenient().when(node.getProperty(eq(SLING_RESOURCE_TYPE_PROPERTY))).thenReturn(property);
-				lenient().when(node.getProperty(eq("text"))).thenReturn(propertyText);
-				lenient().when(property.getValue()).thenReturn(value);
-				lenient().when(value.getString()).thenReturn(GlobalConstants.TEXT_COMPONENT);
-				lenient().when(propertyText.getValue()).thenReturn(value1);
-				lenient().when(value1.getString()).thenReturn(GlobalConstants.TEXT_COMPONENT);
-			} catch (RepositoryException e) {
-				throw new RuntimeException(e);
-			}
-		});
-
-		NodeIterator nodeIterator = new NodeIterator() {
-			int count = 0;
-
-			@Override
-			public Node nextNode() {
-				if (count < testItems.size()) {
-					Node next = testItems.get(count);
-					count++;
-					return next;
-				}
-				return null;
-			}
-
-			@Override
-			public void skip(long l) {
-			}
-
-			@Override
-			public long getSize() {
-				return testItems.size();
-			}
-
-			@Override
-			public long getPosition() {
-				return count;
-			}
-
-			@Override
-			public boolean hasNext() {
-				return count < testItems.size();
-			}
-
-			@Override
-			public Object next() {
-				return nextNode();
-			}
-		};
-
-		return retirementManagerJobConsumer.processTextComponentFromEmailTemplate(nodeIterator.nextNode(), nodeObj,
-				"/content/workday-community/en-us/admin-tools/notifications/workflows/review-reminder");
-    }
-    
-    @Test
-    public String testProcessTitleComponentFromEmailTemplate() throws RepositoryException {
-		List<Node> testItems = new ArrayList<>();
-		testItems.add(mock(Node.class));
-		testItems.add(mock(Node.class));
-
-		Node nodeObj = mock(Node.class);
-		Property prop1 = mock(Property.class);
-		lenient().when(nodeObj.hasProperty(JCR_TITLE)).thenReturn(true);
-		lenient().when(nodeObj.getProperty(anyString())).thenReturn(prop1);
-		assertNotNull(prop1);
-		lenient().when(prop1.getString()).thenReturn("title");
-
-		testItems.forEach(node -> {
-			try {
-				Property property = mock(Property.class);
-				Property propertyText = mock(Property.class);
-				Value value = mock(Value.class);
-				Value value1 = mock(Value.class);
-
-				lenient().when(node.hasProperty(eq(SLING_RESOURCE_TYPE_PROPERTY))).thenReturn(true);
-				lenient().when(node.getProperty(eq(SLING_RESOURCE_TYPE_PROPERTY))).thenReturn(property);
-				lenient().when(node.getProperty(eq(JCR_TITLE))).thenReturn(propertyText);
-				lenient().when(property.getValue()).thenReturn(value);
-				lenient().when(value.getString()).thenReturn(GlobalConstants.TITLE_COMPONENT);
-				lenient().when(propertyText.getValue()).thenReturn(value1);
-				lenient().when(value1.getString()).thenReturn(GlobalConstants.TITLE_COMPONENT);
-			} catch (RepositoryException e) {
-				throw new RuntimeException(e);
-			}
-		});
-
-		NodeIterator nodeIterator = new NodeIterator() {
-			int count = 0;
-
-			@Override
-			public Node nextNode() {
-				if (count < testItems.size()) {
-					Node next = testItems.get(count);
-					count++;
-					return next;
-				}
-				return null;
-			}
-
-			@Override
-			public void skip(long l) {
-			}
-
-			@Override
-			public long getSize() {
-				return testItems.size();
-			}
-
-			@Override
-			public long getPosition() {
-				return count;
-			}
-
-			@Override
-			public boolean hasNext() {
-				return count < testItems.size();
-			}
-
-			@Override
-			public Object next() {
-				return nextNode();
-			}
-		};
-
-		return retirementManagerJobConsumer.processTitleComponentFromEmailTemplate(nodeIterator.nextNode(), nodeObj,
-				"/content/workday-community/en-us/admin-tools/notifications/workflows/review-reminder");
     }
     
     @Test
