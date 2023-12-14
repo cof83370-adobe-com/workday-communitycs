@@ -53,25 +53,6 @@ public @interface DrupalConfig {
       type = AttributeType.STRING)
   String drupalUserLookupClientSecret();
 
-
-  /**
-   * Drupal API AEM Content Client Id.
-   *
-   * @return Drupal API AEM Content Client Id
-   */
-  @AttributeDefinition(name = "Drupal API AEM Content Client Id", description = "Drupal API AEM Content Client Id.",
-      type = AttributeType.STRING)
-  String drupalAemContentClientId();
-
-  /**
-   * Drupal AEM Content Client Secret.
-   *
-   * @return Drupal AEM Content Client Secret
-   */
-  @AttributeDefinition(name = "Drupal API AEM Content Client Secret",
-      description = "Drupal API AEM Content Client Secret.",
-      type = AttributeType.STRING)
-  String drupalAemContentClientSecret();
   /**
    * Drupal API token cache size.
    *

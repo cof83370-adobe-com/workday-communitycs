@@ -14,7 +14,6 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.config.DrupalConfig;
-import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.dto.AemContentDto;
 import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.pojos.restclient.ApiResponse;
@@ -41,6 +40,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
  */
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class DrupalServiceImplTest {
+
+  /**
+   * The path to the Community content page.
+   */
+  static final String COMMUNITY_EVENT_PAGE_PATH = "/content/workday-community/en-us/event1/event2";
+
   private final DrupalServiceImpl service = new DrupalServiceImpl();
 
   /**
@@ -86,16 +91,6 @@ public class DrupalServiceImplTest {
     @Override
     public String drupalUserLookupClientSecret() {
       return "drupalUserLookupClientSecret";
-    }
-
-    @Override
-    public String drupalAemContentClientId() {
-      return "drupalAemContentClientId";
-    }
-
-    @Override
-    public String drupalAemContentClientSecret() {
-      return "drupalAemContentClientSecret";
     }
 
     @Override
@@ -514,7 +509,7 @@ public class DrupalServiceImplTest {
       when(RestApiUtil.doDrupalCsrfTokenGet(anyString())).thenReturn(response3);
       when(RestApiUtil.doDrupalDeleteEntity(anyString(),any(), anyString(), anyString())).thenReturn(response3);
 
-      ApiResponse result = this.service.deleteEntity(GlobalConstants.COMMUNITY_EVENT_PAGE_PATH);
+      ApiResponse result = this.service.deleteEntity(COMMUNITY_EVENT_PAGE_PATH);
 
       //assertNotNull(result);
       //assertEquals(HttpStatus.SC_OK, result.getResponseCode());

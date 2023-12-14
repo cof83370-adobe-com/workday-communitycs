@@ -33,9 +33,7 @@ import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.consumer.JobConsumer;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 
 /**
@@ -54,7 +52,15 @@ public class PageUpdateJobConsumer implements JobConsumer {
   /**
    * The bundleMap.
    */
-  private Map<String, String> bundleMap;
+  private static Map<String, String> bundleMap = new HashMap<>();
+
+  {
+    bundleMap.put(EVENTS_TEMPLATE_PATH, "event");
+    bundleMap.put(FAQ_TEMPLATE_PATH, "faq");
+    bundleMap.put(KITS_AND_TOOLS_TEMPLATE_PATH, "kits_and_tools");
+    bundleMap.put(REFERENCE_TEMPLATE_PATH, "reference");
+    bundleMap.put(TROUBLESHOOTING_TEMPLATE_PATH, "troubleshooting");
+  }
 
   /**
    * The cache manager.
@@ -73,21 +79,6 @@ public class PageUpdateJobConsumer implements JobConsumer {
    */
   @Reference
   private DrupalService drupalService;
-
-  /**
-   * Activates the bundleMap.
-   */
-  @Activate
-  @Modified
-  public void activate() {
-
-    bundleMap = new HashMap<>();
-    bundleMap.put(EVENTS_TEMPLATE_PATH, "event");
-    bundleMap.put(FAQ_TEMPLATE_PATH, "faq");
-    bundleMap.put(KITS_AND_TOOLS_TEMPLATE_PATH, "kits_and_tools");
-    bundleMap.put(REFERENCE_TEMPLATE_PATH, "reference");
-    bundleMap.put(TROUBLESHOOTING_TEMPLATE_PATH, "troubleshooting");
-  }
 
   /**
    * {@inheritDoc}
@@ -153,7 +144,7 @@ public class PageUpdateJobConsumer implements JobConsumer {
    * @return JobResult Failed or Pass based on result.
    */
   private JobResult processPageActivationOrDeactivation(String path, String actionType) {
-    try (ResourceResolver resourceResolver = getResourceResolver()) {
+    try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
       Resource pageResource = resourceResolver.getResource(path);
       if (pageResource != null) {
         Page currentPage = pageResource.adaptTo(Page.class);
@@ -192,17 +183,6 @@ public class PageUpdateJobConsumer implements JobConsumer {
     }
 
     return JobResult.FAILED;
-  }
-
-  /**
-   * Get Resource resolver Object.
-   *
-   * @return resourceResolver Object.
-   *
-   * @throws CacheException throws Cache Exception.
-   */
-  private ResourceResolver getResourceResolver() throws CacheException {
-    return cacheManager.getServiceResolver(ADMIN_SERVICE_USER);
   }
 
   /**

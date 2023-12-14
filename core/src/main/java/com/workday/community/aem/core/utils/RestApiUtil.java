@@ -96,7 +96,8 @@ public class RestApiUtil {
    * @throws RestException APIException object.
    */
   private static ApiResponse executeGetRequest(ApiRequest req) throws RestException {
-    return executeRequest(req, HttpConstants.METHOD_GET);
+    req.setMethod(HttpConstants.METHOD_GET);
+    return executeRequest(req);
   }
 
   /**
@@ -107,26 +108,27 @@ public class RestApiUtil {
    * @throws RestException APIException object.
    */
   private static ApiResponse executeDeleteRequest(ApiRequest req) throws RestException {
-    return executeRequest(req, HttpConstants.METHOD_DELETE);
+    req.setMethod(HttpConstants.METHOD_DELETE);
+    return executeRequest(req);
   }
 
   /**
    * Executes the request call.
    *
    * @param req API request.
-   * @param method Request Method.
+
    * @return Response from API.
    * @throws RestException APIException object.
    */
-  private static ApiResponse executeRequest(ApiRequest req, String method) throws RestException {
-    log.debug("RESTAPIUtil executeRequest: Calling REST executeRequest() for method: {}", method);
-    if (StringUtils.isBlank(req.getMethod())) {
-      req.setMethod(method);
+  private static ApiResponse executeRequest(ApiRequest req) throws RestException {
+    String method = req.getMethod();
+    if (StringUtils.isBlank(method)) {
+      method = HttpConstants.METHOD_GET;
     }
-
+    log.debug("RESTAPIUtil executeRequest: Calling REST executeRequest() for method: {}", method);
     HttpClient httpclient =
         HttpClient.newBuilder().connectTimeout(Duration.ofMillis(HTTP_TIMEMOUT)).build();
-    log.debug("RestAPIUtil executeRequest: method:{}, uri: {}", req.getMethod(), req.getUri().toString());
+    log.debug("RestAPIUtil executeRequest: method:{}, uri: {}", method, req.getUri().toString());
 
     Builder builder = HttpRequest.newBuilder().uri(req.getUri());
 

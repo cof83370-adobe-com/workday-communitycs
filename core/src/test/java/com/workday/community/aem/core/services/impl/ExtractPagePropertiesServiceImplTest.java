@@ -111,16 +111,6 @@ public class ExtractPagePropertiesServiceImplTest {
     }
 
     @Override
-    public String drupalAemContentClientId() {
-      return "drupalAemContentClientId";
-    }
-
-    @Override
-    public String drupalAemContentClientSecret() {
-      return "drupalAemContentClientSecret";
-    }
-
-    @Override
     public int drupalTokenCacheMax() {
       return 100;
     }

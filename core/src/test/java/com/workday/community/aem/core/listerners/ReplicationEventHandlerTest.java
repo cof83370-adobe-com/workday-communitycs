@@ -39,6 +39,11 @@ import org.osgi.service.event.Event;
 public class ReplicationEventHandlerTest {
 
   /**
+   * The path to the Community content page.
+   */
+  static final String COMMUNITY_EVENT_PAGE_PATH = "/content/workday-community/en-us/event1/event2";
+
+  /**
    * The ReplicationEventHandler.
    */
   @InjectMocks
@@ -150,15 +155,14 @@ public class ReplicationEventHandlerTest {
   @ParameterizedTest
   @EnumSource(value = ReplicationActionType.class, names = {"ACTIVATE", "DEACTIVATE"})
   void testHandleEventsPassedWhenContentIsActivateOrDeactivated(ReplicationActionType actionType) {
-    ReplicationAction action = new ReplicationAction(actionType,
-            GlobalConstants.COMMUNITY_EVENT_PAGE_PATH);
+    ReplicationAction action = new ReplicationAction(actionType, COMMUNITY_EVENT_PAGE_PATH);
     when(service.isCoveoIndexEnabled()).thenReturn(false);
     when(drupalService.isContentSyncEnabled()).thenReturn(true);
     when(resourceResolver.getResource(anyString())).thenReturn(resourceMock);
     when(pageManager.getContainingPage(resourceMock)).thenReturn(eventsPage);
     when(eventsPage.getTemplate()).thenReturn(eventsTemplate);
     when(eventsTemplate.getPath()).thenReturn(GlobalConstants.EVENTS_TEMPLATE_PATH);
-    eventHandler.activate();
+
     try (MockedStatic<ReplicationAction> mock = mockStatic(ReplicationAction.class)) {
       when(ReplicationAction.fromEvent(event)).thenReturn(action);
       eventHandler.handleEvent(event);
@@ -172,11 +176,9 @@ public class ReplicationEventHandlerTest {
   @ParameterizedTest
   @EnumSource(value = ReplicationActionType.class, names = {"DELETE"})
   void testHandleEventsPassedWhenContentIsDeleted(ReplicationActionType actionType) {
-    ReplicationAction action = new ReplicationAction(actionType,
-        GlobalConstants.COMMUNITY_EVENT_PAGE_PATH);
+    ReplicationAction action = new ReplicationAction(actionType, COMMUNITY_EVENT_PAGE_PATH);
     when(service.isCoveoIndexEnabled()).thenReturn(false);
     when(drupalService.isContentSyncEnabled()).thenReturn(true);
-    eventHandler.activate();
     try (MockedStatic<ReplicationAction> mock = mockStatic(ReplicationAction.class)) {
       when(ReplicationAction.fromEvent(event)).thenReturn(action);
       eventHandler.handleEvent(event);
@@ -193,11 +195,9 @@ public class ReplicationEventHandlerTest {
   @ParameterizedTest
   @EnumSource(value = ReplicationActionType.class, names = {"ACTIVATE"})
   void testHandleEventsFailedForWhenContentSyncDisabled(ReplicationActionType actionType) {
-    ReplicationAction action = new ReplicationAction(actionType,
-            GlobalConstants.COMMUNITY_EVENT_PAGE_PATH);
+    ReplicationAction action = new ReplicationAction(actionType, COMMUNITY_EVENT_PAGE_PATH);
     when(service.isCoveoIndexEnabled()).thenReturn(false);
     when(drupalService.isContentSyncEnabled()).thenReturn(false);
-    eventHandler.activate();
     try (MockedStatic<ReplicationAction> mock = mockStatic(ReplicationAction.class)) {
       when(ReplicationAction.fromEvent(event)).thenReturn(action);
       eventHandler.handleEvent(event);

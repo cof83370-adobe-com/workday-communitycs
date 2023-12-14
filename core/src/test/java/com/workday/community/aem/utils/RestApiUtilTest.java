@@ -26,6 +26,11 @@ import org.mockito.MockedStatic;
  * The Class RESTAPIUtilTest.
  */
 public class RestApiUtilTest {
+  /**
+   * The path to the Community content page.
+   */
+  static final String COMMUNITY_EVENT_PAGE_PATH = "/content/workday-community/en-us/event1/event2";
+
   @Test
   public void testDoGetMenu()
       throws SnapException, IOException, InterruptedException {
@@ -217,7 +222,7 @@ public class RestApiUtilTest {
       when(response.body()).thenReturn("");
 
       ApiResponse apiResponse = RestApiUtil.doDrupalDeleteEntity("url", "bearerToken", "csrfToken",
-          GlobalConstants.COMMUNITY_EVENT_PAGE_PATH);
+          COMMUNITY_EVENT_PAGE_PATH);
       assertEquals(200, apiResponse.getResponseCode());
     }
   }
@@ -231,7 +236,7 @@ public class RestApiUtilTest {
     HttpRequest request = mock(HttpRequest.class);
 
     AemContentDto aemContentDto = new AemContentDto();
-    aemContentDto.setFieldAemLink(GlobalConstants.COMMUNITY_EVENT_PAGE_PATH);
+    aemContentDto.setFieldAemLink(COMMUNITY_EVENT_PAGE_PATH);
     aemContentDto.setOwner("author1");
     aemContentDto.setLabel("label");
     aemContentDto.setFieldAemStatus("published");

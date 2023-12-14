@@ -27,9 +27,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.event.jobs.Job;
 import org.apache.sling.event.jobs.JobManager;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
@@ -50,7 +48,15 @@ public class ReplicationEventHandler implements EventHandler {
   /**
    * The subscriptionTemplatesList.
    */
-  private List<String> subscriptionTemplatesList;
+  private static List<String> subscriptionTemplatesList = new ArrayList<>();
+
+  {
+    subscriptionTemplatesList.add(EVENTS_TEMPLATE_PATH);
+    subscriptionTemplatesList.add(FAQ_TEMPLATE_PATH);
+    subscriptionTemplatesList.add(KITS_AND_TOOLS_TEMPLATE_PATH);
+    subscriptionTemplatesList.add(REFERENCE_TEMPLATE_PATH);
+    subscriptionTemplatesList.add(TROUBLESHOOTING_TEMPLATE_PATH);
+  }
 
   /**
    * The CoveoIndexApiConfigService.
@@ -95,22 +101,6 @@ public class ReplicationEventHandler implements EventHandler {
   }
 
   /**
-   * Activates the Replication Event Handler.
-   */
-  @Activate
-  @Modified
-  public void activate() {
-
-    subscriptionTemplatesList = new ArrayList<>();
-    subscriptionTemplatesList.add(EVENTS_TEMPLATE_PATH);
-    subscriptionTemplatesList.add(FAQ_TEMPLATE_PATH);
-    subscriptionTemplatesList.add(KITS_AND_TOOLS_TEMPLATE_PATH);
-    subscriptionTemplatesList.add(REFERENCE_TEMPLATE_PATH);
-    subscriptionTemplatesList.add(TROUBLESHOOTING_TEMPLATE_PATH);
-
-  }
-
-  /**
    * {@inheritDoc}
    */
   @Override
@@ -131,16 +121,15 @@ public class ReplicationEventHandler implements EventHandler {
       }
     }
     if (isContentSyncEnabled()) {
-      String actionType = determineActionType(action.getType());
       if ((action.getType().equals(ReplicationActionType.ACTIVATE)
           || action.getType().equals(ReplicationActionType.DEACTIVATE))
           && isCurrentPageIsInSubscriptionPageTypes(actionPath)) {
 
-        if (startPageUpdateJob(actionType, actionPath) == null) {
+        if (startPageUpdateJob(action.getType().getName(), actionPath) == null) {
           log.error("\n Error occurred while Page Create/update push job for page {}", actionPath);
         }
       } else if (action.getType().equals(ReplicationActionType.DELETE)) {
-        if (startPageUpdateJob(actionType, actionPath) == null) {
+        if (startPageUpdateJob(action.getType().getName(), actionPath) == null) {
           log.error("\n Error occurred while Page Delete push job for page {}", actionPath);
         }
       }
@@ -183,25 +172,6 @@ public class ReplicationEventHandler implements EventHandler {
     Map<String, Object> jobProperties = createJobProperties(actionType, path);
 
     return jobManager.addJob(GlobalConstants.COMMUNITY_PAGE_UPDATE_JOB, jobProperties);
-  }
-
-  /**
-   * Determine Action Type on the page Based on ReplicationActionType.
-   *
-   * @param type The Replication Action Type.
-   * @return actionType, or empty based on ReplicationActionType.
-   */
-  private String determineActionType(ReplicationActionType type) {
-    switch (type) {
-      case ACTIVATE:
-        return GlobalConstants.REPLICATION_ACTION_TYPE_ACTIVATE;
-      case DEACTIVATE:
-        return GlobalConstants.REPLICATION_ACTION_TYPE_DEACTIVATE;
-      case DELETE:
-        return GlobalConstants.REPLICATION_ACTION_TYPE_DELETE;
-      default:
-        return StringUtils.EMPTY;
-    }
   }
 
   /**

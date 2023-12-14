@@ -18,11 +18,6 @@ public final class GlobalConstants {
   public static final String COMMUNITY_CONTENT_ROOT_PATH = "/content/workday-community";
 
   /**
-   * The path to the Community content root.
-   */
-  public static final String COMMUNITY_EVENT_PAGE_PATH = "/content/workday-community/en-us/event1/event2";
-
-  /**
    * The Community Coveo job path.
    */
   public static final String COMMUNITY_COVEO_JOB = "workday-community/common/coveo/job";

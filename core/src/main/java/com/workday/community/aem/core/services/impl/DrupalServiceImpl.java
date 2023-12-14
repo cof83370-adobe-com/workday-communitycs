@@ -197,6 +197,7 @@ public class DrupalServiceImpl implements DrupalService {
       if (drupalResponse == null || StringUtils.isEmpty(drupalResponse.getResponseBody())
           || drupalResponse.getResponseCode() != HttpStatus.SC_OK) {
         LOGGER.error("Drupal API CSRF token response is empty.");
+        drupalApiCache.remove(DrupalConstants.CSRF_TOKEN_CACHE_KEY);
         return StringUtils.EMPTY;
       }
 
@@ -445,26 +446,29 @@ public class DrupalServiceImpl implements DrupalService {
 
   @Override
   public ApiResponse createOrUpdateEntity(AemContentDto aemContentDto) throws DrupalException {
-    try {
-      String bearerToken = getApiToken();  // Get the bearer token needed for user data API call.
-      String csrfToken = getCsrfToken(); // Get the CSRF token needed for user data API call.
+    if (isContentSyncEnabled()) {
+      try {
+        String bearerToken = getApiToken();  // Get the bearer token needed for user data API call.
+        String csrfToken = getCsrfToken(); // Get the CSRF token needed for user data API call.
 
-      if (StringUtils.isNotBlank(bearerToken) && StringUtils.isNotBlank(csrfToken)) {
-        // Frame the request URL.
-        String url = CommunityUtils.formUrl(config.drupalApiUrl(), config.drupalAemContentEntityPath());
-        // Execute the request.
-        ApiResponse createEntityResponse =
-            RestApiUtil.doDrupalCreateOrUpdateEntity(url, aemContentDto, bearerToken, csrfToken);
-        if (createEntityResponse.getResponseCode() == HttpStatus.SC_OK
-            || createEntityResponse.getResponseCode() == HttpStatus.SC_CREATED) {
-          return createEntityResponse;
-        } else {
+        if (StringUtils.isNotBlank(bearerToken) && StringUtils.isNotBlank(csrfToken)) {
+          // Frame the request URL.
+          String url = CommunityUtils.formUrl(config.drupalApiUrl(), config.drupalAemContentEntityPath());
+          // Execute the request.
+          ApiResponse createEntityResponse =
+              RestApiUtil.doDrupalCreateOrUpdateEntity(url, aemContentDto, bearerToken, csrfToken);
+          if (createEntityResponse.getResponseCode() == HttpStatus.SC_OK
+              || createEntityResponse.getResponseCode() == HttpStatus.SC_CREATED) {
+            return createEntityResponse;
+          }
           LOGGER.error("Failed to create or update entity in Drupal for the page path.{}", url);
+          drupalApiCache.remove(DrupalConstants.CSRF_TOKEN_CACHE_KEY);
+          drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
         }
+      } catch (Exception e) {
+        throw new DrupalException(String.format("There is an error while creating AEM content entity in Drupal. {} ",
+            e.getMessage()));
       }
-    } catch (Exception e) {
-      throw new DrupalException(String.format("There is an error while creating AEM content entity in Drupal. {} ",
-          e.getMessage()));
     }
     return null;
   }
@@ -483,9 +487,11 @@ public class DrupalServiceImpl implements DrupalService {
         ApiResponse deleteEntityResponse = RestApiUtil.doDrupalDeleteEntity(url, bearerToken, csrfToken, pagePath);
         if (deleteEntityResponse.getResponseCode() == HttpStatus.SC_NO_CONTENT) {
           return deleteEntityResponse;
-        } else {
-          LOGGER.error("Failed to delete entity in Drupal for the page path.{}", url);
         }
+        LOGGER.error("Failed to delete entity in Drupal for the page path.{}", url);
+        drupalApiCache.remove(DrupalConstants.CSRF_TOKEN_CACHE_KEY);
+        drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
+
       }
 
     } catch (DrupalException e) {

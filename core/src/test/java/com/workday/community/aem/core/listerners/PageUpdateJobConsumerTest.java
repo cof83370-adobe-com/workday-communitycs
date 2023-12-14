@@ -42,6 +42,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class PageUpdateJobConsumerTest {
 
   /**
+   * The path to the Community content root.
+   */
+   static final String COMMUNITY_EVENT_PAGE_PATH = "/content/workday-community/en-us/event1/event2";
+
+  /**
    * The PageUpdateJobConsumer.
    */
   @InjectMocks
@@ -92,7 +97,7 @@ public class PageUpdateJobConsumerTest {
   public void setUp() throws CacheException {
     lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resourceResolver);
     lenient().when(runModeConfigService.getPublishInstanceDomain()).thenReturn("https://localhost:3503/");
-    String path = GlobalConstants.COMMUNITY_EVENT_PAGE_PATH;
+    String path = COMMUNITY_EVENT_PAGE_PATH;
     List<String> pathsList = Collections.singletonList(path);
 
     when(job.getProperty("paths", List.class)).thenReturn(pathsList);
@@ -121,7 +126,6 @@ public class PageUpdateJobConsumerTest {
     apiResponse.setResponseBody("success");
     apiResponse.setResponseCode(HttpStatus.SC_OK);
     when(drupalService.createOrUpdateEntity(any())).thenReturn(apiResponse);
-    pageUpdateJobConsumer.activate();
     JobResult result = pageUpdateJobConsumer.process(job);
 
     verify(drupalService, times(1)).createOrUpdateEntity(any());
@@ -136,7 +140,6 @@ public class PageUpdateJobConsumerTest {
     apiResponse.setResponseBody("success");
     apiResponse.setResponseCode(HttpStatus.SC_OK);
     when(drupalService.createOrUpdateEntity(any())).thenReturn(apiResponse);
-    pageUpdateJobConsumer.activate();
     JobResult result = pageUpdateJobConsumer.process(job);
 
     verify(drupalService, times(1)).createOrUpdateEntity(any());
@@ -148,7 +151,7 @@ public class PageUpdateJobConsumerTest {
 
     lenient().when(cacheManager.getServiceResolver(anyString())).thenReturn(resourceResolver);
     lenient().when(runModeConfigService.getPublishInstanceDomain()).thenReturn("https://localhost:3503/");
-    String path = GlobalConstants.COMMUNITY_EVENT_PAGE_PATH;
+    String path = COMMUNITY_EVENT_PAGE_PATH;
     List<String> pathsList = Collections.singletonList(path);
     when(job.getProperty("paths", List.class)).thenReturn(pathsList);
     when(job.getProperty("op")).thenReturn("Delete");
@@ -157,7 +160,6 @@ public class PageUpdateJobConsumerTest {
     apiResponse.setResponseBody("success");
     apiResponse.setResponseCode(HttpStatus.SC_NO_CONTENT);
     when(drupalService.deleteEntity(any())).thenReturn(apiResponse);
-    pageUpdateJobConsumer.activate();
     JobResult result = pageUpdateJobConsumer.process(job);
 
     verify(drupalService, times(1)).deleteEntity(any());
