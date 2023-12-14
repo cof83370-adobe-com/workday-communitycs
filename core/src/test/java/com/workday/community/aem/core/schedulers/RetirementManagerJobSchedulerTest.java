@@ -13,7 +13,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
+import com.workday.community.aem.core.services.WorkflowConfigService;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 
 /**
@@ -33,7 +33,7 @@ public class RetirementManagerJobSchedulerTest {
     RetirementManagerJobScheduler revNotifScheduler;
     
     @Mock
-    RetirementManagerJobConfigService retirementManagerJobConfigService;
+    WorkflowConfigService workflowConfigService;
     
     @Mock
     JobBuilder jobBuilder;

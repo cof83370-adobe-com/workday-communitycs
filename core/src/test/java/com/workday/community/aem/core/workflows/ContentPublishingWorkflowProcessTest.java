@@ -25,18 +25,27 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.services.WorkflowConfigService;
+
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
+
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.User;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.ResourceResolverType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,6 +76,9 @@ public class ContentPublishingWorkflowProcessTest {
    */
   @InjectMocks
   private ContentPublishingWorkflowProcess cpwProcessStep;
+  
+  @Mock
+  private WorkflowConfigService workflowConfigService;
 
   /**
    * The workflow session.
@@ -127,6 +139,18 @@ public class ContentPublishingWorkflowProcessTest {
    */
   @Mock
   private WorkItem workItem;
+  
+  /**
+   * The user manager.
+   */
+  @Mock
+  UserManager userManager;
+
+  /**
+   * The authorizable.
+   */
+  @Mock
+  Authorizable authorizable;
 
   /**
    * The meta data.
@@ -139,7 +163,7 @@ public class ContentPublishingWorkflowProcessTest {
    * @throws LoginException the login exception
    */
   @BeforeEach
-  void setup() throws LoginException {
+  void setup() throws LoginException, RepositoryException {
     lenient().when(workflowSession.adaptTo(Session.class)).thenReturn(session);
     lenient().when(workflow.getMetaDataMap()).thenReturn(metaData);
     lenient().when(workflowData.getPayloadType()).thenReturn("JCR_PATH");
@@ -157,6 +181,8 @@ public class ContentPublishingWorkflowProcessTest {
     context.registerService(QueryService.class, queryService);
     context.registerService(Replicator.class, replicator);
     context.registerService(ReplicationStatus.class, repStatus);
+    context.registerService(UserManager.class, userManager);
+    context.registerService(Authorizable.class, authorizable);
     Page currentPage =
         context.currentResource("/content/process-publish-content").adaptTo(Page.class);
     context.registerService(Page.class, currentPage);
@@ -202,14 +228,27 @@ public class ContentPublishingWorkflowProcessTest {
     lenient().when(replicator.getReplicationStatus(session, context.currentPage().getPath())).thenReturn(repStatus);
     lenient().when(repStatus.isActivated()).thenReturn(true);
     
+    ValueMap data = mock(ValueMap.class);
+    lenient().when(page.getProperties()).thenReturn(data);
+    lenient().when(data.get("author")).thenReturn("test@workday.com");
+    
+    UserManager userManager = mock(UserManager.class);
+    lenient().when(resolver.adaptTo(UserManager.class)).thenReturn(userManager);
+    User user = mock(User.class);
+    String userName = "admin";
+    lenient().when(userManager.getAuthorizable(userName)).thenReturn(user);
+    assertNotNull(user);
+    
     TaskManager tm = mock(TaskManager.class);
 	lenient().when(resolver.adaptTo(TaskManager.class)).thenReturn(tm);
 	Task ts = mock(Task.class);
 	TaskManagerFactory tmf = mock(TaskManagerFactory.class);
 	lenient().when(tm.getTaskManagerFactory()).thenReturn(tmf);
 	lenient().when(tmf.newTask("Notification")).thenReturn(ts);
+	
+	testSendMailNotification();
 
-    cpwProcessStep.replicatePage(session, context.currentPage().getPath(), resolver, "test", page);
+    cpwProcessStep.replicatePage(session, context.currentPage().getPath(), resolver, "admin", page);
     assertNotNull(session);
     assertNotNull(replicator);
     assertNotNull(repStatus);
@@ -366,5 +405,12 @@ public class ContentPublishingWorkflowProcessTest {
 
     cpwProcessStep.updatePageProperties(context.currentPage().getPath(), session, resolver, page);
     assertNotNull(page);
+  }
+  
+  @Test
+  public final void testSendMailNotification() {
+  	List<String> paths = new ArrayList<>();
+  	paths.add("/content/workday-community/en-us/test");
+  	cpwProcessStep.sendPublishNotificationEmail("test@oworkday.com", resolver, "/workflows/publish-notification/jcr:content/root/container/container/text", "Page Publish", "/content/process-publish-content");
   }
 }

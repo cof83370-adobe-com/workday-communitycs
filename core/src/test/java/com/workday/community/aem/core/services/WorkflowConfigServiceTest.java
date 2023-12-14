@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.services;
 
-import com.workday.community.aem.core.config.RetirementManagerJobConfig;
+import com.workday.community.aem.core.config.WorkflowConfig;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.lang.annotation.Annotation;
@@ -10,18 +10,18 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * The Class RetirementManagerJobConfigServiceTest.
+ * The Class WorkflowConfigServiceTest.
  */
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
-public class RetirementManagerJobConfigServiceTest {
+public class WorkflowConfigServiceTest {
 
   /**
-   * The RetirementManagerJobConfigService.
+   * The WorkflowConfigService.
    */
-  private final RetirementManagerJobConfigService service = new RetirementManagerJobConfigService();
+  private final WorkflowConfigService service = new WorkflowConfigService();
 
-  /** The retirement manager job config. */
-  private final RetirementManagerJobConfig retirementManagerJobConfig = new RetirementManagerJobConfig() {
+  /** The workflow config. */
+  private final WorkflowConfig workflowConfig = new WorkflowConfig() {
 
 		@Override
 		public String workflowNotificationCron() {
@@ -56,7 +56,7 @@ public class RetirementManagerJobConfigServiceTest {
 
   @BeforeEach
   public void setup() {
-    service.activate(retirementManagerJobConfig);
+    service.activate(workflowConfig);
   }
 
   /**
@@ -64,10 +64,10 @@ public class RetirementManagerJobConfigServiceTest {
    */
   @Test
   public void testMethods() {
-    assertEquals(service.getWorkflowNotificationCron(), retirementManagerJobConfig.workflowNotificationCron());
-    assertEquals(service.enableWorkflowNotificationReview(), retirementManagerJobConfig.enableWorkflowNotificationReview());
-    assertEquals(service.getAuthorDomain(), retirementManagerJobConfig.authorDomain());
-    assertEquals(service.enableWorkflowNotificationRetirement(), retirementManagerJobConfig.enableWorkflowNotificationRetirement());
+    assertEquals(service.getWorkflowNotificationCron(), workflowConfig.workflowNotificationCron());
+    assertEquals(service.enableWorkflowNotificationReview(), workflowConfig.enableWorkflowNotificationReview());
+    assertEquals(service.getAuthorDomain(), workflowConfig.authorDomain());
+    assertEquals(service.enableWorkflowNotificationRetirement(), workflowConfig.enableWorkflowNotificationRetirement());
   }
 
 }

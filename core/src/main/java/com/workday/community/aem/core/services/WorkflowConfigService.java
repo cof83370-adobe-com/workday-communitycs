@@ -1,31 +1,31 @@
 package com.workday.community.aem.core.services;
 
-import com.workday.community.aem.core.config.RetirementManagerJobConfig;
+import com.workday.community.aem.core.config.WorkflowConfig;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.metatype.annotations.Designate;
 
 /**
- * The RetirementManagerJobConfigService class.
+ * The WorkflowConfigService class.
  */
 @Component(
-    service = RetirementManagerJobConfigService.class,
-    configurationPid = "com.workday.community.aem.core.config.RetirementManagerJobConfig",
+    service = WorkflowConfigService.class,
+    configurationPid = "com.workday.community.aem.core.config.WorkflowConfig",
     immediate = true
 )
-@Designate(ocd = RetirementManagerJobConfig.class)
-public class RetirementManagerJobConfigService {
+@Designate(ocd = WorkflowConfig.class)
+public class WorkflowConfigService {
 
   /**
-   * The RetirementManagerJobConfig config.
+   * The WorkflowConfig config.
    */
-  private RetirementManagerJobConfig config;
+  private WorkflowConfig config;
 
   @Activate
   @Modified
-  protected void activate(RetirementManagerJobConfig retirementManagerJobConfig) {
-    this.config = retirementManagerJobConfig;
+  protected void activate(WorkflowConfig workflowConfig) {
+    this.config = workflowConfig;
   }
 
   /**

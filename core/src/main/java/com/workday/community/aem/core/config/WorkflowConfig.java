@@ -5,11 +5,11 @@ import org.osgi.service.metatype.annotations.AttributeType;
 import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 /**
- * The Interface RetirementManagerJobConfig.
+ * The Interface WorkflowConfig.
  */
-@ObjectClassDefinition(name = "Retirement Manager Job Configuration", 
-description = "Paramerters for Retirement Manager Scheduler")
-public @interface RetirementManagerJobConfig {
+@ObjectClassDefinition(name = "Workflow Configuration", 
+description = "WorkflowService OSGi Config Vaues")
+public @interface WorkflowConfig {
 
   /**
    * Workflow notification cron.
