@@ -61,27 +61,27 @@ public class DrupalServiceImplTest {
 
     @Override
     public String drupalApiUrl() {
-      return "https://mex.community-workday.com";
+      return "drupalApiUrl";
     }
 
     @Override
     public String drupalTokenPath() {
-      return "/oauth/token";
+      return "drupalTokenPath";
     }
 
     @Override
     public String drupalUserDataPath() {
-      return "/user/data/%s";
+      return "drupalUserDataPath";
     }
 
     @Override
     public String drupalUserLookupClientId() {
-      return "default_consumer";
+      return "drupalUserLookupClientId";
     }
 
     @Override
     public String drupalUserLookupClientSecret() {
-      return "12345";
+      return "drupalUserLookupClientSecret";
     }
 
     @Override

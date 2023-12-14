@@ -92,14 +92,14 @@ public class RestApiUtil {
    * @throws RestException APIException object.
    */
   private static ApiResponse executeRequest(ApiRequest req) throws RestException {
-    log.debug("RESTAPIUtil executeGetRequest: Calling REST executeGetRequest().");
+    log.debug("RESTAPIUtil executeRequest: Calling REST executeRequest().");
     if (StringUtils.isBlank(req.getMethod())) {
       req.setMethod(HttpConstants.METHOD_GET);
     }
 
     HttpClient httpclient =
         HttpClient.newBuilder().connectTimeout(Duration.ofMillis(HTTP_TIMEMOUT)).build();
-    log.debug("RestAPIUtil executeGetRequest: method:{}, uri: {}", req.getMethod(), req.getUri().toString());
+    log.debug("RestAPIUtil executeRequest: method:{}, uri: {}", req.getMethod(), req.getUri().toString());
 
     Builder builder = HttpRequest.newBuilder().uri(req.getUri());
 
@@ -115,7 +115,7 @@ public class RestApiUtil {
       // Send the HttpGet request using the configured HttpClient.
       response = httpclient.send(request, BodyHandlers.ofString());
     } catch (IOException | InterruptedException e) {
-      throw new RestException("Exception in executeGetRequest method while executing the request %s", e.getMessage());
+      throw new RestException("Exception in executeRequest method while executing the request %s", e.getMessage());
     }
 
     int statusCode = response.statusCode();
@@ -382,7 +382,7 @@ public class RestApiUtil {
       return executeRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new DrupalException(
-          String.format("Exception in doDrupalUserDataGet method while executing the request = %s", e.getMessage()));
+          String.format("Exception in doDrupalGet method while executing the request = %s", e.getMessage()));
     }
   }
 
@@ -408,7 +408,7 @@ public class RestApiUtil {
       return executePostRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new DrupalException(
-          String.format("Exception in doDrupalUserDataGet method while executing the request = %s", e.getMessage()));
+          String.format("Exception in doDrupalPost method while executing the request = %s", e.getMessage()));
     }
   }
 }

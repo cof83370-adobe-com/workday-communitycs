@@ -100,8 +100,7 @@
                         sling:resourceType="workday-community/components/core/container">
                         <subscribe
                                 jcr:primaryType="nt:unstructured"
-                                sling:resourceType="workday-community/components/react/subscribe"
-                                editable="{Boolean}true"/>
+                                sling:resourceType="workday-community/components/react/subscribe"/>
                         <relatedinformation
                             jcr:primaryType="nt:unstructured"
                             sling:resourceType="workday-community/components/common/relatedinformation"
