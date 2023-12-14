@@ -48,6 +48,6 @@ $include "./default_filters.any"
 /0131 { /type "allow" /method "GET" /url "/bin/subscribe" }  # allow bin path access
 
 // Enable create subscription
-/0131 { /type "allow" /method "POST" /url "/bin/subscribe" }  # allow bin path access
+/0131 { /type "allow" /method "GET" /url "/bin/subscribe/create" }  # allow bin path access
 
 /0200 { /type "allow" /method '(GET|HEAD)' /url "/content/workday-community/*" }
