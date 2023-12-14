@@ -31,6 +31,7 @@ import com.workday.community.aem.core.services.RunModeConfigService;
 import com.workday.community.aem.core.utils.CommunityUtils;
 import com.workday.community.aem.core.utils.RestApiUtil;
 import com.workday.community.aem.core.utils.cache.LruCacheWithTimeout;
+import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.osgi.service.component.annotations.Activate;
@@ -58,6 +59,7 @@ public class DrupalServiceImpl implements DrupalService {
   /**
    * The drupal Config.
    */
+  @Getter
   private DrupalConfig config;
 
   /**
@@ -373,16 +375,6 @@ public class DrupalServiceImpl implements DrupalService {
     }
 
     return true;
-  }
-
-  /**
-   * Get the Drupal config.
-   *
-   * @return the drupal config object.
-   */
-  @Override
-  public DrupalConfig getConfig() {
-    return this.config;
   }
 
   /**
