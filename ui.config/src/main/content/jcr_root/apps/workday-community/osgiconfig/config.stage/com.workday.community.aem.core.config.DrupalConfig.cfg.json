@@ -9,5 +9,5 @@
   "drupalTokenCacheTimeout": 1740000,
   "enableCache": "$[env:drupalEnableCache;default=true]",
   "drupalInstanceDomain":"$[env:drupalInstanceDomain]",
-  "enableSubscribe":"$[env:enableSubscribe;default=true]"
+  "enableSubscribe":"$[env:enableSubscribe;default=false]"
 }

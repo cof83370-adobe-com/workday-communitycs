@@ -1,8 +1,15 @@
 package com.workday.community.aem.core.utils;
 
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
+
 import com.workday.community.aem.core.exceptions.CacheException;
+import com.workday.community.aem.core.pojos.SubscriptionRequest;
+import com.workday.community.aem.core.services.DrupalService;
+import com.workday.community.aem.core.services.SearchApiConfigService;
 import com.workday.community.aem.core.services.UserService;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +21,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpStatus;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
+import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ResourceResolverFactory;
 
 /**
  * Utility class for Http request/response related code.
@@ -149,5 +159,44 @@ public class HttpUtils {
     }
 
     return false;
+  }
+
+  /**
+   * Return the subscription request object.
+   *
+   * @param request request object
+   * @param userService user service object
+   * @param searchApiConfigService search api configuration service object
+   * @param drupalService drupal service object
+   * @param resourceResolverFactory resource resolver factory.
+   *
+   * @return the subscription request object.
+   * @throws URISyntaxException the URI syntax exception.
+   * @throws LoginException LoginExceptin.
+   */
+  public static SubscriptionRequest getSubscriptionRequest(
+      SlingHttpServletRequest request,
+      UserService userService,
+      SearchApiConfigService searchApiConfigService,
+      DrupalService drupalService,
+      ResourceResolverFactory resourceResolverFactory
+  ) throws URISyntaxException, LoginException {
+    if (request.getHeaders("Referer") == null) {
+      return new SubscriptionRequest();
+    }
+
+    String path = request.getHeaders("Referer").nextElement();
+    String pagePath = new URI(path).getPath();
+
+    try (ResourceResolver resolver = ResolverUtil.newResolver(resourceResolverFactory, READ_SERVICE_USER)) {
+      String pageUuid = PageUtils.getPageUuid(resolver, pagePath);
+      String sfId = OurmUtils.getSalesForceId(request, userService);
+      String email = OurmUtils.getUserEmail(sfId, searchApiConfigService, drupalService);
+      if (!com.adobe.xfa.ut.StringUtils.isEmpty(pageUuid) && !com.adobe.xfa.ut.StringUtils.isEmpty(email)) {
+        return new SubscriptionRequest(pageUuid, email);
+      }
+    }
+
+    return new SubscriptionRequest();
   }
 }

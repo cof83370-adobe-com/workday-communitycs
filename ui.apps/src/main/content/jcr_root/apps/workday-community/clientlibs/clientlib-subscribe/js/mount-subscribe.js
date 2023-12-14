@@ -1,5 +1,9 @@
 (function(react, reactDom) {
     const SUBSCRIBE_API_PATH = '/bin/subscribe';
+    const SUBSCRIBE_CREATE_API_PATH = '/bin/subscribe/create';
+
+    const ERROR_MSG_FETCH = 'We are unable to fetch the page\'s subscription status. Please try again later.';
+    const ERROR_MSG_CREATE = 'We are unable to save your subscription at this time. Please try again later.';
     function renderSubscribe() {
         const subscribeDiv = document.getElementById('community-subscribe-div');
         if (subscribeDiv) {
@@ -25,20 +29,15 @@
                 if (!subscribe) {
                     return fetch(
                         SUBSCRIBE_API_PATH
-                    ).then(((response) => response? ({status: response['subscribed']}) : ({ status: false })))
-                     .catch((reason) => ({status: false}))
+                    ).then((response) => response.json())
+                     .then((result) => result? ({status: result['subscribed']}) : ({ status: false }))
+                     .catch((reason) => ({status: false, message: ERROR_MSG_FETCH}))
                 }
 
-                return fetch(SUBSCRIBE_API_PATH, {
-                    method: "POST",
-                    credentials: "same-origin",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    referrerPolicy: "no-referrer",
-                    body: JSON.stringify("")})
-                    .then(((response) => response? ({status: response['subscribed']}) : ({ status: false })))
-                    .catch((reason) => ({status: false}))
+                return fetch(SUBSCRIBE_CREATE_API_PATH)
+                    .then((response) => response.json())
+                    .then((result) => result? ({status: result['subscribed']}) : ({ status: false, message: ERROR_MSG_CREATE }))
+                    .catch((reason) => ({status: false, message: ERROR_MSG_CREATE}))
             };
 
             const subscribeElem = react.createElement(Cmty.Subscribe, data);

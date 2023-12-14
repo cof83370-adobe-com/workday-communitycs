@@ -32,9 +32,9 @@ import org.osgi.service.component.annotations.Reference;
 @Component(service = Servlet.class, property = {
     org.osgi.framework.Constants.SERVICE_DESCRIPTION + "= Subscribe Servlet",
     "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-    "sling.servlet.paths=" + "/bin/subscribe"
+    "sling.servlet.paths=" + "/bin/subscribe/create"
 })
-public class SubscribeServlet extends SlingAllMethodsServlet {
+public class CreateSubscriptionServlet extends SlingAllMethodsServlet {
   @Reference
   private transient DrupalService drupalService;
 
@@ -55,10 +55,10 @@ public class SubscribeServlet extends SlingAllMethodsServlet {
     log.debug("initialize Logout service");
   }
 
+
   @Override
-  protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
-      throws IOException {
-    SubscriptionRequest requestObj = null;
+  protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {
+    SubscriptionRequest requestObj;
     try {
       requestObj = getSubscriptionRequest(
           request, userService, searchApiConfigService, drupalService, resourceResolverFactory);
@@ -67,11 +67,11 @@ public class SubscribeServlet extends SlingAllMethodsServlet {
     }
     if (!requestObj.isEmpty()) {
       try {
-        boolean ret = drupalService.isSubscribed(requestObj.getId(), requestObj.getEmail());
+        boolean ret = drupalService.subscribe(requestObj.getId(), requestObj.getEmail());
         response.setStatus(HttpStatus.SC_OK);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         response.getWriter().write(gson.toJson(new SubscriptionResponse(ret)));
-      } catch (DrupalException e) {
+      } catch (DrupalException | IOException e) {
         response.setStatus(HttpStatus.SC_INTERNAL_SERVER_ERROR);
         response.getWriter().write(gson.toJson(new SubscriptionResponse(false)));
       }

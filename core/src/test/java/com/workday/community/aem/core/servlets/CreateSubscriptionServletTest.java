@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class SubscribeServletTest {
+public class CreateSubscriptionServletTest {
 
   @Mock
   SearchApiConfigService searchApiConfigService;
@@ -52,7 +52,7 @@ public class SubscribeServletTest {
   private ResourceResolverFactory resourceResolverFactory;
 
   @InjectMocks
-  private SubscribeServlet subscribeServlet;
+  private CreateSubscriptionServlet subscribeServlet;
 
   @Test
   void testDoGet() throws IOException, DrupalException, LoginException {
@@ -60,7 +60,7 @@ public class SubscribeServletTest {
          MockedStatic<OurmUtils> mockOurmUtils = mockStatic(OurmUtils.class)) {
       MockSlingHttpServletRequest request = mock(MockSlingHttpServletRequest.class);
       MockSlingHttpServletResponse response = mock(MockSlingHttpServletResponse.class);
-      lenient().when(drupalService.isSubscribed(anyString(), anyString())).thenReturn(true);
+      lenient().when(drupalService.subscribe(anyString(), anyString())).thenReturn(true);
       Enumeration<String> headers = mock(Enumeration.class);
       lenient().when(request.getHeaders("Referer")).thenReturn(headers);
       lenient().when(headers.nextElement()).thenReturn("/foo/foo.html");
