@@ -36,7 +36,7 @@
 
                 return fetch(SUBSCRIBE_CREATE_API_PATH)
                     .then((response) => response.json())
-                    .then((result) => result? ({status: result['subscribed']}) : ({ status: false, message: ERROR_MSG_CREATE }))
+                    .then((result) => result && result['subscribed']? ({status: result['subscribed']}) : ({ status: false, message: ERROR_MSG_CREATE }))
                     .catch((reason) => ({status: false, message: ERROR_MSG_CREATE}))
             };
 
