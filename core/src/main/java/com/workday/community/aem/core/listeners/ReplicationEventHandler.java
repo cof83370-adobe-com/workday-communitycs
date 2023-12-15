@@ -1,9 +1,9 @@
 package com.workday.community.aem.core.listeners;
 
-import static com.workday.community.aem.core.constants.GlobalConstants.ADMIN_SERVICE_USER;
 import static com.workday.community.aem.core.constants.GlobalConstants.EVENTS_TEMPLATE_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.FAQ_TEMPLATE_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.KITS_AND_TOOLS_TEMPLATE_PATH;
+import static com.workday.community.aem.core.constants.GlobalConstants.READ_SERVICE_USER;
 import static com.workday.community.aem.core.constants.GlobalConstants.REFERENCE_TEMPLATE_PATH;
 import static com.workday.community.aem.core.constants.GlobalConstants.TROUBLESHOOTING_TEMPLATE_PATH;
 import static com.workday.community.aem.core.constants.WccConstants.WORKDAY_PUBLIC_PAGE_PATH;
@@ -48,15 +48,13 @@ public class ReplicationEventHandler implements EventHandler {
   /**
    * The subscriptionTemplatesList.
    */
-  private static List<String> subscriptionTemplatesList = new ArrayList<>();
-
-  {
-    subscriptionTemplatesList.add(EVENTS_TEMPLATE_PATH);
-    subscriptionTemplatesList.add(FAQ_TEMPLATE_PATH);
-    subscriptionTemplatesList.add(KITS_AND_TOOLS_TEMPLATE_PATH);
-    subscriptionTemplatesList.add(REFERENCE_TEMPLATE_PATH);
-    subscriptionTemplatesList.add(TROUBLESHOOTING_TEMPLATE_PATH);
-  }
+  private static List<String> subscriptionTemplatesList = List.of(
+      EVENTS_TEMPLATE_PATH,
+      FAQ_TEMPLATE_PATH,
+      KITS_AND_TOOLS_TEMPLATE_PATH,
+      REFERENCE_TEMPLATE_PATH,
+      TROUBLESHOOTING_TEMPLATE_PATH
+  );
 
   /**
    * The CoveoIndexApiConfigService.
@@ -201,7 +199,7 @@ public class ReplicationEventHandler implements EventHandler {
   private boolean isCurrentPageIsInSubscriptionPageTypes(String path) {
     boolean isCurrentPageIsInSubscriptionPageTypes = false;
 
-    try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(ADMIN_SERVICE_USER)) {
+    try (ResourceResolver resourceResolver = cacheManager.getServiceResolver(READ_SERVICE_USER)) {
       Resource pageResource = resourceResolver.getResource(path);
       if (pageResource != null) {
         PageManager pageManager = resourceResolver.adaptTo(PageManager.class);

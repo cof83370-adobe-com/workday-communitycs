@@ -21,7 +21,6 @@ import com.workday.community.aem.core.services.CacheManagerService;
 import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -52,15 +51,13 @@ public class PageUpdateJobConsumer implements JobConsumer {
   /**
    * The bundleMap.
    */
-  private static Map<String, String> bundleMap = new HashMap<>();
-
-  {
-    bundleMap.put(EVENTS_TEMPLATE_PATH, "event");
-    bundleMap.put(FAQ_TEMPLATE_PATH, "faq");
-    bundleMap.put(KITS_AND_TOOLS_TEMPLATE_PATH, "kits_and_tools");
-    bundleMap.put(REFERENCE_TEMPLATE_PATH, "reference");
-    bundleMap.put(TROUBLESHOOTING_TEMPLATE_PATH, "troubleshooting");
-  }
+  private static Map<String, String> bundleMap = Map.of(
+      EVENTS_TEMPLATE_PATH, "event",
+      FAQ_TEMPLATE_PATH, "faq",
+      KITS_AND_TOOLS_TEMPLATE_PATH, "kits_and_tools",
+      REFERENCE_TEMPLATE_PATH, "reference",
+      TROUBLESHOOTING_TEMPLATE_PATH, "troubleshooting"
+  );
 
   /**
    * The cache manager.

@@ -205,6 +205,7 @@ public class DrupalServiceImpl implements DrupalService {
       drupalApiCache.put(DrupalConstants.CSRF_TOKEN_CACHE_KEY, csrfToken);
       return csrfToken;
     } catch (Exception e) {
+      drupalApiCache.remove(DrupalConstants.CSRF_TOKEN_CACHE_KEY);
       throw new DrupalException(
           String.format(
               "Error while fetching the Drupal Api token. Please contact Community Admin. Error: %s",
@@ -466,13 +467,14 @@ public class DrupalServiceImpl implements DrupalService {
           drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
         }
       } catch (Exception e) {
+        drupalApiCache.remove(DrupalConstants.CSRF_TOKEN_CACHE_KEY);
+        drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
         throw new DrupalException(String.format("There is an error while creating AEM content entity in Drupal. {} ",
             e.getMessage()));
       }
     }
     return null;
   }
-
 
   @Override
   public ApiResponse deleteEntity(String pagePath) throws DrupalException {
@@ -495,6 +497,8 @@ public class DrupalServiceImpl implements DrupalService {
       }
 
     } catch (DrupalException e) {
+      drupalApiCache.remove(DrupalConstants.CSRF_TOKEN_CACHE_KEY);
+      drupalApiCache.remove(DrupalConstants.TOKEN_CACHE_KEY);
       throw new DrupalException(
           String.format("There is an error while fetching user search data. Please contact Community Admin. %s",
               e.getMessage()));
