@@ -201,22 +201,19 @@ public class RestApiUtil {
    * @throws RestException APIException object.
    */
   private static ApiResponse executePostRequest(ApiRequest request) throws RestException {
-    HttpRequest.BodyPublisher bodyPublisher = buildFormDataFromMap(request.getFormData());
-    return executePostRequest(request, bodyPublisher);
-  }
+    // Build the request.
+    HttpRequest.BodyPublisher bodyPublisher = null;
+    String payload = request.getBody();
+    if (!StringUtils.isEmpty(payload)) {
+      bodyPublisher = HttpRequest.BodyPublishers.ofString(payload);
+    } else {
+      Map<String, String> formData = request.getFormData();
+      if (formData != null && !formData.isEmpty()) {
+        bodyPublisher =  buildFormDataFromMap(formData);
+      }
+    }
 
-
-  /**
-   * Executes the post request using the java net Httpclient.
-   *
-   * @param request API Request object
-   * @return API Response object
-   * @throws RestException APIException object.
-   */
-  private static ApiResponse executePostRequest(ApiRequest request, HttpRequest.BodyPublisher bodyPublisher)
-      throws RestException {
     ApiResponse apiresponse = new ApiResponse();
-
     log.debug("RESTAPIUtil executePostRequest: Calling REST executePostRequest().");
 
     HttpClient httpClient =
@@ -264,9 +261,8 @@ public class RestApiUtil {
     try {
       ObjectMapper mapper = new ObjectMapper();
       String jsonString = mapper.writeValueAsString(aemContentDto);
-
-      HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofString(jsonString);
-      return executePostRequest(request, bodyPublisher);
+      request.setBody(jsonString);
+      return executePostRequest(request);
     } catch (JsonProcessingException e) {
       throw new RestException("Exception while processing JSON: %s", e.getMessage());
     }
