@@ -59,7 +59,7 @@ public class RestApiUtil {
       // Construct the request header.
       log.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
       ApiRequest req = getMenuApiRequest(url, apiToken, apiKey, traceId);
-      return executeGetRequest(req);
+      return executeRequest(req);
     } catch (RestException e) {
       throw new SnapException("Exception in doMenuGet method while executing the request = %s", e.getMessage());
     }
@@ -83,34 +83,10 @@ public class RestApiUtil {
       apiRequestInfo.setUrl(url);
       apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(authToken))
           .addHeader(RestApiConstants.X_API_KEY, apiKey);
-      return executeGetRequest(apiRequestInfo).getResponseBody();
+      return executeRequest(apiRequestInfo).getResponseBody();
     } catch (RestException e) {
       throw new SnapException("Exception in doSnapGet method while executing the request = %s", e.getMessage());
     }
-  }
-
-  /**
-   * Executes the get request call.
-   *
-   * @param req API request.
-   * @return Response from API.
-   * @throws RestException APIException object.
-   */
-  private static ApiResponse executeGetRequest(ApiRequest req) throws RestException {
-    req.setMethod(HttpConstants.METHOD_GET);
-    return executeRequest(req);
-  }
-
-  /**
-   * Executes the Delete request call.
-   *
-   * @param req API request.
-   * @return Response from API.
-   * @throws RestException APIException object.
-   */
-  private static ApiResponse executeDeleteRequest(ApiRequest req) throws RestException {
-    req.setMethod(HttpConstants.METHOD_DELETE);
-    return executeRequest(req);
   }
 
   /**
@@ -365,7 +341,7 @@ public class RestApiUtil {
           .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
           .addHeader(CONTENT_TYPE, ContentType.JSON);
 
-      return executeGetRequest(apiRequestInfo);
+      return executeRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new LmsException("Exception in doLmsCourseDetailGet method while executing the request = %s",
               e.getMessage());
@@ -452,7 +428,7 @@ public class RestApiUtil {
           .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
           .addHeader(CONTENT_TYPE, ContentType.JSON);
 
-      return executeGetRequest(apiRequestInfo);
+      return executeRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new DrupalException(
           String.format("Exception in doDrupalGet method while executing the request = %s", e.getMessage()));
@@ -532,8 +508,8 @@ public class RestApiUtil {
           .addHeader(CONTENT_TYPE, ContentType.JSON)
           .addHeader(GlobalConstants.X_CSRF_TOKEN, csrfToken)
           .addHeader(GlobalConstants.X_AEM_IDENTIFIER, pagePath);
-
-      return executeDeleteRequest(apiRequestInfo);
+      apiRequestInfo.setMethod(HttpConstants.METHOD_DELETE);
+      return executeRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new DrupalException(
           String.format(REST_API_UTIL_MESSAGE, e.getMessage()));
