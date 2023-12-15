@@ -192,7 +192,7 @@ public class HttpUtils {
       String pageUuid = PageUtils.getPageUuid(resolver, pagePath);
       String sfId = OurmUtils.getSalesForceId(request, userService);
       String email = OurmUtils.getUserEmail(sfId, searchApiConfigService, drupalService);
-      if (!com.adobe.xfa.ut.StringUtils.isEmpty(pageUuid) && !com.adobe.xfa.ut.StringUtils.isEmpty(email)) {
+      if (!StringUtils.isEmpty(pageUuid) && !StringUtils.isEmpty(email)) {
         return new SubscriptionRequest(pageUuid, email);
       }
     }
