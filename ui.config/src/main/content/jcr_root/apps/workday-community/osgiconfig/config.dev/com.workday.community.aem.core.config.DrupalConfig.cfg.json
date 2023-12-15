@@ -9,9 +9,9 @@
   "drupalTokenCacheTimeout": 1740000,
   "enableCache": "$[env:drupalEnableCache;default=true]",
   "drupalInstanceDomain":"$[env:drupalInstanceDomain]",
-  "enableCache": "$[env:drupalEnableCache;default=true]",
   "drupalCSRFTokenPath": "$[env:drupalCSRFTokenPath;default=/session/token]",
   "drupalAemContentEntityPath": "$[env:drupalAemContentEntityPath;default=/aem/node?_format=json]",
   "drupalAemContentDeleteEntityPath": "$[env:drupalAemContentDeleteEntityPath;default=/aem/node/delete]",
-  "contentSyncEnabled": "$[env:contentSyncEnabled;default=false]"
+  "contentSyncEnabled": "$[env:contentSyncEnabled;default=false]",
+  "enableSubscribe":"$[env:enableSubscribe;default=false]"
 }

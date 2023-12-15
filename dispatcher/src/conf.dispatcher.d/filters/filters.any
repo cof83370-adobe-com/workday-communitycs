@@ -44,4 +44,10 @@ $include "./default_filters.any"
 # Enable token generation used by Coveo search
 /0130 { /type "allow" /method "GET" /url "/bin/search/token" }  # allow bin path access
 
+// Enable getSubscription status API
+/0131 { /type "allow" /method "GET" /url "/bin/subscribe" }  # allow bin path access
+
+// Enable create subscription
+/0131 { /type "allow" /method "GET" /url "/bin/subscribe/create" }  # allow bin path access
+
 /0200 { /type "allow" /method '(GET|HEAD)' /url "/content/workday-community/*" }

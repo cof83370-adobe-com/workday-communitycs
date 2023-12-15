@@ -136,6 +136,16 @@ public class ExtractPagePropertiesServiceImplTest {
     }
 
     @Override
+    public boolean enableSubscribe() {
+      return false;
+    }
+
+    @Override
+    public String subscribePath() {
+      return "subscribe";
+    }
+
+    @Override
     public String drupalCsrfTokenPath() {
       return null;
     }

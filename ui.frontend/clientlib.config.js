@@ -65,7 +65,7 @@ module.exports = {
       ...libsBaseConfig,
       name: 'clientlib-site',
       categories: ['workday-community.site'],
-      dependencies: ['workday-community.dependencies', 'workday-community.navigation'],
+      dependencies: ['workday-community.dependencies', 'workday-community.navigation', 'workday-community.subscribe'],
       assets: {
         // Copy entrypoint scripts and stylesheets into the respective ClientLib
         // directories

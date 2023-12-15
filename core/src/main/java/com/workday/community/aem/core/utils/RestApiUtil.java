@@ -6,6 +6,7 @@ import static com.workday.community.aem.core.constants.RestApiConstants.BEARER_T
 import static com.workday.community.aem.core.constants.RestApiConstants.CLIENT_CREDENTIALS;
 import static org.apache.http.HttpHeaders.AUTHORIZATION;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.apache.sling.api.servlets.HttpConstants.METHOD_POST;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -58,7 +59,7 @@ public class RestApiUtil {
       // Construct the request header.
       log.debug("RestAPIUtil: Calling REST doMenuGet()...= {}", url);
       ApiRequest req = getMenuApiRequest(url, apiToken, apiKey, traceId);
-      return executeGetRequest(req);
+      return executeRequest(req);
     } catch (RestException e) {
       throw new SnapException("Exception in doMenuGet method while executing the request = %s", e.getMessage());
     }
@@ -82,34 +83,10 @@ public class RestApiUtil {
       apiRequestInfo.setUrl(url);
       apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(authToken))
           .addHeader(RestApiConstants.X_API_KEY, apiKey);
-      return executeGetRequest(apiRequestInfo).getResponseBody();
+      return executeRequest(apiRequestInfo).getResponseBody();
     } catch (RestException e) {
       throw new SnapException("Exception in doSnapGet method while executing the request = %s", e.getMessage());
     }
-  }
-
-  /**
-   * Executes the get request call.
-   *
-   * @param req API request.
-   * @return Response from API.
-   * @throws RestException APIException object.
-   */
-  private static ApiResponse executeGetRequest(ApiRequest req) throws RestException {
-    req.setMethod(HttpConstants.METHOD_GET);
-    return executeRequest(req);
-  }
-
-  /**
-   * Executes the Delete request call.
-   *
-   * @param req API request.
-   * @return Response from API.
-   * @throws RestException APIException object.
-   */
-  private static ApiResponse executeDeleteRequest(ApiRequest req) throws RestException {
-    req.setMethod(HttpConstants.METHOD_DELETE);
-    return executeRequest(req);
   }
 
   /**
@@ -200,22 +177,19 @@ public class RestApiUtil {
    * @throws RestException APIException object.
    */
   private static ApiResponse executePostRequest(ApiRequest request) throws RestException {
-    HttpRequest.BodyPublisher bodyPublisher = buildFormDataFromMap(request.getFormData());
-    return executePostRequest(request, bodyPublisher);
-  }
+    // Build the request.
+    HttpRequest.BodyPublisher bodyPublisher = null;
+    String payload = request.getBody();
+    if (!StringUtils.isEmpty(payload)) {
+      bodyPublisher = HttpRequest.BodyPublishers.ofString(payload);
+    } else {
+      Map<String, String> formData = request.getFormData();
+      if (formData != null && !formData.isEmpty()) {
+        bodyPublisher =  buildFormDataFromMap(formData);
+      }
+    }
 
-
-  /**
-   * Executes the post request using the java net Httpclient.
-   *
-   * @param request API Request object
-   * @return API Response object
-   * @throws RestException APIException object.
-   */
-  private static ApiResponse executePostRequest(ApiRequest request, HttpRequest.BodyPublisher bodyPublisher)
-      throws RestException {
     ApiResponse apiresponse = new ApiResponse();
-
     log.debug("RESTAPIUtil executePostRequest: Calling REST executePostRequest().");
 
     HttpClient httpClient =
@@ -263,9 +237,8 @@ public class RestApiUtil {
     try {
       ObjectMapper mapper = new ObjectMapper();
       String jsonString = mapper.writeValueAsString(aemContentDto);
-
-      HttpRequest.BodyPublisher bodyPublisher = HttpRequest.BodyPublishers.ofString(jsonString);
-      return executePostRequest(request, bodyPublisher);
+      request.setBody(jsonString);
+      return executePostRequest(request);
     } catch (JsonProcessingException e) {
       throw new RestException("Exception while processing JSON: %s", e.getMessage());
     }
@@ -368,7 +341,7 @@ public class RestApiUtil {
           .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
           .addHeader(CONTENT_TYPE, ContentType.JSON);
 
-      return executeGetRequest(apiRequestInfo);
+      return executeRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new LmsException("Exception in doLmsCourseDetailGet method while executing the request = %s",
               e.getMessage());
@@ -446,7 +419,7 @@ public class RestApiUtil {
    * @return API Response
    * @throws DrupalException DrupalException object.
    */
-  public static ApiResponse doDrupalUserDataGet(String url, String bearerToken) throws DrupalException {
+  public static ApiResponse doDrupalGet(String url, String bearerToken) throws DrupalException {
     try {
       ApiRequest apiRequestInfo = new ApiRequest();
 
@@ -455,34 +428,36 @@ public class RestApiUtil {
           .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
           .addHeader(CONTENT_TYPE, ContentType.JSON);
 
-      return executeGetRequest(apiRequestInfo);
+      return executeRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new DrupalException(
-          String.format("Exception in doDrupalUserDataGet method while executing the request = %s", e.getMessage()));
+          String.format("Exception in doDrupalGet method while executing the request = %s", e.getMessage()));
     }
   }
 
   /**
-   * Frames the Drupal API user search get request.
+   * Do Drupal Post.
    *
-   * @param url         Url
-   * @param bearerToken Bearer Token
-   * @return API Response
-   * @throws DrupalException DrupalException object.
+   * @param url the pass-in url
+   * @param bearerToken the pass-in bearer token
+   * @param payload  the payload
+   * @return an ApiResponse object
+   * @throws DrupalException if drupal post fails.
    */
-  public static ApiResponse doDrupalUserSearchGet(String url, String bearerToken) throws DrupalException {
+  public static ApiResponse doDrupalPost(String url, String bearerToken, String payload) throws DrupalException {
     try {
       ApiRequest apiRequestInfo = new ApiRequest();
+      apiRequestInfo.setMethod(METHOD_POST);
 
       apiRequestInfo.setUrl(url);
       apiRequestInfo.addHeader(AUTHORIZATION, BEARER_TOKEN.token(bearerToken))
           .addHeader(HttpConstants.HEADER_ACCEPT, ContentType.JSON)
           .addHeader(CONTENT_TYPE, ContentType.JSON);
-
-      return executeGetRequest(apiRequestInfo);
+      apiRequestInfo.setBody(payload);
+      return executePostRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new DrupalException(
-          String.format(REST_API_UTIL_MESSAGE, e.getMessage()));
+          String.format("Exception in doDrupalPost method while executing the request = %s", e.getMessage()));
     }
   }
 
@@ -533,8 +508,8 @@ public class RestApiUtil {
           .addHeader(CONTENT_TYPE, ContentType.JSON)
           .addHeader(GlobalConstants.X_CSRF_TOKEN, csrfToken)
           .addHeader(GlobalConstants.X_AEM_IDENTIFIER, pagePath);
-
-      return executeDeleteRequest(apiRequestInfo);
+      apiRequestInfo.setMethod(HttpConstants.METHOD_DELETE);
+      return executeRequest(apiRequestInfo);
     } catch (RestException e) {
       throw new DrupalException(
           String.format(REST_API_UTIL_MESSAGE, e.getMessage()));

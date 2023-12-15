@@ -17,6 +17,9 @@
                 <eventregistration
                     jcr:primaryType="nt:unstructured"
                     sling:resourceType="workday-community/components/core/container">
+                    <subscribe
+                        jcr:primaryType="nt:unstructured"
+                        sling:resourceType="workday-community/components/react/subscribe"/>
                     <button
                         jcr:primaryType="nt:unstructured"
                         jcr:title="Register for Event"

@@ -136,4 +136,19 @@ public @interface DrupalConfig {
       type = AttributeType.STRING)
   String drupalAemContentDeleteEntityPath();
 
+  /**
+   * Enable subscribe or not.
+   *
+   * @return true if enabled, false not
+   */
+  @AttributeDefinition(name = "Enable subscribe", description = "Enable subscribe.", type = AttributeType.BOOLEAN)
+  boolean enableSubscribe() default false;
+
+  /**
+   * The subscription API path.
+   *
+   * @return the subscription API path
+   */
+  @AttributeDefinition(name = "Drupal subscription API path", description = "Drupal subscription API path")
+  String subscribePath();
 }
