@@ -144,6 +144,26 @@ public class ExtractPagePropertiesServiceImplTest {
     public String subscribePath() {
       return "subscribe";
     }
+
+    @Override
+    public String drupalCsrfTokenPath() {
+      return null;
+    }
+
+    @Override
+    public boolean contentSyncEnabled() {
+      return false;
+    }
+
+    @Override
+    public String drupalAemContentEntityPath() {
+      return null;
+    }
+
+    @Override
+    public String drupalAemContentDeleteEntityPath() {
+      return null;
+    }
   };
 
   @BeforeEach

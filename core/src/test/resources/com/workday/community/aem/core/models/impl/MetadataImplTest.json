@@ -47,38 +47,8 @@
       "jcr:createdBy": "admin",
       "updatedDate": "Mon Nov 21 2022 23:00:00 GMT-0600",
       "postedDate": "Sun Nov 20 2022 22:00:00 GMT-0600",
-      "jcr:created": "Sat Jan 21 2023 07:14:52 GMT-0600"
-    }
-  },
-  "training-catalog-page": {
-    "jcr:primaryType": "cq:Page",
-    "jcr:content": {
-      "jcr:primaryType": "nt:unstructured",
-      "sling:resourceType": "workday-community/components/core/trainingcatalogpage",
-      "trainingFormat": [
-        "training:/training-format/learn-on-demand",
-        "training:/training-format/learn-virtual",
-        "training:/training-format/workday-pro",
-        "training:/training-format/refresher-training"
-      ],
-      "jcr:createdBy": "admin",
-      "updatedDate": "Mon Nov 21 2022 23:00:00 GMT-0600",
-      "postedDate": "Sun Nov 20 2022 22:00:00 GMT-0600",
-      "jcr:created": "Sat Jan 21 2023 07:14:52 GMT-0600"
-    }
-  },
-  "kits-and-tools-page": {
-    "jcr:primaryType": "cq:Page",
-    "jcr:content": {
-      "jcr:primaryType": "nt:unstructured",
-      "sling:resourceType": "workday-community/components/structure/kitsandtoolspage",
-      "productTags": [
-        "product:engage"
-      ],
-      "jcr:createdBy": "admin",
-      "updatedDate": "Mon Nov 21 2022 23:00:00 GMT-0600",
-      "postedDate": "Sun Nov 20 2022 22:00:00 GMT-0600",
-      "jcr:created": "Sat Jan 21 2023 07:14:52 GMT-0600"
+      "jcr:created": "Sat Jan 21 2023 07:14:52 GMT-0600",
+      "username":"test username"
     }
   }
 }

@@ -2,7 +2,9 @@ package com.workday.community.aem.core.services;
 
 import com.google.gson.JsonObject;
 import com.workday.community.aem.core.config.DrupalConfig;
+import com.workday.community.aem.core.dto.AemContentDto;
 import com.workday.community.aem.core.exceptions.DrupalException;
+import com.workday.community.aem.core.pojos.restclient.ApiResponse;
 
 /**
  * The Drupal service definition interface.
@@ -58,6 +60,33 @@ public interface DrupalService {
    * @throws DrupalException DrupalException.
    */
   JsonObject searchOurmUserList(String searchText) throws DrupalException;
+
+  /**
+   * Returns createOrUpdateEntity API Response as json object.
+   *
+   * @param aemContentDto AEM Page data bean.
+   * @return API Response as json object.
+   *
+   * @throws DrupalException throes custom exception.
+   */
+  ApiResponse createOrUpdateEntity(AemContentDto aemContentDto) throws DrupalException;
+
+  /**
+   * Returns createOrUpdateEntity API Response as json object.
+   *
+   * @param pagePath AEM Page url.
+   * @return API Response as json object.
+   * @throws DrupalException  throes custom exception.
+   */
+  ApiResponse deleteEntity(String  pagePath) throws DrupalException;
+
+  /**
+   * Is AEM to Drupal content sync enabled or not.
+   *
+   * @return true or false depends on Configurations.
+   */
+  boolean isContentSyncEnabled();
+
 
   /**
    * Check if current user is subscribed to the page or question.

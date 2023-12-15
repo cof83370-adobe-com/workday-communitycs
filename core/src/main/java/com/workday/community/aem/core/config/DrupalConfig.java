@@ -96,6 +96,47 @@ public @interface DrupalConfig {
   String drupalInstanceDomain();
 
   /**
+   * Drupal CSRF token path.
+   *
+   * @return Drupal CSRF token path
+   */
+  @AttributeDefinition(name = "Drupal CSRF Token API Path", description = "Drupal CSRF Token Path.",
+      type = AttributeType.STRING)
+  String drupalCsrfTokenPath();
+
+  /**
+   * Whether AEM - Drupal Content Sync enabled.
+   *
+   * @return True if enabled, otherwise false.
+   */
+  @AttributeDefinition(
+          name = "AEM -Drupal Content Sync Enabled",
+          description = "Is AEM to Drupal Content Sync Enabled",
+          type = AttributeType.BOOLEAN
+  )
+  boolean contentSyncEnabled() default true;
+
+  /**
+   * Drupal AEM Content Data API Path.
+   *
+   * @return Drupal AEM Content Data API Path
+   */
+  @AttributeDefinition(name = "Drupal AEM Entity Post/Patch API Path",
+      description = "Drupal AEM Entity Post/Patch API Path.",
+      type = AttributeType.STRING)
+  String drupalAemContentEntityPath();
+
+  /**
+   * Drupal AEM Content Data Delete API Path.
+   *
+   * @return Drupal AEM Content Data Delete API Path
+   */
+  @AttributeDefinition(name = "Drupal AEM  Entity Delete API Path",
+      description = "Drupal AEM Entity Delete API Path.",
+      type = AttributeType.STRING)
+  String drupalAemContentDeleteEntityPath();
+
+  /**
    * Enable subscribe or not.
    *
    * @return true if enabled, false not

@@ -8,11 +8,11 @@ import java.util.Date;
 public interface Metadata {
 
   /**
-   * Gets the author name.
+   * Gets the user name.
    *
-   * @return the author name
+   * @return the user name
    */
-  String getAuthorName();
+  String getUserName();
 
   /**
    * Gets the posted date.

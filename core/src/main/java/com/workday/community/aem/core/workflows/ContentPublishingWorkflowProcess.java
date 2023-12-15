@@ -24,7 +24,10 @@ import com.workday.community.aem.core.constants.GlobalConstants;
 import com.workday.community.aem.core.constants.WccConstants;
 import com.workday.community.aem.core.constants.WorkflowConstants;
 import com.workday.community.aem.core.services.CacheManagerService;
+import com.workday.community.aem.core.services.EmailService;
 import com.workday.community.aem.core.services.QueryService;
+import com.workday.community.aem.core.services.WorkflowConfigService;
+import com.workday.community.aem.core.utils.WorkflowUtils;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -36,6 +39,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jackrabbit.api.security.user.Authorizable;
+import org.apache.jackrabbit.api.security.user.UserManager;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -62,6 +67,26 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
    */
   @Reference
   private QueryService queryService;
+  
+  /** The workflow config service. */
+  @Reference
+  private WorkflowConfigService workflowConfigService;
+  
+  /** The email service. */
+  @Reference
+  private EmailService emailService;
+  
+  /**
+   * The email template publish body path.
+   */
+  private final String emailTemplatePagePublishBodyPath = 
+        "/workflows/publish-notification/jcr:content/root/container/container/text";
+  
+  /**
+   * The email template publish subject path.
+   */
+  private final String emailTemplatePagePublishSubjectPath = 
+      "/workflows/publish-notification/jcr:content/root/container/container/title";
 
   /**
    * {@inheritDoc}
@@ -274,26 +299,76 @@ public class ContentPublishingWorkflowProcess implements WorkflowProcess {
    * @param resResolver the ResourceResolver
    * @param assignee   the initiator
    */
-  private void sendInboxNotification(ResourceResolver resResolver, String assignee, Page payloadPage) {
+  private void sendInboxNotification(ResourceResolver resResolver, String initiator, Page payloadPage) {
     log.debug("sendInboxNotification start");
+    if (payloadPage != null) {
+      String authorId = null;
+      try {
+        TaskManager taskManager = resResolver.adaptTo(TaskManager.class);
+        Task newTask = taskManager.getTaskManagerFactory().newTask(WorkflowConstants.TASK_TYPE_NOTIFICATION);
+        if (newTask != null) {
+          newTask.setName(WorkflowConstants.NOTIFICATION_NAME_CONTENT_PUBLISHED);
 
-    try {
-      TaskManager taskManager = resResolver.adaptTo(TaskManager.class);
-      Task newTask = taskManager.getTaskManagerFactory().newTask(WorkflowConstants.TASK_TYPE_NOTIFICATION);
-      if (newTask != null) {
-        newTask.setName(WorkflowConstants.NOTIFICATION_NAME_CONTENT_PUBLISHED);
-        if (payloadPage != null) {
           newTask.setContentPath(payloadPage.getPath());
           newTask.setDescription(payloadPage.getTitle());
-        }
-        newTask.setCurrentAssignee(assignee);
-        
-        taskManager.createTask(newTask);
-      }
-    } catch (TaskManagerException e) {
-      log.error("Exception occured while sending inbox notification: {}", e.getMessage());
-    }
+          newTask.setCurrentAssignee(initiator); // workflow initiator inbox notification
+          taskManager.createTask(newTask);
 
+          String author = (String) payloadPage.getProperties().get(GlobalConstants.PROP_AUTHOR);
+          UserManager userManager = resResolver.adaptTo(UserManager.class);
+          //assuming ID and Emailid of an user are same.
+          Authorizable authorizable = Objects.requireNonNull(userManager).getAuthorizable(author);
+
+          if (authorizable != null) {
+            authorId = authorizable.getID();
+
+            if (!authorId.equalsIgnoreCase(initiator)) {
+              log.debug("author and initiator are not same");
+              newTask.setCurrentAssignee(authorId); // author inbox notification
+              taskManager.createTask(newTask);
+            } else {
+              log.debug("author: {} and initiator: {} are same");
+            }
+          } else {
+            log.debug("author has no AEM Account");
+            // send email notification to author
+            sendPublishNotificationEmail(author, resResolver, emailTemplatePagePublishBodyPath, 
+                emailTemplatePagePublishSubjectPath, payloadPage.getPath());
+          }
+        }
+
+      } catch (TaskManagerException e) {
+        log.error("Exception occured while sending inbox notification: {}", e.getMessage());
+      } catch (RepositoryException e) {
+        log.error("RepositoryException in MetadataImpl::getFullNameByUserID: {}", e.getMessage());
+      }
+    }
     log.debug("sendInboxNotification end");
+  }
+  
+  /**
+   * Send mail notification to author.
+   *
+   * @param author                   the author
+   * @param resolver                 the resolver
+   * @param emailTemplateBodyPath    the emailTemplateBodyPath
+   * @param emailTemplateSubjectPath the emailTemplateSubjectPath
+   * @param path                     the path
+   */
+  public void sendPublishNotificationEmail(String author, ResourceResolver resolver, String emailTemplateBodyPath,
+      String emailTemplateSubjectPath, String path) {
+    log.debug("in sendMailNotification, path is: {}", path);
+
+    try {
+      Node node = Objects.requireNonNull(resolver.getResource(path + GlobalConstants.JCR_CONTENT_PATH))
+          .adaptTo(Node.class);
+
+      if (node != null) {
+        WorkflowUtils.sendNotification(author, resolver, emailTemplateBodyPath, emailTemplateSubjectPath, path,
+            node, workflowConfigService, emailService);
+      }
+    } catch (Exception e) {
+      log.error("Exception occured in sendMailNotification: {}", e.getMessage());
+    }
   }
 }

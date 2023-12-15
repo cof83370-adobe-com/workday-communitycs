@@ -1,6 +1,6 @@
 package com.workday.community.aem.core.schedulers;
 
-import com.workday.community.aem.core.services.RetirementManagerJobConfigService;
+import com.workday.community.aem.core.services.WorkflowConfigService;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
@@ -34,9 +34,9 @@ public class RetirementManagerJobScheduler {
   @Reference
   private JobManager jobManager;
   
-  /** The retirement manager job config service. */
+  /** The workflow config service. */
   @Reference
-  private RetirementManagerJobConfigService retirementManagerJobConfigService;
+  private WorkflowConfigService workflowConfigService;
 
   /**
    * Activate RetirementManagerJobScheduler scheduler.
@@ -78,7 +78,7 @@ public class RetirementManagerJobScheduler {
 
         ScheduleBuilder scheduleBuilder = jobBuilder.schedule();
         if (scheduleBuilder != null) {
-          scheduleBuilder.cron(retirementManagerJobConfigService.getWorkflowNotificationCron());
+          scheduleBuilder.cron(workflowConfigService.getWorkflowNotificationCron());
 
           if (scheduleBuilder.add() == null) {
             log.debug("Unable to add jobs to the queue");

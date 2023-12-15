@@ -22,7 +22,7 @@ The main parts of the template are:
 
 ### BEFORE running maven commands please do the following
 
-* Ensure AWS CLI is setup and configured locally.
+* Ensure AWS CLI is set up and configured locally.
   * If you are a contractor, reach out for special AWS credentials otherwise proceed with the following step.
   * Run `okta2aws login` or use your provided AWS credentials in your AWS CLI config  
 * Set the environmental variable for your role.
@@ -43,7 +43,7 @@ To build all the modules and deploy the `all` package to a local instance of AEM
 
     mvn clean install -PautoInstallSinglePackage
 
-Or to deploy it to a publish instance, run
+Or to deploy it to a published instance, run
 
     mvn clean install -PautoInstallSinglePackagePublish
 
