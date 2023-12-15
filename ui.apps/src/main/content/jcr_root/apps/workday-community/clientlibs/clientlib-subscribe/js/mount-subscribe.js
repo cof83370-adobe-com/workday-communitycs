@@ -14,6 +14,9 @@
             const subscribeText = subscribeDiv.getAttribute('data-subscribe-text');
             const manageText = subscribeDiv.getAttribute('data-manage-text');
             const errorMessage = subscribeDiv.getAttribute('data-error-message');
+            let readOnly = subscribeDiv.getAttribute('data-read-only');
+            readOnly = readOnly && readOnly === 'true';
+
             const data = {};
 
             if (manageUrl) data['manageUrl'] = manageUrl;
@@ -26,6 +29,10 @@
 
             // implement callback.
             data['callback'] = (subscribe) => {
+                if (readOnly) {
+                    return { status: false };
+                }
+
                 if (!subscribe) {
                     return fetch(
                         SUBSCRIBE_API_PATH

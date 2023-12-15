@@ -3,6 +3,7 @@ package com.workday.community.aem.core.models.impl;
 import com.drew.lang.annotations.NotNull;
 import com.workday.community.aem.core.models.SubscribeModel;
 import com.workday.community.aem.core.services.DrupalService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.resource.Resource;
@@ -30,8 +31,18 @@ public class SubscribeModelImpl implements SubscribeModel {
   @OSGiService
   private  DrupalService drupalService;
 
+  @NotNull
+  @OSGiService
+  private RunModeConfigService runModeConfigService;
+
   @Override
   public boolean enabled() {
     return drupalService.getConfig().enableSubscribe();
+  }
+
+  @Override
+  public boolean readOnly() {
+    String inst = runModeConfigService.getInstance();
+    return inst != null && inst.equals("author");
   }
 }

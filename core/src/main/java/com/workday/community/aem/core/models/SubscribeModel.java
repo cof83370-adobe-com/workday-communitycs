@@ -10,4 +10,11 @@ public interface SubscribeModel {
    * @return true if it is, false not.
    */
   boolean enabled();
+
+  /**
+   * Indicated if subscribe is read only (in author environment).
+   *
+   * @return true if it is, false not.
+   */
+  boolean readOnly();
 }

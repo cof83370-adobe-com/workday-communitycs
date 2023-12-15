@@ -3,6 +3,7 @@ package com.workday.community.aem.core.models.impl;
 import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.models.SubscribeModel;
 import com.workday.community.aem.core.services.DrupalService;
+import com.workday.community.aem.core.services.RunModeConfigService;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,19 +26,29 @@ public class SubscribeModelImplTest {
   @Mock
   DrupalService drupalService;
 
+  @Mock
+  RunModeConfigService runModeConfigService;
+
   @BeforeEach
   public void setup() {
     context.addModelsForClasses(SubscribeModelImpl.class);
     context.registerService(DrupalService.class, drupalService);
-
+    context.registerService(RunModeConfigService.class, runModeConfigService);
   }
 
   @Test
-  void testSubscribeEnabled() {
+  void testEnabled() {
     SubscribeModel model = context.request().adaptTo(SubscribeModel.class);
     DrupalConfig config = mock(DrupalConfig.class);
     lenient().when(drupalService.getConfig()).thenReturn(config);
     lenient().when(config.enableSubscribe()).thenReturn(true);
     assertTrue("The subscription is enabled", model.enabled());
+  }
+
+  @Test
+  void testReadOnly() {
+    SubscribeModel model = context.request().adaptTo(SubscribeModel.class);
+    lenient().when(runModeConfigService.getInstance()).thenReturn("author");
+    assertTrue("The subscription is readonly", model.readOnly());
   }
 }
