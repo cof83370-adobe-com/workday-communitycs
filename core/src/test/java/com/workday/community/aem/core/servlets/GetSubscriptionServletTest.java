@@ -37,7 +37,7 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class SubscribeServletTest {
+public class GetSubscriptionServletTest {
 
   @Mock
   SearchApiConfigService searchApiConfigService;
@@ -52,7 +52,7 @@ public class SubscribeServletTest {
   private ResourceResolverFactory resourceResolverFactory;
 
   @InjectMocks
-  private SubscribeServlet subscribeServlet;
+  private GetSubscriptionServlet getSubscriptionServlet;
 
   @Test
   void testDoGet() throws IOException, DrupalException, LoginException {
@@ -75,7 +75,7 @@ public class SubscribeServletTest {
       PrintWriter pw = mock(PrintWriter.class);
       lenient().when(response.getWriter()).thenReturn(pw);
 
-      subscribeServlet.doGet(request, response);
+      getSubscriptionServlet.doGet(request, response);
       verify(response, times(1)).setStatus(HttpStatus.SC_OK);
     }
   }

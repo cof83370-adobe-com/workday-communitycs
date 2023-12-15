@@ -34,7 +34,7 @@ import org.osgi.service.component.annotations.Reference;
     "sling.servlet.methods=" + HttpConstants.METHOD_GET,
     "sling.servlet.paths=" + "/bin/subscribe"
 })
-public class SubscribeServlet extends SlingAllMethodsServlet {
+public class GetSubscriptionServlet extends SlingAllMethodsServlet {
   @Reference
   private transient DrupalService drupalService;
 
@@ -52,7 +52,7 @@ public class SubscribeServlet extends SlingAllMethodsServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    log.debug("initialize Logout service");
+    log.debug("initialize Get Subscription Servlet");
   }
 
   @Override

@@ -19,7 +19,7 @@ import org.apache.sling.models.annotations.injectorspecific.OSGiService;
     adaptables = {Resource.class, SlingHttpServletRequest.class},
     adapters = {SubscribeModel.class},
     resourceType = {SubscribeModelImpl.RESOURCE_TYPE},
-    defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL
+    defaultInjectionStrategy = DefaultInjectionStrategy.REQUIRED
 )
 public class SubscribeModelImpl implements SubscribeModel {
   /**

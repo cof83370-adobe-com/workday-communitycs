@@ -52,9 +52,8 @@ public class CreateSubscriptionServlet extends SlingAllMethodsServlet {
   @Override
   public void init() throws ServletException {
     super.init();
-    log.debug("initialize Logout service");
+    log.debug("initialize Create Subscription Servlet");
   }
-
 
   @Override
   protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response) throws IOException {

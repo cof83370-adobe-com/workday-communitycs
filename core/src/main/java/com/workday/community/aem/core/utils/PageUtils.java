@@ -138,6 +138,7 @@ public class PageUtils {
     pagePath = pagePath.substring(0, pagePath.indexOf("."));
     Page page = pageManager.getPage(pagePath);
     Object ret =  page.getProperties().get("jcr:uuid");
+    log.debug("current page's {} UUID {}", pagePath, ret);
     return ret == null ? "" : ret.toString();
   }
 }
