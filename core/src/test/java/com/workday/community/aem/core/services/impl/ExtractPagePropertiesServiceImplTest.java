@@ -134,6 +134,26 @@ public class ExtractPagePropertiesServiceImplTest {
     public String drupalInstanceDomain() {
       return "http://test-link.com";
     }
+
+    @Override
+    public String drupalCsrfTokenPath() {
+      return null;
+    }
+
+    @Override
+    public boolean contentSyncEnabled() {
+      return false;
+    }
+
+    @Override
+    public String drupalAemContentEntityPath() {
+      return null;
+    }
+
+    @Override
+    public String drupalAemContentDeleteEntityPath() {
+      return null;
+    }
   };
 
   @BeforeEach

@@ -2,7 +2,10 @@ package com.workday.community.aem.core.services.impl;
 
 import static com.workday.community.aem.core.constants.SnapConstants.DEFAULT_SFID_MASTER;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
@@ -13,6 +16,7 @@ import com.google.gson.JsonObject;
 import com.workday.community.aem.core.TestUtil;
 import com.workday.community.aem.core.config.CacheConfig;
 import com.workday.community.aem.core.config.DrupalConfig;
+import com.workday.community.aem.core.dto.AemContentDto;
 import com.workday.community.aem.core.exceptions.DrupalException;
 import com.workday.community.aem.core.pojos.restclient.ApiResponse;
 import com.workday.community.aem.core.services.RunModeConfigService;
@@ -20,7 +24,9 @@ import com.workday.community.aem.core.utils.RestApiUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
 import java.lang.annotation.Annotation;
+import java.util.List;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpStatus;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -29,6 +35,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -36,6 +43,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
  */
 @ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class DrupalServiceImplTest {
+
+  /**
+   * The path to the Community content page.
+   */
+  static final String COMMUNITY_EVENT_PAGE_PATH = "/content/workday-community/en-us/event1/event2";
+
   private final DrupalServiceImpl service = new DrupalServiceImpl();
 
   /**
@@ -107,6 +120,27 @@ public class DrupalServiceImplTest {
     public String drupalInstanceDomain() {
       return "http://test-link.com";
     }
+
+    @Override
+    public String drupalCsrfTokenPath() {
+      return "drupalCsrfTokenPath";
+    }
+
+    @Override
+    public boolean contentSyncEnabled() {
+      return true;
+    }
+
+    @Override
+    public String drupalAemContentEntityPath() {
+      return "drupalAemContentEntityPath";
+    }
+
+    @Override
+    public String drupalAemContentDeleteEntityPath() {
+      return "drupalAemContentDeleteEntityPath";
+    }
+
   };
 
   /**
@@ -123,7 +157,7 @@ public class DrupalServiceImplTest {
 
     context.registerService(RunModeConfigService.class, runModeConfigService);
     context.registerService(cacheManagerService);
-
+    MockitoAnnotations.openMocks(this);
     service.activate(testConfig);
   }
 
@@ -165,6 +199,28 @@ public class DrupalServiceImplTest {
       // token
       token = this.service.getApiToken();
       assertEquals("", token);
+    }
+  }
+
+  /**
+   * Test method for getAPIToken method.
+   *
+   * @throws DrupalException      DrupalException
+   * @throws InterruptedException InterruptedException
+   */
+  @Test
+  public void testCsrfToken() throws DrupalException, InterruptedException {
+    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      // Case 1: with valid response
+      ApiResponse response = mock(ApiResponse.class);
+      mocked.when(() -> RestApiUtil.doDrupalCsrfTokenGet(anyString())).thenReturn(response);
+      String responseBody = "testCsrfToken";
+      when(response.getResponseBody()).thenReturn(responseBody);
+      when(response.getResponseCode()).thenReturn(200);
+
+      String token = this.service.getCsrfToken();
+      assertEquals("testCsrfToken", token);
+
     }
   }
 
@@ -402,5 +458,114 @@ public class DrupalServiceImplTest {
       JsonObject ret = this.service.searchOurmUserList(searchText);
       assertEquals(testUserContext, ret.toString());
     }
+  }
+
+  @Test
+  public void testCreateOrUpdateEntity_Success() throws DrupalException {
+    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      AemContentDto aemContentDto = new AemContentDto();
+      aemContentDto.setAccess(List.of("authors"));
+      aemContentDto.setFieldAemLink("testlink");
+      aemContentDto.setLabel("testLabel");
+      String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"expires_in\": 1799}";
+
+      ApiResponse response1 = new ApiResponse();
+      response1.setResponseBody(responseBody);
+      response1.setResponseCode(HttpStatus.SC_OK);
+
+      ApiResponse response2 = new ApiResponse();
+      response2.setResponseBody("CsrfToken");
+      response2.setResponseCode(HttpStatus.SC_OK);
+
+      ApiResponse response3 = new ApiResponse();
+      response3.setResponseBody("Entity Created");
+      response3.setResponseCode(HttpStatus.SC_OK);
+
+      mocked.when(()->RestApiUtil.doDrupalTokenGet(anyString(),  anyString(), anyString())).thenReturn(response1);
+      mocked.when(()->RestApiUtil.doDrupalCsrfTokenGet(anyString())).thenReturn(response2);
+      mocked.when(()->RestApiUtil.doDrupalCreateOrUpdateEntity(anyString(),any(AemContentDto.class), anyString(), anyString())).thenReturn(response3);
+
+      ApiResponse result = service.createOrUpdateEntity(aemContentDto);
+
+      assertNotNull(result);
+      assertEquals(HttpStatus.SC_OK, result.getResponseCode());
+      assertEquals("Entity Created", result.getResponseBody());
+    }
+  }
+
+  @Test
+  public void testCreateOrUpdateEntity_Fail() throws DrupalException {
+    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      AemContentDto aemContentDto = new AemContentDto();
+      aemContentDto.setAccess(List.of("authors"));
+      aemContentDto.setFieldAemLink("testlink");
+      aemContentDto.setLabel("testLabel");
+      String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"expires_in\": 1799}";
+
+      ApiResponse response1 = new ApiResponse();
+      response1.setResponseBody(responseBody);
+      response1.setResponseCode(HttpStatus.SC_OK);
+
+      mocked.when(()->RestApiUtil.doDrupalTokenGet(anyString(),  anyString(), anyString())).thenReturn(response1);
+      mocked.when(()->RestApiUtil.doDrupalCsrfTokenGet(anyString())).thenReturn(null);
+
+      ApiResponse result = service.createOrUpdateEntity(aemContentDto);
+
+      assertNull(result);
+
+    }
+  }
+
+  @Test
+  public void testDeleteEntity_Success() throws DrupalException {
+    try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+      String responseBody = "{\"access_token\": \"bearerToken\",\"token_type\": \"Bearer\",\"expires_in\": 1799}";
+
+      ApiResponse response1 = new ApiResponse();
+      response1.setResponseBody(responseBody);
+      response1.setResponseCode(HttpStatus.SC_OK);
+
+      ApiResponse response2 = new ApiResponse();
+      response2.setResponseBody("CsrfToken");
+      response2.setResponseCode(HttpStatus.SC_OK);
+
+      ApiResponse response3 = new ApiResponse();
+      response3.setResponseBody("Entity Deleted");
+      response3.setResponseCode(HttpStatus.SC_NO_CONTENT);
+
+      mocked.when(() -> RestApiUtil.doDrupalTokenGet(anyString(), anyString(), anyString())).thenReturn(response1);
+      mocked.when(() -> RestApiUtil.doDrupalCsrfTokenGet(anyString())).thenReturn(response2);
+      mocked.when(() -> RestApiUtil.doDrupalDeleteEntity(anyString(), anyString(), anyString(), anyString()))
+          .thenReturn(response3);
+
+
+      ApiResponse result = service.deleteEntity(COMMUNITY_EVENT_PAGE_PATH);
+
+      assertNotNull(result);
+      assertEquals(HttpStatus.SC_NO_CONTENT, result.getResponseCode());
+      assertEquals("Entity Deleted", result.getResponseBody());
+    }
+  }
+
+    @Test
+    public void testDeleteEntity_Fail() throws DrupalException {
+      try (MockedStatic<RestApiUtil> mocked = mockStatic(RestApiUtil.class)) {
+        ApiResponse response2 = new ApiResponse();
+        response2.setResponseBody("CsrfToken");
+        response2.setResponseCode(HttpStatus.SC_OK);
+
+        ApiResponse response3 = new ApiResponse();
+        response3.setResponseBody("Entity Deleted");
+        response3.setResponseCode(HttpStatus.SC_NO_CONTENT);
+
+        mocked.when(()->RestApiUtil.doDrupalTokenGet(anyString(),  anyString(), anyString())).thenReturn(null);
+        mocked.when(()->RestApiUtil.doDrupalCsrfTokenGet(anyString())).thenReturn(response2);
+        mocked.when(()->RestApiUtil.doDrupalDeleteEntity(anyString(), anyString(),anyString(), anyString())).thenReturn(response3);
+
+        ApiResponse result = service.deleteEntity(COMMUNITY_EVENT_PAGE_PATH);
+
+        assertNull(result);
+      }
+
   }
 }
