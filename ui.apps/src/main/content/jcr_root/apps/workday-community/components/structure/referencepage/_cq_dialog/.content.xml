@@ -32,6 +32,14 @@
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="granite/ui/components/coral/foundation/container">
                                 <items jcr:primaryType="nt:unstructured">
+                                    <skipNotification
+                                            jcr:primaryType="nt:unstructured"
+                                            sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
+                                            fieldDescription="If checked, Notification to Drupal will be skipped."
+                                            name="./skipNotification"
+                                            renderReadOnly="{Boolean}true"
+                                            text="Skip Notification to Drupal"
+                                            value="true"/>
                                     <drupalNodeId
                                         cq:showOnCreate="{Boolean}true"
                                         jcr:primaryType="nt:unstructured"
