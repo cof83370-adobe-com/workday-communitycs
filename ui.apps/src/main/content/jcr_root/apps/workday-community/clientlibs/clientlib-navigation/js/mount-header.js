@@ -13,18 +13,23 @@ const signOutObject = {
 
 let searchConfig;
 
-const getSearchToken = async () => {
+const getSearchToken = new Promise((resolve, reject) => {
     const tokenUrl = '/bin/search/token';
     try {
-        const response = await fetch(tokenUrl);
-        const res = await response.json();
-        return res['searchToken'];
+        fetch(tokenUrl).then(response => response.json())
+            .then(res => {
+                if (!res && !res['searchToken']) {
+                    reject('failed to getToken');
+                } else {
+                    resolve(res['searchToken']);
+                }
+            });
     } catch (err) {
-        return '';
+        return reject('failed to getToken');
     }
-};
+});
 
-function renderNavHeader(searchToken = '') {
+function renderNavHeader() {
     const headerDiv = document.getElementById('community-header-div');
     if (headerDiv !== undefined && headerDiv !== null) {
         let enableCache = headerDiv.getAttribute('data-enable-cache');
@@ -50,43 +55,50 @@ function renderNavHeader(searchToken = '') {
         const searchUrl = headerDiv.getAttribute('data-search-url');
         searchConfig = JSON.parse(headerDiv.getAttribute('data-search-config'));
 
-        headerDataJson.coveoProps = searchToken ? {
-            engine: Cmty.CoveoEngineService.CoveoSearchEngine(
-                {
-                    organizationId: searchConfig['orgId'],
-                    search: {
-                        searchHub: searchConfig['searchHub']
-                    },
-                    accessToken: searchToken,
-                    renewAccessToken: getSearchToken
-                }
-            ),
-            controllerConfig: {
-                numberOfSuggestions: 10
-            },
-            redirectProps: {
-                redirectPath: searchUrl,
-                querySeparator: '#',
-                queryParameterName: 'q'
-            },
-            analytics: {
-                analyticsClientMiddleware: (eventName, payload) => {
-                    if (searchConfig["userContext"]) {
-                        payload.customData = {...payload.customData, ...JSON.parse(searchConfig["userContext"])};
-                    }
-                    return payload;
-                }
-            }
-        } : undefined;
+        const unAuthenticated = {
+            redirectPath: searchUrl,
+            querySeparator: '#',
+            queryParameterName: 'q'
+        };
 
-        if (!headerDataJson.coveoProps && dataModel !== 'HIDE_MENU_UNAUTHENTICATED') {
-            // Add search props if Coveo props is not present
-            headerDataJson.searchProps = {
-                redirectPath: searchUrl,
-                querySeparator: '#',
-                queryParameterName: 'q'
+        headerDataJson.coveoProps = (dataModel === 'HIDE_MENU_UNAUTHENTICATED') ? undefined : () => getSearchToken.then((searchToken) => (
+            {
+                engine: Cmty.CoveoEngineService.CoveoSearchEngine(
+                    {
+                        organizationId: searchConfig['orgId'],
+                        search: {
+                            searchHub: searchConfig['searchHub']
+                        },
+                        accessToken: searchToken,
+                        renewAccessToken: () => getSearchToken
+                    }
+                ),
+                controllerConfig: {
+                    numberOfSuggestions: 10
+                },
+                redirectProps: {
+                    redirectPath: searchUrl,
+                    querySeparator: '#',
+                    queryParameterName: 'q'
+                },
+                analytics: {
+                    analyticsClientMiddleware: (eventName, payload) => {
+                        const userContext = searchConfig["userContext"]
+                        if (userContext) {
+                            payload.customData = {...payload.customData, ...JSON.parse(userContext)};
+                        }
+                        return payload;
+                    }
+                }
             }
-        }
+        )).catch((error) => {
+            if (dataModel !== 'HIDE_MENU_UNAUTHENTICATED') {
+                // Add search props if Coveo props is not present and not public page
+                headerDataJson.searchProps = { ...unAuthenticated };
+            } else {
+                headerDataJson.searchProps = undefined;
+            }
+        });
 
         try {
             const headerElement = React.createElement(Cmty.GlobalHeader, headerDataJson);
@@ -119,12 +131,7 @@ function dataWithMenu(headerData) {
 
 document.addEventListener('readystatechange', async (event) => {
     if (event.target.readyState === 'complete') {
-        let headerStringData = document.getElementById('community-header-div').getAttribute('data-model-property');
-        if (stringValid(headerStringData) && headerStringData !== 'HIDE_MENU_UNAUTHENTICATED') {
-            renderNavHeader(await getSearchToken());
-        } else {
-            renderNavHeader();
-        }
+        renderNavHeader();
     }
 });
 
