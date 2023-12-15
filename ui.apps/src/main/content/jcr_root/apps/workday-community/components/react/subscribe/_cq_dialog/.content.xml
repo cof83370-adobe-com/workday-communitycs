@@ -51,7 +51,7 @@
                                             <manageText
                                                     jcr:primaryType="nt:unstructured"
                                                     sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                    fieldDescription="Subscribe text"
+                                                    fieldDescription="Manage Text"
                                                     fieldLabel="Manage text"
                                                     name="./manageText"
                                                     required="{Boolean}false"/>
@@ -72,8 +72,8 @@
                                             <height
                                                     jcr:primaryType="nt:unstructured"
                                                     sling:resourceType="granite/ui/components/coral/foundation/form/textfield"
-                                                    fieldDescription="Height (px)"
-                                                    fieldLabel="Height (px)"
+                                                    fieldDescription="Height(unit: px)"
+                                                    fieldLabel="Height (unit: px)"
                                                     name="./height"
                                                     required="{Boolean}false"/>
                                         </items>
