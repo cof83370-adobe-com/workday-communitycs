@@ -35,10 +35,10 @@
                                     <skipNotification
                                             jcr:primaryType="nt:unstructured"
                                             sling:resourceType="granite/ui/components/coral/foundation/form/checkbox"
-                                            fieldDescription="If checked, Notification to Drupal will be skipped."
+                                            fieldDescription="If checked, notifications will not be sent once the content is published."
                                             name="./skipNotification"
                                             renderReadOnly="{Boolean}true"
-                                            text="Skip Notification to Drupal"
+                                            text="Do not notify subscribers on publication"
                                             value="true"/>
                                     <drupalNodeId
                                         cq:showOnCreate="{Boolean}true"
