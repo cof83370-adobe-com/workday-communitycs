@@ -1,13 +1,13 @@
 .cmp-download {
     display: flex;
     align-items: $align-center;
-    height: 43px;
+    height: auto;
     background: $wdc-color-soap-200;
     margin-bottom: 8px;
 
     &__title {
         max-width: 100%;
-        margin: 0;
+        margin: 0 !important;
     }
 
     &__title-link {
@@ -17,13 +17,11 @@
         line-height: 22px;
         letter-spacing: 0.5px;
         color: $wdc-color-black-pepper-400;
-
         text-decoration: none;
         margin-left: 15px;
-        white-space: nowrap;
-        overflow: hidden;
         text-overflow: ellipsis;
-        display: inherit;
+        display: flex;
+        padding: 10px 0;
 
         &:before {
             $imagePath: url('../resources/images/download.svg');
