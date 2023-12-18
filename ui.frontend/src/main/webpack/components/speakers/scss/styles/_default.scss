@@ -1,7 +1,8 @@
 .cmp-speakers {
     border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.16), 0 2px 8px rgba(0, 0, 0, 0.2);
     margin-top: 32px;
+    background-color: $wdc-color-french-vanilla-100;
 
     &__heading {
         padding-top: 18px;
@@ -31,6 +32,10 @@
             min-height: 41px;
             height: auto;
             padding-bottom: 10px;
+        }
+
+        &__image-content {
+            display: flex;
         }
 
         &__image {
