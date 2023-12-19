@@ -1,4 +1,0 @@
-User-agent: *
-Disallow: /
-Allow: /content/workday-community/*/public/
-Allow: /content/workday-community/*/public/learn/get-started/
