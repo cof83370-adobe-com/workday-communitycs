@@ -5,6 +5,7 @@
     <filter root="/content/dam/workday-community">
         <exclude pattern="/content/dam/workday-community(/.*)?"/>
         <include pattern="/content/dam/workday-community/jcr:content(/.*)?"/>
+        <include pattern="/content/dam/workday-community/admin(/.*)?"/>
         <include pattern="/content/dam/workday-community/resources(/.*)?"/>
     </filter>
     <filter root="/content/cq:tags/event" mode="merge"/>
