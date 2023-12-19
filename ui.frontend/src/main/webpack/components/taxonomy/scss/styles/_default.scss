@@ -35,16 +35,7 @@
 
     &__item-output {
         margin: 0;
-
-        &:after {
-            content: ',';
-        }
-
-        &:last-child {
-            &:after {
-                content: none;
-            }
-        }
+        display: block;
     }
 }
 
