@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jcr:root xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:dam="http://www.day.com/dam/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:cq="http://www.day.com/jcr/cq/1.0" xmlns:dc="http://purl.org/dc/elements/1.1/"
+    jcr:mixinTypes="[mix:referenceable]"
+    jcr:primaryType="dam:Asset"
+    jcr:uuid="75342eb4-38ec-4609-817d-43fca6015860">
+    <jcr:content
+        dam:assetState="processed"
+        dam:jobId="660444fc-5e09-4fe8-aeb9-e81da450e16b"
+        dam:processingId="30dc4a79-277b-4146-bffe-dd6ae81d0756"
+        dam:processingRenditions="[cqdam.metadata.xml,cqdam.machine.metadata.colors.json,cqdam.machine.metadata.features.json,cqdam.text.txt,cq5dam.thumbnail.140.100.png,cq5dam.zoom.2048.2048.jpeg,cq5dam.preview.pdf,cq5dam.thumbnail.319.319.png,cq5dam.thumbnail.48.48.png,cqdam.machine.metadata.tags.json,cq5dam.web.1280.1280.jpeg]"
+        dam:processingRequestedDate="{Date}2023-12-13T22:34:33.229Z"
+        dam:runDMProcess="{Boolean}true"
+        dam:runPostProcess="{Boolean}true"
+        jcr:lastModified="{Date}2023-12-13T22:35:20.366Z"
+        jcr:lastModifiedBy="kevin.sante@workday.com"
+        jcr:primaryType="dam:AssetContent">
+        <metadata
+            dam:encoding="ISO-8859-1"
+            dam:extracted="{Date}2023-12-13T22:34:44.277Z"
+            dam:sha1="d7731e9892099e5630037fe00f5e1b66ac88fc5e"
+            dam:size="{Long}131"
+            dam:WordCount="{Long}8"
+            dc:format="text/plain"
+            jcr:mixinTypes="[cq:Taggable]"
+            jcr:primaryType="nt:unstructured">
+            <predictedTags jcr:primaryType="nt:unstructured">
+                <content
+                    jcr:lastModified="{Date}2023-12-13T22:34:44.598Z"
+                    jcr:primaryType="nt:unstructured"
+                    confidence="{Double}0.9357662134851039"
+                    isCustom="{Boolean}false"
+                    name="content"/>
+                <disallow
+                    jcr:lastModified="{Date}2023-12-13T22:34:44.599Z"
+                    jcr:primaryType="nt:unstructured"
+                    confidence="{Double}0.8521523757222436"
+                    isCustom="{Boolean}false"
+                    name="Disallow"/>
+            </predictedTags>
+        </metadata>
+        <related jcr:primaryType="nt:unstructured"/>
+    </jcr:content>
+</jcr:root>
