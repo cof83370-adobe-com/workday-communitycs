@@ -85,6 +85,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
       put("release-notes", "releaseNotesTags");
       put("event", "eventTags");
       put("content-types", "contentType");
+      put("asset-type", "assetTypeTags");
     }
   };
 
@@ -139,8 +140,7 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
   private final List<String> taxonomyFields = new ArrayList<>(
       Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags",
           "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType",
-          "eventAudience", "eventFormat")
-  );
+          "eventAudience", "eventFormat", "releaseNotesTags", "assetTypeTags"));
 
   /**
    * The dateFields.
@@ -153,7 +153,8 @@ public class ExtractPagePropertiesServiceImpl implements ExtractPagePropertiesSe
    */
   private final List<String> hierarchyFields = new ArrayList<>(
       Arrays.asList("productTags", "usingWorkdayTags", "programsToolsTags", "releaseTags",
-          "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType"));
+          "industryTags", "userTags", "regionCountryTags", "trainingTags", "contentType",
+          "eventAudience", "eventFormat", "assetTypeTags", "releaseNotesTags"));
 
   /**
    * The stringFields.

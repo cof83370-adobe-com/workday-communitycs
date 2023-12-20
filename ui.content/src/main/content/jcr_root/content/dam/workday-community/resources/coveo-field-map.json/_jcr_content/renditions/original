@@ -28,7 +28,7 @@
     "release-notes": "comreleasenotehierarchy",
     "event": "comeventtagshierarchy",
     "content-types": "commcontenttypehierarchy",
-    "release": "comfieldreleasehierarchy"
+    "asset-type": comfieldassettypehierarchy
   },
   "customComponents": {"root/container/eventregistration/button": "registrationLink"},
   "drupalRoleMapping" : {
