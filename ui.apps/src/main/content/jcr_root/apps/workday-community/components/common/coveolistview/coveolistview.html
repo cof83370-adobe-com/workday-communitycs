@@ -343,7 +343,9 @@
           if (clientOrigin === 'searchApiFetch') {
             const body = JSON.parse(request.body);
             body.maximumAge=30000;
-            body.cq = cQuery;
+            if (cQuery) {
+              body.cq = cQuery;
+            }
             request.body = JSON.stringify(body);
           }
           return request;
