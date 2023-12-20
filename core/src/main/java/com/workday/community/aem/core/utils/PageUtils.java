@@ -141,4 +141,20 @@ public class PageUtils {
     log.debug("current page's {} UUID {}", pagePath, ret);
     return ret == null ? "" : ret.toString();
   }
+
+  /**
+   * Return if the current page is marked as retired.
+   *
+   * @param resourceResolver Pass-in resource resolver object
+   * @param pagePath Pass-in page path
+   * @return true if page is marked as retired, false if not.
+   */
+  public static boolean isPageRetired(ResourceResolver resourceResolver, String pagePath) {
+    PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
+    // Trim .html at end.
+    pagePath = pagePath.substring(0, pagePath.indexOf("."));
+    Page page = pageManager.getPage(pagePath);
+    Object ret =  page.getProperties().get("RETIREMENT_STATUS_PROP");
+    return ret != null && ret.equals("archived");
+  }
 }

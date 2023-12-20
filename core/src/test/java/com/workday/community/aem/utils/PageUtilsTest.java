@@ -1,10 +1,12 @@
 package com.workday.community.aem.utils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.apache.sling.api.resource.ValueMap;
 import com.day.cq.tagging.Tag;
 import com.day.cq.wcm.api.Page;
 import com.day.cq.wcm.api.PageManager;
@@ -159,4 +161,21 @@ public class PageUtilsTest {
     assertEquals(expectedTagTitlesList, actualTagTitlesList);
   }
 
+  /**
+   * Test get page tags title list returns empty list if page is null.
+   *
+   * @throws RepositoryException the repository exception
+   */
+  @Test
+  void testIsPageRetired() throws RepositoryException {
+    PageManager pageManager = mock(PageManager.class);
+    Page mockPage = mock(Page.class);
+    ValueMap mockValues = mock(ValueMap.class);
+    when(resourceResolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+    when(pageManager.getPage(anyString())).thenReturn(mockPage);
+    when(mockPage.getProperties()).thenReturn(mockValues);
+    when(mockValues.get(anyString())).thenReturn("archived");
+    boolean isRetired = PageUtils.isPageRetired(resourceResolver, "/pagePath/page.html");
+    assertTrue(isRetired);
+  }
 }
