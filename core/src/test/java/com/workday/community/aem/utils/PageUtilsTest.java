@@ -174,7 +174,7 @@ public class PageUtilsTest {
     when(resourceResolver.adaptTo(PageManager.class)).thenReturn(pageManager);
     when(pageManager.getPage(anyString())).thenReturn(mockPage);
     when(mockPage.getProperties()).thenReturn(mockValues);
-    when(mockValues.get(anyString())).thenReturn("archived");
+    when(mockValues.get(anyString())).thenReturn("retired");
     boolean isRetired = PageUtils.isPageRetired(resourceResolver, "/pagePath/page.html");
     assertTrue(isRetired);
   }
