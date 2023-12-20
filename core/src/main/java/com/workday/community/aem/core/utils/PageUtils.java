@@ -1,6 +1,7 @@
 package com.workday.community.aem.core.utils;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_VAL;
 import static java.util.Objects.requireNonNull;
 
 import com.day.cq.tagging.Tag;
@@ -155,6 +156,6 @@ public class PageUtils {
     pagePath = pagePath.substring(0, pagePath.indexOf("."));
     Page page = pageManager.getPage(pagePath);
     Object ret =  page.getProperties().get("RETIREMENT_STATUS_PROP");
-    return ret != null && ret.equals("archived");
+    return ret != null && ret.equals(RETIREMENT_STATUS_VAL);
   }
 }
