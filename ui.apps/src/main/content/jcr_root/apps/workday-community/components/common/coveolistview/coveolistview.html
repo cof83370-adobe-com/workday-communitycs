@@ -7,8 +7,8 @@
     <atomic-layout-section section="facets" class="facet-section">
       <span class="facet-header">Refine By</span>
       <atomic-facet-manager data-sly-list.facet="${coveo.categories}">
-        <span id="facet-${facetList.index}">
-          <atomic-category-facet field="${facet.field}" label="${facet.label}" base-path='[${facet.subCategory}]' with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric" data-placeholder-text="${facet.searchHelpText}">
+        <span id="facet-${facetList.index}" data-tag-query="${facet.tagFiltersString}" class="wdcTagFiltersString">
+          <atomic-category-facet field="${facet.field}" label="${facet.label}" with-search="true" class="facet" delimiting-character="|" sort-criteria="alphanumeric" data-placeholder-text="${facet.searchHelpText}">
           </atomic-category-facet>
         </span>
       </atomic-facet-manager>
@@ -324,7 +324,16 @@
       await customElements.whenDefined('atomic-search-interface');
 
       const searchInterface = document.querySelector('atomic-search-interface');
-
+      const collection = document.getElementsByClassName('wdcTagFiltersString');
+      let cQuery = '';
+      const queryArray = [];
+      for (let i = 0; i < collection.length; i++) {
+        const tagQuery = collection[i].getAttribute('data-tag-query');
+        if (tagQuery) {
+          queryArray.push(tagQuery)
+        }
+      }
+      cQuery = queryArray.join(' AND ');
       await searchInterface.initialize({
         accessToken: token,
         searchHub: listViewConfig["searchHub"],
@@ -334,6 +343,7 @@
           if (clientOrigin === 'searchApiFetch') {
             const body = JSON.parse(request.body);
             body.maximumAge=30000;
+            body.cq = cQuery;
             request.body = JSON.stringify(body);
           }
           return request;

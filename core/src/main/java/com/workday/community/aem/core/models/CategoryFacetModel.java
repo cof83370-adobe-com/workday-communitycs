@@ -46,10 +46,10 @@ public class CategoryFacetModel {
   private String field = null;
 
   /**
-   * Facet sub category.
+   * Tag field filter string.
    */
   @Getter
-  private String subCategory = "";
+  private String tagFiltersString;
 
   @Inject
   private ResourceResolverFactory resourceResolverFactory;
@@ -71,6 +71,13 @@ public class CategoryFacetModel {
   @Getter
   @ValueMapValue
   private String category;
+
+  /**
+   * Category string value from jcr.
+   */
+  @Getter
+  @ValueMapValue
+  private String[] tags;
 
   /**
    * Search help text.
@@ -104,18 +111,44 @@ public class CategoryFacetModel {
         return;
       }
 
-      JsonElement facetField = this.getFieldMapConfig(resolver).get(nameSpace);
-
+      JsonObject fieldMapConfig = this.getFieldMapConfig(resolver);
+      JsonElement facetField = fieldMapConfig.get(nameSpace);
       if (facetField != null) {
         field = facetField.getAsString();
-        List<String> tags = new ArrayList<>();
-        while (!tag.isNamespace()) {
-          tags.add(tag.getTitle());
-          tag = tag.getParent();
+      }
+
+      if (tags != null && tags.length > 0) {
+        List<String> tagPaths = new ArrayList<>();
+        for (int i = 0; i < tags.length; i++) {
+          tag = tagManager != null ? tagManager.resolve(tags[i]) : null;
+          if (tag == null) {
+            continue;
+          }
+          nameSpace = tag.getNamespace().getName();
+          if (nameSpace == null) {
+            continue;
+          }
+          facetField = fieldMapConfig.get(nameSpace);
+          if (facetField == null) {
+            continue;
+          }
+          String tagField = facetField.getAsString();
+          List<String> tagTitles = new ArrayList<>();
+          while (!tag.isNamespace()) {
+            tagTitles.add(tag.getTitle());
+            tag = tag.getParent();
+          }
+          if (!tagTitles.isEmpty()) {
+            Collections.reverse(tagTitles);
+            tagPaths.add("@".concat(tagField).concat("==").concat("\"")
+                    .concat(String.join("|", tagTitles)).concat("\""));
+          }
         }
-        if (!tags.isEmpty()) {
-          Collections.reverse(tags);
-          subCategory = "\"" + String.join("\", \"", tags) + "\"";
+        if (!tagPaths.isEmpty()) {
+          tagFiltersString = (String.join(" AND ", tagPaths));
+        }
+        if (tagFiltersString.length() > 0) {
+          tagFiltersString = "(".concat(tagFiltersString).concat(")");
         }
       }
     } catch (CacheException | LoginException e) {
