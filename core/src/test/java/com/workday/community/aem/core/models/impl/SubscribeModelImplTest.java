@@ -1,40 +1,45 @@
 package com.workday.community.aem.core.models.impl;
 
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_VAL;
+import static junitx.framework.Assert.assertFalse;
+
+import com.day.cq.wcm.api.Page;
+import com.day.cq.wcm.api.PageManager;
 import com.workday.community.aem.core.config.DrupalConfig;
 import com.workday.community.aem.core.models.SubscribeModel;
 import com.workday.community.aem.core.services.DrupalService;
 import com.workday.community.aem.core.services.RunModeConfigService;
-import com.workday.community.aem.core.utils.PageUtils;
-import com.workday.community.aem.core.utils.ResolverUtil;
 import io.wcm.testing.mock.aem.junit5.AemContext;
 import io.wcm.testing.mock.aem.junit5.AemContextExtension;
-import org.apache.sling.api.request.RequestPathInfo;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.resource.ResourceResolverFactory;
-import org.apache.sling.testing.mock.sling.servlet.MockRequestPathInfo;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.testing.mock.sling.servlet.MockSlingHttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.when;
 
-@ExtendWith({ AemContextExtension.class, MockitoExtension.class })
+@ExtendWith({AemContextExtension.class, MockitoExtension.class})
 public class SubscribeModelImplTest {
   /**
    * AemContext.
    */
   private final AemContext context = new AemContext();
+
+  @Spy
+  @InjectMocks
+  MockSlingHttpServletRequest request = context.request();
 
   @Mock
   DrupalService drupalService;
@@ -54,20 +59,23 @@ public class SubscribeModelImplTest {
 
   @Test
   void testEnabled() {
-    try(MockedStatic<PageUtils> mockPageUtils = mockStatic(PageUtils.class);
-        MockedStatic<ResolverUtil> mockResolverUtils = mockStatic(ResolverUtil.class)) {
-      MockSlingHttpServletRequest request = context.request();
-      SubscribeModel model = request.adaptTo(SubscribeModel.class);
 
-      DrupalConfig config = mock(DrupalConfig.class);
-      ResourceResolver resolver = mock(ResourceResolver.class);
-      lenient().when(drupalService.getConfig()).thenReturn(config);
-      mockPageUtils.when(() -> PageUtils.isPageRetired(any(), anyString())).thenReturn(false);
-      mockResolverUtils.when(() -> ResolverUtil.newResolver(any(), anyString())).thenReturn(resolver);
-
-      lenient().when(config.enableSubscribe()).thenReturn(true);
-      assertTrue("The subscription is enabled", model.enabled());
-    }
+    SubscribeModel model = request.adaptTo(SubscribeModel.class);
+    DrupalConfig config = mock(DrupalConfig.class);
+    lenient().when(drupalService.getConfig()).thenReturn(config);
+    ResourceResolver resolver = mock(ResourceResolver.class);
+    lenient().when(request.getResourceResolver()).thenReturn(resolver);
+    Resource mockResource = mock(Resource.class);
+    lenient().when(request.getResource()).thenReturn(mockResource);
+    PageManager pageManager = mock(PageManager.class);
+    lenient().when(resolver.adaptTo(PageManager.class)).thenReturn(pageManager);
+    Page mockPage = mock(Page.class);
+    when(pageManager.getContainingPage(mockResource)).thenReturn(mockPage);
+    ValueMap properties = mock(ValueMap.class);
+    when(mockPage.getProperties()).thenReturn(properties);
+    when(properties.get(anyString())).thenReturn(RETIREMENT_STATUS_VAL);
+    lenient().when(config.enableSubscribe()).thenReturn(true);
+    assertFalse("The subscription is enabled", model.enabled());
   }
 
   @Test
