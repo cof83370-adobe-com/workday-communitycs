@@ -20,6 +20,8 @@
                 centerContainerPanel.classList.add(`${aemGridColumn}--6`);
                 centerContainerPanel.classList.remove(`${aemGridColumn}--8`);
                 toggleIcon.setAttribute('aria-expanded', 'true');
+                toggleIcon.style.transform = 'rotate(180deg)';
+                toggleIcon.style.marginRight = '15px';
             } else {
                 leftContainerPanel.classList.remove(`${aemGridColumn}--3`);
                 leftContainerPanel.classList.add(`${aemGridColumn}--1`, 'collapse');
@@ -27,6 +29,8 @@
                 centerContainerPanel.classList.remove(`${aemGridColumn}--6`);
                 centerContainerPanel.classList.add(`${aemGridColumn}--8`);
                 toggleIcon.setAttribute('aria-expanded', 'false');
+                toggleIcon.style.transform = '';
+                toggleIcon.style.marginRight = '';
             }
         }
     }
@@ -56,10 +60,12 @@
     }
 
     function onDocumentReady() {
-        const toggleIcon = document.querySelector(containerSelectors.tocToggleIcon);
+        const toggleIcon = document.querySelector(containerSelectors.tocToggleIcon) as HTMLElement;
         let showPanel = true;
         if(toggleIcon && showPanel == true) {
             toggleIcon.setAttribute('aria-expanded', 'true');
+            toggleIcon.style.transform = 'rotate(180deg)';
+            toggleIcon.style.marginRight = '15px';
         }
         checkTocPanel();
 
