@@ -1,6 +1,8 @@
 package com.workday.community.aem.core.utils;
 
 import static com.workday.community.aem.core.constants.GlobalConstants.PUBLISH;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_PROP;
+import static com.workday.community.aem.core.constants.WorkflowConstants.RETIREMENT_STATUS_VAL;
 import static java.util.Objects.requireNonNull;
 
 import com.day.cq.tagging.Tag;
@@ -140,5 +142,21 @@ public class PageUtils {
     Object ret =  page.getProperties().get("jcr:uuid");
     log.debug("current page's {} UUID {}", pagePath, ret);
     return ret == null ? "" : ret.toString();
+  }
+
+  /**
+   * Return if the current page is marked as retired.
+   *
+   * @param resourceResolver Pass-in resource resolver object
+   * @param pagePath Pass-in page path
+   * @return true if page is marked as retired, false if not.
+   */
+  public static boolean isPageRetired(ResourceResolver resourceResolver, String pagePath) {
+    PageManager pageManager = resourceResolver.adaptTo(PageManager.class);
+    // Trim .html at end.
+    pagePath = pagePath.substring(0, pagePath.indexOf("."));
+    Page page = pageManager.getPage(pagePath);
+    Object ret =  page.getProperties().get(RETIREMENT_STATUS_PROP);
+    return ret != null && ret.equals(RETIREMENT_STATUS_VAL);
   }
 }
