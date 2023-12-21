@@ -50,6 +50,17 @@
                                                             required="{Boolean}true"
                                                             name="./category"
                                                             rootPath="/content/cq:tags"/>
+                                                        <tags
+                                                                cq:showOnCreate="{Boolean}true"
+                                                                jcr:primaryType="nt:unstructured"
+                                                                sling:resourceType="cq/gui/components/coral/common/form/tagfield"
+                                                                emptyText="Choose tags"
+                                                                fieldDescription="Choose tags"
+                                                                fieldLabel="Tags"
+                                                                multiple="{Boolean}true"
+                                                                required="{Boolean}false"
+                                                                name="./tags"
+                                                                rootPath="/content/cq:tags"/>
                                                         <searchhelptext
                                                                 jcr:primaryType="nt:unstructured"
                                                                 sling:resourceType="granite/ui/components/coral/foundation/form/textfield"

@@ -8,11 +8,13 @@
     "categories": {
       "item0": {
         "category": "product:",
-        "searchHelpText": "Product"
+        "searchHelpText": "Product",
+        "tags": "product:parent/child"
       },
       "item1": {
         "category": "using-workday:",
-        "searchHelpText": "Using workday"
+        "searchHelpText": "Using workday",
+        "tags": "using-workday:parent/child"
       }
     }
   }

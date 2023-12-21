@@ -99,11 +99,36 @@ public class CoveoListViewModelImplTest {
     Tag tag2 = mock(Tag.class);
 
     when(tag1.getNamespace()).thenReturn(tag1Namespace);
-    when(tag1.isNamespace()).thenReturn(true);
     when(tag2.getNamespace()).thenReturn(tag2Namespace);
-    when(tag2.isNamespace()).thenReturn(true);
     when(tagManager.resolve("product:")).thenReturn(tag1);
     when(tagManager.resolve("using-workday:")).thenReturn(tag2);
+
+    Tag tag3 = mock(Tag.class);
+    Tag tag3Parent = mock(Tag.class);
+    Tag tag3Namespace = mock(Tag.class);
+    Tag tag4 = mock(Tag.class);
+    Tag tag4Parent = mock(Tag.class);
+    Tag tag4Namespace = mock(Tag.class);
+    when(tag3.getNamespace()).thenReturn(tag1Namespace);
+    when(tag4.getNamespace()).thenReturn(tag2Namespace);
+    when(tagManager.resolve("product:parent/child")).thenReturn(tag3);
+    when(tagManager.resolve("using-workday:parent/child")).thenReturn(tag4);
+
+    when(tag3.isNamespace()).thenReturn(false);
+    when(tag3.getTitle()).thenReturn("Child Product");
+    when(tag3.getParent()).thenReturn(tag3Parent);
+    when(tag3Parent.getTitle()).thenReturn("Parent Product");
+    when(tag3Parent.isNamespace()).thenReturn(false);
+    when(tag3Parent.getParent()).thenReturn(tag3Namespace);
+    when(tag3Namespace.isNamespace()).thenReturn(true);
+
+    when(tag4.isNamespace()).thenReturn(false);
+    when(tag4.getTitle()).thenReturn("Child Using Wday");
+    when(tag4.getParent()).thenReturn(tag4Parent);
+    when(tag4Parent.getTitle()).thenReturn("Parent Using Wday");
+    when(tag4Parent.isNamespace()).thenReturn(false);
+    when(tag4Parent.getParent()).thenReturn(tag4Namespace);
+    when(tag4Namespace.isNamespace()).thenReturn(true);
 
     String fieldMapConfig =
         "{\"tagIdToCoveoField\": {\"product\" : \"coveo_product\", \"using-workday\": \"coveo_using-workday\"}}";
@@ -207,8 +232,12 @@ public class CoveoListViewModelImplTest {
     assertEquals(2, categoryFacetModels.size());
     CategoryFacetModel prod = categoryFacetModels.get(0);
     assertEquals("coveo_product", prod.getField());
+    assertEquals("(@coveo_product==\"Parent Product|Child Product\")", prod.getTagFiltersString());
+    assertEquals("Product", prod.getSearchHelpText());
     CategoryFacetModel usingWorkday = categoryFacetModels.get(1);
     assertEquals("coveo_using-workday", usingWorkday.getField());
+    assertEquals("(@coveo_using-workday==\"Parent Using Wday|Child Using Wday\")", usingWorkday.getTagFiltersString());
+    assertEquals("Using workday", usingWorkday.getSearchHelpText());
   }
 
   @AfterEach
